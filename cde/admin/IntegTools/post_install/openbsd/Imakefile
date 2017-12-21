@@ -34,23 +34,19 @@ BUILD_UDB_LIST = $(SHELL) ../build_udb_list
 all::
 
 configMin:: $(DATABASE_DIR)/CDE-MIN.udb
-	$(UDBTOANY) -toLst -ReleaseStream $(PLATFORM) \
-            $(DATABASE_DIR)/CDE-MIN.udb > CDE-MIN.lst
+	$(UDBTOANY) -toLst -ReleaseStream $(PLATFORM) $(DATABASE_DIR)/CDE-MIN.udb > CDE-MIN.lst
 	$(BUILD_UDB_LIST) CDE-MIN ../../../..
 
 configTT:: $(DATABASE_DIR)/CDE-TT.udb
-	$(UDBTOANY) -toLst -ReleaseStream $(PLATFORM) \
-            $(DATABASE_DIR)/CDE-TT.udb > CDE-TT.lst
+	$(UDBTOANY) -toLst -ReleaseStream $(PLATFORM) $(DATABASE_DIR)/CDE-TT.udb > CDE-TT.lst
 	$(BUILD_UDB_LIST) CDE-TT ../../../..
 
 configRun:: $(DATABASE_DIR)/CDE-RUN.udb
-	$(UDBTOANY) -toLst -ReleaseStream $(PLATFORM) \
-            $(DATABASE_DIR)/CDE-RUN.udb > CDE-RUN.lst
+	$(UDBTOANY) -toLst -ReleaseStream $(PLATFORM) $(DATABASE_DIR)/CDE-RUN.udb > CDE-RUN.lst
 	$(BUILD_UDB_LIST) CDE-RUN ../../../..
 
 configShlibs:: $(DATABASE_DIR)/CDE-SHLIBS.udb
-	$(UDBTOANY) -toLst -ReleaseStream $(PLATFORM) \
-            $(DATABASE_DIR)/CDE-SHLIBS.udb > CDE-SHLIBS.lst
+	$(UDBTOANY) -toLst -ReleaseStream $(PLATFORM) $(DATABASE_DIR)/CDE-SHLIBS.udb > CDE-SHLIBS.lst
 	$(BUILD_UDB_LIST) CDE-SHLIBS ../../../..
 
 LOCAL_CPP_DEFINES = -DCDE_INSTALLATION_TOP=$(CDE_INSTALLATION_TOP) \
