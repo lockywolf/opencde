@@ -176,9 +176,14 @@ XCOMM operating system:  OSName (OSMajorVersion./**/OSMinorVersion./**/OSTeenyVe
 #define PreProcessCmd   	CppCmd
 #define PreIncDir		DefaultGccIncludeDir
 
-#ifndef CcCmd
-#define CcCmd 			cc
+#if OSMajorVersion > 6 || (OSMajorVersion == 6 && OSMinorVersion >= 2)
+#define CcCmd			clang
+#define CplusplusCmd		clang++
+#else
+#define CcCmd			gcc
+#define CplusplusCmd		g++
 #endif
+
 #ifndef AsCmd
 #define AsCmd			cc -c -x assembler
 #endif
