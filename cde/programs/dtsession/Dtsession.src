@@ -25,6 +25,8 @@ Dtsession*drawArea.background: black
 Dtsession*lockLabelPixmap.imageName: DECDtlogo
 #elif __FreeBSD__
 Dtsession*lockLabelPixmap.imageName: FreeBSDDtlogo
+#elif __OpenBSD__
+Dtsession*lockLabelPixmap.imageName: OpenBSDDtlogo
 #else
 Dtsession*lockLabelPixmap.imageName: Dtlogo
 #endif
