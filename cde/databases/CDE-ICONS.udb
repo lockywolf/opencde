@@ -3007,6 +3007,17 @@ programs/icons/FreeBSDDtlogo.pm
 }
 #
 #
+programs/icons/OpenBSDDtlogo.bm
+{ openbsd
+        install_target = /usr/dt/appconfig/icons/C/OpenBSDDtlogo.bm
+}
+#
+programs/icons/OpenBSDDtlogo.pm
+{ openbsd
+        install_target = /usr/dt/appconfig/icons/C/OpenBSDDtlogo.pm
+}
+#
+#
 programs/icons/Dtlogo.pm
 { default
         install_target = /usr/dt/appconfig/icons/C/Dtlogo.pm

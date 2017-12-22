@@ -171,6 +171,8 @@ Dtlogin*passwd_text.columns: %|nls-5-#20#|
    Dtlogin*logo*bitmapFile:		MPowerLogo
 #elif FREEBSD
    Dtlogin*logo*bitmapFile:		FreeBSDDtlogo
+#elif defined(__OpenBSD__)
+   Dtlogin*logo*bitmapFile:        OpenBSDDtlogo
 #else  /* IVE */
 !! Dtlogin*logo*bitmapFile:		< bitmap or pixmap file >
 #endif /* IVE */
