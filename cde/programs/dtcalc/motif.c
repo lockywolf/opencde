@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $TOG: motif.c /main/28 1998/07/21 16:17:00 samborn $ */
-/* 
- * (c) Copyright 1997, The Open Group 
+/*
+ * (c) Copyright 1997, The Open Group
  */
 /*                                                                      *
  *  motif.c                                                             *
@@ -2077,7 +2077,7 @@ get_next_event(Widget widget, int ev_action, XEvent *xevent)
 
 /* Get dtcalc resource from merged database. */
 char *
-get_resource(enum res_type rtype) 
+get_resource(enum res_type rtype)
 {
   char str[MAXLINE] ;
 
@@ -3295,7 +3295,7 @@ static void
 modelineValueChanged(Widget widget, XtPointer client_data, XtPointer call_data)
 {
   Arg args[1];
-  int val, choice;
+  long val, choice;
 
   X->mtype = (enum menu_type) client_data ;
   XtSetArg (args[0], XmNuserData, &val);
