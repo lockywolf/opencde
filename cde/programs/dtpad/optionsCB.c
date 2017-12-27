@@ -72,9 +72,9 @@ OverstrikeCB(
 {
     Arg al[1];
     Editor *pPad = (Editor *)client_data;
-    XmToggleButtonCallbackStruct *cb = (XmToggleButtonCallbackStruct *) 
+    XmToggleButtonCallbackStruct *cb = (XmToggleButtonCallbackStruct *)
 				       call_data;
-				       
+
     XtSetArg(al[0], DtNoverstrike, (Boolean) cb->set);
     XtSetValues(pPad->editor, al, 1);
     pPad->xrdb.overstrike = (Boolean) cb->set;	/* reset edit session default */
@@ -99,12 +99,12 @@ WordWrapCB(
 {
     Arg al[1];
     Editor *pPad = (Editor *)client_data;
-    XmToggleButtonCallbackStruct *cb = (XmToggleButtonCallbackStruct *) 
+    XmToggleButtonCallbackStruct *cb = (XmToggleButtonCallbackStruct *)
 				       call_data;
     SaveAs *pSaveAs = &pPad->fileStuff.fileWidgets.saveAs;
     Select *pSelect = &pPad->fileStuff.fileWidgets.select;
 
-    XtSetArg(al[0], DtNwordWrap, (Boolean) cb->set);
+    XtSetArg(al[0], DtNwordWrap, (int) cb->set);
     XtSetValues(pPad->editor, al, 1);
 
     pPad->xrdb.wordWrap = (Boolean) cb->set;	/* reset edit session default */
@@ -148,13 +148,13 @@ StatusLineCB(
 {
     Arg al[1];
     Editor *pPad = (Editor *)client_data;
-    XmToggleButtonCallbackStruct *cb = (XmToggleButtonCallbackStruct *) 
+    XmToggleButtonCallbackStruct *cb = (XmToggleButtonCallbackStruct *)
 				       call_data;
-				       
+
     XtSetArg(al[0], DtNshowStatusLine, (Boolean) cb->set);
     XtSetValues(pPad->editor, al, 1);
     pPad->xrdb.statusLine = (Boolean) cb->set;	/* reset edit session default */
- 
+
     /* Reset the resize increment and minimum window size properties. */
     SetAppShellResizeHints(pPad);
 }
