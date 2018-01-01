@@ -1,6 +1,6 @@
 # $OpenBSD$
 
-V =		0.1
+V =		0.2
 COMMENT =
 DISTNAME =	opencde-${V}
 CATEGORIES =	x11
