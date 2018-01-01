@@ -24,7 +24,7 @@
 **
 **  monthglance.h
 **
-**  static char sccsid[] = "@(#)yearglance.h 1.2 93/08/10 Copyr 1991 Sun Microsystems, Inc."; 
+**  static char sccsid[] = "@(#)yearglance.h 1.2 93/08/10 Copyr 1991 Sun Microsystems, Inc.";
 **
 **  $XConsortium: monthglance.h /main/4 1996/04/12 14:58:21 rswiston $
 **
@@ -64,7 +64,7 @@ typedef struct month {
 } Month;
 
 extern void 	prepare_to_paint_monthview	P((Calendar*, XRectangle*));
-extern void	get_time_str		P((Dtcm_appointment*, char*));
+extern void	get_time_str		P((Dtcm_appointment*, char*, int));
 extern void	month_button		P((Widget, XtPointer, XtPointer));
 extern void	month_event		P((XEvent*));
 extern void	paint_grid		P((Calendar*, XRectangle*));

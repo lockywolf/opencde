@@ -161,19 +161,19 @@ ge_add_to_gappt_list(Access_data *ad, int idx, GEditor *ge, Boolean reset) {
 	if (step && step->ad)
 		name2 = cm_target2name(step->ad->name);
 	if (!step || start_tick != step->tick || reset)
-		format_gappt(appt, ad->name, buf, dt, DEFAULT_GAPPT_LEN);
+		format_gappt(appt, ad->name, buf, DEFAULT_GAPPT_LEN, dt, DEFAULT_GAPPT_LEN);
 	else {
 
 
-		/* Potentially nasty memory bug here.  The assumption is 
-		   that the buffer supplied for the time format is the 
+		/* Potentially nasty memory bug here.  The assumption is
+		   that the buffer supplied for the time format is the
 		   right size for the new format. */
 
 		_csa_tick_to_iso8601(0, appt->time->value->item.date_time_value);
 		if (!step || strcmp(ad->name, name2) != 0)
-			format_gappt(appt, ad->name, buf, dt, DEFAULT_GAPPT_LEN);
+			format_gappt(appt, ad->name, buf, DEFAULT_GAPPT_LEN, dt, DEFAULT_GAPPT_LEN);
 		else
-			format_gappt(appt, NULL, buf, dt, DEFAULT_GAPPT_LEN);
+			format_gappt(appt, NULL, buf, DEFAULT_GAPPT_LEN, dt, DEFAULT_GAPPT_LEN);
 	}
 
 	/*
@@ -211,14 +211,14 @@ appt_to_form(GEditor *ge, CSA_entry_handle a, char *name, int version) {
 		return;
 	ge->rfpFlags = 0;
 
-	appt = allocate_appt_struct(appt_read, 
+	appt = allocate_appt_struct(appt_read,
 				        version,
-					CSA_ENTRY_ATTR_ORGANIZER_I, 
+					CSA_ENTRY_ATTR_ORGANIZER_I,
 					NULL);
 	stat = query_appt_struct(ge->cal->cal_handle, a, appt);
 	backend_err_msg(ge->frame, name, stat, pu->xm_error_pixmap);
 	if (stat == CSA_SUCCESS) {
-		sprintf(buf, "%s:  %s",
+		snprintf(buf, MAXNAMELEN, "%s:  %s",
 			catgets(ge->cal->DT_catd, 1, 300, "Author"),
 			appt->author->value->item.calendar_user_value->user_name);
 		set_message(ge->message_text, buf);
@@ -241,7 +241,7 @@ ge_list_select_proc(Widget w, XtPointer client_data, XtPointer data) {
 	Access_data		*ad, *step_ad;
 	XmListCallbackStruct	*cbs = (XmListCallbackStruct *)data;
 
-	if (a = geditor_nth_appt(ge, cbs->item_position, &ad))
+	if ( (a = geditor_nth_appt(ge, cbs->item_position, &ad)) )
 		appt_to_form(ge, a, (ad && ad->name) ? ad->name : "\0", ad->version);
 	XmListDeselectAllItems(ge->access_list);
 	if (!ad || !ad->name)
@@ -265,10 +265,10 @@ ge_set_modify_buttons(GEditor *ge, int cnt) {
 	Boolean	val;
 
 	if (cnt == 1)
-		sprintf(buf, "%d %s.", cnt,
+		snprintf(buf, MAXNAMELEN, "%d %s.", cnt,
 			catgets(ge->cal->DT_catd, 1, 633, "Calendar Selected"));
 	else
-		sprintf(buf, "%d %s.", cnt,
+		snprintf(buf, MAXNAMELEN, "%d %s.", cnt,
 			catgets(ge->cal->DT_catd, 1, 634, "Calendars Selected"));
 	set_message(ge->message_text, buf);
 
@@ -320,8 +320,8 @@ get_mail_address_list(Calendar *c) {
 		ad = (Access_data *)CmDataListGetData(ge->access_data,
 						    pos_list[i]);
 		if (ad) {
-			strcat(address, ad->name);
-			strcat(address, " ");
+			strlcat(address, ad->name, address_len+1);
+			strlcat(address, " ", address_len+1);
 		}
 	}
 	if (pos_list)
@@ -345,12 +345,12 @@ ge_mail_proc(Widget w, XtPointer client_data, XtPointer data) {
 	Dtcm_appointment        *appt;
 	char		*address = get_mail_address_list(c);
 	char		*address_list[1];
- 
+
         /* Send ToolTalk message to bring up compose GUI with buffer as attachme
 nt */
 
 	appt = form_to_appt(ge, False, DATAVER4);
- 
+
         appointment_buf = parse_attrs_to_string(appt, (Props *) c->properties, attrs_to_string(appt->attrs, appt->count));
 
 
@@ -359,9 +359,9 @@ nt */
 	address_list[0] = appointment_buf;
 
 	mime_buf = create_rfc_message(address, "message", address_list, 1);
- 
+
         msg = ttmedia_load(0, (Ttmedia_load_msg_cb)reply_cb, NULL, TTME_MAIL_EDIT, "RFC_822_MESSAGE", (unsigned char *)mime_buf, strlen(mime_buf), NULL, "dtcm_appointment_attachment", 0);
- 
+
 	status = tt_ptr_error(msg);
 	if (tt_is_err(status))
 	{
@@ -446,15 +446,15 @@ ge_expand_ui_proc(Widget w, XtPointer client_data, XtPointer data) {
 	Dimension       h, height, width;
 	static Boolean	expand_state_closed = True;
 
-	/* This is really hokey.  There is a problem in the Motif code 
-	   that figures out traversals.  In the case of the appointment 
-	   editor, when the widgets are traversed, that the appointment 
-	   editor is them expanded, the traversal list is left in an 
-	   incorrect state.  The only way to straighten this out is 
-	   to trick the traversal code into re-evaluating the traversal 
-	   list.  We do this by setting one of the forms insensitive, 
-	   and then back to sensitive.  There is no visual impact, and 
-	   it seems to work.  Do *not* remove these calls to 
+	/* This is really hokey.  There is a problem in the Motif code
+	   that figures out traversals.  In the case of the appointment
+	   editor, when the widgets are traversed, that the appointment
+	   editor is them expanded, the traversal list is left in an
+	   incorrect state.  The only way to straighten this out is
+	   to trick the traversal code into re-evaluating the traversal
+	   list.  We do this by setting one of the forms insensitive,
+	   and then back to sensitive.  There is no visual impact, and
+	   it seems to work.  Do *not* remove these calls to
 	   XtSetSensitive(), of the synlib tests will stop working. */
 
 	XtVaGetValues(ge->appt_list_sw, XmNheight, &height, NULL);
@@ -473,14 +473,14 @@ ge_expand_ui_proc(Widget w, XtPointer client_data, XtPointer data) {
 
 		xmstr = XmStringCreateLocalized(
 				catgets(ge->cal->DT_catd, 1, 625, "Less"));
-		XtVaSetValues(ge->expand_ui_button, 
+		XtVaSetValues(ge->expand_ui_button,
 			XmNlabelString, xmstr,
 			NULL);
 		XmStringFree(xmstr);
 
 		XtVaGetValues(ge->rfp.rfp_form_mgr, XmNheight, &h, NULL);
 		XtVaSetValues(ge->separator1, XmNbottomOffset, h + 10, NULL);
-		
+
 		children[0] = ge->rfp.rfp_form_mgr;
 		children[1] = ge->mail_button;
 
@@ -579,6 +579,10 @@ form_to_appt(GEditor *ge, Boolean no_reminders, int version) {
 					 CSA_X_DT_ENTRY_ATTR_REPEAT_OCCURRENCE_NUM_I,
 					 CSA_ENTRY_ATTR_RECURRENCE_RULE_I,
 					 NULL);
+		else {
+			fprintf( stderr, "Invalid version, aborting");
+			exit(1);
+		}
 	}
 	else {
 
@@ -642,27 +646,31 @@ form_to_appt(GEditor *ge, Boolean no_reminders, int version) {
 					 CSA_ENTRY_ATTR_POPUP_REMINDER_I,
 					 CSA_ENTRY_ATTR_RECURRENCE_RULE_I,
 					 NULL);
+		else {
+			fprintf( stderr, "Invalid version, aborting");
+			exit(1);
+		}
 
 		a->beep->value->item.reminder_value->lead_time = malloc(BUFSIZ);
-		_csa_duration_to_iso8601(ge_reminder_val(p, CP_BEEPUNIT, CP_BEEPADV), 
+		_csa_duration_to_iso8601(ge_reminder_val(p, CP_BEEPUNIT, CP_BEEPADV),
 				     a->beep->value->item.reminder_value->lead_time);
 		a->beep->value->item.reminder_value->reminder_data.data = NULL;
 		a->beep->value->item.reminder_value->reminder_data.size = 0;
 
 		a->flash->value->item.reminder_value->lead_time = malloc(BUFSIZ);
-		_csa_duration_to_iso8601(ge_reminder_val(p, CP_FLASHUNIT, CP_BEEPADV), 
+		_csa_duration_to_iso8601(ge_reminder_val(p, CP_FLASHUNIT, CP_BEEPADV),
 				     a->flash->value->item.reminder_value->lead_time);
 		a->flash->value->item.reminder_value->reminder_data.data = NULL;
 		a->flash->value->item.reminder_value->reminder_data.size = 0;
 
 		a->popup->value->item.reminder_value->lead_time = malloc(BUFSIZ);
-		_csa_duration_to_iso8601(ge_reminder_val(p, CP_OPENUNIT, CP_BEEPADV), 
+		_csa_duration_to_iso8601(ge_reminder_val(p, CP_OPENUNIT, CP_BEEPADV),
 				     a->popup->value->item.reminder_value->lead_time);
 		a->popup->value->item.reminder_value->reminder_data.data = NULL;
 		a->popup->value->item.reminder_value->reminder_data.size = 0;
 
 		a->mail->value->item.reminder_value->lead_time = malloc(BUFSIZ);
-		_csa_duration_to_iso8601(ge_reminder_val(p, CP_MAILUNIT, CP_BEEPADV), 
+		_csa_duration_to_iso8601(ge_reminder_val(p, CP_MAILUNIT, CP_BEEPADV),
 				     a->mail->value->item.reminder_value->lead_time);
 		a->mail->value->item.reminder_value->reminder_data.data =
 			(CSA_uint8 *) cm_strdup(get_char_prop(p, CP_MAILTO));
@@ -723,7 +731,7 @@ ge_insert_proc(Widget w, XtPointer client_data, XtPointer data) {
 		XtFree(title);
 		_DtTurnOffHourGlass(ge->frame);
 		return;
-	} 
+	}
 
 
 	for(i = 0; i < c_cnt; i++) {
@@ -732,12 +740,12 @@ ge_insert_proc(Widget w, XtPointer client_data, XtPointer data) {
 
 
 		/* it may seem a little odd to create this
-		   template appointment over and over again, but this 
-		   needs to be done because each connection may support 
-		   a different data model, and thus need the appointments 
+		   template appointment over and over again, but this
+		   needs to be done because each connection may support
+		   a different data model, and thus need the appointments
 		   created differently. */
 
-		if (same_user(ad->name, c->calname)) 
+		if (same_user(ad->name, c->calname))
 			appt = form_to_appt(ge, False, ad->version);
 		else
 	    		appt = form_to_appt(ge, True, ad->version);
@@ -763,7 +771,7 @@ ge_insert_proc(Widget w, XtPointer client_data, XtPointer data) {
 			}
 
 			stat = csa_add_entry(ad->cal_handle,
-					       appt->count, 
+					       appt->count,
 					       appt->attrs,
 					       &new_a, NULL);
 		}
@@ -869,12 +877,12 @@ ge_delete_proc(Widget w, XtPointer client_data, XtPointer data) {
 		XtFree(title);
 		_DtTurnOffHourGlass(ge->frame);
 		return;
-	} 
+	}
 
 	answer = 0;
-	appt = allocate_appt_struct(appt_read, 
+	appt = allocate_appt_struct(appt_read,
 				        ad->version,
-					CSA_X_DT_ENTRY_ATTR_REPEAT_TYPE_I, 
+					CSA_X_DT_ENTRY_ATTR_REPEAT_TYPE_I,
 					NULL);
 	stat = query_appt_struct(c->cal_handle, entry, appt);
 	backend_err_msg(ge->frame, c->view->current_calendar, stat,
@@ -994,7 +1002,7 @@ ge_change_proc(Widget w, XtPointer client_data, XtPointer data) {
 		XtFree(title);
 		_DtTurnOffHourGlass(ge->frame);
 		return;
-	} 
+	}
 
 	if (!(old_a = geditor_nth_appt(ge, item_list[0], &ad))) {
 		char *title = XtNewString(catgets(c->DT_catd, 1, 305,
@@ -1036,7 +1044,7 @@ ge_change_proc(Widget w, XtPointer client_data, XtPointer data) {
 		XtFree(text);
 		XtFree(title);
 		return;
-	} 
+	}
 
 	answer = 0;
 	appt = allocate_appt_struct(appt_read,
@@ -1086,7 +1094,7 @@ ge_change_proc(Widget w, XtPointer client_data, XtPointer data) {
 		XtFree(title);
 	}
 
-	else if (appt->repeat_type->value->item.sint32_value != 
+	else if (appt->repeat_type->value->item.sint32_value !=
 		CSA_X_DT_REPEAT_ONETIME) {
 		char *title = XtNewString(catgets(c->DT_catd, 1, 329,
 				"Calendar : Group Appointment Editor - Change"));
@@ -1139,7 +1147,7 @@ ge_change_proc(Widget w, XtPointer client_data, XtPointer data) {
 
 	/* We are not allowed to change the type of the entry, so we will
            remove that particular entry from the list for writing. */
- 
+
 	if (new_a->type) {
                 if (new_a->type->name){
                         free(new_a->type->name);
@@ -1219,7 +1227,7 @@ FormGroupApptDragMotionHandler(Widget dragInitiator, XtPointer clientData,
         int             diffX, diffY;
         Calendar        *c = (Calendar *) clientData;
         GEditor         *ge = (GEditor *) c->geditor;
- 
+
         if (!ge->doing_drag) {
                 /*
                  * If the drag is just starting, set initial button down coords
@@ -1233,7 +1241,7 @@ FormGroupApptDragMotionHandler(Widget dragInitiator, XtPointer clientData,
                  */
                 diffX = ge->initialX - event->xmotion.x;
                 diffY = ge->initialY - event->xmotion.y;
- 
+
                 if ((ABS(diffX) >= DRAG_THRESHOLD) ||
                     (ABS(diffY) >= DRAG_THRESHOLD)) {
                         ge->doing_drag = True;
@@ -1513,13 +1521,13 @@ ge_make_editor(Calendar *c) {
         XtAddEventHandler(XtParent(ge->drag_source), Button1MotionMask, False,
                 (XtEventHandler)FormGroupApptDragMotionHandler, (XtPointer) c);
 
-	XtVaGetValues((Widget)XmGetXmDisplay(XtDisplay(c->frame)), 
-			"enableBtn1Transfer",   &btn1_transfer, 
-			NULL); 
+	XtVaGetValues((Widget)XmGetXmDisplay(XtDisplay(c->frame)),
+			"enableBtn1Transfer",   &btn1_transfer,
+			NULL);
 
-        /* btn1_transfer is a tri-state variable - see 1195846 */ 
+        /* btn1_transfer is a tri-state variable - see 1195846 */
 	if ((Boolean)btn1_transfer != True)
-        	XtAddEventHandler(XtParent(ge->drag_source), 
+        	XtAddEventHandler(XtParent(ge->drag_source),
 				Button2MotionMask, False,
                 		(XtEventHandler)FormGroupApptDragMotionHandler,
 				(XtPointer) c);
@@ -1529,11 +1537,11 @@ ge_make_editor(Calendar *c) {
                                 XmNpixmap, p->drag_icon_xbm,
                                 NULL);
 
-	XtVaSetValues(ge->dssw.what_scrollwindow, 
+	XtVaSetValues(ge->dssw.what_scrollwindow,
 			XmNrightAttachment, 	XmATTACH_WIDGET,
-			XmNrightWidget, 	ge->drag_source, 
+			XmNrightWidget, 	ge->drag_source,
 			NULL);
-	
+
 	ManageChildren(ge->dssw.dssw_form_mgr);
 
 	/*
@@ -1545,11 +1553,11 @@ ge_make_editor(Calendar *c) {
 	XtSetArg(args[cnt], XmNlistSizePolicy, XmCONSTANT); ++cnt;
 	XtSetArg(args[cnt], XmNselectionPolicy, XmMULTIPLE_SELECT); ++cnt;
 	XtSetArg(args[cnt], XmNwidth, 23 * listfontextents.max_logical_extent.width); ++cnt;
-	XtSetArg(args[cnt], XmNdoubleClickInterval, 5); ++cnt; 
+	XtSetArg(args[cnt], XmNdoubleClickInterval, 5); ++cnt;
         ge->access_list = XmCreateScrolledList(ge->base_form_mgr,
 					       "access_list", args, cnt);
 	XtAddCallback(ge->access_list, XmNmultipleSelectionCallback,
-		      ge_access_select_proc, (XtPointer)ge); 
+		      ge_access_select_proc, (XtPointer)ge);
 
 	ge->access_list_sw = XtParent(ge->access_list);
 
@@ -1597,20 +1605,20 @@ ge_make_editor(Calendar *c) {
 	XtSetArg(args[cnt], XmNlistSizePolicy, XmCONSTANT); ++cnt;
 	XtSetArg(args[cnt], XmNscrollBarDisplayPolicy, XmSTATIC); ++cnt;
 	XtSetArg(args[cnt], XmNwidth, 200); ++cnt;
-	XtSetArg(args[cnt], XmNdoubleClickInterval, 5); ++cnt; 
+	XtSetArg(args[cnt], XmNdoubleClickInterval, 5); ++cnt;
 	ge->appt_list = XmCreateScrolledList(ge->base_form_mgr,
 					     "ge_appt_list", args, cnt);
 
         XtOverrideTranslations(ge->appt_list, new_translations);
         /* Make btn 2 do dnd of appts */
-	/* btn1_transfer is a tri-state variable - see 1195846 */ 
-	if ((Boolean)btn1_transfer != True) {   
+	/* btn1_transfer is a tri-state variable - see 1195846 */
+	if ((Boolean)btn1_transfer != True) {
                 new_translations = XtParseTranslationTable(btn2_translations);
                 XtOverrideTranslations(ge->appt_list, new_translations);
         }
 
 	XtAddCallback(ge->appt_list, XmNbrowseSelectionCallback,
-		      ge_list_select_proc, (XtPointer)ge); 
+		      ge_list_select_proc, (XtPointer)ge);
 
 	ge->appt_list_sw = XtParent(ge->appt_list);
 
@@ -1724,9 +1732,9 @@ add_to_gaccess_list(
 	new_data->entry_access = user_access;
 	CmDataListAdd(ge->access_data, (void *)new_data, 0);
 
-	buf = (char *)ckalloc(ACCESS_NAME_LEN + cm_strlen(catgets(c->DT_catd,
-		1, 348, "Insert Permission")) + 5);
-	sprintf(buf, "%-*s %c", ACCESS_NAME_LEN, name, access);
+	int buf_size = ACCESS_NAME_LEN + cm_strlen(catgets(c->DT_catd,1, 348, "Insert Permission")) + 5;
+	buf = (char *)ckalloc(buf_size);
+	snprintf(buf, buf_size, "%-*s %c", ACCESS_NAME_LEN, name, access);
 	xmstr = XmStringCreateLocalized(buf);
 	free(buf);
 	XmListAddItemUnselected(ge->access_list, xmstr, 0);
@@ -1954,7 +1962,7 @@ set_geditor_defaults(GEditor *ge, Tick start, Tick stop) {
 	} else
 		set_dssw_defaults(&ge->dssw, ge->cal->view->date, True);
 
-	if (ge->rfp.rfp_form_mgr) 
+	if (ge->rfp.rfp_form_mgr)
 		set_rfp_defaults(&ge->rfp);
 
 	XmListGetSelectedPos(ge->access_list, &list, &cnt);
@@ -1971,7 +1979,7 @@ set_geditor_title(GEditor *ge, char *name) {
 	Calendar	*c = ge->cal;
 
 	if (ge->frame) {
-		sprintf(buf, "%s - %s", catgets(c->DT_catd, 1, 349,
+		snprintf(buf, MAXNAMELEN, "%s - %s", catgets(c->DT_catd, 1, 349,
 			"Calendar : Group Appointment Editor"), name);
 		XtVaSetValues(ge->frame, XmNtitle, buf,
 			NULL);
@@ -2001,8 +2009,8 @@ show_geditor(Calendar *c, Tick start, Tick stop) {
 	if (!geditor_showing(ge)) {
 		ds_position_popup(c->frame, ge->frame, DS_POPUP_LOR);
         	XmProcessTraversal(ge->dssw.what_text, XmTRAVERSE_CURRENT);
-        	XtVaSetValues(ge->base_form_mgr, 
-			XmNinitialFocus, ge->dssw.what_text, 
+        	XtVaSetValues(ge->base_form_mgr,
+			XmNinitialFocus, ge->dssw.what_text,
 			NULL);
 	}
 

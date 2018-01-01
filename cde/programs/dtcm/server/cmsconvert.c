@@ -312,7 +312,7 @@ _DtCmsV4ReminderToReminderRef(
 			break;
 		}
 
-		sprintf(buf, "%ld:%s@%s", ids->id, calname,
+		snprintf(buf, BUFSIZ, "%ld:%s@%s", ids->id, calname,
 			_DtCmGetHostAtDomain());
 
 		if ((rptr->entryid = strdup(buf)) == NULL) {
@@ -502,7 +502,7 @@ _DtCmsAttrsToAppt4(
 				stat = CSA_E_INVALID_DATE_TIME;
 			break;
 
-		case CSA_ENTRY_ATTR_END_DATE_I: 
+		case CSA_ENTRY_ATTR_END_DATE_I:
 			enddateindex = i;
 			break;
 
@@ -685,10 +685,10 @@ _DtCmsAttrsToAppt4(
 
 	if (stat == CSA_SUCCESS && (typeindex >= 0 || typeindex >= 0)) {
 		if (typeindex >= 0) {
-			if (stat = _DtCm_attrs_to_eventtype4(
+			if ( (stat = _DtCm_attrs_to_eventtype4(
 			    attrs[typeindex].value,
 			    (stypeindex >= 0 ? attrs[stypeindex].value : NULL),
-			    appt->tag)) {
+			    appt->tag)) ) {
 				if (check == B_FALSE) {
 					/* this is the case where we are
 					 * converting appt for clients
@@ -962,11 +962,11 @@ _Appt4ToCmsentryAttrs(
 	ptr1 = strchr(calname, '@');
 	ptr2 = (ptr1 ? strchr(ptr1, '.') : NULL);
 	if (ptr1) {
-		sprintf(buf, "%ld:%s%s%s", a4->appt_id.key, calname,
+		snprintf(buf, BUFSIZ, "%ld:%s%s%s", a4->appt_id.key, calname,
 			(ptr2 == NULL ? "." : ""),
 			(ptr2 == NULL ? _DtCmGetLocalDomain(ptr1+1) : ""));
 	} else {
-		sprintf(buf, "%ld:%s@%s", a4->appt_id.key, calname,
+		snprintf(buf, BUFSIZ, "%ld:%s@%s", a4->appt_id.key, calname,
 			_DtCmGetHostAtDomain());
 	}
 	opq.size = strlen(buf);

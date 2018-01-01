@@ -129,7 +129,7 @@ paint_day_header(Calendar *c, Tick date, void *rect)
 
 		Monday, January 16, 1995
 
-	   strftime conversion string: "%A, %B %e, %Y" is used.  
+	   strftime conversion string: "%A, %B %e, %Y" is used.
 
 	   Use the appropriate strftime conversion for your locale.
 	*/
@@ -137,15 +137,15 @@ paint_day_header(Calendar *c, Tick date, void *rect)
 	inrange = today_inrange(c, date);
 	x = gr_center(c->view->winw-(int)MOBOX_AREA_WIDTH, buf,
 			c->fonts->labelfont) + (int)MOBOX_AREA_WIDTH;
-	if (c->xcontext->screen_depth >= 8 && inrange) 
+	if (c->xcontext->screen_depth >= 8 && inrange)
         	gr_text_rgb(c->xcontext, x, c->view->topoffset - (pfy/2),
-                        c->fonts->labelfont, buf, foreground_pixel, 
+                        c->fonts->labelfont, buf, foreground_pixel,
 			cmap, rect);
 	else
         	gr_text(c->xcontext, x, c->view->topoffset - (pfy/2),
                         c->fonts->labelfont, buf, rect);
 }
-	
+
 extern int
 morning(int hr)
 {
@@ -214,14 +214,14 @@ paint_dayview_appts(Calendar *c, Paint_cache *cache, int a_total, void *rect)
 			buf[0] = '\0';
 		else if (disp_t == HOUR12) {
 			am = adjust_hour(&hr);
-			(void) sprintf(buf, "%d%s", hr, am ? "a" : "p");
+			(void) snprintf(buf, 5, "%d%s", hr, am ? "a" : "p");
 		}
 		else
-			(void) sprintf(buf, "%02d", hr);
-		x_off = gr_center(hrbox_margin, buf, pf); 
+			(void) snprintf(buf, 5, "%02d", hr);
+		x_off = gr_center(hrbox_margin, buf, pf);
 
 /* REVISIT: unclear why we're still distinguishing between gr_text[_rgb]
-		if (c->xcontext->screen_depth >= 8) 
+		if (c->xcontext->screen_depth >= 8)
 			gr_text_rgb(c->xcontext, x+x_off, y, pf,
 				buf, fg, cmap, rect);
 		else
@@ -254,23 +254,24 @@ paint_dayview_appts(Calendar *c, Paint_cache *cache, int a_total, void *rect)
 
 				start_tick = cache[i].start_time;
 				end_tick = cache[i].end_time;
-				if (lines != NULL && lines->s != NULL) { 
-					appt_str = ckalloc(cm_strlen(lines->s)+18);
-					format_line(start_tick, lines->s, 
-						appt_str, end_tick, 
+				if (lines != NULL && lines->s != NULL) {
+				        int appt_size = cm_strlen(lines->s) + 18;
+					appt_str = ckalloc(appt_size);
+					format_line(start_tick, lines->s,
+						appt_str, appt_size, end_tick,
 						cache[i].show_time, disp_t);
 					lines = lines->next;
 				}
 				else {
 					appt_str = ckalloc(15);
-					format_line(start_tick, (char*)NULL, 
-						appt_str, end_tick, 
+					format_line(start_tick, (char*)NULL,
+						appt_str, 15, end_tick,
 						cache[i].show_time, disp_t);
 				}
 				appt_str[cm_strlen(appt_str)] = '\0';
 
 /* REVISIT: unclear why we're still distinguishing between gr_text[_rgb]
-				if (c->xcontext->screen_depth >= 8) 
+				if (c->xcontext->screen_depth >= 8)
 					gr_text_rgb(c->xcontext, x, y,
 					   pf2, appt_str, fg, cmap, rect);
 				else
@@ -282,19 +283,19 @@ paint_dayview_appts(Calendar *c, Paint_cache *cache, int a_total, void *rect)
 				curr_line++;
 				if (curr_line < maxlines && lines != NULL) {
 				 	appt_str = ckalloc(324);
-					cm_strcpy(appt_str, "    ");
-					while (lines != NULL) { 
-						if (lines->s != NULL) 
-							cm_strcat(appt_str, lines->s);
+					cm_strlcpy(appt_str, "    ", 324);
+					while (lines != NULL) {
+						if (lines->s != NULL)
+							cm_strlcat(appt_str, lines->s, 324);
 						lines = lines->next;
 						if (lines != NULL && lines->s != NULL)
-							cm_strcat(appt_str, " - ");
+							cm_strlcat(appt_str, " - ", 324);
 					}
 					y += pfy;
 
 /* REVISIT: unclear why we're still distinguishing between gr_text[_rgb]
 
-					if (c->xcontext->screen_depth >= 8) 
+					if (c->xcontext->screen_depth >= 8)
 						gr_text_rgb(c->xcontext, x, y,
 						   pf2, appt_str, fg,
 						   cmap, rect);
@@ -324,23 +325,24 @@ paint_dayview_appts(Calendar *c, Paint_cache *cache, int a_total, void *rect)
 			if (curr_line < maxlines) {
 				y += (curr_line * pfy) + h * (hr - begin_time + 1);
 				headlines = lines = text_to_lines(cache[i].summary, 4);
-				if (lines != NULL && lines->s != NULL) { 
-					appt_str = ckalloc(cm_strlen(lines->s)+18);
-					format_line(start_tick, lines->s, 
-						appt_str, end_tick, 
+				if (lines != NULL && lines->s != NULL) {
+					int appt_size = cm_strlen(lines->s) + 18;
+					appt_str = ckalloc(appt_size);
+					format_line(start_tick, lines->s,
+						appt_str, appt_size, end_tick,
 						cache[i].show_time, disp_t);
 					lines = lines->next;
 				}
 				else {
 					appt_str = ckalloc(15);
-					format_line(start_tick, (char*)NULL, 
-						appt_str, end_tick, 
+					format_line(start_tick, (char*)NULL,
+						appt_str, 15, end_tick,
 						cache[i].show_time, disp_t);
 				}
 				appt_str[cm_strlen(appt_str)] = '\0';
 
 /* REVISIT: unclear why we're still distinguishing between gr_text[_rgb]
-				if (c->xcontext->screen_depth >= 8) 
+				if (c->xcontext->screen_depth >= 8)
 					gr_text_rgb(c->xcontext, x, y,
 					   pf2, appt_str, fg, cmap, rect);
 				else
@@ -352,23 +354,23 @@ paint_dayview_appts(Calendar *c, Paint_cache *cache, int a_total, void *rect)
 				curr_line++;
 				if (curr_line < maxlines && lines != NULL) {
 				 	appt_str = ckalloc(324);
-					cm_strcpy(appt_str, "    ");
-					while (lines != NULL) { 
-						if (lines->s != NULL) 
-							cm_strcat(appt_str, lines->s);
+					cm_strlcpy(appt_str, "    ", 324);
+					while (lines != NULL) {
+						if (lines->s != NULL)
+							cm_strlcat(appt_str, lines->s, 324);
 						lines = lines->next;
 						if (lines != NULL && lines->s != NULL)
-							cm_strcat(appt_str, " - ");
+							cm_strlcat(appt_str, " - ", 324);
 					}
 					y += pfy;
 
 /* REVISIT: unclear why we're still distinguishing between gr_text[_rgb]
 
-					if (c->xcontext->screen_depth >= 8) 
+					if (c->xcontext->screen_depth >= 8)
 						gr_text_rgb(c->xcontext, x, y,
 						   pf2, appt_str, fg,
 						   cmap, rect);
-					else 
+					else
 */
 						gr_text(c->xcontext, x, y,
 						   pf2, appt_str, rect);
@@ -391,7 +393,7 @@ init_mo(Calendar *c)
 	day_info->month3 = nextmonth(c->view->date);
 }
 
-extern void 
+extern void
 init_dayview(Calendar *c)
 {
         int  tot_rows, wks_1, wks_2, wks_3;
@@ -412,39 +414,39 @@ init_dayview(Calendar *c)
 	(void)cache_dims(c, w, h);
 
 	day_info->day_selected = -1;
-	day_info->mobox_width = (int)MOBOX_AREA_WIDTH - 
+	day_info->mobox_width = (int)MOBOX_AREA_WIDTH -
 			2*c->view->outside_margin;
 	/* col width of day number in month boxes */
-        day_info->col_w = 
+        day_info->col_w =
 		(day_info->mobox_width-INSIDE_MARGIN*2)/7;
 	/* width of all of the month boxes */
-        day_info->mobox_width = 7 * day_info->col_w + 
+        day_info->mobox_width = 7 * day_info->col_w +
 			2 * INSIDE_MARGIN;
 
 	wks_1 = numwks(day_info->month1);
 	wks_2 = numwks(day_info->month2);
-	wks_3 = numwks(day_info->month3); 
-	/* total rows in three months */ 
-	tot_rows = wks_1 + wks_2 + wks_3 + 3; 
+	wks_3 = numwks(day_info->month3);
+	/* total rows in three months */
+	tot_rows = wks_1 + wks_2 + wks_3 + 3;
 
 	/* row height of day number in month boxes */
-        day_info->row_h = (c->view->winh - 3*c->view->topoffset-c->view->outside_margin) 
+        day_info->row_h = (c->view->winh - 3*c->view->topoffset-c->view->outside_margin)
 			/ tot_rows;
 
 	/* height of 1st month */
-        day_info->mobox_height1 = day_info->row_h * 
+        day_info->mobox_height1 = day_info->row_h *
 			(wks_1+1)+1;
 	/* height of 2nd month */
-        day_info->mobox_height2 = day_info->row_h * 
+        day_info->mobox_height2 = day_info->row_h *
 			(wks_2+1)+1;
 	/* height of 2rd month */
-        day_info->mobox_height3 = day_info->row_h * 
+        day_info->mobox_height3 = day_info->row_h *
 			(wks_3+1)+1;
 
 	day_info->month1_y = c->view->topoffset;
-	day_info->month2_y = 2*c->view->topoffset + 
-			day_info->mobox_height1; 
-	day_info->month3_y = 3*c->view->topoffset + 
+	day_info->month2_y = 2*c->view->topoffset +
+			day_info->mobox_height1;
+	day_info->month3_y = 3*c->view->topoffset +
 			day_info->mobox_height1 +
 			day_info->mobox_height2;
 	((Selection*)(c->view->current_selection))->row = 0;
@@ -469,17 +471,17 @@ monthbox_xytodate(Calendar *c, int x, int y)
 	if (col < 0) return;
 	tmpx = c->view->outside_margin + INSIDE_MARGIN + col * col_w;
 
-	if (y < (day_info->month1_y + 
+	if (y < (day_info->month1_y +
 			day_info->mobox_height1)) {
 		row = (y-day_info->month1_y-row_h) / row_h;
         	day_selected = (7 * (row+1)) - fdom(day_info->month1)
 				 - (6 - col);
 		if (day_selected <= 0 || day_selected >
-			 monthlength(day_info->month1)) 
+			 monthlength(day_info->month1))
 				return;
 		day_info->day_selected = day_selected;
-		day_info->day_selected_y = 
-			day_info->month1_y + (row+1)*row_h; 
+		day_info->day_selected_y =
+			day_info->month1_y + (row+1)*row_h;
 		c->view->olddate = c->view->date;
 		c->view->date = next_ndays(first_dom(day_info->month1),
 			 day_info->day_selected);
@@ -490,11 +492,11 @@ monthbox_xytodate(Calendar *c, int x, int y)
         	day_selected = (7 * (row+1)) - fdom(day_info->month2)
 				 - (6 - col);
 		if (day_selected <= 0 || day_selected >
-			 monthlength(day_info->month2)) 
+			 monthlength(day_info->month2))
 				return;
 		day_info->day_selected = day_selected;
-		day_info->day_selected_y = 
-			day_info->month2_y + (row+1)*row_h; 
+		day_info->day_selected_y =
+			day_info->month2_y + (row+1)*row_h;
 		c->view->olddate = c->view->date;
 		c->view->date = next_ndays(first_dom(day_info->month2),
 			 day_info->day_selected);
@@ -502,20 +504,20 @@ monthbox_xytodate(Calendar *c, int x, int y)
 	else if (y < (day_info->month3_y +
                         day_info->mobox_height3)) {
 		row = (y-day_info->month3_y-row_h) / row_h;
-        	day_selected = (7 * (row+1)) - fdom(day_info->month3) 
+        	day_selected = (7 * (row+1)) - fdom(day_info->month3)
 				- (6 - col);
-		if (day_selected <= 0 || day_selected > 
-				monthlength(day_info->month3)) 
+		if (day_selected <= 0 || day_selected >
+				monthlength(day_info->month3))
 				return;
 		day_info->day_selected = day_selected;
-		day_info->day_selected_y = 
-			day_info->month3_y + (row+1)*row_h; 
+		day_info->day_selected_y =
+			day_info->month3_y + (row+1)*row_h;
 		c->view->olddate = c->view->date;
 		c->view->date = next_ndays(first_dom(day_info->month3),
 			 day_info->day_selected);
 	}
 	day_info->day_selected_x = tmpx;
-	sprintf(str, "%d", day_info->day_selected);
+	snprintf(str, 5, "%d", day_info->day_selected);
 	x_off = gr_center(col_w, str, c->fonts->labelfont);
 	day_info->day_selected_x2 =
 		day_info->day_selected_x+x_off;
@@ -545,26 +547,26 @@ monthbox_datetoxy(Calendar *c)
 	dayw = tm.tm_wday;
 	daym = tm.tm_mday;
 	week = (12+tm.tm_mday-tm.tm_wday)/7;
-	day_info->day_selected_x = c->view->outside_margin + 
+	day_info->day_selected_x = c->view->outside_margin +
 			INSIDE_MARGIN + col_w*dayw;
 
-	if (mo == month(day_info->month1)) 
-		day_info->day_selected_y = 
-			day_info->month1_y + 
+	if (mo == month(day_info->month1))
+		day_info->day_selected_y =
+			day_info->month1_y +
 			row_h*week;
-	else if (mo == month(day_info->month2))  
-		day_info->day_selected_y = 
-			day_info->month2_y + 
+	else if (mo == month(day_info->month2))
+		day_info->day_selected_y =
+			day_info->month2_y +
 			row_h*week;
-	else if (mo == month(day_info->month3)) 
-		day_info->day_selected_y = 
-			day_info->month3_y + 
+	else if (mo == month(day_info->month3))
+		day_info->day_selected_y =
+			day_info->month3_y +
 			row_h*week;
-	sprintf(str, "%d", daym);
+	snprintf(str, 5, "%d", daym);
 	x_off = gr_center(col_w, str, c->fonts->labelfont);
-	day_info->day_selected_x2 = 
+	day_info->day_selected_x2 =
 			day_info->day_selected_x+x_off;
-	day_info->day_selected_y2 = 
+	day_info->day_selected_y2 =
 			day_info->day_selected_y + pfy;
 	day_info->day_selected = daym;
 }
@@ -578,11 +580,11 @@ in_moboxes(Calendar *c, int x, int y)
 	Day *day_info = (Day *)c->view->day_info;
 	int row_h = day_info->row_h;
 
-	if (x < (MOBOX_AREA_WIDTH-margin-2*INSIDE_MARGIN) && 
-	   	x > margin && y > topoff && 
+	if (x < (MOBOX_AREA_WIDTH-margin-2*INSIDE_MARGIN) &&
+	   	x > margin && y > topoff &&
 		( (y < (day_info->month3_y+
 			day_info->mobox_height3) &&
-			y > (day_info->month3_y+row_h)) || 
+			y > (day_info->month3_y+row_h)) ||
 		  (y < (day_info->month2_y+
                 	day_info->mobox_height2) &&
 			y > (day_info->month2_y+row_h)) ||
@@ -623,7 +625,7 @@ paint_dayview(Calendar *c, Boolean repaint, XRectangle *rect, Boolean update_mon
 		setup_range(&range_attrs, &ops, &j, start, stop, CSA_TYPE_EVENT, 0,
 		    	B_FALSE, c->general->version);
         	csa_list_entries(c->cal_handle, j, range_attrs, ops, &a_total, &list, NULL);
-	
+
 		free_range(&range_attrs, &ops, j);
 		allocate_paint_cache(list, a_total, &c->paint_cache);
 		c->paint_cache_size = a_total;
@@ -647,16 +649,16 @@ paint_dayview(Calendar *c, Boolean repaint, XRectangle *rect, Boolean update_mon
 		XmNmonth, &panel0_month,
 		NULL);
 
-	if ((year_num < panel0_year) || 
+	if ((year_num < panel0_year) ||
 	    ((year_num == panel0_year) && (month_num < panel0_month)))
 		day_not_on_panel = True;
-	
+
 	XtVaGetValues(d->month_panels[bottom_panel],
 		XmNyear, &panel2_year,
 		XmNmonth, &panel2_month,
 		NULL);
 
-	if ((year_num > panel2_year) || 
+	if ((year_num > panel2_year) ||
 	    ((year_num == panel2_year) && (month_num > panel2_month)))
 		day_not_on_panel = True;
 
@@ -673,35 +675,35 @@ paint_dayview(Calendar *c, Boolean repaint, XRectangle *rect, Boolean update_mon
 	if (repaint) {
 		int	line_length;
 
-		gr_clear_area(c->xcontext, 0, 0, 
+		gr_clear_area(c->xcontext, 0, 0,
 			c->view->winw, c->view->winh);
-		line_length = c->view->topoffset + 
+		line_length = c->view->topoffset +
 			      ((end - beg + 1) * c->view->boxh);
 		/* draw line separating mo. boxes and appts. */
         	gr_draw_line(c->xcontext, (int)MOBOX_AREA_WIDTH+1,
 			 0, (int)MOBOX_AREA_WIDTH+1,
                          line_length, gr_solid, rect);
-        	gr_draw_line(c->xcontext, (int)MOBOX_AREA_WIDTH+2, 
+        	gr_draw_line(c->xcontext, (int)MOBOX_AREA_WIDTH+2,
 			 0, (int)MOBOX_AREA_WIDTH+2,
                          line_length, gr_solid, rect);
-        	gr_draw_line(c->xcontext, (int)MOBOX_AREA_WIDTH+2, 
+        	gr_draw_line(c->xcontext, (int)MOBOX_AREA_WIDTH+2,
 			 c->view->topoffset-1, c->view->winw,
                          c->view->topoffset-1,  gr_solid, rect);
-        	gr_draw_line(c->xcontext, (int)MOBOX_AREA_WIDTH+2, 
+        	gr_draw_line(c->xcontext, (int)MOBOX_AREA_WIDTH+2,
 			 c->view->topoffset, c->view->winw,
                          c->view->topoffset, gr_solid, rect);
 		paint_dayview_appts(c, c->paint_cache, c->paint_cache_size, rect);
 	}
 	/* just repaint schedule area */
 	else {
-		gr_clear_area(c->xcontext, 
-				(int)MOBOX_AREA_WIDTH+4, 0, 
+		gr_clear_area(c->xcontext,
+				(int)MOBOX_AREA_WIDTH+4, 0,
 				c->view->winw - (int)MOBOX_AREA_WIDTH+4,
 				c->view->winh);
-        	gr_draw_line(c->xcontext, (int)MOBOX_AREA_WIDTH+2, 
+        	gr_draw_line(c->xcontext, (int)MOBOX_AREA_WIDTH+2,
 			 c->view->topoffset, c->view->winw,
                          c->view->topoffset,  gr_solid, rect);
-        	gr_draw_line(c->xcontext, (int)MOBOX_AREA_WIDTH+2, 
+        	gr_draw_line(c->xcontext, (int)MOBOX_AREA_WIDTH+2,
 			 c->view->topoffset+1, c->view->winw,
                          c->view->topoffset+1, gr_solid, rect);
 		paint_dayview_appts(c, c->paint_cache, c->paint_cache_size, rect);
@@ -720,10 +722,10 @@ paint_day(Calendar *c)
 	gr_clear_area(c->xcontext, 0, 0, c->view->winw, c->view->winh);
 	if (day_info->month_panels == (Widget *) NULL)
 		(void)init_dayview(c);
-	paint_dayview(c, True, NULL, True); 
+	paint_dayview(c, True, NULL, True);
 	calendar_select(c, hourSelect, (caddr_t)NULL);
 }
-	
+
 /*
  * handler for button to switch to day view.
  */
@@ -752,7 +754,7 @@ day_button (Widget widget, XtPointer data, XtPointer cbs)
 			cleanup_after_monthview(c);
 			break;
 		default:
-			break;	
+			break;
 	}
 
 	init_mo(c);
@@ -795,7 +797,7 @@ print_day_range(Calendar *c, Tick start_tick, Tick end_tick)
 static int
 count_day_pages(Calendar *c, int lines_per_page, Tick tick)
 {
-	int	n, i, j, timeslots, num_appts, pages, max = 0; 
+	int	n, i, j, timeslots, num_appts, pages, max = 0;
 	Props *p = (Props *)c->properties;
 	int       daybegin = get_int_prop(p, CP_DAYBEGIN);
 	int       dayend   = get_int_prop(p, CP_DAYEND);
@@ -822,11 +824,11 @@ count_day_pages(Calendar *c, int lines_per_page, Tick tick)
 
                 csa_free(list);
 	}
- 
+
        	pages = max / lines_per_page;
         if ((max % lines_per_page) > 0)
                 pages++;
- 
+
         return(pages);
 }
 
@@ -859,8 +861,8 @@ _print_day(Calendar *c,
     /*
      * Need to find the max number of timeslots which will be shown
      * in one column, for later calculation of box height.
-     */  
-    if ((!morning(daybegin)) || dayend <= 12) 
+     */
+    if ((!morning(daybegin)) || dayend <= 12)
     	timeslots = dayend - daybegin;
     else
     	timeslots = ((12-daybegin) > (dayend-12)) ?
@@ -879,7 +881,7 @@ _print_day(Calendar *c,
       total_pages = (lines_per_page > 0) ?
 	count_day_pages(c, lines_per_page, tick) : 1;
 
-    format_date(tick, ord_t, buf, 1, 0, 0);
+    format_date(tick, ord_t, buf, 100, 1, 0, 0);
 
     x_print_header(xp, buf, num_page, total_pages);
     x_day_header(xp);
@@ -893,7 +895,7 @@ _print_day(Calendar *c,
       csa_list_entries(c->cal_handle, j, range_attrs,
 		       ops, &a_total, &list, NULL);
       free_range(&range_attrs, &ops, j);
- 
+
       num_appts = count_multi_appts(list, a_total, c);
 
       if ((lines_per_page > 0) && (num_appts > (lines_per_page * num_page)))
@@ -912,9 +914,9 @@ _print_day(Calendar *c,
 	all_done = False;
       csa_free(list);
     }
- 
+
     x_finish_printer(xp);
-    tick = nextday(tick); 
+    tick = nextday(tick);
 
     return(all_done);
 }
@@ -934,13 +936,13 @@ day_xytoclock(Calendar *c, int x, int y, Tick t)
 
 	hr = (x == 1) ? (12 + y) : (y + daybegin - 1);
 
-	/* 
+	/*
 	 * If y == 0 then the user is clicking on the no-time area.  There
 	 * is no hour associated with no-time events.
 	 */
 	if (y == 0) hr = 0;
 
-	(void)sprintf(buf, "%d/%d/%d", tm.tm_mon+1, tm.tm_mday, tm.tm_year+1900);
+	(void)snprintf(buf, 10, "%d/%d/%d", tm.tm_mon+1, tm.tm_mday, tm.tm_year+1900);
 	val	=cm_getdate(buf, NULL);
 	val	= val+(hr*(int)hrsec);
 	adjust_dst(t, val);
@@ -962,13 +964,13 @@ day_event(XEvent *event)
         ToDo *t = (ToDo*)c->todo;
         GEditor *ge = (GEditor*)c->geditor;
         Day *day_info = (Day *)c->view->day_info;
- 
+
         boxw    = c->view->boxw;
         boxh    = c->view->boxh;
         margin  = c->view->outside_margin;
         x       = event->xbutton.x;
         y       = event->xbutton.y;
- 
+
         /* boundary conditions */
         if ((!(in_mbox = in_moboxes(c, x, y)) && x < MOBOX_AREA_WIDTH+2)
 ||
@@ -1088,13 +1090,13 @@ display_monthpanels(Calendar *c)
 	if ((panel_year == firstyear) && (panel_month == 1)) {
 		XtUnmapWidget(d->month_panels[0]);
 		XtMapWidget(d->month_panels[2]);
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 623, "Calendar does not display dates prior to January 1, 1970"));
+		snprintf(buf, BUFSIZ, "%s", catgets(c->DT_catd, 1, 623, "Calendar does not display dates prior to January 1, 1970"));
 		set_message(c->message_text, buf);
 	}
 	else if ((panel_year == lastyear) && (panel_month == 12)) {
 		XtMapWidget(d->month_panels[0]);
 		XtUnmapWidget(d->month_panels[2]);
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 624, "Calendar does not display dates after December 31, 2037"));
+		snprintf(buf, BUFSIZ, "%s", catgets(c->DT_catd, 1, 624, "Calendar does not display dates after December 31, 2037"));
 		set_message(c->message_text, buf);
 	}
 	else {
@@ -1169,7 +1171,7 @@ create_month_panels(Calendar *c)
         d->month_panels[0] = XmCreateMonthPanel(d->panel_form, "lastMonth", al, ac);
         XtAddCallback(d->month_panels[0], XmNactivateCallback,
                         day_btn_cb, (XtPointer) c);
-	XtAddCallback(d->month_panels[0], XmNhelpCallback, 
+	XtAddCallback(d->month_panels[0], XmNhelpCallback,
 			(XtCallbackProc)help_view_cb, NULL);
 
 	ac=0;
@@ -1184,7 +1186,7 @@ create_month_panels(Calendar *c)
         d->month_panels[1] = XmCreateMonthPanel(d->panel_form, "thisMonth", al, ac);
         XtAddCallback(d->month_panels[1], XmNactivateCallback,
                         day_btn_cb, (XtPointer) c);
-	XtAddCallback(d->month_panels[1], XmNhelpCallback, 
+	XtAddCallback(d->month_panels[1], XmNhelpCallback,
 			(XtCallbackProc)help_view_cb, NULL);
 
 	ac=0;
@@ -1198,7 +1200,7 @@ create_month_panels(Calendar *c)
         d->month_panels[2] = XmCreateMonthPanel(d->panel_form, "nextMonth", al, ac);
         XtAddCallback(d->month_panels[2], XmNactivateCallback,
                         day_btn_cb, (XtPointer) c);
-	XtAddCallback(d->month_panels[2], XmNhelpCallback, 
+	XtAddCallback(d->month_panels[2], XmNhelpCallback,
 			(XtCallbackProc)help_view_cb, NULL);
 
 	ManageChildren(d->panel_form);
@@ -1222,7 +1224,7 @@ update_quarter(Calendar *c)
 		XmNyear, year_num,
 		XmNmonth, month_num,
 		NULL);
-	
+
 	/* current month */
 	year_num = year(c->view->date);
 	month_num = month(c->view->date);
@@ -1230,7 +1232,7 @@ update_quarter(Calendar *c)
 		XmNyear, year_num,
 		XmNmonth, month_num,
 		NULL);
-	
+
 	/* next month */
 	year_num = year(nextmonth(c->view->date));
 	month_num = month(nextmonth(c->view->date));
@@ -1238,7 +1240,7 @@ update_quarter(Calendar *c)
 		XmNyear, year_num,
 		XmNmonth, month_num,
 		NULL);
-	
+
 }
 
 static void
@@ -1248,11 +1250,11 @@ day_btn_cb(Widget w, XtPointer client, XtPointer call)
         Calendar *c = (Calendar *)client;
         int monthno, year;
         int date = c->view->date;
- 
+
 	invalidate_cache(c);
 
         XtVaGetValues(w, XmNmonth, &monthno, XmNyear, &year, NULL);
- 
+
         if (cbs->type == MONTH_SELECTION) {
 
 		XtUnmapWidget(c->canvas);
@@ -1270,7 +1272,7 @@ day_btn_cb(Widget w, XtPointer client, XtPointer call)
 			c->view->nwks = numwks(c->view->date);
 			calendar_select (c, monthSelect, NULL);
 		}
- 
+
                 /* switch to month view */
                 c->view->glance = monthGlance;
                 cleanup_after_dayview(c);
@@ -1282,7 +1284,7 @@ day_btn_cb(Widget w, XtPointer client, XtPointer call)
                 c->view->olddate = c->view->date;
                 c->view->date = monthdayyear(monthno, cbs->day, year);
 		gr_clear_area(c->xcontext, 0, 0, c->view->winw, c->view->winh);
-		paint_dayview(c, True, NULL, False); 
+		paint_dayview(c, True, NULL, False);
 		calendar_select(c, hourSelect, (caddr_t)NULL);
         }
 }

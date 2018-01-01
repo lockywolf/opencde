@@ -351,7 +351,7 @@ _cleanup:
 		_DtCmsInsertEntry(cal, olde);
 	else {
 		_DtCm_free_cms_entry(updatedold);
-		if (lnode = hc_lookup_node(cal->list, (caddr_t)key)) {
+		if ( (lnode = hc_lookup_node(cal->list, (caddr_t)key)) ) {
 			updatedold = (cms_entry *)lnode->data;
 			lnode->data = (caddr_t)olde;
 			olde = updatedold;
@@ -564,7 +564,7 @@ extern	void _DtCm_rule_parser();
 
 		if (newbod == instbod) {
 			/* keep the same start day */
-			newe->key.time -= (newbod - fstbod); 
+			newe->key.time -= (newbod - fstbod);
 			_csa_tick_to_iso8601(newe->key.time,
 				newe->attrs[CSA_ENTRY_ATTR_START_DATE_I].\
 				value->item.date_time_value);
@@ -582,7 +582,7 @@ extern	void _DtCm_rule_parser();
 			if ((stat = _SetNewStartDate(olde, lnode->re,
 			    newe, newre, key)) != CSA_SUCCESS) {
 				_DtCm_free_re(newre);
-				return (stat); 
+				return (stat);
 			}
 			_DtCm_free_re(newre);
 			newfstbod = _DtCmsBeginOfDay(newe->key.time);

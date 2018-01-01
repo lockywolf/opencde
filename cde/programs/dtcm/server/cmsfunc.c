@@ -239,7 +239,7 @@ cms_remove_calendar_5_svc(cms_remove_args *args, struct svc_req *svcrq)
 
 		/* free up internal structures */
 		_DtCmsFreeCalendar(cal);
-	} 
+	}
 
 	return (&res);
 }
@@ -852,7 +852,7 @@ cms_insert_entry_5_svc(cms_insert_args *args, struct svc_req *svcrq)
 			res.stat = CSA_E_INSUFFICIENT_MEMORY;
 			return (&res);
 		}
- 
+
 		if ((res.stat = _DtCmsAttrsToAppt4(args->num_attrs,
 		    args->attrs, appt, B_TRUE)) != CSA_SUCCESS) {
 			_DtCm_free_appt4(appt);
@@ -989,7 +989,7 @@ cms_update_entry_5_svc(cms_update_args *args, struct svc_req *svcrq)
 		} else if ((appt = _DtCm_copy_one_appt4((Appt_4 *)event))
 		    == NULL) {
 
-			res.stat = CSA_E_INSUFFICIENT_MEMORY; 
+			res.stat = CSA_E_INSUFFICIENT_MEMORY;
 
 		} else {
 			/* get rid of exceptions */
@@ -1293,9 +1293,9 @@ _ListCalendarNames(uint *num_names, char ***names)
 		return (CSA_E_INSUFFICIENT_MEMORY);
 	}
 
-	while (dp = readdir_r(dirp, dp)) {
+	while ( (dp = readdir_r(dirp, dp)) ) {
 #else
-	while (dp = readdir(dirp)) {
+	while ( (dp = readdir(dirp)) ) {
 #endif
 		if (strncmp(dp->d_name, "callog.", strlen("callog.")) == 0) {
 			if (count == num) {
@@ -1334,7 +1334,7 @@ _grow_char_array(void *ptr, uint oldcount, uint newcount)
 {
 	void *nptr;
 
-	if (nptr = realloc(ptr, newcount)) {
+	if ( (nptr = realloc(ptr, newcount)) ) {
 		memset((void *)((char *)nptr + oldcount), 0,
 			newcount - oldcount);
 		return (nptr);

@@ -84,11 +84,11 @@ dssw_get_non_times(DSSW *dssw, time_t t) {
 	OrderingType	ot = get_int_prop(p, CP_DATEORDERING);
 	SeparatorType	st = get_int_prop(p, CP_DATESEPARATOR);
 
-	cm_strcpy(dssw->date_val,
-		get_date_from_widget(t, dssw->date_text, ot, st));
+	cm_strlcpy(dssw->date_val,
+		get_date_from_widget(t, dssw->date_text, ot, st), DATE_LEN);
 
 	str = XmTextGetString(dssw->what_text);
-	strcpy(dssw->what_val, str);
+	strlcpy(dssw->what_val, str, WHAT_LEN);
 	XtFree(str);
 }
 
@@ -121,11 +121,11 @@ dssw_set_start_hour(Widget w, XtPointer client_data, XtPointer cbs) {
 		dssw->start_val.block = dssw->stop_val.block = TIME_AM;
         } else if (user_data == ALL_DAY) {
 		if (dt == HOUR12) {
-			sprintf(dssw->start_val.val, "12:00");
-			sprintf(dssw->stop_val.val, "11:59");
+			snprintf(dssw->start_val.val, START_STOP_LEN, "12:00");
+			snprintf(dssw->stop_val.val, START_STOP_LEN, "11:59");
 		} else {
-			sprintf(dssw->start_val.val, "0000");
-			sprintf(dssw->stop_val.val, "2359");
+			snprintf(dssw->start_val.val, START_STOP_LEN, "0000");
+			snprintf(dssw->stop_val.val, START_STOP_LEN, "2359");
 		}
 		dssw->start_val.block = TIME_AM;
 		dssw->stop_val.block = TIME_PM;
@@ -142,18 +142,18 @@ dssw_set_start_hour(Widget w, XtPointer client_data, XtPointer cbs) {
 				(adjust_hour(&start_hrs)) ? TIME_AM : TIME_PM;
 			dssw->stop_val.block =
 				(adjust_hour(&stop_hrs)) ? TIME_AM : TIME_PM;
-			sprintf(dssw->start_val.val, "%2d:%02d",
+			snprintf(dssw->start_val.val, START_STOP_LEN, "%2d:%02d",
 				start_hrs, start_mins);
-			sprintf(dssw->stop_val.val, "%2d:%02d",
+			snprintf(dssw->stop_val.val, START_STOP_LEN, "%2d:%02d",
 				stop_hrs, stop_mins);
 		} else {
 			dssw->start_val.block =
 				(start_hrs > 12) ? TIME_PM : TIME_AM;
 			dssw->stop_val.block =
 				(stop_hrs > 12) ? TIME_PM : TIME_AM;
-			sprintf(dssw->start_val.val, "%02d%02d",
+			snprintf(dssw->start_val.val, START_STOP_LEN, "%02d%02d",
 				start_hrs, start_mins);
-			sprintf(dssw->stop_val.val, "%02d%02d",
+			snprintf(dssw->stop_val.val, START_STOP_LEN, "%02d%02d",
 				stop_hrs, stop_mins);
 		}
 	}
@@ -181,10 +181,10 @@ dssw_set_stop_hour(Widget w, XtPointer client_data, XtPointer cbs) {
 		if (dt == HOUR12) {
 			dssw->stop_val.block =
 				(adjust_hour(&hrs)) ? TIME_AM : TIME_PM;
-			sprintf(dssw->stop_val.val, "%2d:%02d", hrs, mins);
+			snprintf(dssw->stop_val.val, START_STOP_LEN, "%2d:%02d", hrs, mins);
 		} else {
 			dssw->stop_val.block = (hrs > 12) ? TIME_PM : TIME_AM;
-			sprintf(dssw->stop_val.val, "%02d%02d", hrs, mins);
+			snprintf(dssw->stop_val.val, START_STOP_LEN, "%02d%02d", hrs, mins);
 		}
 	}
 	set_dssw_times(dssw);
@@ -199,12 +199,12 @@ dssw_set_stop_hour(Widget w, XtPointer client_data, XtPointer cbs) {
 extern void
 set_dssw_menus(DSSW *dssw, Props *p) {
 
-	set_time_submenu(dssw->dssw_form_mgr, dssw->start_menu, p, 
-			 dssw_set_start_hour, (XtPointer)dssw, 
+	set_time_submenu(dssw->dssw_form_mgr, dssw->start_menu, p,
+			 dssw_set_start_hour, (XtPointer)dssw,
 			 dssw->show_notime_selection, dssw->show_allday_selection,
 			 &dssw->start_menu_widget_list, &dssw->start_menu_widget_count);
 
-	set_time_submenu(dssw->dssw_form_mgr, dssw->stop_menu, p, 
+	set_time_submenu(dssw->dssw_form_mgr, dssw->stop_menu, p,
 			 dssw_set_stop_hour, (XtPointer)dssw, dssw->show_notime_selection, False,
 			 &dssw->stop_menu_widget_list, &dssw->stop_menu_widget_count);
 
@@ -216,10 +216,10 @@ set_dssw_menus(DSSW *dssw, Props *p) {
 
 extern void
 build_dssw(
-	DSSW 		*dssw, 
-	Calendar 	*c, 
-	Widget 		 parent, 
-	Boolean 	 show_notime, 
+	DSSW 		*dssw,
+	Calendar 	*c,
+	Widget 		 parent,
+	Boolean 	 show_notime,
 	Boolean 	 show_allday)
 {
 	Props		*p;
@@ -277,13 +277,13 @@ build_dssw(
 		XmNlabelString,		label_str,
                 NULL);
 	XmStringFree(label_str);
- 
+
         dssw->date_text = XtVaCreateWidget("date_text",
 		xmTextWidgetClass, 	dssw->dssw_form_mgr,
                 XmNeditMode, 		XmSINGLE_LINE_EDIT,
 		XmNmaxLength, 		DATE_LEN - 1,
                 NULL);
- 
+
 	/*
 	**  Radio button behavior for AM/PM selection for start time
 	*/
@@ -294,8 +294,8 @@ build_dssw(
 		NULL);
 
         dssw->start_menu = create_start_stop_time_menu(dssw->dssw_form_mgr,
-		NULL, dssw_set_start_hour, (XtPointer)dssw, p, show_notime, 
-		show_allday, &dssw->start_menu_widget_list, 
+		NULL, dssw_set_start_hour, (XtPointer)dssw, p, show_notime,
+		show_allday, &dssw->start_menu_widget_list,
 		&dssw->start_menu_widget_count);
 
 	XtVaSetValues(dssw->start_menu,
@@ -316,7 +316,7 @@ build_dssw(
 		xmToggleButtonGadgetClass, dssw->start_ampm_rc_mgr,
 		XmNlabelString,		label_str,
 		XmNsensitive, 		(dt == HOUR12) ? True : False,
-		NULL);      
+		NULL);
 	XmStringFree(label_str);
 
 	label_str = XmStringCreateLocalized(catgets(c->DT_catd, 1, 831, "PM"));
@@ -324,7 +324,7 @@ build_dssw(
 		xmToggleButtonGadgetClass, dssw->start_ampm_rc_mgr,
 		XmNlabelString,		label_str,
 		XmNsensitive, 		(dt == HOUR12) ? True : False,
-		NULL);      
+		NULL);
 	XmStringFree(label_str);
 
 	XtManageChildren(child, 2);
@@ -340,8 +340,8 @@ build_dssw(
 		NULL);
 
         dssw->stop_menu = create_start_stop_time_menu(dssw->dssw_form_mgr,
-		NULL, dssw_set_stop_hour, (XtPointer)dssw, p, show_notime, 
-		False, &dssw->stop_menu_widget_list, 
+		NULL, dssw_set_stop_hour, (XtPointer)dssw, p, show_notime,
+		False, &dssw->stop_menu_widget_list,
 		&dssw->stop_menu_widget_count);
 
 	XtVaSetValues(dssw->stop_menu,
@@ -362,7 +362,7 @@ build_dssw(
 		xmToggleButtonGadgetClass, dssw->stop_ampm_rc_mgr,
 		XmNlabelString,		label_str,
 		XmNsensitive, 		(dt == HOUR12) ? True : False,
-		NULL);      
+		NULL);
 	XmStringFree(label_str);
 
 	label_str = XmStringCreateLocalized(catgets(c->DT_catd, 1, 834, "PM"));
@@ -370,7 +370,7 @@ build_dssw(
 		xmToggleButtonGadgetClass, dssw->stop_ampm_rc_mgr,
 		XmNlabelString,		label_str,
 		XmNsensitive, 		(dt == HOUR12) ? True : False,
-		NULL);      
+		NULL);
 	XmStringFree(label_str);
 
 	XtManageChildren(child, 2);
@@ -382,13 +382,13 @@ build_dssw(
 	n = 0;
         XtSetArg(args[n], XmNeditMode, 		XmMULTI_LINE_EDIT), n++;
 /*	XtSetArg(args[n], XmNscrollVertical, 	True), n++;  */
-	XtSetArg(args[n], XmNscrollHorizontal,	False), n++; 
-	XtSetArg(args[n], XmNscrollingPolicy, 	XmAUTOMATIC), n++; 
+	XtSetArg(args[n], XmNscrollHorizontal,	False), n++;
+	XtSetArg(args[n], XmNscrollingPolicy, 	XmAUTOMATIC), n++;
 	XtSetArg(args[n], XmNscrollBarDisplayPolicy, XmAS_NEEDED), n++;
 	XtSetArg(args[n], XmNrows, 		3), n++;
 	XtSetArg(args[n], XmNmaxLength, 	WHAT_LEN - 1), n++;
 
-	dssw->what_text = XmCreateScrolledText(dssw->dssw_form_mgr, 
+	dssw->what_text = XmCreateScrolledText(dssw->dssw_form_mgr,
 					       "what_text", args, n);
 
 	dssw->what_scrollwindow = XtParent(dssw->what_text);
@@ -553,11 +553,11 @@ dssw_form_flags_to_appt(DSSW *dssw, Dtcm_appointment *a, char *name, Tick t, int
 	if (!blank_buf(dssw->start_val.val)) {
 		if (!valid_time(p, dssw->start_val.val)) {
 			if (a->type->value->item.sint32_value == CSA_TYPE_TODO)
-				editor_err_msg(dssw->parent, name, 
+				editor_err_msg(dssw->parent, name,
 					       INVALID_TIME_DUE,
 					       pu->xm_error_pixmap);
 			else
-				editor_err_msg(dssw->parent, name, 
+				editor_err_msg(dssw->parent, name,
 					       INVALID_START,
 					       pu->xm_error_pixmap);
 			return False;
@@ -569,14 +569,14 @@ dssw_form_flags_to_appt(DSSW *dssw, Dtcm_appointment *a, char *name, Tick t, int
 			 * the user.
 			 */
 			if (dssw->start_val.block == TIME_AM)
-				sprintf(ampm_buf, "am");
+				snprintf(ampm_buf, BUFSIZ, "am");
 			else
-				sprintf(ampm_buf, "pm");
+				snprintf(ampm_buf, BUFSIZ, "pm");
 		} else
 			ampm_buf[0] = '\0';
 
-		sprintf(buf, "%s %s%s",
-			dssw->date_val, dssw->start_val.val, ampm_buf); 
+		snprintf(buf, BUFSIZ, "%s %s%s",
+			dssw->date_val, dssw->start_val.val, ampm_buf);
 
 		if (!blank_buf(dssw->stop_val.val)
 			&& !valid_time(p, dssw->stop_val.val)) {
@@ -589,7 +589,7 @@ dssw_form_flags_to_appt(DSSW *dssw, Dtcm_appointment *a, char *name, Tick t, int
 			pu->xm_error_pixmap);
 		return False;
 	} else
-		sprintf(buf, "%s 3:41am", dssw->date_val);
+		snprintf(buf, BUFSIZ, "%s 3:41am", dssw->date_val);
 
 	start_tick = cm_getdate(buf, NULL);
 	if(start_tick < 0) {
@@ -617,14 +617,14 @@ dssw_form_flags_to_appt(DSSW *dssw, Dtcm_appointment *a, char *name, Tick t, int
 			 * the user.
 			 */
 			if (dssw->stop_val.block == TIME_AM)
-				sprintf(ampm_buf, "am");
+				snprintf(ampm_buf, BUFSIZ, "am");
 			else
-				sprintf(ampm_buf, "pm");
+				snprintf(ampm_buf, BUFSIZ, "pm");
 		} else
 			ampm_buf[0] = '\0';
 
-		sprintf(buf, "%s %s%s", dssw->date_val,
-			dssw->stop_val.val, ampm_buf); 
+		snprintf(buf, BUFSIZ, "%s %s%s", dssw->date_val,
+			dssw->stop_val.val, ampm_buf);
 		if ((stop_tick = cm_getdate(buf, NULL)) <= 0) {
 			editor_err_msg(dssw->parent, name, INVALID_DATE,
 				       pu->xm_error_pixmap);
@@ -639,7 +639,7 @@ dssw_form_flags_to_appt(DSSW *dssw, Dtcm_appointment *a, char *name, Tick t, int
 					923, "Cancel"));
 		  	char *ident2 = XtNewString(catgets(calendar->DT_catd, 1,
 					250, "Next Day"));
-			sprintf(buf, "%s", catgets(calendar->DT_catd, 1, 247,
+			snprintf(buf, BUFSIZ, "%s", catgets(calendar->DT_catd, 1, 247,
 				"This appointment has an end time earlier than\nits begin time.  Do you want to\nschedule it into the next day?"));
 			*flagsP = dialog_popup(dssw->parent,
 				DIALOG_TITLE, title,
@@ -709,16 +709,16 @@ dssw_form_to_todo(DSSW *dssw, Dtcm_appointment *a, char *name, Tick t)
 
 		if (dt == HOUR12) {
 			if (dssw->start_val.block == TIME_AM)
-				sprintf(ampm_buf, "am");
+				snprintf(ampm_buf, BUFSIZ, "am");
 			else
-				sprintf(ampm_buf, "pm");
+				snprintf(ampm_buf, BUFSIZ, "pm");
 		} else
 			ampm_buf[0] = '\0';
 
-		sprintf(buf, "%s %s%s",
-			dssw->date_val, dssw->start_val.val, ampm_buf); 
+		snprintf(buf, BUFSIZ, "%s %s%s",
+			dssw->date_val, dssw->start_val.val, ampm_buf);
 
-		/* 
+		/*
 		 * No check here for stop time.
 		 */
 	} else {
@@ -809,10 +809,10 @@ dssw_attrs_to_form(DSSW *dssw, Dtcm_appointment *appt) {
 				start_hr = 12;
 			else if (start_hr > 12)
 				start_hr -= 12;
-			sprintf(dssw->start_val.val, "%2d:%02d", start_hr,
+			snprintf(dssw->start_val.val, START_STOP_LEN, "%2d:%02d", start_hr,
 				minute(tick));
 		} else
-			sprintf(dssw->start_val.val, "%02d%02d", start_hr,
+			snprintf(dssw->start_val.val, START_STOP_LEN, "%02d%02d", start_hr,
 				minute(tick));
 
 		if (end_tick) {
@@ -826,10 +826,10 @@ dssw_attrs_to_form(DSSW *dssw, Dtcm_appointment *appt) {
 					stop_hr = 12;
 				else if (stop_hr > 12)
 					stop_hr -= 12;
-				sprintf(dssw->stop_val.val, "%2d:%02d", stop_hr,
+				snprintf(dssw->stop_val.val, START_STOP_LEN, "%2d:%02d", stop_hr,
 					minute(end_tick));
 			} else
-				sprintf(dssw->stop_val.val, "%02d%02d", stop_hr,
+				snprintf(dssw->stop_val.val, START_STOP_LEN, "%02d%02d", stop_hr,
 					minute(end_tick));
 		} else {
 			/* no end time */
@@ -855,13 +855,13 @@ get_dssw_times(DSSW *dssw) {
 	char		*str;
 
 	str = XmTextGetString(dssw->start_text);
-	strcpy(dssw->start_val.val, str);
+	strlcpy(dssw->start_val.val, str, START_STOP_LEN);
 	XtFree(str);
 	dssw->start_val.block =
 		XmToggleButtonGetState(dssw->start_am) ? TIME_AM : TIME_PM;
 
 	str = XmTextGetString(dssw->stop_text);
-	strcpy(dssw->stop_val.val, str);
+	strlcpy(dssw->stop_val.val, str, START_STOP_LEN);
 	XtFree(str);
 	dssw->stop_val.block =
 		XmToggleButtonGetState(dssw->stop_am) ? TIME_AM : TIME_PM;
@@ -920,32 +920,32 @@ load_dssw_times(DSSW *dssw, Tick start, Tick stop, Boolean set_no_time) {
 	dt = get_int_prop(p, CP_DEFAULTDISP);
 
 	if (set_no_time == True){
-		strcpy(dssw->start_val.val, " ");
-		strcpy(dssw->stop_val.val, " ");
+		strlcpy(dssw->start_val.val, " ", START_STOP_LEN);
+		strlcpy(dssw->stop_val.val, " ", START_STOP_LEN);
 		return;
 	}
 
 	if (start > 0) {
-		format_time(start, dt, buf);
+		format_time(start, dt, buf, 10);
 		if (dt == HOUR12) {
 			strncpy(dssw->start_val.val, buf, 5);
 			dssw->start_val.val[5] = '\0';
 			dssw->start_val.block = (buf[5] == 'a') ?
 				TIME_AM : TIME_PM;
 		} else {
-			strcpy(dssw->start_val.val, buf);
+			strlcpy(dssw->start_val.val, buf, START_STOP_LEN);
 			dssw->start_val.block = TIME_AM;
 		}
 	}
 	if (stop > 0) {
-		format_time(stop, dt, buf);
+		format_time(stop, dt, buf, 10);
 		if (dt == HOUR12) {
 			strncpy(dssw->stop_val.val, buf, 5);
 			dssw->stop_val.val[5] = '\0';
 			dssw->stop_val.block = (buf[5] == 'a') ?
 				TIME_AM : TIME_PM;
 		} else {
-			strcpy(dssw->stop_val.val, buf);
+			strlcpy(dssw->stop_val.val, buf, START_STOP_LEN);
 			dssw->stop_val.block = TIME_AM;
 		}
 	}
@@ -977,14 +977,14 @@ set_dssw_defaults(DSSW *dssw, Tick t, Boolean set_times) {
 				TIME_AM : TIME_PM;
 			dssw->stop_val.block =	(adjust_hour(&end_hr)) ?
 				TIME_AM : TIME_PM;
-			sprintf(dssw->start_val.val, "%2d:%02d",
+			snprintf(dssw->start_val.val, START_STOP_LEN, "%2d:%02d",
 				beg_hr, appt_beg % minsec);
-			sprintf(dssw->stop_val.val, "%2d:%02d",
+			snprintf(dssw->stop_val.val, START_STOP_LEN, "%2d:%02d",
 				end_hr, appt_end % minsec);
 		} else {
-			sprintf(dssw->start_val.val, "%02d%02d",
+			snprintf(dssw->start_val.val, START_STOP_LEN, "%02d%02d",
 				beg_hr, appt_beg % minsec);
-			sprintf(dssw->stop_val.val, "%02d%02d",
+			snprintf(dssw->stop_val.val, START_STOP_LEN, "%02d%02d",
 				end_hr, appt_end % minsec);
 			dssw->start_val.block = dssw->stop_val.block = TIME_AM;
 		}

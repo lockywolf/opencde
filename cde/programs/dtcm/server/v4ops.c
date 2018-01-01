@@ -564,12 +564,12 @@ _DtCmsChangeSome(
 		/* if repeating info is not changed, replace
 		 * the deleted part with the new series, i.e.,
 		 * ntimes of new series _DtCmsIsEquals to the number
-		 * of deleted instances. Also get new 
-		 * exception list.	
+		 * of deleted instances. Also get new
+		 * exception list.
 		 */
 		if (olda->period.period == newa->period.period &&
 		    olda->period.nth == newa->period.nth &&
-		    olda->ntimes == newa->ntimes) { 
+		    olda->ntimes == newa->ntimes) {
 
 			newcopy->ntimes = remain;
 			if (olda->exception != NULL) {
@@ -815,7 +815,7 @@ _DtCmsLookupRangeV4(
 			    (match_func &&
 			     !match_func(p_appt, num_attrs, attrs, ops)) ||
 			    _GetAccessLevel(user, access, p_appt) == private_4)
-			{ 
+			{
 				p_lnode = hc_lookup_next (p_lnode);
 				continue;
 			}
@@ -851,7 +851,7 @@ _DtCmsLookupRangeV4(
 				 * current tick for the repeating event
 				 */
 				tmp_tick = APPT_TICK(p_appt);
-				APPT_TICK(p_appt) = tick; 
+				APPT_TICK(p_appt) = tick;
 
 				/* Add to list, restore parent key */
 				stat = (*add_list_func)(p_appt, user,
@@ -915,7 +915,6 @@ _DtCmsLookupKeyrangeV4(
 	Period_4	period;
 	long		tmp_tick, endtick;
 	Id_4		lo_key;
-	int		n;
 	List_node	*p_lnode;
 	int		tick;
 	int		ordinal;
@@ -1009,14 +1008,12 @@ _DtCmsLookupKeyrangeV4(
 			/* If not cancelled, add to linked list */
 			if (!_DtCms_marked_4_cancellation (p_appt, ordinal))
 			{
-				n++;
-
 				/* Replace the parent key by
 				 * the current tick for the
 				 * repeating event
 				 */
 				tmp_tick = APPT_TICK(p_appt);
-				APPT_TICK(p_appt) = tick; 
+				APPT_TICK(p_appt) = tick;
 
 				/* Add to list, restore parent key */
 				stat = (*add_list_func)(p_appt, user, access,
@@ -1347,7 +1344,7 @@ _DtCmsTruncateElist(Appt_4 *parent_p, int remain, Except_4 **excpt)
 	ntimes_diff = _DtCms_get_ninstance_v4(parent_p) - remain;
 	p = parent_p->exception;
 	while(p != NULL) {
-		if ((except_no = (p->ordinal - ntimes_diff)) > 0 && 
+		if ((except_no = (p->ordinal - ntimes_diff)) > 0 &&
 			except_no <= remain) {
 			if ((e = (Except_4*)calloc(1, sizeof(Except_4)))
 			    == NULL) {
@@ -1356,7 +1353,7 @@ _DtCmsTruncateElist(Appt_4 *parent_p, int remain, Except_4 **excpt)
 			}
 			e->ordinal = except_no;
 			e->next = NULL;
-			if (last_e != NULL) 
+			if (last_e != NULL)
 				last_e->next = e;
 			else
 				head = e;
@@ -1369,7 +1366,7 @@ _DtCmsTruncateElist(Appt_4 *parent_p, int remain, Except_4 **excpt)
 	return (CSA_SUCCESS);
 }
 
-extern CSA_return_code 
+extern CSA_return_code
 _DtCmsSetV4AccessListInCal(_DtCmsCalendar *cal, Access_Entry_4 *e)
 {
 	Access_Entry_4	*q;

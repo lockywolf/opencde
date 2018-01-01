@@ -93,9 +93,9 @@ get_resource(Resource *r, char *class_name, char *app_name, char *name,
 {
 	char	*buf, *ret;
 
-	buf = (char *)ckalloc(cm_strlen(class_name) + cm_strlen(app_name)
-		+ cm_strlen(name) + 3);
-	sprintf(buf, "%s.%s.%s", class_name, app_name, name);
+	int buf_size = cm_strlen(class_name) + cm_strlen(app_name) + cm_strlen(name) + 3;
+	buf = (char *)ckalloc(buf_size);
+	snprintf(buf, buf_size, "%s.%s.%s", class_name, app_name, name);
 	ret = get_resource_by_val(r, buf, default_value);
 	free(buf);
 	return ret;
@@ -181,7 +181,7 @@ load_resources(Resource **r, char *file_name) {
 				(idx < MAXPROPLEN - 2) && *c_ptr != COMMENT &&
 				*c_ptr != CONTINUATION)
 				value[idx++] = *c_ptr++;
- 
+
 			/*
 			**  Anything but continuation, cork value and bail
 			*/
@@ -223,7 +223,7 @@ save_resources(Resource *r, char *file_name) {
 	if (!(rc_file = fopen(file_name, "w")))
                 return B_FALSE;
 	while(step) {
-		sprintf(buf, "%s:\t%s\n",
+		snprintf(buf, MAXPROPLEN + 3, "%s:\t%s\n",
 			step->resource_name, step->resource_value);
 		fputs(buf, rc_file);
 		step = step->next;
@@ -242,9 +242,9 @@ set_resource(Resource **r, char *class_name, char *app_name, char *name,
 	boolean_t	ret;
 	char		*buf;
 
-	buf = (char *)ckalloc(cm_strlen(class_name) + cm_strlen(app_name)
-		+ cm_strlen(name) + 3);
-	sprintf(buf, "%s.%s.%s", class_name, app_name, name);
+	int buf_size = cm_strlen(class_name) + cm_strlen(app_name) + cm_strlen(name) + 3;
+	buf = (char *)ckalloc(buf_size);
+	snprintf(buf, buf_size, "%s.%s.%s", class_name, app_name, name);
 	ret = set_resource_by_val(r, buf, value);
 	free(buf);
 	return ret;

@@ -144,7 +144,7 @@ static char *col_hdr[] = { "sunday", "monday", "tuesday", "wednesday",
  *									*
  ************************************************************************/
 
-static XtResource resources[] = 
+static XtResource resources[] =
 {
     { XmNyear, XmCYear, XmRInt, sizeof(int),
         XtOffsetOf( struct _XmMonthPanelRec, month_panel.year),
@@ -236,23 +236,23 @@ externaldef(xmmonthpanelclassrec) XmMonthPanelClassRec
     NULL,
     NULL,
     NULL
-      
+
   },
 /* Manager Class */
-   {		
-      XtInheritTranslations,    		/* translations        */    
+   {
+      XtInheritTranslations,    		/* translations        */
       NULL,					/* get resources      	  */
       0,					/* num get_resources 	  */
       NULL,					/* get_cont_resources     */
       0,					/* num_get_cont_resources */
       XmInheritParentProcess,                   /* parent_process         */
-      NULL,					/* extension           */    
+      NULL,					/* extension           */
    },
 
  {
-/* Month Panel class - none */     
+/* Month Panel class - none */
      /* mumble */               0
- }	
+ }
 };
 
 externaldef(xmmonthpanelwidgetclass) WidgetClass
@@ -266,7 +266,7 @@ externaldef(xmmonthpanelwidgetclass) WidgetClass
  *  ClassPartInitialize - Set up the fast subclassing.			*
  *									*
  ************************************************************************/
-static void 
+static void
 ClassPartInitialize( WidgetClass wc )
 {
 /*
@@ -281,7 +281,7 @@ ClassPartInitialize( WidgetClass wc )
  *									*
  ************************************************************************/
 /* ARGSUSED */
-static void 
+static void
 Initialize( Widget rw, Widget nw, ArgList args, Cardinal *num_args )
 {
 	int i=0;
@@ -292,7 +292,7 @@ Initialize( Widget rw, Widget nw, ArgList args, Cardinal *num_args )
 	time_t timer;
 	Tick tmptick;
 	_Xltimeparams localtime_buf;
-	
+
         XmMonthPanelWidget request = (XmMonthPanelWidget) rw ;
         XmMonthPanelWidget new_w = (XmMonthPanelWidget) nw ;
 
@@ -318,7 +318,7 @@ Initialize( Widget rw, Widget nw, ArgList args, Cardinal *num_args )
 	   new_w->month_panel.header =
 		XmCreateLabelGadget((Widget)new_w, "header", NULL, 0);
 	   new_w->month_panel.separator =
-		XmCreateSeparatorGadget((Widget)new_w, "separator", NULL, 0); 
+		XmCreateSeparatorGadget((Widget)new_w, "separator", NULL, 0);
 	   /* Managing of separator is switchable */
 	   if (new_w->month_panel.show_separator) {
 	      XtManageChild(new_w->month_panel.separator);
@@ -381,10 +381,10 @@ Initialize( Widget rw, Widget nw, ArgList args, Cardinal *num_args )
            XmString str;
            Widget btn;
 
-           sprintf(buf, "%d", i+1);
+           snprintf(buf, sizeof(buf), "%d", i+1);
            str = XmStringCreateLocalized(buf);
            XtSetArg(wargs[0], XmNlabelString, str);
-           sprintf(buf, "day%d", i+1);
+           snprintf(buf, BUFSIZ, "day%d", i+1);
 
 /* choose between buttons or labels for day objects */
 	   if (new_w->month_panel.active_days) {
@@ -423,7 +423,7 @@ Redisplay(Widget w, XEvent *ev, Region region)
  * DoLayout - Layout the month panel.					*
  *                                                                      *
  ************************************************************************/
-static void 
+static void
 DoLayout( XmMonthPanelWidget mw )
 {
 	XmMonthPanelPart *mpp = &(mw->month_panel);
@@ -448,7 +448,7 @@ DoLayout( XmMonthPanelWidget mw )
 		row_h = (int) h/(mpp->display_rows);
 	}
 
-/* 
+/*
  * Make sure the variable buttons are correctly [un]managed.
  * (the "variable" buttons are those for 29th, 30th and 31st)
  */
@@ -564,7 +564,7 @@ scale_components(XmMonthPanelWidget mw) {
 	 *
 	 * NOTE1: Don't need to release the pixmaps, because they come from
 	 * the Motif-owned image cache.
-	 * 
+	 *
 	 * NOTE2: setting the pixmaps should be in redisplay rather than
 	 * here - only done here because this is where labelType is toggled.
 	 ******************************************************************/
@@ -582,7 +582,7 @@ scale_components(XmMonthPanelWidget mw) {
 	/**************************
 	 * set panel header size
 	 **************************/
-	
+
 	if (tall_header)
 		XtResizeWidget(mpp->header, w, 2 * row_h, mpp->header->core.border_width);
 	else
@@ -605,14 +605,14 @@ scale_components(XmMonthPanelWidget mw) {
 	if (mpp->separator != NULL) {
 		XtResizeWidget(mpp->separator, 3*(int)w/4, row_h, 0);
 	}
-	
+
 	/**************************
 	 * set column-heading label sizes
 	 **************************/
 	for (i=0; i<7; i++) {
 		this_widget = (mpp->day_labels)[i];
 		XtResizeWidget(this_widget, col_w, row_h, 0);
-	}	
+	}
 	/* display pixmap if clipped, string otherwise */
 	this_widget = (mpp->day_labels)[6];
 	XtVaGetValues(this_widget, XmNlabelType, &ltype, NULL);
@@ -623,14 +623,14 @@ scale_components(XmMonthPanelWidget mw) {
 			XmNlabelType, XmPIXMAP,
 			XmNlabelPixmap, col_head_pm,
 			NULL);
-		}	
+		}
 	   }
 	}
 	else {
 	   if (ltype == XmPIXMAP) {
 		for (i=0; i<7; i++) {
 		   XtVaSetValues((mpp->day_labels)[i], XmNlabelType, XmSTRING, NULL);
-		}	
+		}
 	   }
 	}
 
@@ -640,7 +640,7 @@ scale_components(XmMonthPanelWidget mw) {
 	for (i=0; i<31; i++) {
 		this_widget = (mpp->days)[i];
 		XtResizeWidget(this_widget, col_w, row_h, 0);
-	}	
+	}
 
 	/*************************************************************
 	 * If any of the button labels are clipped, replace the
@@ -662,14 +662,14 @@ scale_components(XmMonthPanelWidget mw) {
 			XmNlabelType, XmPIXMAP,
 			XmNlabelPixmap, btn_pm,
 			NULL);
-		}	
+		}
 	   }
 	}
 	else {
 	   if (ltype == XmPIXMAP) {
 		for (i=0; i<31; i++) {
 		   XtVaSetValues((mpp->days)[i], XmNlabelType, XmSTRING, NULL);
-		}	
+		}
 	   }
 	}
 }
@@ -680,7 +680,7 @@ scale_components(XmMonthPanelWidget mw) {
  * can be used to display clipped information differently
  */
 static Boolean
-clipped(Widget w) 
+clipped(Widget w)
 {
 	XmString str;
 	XmFontList fl;
@@ -711,10 +711,10 @@ clipped(Widget w)
 
 /************************************************************************
  *                                                                      *
- *  Recompute the size of the month panel.				* 
+ *  Recompute the size of the month panel.				*
  *									*
  ************************************************************************/
-static void 
+static void
 Resize( Widget wid )
 {
     XmMonthPanelWidget mw = (XmMonthPanelWidget) wid ;
@@ -741,7 +741,7 @@ GeometryManager( Widget w, XtWidgetGeometry *request, XtWidgetGeometry *reply )
  *  QueryProc (stub for now)						   *
  *									   *
  ***************************************************************************/
-static XtGeometryResult 
+static XtGeometryResult
 QueryProc( Widget w, XtWidgetGeometry *request, XtWidgetGeometry *reply )
 {
 /*    XmMonthPanelWidget mw = (XmMonthPanelWidget) w;*/
@@ -769,7 +769,7 @@ CalcSize(XmMonthPanelWidget mw, Dimension *replyWidth , Dimension *replyHeight)
  *  SetValues								*
  *									*
  ************************************************************************/
-static Boolean 
+static Boolean
 SetValues( Widget cw, Widget rw, Widget nw, ArgList args, Cardinal *num_args )
 {
         XmMonthPanelWidget current = (XmMonthPanelWidget) cw ;
@@ -809,7 +809,7 @@ SetValues( Widget cw, Widget rw, Widget nw, ArgList args, Cardinal *num_args )
        }
        relayout = TRUE;
     }
-       
+
     if (request->month_panel.show_separator != current->month_panel.show_separator) {
        if (request->month_panel.show_separator) {
           XtManageChild(request->month_panel.separator);
@@ -840,7 +840,7 @@ SetValues( Widget cw, Widget rw, Widget nw, ArgList args, Cardinal *num_args )
 		new_w->month_panel.year = 1970;
 	else if (request->month_panel.year > 2037)
 		new_w->month_panel.year = 2037;
- 
+
 	new_date = TRUE;
     }
 
@@ -933,13 +933,13 @@ static void MonthCallback(Widget w, XtPointer client, XtPointer call)
  * XmCreateMonthPanel - convenience interface to XtCreateWidget.	*
  *									*
  ************************************************************************/
-Widget 
+Widget
 XmCreateMonthPanel( Widget parent, char *name, ArgList args, Cardinal argCount )
 {
 
-    return ( XtCreateWidget( name, 
-			     xmMonthPanelWidgetClass, 
-			     parent, 
-			     args, 
+    return ( XtCreateWidget( name,
+			     xmMonthPanelWidgetClass,
+			     parent,
+			     args,
 			     argCount ) );
 }

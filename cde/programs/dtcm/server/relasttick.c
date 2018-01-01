@@ -49,10 +49,10 @@ static Tick DoYearByMonth(const Tick, RepeatEvent *);
 static Tick DoYearByDay(const Tick, RepeatEvent *);
 static Tick LastOccurence(const Tick, const WeekDayTime *, const unsigned int);
 static Tick LastTickFromEndDate(const Tick, const RepeatEvent *);
-static int LastDayExists(const struct tm *, const unsigned int, 
+static int LastDayExists(const struct tm *, const unsigned int,
 			 const unsigned int *);
 extern void FillInRepeatEvent(const Tick, RepeatEvent *);
-extern Tick ClosestTick(const Tick, const Tick, RepeatEvent *, 
+extern Tick ClosestTick(const Tick, const Tick, RepeatEvent *,
 			RepeatEventState **);
 extern Tick PrevTick(const Tick, const Tick, RepeatEvent *, RepeatEventState *);
 
@@ -130,7 +130,7 @@ DoDay(
 		if (RE_DAILY(re)->dd_ntime) {
 			start_tm->tm_hour =
 			RE_DAILY(re)->dd_time[RE_DAILY(re)->dd_ntime - 1] / 100;
-			start_tm->tm_min = 
+			start_tm->tm_min =
 			RE_DAILY(re)->dd_time[RE_DAILY(re)->dd_ntime - 1] % 100;
 		}
 		last_time2 = mktime(start_tm);
@@ -186,7 +186,7 @@ DoWeek(
         	start_tm = _XLocaltime((const time_t *)&_start_time, localtime_buf);
 
 		/* Move forward to the proper week day */
-		start_tm->tm_mday += 
+		start_tm->tm_mday +=
 			RE_WEEKLY(re)->wd_daytime[wd_ndaytime - 1].dt_day;
 
 		dt_ntime = RE_WEEKLY(re)->wd_daytime[wd_ndaytime - 1].dt_ntime;
@@ -203,7 +203,7 @@ DoWeek(
 			start_tm->tm_hour = start_hour;
 			start_tm->tm_min = start_min;
 		}
-	} 
+	}
 
 	start_tm->tm_isdst = -1;
 	last_time2 = mktime(start_tm);
@@ -260,7 +260,7 @@ DoMonthDay(
 
 		start_tm.tm_mon = cur_tm->tm_mon;
 		start_tm.tm_year = cur_tm->tm_year;
-		start_tm.tm_mday = LastDayExists(cur_tm, md_nitems, md_days); 
+		start_tm.tm_mday = LastDayExists(cur_tm, md_nitems, md_days);
 
 	} else if (md_nitems) {
 		start_tm.tm_mon += (re->re_duration - 1) * re->re_interval;
@@ -273,7 +273,7 @@ DoMonthDay(
 		start_tm.tm_mday = DayOfMonth(
 				md_days[md_nitems - 1],
 				start_tm.tm_mon, start_tm.tm_year);
-	} else 
+	} else
 		start_tm.tm_mon += (re->re_duration - 1) * re->re_interval;
 
 	last_time2 = mktime(&start_tm);
@@ -329,7 +329,7 @@ DoMonthPos(
                         cur_tm.tm_mon += re->re_interval;
                         cur_tm.tm_isdst = -1;
                         last_time2 = mktime(&cur_tm);
-                        cur_tm = *_XLocaltime((const time_t *)&last_time2, 
+                        cur_tm = *_XLocaltime((const time_t *)&last_time2,
 					    localtime_buf);
 
                         if (OccurenceExists(wdt_list, nwdt_list, last_time2))
@@ -360,7 +360,7 @@ DoYearByMonth(
 	RepeatEvent		*re)
 {
 	struct tm               *start_tm;
-	int			 start_day; 
+	int			 start_day;
 	Tick			 _start_time,
 				 last_time1 = EOT,
 				 last_time2 = EOT;
@@ -404,7 +404,7 @@ DoYearByMonth(
 			}
 		}
 		/* No months have a day that can be used */
-		return ((Tick)NULL); 
+		return ((Tick)NULL);
 	}
 
 	last_time2 = mktime(start_tm);
@@ -417,7 +417,7 @@ DoYearByDay(
 	RepeatEvent		*re)
 {
 	struct tm               *start_tm;
-	int			 start_day; 
+	int			 start_day;
 	Tick			 _start_time,
 				 last_time1 = EOT,
 				 last_time2 = EOT;
@@ -442,7 +442,7 @@ DoYearByDay(
 
 	/* Go to the last time an event can happen on. */
 	if (RE_YEARLY(re)->yd_nitems) {
-		start_tm->tm_mon = 0; 
+		start_tm->tm_mon = 0;
 		start_tm->tm_mday =
 			RE_YEARLY(re)->yd_items[RE_YEARLY(re)->yd_nitems - 1];
 	}
@@ -464,7 +464,7 @@ LastDayExists(
 	int	i;
 	int	day;
 
-	for (i = md_nitems - 1; i >= 0; i--) {  
+	for (i = md_nitems - 1; i >= 0; i--) {
 		day = DayOfMonth(md_days[i], cur_tm->tm_mon, cur_tm->tm_year);
 	    	if (DayExists(day, cur_tm->tm_mon, cur_tm->tm_year))
 			return(day);
@@ -486,16 +486,16 @@ LastOccurence(
         int	i, j, k;
 	Tick	oldest_time = 0,
 		current_time;
- 
+
         for (i = 0; i < nwdt_list; i++) {
                 for (j = 0; j < wdt_list[i].wdt_nweek; j++) {
                         for (k = 0; k < wdt_list[i].wdt_nday; k++) {
-                                if (current_time = WeekNumberToDay(cur_time,
+                                if ( (current_time = WeekNumberToDay(cur_time,
                                                 wdt_list[i].wdt_week[j],
-                                                wdt_list[i].wdt_day[k])) {
+                                                wdt_list[i].wdt_day[k])) ) {
 					if (current_time > oldest_time)
 						oldest_time = current_time;
-					
+
 				}
 			}
 		}
@@ -517,11 +517,11 @@ LastTickFromEndDate(
 	Tick                     end_date = re->re_end_date,
 				 last_time;
 	Duration                 duration = re->re_duration;
- 
+
 	/* Take the end date out of the equation. */
 	_re->re_end_date = 0;
 	_re->re_duration = RE_INFINITY;
- 
+
 	/* Use the end date to get the closest tick after it, then
 	 * step back one tick to get the last tick before the
 	 * end date.
@@ -533,7 +533,7 @@ LastTickFromEndDate(
 	 */
 	if (last_time != end_date)
 		last_time = PrevTick(last_time, cur_time, _re, res);
- 
+
 	/* Return the re to its original state. */
 	_re->re_end_date = end_date;
 	_re->re_duration = duration;

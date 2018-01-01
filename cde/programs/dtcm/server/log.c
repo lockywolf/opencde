@@ -77,11 +77,10 @@ char *tag_string[] = {
  * forward declaration of functions used within this file
  */
 static char * cr_to_str(char *s, int size);
-static void periodtostr(Interval_4 i, char *q);
-static void privacytostr(Privacy_Level_4 p, char *q);
-static void apptstatustostr(Appt_Status_4 p, char *q);
-static void apptstatustostr(Appt_Status_4 p, char *q);
-static void tagstostr(Event_Type_4 p, char *q);
+static void periodtostr(Interval_4 i, char *q, int buf_size);
+static void privacytostr(Privacy_Level_4 p, char *q, int buf_size);
+static void apptstatustostr(Appt_Status_4 p, char *q, int buf_size);
+static void tagstostr(Event_Type_4 p, char *q, int buf_size);
 static char * get_fname (char *dir, char *fname, char *who);
 static CSA_return_code append_log(int f, char *buf);
 static CSA_return_code create_log(char *owner, char *file, int version);
@@ -101,13 +100,13 @@ _DtCmsGetLogFN(char *who)
 {
 	return (get_fname (spool_dir, _DtCMS_DEFAULT_LOG, who));
 }
- 
+
 extern char *
 _DtCmsGetBakFN(char *who)
 {
 	return (get_fname (spool_dir, _DtCMS_DEFAULT_BAK, who));
 }
- 
+
 extern char *
 _DtCmsGetTmpFN(char *who)
 {
@@ -156,10 +155,10 @@ _DtCmsAppendHTableByFD(int fd, uint size, char **names, int *types)
 
 	if ((buf = malloc(BUFSIZ)) == NULL) return (CSA_E_INSUFFICIENT_MEMORY);
 	tcount = BUFSIZ;
-	strcpy(buf, "(entrytable ");
+	strlcpy(buf, "(entrytable ", tcount);
 
 	for (i = 1; i <= size; i++) {
-		sprintf(tmpbuf, "(%d \"%s\" \"%s\")\n", i, names[i],
+		snprintf(tmpbuf, BUFSIZ/4, "(%d \"%s\" \"%s\")\n", i, names[i],
 			tag_string[types[i]]);
 
 		count += strlen(tmpbuf);
@@ -172,10 +171,10 @@ _DtCmsAppendHTableByFD(int fd, uint size, char **names, int *types)
 			buf = tptr;
 			tcount += BUFSIZ;
 		} else
-			strcat(buf, tmpbuf);
+			strlcat(buf, tmpbuf, tcount);
 	}
 
-	strcat(buf, ")\n");
+	strlcat(buf, ")\n", tcount);
 
 	stat = append_log(fd, buf);
 
@@ -207,11 +206,12 @@ _DtCmsAppendEntryByFD(int f, cms_entry *entry, _DtCmsLogOps op)
 	int	count;
 	char	*cptr, *tptr, *buf;
 	char	isotime[25];
+	int buf_size = 100;
 
-	if ((buf = malloc(100)) == NULL) return (CSA_E_INSUFFICIENT_MEMORY);
+	if ((buf = malloc(buf_size)) == NULL) return (CSA_E_INSUFFICIENT_MEMORY);
 
 	_csa_tick_to_iso8601(entry->key.time, isotime);
-	sprintf(buf, "(%s \"%s\" key: %ld%s",
+	snprintf(buf, buf_size, "(%s \"%s\" key: %ld%s",
 		(op == _DtCmsLogAdd ? "add" : "remove"),
 		isotime, entry->key.id,
 		(op == _DtCmsLogAdd ? "\nhashedattributes: (" : ""));
@@ -235,9 +235,9 @@ _DtCmsAppendEntryByFD(int f, cms_entry *entry, _DtCmsLogOps op)
 
 	/* closing for attr list and closing for entry */
 	if (op == _DtCmsLogAdd)
-		strcat(buf, "))\n");
+		strlcat(buf, "))\n", count);
 	else
-		strcat(buf, ")\n");
+		strlcat(buf, ")\n", count);
 
 	stat = append_log(f, buf);
 
@@ -283,7 +283,7 @@ _DtCmsAppendCalAttrsByFD(int f, int size, cms_attribute * attrs)
 		free(attrstr);
 		return (CSA_E_INSUFFICIENT_MEMORY);
 	}
-	sprintf(buf, "%s%s%s", prefix, attrstr, subfix);
+	snprintf(buf, count, "%s%s%s", prefix, attrstr, subfix);
 
 	stat = append_log(f, buf);
 
@@ -314,7 +314,8 @@ _DtCmsAppendAppt4ByFD(int f, Appt_4 *appt, _DtCmsLogOps op)
 {
 	char *cptr;
 	char tmpbuf[BUFSIZ];
-	char buf[BUFSIZ*3], buf2[BUFSIZ*2]; /* 1 BUFSIZ for what fields, 
+	int buf_size = BUFSIZ*3, buf2_size = BUFSIZ*2;
+	char buf[BUFSIZ*3], buf2[BUFSIZ*2]; /* 1 BUFSIZ for what fields,
 					       1 BUFSIZ for mailto field,
 					       and 1 BUFSIZ for the rest */
 
@@ -324,96 +325,96 @@ _DtCmsAppendAppt4ByFD(int f, Appt_4 *appt, _DtCmsLogOps op)
 	buf[0] = '\0';
 	switch (op) {
 	case _DtCmsLogAdd:
-		sprintf(buf, "(add \"%s\" key: %ld ", cptr, appt->appt_id.key);
+		snprintf(buf, buf_size, "(add \"%s\" key: %ld ", cptr, appt->appt_id.key);
 		if (appt->what) {
 			cptr = cr_to_str(appt->what, strlen(appt->what));
 			if (cptr != NULL) {
-				sprintf(buf2, "what: \"%s\" ", cptr);
-				strcat(buf, buf2);
+				snprintf(buf2, buf2_size, "what: \"%s\" ", cptr);
+				strlcat(buf, buf2, buf_size);
 				free(cptr);
 			} else {
 				return (CSA_E_INSUFFICIENT_MEMORY);
 			}
 		}
 		if (appt->client_data) {
-			sprintf(buf2, "details: \"%s\" ", appt->client_data);
-			strcat(buf, buf2);
+			snprintf(buf2, buf2_size, "details: \"%s\" ", appt->client_data);
+			strlcat(buf, buf2, buf_size);
 		}
 		if (appt->duration) {
-			sprintf(buf2, "duration: %d ", appt->duration);
-			strcat(buf, buf2);
+			snprintf(buf2, buf2_size, "duration: %d ", appt->duration);
+			strlcat(buf, buf2, buf_size);
 		}
 
-		periodtostr (appt->period.period, tmpbuf);
-		sprintf(buf2, "period: %s ", tmpbuf);
-		strcat(buf, buf2);
+		periodtostr (appt->period.period, tmpbuf, BUFSIZ);
+		snprintf(buf2, buf2_size, "period: %s ", tmpbuf);
+		strlcat(buf, buf2, buf_size);
 
 		if (appt->period.nth != 0) {
-			sprintf (buf2, "nth: %d ", appt->period.nth);
-			strcat(buf, buf2);
+			snprintf (buf2, buf2_size, "nth: %d ", appt->period.nth);
+			strlcat(buf, buf2, buf_size);
 		}
 		if (appt->period.enddate != 0) {
 			cptr = ctime (&(appt->period.enddate));
 			cptr[24] = '\0'; /* strip off CR */
-			sprintf(buf2, "enddate: \"%s\" ", cptr);
-			strcat(buf, buf2);
+			snprintf(buf2, buf2_size, "enddate: \"%s\" ", cptr);
+			strlcat(buf, buf2, buf_size);
 		}
 
-		sprintf(buf2, "ntimes: %d ", appt->ntimes);
-		strcat(buf, buf2);
+		snprintf(buf2, buf2_size, "ntimes: %d ", appt->ntimes);
+		strlcat(buf, buf2, buf_size);
 
 		if (appt->exception != NULL) {
 			struct Except_4 *e = appt->exception;
-			strcat(buf, "exceptions: (");
+			strlcat(buf, "exceptions: (", buf_size);
 			while(e != NULL) {
-				sprintf(buf2, "%d ", e->ordinal);
-				strcat(buf, buf2);
+				snprintf(buf2, buf2_size, "%d ", e->ordinal);
+				strlcat(buf, buf2, buf_size);
 				e = e->next;
 			}
-			strcat(buf, ") ");
+			strlcat(buf, ") ", buf_size);
 		}
 
 		if (appt->author != NULL) {
-			sprintf(buf2, "author: \"%s\" ", appt->author);
-			strcat(buf, buf2);
+			snprintf(buf2, buf2_size, "author: \"%s\" ", appt->author);
+			strlcat(buf, buf2, buf_size);
 		}
 		if (appt->attr != NULL) {
 			struct Attribute_4 *item = appt->attr;
-			strcat(buf, "attributes: (");
+			strlcat(buf, "attributes: (", buf_size);
 			while(item != NULL) {
-				sprintf(buf2, "(\"%s\",\"%s\",\"%s\")",
+				snprintf(buf2, buf2_size, "(\"%s\",\"%s\",\"%s\")",
 					item->attr, item->value,
 					item->clientdata);
-				strcat(buf, buf2);
+				strlcat(buf, buf2, buf_size);
 				item = item->next;
 			}
-			strcat(buf, ") ");
+			strlcat(buf, ") ", buf_size);
 		}
 		if (appt->tag != NULL) {
 			struct Tag_4 *item = appt->tag;
-			strcat(buf, "tags: (");
+			strlcat(buf, "tags: (", buf_size);
 			while(item != NULL) {
-				tagstostr(item->tag, tmpbuf);
-				sprintf(buf2, "(%s , %d)", tmpbuf,
+				tagstostr(item->tag, tmpbuf, BUFSIZ);
+				snprintf(buf2, buf2_size, "(%s , %d)", tmpbuf,
 					item->showtime);
-				strcat(buf, buf2);
+				strlcat(buf, buf2, buf_size);
 				item = item->next;
 			}
-			strcat(buf, ") ");
+			strlcat(buf, ") ", buf_size);
 		}
 
-		apptstatustostr(appt->appt_status, tmpbuf);
-		sprintf(buf2, "apptstat: %s ", tmpbuf);
-		strcat(buf, buf2);
+		apptstatustostr(appt->appt_status, tmpbuf, BUFSIZ);
+		snprintf(buf2, buf2_size, "apptstat: %s ", tmpbuf);
+		strlcat(buf, buf2, buf_size);
 
-		privacytostr(appt->privacy, tmpbuf);
-		sprintf(buf2, "privacy: %s )\n", tmpbuf);
-		strcat(buf, buf2);
+		privacytostr(appt->privacy, tmpbuf, BUFSIZ);
+		snprintf(buf2, buf2_size, "privacy: %s )\n", tmpbuf);
+		strlcat(buf, buf2, buf_size);
 
-		break;    
+		break;
 
 	case _DtCmsLogRemove:
-		sprintf(buf, "(remove \"%s\" key: %ld)\n", cptr,
+		snprintf(buf, buf_size, "(remove \"%s\" key: %ld)\n", cptr,
 			appt->appt_id.key);
 		break;
 	}
@@ -461,7 +462,7 @@ _DtCmsAppendAccessByFD(int f, int type, Access_Entry_4 *p)
 	if ((buf = malloc(count)) == NULL)
 		return (CSA_E_INSUFFICIENT_MEMORY);
 
-	sprintf(buf, "(access %s ", p_type);
+	snprintf(buf, count, "(access %s ", p_type);
 
 	while(p != NULL) {
 		if (p->who != NULL) {
@@ -469,14 +470,14 @@ _DtCmsAppendAccessByFD(int f, int type, Access_Entry_4 *p)
 			if ((buf = realloc(buf, count)) == NULL)
 				return (CSA_E_INSUFFICIENT_MEMORY);
 			else {
-				strcat(buf, "\"");
-				strcat(buf, p->who);
-				strcat(buf, "\" ");
+				strlcat(buf, "\"", count);
+				strlcat(buf, p->who, count);
+				strlcat(buf, "\" ", count);
 			}
 		}
 		p = p->next;
 	}
-	strcat(buf, ")\n");
+	strlcat(buf, ")\n", count);
 
 	stat = append_log(f, buf);
 
@@ -520,8 +521,8 @@ _DtCmsPrintAppt4(caddr_t data)
 			return (B_TRUE);
 	}
 
-	buf[0] = '\0';  
-	periodtostr (appt->period.period, buf);
+	buf[0] = '\0';
+	periodtostr (appt->period.period, buf, BUFSIZ);
 	if (fprintf(stderr, "period: %s ", buf) == EOF)
 		return (B_TRUE);
 
@@ -574,7 +575,7 @@ _DtCmsPrintAppt4(caddr_t data)
 			return (B_TRUE);
 		while(item != NULL) {
 			buf[0] = '\0';
-			tagstostr(item->tag, buf);
+			tagstostr(item->tag, buf, BUFSIZ);
 			if (fprintf(stderr, "(%s , %d)", buf, item->showtime)
 			    == EOF)
 				return (B_TRUE);
@@ -586,12 +587,12 @@ _DtCmsPrintAppt4(caddr_t data)
 
 
 	buf[0] = '\0';
-	apptstatustostr(appt->appt_status, buf);
+	apptstatustostr(appt->appt_status, buf, BUFSIZ);
 	if (fprintf(stderr, "apptstat: %s ", buf) == EOF)
 		return (B_TRUE);
 
 	buf[0] = '\0';
-	privacytostr(appt->privacy, buf);
+	privacytostr(appt->privacy, buf, BUFSIZ);
 	if (fprintf(stderr, "privacy: %s )\n", buf) == EOF)
 		return (B_TRUE);
 
@@ -703,7 +704,7 @@ _DtCmsWriteVersionString(char *file, int version)
 		return (CSA_X_DT_E_BACKING_STORE_PROBLEM);
 	}
 
-	sprintf(buf, "Version: %d\n**** start of log on %s ****\n\n",
+	snprintf(buf, BUFSIZ, "Version: %d\n**** start of log on %s ****\n\n",
 		version, tmstr);
 
 	len = strlen(buf);
@@ -746,7 +747,7 @@ _DtCmsSetFileMode(
 	if (chmod (file, mode) < 0) {
 		if (printerr == B_TRUE) {
 			error = errno;
-			sprintf (buff, "%s: chmod %s to %lo failed.\n%s: System error",
+			snprintf (buff, BUFSIZ, "%s: chmod %s to %lo failed.\n%s: System error",
 				pgname, file, (long)mode, pgname);
 			errno = error;
 			perror (buff);
@@ -757,7 +758,7 @@ _DtCmsSetFileMode(
 	if (chown (file, uid, gid) < 0) {
 		if (printerr == B_TRUE) {
 			error = errno;
-			sprintf (buff, "%s: chown %s to (uid=%ld,gid=%ld) failed.\n%s%s",
+			snprintf (buff, BUFSIZ, "%s: chown %s to (uid=%ld,gid=%ld) failed.\n%s%s",
 				pgname, file, (long)uid, (long)gid, pgname, ": System error");
 			errno = error;
 			perror (buff);
@@ -774,7 +775,7 @@ _DtCmsSetFileMode(
 	{
 		if (printerr == B_TRUE) {
 			error = errno;
-			sprintf (buff, "%s: Can't switch process uid back to daemon.\n%s%s",
+			snprintf (buff, BUFSIZ, "%s: Can't switch process uid back to daemon.\n%s%s",
 				pgname, pgname, ": System error");
 			errno = error;
 			perror (buff);
@@ -786,133 +787,133 @@ _DtCmsSetFileMode(
 }
 
 static void
-periodtostr(Interval_4 i, char *q)
+periodtostr(Interval_4 i, char *q, int buf_size)
 {
 	if (q==NULL) return;
 	q[0] = '\0';
 	switch (i) {
 		case single_4:
-			strcpy (q, "single");
+			strlcpy (q, "single", buf_size);
 			break;
 		case daily_4:
-			strcpy (q, "daily");
+			strlcpy (q, "daily", buf_size);
 			break;
 		case weekly_4:
-			strcpy (q, "weekly");
+			strlcpy (q, "weekly", buf_size);
 			break;
 		case biweekly_4:
-			strcpy (q, "biweekly");
+			strlcpy (q, "biweekly", buf_size);
 			break;
 		case monthly_4:
-			strcpy (q, "monthly");
+			strlcpy (q, "monthly", buf_size);
 			break;
 		case yearly_4:
-			strcpy (q, "yearly");
+			strlcpy (q, "yearly", buf_size);
 			break;
 		case nthWeekday_4:
-			strcpy (q, "nthWeekday");
+			strlcpy (q, "nthWeekday", buf_size);
 			break;
 		case everyNthDay_4:
-			strcpy (q, "everyNthDay");
+			strlcpy (q, "everyNthDay", buf_size);
 			break;
 		case everyNthWeek_4:
-			strcpy (q, "everyNthWeek");
+			strlcpy (q, "everyNthWeek", buf_size);
 			break;
 		case everyNthMonth_4:
-			strcpy (q, "everyNthMonth");
+			strlcpy (q, "everyNthMonth", buf_size);
 			break;
 		case monThruFri_4:
-			strcpy (q, "monThruFri");
+			strlcpy (q, "monThruFri", buf_size);
 			break;
 		case monWedFri_4:
-			strcpy (q, "monWedFri");
+			strlcpy (q, "monWedFri", buf_size);
 			break;
 		case tueThur_4:
-			strcpy (q, "tueThur");
+			strlcpy (q, "tueThur", buf_size);
 			break;
 		case daysOfWeek_4:
-			strcpy (q, "daysOfWeek");
+			strlcpy (q, "daysOfWeek", buf_size);
 			break;
 		default:
-			strcpy (q, "single");
+			strlcpy (q, "single", buf_size);
 			break;
 	}
 }
 
 static void
-privacytostr(Privacy_Level_4 p, char *q)
+privacytostr(Privacy_Level_4 p, char *q, int buf_size)
 {
 	if (q==NULL) return;
 	q[0] = '\0';
 	switch(p) {
 	case public_4:
-		strcpy(q, "public");
+		strlcpy(q, "public", buf_size);
 		break;
 	case private_4:
-		strcpy(q, "private");
+		strlcpy(q, "private", buf_size);
 		break;
 	case semiprivate_4:
-		strcpy(q, "semiprivate");
+		strlcpy(q, "semiprivate", buf_size);
 		break;
 	default:
-		strcpy(q, "public");
+		strlcpy(q, "public", buf_size);
 		break;
 	}
 }
 
 static void
-apptstatustostr(Appt_Status_4 p, char *q)
+apptstatustostr(Appt_Status_4 p, char *q, int buf_size)
 {
 	if (q==NULL) return;
 	q[0] = '\0';
 	switch(p) {
 	case active_4:
-		strcpy(q, "active");
+		strlcpy(q, "active", buf_size);
 		break;
 	case pendingAdd_4:
-		strcpy(q, "pendingAdd");
+		strlcpy(q, "pendingAdd", buf_size);
 		break;
 	case pendingDelete_4:
-		strcpy(q, "pendingDelete");
+		strlcpy(q, "pendingDelete", buf_size);
 		break;
 	case committed_4:
-		strcpy(q, "committed");
+		strlcpy(q, "committed", buf_size);
 		break;
 	case cancelled_4:
-		strcpy(q, "cancelled");
+		strlcpy(q, "cancelled", buf_size);
 		break;
 	case completed_4:
-		strcpy(q, "completed");
+		strlcpy(q, "completed", buf_size);
 		break;
 	default:
-		strcpy(q, "active");
+		strlcpy(q, "active", buf_size);
 		break;
 	}
 }
 
 static void
-tagstostr(Event_Type_4 p, char *q)
+tagstostr(Event_Type_4 p, char *q, int buf_size)
 {
 	if (q==NULL) return;
 	q[0] = '\0';
 	switch(p) {
 	case appointment_4:
-		strcpy(q, "appointment");
+		strlcpy(q, "appointment", buf_size);
 		break;
 	case reminder_4:
-		strcpy(q, "reminder");
+		strlcpy(q, "reminder", buf_size);
 		break;
 	case otherTag_4:
-		strcpy(q, "otherTag");
+		strlcpy(q, "otherTag", buf_size);
 		break;
 	case holiday_4:
-		strcpy(q, "holiday");
+		strlcpy(q, "holiday", buf_size);
 		break;
 	case toDo_4:
-		strcpy(q, "toDo");
+		strlcpy(q, "toDo", buf_size);
 		break;
 	default:
-		strcpy(q, "appointment");
+		strlcpy(q, "appointment", buf_size);
 		break;
 	}
 }
@@ -921,10 +922,11 @@ static char *
 get_fname (char *dir, char *fname, char *who)
 {
 	char *buf;
+	int buf_length = strlen(dir) + strlen(fname) + strlen(who) + 3;
 
-	buf = (char *)malloc(strlen(dir) + strlen(fname) + strlen(who) + 3);
+	buf = (char *)malloc(buf_length);
 	if (buf != NULL)
-		sprintf (buf, "%s/%s.%s", dir, fname, who);
+		snprintf (buf, buf_length, "%s/%s.%s", dir, fname, who);
         return (buf);
 }
 
@@ -1002,7 +1004,7 @@ append_log(int f, char *buf)
 			perror(strerror(errno));
 			status = CSA_X_DT_E_BACKING_STORE_PROBLEM;
 		}
-		return (status);	
+		return (status);
 	}
 
 	return(CSA_SUCCESS);
@@ -1017,9 +1019,9 @@ grow_n_concat(char *base, char *newstr, int newcount)
 		return (NULL);
 
 	if (base)
-		strcat(ptr, newstr);
+		strlcat(ptr, newstr, newcount);
 	else
-		strcpy(ptr, newstr);
+		strlcpy(ptr, newstr, newcount);
 
 	return (ptr);
 }
@@ -1071,6 +1073,7 @@ attrs_to_attrliststr(
 	int	i, count, tcount;
 	char	*ptr, *buf = NULL;
 	char	tmpbuf[BUFSIZ/2], tmpbuf2[BUFSIZ/2], *body;
+	int     tmpbuf_size = BUFSIZ/2;
 	CSA_opaque_data *opq;
 
 	if ((buf = malloc(BUFSIZ+1)) == NULL) return (NULL);
@@ -1089,10 +1092,10 @@ attrs_to_attrliststr(
 
 		if (write_hash)
 			/* open_bracket hash_number open quote for value */
-			sprintf(tmpbuf, "(%d \"", attrs[i].name.num);
+			snprintf(tmpbuf, tmpbuf_size, "(%d \"", attrs[i].name.num);
 		else
 			/* open bracket name, type, open quote for value */
-			sprintf(tmpbuf, "(\"%s\",\"%s\",\"", attrs[i].name.name,
+			snprintf(tmpbuf, tmpbuf_size, "(\"%s\",\"%s\",\"", attrs[i].name.name,
 				tag_string[attrs[i].value->type]);
 
 		/* value string */
@@ -1101,14 +1104,14 @@ attrs_to_attrliststr(
 		switch (attrs[i].value->type) {
 		case CSA_VALUE_ENUMERATED:
 		case CSA_VALUE_SINT32:
-			sprintf(tmpbuf2, "%ld",
+			snprintf(tmpbuf2, tmpbuf_size, "%ld",
 				attrs[i].value->item.sint32_value);
 			break;
 
 		case CSA_VALUE_BOOLEAN:
 		case CSA_VALUE_FLAGS:
 		case CSA_VALUE_UINT32:
-			sprintf(tmpbuf2, "%lu",
+			snprintf(tmpbuf2, tmpbuf_size, "%lu",
 				attrs[i].value->item.uint32_value);
 			break;
 
@@ -1137,14 +1140,14 @@ attrs_to_attrliststr(
 			if (attrs[i].value->item.reminder_value->repeat_count
 			    > 1)
 			{
-			    sprintf(tmpbuf2, "%s:%s:%lu:%lu:",
+			    snprintf(tmpbuf2, tmpbuf_size, "%s:%s:%lu:%lu:",
 				attrs[i].value->item.reminder_value->lead_time,
 				(attrs[i].value->item.reminder_value->snooze_time ?
 				attrs[i].value->item.reminder_value->snooze_time:""),
 				attrs[i].value->item.reminder_value->repeat_count,
 				opq->size);
 			} else {
-			    sprintf(tmpbuf2, "%s:%lu:",
+			    snprintf(tmpbuf2, tmpbuf_size, "%s:%lu:",
 				attrs[i].value->item.reminder_value->lead_time,
 				opq->size);
 			}
@@ -1163,7 +1166,7 @@ attrs_to_attrliststr(
 
 		case CSA_VALUE_OPAQUE_DATA:
 			opq = attrs[i].value->item.opaque_data_value;
-			sprintf(tmpbuf2, "%lu:", opq->size);
+			snprintf(tmpbuf2, tmpbuf_size, "%lu:", opq->size);
 
 			if (opq->size > 0) {
 				if ((ptr = cr_to_str((char *)opq->data,
@@ -1214,10 +1217,10 @@ attrs_to_attrliststr(
 			buf = ptr;
 			tcount += BUFSIZ;
 		}
-		strcat(buf, tmpbuf);
-		if (*tmpbuf2 != '\0') strcat(buf, tmpbuf2);
-		if (body) strcat(buf, body);
-		strcat(buf, "\")\n");
+		strlcat(buf, tmpbuf, tcount);
+		if (*tmpbuf2 != '\0') strlcat(buf, tmpbuf2, tcount);
+		if (body) strlcat(buf, body, tcount);
+		strlcat(buf, "\")\n", tcount);
 		if (body) free(body);
 	}
 
@@ -1233,12 +1236,12 @@ get_access_list_string(cms_access_entry *list)
 	/* do the first one */
 	if ((ptr = malloc(BUFSIZ+1)) == NULL) return (NULL);
 	tcount = BUFSIZ;
-	sprintf(ptr, "%s:%u", list->user, list->rights);
+	snprintf(ptr, BUFSIZ+1, "%s:%u", list->user, list->rights);
 	count = strlen(ptr);
 
 	while (list->next) {
 		list = list->next;
-		sprintf(buf, " %s:%u", list->user, list->rights);
+		snprintf(buf, BUFSIZ/4, " %s:%u", list->user, list->rights);
 
 		count += strlen(buf);
 		if (tcount < count) {
@@ -1250,7 +1253,7 @@ get_access_list_string(cms_access_entry *list)
 			ptr = tptr;
 			tcount += BUFSIZ;
 		} else
-			strcat(ptr, buf);
+			strlcat(ptr, buf, tcount);
 	}
 	return (ptr);
 }
@@ -1299,19 +1302,19 @@ get_date_time_list_string(CSA_date_time_list list)
 	int count, datestrlen, tcount;
 
 	/* do the first one */
-	sprintf(buf, "%s", list->date_time);
+	snprintf(buf, 80, "%s", list->date_time);
 	if ((ptr = strdup(buf)) == NULL)
 		return (NULL);
 
 	if ((ptr = malloc(BUFSIZ+1)) == NULL) return (NULL);
 	tcount = BUFSIZ;
-	strcpy(ptr, list->date_time);
+	strlcpy(ptr, list->date_time, BUFSIZ+1);
 	count = strlen(ptr);
 
 	datestrlen = count + 1;
 	while (list->next) {
 		list = list->next;
-		sprintf(buf, " %s", list->date_time);
+		snprintf(buf, 80, " %s", list->date_time);
 
 		count += datestrlen;
 		if (tcount < count) {
@@ -1323,7 +1326,7 @@ get_date_time_list_string(CSA_date_time_list list)
 			ptr = tptr;
 			tcount += BUFSIZ;
 		} else
-			strcat(ptr, buf);
+			strlcat(ptr, buf, tcount);
 	}
 	return (ptr);
 }

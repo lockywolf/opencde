@@ -43,8 +43,8 @@ typedef enum {
 
 static void NumsToBuf(unsigned int *, unsigned int, NumType, char *,
                         unsigned int);
-static void WeekNumberToString(WeekNumber, char *);
-static void WeekDayToString(WeekDay, char *);
+static void WeekNumberToString(WeekNumber, char *, int);
+static void WeekDayToString(WeekDay, char *, int);
 static void ConvertDaily(RepeatEvent *, char *, unsigned int);
 static void ConvertWeekly(RepeatEvent *, char *, unsigned int);
 static void ConvertMonthly(RepeatEvent *, char *, unsigned int);
@@ -63,6 +63,7 @@ ReToString(
 	char	*cmd_buf_tmp = NULL;
 	int	 cmd_buf_size = 0;
 	int	 subcommand_size = 0;
+	int 	 subcommand_length = 1024;
 	char     subcommand[1024];  /* XXX: fixed size */
 
 	if (!re) return (char *)NULL;
@@ -71,7 +72,7 @@ ReToString(
 		switch (re->re_type) {
 
 		case RT_MINUTE:
-			sprintf(subcommand, "M%d #%d",
+			snprintf(subcommand, subcommand_length, "M%d #%d",
 					re->re_interval, re->re_duration);
 			break;
 		case RT_DAILY:
@@ -93,17 +94,18 @@ ReToString(
 		cmd_buf_tmp = cmd_buf;
 
 		if (cmd_buf) cmd_buf_size = strlen(cmd_buf);
-		if (subcommand) subcommand_size = strlen(subcommand);
+		subcommand_size = strlen(subcommand);
 
-		cmd_buf = (char *)calloc(1, cmd_buf_size + subcommand_size + 2);
+		int new_cmd_buf_size = cmd_buf_size + subcommand_size + 2;
+		cmd_buf = (char *)calloc(1, new_cmd_buf_size);
 
 		if (cmd_buf_tmp)
-			strcat (cmd_buf, cmd_buf_tmp);
-			
-		if (subcommand) {
+			strlcat (cmd_buf, cmd_buf_tmp, new_cmd_buf_size);
+
+		if (subcommand_size) {
 			if (cmd_buf_tmp)
-				strcat (cmd_buf, " ");
-			strcat (cmd_buf, subcommand);
+				strlcat (cmd_buf, " ", new_cmd_buf_size);
+			strlcat (cmd_buf, subcommand, new_cmd_buf_size);
 		}
 
 		memset (subcommand, 0, 1024);
@@ -128,25 +130,26 @@ NumsToBuf(
 	unsigned int	 buf_size)
 {
 	int 	 i,
-		 size = 0; 
+		 size = 0;
 	char	 tmp_buf[32],
 		 tmp_buf2[32];
+	int tmp_buf_size = 32;
 
 	for (i = 0; i < array_size; i++) {
 		if (type == NUM_NUM)
-			sprintf(tmp_buf2, " %d", RE_MASK_STOP(array[i]));
+			snprintf(tmp_buf2, 32, " %d", RE_MASK_STOP(array[i]));
 		else if (type == NUM_DAY)
-			WeekDayToString(RE_MASK_STOP(array[i]), tmp_buf2);
+			WeekDayToString(RE_MASK_STOP(array[i]), tmp_buf2, tmp_buf_size);
 		else if (type == NUM_WEEK)
-			WeekNumberToString(RE_MASK_STOP(array[i]), tmp_buf2);
-			
+			WeekNumberToString(RE_MASK_STOP(array[i]), tmp_buf2, 32);
+
 			/* Add end mark if needed */
 		if (RE_STOP_IS_SET(array[i])) {
-			sprintf(tmp_buf, "%s$", tmp_buf2);
-			strcat (buffer, tmp_buf);
+			snprintf(tmp_buf, tmp_buf_size, "%s$", tmp_buf2);
+			strlcat (buffer, tmp_buf, buf_size);
 			size += strlen(tmp_buf);
 		} else {
-			strcat (buffer, tmp_buf2);
+			strlcat (buffer, tmp_buf2, buf_size);
 			size += strlen(tmp_buf2);
 		}
 
@@ -161,76 +164,78 @@ NumsToBuf(
 static void
 WeekDayToString(
 	WeekDay		 day,
-	char		*buffer)
+	char		*buffer,
+	int              buffer_size)
 {
 	switch (RE_MASK_STOP(day)) {
 	case WD_SUN:
-		sprintf (buffer, " SU");
+		snprintf (buffer, buffer_size, " SU");
 		break;
 	case WD_MON:
-		sprintf (buffer, " MO");
+		snprintf (buffer, buffer_size, " MO");
 		break;
 	case WD_TUE:
-		sprintf (buffer, " TU");
+		snprintf (buffer, buffer_size, " TU");
 		break;
 	case WD_WED:
-		sprintf (buffer, " WE");
+		snprintf (buffer, buffer_size, " WE");
 		break;
 	case WD_THU:
-		sprintf (buffer, " TH");
+		snprintf (buffer, buffer_size, " TH");
 		break;
 	case WD_FRI:
-		sprintf (buffer, " FR");
+		snprintf (buffer, buffer_size, " FR");
 		break;
 	case WD_SAT:
-		sprintf (buffer, " SA");
+		snprintf (buffer, buffer_size, " SA");
 		break;
 	}
 
 	if (RE_STOP_IS_SET(day))
-		strcat (buffer, "$");
+		strlcat (buffer, "$", buffer_size);
 }
 
 static void
 WeekNumberToString(
 	WeekNumber	 week,
-	char		*buffer)
+	char		*buffer,
+	int 		 buffer_size)
 {
 	switch (RE_MASK_STOP(week)) {
 	case WK_F1:
-		sprintf (buffer, " 1+");
+		snprintf (buffer, buffer_size, " 1+");
 		break;
 	case WK_F2:
-		sprintf (buffer, " 2+");
+		snprintf (buffer, buffer_size, " 2+");
 		break;
 	case WK_F3:
-		sprintf (buffer, " 3+");
+		snprintf (buffer, buffer_size, " 3+");
 		break;
 	case WK_F4:
-		sprintf (buffer, " 4+");
+		snprintf (buffer, buffer_size, " 4+");
 		break;
 	case WK_F5:
-		sprintf (buffer, " 5+");
+		snprintf (buffer, buffer_size, " 5+");
 		break;
 	case WK_L1:
-		sprintf (buffer, " 1-");
+		snprintf (buffer, buffer_size, " 1-");
 		break;
 	case WK_L2:
-		sprintf (buffer, " 2-");
+		snprintf (buffer, buffer_size, " 2-");
 		break;
 	case WK_L3:
-		sprintf (buffer, " 3-");
+		snprintf (buffer, buffer_size, " 3-");
 		break;
 	case WK_L4:
-		sprintf (buffer, " 4-");
+		snprintf (buffer, buffer_size, " 4-");
 		break;
 	case WK_L5:
-		sprintf (buffer, " 5-");
+		snprintf (buffer, buffer_size, " 5-");
 		break;
 	}
 
 	if (RE_STOP_IS_SET(week))
-		strcat (buffer, "$");
+		strlcat (buffer, "$", buffer_size);
 }
 
 static void
@@ -246,21 +251,21 @@ ConvertDaily(
 
 	num_time = RE_DAILY(re)->dd_ntime;
 
-	sprintf(subcommand, "D%d", re->re_interval);
+	snprintf(subcommand, buf_size, "D%d", re->re_interval);
 	size += strlen(subcommand);
 
 	NumsToBuf((unsigned int *)RE_DAILY(re)->dd_time, num_time, NUM_NUM,
 		  subcommand, buf_size - size);
 
 		/* Tack on the duration information */
-	sprintf(tmp_buf, " #%d", re->re_duration);
+	snprintf(tmp_buf, 32, " #%d", re->re_duration);
 
 	size += strlen(tmp_buf);
 	if (size > buf_size) {
 		printf ("Error: Internal buffer size exceeded\n");
 		return;
 	}
-	strcat (subcommand, tmp_buf);
+	strlcat (subcommand, tmp_buf, buf_size);
 }
 
 static void
@@ -269,6 +274,7 @@ ConvertWeekly(
 	char		*subcommand,
 	unsigned int	 subcommand_size)
 {
+	int      tmp_buf_size = 32;
 	char	 tmp_buf[32];
 	int	 size = 0,
 		 num_items,
@@ -276,14 +282,14 @@ ConvertWeekly(
 
 	num_items = RE_WEEKLY(re)->wd_ndaytime;
 
-	sprintf(subcommand, "W%d", re->re_interval);
+	snprintf(subcommand, subcommand_size, "W%d", re->re_interval);
 	size += strlen(subcommand);
 
 		/* walk through Day/time data (e.g. TU 1200 Th 2000)	*/
 	for (i = 0; i < num_items; i++) {
 
 			/* The day: MO TU TH etc. */
-		WeekDayToString(RE_WEEKLY(re)->wd_daytime[i].dt_day, tmp_buf);
+		WeekDayToString(RE_WEEKLY(re)->wd_daytime[i].dt_day, tmp_buf, tmp_buf_size);
 		size += strlen(tmp_buf);
 
 			/* Make sure the size of our buffer does not overflow */
@@ -292,7 +298,7 @@ ConvertWeekly(
 			return;
 		}
 
-		strcat (subcommand, tmp_buf);
+		strlcat (subcommand, tmp_buf, subcommand_size);
 
 			/* The hours: 1000 1400 etc. */
 		NumsToBuf((unsigned int *)RE_WEEKLY(re)->wd_daytime[i].dt_time,
@@ -302,14 +308,14 @@ ConvertWeekly(
 		size = strlen(subcommand);
 	}
 		/* Tack on the duration information */
-	sprintf(tmp_buf, " #%d", re->re_duration);
+	snprintf(tmp_buf, 32, " #%d", re->re_duration);
 
 	size += strlen(tmp_buf);
 	if (size > subcommand_size) {
 		printf ("Error: Internal buffer size exceeded\n");
 		return;
 	}
-	strcat (subcommand, tmp_buf);
+	strlcat (subcommand, tmp_buf, subcommand_size);
 }
 
 static void
@@ -326,9 +332,9 @@ ConvertMonthly(
 	num_items = RE_MONTHLY(re)->md_nitems;
 
 	if (re->re_type == RT_MONTHLY_POSITION)
-		sprintf(subcommand, "MP%d", re->re_interval);
+		snprintf(subcommand, subcommand_size, "MP%d", re->re_interval);
 	else
-		sprintf(subcommand, "MD%d", re->re_interval);
+		snprintf(subcommand, subcommand_size, "MD%d", re->re_interval);
 
 	size += strlen(subcommand);
 
@@ -381,14 +387,14 @@ ConvertMonthly(
 			  subcommand_size - size);
 	}
 		/* Tack on the duration information */
-	sprintf(tmp_buf, " #%d", re->re_duration);
+	snprintf(tmp_buf, 32, " #%d", re->re_duration);
 
 	size += strlen(tmp_buf);
 	if (size > subcommand_size) {
 		printf ("Error: Internal buffer size exceeded\n");
 		return;
 	}
-	strcat (subcommand, tmp_buf);
+	strlcat (subcommand, tmp_buf, subcommand_size);
 }
 
 static void
@@ -405,9 +411,9 @@ ConvertYearly(
 	num_items = RE_YEARLY(re)->yd_nitems;
 
 	if (re->re_type == RT_YEARLY_MONTH)
-		sprintf(subcommand, "YM%d", re->re_interval);
+		snprintf(subcommand, subcommand_size, "YM%d", re->re_interval);
 	else
-		sprintf(subcommand, "YD%d", re->re_interval);
+		snprintf(subcommand, subcommand_size, "YD%d", re->re_interval);
 
 	size += strlen(subcommand);
 
@@ -417,12 +423,12 @@ ConvertYearly(
 		  subcommand, subcommand_size - size);
 
 		/* Tack on the duration information */
-	sprintf(tmp_buf, " #%d", re->re_duration);
+	snprintf(tmp_buf, 32, " #%d", re->re_duration);
 
 	size += strlen(tmp_buf);
 	if (size > subcommand_size) {
 		printf ("Error: Internal buffer size exceeded\n");
 		return;
 	}
-	strcat (subcommand, tmp_buf);
+	strlcat (subcommand, tmp_buf, subcommand_size);
 }

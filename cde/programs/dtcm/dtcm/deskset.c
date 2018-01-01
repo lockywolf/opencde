@@ -78,7 +78,7 @@ static  char sccsid[] = "@(#)deskset.c 1.11 94/12/22 Copyr 1993 Sun Microsystems
 **  Function:		ds_relname
 **
 **  Description:	Return revision name.
-**		
+**
 **  Parameters:		None
 **
 **  Returns:		Revision name (char *)
@@ -89,7 +89,7 @@ ds_relname()
 {
 	static char	buf[MAXNAMELEN];
 
-	sprintf(buf, "Version %d.%d.%d Revision %d",
+	snprintf(buf, MAXNAMELEN, "Version %d.%d.%d Revision %d",
 		DtVERSION, DtREVISION, DtUPDATE_LEVEL,
 		DTCM_INTERNAL_REV);
 	return buf;
@@ -151,7 +151,7 @@ ds_position_popup(Widget base, Widget popup, ds_location_op location_op) {
   ph = (int) popup_height ;
 
   ds_get_screen_size(popup, &screen_width, &screen_height) ;
- 
+
   if (location_op == DS_POPUP_LOR)
     {
       if (bx >= screen_width - bw - bx) location_op = DS_POPUP_LEFT ;
@@ -269,14 +269,14 @@ ds_force_popup_on_screen(Widget popup, int *popup_x_p, int *popup_y_p) {
  *
  *  Parameters:     width_p         Pointer to an integer to place width
  *                  height_p        Pointer to an integer to place height
- *        
+ *
  *  Returns:        None.
  */
 extern void
 ds_get_screen_size(Widget widget, int *width_p, int *height_p) {
   Display *dpy  = XtDisplay(widget) ;
   int screen    = DefaultScreen(dpy) ;
- 
+
   *width_p  = DisplayWidth(dpy, screen) ;
   *height_p = DisplayHeight(dpy, screen) ;
 }

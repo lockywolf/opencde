@@ -64,6 +64,7 @@
 #include "print.h"
 #include "todo.h"
 #include "help.h"
+#include "x_graphics.h"
 
 /* needed for view-specific print routines */
 #include "dayglance.h"
@@ -932,7 +933,7 @@ create_print_dialog(Calendar *c)
 	  print_dir = get_char_prop((Props *)c->properties,CP_PRINTDIRNAME);
 	  if (!print_dir)
 	    print_dir = "";
-	  sprintf(fnamebuf, "%s/%s", print_dir, print_file);
+	  snprintf(fnamebuf, BUFSIZ, "%s/%s", print_dir, print_file);
 
 	  title = XtNewString(catgets(c->DT_catd, 1, 728, "Calendar : Print"));
 	  nargs = 0;
@@ -1384,7 +1385,7 @@ print_report(Calendar *c)
   Tick		end_date = pd_get_end_date(c);
   char *text = (char *)NULL;
 
-  if ((start_date == DATE_BBOT) || (end_date == DATE_BBOT) || 
+  if ((start_date == DATE_BBOT) || (end_date == DATE_BBOT) ||
       (start_date == DATE_AEOT) || (end_date == DATE_BBOT))
   {
     text = XtNewString(catgets(c->DT_catd, 1, 892,
@@ -1631,6 +1632,6 @@ pd_get_bad_alloc_error(Calendar *c)
 
   if (pd != (_DtCmPrintData *)NULL)
       return pd->badAllocError;
-      
+
   return False;
 }

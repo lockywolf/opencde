@@ -24,7 +24,7 @@
 **
 **  util.h
 **
-**  static char sccsid[] = "@(#)util.h 1.38 94/12/20 Copyr 1991 Sun Microsystems, Inc."; 
+**  static char sccsid[] = "@(#)util.h 1.38 94/12/20 Copyr 1991 Sun Microsystems, Inc.";
 **
 **  $XConsortium: util.h /main/5 1995/11/03 10:39:22 rswiston $
 **
@@ -96,7 +96,7 @@ typedef enum {
         ORDER_DMY,
         ORDER_YMD
 } OrderingType;
- 
+
 typedef enum {
         SEPARATOR_BLANK,
         SEPARATOR_SLASH,
@@ -157,8 +157,8 @@ typedef struct {
 
 	int		filled;
 	Allocation_reason reason;
-	
-	/* the version of the back end this appointment structure 
+
+	/* the version of the back end this appointment structure
 	   was intended for */
 
 	int		version;
@@ -200,8 +200,8 @@ typedef struct {
 
 	int		filled;
 	Allocation_reason reason;
-	
-	/* the version of the back end this calendar structure 
+
+	/* the version of the back end this calendar structure
 	   was intended for */
 
 	int		version;
@@ -213,11 +213,11 @@ typedef struct {
  * indexes into the arrays unnecessary.
  */
 extern Dtcm_appointment	*allocate_appt_struct	P((Allocation_reason , int, ...));
-extern CSA_return_code  query_appt_struct       P((CSA_session_handle, 
-						   CSA_entry_handle, 
+extern CSA_return_code  query_appt_struct       P((CSA_session_handle,
+						   CSA_entry_handle,
 						   Dtcm_appointment *));
 extern Dtcm_calendar	*allocate_cal_struct	P((Allocation_reason, int, ...));
-extern CSA_return_code  query_cal_struct        P((CSA_session_handle, 
+extern CSA_return_code  query_cal_struct        P((CSA_session_handle,
 						   Dtcm_calendar *));
 extern void		free_appt_struct	P((Dtcm_appointment**));
 extern void		free_cal_struct		P((Dtcm_calendar**));
@@ -253,8 +253,8 @@ extern char		*cm_get_local_domain	P(());
 extern char		*cm_get_local_host	P(());
 extern char		*cm_get_uname		P(());
 extern char		*cm_pqtarget		P((char*));
-extern char		*cm_strcat		P((char*, char*));
-extern char		*cm_strcpy		P((char*, char*));
+extern char		*cm_strlcat		P((char*, char*, int));
+extern char		*cm_strlcpy		P((char*, char*, int));
 extern char		*cm_strdup		P((char*));
 extern int		cm_strlen		P((char*));
 extern char		*cm_target2domain	P((char*));
@@ -282,9 +282,9 @@ extern int		max			P((int, int));
 extern int		min			P((int, int));
 extern int              parse_date              P((OrderingType, SeparatorType, char*, char*, char*, char*));
 
-extern int              datestr2mdy             P((char*, OrderingType, SeparatorType, char*));
-extern void             format_tick             P((time_t, OrderingType, SeparatorType, char*));
-extern void		format_time		P((Tick, DisplayType, char*));
+extern int              datestr2mdy             P((char*, OrderingType, SeparatorType, char*, int));
+extern void             format_tick             P((time_t, OrderingType, SeparatorType, char*, int));
+extern void		format_time		P((Tick, DisplayType, char*, int));
 
 /*
  * In Motif you can't associate user data with items in a list.  To get around

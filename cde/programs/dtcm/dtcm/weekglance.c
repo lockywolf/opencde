@@ -94,10 +94,10 @@ static void clear_hot_btn(Calendar *, int);
 static void allocator(Calendar *);
 static void deallocator(Calendar *);
 static Boolean print_week (Calendar *c,
-			   int num_page, 
+			   int num_page,
 			   void *xp,
-			   Tick first_date, 
-			   Props *p, 
+			   Tick first_date,
+			   Props *p,
 			   Boolean first);
 
 
@@ -125,7 +125,7 @@ format_week_header(Tick date, OrderingType order, char *buf)
 	   Attention Translator:
 
 	   This string is used in the calendar week view.  In the C locale
-	   it has the form: 
+	   it has the form:
 
 			Monday, January 16, 1995
 
@@ -136,10 +136,10 @@ format_week_header(Tick date, OrderingType order, char *buf)
 
 	   Use the appropriate strftime conversion for your locale.
 	*/
-	strftime(buf, 80, 
+	strftime(buf, 80,
 		catgets(c->DT_catd, 1, 993, "Week Starting %A, %B %e, %Y"), tm);
 }
- 
+
 static int
 count_week_pages (Calendar *c, int lines_per_page, Tick start_date)
 {
@@ -165,11 +165,11 @@ count_week_pages (Calendar *c, int lines_per_page, Tick start_date)
                 num_appts = count_multi_appts(list, a_total, c);
                 if (num_appts > max)
                         max = num_appts;
- 
+
                 start_date = nextday(start_date);
                 csa_free(list);
         }
- 
+
         pages = max / lines_per_page;
         if ((max % lines_per_page) > 0)
                 pages++;
@@ -178,11 +178,11 @@ count_week_pages (Calendar *c, int lines_per_page, Tick start_date)
 }
 
 static Boolean
-print_week (Calendar *c, 
-	int num_page, 
+print_week (Calendar *c,
+	int num_page,
 	void *xp,
-	Tick first_date, 
-	Props *p, 
+	Tick first_date,
+	Props *p,
 	Boolean first)
 {
         Boolean more, done = False, all_done = True;
@@ -199,7 +199,7 @@ print_week (Calendar *c,
 	int lines_per_page;
         static Tick start_date = 0;
 	static int total_pages;
- 
+
         static char *days[] = {
                 (char *)NULL, (char *)NULL, (char *)NULL,
                 (char *)NULL, (char *)NULL, (char *)NULL, (char *)NULL
@@ -245,7 +245,7 @@ print_week (Calendar *c,
 	  /* print <Weekday DD> centered at top of appt box */
 	  x_week_sched_init(xp);
 
-	  sprintf(buf, days[i], dom(start_date));
+	  snprintf(buf, 128, days[i], dom(start_date));
 
 	  /* setup a time limit for appts searched */
 	  start = (time_t) lowerbound (start_date);
@@ -332,7 +332,7 @@ count_multi_appts(CSA_entry_handle *list, int num_entries, Calendar *c)
   int count = 0, i, meoval;
   Props *pr = (Props*)c->properties;
   Lines *lines, *l_ptr;
- 
+
   meoval = get_int_prop(pr, CP_PRINTPRIVACY);
 
   appt = allocate_appt_struct(appt_read,
@@ -368,11 +368,11 @@ count_multi_appts(CSA_entry_handle *list, int num_entries, Calendar *c)
       lines = lines->next;
     }
     destroy_lines(l_ptr);
-  }        
+  }
   free_appt_struct(&appt);
   return(count);
-}        
- 
+}
+
 /*
  * handler for week view menu item.
  */
@@ -437,7 +437,7 @@ cleanup_after_weekview(Calendar *c)
 /*
  * allocate storage & subwidgets used by week view
  */
-static void 
+static void
 allocator(Calendar *c)
 {
 	int n;
@@ -451,15 +451,15 @@ allocator(Calendar *c)
 	/* navigation buttons to day view */
 	w->hot_button = (Widget *) ckalloc(7 * sizeof(Widget));
 
-	/* Set the recomputeSize of the PushButtons to False, to prevent a loop 
-	   where a SetValues is done on the PushButton's width from the 
+	/* Set the recomputeSize of the PushButtons to False, to prevent a loop
+	   where a SetValues is done on the PushButton's width from the
 	   exposeCallback of the DrawingArea */
-	XtSetArg(args[0], XmNrecomputeSize, False); 	
+	XtSetArg(args[0], XmNrecomputeSize, False);
 
 	for (n=0; n<7; n++) {
 		w->hot_button[n] =
 			XmCreatePushButton(c->canvas, "week2day", args, 1);
-		XtAddCallback(w->hot_button[n],XmNactivateCallback, 
+		XtAddCallback(w->hot_button[n],XmNactivateCallback,
 			quick_button_cb, (XtPointer) (intptr_t) n);
 	}
 
@@ -472,7 +472,7 @@ allocator(Calendar *c)
 /*
  * allocate storage & subwidgets used by week view
  */
-static void 
+static void
 deallocator(Calendar *c)
 {
         Week *w = (Week *)c->view->week_info;
@@ -540,9 +540,9 @@ init_week(Calendar *c, Boundary *boundary)
          * Set up a bunch of variables which are needed to draw and fill
          * the week at a glance screen
          */
-	XtVaGetValues(c->canvas, 
-			XmNwidth, &w->canvas_w, 
-			XmNheight, &w->canvas_h, 
+	XtVaGetValues(c->canvas,
+			XmNwidth, &w->canvas_w,
+			XmNheight, &w->canvas_h,
 			NULL);
 
         w->font = c->fonts->labelfont;
@@ -567,51 +567,51 @@ init_week(Calendar *c, Boundary *boundary)
         w->width = w->day_width * 5;
         /* height from top of box to bottom of weekend boxes */
         w->height = w->day_height * 2;
- 
+
         p = (Props *)c->properties;
         w->begin_hour = get_int_prop(p, CP_DAYBEGIN);
         w->end_hour = get_int_prop(p, CP_DAYEND);
- 
+
         /* width of a column in chart */
         w->chart_day_width = (3 * w->day_width - 3 * char_width) / 7;
         /* width of chart */
         w->chart_width = w->chart_day_width * 7;
         num_hrs = w->end_hour - w->begin_hour;
- 
+
         /* height of box without label */
         day_box = w->day_height - w->label_height;
- 
+
         /* height of an hour in chart */
         w->chart_hour_height = day_box / num_hrs;
         /* chart_hour_height must be evenly divisble by BOX_SEG */
         w->chart_hour_height -= (w->chart_hour_height % BOX_SEG);
         w->chart_height = w->chart_hour_height * num_hrs;
- 
+
         /* x point of upper left corner of chart */
         w->chart_x = w->x + 2 * boldfontextents.max_logical_extent.width;
         /* y point of upper left corner of chart */
         w->chart_y = w->y + w->height - w->chart_height;
- 
+
         /* left over empty space above chart after round off error */
         empty_space = day_box - w->chart_height;
         /* add pixels to the height of each hour box in chart to fill gap*/
-        if (w->add_pixels = ((double)empty_space / (double)num_hrs)) {
+        if ( (w->add_pixels = ((double)empty_space / (double)num_hrs)) ) {
                 w->chart_y -= w->add_pixels * num_hrs;
                 w->chart_height += w->add_pixels * num_hrs;
         }
- 
+
         w->segs_in_array = BOX_SEG * num_hrs * 7;
         if (w->time_array != NULL)
                 free(w->time_array);
         w->time_array = (char*)ckalloc(w->segs_in_array);
- 
+
         c->view->outside_margin = w->x;
         c->view->topoffset = w->y;
 }
 
 extern void
 paint_weekview(
-	Calendar 	*c, 
+	Calendar 	*c,
 	XRectangle 	*rect)
 {
 	Boundary 	 boundary;
@@ -623,7 +623,7 @@ paint_weekview(
 	if (c->view->week_info == NULL) {
 		allocator(c);
 		resize_weekview(c, &boundary);
-	} else 
+	} else
         	init_week(c, &boundary);
 
         draw_week(c, rect, boundary);
@@ -631,23 +631,23 @@ paint_weekview(
 }
 
 static void
-cm_update_segs(Week *w, 
-	Tick tick, 
-	Tick dur, 
-	int *start_index, 
-	int *end_index, 
+cm_update_segs(Week *w,
+	Tick tick,
+	Tick dur,
+	int *start_index,
+	int *end_index,
 	Boolean addto)
 {
         int     num_segs, i, start, start_hour, duration, nday;
- 
+
         start_hour = hour(tick);
-       
+
         if (start_hour >= w->end_hour) {
                 *start_index = -1;
                 *end_index = -1;
                 return;
         }
- 
+
         if (start_hour < w->begin_hour) {
                 start = 0;
                 duration = dur - ((w->begin_hour -
@@ -657,7 +657,7 @@ cm_update_segs(Week *w,
                 start = ((start_hour - w->begin_hour) * 60 + minute(tick));
                 duration = dur;
         }
- 
+
         if (duration <= 0) {
                 *start_index = -1;
                 *end_index = -1;
@@ -680,9 +680,9 @@ cm_update_segs(Week *w,
         for (i = *start_index; i < *end_index; i++)
                 if (addto)
                         w->time_array[i]++;
-                else      
+                else
                         w->time_array[i]--;
-}        
+}
 
 static void
 add_extra_pixels(int i, int num_pixels, int *h)
@@ -710,7 +710,7 @@ chart_draw_appts(Week *w, int start, int end)
                         ((double)w->add_pixels * (double)no_boxes) + 1;
         x = w->chart_x + ((double)start / (double)segs_in_col *
                         (double)w->chart_day_width);
- 
+
         for (i = start; i < end; i++) {
                 if (w->time_array[i] == 0) {
                         /* batch up repaints */
@@ -854,7 +854,7 @@ draw_week(Calendar *c, XRectangle *rect, Boundary boundary)
         int i, lower_bound = 0, upper_bound = 0;
 	XFontSetExtents regfontextents, boldfontextents;
 	int	notused, width1, width2, width3;
-        
+
 	CalFontExtents(w->font, &regfontextents);
 	char_height = regfontextents.max_logical_extent.height;
         start_date      = w->start_date;
@@ -866,7 +866,7 @@ draw_week(Calendar *c, XRectangle *rect, Boundary boundary)
         if (c->paint_cache == NULL) {
 		setup_range(&range_attrs, &ops, &i, start, stop, CSA_TYPE_EVENT,
 	    		0, B_FALSE, c->general->version);
-		csa_list_entries(c->cal_handle, i, range_attrs, ops, 
+		csa_list_entries(c->cal_handle, i, range_attrs, ops,
 				 &a_total, &list, NULL);
 		free_range(&range_attrs, &ops, i);
                 allocate_paint_cache(list, a_total, &c->paint_cache);
@@ -876,12 +876,12 @@ draw_week(Calendar *c, XRectangle *rect, Boundary boundary)
 
 
         gr_clear_box(xc, 0, 0, w->canvas_w, w->canvas_h);
- 
-	CalTextExtents(w->font, days2[3], cm_strlen(days2[3]), 
+
+	CalTextExtents(w->font, days2[3], cm_strlen(days2[3]),
 		       &notused, &notused, &width1, &notused);
 	CalTextExtents(w->font, "  00", cm_strlen("  00"),
 		       &notused, &notused, &width2, &notused);
-	CalTextExtents(w->font, "Wed 00", cm_strlen("Wed 00"), 
+	CalTextExtents(w->font, "Wed 00", cm_strlen("Wed 00"),
 		       &notused, &notused, &width3, &notused);
         if (width1 + width2 <= w->day_width - 2)
                 day_names = days2;
@@ -891,10 +891,10 @@ draw_week(Calendar *c, XRectangle *rect, Boundary boundary)
                 day_names = days3;
         x = w->x;
         y = w->y;
-        
+
         format_week_header(start_date, ot, label);
         gr_text(xc, x, y - char_height / 2, w->font, label, rect);
- 
+
         /*
          * Draw bold box around first 5 days
          */
@@ -902,22 +902,22 @@ draw_week(Calendar *c, XRectangle *rect, Boundary boundary)
         gr_draw_box(xc, x - 1, y - 1, w->width + 2, w->day_height + 2, rect);
         gr_draw_line(xc, x, y + w->label_height, x + w->width,
                 y + w->label_height, gr_solid, rect);
- 
+
         /*
          * Draw bold box around last 2 days
          */
         x += 3 * w->day_width;
         y += w->day_height;
- 
+
         gr_draw_box(xc, x, y, 2 * w->day_width, w->day_height, rect);
         gr_draw_box(xc, x - 1, y, 2 * w->day_width + 2, w->day_height + 1,rect);
-        gr_draw_line(xc, x, y + w->label_height, x + 2 * w->day_width, 
+        gr_draw_line(xc, x, y + w->label_height, x + 2 * w->day_width,
 		     y + w->label_height, gr_solid, rect);
         y = w->y;
         x = w->x + w->day_width;
         for (n = 0; n < 4; n++) {
                 if (n < 3) {
-                        gr_draw_line(xc, x, y, x, y + w->day_height, 
+                        gr_draw_line(xc, x, y, x, y + w->day_height,
 				     gr_solid, rect);
                 } else {
                         gr_draw_line(xc, x, y, x, y + 2 * w->day_height,
@@ -932,14 +932,14 @@ draw_week(Calendar *c, XRectangle *rect, Boundary boundary)
         y = w->y;
         current_day = start_date;
         today_dom = dom(time(0));
- 
-	/* Crock alert!!!!  The obscure code below is doing something 
-	   really nasty.  The variable boundary indicates whether the 
-	   week being displayed falls across a boundary with the 
-	   beginning or the end of time.  In the case of the beginning 
-	   of time, the code then assumes that the first 2 days in the 
-	   week need to be unbuttoned, and the rest buttoned and painted.  
-	   Likewise, with the end of time case, the code assumes the last 
+
+	/* Crock alert!!!!  The obscure code below is doing something
+	   really nasty.  The variable boundary indicates whether the
+	   week being displayed falls across a boundary with the
+	   beginning or the end of time.  In the case of the beginning
+	   of time, the code then assumes that the first 2 days in the
+	   week need to be unbuttoned, and the rest buttoned and painted.
+	   Likewise, with the end of time case, the code assumes the last
 	   3 days of the week need similar treatment. */
 
         for (n = 0; n < 7; n++)  {
@@ -948,15 +948,15 @@ draw_week(Calendar *c, XRectangle *rect, Boundary boundary)
                         y += w->day_height;
                         x = w->x + 3 * w->day_width;
                 }
- 
+
 		if (boundary == okay) {
                 	day_om = dom(current_day);
 			display_hot_btn(c, n, day_om);
-                	fill_day(c, w, x, y, current_day, 
+                	fill_day(c, w, x, y, current_day,
 				 c->paint_cache, c->paint_cache_size, rect);
                 	current_day += daysec;
 			if (lower_bound > 0) {
-				sprintf(buf, "%s", catgets(c->DT_catd, 1, 623, "Calendar does not display dates prior to January 1, 1970"));
+				snprintf(buf, 128, "%s", catgets(c->DT_catd, 1, 623, "Calendar does not display dates prior to January 1, 1970"));
 				footer_message = buf;
 			}
 			else
@@ -972,13 +972,13 @@ draw_week(Calendar *c, XRectangle *rect, Boundary boundary)
                 	day_om = dom(current_day);
 			if (++upper_bound <= 4)
 				display_hot_btn(c, n, day_om);
-                	fill_day(c, w, x, y, current_day, 
+                	fill_day(c, w, x, y, current_day,
 				 c->paint_cache, c->paint_cache_size, rect);
                 	current_day += daysec;
-			sprintf(buf, "%s", catgets(c->DT_catd, 1, 624, "Calendar does not display dates after December 31, 2037"));
-			footer_message = buf; 
+			snprintf(buf, 128, "%s", catgets(c->DT_catd, 1, 624, "Calendar does not display dates after December 31, 2037"));
+			footer_message = buf;
 			if (upper_bound > 4)
-				clear_hot_btn(c, n); 
+				clear_hot_btn(c, n);
 		}
                 x += w->day_width;
         }
@@ -1004,8 +1004,8 @@ draw_week(Calendar *c, XRectangle *rect, Boundary boundary)
                 draw_chart(c, w, NULL);
         }
 
-	/* do not repaint the footer message in a damage display.  
-	   For some reason this causes the damage routine to get called 
+	/* do not repaint the footer message in a damage display.
+	   For some reason this causes the damage routine to get called
 	   again, resulting in a recursive dsaster. */
 
 	if (footer_message && !rect)
@@ -1015,7 +1015,7 @@ draw_week(Calendar *c, XRectangle *rect, Boundary boundary)
  *  Format 2 lines of appt data
  */
 static void
-format_entry(Paint_cache *cache_entry, char *buf1, char *buf2,
+format_entry(Paint_cache *cache_entry, char *buf1, int buf1_size, char *buf2, int buf2_size,
 	     DisplayType display) {
         Tick    tick, end_tick = 0;
         int     hour1, min1, hour2, min2;
@@ -1027,7 +1027,7 @@ format_entry(Paint_cache *cache_entry, char *buf1, char *buf2,
 
 	tick = cache_entry->start_time;
 	end_tick = cache_entry->end_time;
- 
+
         /*
          * Extract an appointment and format it into 2 lines of no more
          * then maxchars
@@ -1037,15 +1037,15 @@ format_entry(Paint_cache *cache_entry, char *buf1, char *buf2,
         tm = _XLocaltime(&tick, localtime_buf);
         hour1 = tm->tm_hour;
         min1  = tm->tm_min;
- 
+
         if (!cache_entry->show_time || magic_time(tick)) {
-                lines = (Lines *) text_to_lines(cache_entry->summary, 1); 
+                lines = (Lines *) text_to_lines(cache_entry->summary, 1);
                 if (lines==NULL) return;
                 strncpy(buf2, lines->s, 256);
                 destroy_lines(lines);
                 return;
         }
- 
+
         s1 = s2 = "am";
         if (display == HOUR12 && !adjust_hour(&hour1))
                 s1="pm";
@@ -1059,27 +1059,27 @@ format_entry(Paint_cache *cache_entry, char *buf1, char *buf2,
         if (end_tick == 0 ||
 	    (hour1 == hour2 && min1 == min2 && (strcmp(s1, s2) == 0))) {
                 if (display == HOUR24)
-                        sprintf(buf1, "%02d%.2d", hour1, min1);
+                        snprintf(buf1, buf1_size, "%02d%.2d", hour1, min1);
                 else
-                        sprintf(buf1, "%d:%.2d%s", hour1, min1, s1);
+                        snprintf(buf1, buf1_size, "%d:%.2d%s", hour1, min1, s1);
         }
         else {
                 if (display == HOUR12)
-                        sprintf(buf1, "%d:%.2d%s-%d:%.2d%s", hour1, min1, s1,
+                        snprintf(buf1, buf1_size, "%d:%.2d%s-%d:%.2d%s", hour1, min1, s1,
                                  hour2, min2, s2);
                 else
-                        sprintf(buf1, "%02d%02d-%02d%02d", hour1, min1,
+                        snprintf(buf1, buf1_size, "%02d%02d-%02d%02d", hour1, min1,
                                  hour2, min2);
         }
 
-          
+
         lines = (Lines *) text_to_lines(cache_entry->summary, 1);
-         
-        if (lines == NULL || lines->s == NULL ||                        
+
+        if (lines == NULL || lines->s == NULL ||
                 (cm_strlen(lines->s) == 1 && lines->s[0] == ' '))
                 buf2[0] = '\0';
         else
-                sprintf(buf2, " %s", lines->s);
+                snprintf(buf2, buf2_size, " %s", lines->s);
         destroy_lines(lines);
 }
 
@@ -1093,22 +1093,22 @@ paint_entry(Calendar *c, int x, int y, int maxchars, Paint_cache *cache_entry, X
         char            buf1[50], buf2[WHAT_LEN+1];
         Week            *w = (Week *)c->view->week_info;
 	Tick		tick;
- 
+
         /*
          * Write an appointment entry into a day
          */
- 
+
         if (maxchars >= 40)             /* maxed out possible=40 */
                 maxchars = 40;
-                 
+
         buf1[0] = '\0'; buf2[0] = '\0';
- 
-        format_entry(cache_entry, buf1, buf2, dt);
+
+        format_entry(cache_entry, buf1, 50, buf2, WHAT_LEN+1, dt);
 
 	tick = cache_entry->start_time;
- 
+
         if (cache_entry->show_time && !magic_time(tick) && (buf1[0] != '\0')) {
-                maxchars = gr_nchars(w->day_width - 5, buf1,c->fonts->boldfont); 
+                maxchars = gr_nchars(w->day_width - 5, buf1,c->fonts->boldfont);
                 buf1[min(cm_strlen(buf1), maxchars)] = '\0';
                 gr_text(xc, x, y, c->fonts->boldfont, buf1, rect);
                 nlines++;
@@ -1116,18 +1116,18 @@ paint_entry(Calendar *c, int x, int y, int maxchars, Paint_cache *cache_entry, X
 		y += fontextents.max_logical_extent.height;;
         }
         if (buf2[0] != '\0') {
-                maxchars = gr_nchars(w->day_width - 5, buf2, 
+                maxchars = gr_nchars(w->day_width - 5, buf2,
 						c->fonts->viewfont);
 		buf2[min(cm_strlen(buf2), maxchars)] = '\0';
                 gr_text(xc, x, y, c->fonts->viewfont, buf2, rect);
                 nlines++;
         }
- 
+
         return(nlines);
 }
 
 static void
-fill_day(Calendar *c, Week *w, int x, int y, int day, 
+fill_day(Calendar *c, Week *w, int x, int y, int day,
 		Paint_cache *cache, int a_total, XRectangle *rect)
 {
 	CSA_return_code stat;
@@ -1142,7 +1142,7 @@ fill_day(Calendar *c, Week *w, int x, int y, int day,
         int     maxlines;
         int     maxchars;
 	Tick	tick;
- 
+
 	CalFontExtents(w->small_font, &fontextents);
         char_width = fontextents.max_logical_extent.width;
 	char_height = fontextents.max_logical_extent.height;
@@ -1153,32 +1153,32 @@ fill_day(Calendar *c, Week *w, int x, int y, int day,
 #endif
         x += 3;
         y += (w->label_height + char_height);
- 
+
         /*
          * Fill in a day with appointments
          */
 
-	/* loop thru twice, first displaying "no time" appointments, 
+	/* loop thru twice, first displaying "no time" appointments,
 	   and then the others. */
 
 	for (loop = 0; loop < 2; loop++) {
 		for (i = 0; i < a_total; i++) {
-	
+
 			if ((cache[i].start_time < lower) || (cache[i].start_time >= upper))
 				continue;
-	
+
 			if (cache[i].show_time != loop)
 				continue;
-	
+
 	                if (nlines < maxlines) {
 	                        n = paint_entry(c, x, y, maxchars, &cache[i], rect);
 	                        y += n * char_height;
 	                        nlines += n;
 	                }
-	        }        
+	        }
 	}
-} 
- 
+}
+
 static void
 draw_chart(Calendar *c, register Week *w, XRectangle *rect)
 {
@@ -1193,19 +1193,19 @@ draw_chart(Calendar *c, register Week *w, XRectangle *rect)
 
 	CalFontExtents(w->font, &fontextents);
 	char_height = fontextents.max_logical_extent.height;
- 
+
         /*
          * Draw chart. We first draw all the lines, then the labels
          * so that Xlib can batch the lines into 1 X request
          */
- 
+
         /* Draw horizontal lines for time */
         x = w->chart_x;
         y = w->chart_y;
         for (n = w->begin_hour; n <= w->end_hour; n++) {
                 gr_draw_line(xc, x, y, x + w->chart_width, y, gr_solid, rect);                y += w->chart_hour_height + w->add_pixels;
         }
- 
+
         /* Draw vertical lines for days */
         y = w->chart_y;
         for (n = 0; n < 7; n++) {
@@ -1213,7 +1213,7 @@ draw_chart(Calendar *c, register Week *w, XRectangle *rect)
                         y, w->chart_x + (w->chart_day_width * n),
                         y + w->chart_height, gr_solid, rect);
         }
- 
+
         /*
          * Draw box around the whole thing.
          */
@@ -1226,14 +1226,14 @@ draw_chart(Calendar *c, register Week *w, XRectangle *rect)
         y = w->chart_y;
         for (n = w->begin_hour; n <= w->end_hour; n++) {
                 if (dt == HOUR12)
-                        sprintf(label, "%2d", n > 12 ? n - 12 : n);
+                        snprintf(label, 5, "%2d", n > 12 ? n - 12 : n);
                 else
-                        sprintf(label, "%2d", n);
+                        snprintf(label, 5, "%2d", n);
                 gr_text(xc, w->x - 8, y+3,
                         w->small_bold_font, label, rect);
                 y += w->chart_hour_height + w->add_pixels;
         }
- 
+
         /* Label  vertical lines with day labels */
         y = w->chart_y;
         for (n = 0; n < 7; n++) {
@@ -1241,7 +1241,7 @@ draw_chart(Calendar *c, register Week *w, XRectangle *rect)
                 gr_text(xc, w->chart_x + (w->chart_day_width * n) + x,
                         y - char_height / 2, w->font, days3[n+1], rect);
         }
- 
+
 }
 
 extern void
@@ -1333,7 +1333,7 @@ week_event(XEvent *event)
 		lastcol = wsel->col;
 		lastrow = wsel->row;
                 break;
-        default: 
+        default:
                 break;
         };             /* switch */
         lastevent = *event;
@@ -1400,7 +1400,7 @@ quick_button_cb(Widget widget, XtPointer client, XtPointer call)
 		c->view->date = w->start_date + dow * daysec;
 	}
 	calendar_select(c, weekhotboxSelect, NULL);
- 
+
 	cleanup_after_weekview(c);
 
 	c->view->glance = dayGlance;
@@ -1426,7 +1426,7 @@ display_hot_btn(
 	char 		 buf[BUFSIZ];
 
 	/* REVISIT: I18N wrap the string for day name */
-	sprintf(buf, "%s %d", n == 6 ? days[0] : days[n + 1], date);
+	snprintf(buf, BUFSIZ, "%s %d", n == 6 ? days[0] : days[n + 1], date);
 
 	str = XmStringCreateLocalized(buf);
 	XtVaSetValues(btn, XmNlabelString, str, NULL);
@@ -1447,7 +1447,7 @@ clear_hot_btn(Calendar *c,
 {
         Week *w = (Week *)c->view->week_info;
         Widget btn = w->hot_button[n];
- 
+
         if (XtIsManaged(btn)) {
                 XtUnmanageChild(btn);
         }

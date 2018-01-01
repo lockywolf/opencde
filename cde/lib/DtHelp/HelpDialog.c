@@ -28,8 +28,8 @@
  **
  **   Project:     Cde Help 1.0 Project
  **
- **   Description: 
- ** 
+ **   Description:
+ **
  **  (c) Copyright 1987, 1988, 1989, 1990, 1991, 1992 Hewlett-Packard Company
  **
  **  (c) Copyright 1993, 1994 Hewlett-Packard Company
@@ -68,7 +68,7 @@
 #include <Xm/XmPrivate.h>
 
 /* Copied from Xm/GeoUtilsI.h */
-extern XmGeoMatrix _XmGeoMatrixAlloc( 
+extern XmGeoMatrix _XmGeoMatrixAlloc(
                         unsigned int numRows,
                         unsigned int numBoxes,
                         unsigned int extSize) ;
@@ -142,16 +142,16 @@ extern XmGeoMatrix _XmGeoMatrixAlloc(
 
 /********    Static Function Declarations    ********/
 
-static void NavigationTypeDefault( 
+static void NavigationTypeDefault(
                         Widget widget,
                         int offset,
                         XrmValue *value) ;
 
-static void ClassPartInitialize( 
+static void ClassPartInitialize(
                         WidgetClass wc) ;
-static void ClassInitialize( 
+static void ClassInitialize(
                         void) ;
-static void Initialize( 
+static void Initialize(
                         Widget rw,
                         Widget nw,
                         ArgList args,
@@ -159,7 +159,7 @@ static void Initialize(
 
 static void Destroy(
                         Widget w );
-static Boolean SetValues( 
+static Boolean SetValues(
                         Widget cw,
                         Widget rw,
                         Widget nw,
@@ -221,7 +221,7 @@ static void InitialPopupCB(
 /* Supported resources for the HelpDialog Widget */
 
 static XtResource resources[] = {
-   
+
     {   DtNshowNewWindowButton,
         DtCShowNewWindowButton,
         XmRBoolean,
@@ -254,117 +254,117 @@ static XtResource resources[] = {
         XmRImmediate,  (XtPointer) DtHELP_EXECUTE_QUERY_UNALIASED
     },
 
-    {	DtNcolumns, 
-        DtCColumns, XmRShort, sizeof(short), 
-	XtOffset (DtHelpDialogWidget, help_dialog.display.textColumns), 
+    {	DtNcolumns,
+        DtCColumns, XmRShort, sizeof(short),
+	XtOffset (DtHelpDialogWidget, help_dialog.display.textColumns),
 	XmRImmediate, (XtPointer) 70
      },
-    
-     {	DtNrows, 
-        DtCRows, XmRShort, sizeof(short), 
-	XtOffset (DtHelpDialogWidget, help_dialog.display.textRows), 
+
+     {	DtNrows,
+        DtCRows, XmRShort, sizeof(short),
+	XtOffset (DtHelpDialogWidget, help_dialog.display.textRows),
 	XmRImmediate, (XtPointer) 25
      },
-     
-     {  DtNmarginWidth, 
+
+     {  DtNmarginWidth,
         DtCMarginWidth, XmRHorizontalDimension, sizeof (Dimension),
-        XtOffset (DtHelpDialogWidget, help_dialog.ghelp.marginWidth), 
+        XtOffset (DtHelpDialogWidget, help_dialog.ghelp.marginWidth),
         XmRImmediate, (XtPointer) 1
      },
 
-     {  DtNmarginHeight, 
+     {  DtNmarginHeight,
         DtCMarginHeight, XmRVerticalDimension, sizeof (Dimension),
-        XtOffset (DtHelpDialogWidget, help_dialog.ghelp.marginHeight), 
+        XtOffset (DtHelpDialogWidget, help_dialog.ghelp.marginHeight),
         XmRImmediate, (XtPointer) 4
      },
 
-    {	DtNvisiblePathCount, 
-        DtCVisiblePathCount, XmRInt, sizeof(int), 
-	XtOffset (DtHelpDialogWidget, help_dialog.browser.visiblePathCount), 
+    {	DtNvisiblePathCount,
+        DtCVisiblePathCount, XmRInt, sizeof(int),
+	XtOffset (DtHelpDialogWidget, help_dialog.browser.visiblePathCount),
 	XmRImmediate, (XtPointer) 7
      },
 
-     {	DtNlocationId, 
-	DtCLocationId, XmRString, sizeof (char*), 
-	XtOffset (DtHelpDialogWidget, help_dialog.display.locationId), 
+     {	DtNlocationId,
+	DtCLocationId, XmRString, sizeof (char*),
+	XtOffset (DtHelpDialogWidget, help_dialog.display.locationId),
 	XmRImmediate, (XtPointer) _DtHelpDefaultLocationId
-      }, 
+      },
 
-     {	DtNhelpPrint, 
-	DtCHelpPrint, XmRString, sizeof (char*), 
-	XtOffset (DtHelpDialogWidget, help_dialog.print.helpPrint), 
+     {	DtNhelpPrint,
+	DtCHelpPrint, XmRString, sizeof (char*),
+	XtOffset (DtHelpDialogWidget, help_dialog.print.helpPrint),
 	XmRImmediate, (XtPointer) _DtHelpDefaultHelpPrint
-      }, 
+      },
 
-     {	DtNprinter, 
-	DtCPrinter, XmRString, sizeof (char*), 
-	XtOffset (DtHelpDialogWidget, help_dialog.print.printer), 
+     {	DtNprinter,
+	DtCPrinter, XmRString, sizeof (char*),
+	XtOffset (DtHelpDialogWidget, help_dialog.print.printer),
 	XmRImmediate, (XtPointer) NULL
-      }, 
+      },
 
-     {	DtNpaperSize, 
-	DtCPaperSize, DtRDtPaperSize, sizeof (unsigned char), 
-	XtOffset (DtHelpDialogWidget, help_dialog.print.paperSize), 
+     {	DtNpaperSize,
+	DtCPaperSize, DtRDtPaperSize, sizeof (unsigned char),
+	XtOffset (DtHelpDialogWidget, help_dialog.print.paperSize),
 	XmRImmediate, (XtPointer) DtHELP_PAPERSIZE_LETTER
-      }, 
+      },
 
-     {	DtNsrchHitPrefixFont, 
-	DtCSrchHitPrefixFont, XmRString, sizeof (char *), 
-	XtOffset (DtHelpDialogWidget, help_dialog.srch.hitPrefixFont), 
+     {	DtNsrchHitPrefixFont,
+	DtCSrchHitPrefixFont, XmRString, sizeof (char *),
+	XtOffset (DtHelpDialogWidget, help_dialog.srch.hitPrefixFont),
 	XmRImmediate, (XtPointer) _DtHelpDefaultSrchHitPrefixFont
-      }, 
+      },
 
-     {	DtNhelpVolume, 
-	DtCHelpVolume, XmRString, sizeof (char*), 
-	XtOffset (DtHelpDialogWidget, help_dialog.display.helpVolume), 
+     {	DtNhelpVolume,
+	DtCHelpVolume, XmRString, sizeof (char*),
+	XtOffset (DtHelpDialogWidget, help_dialog.display.helpVolume),
 	XmRImmediate, (XtPointer) NULL
-      }, 
+      },
 
-      {	DtNmanPage, 
-	DtCManPage, XmRString, sizeof (char*), 
-	XtOffset (DtHelpDialogWidget, help_dialog.display.manPage), 
+      {	DtNmanPage,
+	DtCManPage, XmRString, sizeof (char*),
+	XtOffset (DtHelpDialogWidget, help_dialog.display.manPage),
 	XmRImmediate, (XtPointer) NULL
-      }, 
+      },
 
-      {	DtNstringData, 
-	DtCStringData, XmRString, sizeof (char*), 
-	XtOffset (DtHelpDialogWidget, help_dialog.display.stringData), 
+      {	DtNstringData,
+	DtCStringData, XmRString, sizeof (char*),
+	XtOffset (DtHelpDialogWidget, help_dialog.display.stringData),
 	XmRImmediate, (XtPointer) NULL
-      }, 
+      },
 
-      {	DtNhelpFile, 
-	DtCHelpFile, XmRString, sizeof (char*), 
-	XtOffset (DtHelpDialogWidget, help_dialog.display.helpFile), 
+      {	DtNhelpFile,
+	DtCHelpFile, XmRString, sizeof (char*),
+	XtOffset (DtHelpDialogWidget, help_dialog.display.helpFile),
 	XmRImmediate, (XtPointer) NULL
-      }, 
+      },
 
-      {	DtNtopicTitle, 
-	DtCTopicTitle, XmRString, sizeof (char*), 
-	XtOffset (DtHelpDialogWidget, help_dialog.display.topicTitleStr), 
+      {	DtNtopicTitle,
+	DtCTopicTitle, XmRString, sizeof (char*),
+	XtOffset (DtHelpDialogWidget, help_dialog.display.topicTitleStr),
 	XmRImmediate, (XtPointer) NULL
-      }, 
+      },
 
-      {	DtNhelpOnHelpVolume, 
-	DtCHelpOnHelpVolume, XmRString, sizeof (char*), 
-	XtOffset (DtHelpDialogWidget, help_dialog.help.helpOnHelpVolume), 
+      {	DtNhelpOnHelpVolume,
+	DtCHelpOnHelpVolume, XmRString, sizeof (char*),
+	XtOffset (DtHelpDialogWidget, help_dialog.help.helpOnHelpVolume),
 	XmRImmediate, (XtPointer) _DtHelpDefaultHelp4HelpVolume
-      }, 
+      },
 
-      {	DtNhelpType, 
-        DtCHelpType, DtRDtHelpType, sizeof(unsigned char), 
-	XtOffset (DtHelpDialogWidget, help_dialog.display.helpType), 
+      {	DtNhelpType,
+        DtCHelpType, DtRDtHelpType, sizeof(unsigned char),
+	XtOffset (DtHelpDialogWidget, help_dialog.display.helpType),
 	XmRImmediate, (XtPointer) DtHELP_TYPE_TOPIC
       },
 
-      {	DtNhyperLinkCallback, 
-	DtCHyperLinkCallback, XmRCallback, sizeof (XtCallbackList), 
-	XtOffset (DtHelpDialogWidget, help_dialog.display.hyperLinkCallback), 
+      {	DtNhyperLinkCallback,
+	DtCHyperLinkCallback, XmRCallback, sizeof (XtCallbackList),
+	XtOffset (DtHelpDialogWidget, help_dialog.display.hyperLinkCallback),
 	XmRImmediate, (XtPointer) NULL
-      }, 
-    
-      {	DtNcloseCallback, 
-	DtCCloseCallback, XmRCallback, sizeof (XtCallbackList), 
-	XtOffset (DtHelpDialogWidget, help_dialog.ghelp.closeCallback), 
+      },
+
+      {	DtNcloseCallback,
+	DtCCloseCallback, XmRCallback, sizeof (XtCallbackList),
+	XtOffset (DtHelpDialogWidget, help_dialog.ghelp.closeCallback),
 	XmRImmediate, (XtPointer) NULL
       },
 
@@ -445,12 +445,12 @@ externaldef( dthelpdialogwidgetclassrec) DtHelpDialogWidgetClassRec dtHelpDialog
    },
 
    {                                            /* constraint_class fields */
-      NULL,                                     /* resource list        */   
-      0,                                        /* num resources        */   
-      0,                                        /* constraint size      */   
-      NULL,                                     /* init proc            */   
-      NULL,                                     /* destroy proc         */   
-      NULL,                                     /* set values proc      */   
+      NULL,                                     /* resource list        */
+      0,                                        /* num resources        */
+      0,                                        /* constraint size      */
+      NULL,                                     /* init proc            */
+      NULL,                                     /* destroy proc         */
+      NULL,                                     /* set values proc      */
       NULL,                                     /* extension            */
    },
 
@@ -469,18 +469,18 @@ externaldef( dthelpdialogwidgetclassrec) DtHelpDialogWidgetClassRec dtHelpDialog
       _DtHelpDialogWidgetGeoMatrixCreate,      /* geo__matrix_create */
       XmInheritFocusMovedProc,                  /* focus_moved_proc */
       NULL                                      /* extension */
-   },   
+   },
 
    {                                            /* messageBox class - none */
       0                                         /* mumble */
-   }    
+   }
 };
 
 externaldef( dthelpdialogwidgetclass) WidgetClass dtHelpDialogWidgetClass
                                 = (WidgetClass) &dtHelpDialogWidgetClassRec;
 
 static char *HelpTypeNames[] =
-{   "help_type_topic", 
+{   "help_type_topic",
     "help_type_string",
     "help_type_man_page",
     "help_type_file",
@@ -489,7 +489,7 @@ static char *HelpTypeNames[] =
 
 static char *ScrollBarValueNames[] =
 {   "help_no_scrollbars",
-    "help_static_scrollbars", 
+    "help_static_scrollbars",
     "help_as_needed_scrollbars"
 };
 
@@ -511,10 +511,10 @@ static char *ExecutionValueNames[] =
 /*********************************************************************
  *
  * NavigationTypeDefault
- *    
+ *
  *
  *********************************************************************/
-static void 
+static void
 NavigationTypeDefault(
         Widget widget,
         int offset,		/* unused */
@@ -529,7 +529,7 @@ NavigationTypeDefault(
     } else {
 	navigation_type = XmTAB_GROUP;
     }
-      
+
 }
 
 
@@ -542,7 +542,7 @@ NavigationTypeDefault(
  *
  * Return Value:    Void.
  *
- * Purpose:   Register our representation types here 
+ * Purpose:   Register our representation types here
  *
  *****************************************************************************/
 static void ClassInitialize(void)
@@ -555,7 +555,7 @@ static void ClassInitialize(void)
     if (checkId == XmREP_TYPE_INVALID)
       {
         /* Register the help representation types here */
-   
+
         XmRepTypeRegister(DtRDtHelpType, HelpTypeNames, NULL,
                                       NUM_NAMES(HelpTypeNames)) ;
         XmRepTypeRegister(DtRDtScrollBarPolicy, ScrollBarValueNames, NULL,
@@ -575,12 +575,12 @@ static void ClassInitialize(void)
  * Function:	    static void ClassPartInitialize (
  *                      WidgetClass widgetClass)
  *
- * Parameters:      WidgetClass      
+ * Parameters:      WidgetClass
  *
  *
  * Return Value:    Void.
  *
- * Purpose: 	    
+ * Purpose:
  *
  *****************************************************************************/
 static void ClassPartInitialize(
@@ -589,14 +589,14 @@ static void ClassPartInitialize(
 
    return ;
 }
- 
 
 
- 
+
+
 
 /*****************************************************************************
  * Function:	    static void VariableInitialize()
- *                      
+ *
  *
  * Return Value:    Void.
  *
@@ -628,7 +628,7 @@ DtHelpDialogWidget nw)
   /*
    * Initialize the topic title variables.
    */
-  hw->help_dialog.display.count = 1;            
+  hw->help_dialog.display.count = 1;
   hw->help_dialog.display.topicTitleLbl = NULL;
   if (hw->help_dialog.display.topicTitleStr != NULL)
     hw->help_dialog.display.topicTitleStr =
@@ -653,7 +653,7 @@ DtHelpDialogWidget nw)
 
   hw->bulletin_board.auto_unmanage  = FALSE;
   hw->bulletin_board.resize_policy  = XmRESIZE_NONE;
- 
+
 
   /* Setup some of our generic widget variables */
   hw->help_dialog.print.printVolume = NULL;
@@ -669,12 +669,12 @@ DtHelpDialogWidget nw)
   /* Set our print display stuff to initial values */
   hw->help_dialog.print.printForm      = NULL;
 
-  /* Set our map flag: true after we hit our popup callback, 
+  /* Set our map flag: true after we hit our popup callback,
    * false otherwise
    */
   hw->help_dialog.display.firstTimePopupFlag = FALSE;
 
-  
+
   /* Set our history display stuff to initial vlaues */
   hw->help_dialog.history.historyWidget     = NULL;
   hw->help_dialog.history.volumeList = NULL;
@@ -682,7 +682,7 @@ DtHelpDialogWidget nw)
   hw->help_dialog.history.pHistoryListHead  = NULL;
 
   /* Set our path display stuff to initial values */
-  hw->help_dialog.history.pPathListHead     = NULL; 
+  hw->help_dialog.history.pPathListHead     = NULL;
   hw->help_dialog.history.pPathListTale     = NULL;
   hw->help_dialog.history.totalPathNodes    = 0;
 
@@ -711,7 +711,7 @@ DtHelpDialogWidget nw)
   hw->help_dialog.browser.btnBoxBackBtn    = NULL;
   hw->help_dialog.browser.btnBoxHistoryBtn = NULL;
   hw->help_dialog.browser.btnBoxIndexBtn   = NULL;
- 
+
   /* Set our parentId to a null starting value */
   hw->help_dialog.ghelp.parentId       = NULL;
 }
@@ -721,7 +721,7 @@ DtHelpDialogWidget nw)
  * Function:	    static void Initialize (
  *                      WidgetClass widgetClass)
  *
- * Parameters:      WidgetClass      
+ * Parameters:      WidgetClass
  *
  *
  * Return Value:    Void.
@@ -747,7 +747,7 @@ static void Initialize(
 
   /* Local variables */
   DtHelpListStruct *pHelpInfo;
- 
+
   /* Initialize all global variables */
   VariableInitialize(hw);
 
@@ -762,7 +762,7 @@ static void Initialize(
   /* Build the Paned Window to hold the path area and display area */
   n = 0;
   XtSetArg (args[n], XmNspacing, 10);  ++n;
-  hw->help_dialog.browser.panedWindow = 
+  hw->help_dialog.browser.panedWindow =
                  XmCreatePanedWindow ((Widget)hw, "panedWindow", args, n);
   XtManageChild (hw->help_dialog.browser.panedWindow);
 
@@ -780,14 +780,14 @@ static void Initialize(
   if (hw->help_dialog.browser.pathArea != (Widget)NULL)
     XmProcessTraversal(hw->help_dialog.browser.pathArea, XmTRAVERSE_HOME);
 
-  /* We build our display area last because we need the other UI 
+  /* We build our display area last because we need the other UI
    * components created first.
    */
-  
+
   /* Call the setup routine to build the display area */
   BuildDisplayArea(hw->help_dialog.browser.panedWindow, hw);
- 
-  
+
+
   /* Add the proper help callback to the top level shell of our dialog */
 
   /* Add all our help callbacks for each of the created widgets */
@@ -810,10 +810,10 @@ static void Initialize(
 
 /****************************************************************************
  * Function:	    static XtCallbackProc InitialPopupCB
- *                   
- *                            
  *
- * Parameters:  
+ *
+ *
+ * Parameters:
  *
  * Return Value:    Void.
  *
@@ -827,13 +827,13 @@ static void InitialPopupCB(
     XtPointer callData)
 {
    DtHelpDialogWidget hw = (DtHelpDialogWidget) clientData;
- 
+
    /* set our firstTimePopupFlag to TRUE because we map it right after
      this call */
    hw->help_dialog.display.firstTimePopupFlag = TRUE;
 
   _DtHelpResizeDisplayArea (XtParent(hw),
-			     hw->help_dialog.help.pDisplayArea, 
+			     hw->help_dialog.help.pDisplayArea,
                              hw->help_dialog.display.textRows,
                              hw->help_dialog.display.textColumns);
 
@@ -861,7 +861,7 @@ static void InitialPopupCB(
  *                           New widget.
  *                  numArgs  Number of argument/value pars in args.
  *
- * Return Value:    
+ * Return Value:
  *
  * Purpose: 	    Set the attributes of the Help Dialog widget.
 
@@ -874,6 +874,7 @@ static Boolean SetValues(
     ArgList args,
     Cardinal *numArgs)
 {
+
   DtHelpDialogWidget hw = (DtHelpDialogWidget) nw ;
   DtHelpDialogWidget current = (DtHelpDialogWidget) cw ;
   Boolean updateRequest=FALSE;
@@ -894,14 +895,14 @@ static Boolean SetValues(
     {
       /* Perform a resize on our display area */
       _DtHelpResizeDisplayArea (XtParent(hw),
-			     hw->help_dialog.help.pDisplayArea, 
+			     hw->help_dialog.help.pDisplayArea,
                              hw->help_dialog.display.textRows,
                              hw->help_dialog.display.textColumns);
     }
 
 
   /* Check DtNhelpVolume resource for change */
-  if (current->help_dialog.display.helpVolume != hw->help_dialog.display.helpVolume) 
+  if (current->help_dialog.display.helpVolume != hw->help_dialog.display.helpVolume)
     {
       hw->help_dialog.display.helpVolume = XtNewString(hw->help_dialog.display.helpVolume);
       XtFree(current->help_dialog.display.helpVolume);
@@ -914,7 +915,7 @@ static Boolean SetValues(
 
 
   /* Check DtNlocationId resource for change */
-  if (current->help_dialog.display.locationId != hw->help_dialog.display.locationId) 
+  if (current->help_dialog.display.locationId != hw->help_dialog.display.locationId)
     {
       hw->help_dialog.display.locationId = XtNewString(hw->help_dialog.display.locationId);
       XtFree(current->help_dialog.display.locationId);
@@ -927,17 +928,17 @@ static Boolean SetValues(
 
   /* Check XmhelpOnHelpVolume resource for change */
   if (current->help_dialog.help.helpOnHelpVolume !=
-                   hw->help_dialog.help.helpOnHelpVolume) 
+                   hw->help_dialog.help.helpOnHelpVolume)
     {
       hw->help_dialog.help.helpOnHelpVolume =
                            XtNewString(hw->help_dialog.help.helpOnHelpVolume);
 
       if (current->help_dialog.help.helpOnHelpVolume != _DtHelpDefaultHelp4HelpVolume)
          XtFree(current->help_dialog.help.helpOnHelpVolume);
-    }    
+    }
 
   /* Check DtNmanPage resource for change */
-  if (current->help_dialog.display.manPage != hw->help_dialog.display.manPage) 
+  if (current->help_dialog.display.manPage != hw->help_dialog.display.manPage)
     {
       hw->help_dialog.display.manPage = XtNewString(hw->help_dialog.display.manPage);
       XtFree(current->help_dialog.display.manPage);
@@ -947,7 +948,7 @@ static Boolean SetValues(
 
 
   /* Check DtNstringData resource for change */
-  if (current->help_dialog.display.stringData != hw->help_dialog.display.stringData) 
+  if (current->help_dialog.display.stringData != hw->help_dialog.display.stringData)
     {
       hw->help_dialog.display.stringData = XtNewString(hw->help_dialog.display.stringData);
       XtFree(current->help_dialog.display.stringData);
@@ -956,7 +957,7 @@ static Boolean SetValues(
     }
 
   /* Check DtNhelpFile resource for change */
-  if (current->help_dialog.display.helpFile != hw->help_dialog.display.helpFile) 
+  if (current->help_dialog.display.helpFile != hw->help_dialog.display.helpFile)
     {
       hw->help_dialog.display.helpFile = XtNewString(hw->help_dialog.display.helpFile);
       XtFree(current->help_dialog.display.helpFile);
@@ -967,7 +968,7 @@ static Boolean SetValues(
   /* Check DtNtopicTitle resource for change */
   if (hw->help_dialog.display.topicTitleStr != NULL &&
 	current->help_dialog.display.topicTitleStr !=
-					hw->help_dialog.display.topicTitleStr) 
+					hw->help_dialog.display.topicTitleStr)
     {
       /*
        * copy the string and make a XmString version.
@@ -995,7 +996,7 @@ static Boolean SetValues(
       hw->help_dialog.display.topicTitleStr = XtMalloc(sizeof(char)*(len+10));
       if (NULL != hw->help_dialog.display.topicTitleStr)
 	{
-          sprintf(hw->help_dialog.display.topicTitleStr, "%s%d", str, 
+          sprintf(hw->help_dialog.display.topicTitleStr, "%s%d", str,
 		  hw->help_dialog.display.count++);
           newTitle = TRUE;
         }
@@ -1034,7 +1035,7 @@ static Boolean SetValues(
  *
  * Parameters:      w       Specifies the widget to be  destroyed.
  *
- * Return Value:    
+ * Return Value:
  *
  * Purpose: 	    Destroy any internally malloced memory.
  *
@@ -1044,13 +1045,13 @@ static void Destroy(
 {
    DtHelpDialogWidget hw = (DtHelpDialogWidget) w;
 
-     /* This routine will clean up all malloc'ed stuff in our instance 
+     /* This routine will clean up all malloc'ed stuff in our instance
       * structure.  It does not remove any callbacks or delete any of the
       * widgets created in this instance of the help dialog.
       */
 
      CleanUpHelpDialog((Widget) hw, DtCLEAN_FOR_DESTROY);
- 
+
      /* Remove any of the callbacks added to the help dialog ??? */
 
 
@@ -1058,19 +1059,19 @@ static void Destroy(
 
 
 /*****************************************************************************
- * Function:	    static void MenuBarFix( 
+ * Function:	    static void MenuBarFix(
  *                            XmGeoMatrix geoSpec,
  *                            int action,
  *                            XmGeoRowLayout layoutPtr,
  *                            XmKidGeometry rowPtr)
- *                            
- *                         
  *
- * Parameters:   
  *
- * Return Value:    
  *
- * Purpose: 	  This routine is a fixup routine which can be used for rows 
+ * Parameters:
+ *
+ * Return Value:
+ *
+ * Purpose: 	  This routine is a fixup routine which can be used for rows
  *                which consist of a single MenuBar RowColumn.  The effect of
  *                this routine is to have the RowColumn ignore the margin
  *                width and height.
@@ -1119,7 +1120,7 @@ static void MenuBarFix(
             }
         }
     return ;
-} 
+}
 
 
 
@@ -1127,11 +1128,11 @@ static void MenuBarFix(
  * Function:	     XmGeoMatrix _DtHelpDialogWidgeGeoMatrixCreate(
  *                           Widget wid,
  *                           Widget instigator,
- *                           XtWidgetGeometry *desired) 
+ *                           XtWidgetGeometry *desired)
  *
- * Parameters:   
+ * Parameters:
  *
- * Return Value:    
+ * Return Value:
  *
  * Purpose: 	  This routine is responsible for all the positioning of the
  *                the internal Help Dialog widgets.
@@ -1142,7 +1143,7 @@ XmGeoMatrix _DtHelpDialogWidgetGeoMatrixCreate(
     Widget instigator,
     XtWidgetGeometry *desired )
 {
- 
+
 
              DtHelpDialogWidget hw = (DtHelpDialogWidget) wid ;
              XmGeoMatrix     geoSpec ;
@@ -1154,7 +1155,7 @@ XmGeoMatrix _DtHelpDialogWidgetGeoMatrixCreate(
     geoSpec->instigator = (Widget) instigator ;
     if(    desired    )
     {   geoSpec->instig_request = *desired ;
-        } 
+        }
     geoSpec->margin_w = hw->help_dialog.ghelp.marginWidth
                         + hw->manager.shadow_thickness ;
     geoSpec->margin_h = hw->help_dialog.ghelp.marginHeight
@@ -1166,24 +1167,24 @@ XmGeoMatrix _DtHelpDialogWidgetGeoMatrixCreate(
 
     /* Menubar setup stuff */
       if( _XmGeoSetupKid( boxPtr, hw->help_dialog.menu.menuBar))
-       {   
+       {
          layoutPtr->fix_up = MenuBarFix;
-         boxPtr += 2;     
-          ++layoutPtr; 
-       } 
-     
-    
+         boxPtr += 2;
+          ++layoutPtr;
+       }
+
+
     /* Display area setup stuff */
     if( _XmGeoSetupKid(boxPtr, hw->help_dialog.browser.panedWindow))
-    {   
+    {
         layoutPtr->space_above = 0;
         layoutPtr->stretch_height = TRUE ;
         layoutPtr->min_height = 100 ;
         boxPtr += 2 ;       /* For new row, add 2. */
         ++layoutPtr ;       /* For new row. */
-        } 
+        }
 
- 
+
 
     layoutPtr->space_above = hw->help_dialog.ghelp.marginWidth;
     layoutPtr->end = TRUE ;        /* Mark the last row. */
@@ -1198,11 +1199,11 @@ XmGeoMatrix _DtHelpDialogWidgetGeoMatrixCreate(
  *                          XmGeoMatrix geoSpec)
  *
  *
- * Parameters:   
+ * Parameters:
  *
- * Return Value:    
+ * Return Value:
  *
- * Purpose: 	  
+ * Purpose:
  *
  ****************************************************************************/
 Boolean _DtHelpDialogWidgetNoGeoRequest(XmGeoMatrix geoSpec)
@@ -1210,9 +1211,9 @@ Boolean _DtHelpDialogWidgetNoGeoRequest(XmGeoMatrix geoSpec)
 
   if(    BB_InSetValues( geoSpec->composite)
       && (XtClass( geoSpec->composite) == dtHelpDialogWidgetClass)    )
-    {   
+    {
       return( TRUE) ;
-    } 
+    }
   return( FALSE) ;
 }
 
@@ -1221,13 +1222,13 @@ Boolean _DtHelpDialogWidgetNoGeoRequest(XmGeoMatrix geoSpec)
 
 /*****************************************************************************
  * Function:	   static void DisplayTopLevelCB(
- *                            Widget w,   
+ *                            Widget w,
  *                            XtPointer client_data,
  *                            XtPointer call_data);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
+ *
+ * Return Value:
  *
  * Purpose: 	   causes the top level topic to be displayed.
  *
@@ -1239,29 +1240,29 @@ static void  DisplayTopLevelCB(
 {
 
    DtHelpDialogWidget	hw = (DtHelpDialogWidget) client_data;
-    
+
    /* Display the top level topic */
    if (hw->help_dialog.help.topLevelId != NULL)
      _DtHelpUpdateDisplayArea(hw->help_dialog.help.topLevelId, hw, TRUE,
                            DtHISTORY_AND_JUMP, DtHELP_TYPE_TOPIC);
    else
      _DtHelpUpdateDisplayArea(NULL, hw, TRUE, DtHISTORY_AND_JUMP,
-                           DtHELP_TYPE_TOPIC); 
+                           DtHELP_TYPE_TOPIC);
 
 }
 
-  
+
 
 
 /*****************************************************************************
  * Function:	   extern void _DtHelpDisplayBackCB(
- *                            Widget w,   
+ *                            Widget w,
  *                            XtPointer client_data,
  *                            XtPointer call_data);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
+ *
+ * Return Value:
  *
  * Purpose: 	   This routine will cause the top element in the jump
  *                 stack to be displayed.
@@ -1285,13 +1286,13 @@ void   _DtHelpDisplayBackCB(
 
 /*****************************************************************************
  * Function:	   extern void _DtHelpDuplicateWindowCB(
- *                             Widget w,   
+ *                             Widget w,
  *                             XtPointer client_data,
  *                             XtPointer call_data);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
+ *
+ * Return Value:
  *
  * Purpose: 	   This routine creates a new help widget by forcing the
  *                 equivelent of a Jump New hyper text call
@@ -1304,12 +1305,12 @@ void  _DtHelpDuplicateWindowCB(
 {
    DtHelpDialogWidget	hw = (DtHelpDialogWidget) clientData;
    DtHelpDialogCallbackStruct callDataStruct;
-  
 
-  /* Setup the DtHelpHyperProcStruct to pass back 
+
+  /* Setup the DtHelpHyperProcStruct to pass back
    * to the client as callData
    */
-        
+
     _DtHelpTurnOnHourGlass(XtParent(hw));
 
     if (hw->help_dialog.display.hyperLinkCallback != NULL)
@@ -1332,26 +1333,26 @@ void  _DtHelpDuplicateWindowCB(
     {   /* The application did not register a hypertext callback so
          *  we must generate the proper warning message and continue!
          */
-              XmeWarning((Widget)hw, (char*) HDMessage6); 
+              XmeWarning((Widget)hw, (char*) HDMessage6);
     }
 
-    _DtHelpTurnOffHourGlass(XtParent(hw));       
+    _DtHelpTurnOffHourGlass(XtParent(hw));
 
 }
- 
+
 
 
 /*****************************************************************************
  * Function:	   static void CopyTextCB(
- *                            Widget w,   
+ *                            Widget w,
  *                            XtPointer client_data,
  *                            XtPointer call_data);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
  *
- * Purpose: 	   This routine will cause the display area to copy text to 
+ * Return Value:
+ *
+ * Purpose: 	   This routine will cause the display area to copy text to
  *                 the clip-board.
  *
  ****************************************************************************/
@@ -1373,13 +1374,13 @@ static void  CopyTextCB(
 
 /*****************************************************************************
  * Function:	   static void ProcessBMenuBackCB(
- *                            Widget w,   
+ *                            Widget w,
  *                            XtPointer client_data,
  *                            XtPointer call_data);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
+ *
+ * Return Value:
  *
  * Purpose: 	   This routine will cause the top element in the jump
  *                 stack to be displayed, if their is a top element.
@@ -1398,20 +1399,20 @@ static void  ProcessBMenuBackCB(
    XtManageChild(hw->help_dialog.menu.popupMenu);
 
 }
- 
+
 
 
 /*****************************************************************************
  * Function:	   extern void  _DtHelpDisplayHistoryCB(
- *                            Widget w,   
+ *                            Widget w,
  *                            XtPointer client_data,
  *                            XtPointer call_data);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
  *
- * Purpose: 	   This routine will cause the history dialog to be 
+ * Return Value:
+ *
+ * Purpose: 	   This routine will cause the history dialog to be
  *                 posted.
  *
  ****************************************************************************/
@@ -1422,15 +1423,15 @@ void   _DtHelpDisplayHistoryCB(
 {
 
    DtHelpDialogWidget	hw = (DtHelpDialogWidget) client_data;
- 
+
 
    XmUpdateDisplay((Widget) hw);
    _DtHelpTurnOnHourGlass(XtParent(hw));
 
    _DtHelpDisplayHistoryInfo((Widget)hw);
 
-   _DtHelpTurnOffHourGlass(XtParent(hw));      
-  
+   _DtHelpTurnOffHourGlass(XtParent(hw));
+
 }
 
 
@@ -1440,15 +1441,15 @@ void   _DtHelpDisplayHistoryCB(
 
 /*****************************************************************************
  * Function:	       void  _DtHelpDisplayBrowserHomeCB(
- *                            Widget w,   
+ *                            Widget w,
  *                            XtPointer client_data,
  *                            XtPointer call_data);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
  *
- * Purpose: 	   This routine will cause the top level of the browser.hv 
+ * Return Value:
+ *
+ * Purpose: 	   This routine will cause the top level of the browser.hv
  *                 help volume to be displayed.
  *
  ****************************************************************************/
@@ -1465,11 +1466,11 @@ void   _DtHelpDisplayBrowserHomeCB(
     * ??? if so, we will never have a match.
     */
    if (   hw->help_dialog.display.helpVolume == NULL
-       || strstr (hw->help_dialog.display.helpVolume, DtBROWSER_NAME) == NULL) 
+       || strstr (hw->help_dialog.display.helpVolume, DtBROWSER_NAME) == NULL)
      {
        XtFree(hw->help_dialog.display.helpVolume);
        hw->help_dialog.display.helpVolume  = XtNewString(DtBROWSER_NAME);
-     
+
        /* Set our help volume flag so we open the proper volume */
        hw->help_dialog.ghelp.volumeFlag         = FALSE;
      }
@@ -1478,7 +1479,7 @@ void   _DtHelpDisplayBrowserHomeCB(
    hw->help_dialog.display.locationId = XtNewString(DtBROWSER_HOME);
    hw->help_dialog.display.helpType = DtHELP_TYPE_TOPIC;
 
-   _DtHelpSetupDisplayType(hw, TRUE, DtHISTORY_AND_JUMP);   
+   _DtHelpSetupDisplayType(hw, TRUE, DtHISTORY_AND_JUMP);
 }
 
 
@@ -1488,15 +1489,15 @@ void   _DtHelpDisplayBrowserHomeCB(
 
 /*****************************************************************************
  * Function:	       void _DtHelpDisplayIndexCB(
- *                            Widget w,   
+ *                            Widget w,
  *                            XtPointer client_data,
  *                            XtPointer call_data);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
  *
- * Purpose: 	   This routine will cause the index dialog to be 
+ * Return Value:
+ *
+ * Purpose: 	   This routine will cause the index dialog to be
  *                 posted.
  *
  ****************************************************************************/
@@ -1507,16 +1508,16 @@ void  _DtHelpDisplayIndexCB(
 {
 
    DtHelpDialogWidget	hw = (DtHelpDialogWidget) client_data;
-    
-   
+
+
    XmUpdateDisplay((Widget) hw);
    _DtHelpTurnOnHourGlass(XtParent(hw));
 
    /* display the index search dialog */
    _DtHelpGlobSrchDisplayDialog((Widget)hw,NULL,hw->help_dialog.display.helpVolume);
-   
-   _DtHelpTurnOffHourGlass(XtParent(hw));       
-      
+
+   _DtHelpTurnOffHourGlass(XtParent(hw));
+
 }
 
 
@@ -1524,15 +1525,15 @@ void  _DtHelpDisplayIndexCB(
 
 /*****************************************************************************
  * Function:	   static void DisplayPrintCB(
- *                            Widget w,   
+ *                            Widget w,
  *                            XtPointer client_data,
  *                            XtPointer call_data);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
  *
- * Purpose: 	   This routine will cause the history dialog to be 
+ * Return Value:
+ *
+ * Purpose: 	   This routine will cause the history dialog to be
  *                 posted.
  *
  ****************************************************************************/
@@ -1546,12 +1547,12 @@ static void  DisplayPrintCB(
 
   XmUpdateDisplay((Widget) hw);
   _DtHelpTurnOnHourGlass(XtParent(hw));
-  
+
   /* display the print dialog */
   _DtHelpDisplayPrintDialog((Widget) hw,&hw->help_dialog.print,
 		&hw->help_dialog.display,&hw->help_dialog.help);
 
-  _DtHelpTurnOffHourGlass(XtParent(hw));      
+  _DtHelpTurnOffHourGlass(XtParent(hw));
 }
 
 
@@ -1583,7 +1584,7 @@ Widget DtCreateHelpDialog(
 {
     Widget w;
     _DtHelpWidgetToAppContext(parent);
-    
+
     _DtHelpAppLock(app);
     w = XmeCreateClassDialog (dtHelpDialogWidgetClass, parent, name, al, ac);
 
@@ -1623,15 +1624,15 @@ int _DtHelpFilterExecCmdCB(
 				 hw->help_dialog.display.helpVolume,
 				 _DtHelpFileSuffixList, False, R_OK);
 
-     return _DtHelpFilterExecCmd((Widget) hw, cmdStr, 
-                 hw->help_dialog.display.executionPolicy, 
+     return _DtHelpFilterExecCmd((Widget) hw, cmdStr,
+                 hw->help_dialog.display.executionPolicy,
                  True, &hw->help_dialog.help, ret_filteredCmdStr, hv_path);
 }
 
 
 /*****************************************************************************
  * Function:	    void BuildDisplayArea(Widget parent,
- *                                 DtHelpDialogWidget nw);  
+ *                                 DtHelpDialogWidget nw);
  *
  *
  * Parameters:      parent      Specifies the widget ID of the help dialog you
@@ -1647,7 +1648,7 @@ static void BuildDisplayArea(
     Widget parent,
     DtHelpDialogWidget nw)
 {
-  Arg	args[2];	
+  Arg	args[2];
   int   n;
   XmFontList  defaultList;
   DtHelpDialogWidget hw = (DtHelpDialogWidget) nw ;
@@ -1679,7 +1680,7 @@ static void BuildDisplayArea(
 
   /* Determin what type of info we are going to display */
   _DtHelpSetupDisplayType(hw, TRUE, DtHISTORY_AND_JUMP);
-  
+
 }
 
 
@@ -1689,7 +1690,7 @@ static void BuildDisplayArea(
 
 /*****************************************************************************
  * Function:	    void _DtHelpSetupDisplayType(DtHelpDialogWidget nw,
- *                                            int updateType);  
+ *                                            int updateType);
  *
  *
  * Parameters:      nw          Specifies the current help dialog widget.
@@ -1716,9 +1717,9 @@ void _DtHelpSetupDisplayType(
    char                *volumeTitle;
    DtTopicListStruct  *tmpPtr;
    Boolean             adjustTopicTitle=TRUE;
-                      /* This is a local flag that we use to determine 
-                       * if we need to re-adjust the topic volume title 
-                       * at the end of this 
+                      /* This is a local flag that we use to determine
+                       * if we need to re-adjust the topic volume title
+                       * at the end of this
                        *  Function: True == Modify title, False == leave alone.
                        */
    Boolean didWeHaveAnError=FALSE;
@@ -1736,7 +1737,7 @@ void _DtHelpSetupDisplayType(
    if (hw->help_dialog.backtr.pJumpListHead != NULL)
      {
        tmpPtr = hw->help_dialog.backtr.pJumpListHead;
-       tmpPtr->scrollPosition = 
+       tmpPtr->scrollPosition =
                      _DtHelpGetScrollbarValue(hw->help_dialog.help.pDisplayArea);
      }
 
@@ -1746,7 +1747,7 @@ void _DtHelpSetupDisplayType(
     */
    XtSetSensitive(hw->help_dialog.menu.topBtn, FALSE);
    XtSetSensitive(hw->help_dialog.menu.popupTopBtn, FALSE);
-	
+
 
    switch (hw->help_dialog.display.helpType)
     {
@@ -1762,7 +1763,7 @@ void _DtHelpSetupDisplayType(
 					&hw->help_dialog.display,
 					&hw->help_dialog.help,
 					&hw->help_dialog.print);
-  
+
         /* If the developer gave us a valid Access Path then we can continue
          * else, we will do nothing
          */
@@ -1773,16 +1774,16 @@ void _DtHelpSetupDisplayType(
              if ( FALSE == hw->help_dialog.ghelp.volumeFlag)
                  _DtHelpGlobSrchUpdateCurVol((Widget) hw);
 
-       
+
              /* We now set this to true after we update our volumeTitle
               * value in _DtHelpUpdateDisplayArea.
               */
-          
-             /* hw->help_dialog.ghelp.volumeFlag         = TRUE;*/
-#endif         
 
-             /* Setup all the proper lists and display area with the 
-              * topic string 
+             /* hw->help_dialog.ghelp.volumeFlag         = TRUE;*/
+#endif
+
+             /* Setup all the proper lists and display area with the
+              * topic string
               */
              templocationId = XtNewString(hw->help_dialog.display.locationId);
 
@@ -1800,7 +1801,7 @@ void _DtHelpSetupDisplayType(
                   didWeHaveAnError=TRUE;
                   tmpError = XtNewString((char *)_DTGETMESSAGE(2, 60,
                             "No help volume specified."));
-                  _DtHelpDisplayFormatError(hw->help_dialog.help.pDisplayArea, 
+                  _DtHelpDisplayFormatError(hw->help_dialog.help.pDisplayArea,
                             (Widget)hw, tmpError, NULL);
 
                   _DtHelpUpdateJumpList(tmpError, DtHELP_TYPE_DYNAMIC_STRING,
@@ -1826,7 +1827,7 @@ void _DtHelpSetupDisplayType(
                                         "Help Volume:"));
                  tmpError = XtMalloc(strlen(tmpMessage) +
                                      strlen(locTitle) +
-                                     strlen(volumeTitle) + 
+                                     strlen(volumeTitle) +
                                      strlen(hw->help_dialog.display.locationId) +
                                      strlen(hw->help_dialog.display.helpVolume) + 4);
                  (void) strcpy(tmpError, tmpMessage);
@@ -1841,7 +1842,7 @@ void _DtHelpSetupDisplayType(
                  /* Set current path area to null by giving it a null id */
                  _DtHelpUpdatePathArea(NULL, hw);
 
-                 _DtHelpDisplayFormatError(hw->help_dialog.help.pDisplayArea, 
+                 _DtHelpDisplayFormatError(hw->help_dialog.help.pDisplayArea,
                                         (Widget)hw, tmpError, NULL);
 
                  _DtHelpUpdateJumpList(tmpError,DtHELP_TYPE_DYNAMIC_STRING,
@@ -1853,16 +1854,16 @@ void _DtHelpSetupDisplayType(
                  XtFree(tmpMessage);
                  XtFree(locTitle);
                  XtFree(volumeTitle);
-  
+
 	       }
-          } 
-      
+          }
+
         break;
 
       case DtHELP_TYPE_STRING:
 
 
-         _DtHelpUpdatePathArea(NULL, hw); 
+         _DtHelpUpdatePathArea(NULL, hw);
 
         /* Set the string to the current help dialog */
         status = _DtHelpFormatAsciiString(hw->help_dialog.help.pDisplayArea,
@@ -1870,18 +1871,18 @@ void _DtHelpSetupDisplayType(
                                        &topicHandle);
         if (status >= VALID_STATUS)
           {
-     
+
             /* Update the History and Jump Lists */
             if (updateType == DtHISTORY_AND_JUMP)
               _DtHelpUpdateJumpList(hw->help_dialog.display.stringData,
                                  DtHELP_TYPE_STRING, (Widget) hw);
-        
-  
+
+
             _DtHelpUpdateHistoryList(hw->help_dialog.display.stringData,
                               DtHELP_TYPE_STRING, TRUE, (Widget)hw);
-            
+
             _DtHelpDisplayAreaSetList (hw->help_dialog.help.pDisplayArea,
-                                    topicHandle, FALSE, 
+                                    topicHandle, FALSE,
                                     hw->help_dialog.backtr.scrollPosition);
           }
         else
@@ -1892,8 +1893,8 @@ void _DtHelpSetupDisplayType(
 
             _DtHelpDisplayFormatError(hw->help_dialog.help.pDisplayArea, (Widget)hw,
                                    tmpError, (char*)HDMessage0);
-          
-            _DtHelpUpdateJumpList(tmpError, DtHELP_TYPE_DYNAMIC_STRING, 
+
+            _DtHelpUpdateJumpList(tmpError, DtHELP_TYPE_DYNAMIC_STRING,
                                (Widget) hw);
             hw->help_dialog.display.helpType = DtHELP_TYPE_DYNAMIC_STRING;
             hw->help_dialog.display.stringData = XtNewString(tmpError);
@@ -1911,15 +1912,15 @@ void _DtHelpSetupDisplayType(
 				    hw->help_dialog.help.pDisplayArea,
 				    hw->help_dialog.display.stringData,
                                     &topicHandle);
-            
+
         if (status >= VALID_STATUS)
           {
-     
+
             /* Update the History and Jump Lists */
             if (updateType == DtHISTORY_AND_JUMP)
               _DtHelpUpdateJumpList(hw->help_dialog.display.stringData,
                                  DtHELP_TYPE_DYNAMIC_STRING, (Widget) hw);
-        
+
             _DtHelpUpdateHistoryList(hw->help_dialog.display.stringData,
                               DtHELP_TYPE_DYNAMIC_STRING, TRUE, (Widget)hw);
             _DtHelpDisplayAreaSetList (hw->help_dialog.help.pDisplayArea,
@@ -1932,9 +1933,9 @@ void _DtHelpSetupDisplayType(
             tmpError = XtNewString((char *)_DTGETMESSAGE(2, 51,
                   "Dynamic string data could not be formatted."));
 
-            _DtHelpUpdateJumpList(tmpError, DtHELP_TYPE_DYNAMIC_STRING, 
+            _DtHelpUpdateJumpList(tmpError, DtHELP_TYPE_DYNAMIC_STRING,
                                (Widget) hw);
-        
+
             hw->help_dialog.display.helpType = DtHELP_TYPE_DYNAMIC_STRING;
             hw->help_dialog.display.stringData = XtNewString(tmpError);
 
@@ -1952,7 +1953,7 @@ void _DtHelpSetupDisplayType(
         status = _DtHelpFormatManPage(
 				hw->help_dialog.help.pDisplayArea,
 				hw->help_dialog.display.manPage, &topicHandle);
-      
+
         if (status >= VALID_STATUS)
          {
             /* Update the History and Jump Lists */
@@ -1960,11 +1961,11 @@ void _DtHelpSetupDisplayType(
             if (updateType == DtHISTORY_AND_JUMP)
               _DtHelpUpdateJumpList(hw->help_dialog.display.manPage,
                                  DtHELP_TYPE_MAN_PAGE, (Widget)hw);
-    
+
               _DtHelpUpdateHistoryList(hw->help_dialog.display.manPage,
                                DtHELP_TYPE_MAN_PAGE, TRUE, (Widget)hw);
               _DtHelpDisplayAreaSetList (hw->help_dialog.help.pDisplayArea,
-                                      topicHandle, FALSE, 
+                                      topicHandle, FALSE,
                                       hw->help_dialog.backtr.scrollPosition);
           }
         else
@@ -1988,11 +1989,11 @@ void _DtHelpSetupDisplayType(
       case DtHELP_TYPE_FILE:
 
         _DtHelpUpdatePathArea(NULL, hw);
-      
+
         /* Set the string to the current help dialog */
         status = _DtHelpFormatAsciiFile(hw->help_dialog.help.pDisplayArea,
 				hw->help_dialog.display.helpFile, &topicHandle);
-           
+
         if (status >= VALID_STATUS)
           {
             /* Update the History and Jump Lists */
@@ -2000,11 +2001,11 @@ void _DtHelpSetupDisplayType(
             if (updateType == DtHISTORY_AND_JUMP)
               _DtHelpUpdateJumpList(hw->help_dialog.display.helpFile,
                                  DtHELP_TYPE_FILE,(Widget)hw);
-    
+
             _DtHelpUpdateHistoryList(hw->help_dialog.display.helpFile,
                                   DtHELP_TYPE_FILE, TRUE, (Widget)hw);
             _DtHelpDisplayAreaSetList (hw->help_dialog.help.pDisplayArea,
-                                    topicHandle, FALSE, 
+                                    topicHandle, FALSE,
                                     hw->help_dialog.backtr.scrollPosition);
           }
         else
@@ -2013,7 +2014,7 @@ void _DtHelpSetupDisplayType(
              tmpError = XtNewString((char *)_DTGETMESSAGE(2, 53,
                                    "Text file data could not be formatted. The requested text file is either not present, or corrupt."));
 
-             _DtHelpUpdateJumpList(tmpError, DtHELP_TYPE_DYNAMIC_STRING, 
+             _DtHelpUpdateJumpList(tmpError, DtHELP_TYPE_DYNAMIC_STRING,
                                 (Widget) hw);
 
              hw->help_dialog.display.helpType = DtHELP_TYPE_DYNAMIC_STRING;
@@ -2028,7 +2029,7 @@ void _DtHelpSetupDisplayType(
         break;
 
 
-      default:  
+      default:
 
         /* ERROR-MESSAGE */
         /* This means the user used the wrong help type */
@@ -2036,7 +2037,7 @@ void _DtHelpSetupDisplayType(
         tmpError = XtNewString((char *)_DTGETMESSAGE(2, 80,
                               "The specified help type is invalid."));
 
-        _DtHelpUpdateJumpList(tmpError, DtHELP_TYPE_DYNAMIC_STRING, 
+        _DtHelpUpdateJumpList(tmpError, DtHELP_TYPE_DYNAMIC_STRING,
                            (Widget) hw);
 
         hw->help_dialog.display.helpType = DtHELP_TYPE_DYNAMIC_STRING;
@@ -2054,7 +2055,7 @@ void _DtHelpSetupDisplayType(
 
    if ((adjustTopicTitle == TRUE) && (didWeHaveAnError == FALSE))
      {
-       /* We have a valid HelpType other than a volume and 
+       /* We have a valid HelpType other than a volume and
        * no error condition, so lets update the Topics title.
        */
        XtSetArg(args[0], XmNlabelString, hw->help_dialog.display.topicTitleLbl);
@@ -2067,7 +2068,7 @@ void _DtHelpSetupDisplayType(
        labelString = XmStringCreateLocalized(" ");
        XtSetArg (args[n], XmNlabelString, labelString);	            n++;
        XtSetValues (hw->help_dialog.browser.volumeLabel, args, n);
-       XmStringFree(labelString); 
+       XmStringFree(labelString);
        if (hw->help_dialog.history.topicList != NULL)
          XmListDeselectAllItems(hw->help_dialog.history.topicList);
        if (hw->help_dialog.history.volumeList != NULL)
@@ -2095,8 +2096,8 @@ void _DtHelpSetupDisplayType(
 
 /*****************************************************************************
  * Function:	    void _DtHelpUpdateDisplayArea(char *locationId,
- *                             DtHelpDialogWidget   nw,  
- *                             int                   listUpdateType, 
+ *                             DtHelpDialogWidget   nw,
+ *                             int                   listUpdateType,
  *                             int                   topicUpdateType);
  *
  *
@@ -2108,7 +2109,7 @@ void _DtHelpSetupDisplayType(
  * Return Value:    Void.
  *
  * Purpose: 	    Updates the Display area with a new Cache Creek Topic.
- *                  
+ *
  *****************************************************************************/
 void _DtHelpUpdateDisplayArea(
     char *locationId,
@@ -2126,11 +2127,11 @@ void _DtHelpUpdateDisplayArea(
    XmString      labelString;
    Arg		 args[10];
    int      	 n=0;
-	
+
    DtHelpDialogWidget hw = (DtHelpDialogWidget) nw;
-  
+
    _DtHelpTurnOnHourGlass(XtParent(hw));
-   
+
     validlocationId = False;  /* default */
 
     /* If we have a null idString, assign the top level topic to it */
@@ -2143,20 +2144,20 @@ void _DtHelpUpdateDisplayArea(
     if (locationId != NULL)
     {
        XmUpdateDisplay((Widget)hw);
-        
+
        /* format the initial locationId info to display */
        status = _DtHelpFormatTopic (
         	    hw->help_dialog.help.pDisplayArea,
-        	    hw->help_dialog.display.volumeHandle, 
+        	    hw->help_dialog.display.volumeHandle,
         	    locationId,
         	    True,
         	    &topicHandle);
-        
+
        /* unless locationId not found, the topic is valid */
-       if (status != -2) 
+       if (status != -2)
            validlocationId = True;
     }  /* if existing loc id, try to format it */
-                
+
     if (status == 0)  /* success */
     {
         if (hw->help_dialog.ghelp.volumeFlag == FALSE)
@@ -2168,36 +2169,36 @@ void _DtHelpUpdateDisplayArea(
 	   XtGetValues(hw->help_dialog.browser.volumeLabel, args, 1);
 
            /* We have a new volume, so update the volume title */
-        
+
 	   _DtHelpFormatVolumeTitle(hw->help_dialog.help.pDisplayArea,
 					hw->help_dialog.display.volumeHandle,
 					&labelString, &fontList, &mod);
-        
+
            if(labelString == NULL && NULL != hw->help_dialog.display.helpVolume)
         	labelString = XmStringCreateLocalized(
 					hw->help_dialog.display.helpVolume);
-        
+
 	   if (NULL != labelString)
 	     {
 	       n = 0;
                XtSetArg (args[n], XmNlabelString, labelString);	n++;
 	       if (mod == True)
-	         { XtSetArg (args[n], XmNfontList, fontList);	n++; }
+	         { XtSetArg (args[n], XmNfontList, &fontList);	n++; }
                XtSetValues (hw->help_dialog.browser.volumeLabel, args, n);
-               XmStringFree(labelString); 
+               XmStringFree(labelString);
 	     }
 
 	   if (True == mod)
 	       XmFontListFree(fontList);
 
            /* Update our volumeFlag because we know that its we have just,
-            * opened a new volume. It will get set to false when we need 
+            * opened a new volume. It will get set to false when we need
             * to process a different help volume, and remain true while
             * processing the current help volume.
            */
            hw->help_dialog.ghelp.volumeFlag = TRUE;
        }  /* if volumeFlag == False */
-        
+
        /* Update our history and jump lists */
        if (listUpdateType == DtHISTORY_AND_JUMP)
        {
@@ -2210,11 +2211,11 @@ void _DtHelpUpdateDisplayArea(
 	 					 vol_changed, (Widget)hw);
        else if (listUpdateType == DtJUMP_ONLY)
            _DtHelpUpdateJumpList(locationId,  topicUpdateType,(Widget)hw);
-        
+
        /* Adjust our "Top Level" browser home buttons */
        if (hw->help_dialog.browser.showTopLevelBtn == TRUE)
        {
-           if (strstr (hw->help_dialog.display.helpVolume, DtBROWSER_NAME) != NULL) 
+           if (strstr (hw->help_dialog.display.helpVolume, DtBROWSER_NAME) != NULL)
            {
 		/* FIX: get top topic of the current volume & compare with locationId */
                if (strcmp (hw->help_dialog.display.locationId, DtBROWSER_HOME)== 0)
@@ -2225,7 +2226,7 @@ void _DtHelpUpdateDisplayArea(
             else
         	XtSetSensitive(hw->help_dialog.browser.btnBoxTopLevelBtn, TRUE);
        }  /* if showTopLevelBtn */
-        
+
        /* Check to see if we are going to display the top level is so */
        if (_DtHelpCeIsTopTopic(hw->help_dialog.display.volumeHandle,
                                hw->help_dialog.display.locationId) == 0)
@@ -2238,32 +2239,32 @@ void _DtHelpUpdateDisplayArea(
            XtSetSensitive(hw->help_dialog.menu.topBtn, TRUE);
            XtSetSensitive(hw->help_dialog.menu.popupTopBtn, TRUE);
        }
-        
-       /* Change the widget instance record locationId field to 
+
+       /* Change the widget instance record locationId field to
         *  represent the new locationId being desplayed.
         */
        XtFree(hw->help_dialog.display.locationId);
        hw->help_dialog.display.locationId = XtNewString(locationId);
-        
-    
+
+
        /* Update the current path area for the given topic */
        _DtHelpUpdatePathArea(hw->help_dialog.display.locationId, hw);
-     
+
        _DtHelpDisplayAreaSetList (hw->help_dialog.help.pDisplayArea,
         	 topicHandle, FALSE, hw->help_dialog.backtr.scrollPosition);
 
     }  /* if status == 0 */
-        
-    if (status < 0) 
+
+    if (status < 0)
     {
         /* Invalid idString */
 
         /* Clear the current volume title label */
         /* ??? Is this the best way to null out a label gadget ??? */
         labelString = XmStringCreateLocalized(" ");
-        XtSetArg (args[n], XmNlabelString, labelString);	
+        XtSetArg (args[n], XmNlabelString, labelString);
         XtSetValues (hw->help_dialog.browser.volumeLabel, args, 1);
-        XmStringFree(labelString); 
+        XmStringFree(labelString);
 
         /* Clear our history dialog selected items */
         if (hw->help_dialog.history.topicList != NULL)
@@ -2274,15 +2275,15 @@ void _DtHelpUpdateDisplayArea(
         /* Set current path area to null by giving it a null idStirng */
         _DtHelpUpdatePathArea(NULL, hw);
 
-        /* De-sensatize our buttons, they do not work 
+        /* De-sensatize our buttons, they do not work
          * with out valid topics.
          */
-      
+
         XtSetSensitive(hw->help_dialog.menu.topBtn, FALSE);
         XtSetSensitive(hw->help_dialog.menu.popupTopBtn, FALSE);
 
         if (hw->help_dialog.history.pHistoryListHead == NULL)
-        {    
+        {
            XtSetSensitive(hw->help_dialog.menu.historyBtn, FALSE);
            XtSetSensitive(hw->help_dialog.browser.btnBoxHistoryBtn, FALSE);
         }
@@ -2293,18 +2294,18 @@ void _DtHelpUpdateDisplayArea(
            XtSetSensitive(hw->help_dialog.browser.btnBoxHistoryBtn, TRUE);
         }
 
-        if (hw->help_dialog.backtr.pJumpListHead != NULL)    
+        if (hw->help_dialog.backtr.pJumpListHead != NULL)
         {
            XtSetSensitive(hw->help_dialog.menu.backBtn, TRUE);
            XtSetSensitive(hw->help_dialog.menu.popupBackBtn, TRUE);
            XtSetSensitive(hw->help_dialog.browser.btnBoxBackBtn, TRUE);
-        } 
+        }
 
-        
+
         /* Determin the proper error message to give */
         if (!validlocationId)
         {
-      
+
             if (locationId == NULL)
             {
                  tmpMsg = (char *)_DTGETMESSAGE(2, 59,
@@ -2315,7 +2316,7 @@ void _DtHelpUpdateDisplayArea(
             {
                  tmpMsg = (char *)_DTGETMESSAGE(2, 55,
                                  "Nonexistent location ID:");
-                 userErrorStr = XtMalloc(strlen(tmpMsg) + 
+                 userErrorStr = XtMalloc(strlen(tmpMsg) +
                                   strlen(hw->help_dialog.display.locationId)+ 2);
                  (void) strcpy(userErrorStr, tmpMsg);
                  (void) strcat(userErrorStr, " ");
@@ -2344,7 +2345,7 @@ void _DtHelpUpdateDisplayArea(
         XtFree(sysErrorStr);
     }   /* if (status < 0) */
 
-    _DtHelpTurnOffHourGlass(XtParent(hw));          
+    _DtHelpTurnOffHourGlass(XtParent(hw));
 }
 
 
@@ -2353,10 +2354,10 @@ void _DtHelpUpdateDisplayArea(
 /*****************************************************************************
  * Function:	    void _DtHelpUpdateJumpList(char *topicInfo,
  *                                 int topicType,
- *                                 DtHelpDialogWidget nw);  
+ *                                 DtHelpDialogWidget nw);
  *
  *
- * Parameters:      topicInfo   Specifies the 
+ * Parameters:      topicInfo   Specifies the
  *                  int         Specifies the topicInfo type.
  *
  *                  nw          Specifies the current help dialog widget.
@@ -2372,7 +2373,7 @@ void _DtHelpUpdateJumpList(
     Widget nw)
 {
   DtHelpDialogWidget hw = (DtHelpDialogWidget) nw ;
- 
+
   /* Add the new topic to the top of the jump list */
   /* We add a -1 for the scrollbar position value, and will replace it with the
    * actual value just prior to changing the window to the new topic.
@@ -2385,7 +2386,7 @@ void _DtHelpUpdateJumpList(
                         &hw->help_dialog.backtr.totalJumpNodes,
                         -1);
 
-  if (hw->help_dialog.backtr.totalJumpNodes <= 1) 
+  if (hw->help_dialog.backtr.totalJumpNodes <= 1)
     {
       XtSetSensitive(hw->help_dialog.menu.backBtn, FALSE);
       XtSetSensitive(hw->help_dialog.menu.popupBackBtn, FALSE);
@@ -2403,7 +2404,7 @@ void _DtHelpUpdateJumpList(
 
 
 /*****************************************************************************
- * Function:	    void ProcessJumpBack(DtHelpDialogWidget nw);  
+ * Function:	    void ProcessJumpBack(DtHelpDialogWidget nw);
  *
  *
  * Parameters:      helpDialogWidget  Specifies the current help dialog widget.
@@ -2419,7 +2420,7 @@ void _DtHelpUpdateJumpList(
 static void ProcessJumpBack(
     DtHelpDialogWidget nw)
 {
- 
+
   DtHelpDialogWidget hw = (DtHelpDialogWidget) nw ;
   DtTopicListStruct *pTemp= NULL;
 
@@ -2428,8 +2429,8 @@ static void ProcessJumpBack(
   _DtHelpTopicListDeleteHead(&hw->help_dialog.backtr.pJumpListHead,
                           &hw->help_dialog.backtr.pJumpListTale,
                           &hw->help_dialog.backtr.totalJumpNodes);
-                          
-                          
+
+
 
   /* Assign pTemp to the current head pointer for or jump list */
   pTemp = hw->help_dialog.backtr.pJumpListHead;
@@ -2454,7 +2455,7 @@ static void ProcessJumpBack(
     {
       XtFree(hw->help_dialog.display.helpVolume);
       hw->help_dialog.display.helpVolume  = XtNewString(pTemp->helpVolume);
-      
+
       /* Set our help volume flag so we open the proper volume */
       hw->help_dialog.ghelp.volumeFlag         = FALSE;
 
@@ -2462,13 +2463,13 @@ static void ProcessJumpBack(
 
    /* grab the current backtracs's topic title value */
    XmStringFree(hw->help_dialog.display.topicTitleLbl);
-   hw->help_dialog.display.topicTitleLbl = XmStringCopy(pTemp->topicTitleLbl); 
+   hw->help_dialog.display.topicTitleLbl = XmStringCopy(pTemp->topicTitleLbl);
 
 
   /* Assign our scrollbar value to our instance structure  so we jump to the
-   * proper location 
+   * proper location
    */
- 
+
   hw->help_dialog.backtr.scrollPosition = pTemp->scrollPosition;
 
 
@@ -2481,38 +2482,38 @@ static void ProcessJumpBack(
         /* Update our help dialog with top jump element */
         XtFree(hw->help_dialog.display.locationId);
         hw->help_dialog.display.locationId = XtNewString(pTemp->locationId);
-        
+
         _DtHelpSetupDisplayType(hw, TRUE, DtHISTORY_ONLY);
-      
+
 	break;
 
       case DtHELP_TYPE_STRING:
       case DtHELP_TYPE_DYNAMIC_STRING:
         XtFree(hw->help_dialog.display.stringData);
         hw->help_dialog.display.stringData = XtNewString(pTemp->locationId);
-        
+
         _DtHelpSetupDisplayType(hw, TRUE, DtHISTORY_ONLY);
-     
+
         break;
 
       case DtHELP_TYPE_MAN_PAGE:
         XtFree(hw->help_dialog.display.manPage);
         hw->help_dialog.display.manPage = XtNewString(pTemp->locationId);
-        
+
         _DtHelpSetupDisplayType(hw, TRUE, DtHISTORY_ONLY);
-     
+
 	break;
 
       case DtHELP_TYPE_FILE:
         XtFree(hw->help_dialog.display.helpFile);
         hw->help_dialog.display.helpFile = XtNewString(pTemp->locationId);
-        
+
         _DtHelpSetupDisplayType(hw, TRUE, DtHISTORY_ONLY);
-     
+
         break;
 
 
-      default:  
+      default:
 
         /* ERROR-MESSAGE */
         /* This means the user used the worng help type */
@@ -2521,9 +2522,9 @@ static void ProcessJumpBack(
         break;
 
     }  /* End Switch Statement */
-    
+
     /* reset our scrollPosition back to its default here so in any other case,
-     * we jump to the top of the topic 
+     * we jump to the top of the topic
      */
    hw->help_dialog.backtr.scrollPosition = -1;
 
@@ -2533,13 +2534,13 @@ static void ProcessJumpBack(
 /*****************************************************************************
  * Function:	    void _DtHelpDialogHypertextCB(
  *                              XtPointer pDisplayAreaStruct,
- *                              XtPointer clientData, 
- *                      	DtHelpHyperTextStruct *hyperData.) 
+ *                              XtPointer clientData,
+ *                      	DtHelpHyperTextStruct *hyperData.)
  *
  * Parameters:      pDisplayAreaStruct  Specifies the curretn display are info.
  *
  *                  clientData          Specifies the client data passed into
- *                                      the hypertext callback. 
+ *                                      the hypertext callback.
  *
  *                  hyperData           Specifies the current hypertext info
  *                                      structure.
@@ -2556,23 +2557,23 @@ void _DtHelpDialogHypertextCB (
     DtHelpHyperTextStruct *hyperData)
 {
   char         *pTempAccessPath;
-  char         *pTempLocationId;  
+  char         *pTempLocationId;
   DtHelpDialogCallbackStruct callData;
   char         *tmpErrorMsg;
 
   DtHelpDialogWidget hw = (DtHelpDialogWidget) clientData ;
-   
+
   /* We allow users to force a new window and override the jump-reuse
    * hyper type and force a new window to be used
    */
-   if (   (   ButtonRelease == hyperData->event->type 
+   if (   (   ButtonRelease == hyperData->event->type
            && hyperData->event->xbutton.state & (ControlMask|ShiftMask))
-       || (   KeyPress == hyperData->event->type 
+       || (   KeyPress == hyperData->event->type
            && hyperData->event->xkey.state & (ControlMask|ShiftMask)))
      hyperData->window_hint = _DtCvWindowHint_NewWindow;
 
 
- 
+
   switch (hyperData->hyper_type)
     {
 
@@ -2588,14 +2589,14 @@ void _DtHelpDialogHypertextCB (
              break;
 
              case _DtCvWindowHint_NewWindow:
-        
+
                _DtHelpTurnOnHourGlass(XtParent(hw));
-  
+
                if (hw->help_dialog.display.hyperLinkCallback != NULL)
                  {
-                    pTempAccessPath = 
+                    pTempAccessPath =
                       _DtHelpParseAccessFile(hyperData->specification);
-         
+
                     if (pTempAccessPath != NULL)       /* Use the New one */
                       callData.helpVolume = pTempAccessPath;
                     else                               /* Use the old one */
@@ -2610,34 +2611,34 @@ void _DtHelpDialogHypertextCB (
                     callData.specification = NULL;
                     callData.hyperType     = DtHELP_LINK_TOPIC;
                     callData.windowHint    = DtHELP_NEW_WINDOW;
-                   
+
                     /* Now, envoke the apps hyper callback */
                     XtCallCallbackList(
                      (Widget)hw,hw->help_dialog.display.hyperLinkCallback,&callData);
 	         }
                else
                  {  /* The application did not register a hypertext callback so
-                     *  we must generate the proper warning message and 
+                     *  we must generate the proper warning message and
                      *  continue!
                      */
-                    XmeWarning((Widget)hw, (char*) HDMessage6); 
+                    XmeWarning((Widget)hw, (char*) HDMessage6);
 
                     /* Call jump-reuse procedure for default */
                     ProcessJumpReuse((Widget)hw, hyperData);
                   }
-	      
-               _DtHelpTurnOffHourGlass(XtParent(hw));       
- 
+
+               _DtHelpTurnOffHourGlass(XtParent(hw));
+
              break;
 
              case _DtCvWindowHint_PopupWindow:
 
                _DtHelpTurnOnHourGlass(XtParent(hw));
 
-               pTempAccessPath = 
+               pTempAccessPath =
                          _DtHelpParseAccessFile(hyperData->specification);
-         
-               if (pTempAccessPath == NULL)  /* Use the old one */  
+
+               if (pTempAccessPath == NULL)  /* Use the old one */
                  pTempAccessPath = XtNewString(hw->help_dialog.display.helpVolume);
 
                pTempLocationId = _DtHelpParseIdString(hyperData->specification);
@@ -2649,16 +2650,16 @@ void _DtHelpDialogHypertextCB (
                XtFree(pTempLocationId);
                XtFree(pTempAccessPath);
 
-               _DtHelpTurnOffHourGlass(XtParent(hw));       
+               _DtHelpTurnOffHourGlass(XtParent(hw));
 
              break;
 
-             default:  
+             default:
 
                /* Non valid window hint generage the proper
                 *  error message.
                 */
-             
+
                 /* ERROR-MESSAGE */
               break;
 
@@ -2670,25 +2671,25 @@ void _DtHelpDialogHypertextCB (
 
 
        case _DtCvLinkType_Execute:
-          _DtHelpExecFilteredCmd((Widget) hw, 
-                    hyperData->specification, DtHELP_ExecutionPolicy_STR, 
+          _DtHelpExecFilteredCmd((Widget) hw,
+                    hyperData->specification, DtHELP_ExecutionPolicy_STR,
                     &hw->help_dialog.display, &hw->help_dialog.help);
          break;
 
 
       case _DtCvLinkType_ManPage:
-      case _DtCvLinkType_AppDefine:	
+      case _DtCvLinkType_AppDefine:
       case _DtCvLinkType_TextFile:
-       
+
         /* Process Application Man page link or App Defined link types */
         _DtHelpTurnOnHourGlass(XtParent(hw));
 
         /* If the application registered a hypertext callback use it! */
         if (hw->help_dialog.display.hyperLinkCallback != NULL)
           {
-  
-            /* Setup the DtHyperProcStructer to pass back to the 
-             * client as callData. 
+
+            /* Setup the DtHyperProcStructer to pass back to the
+             * client as callData.
              */
              callData.reason        = DtCR_HELP_LINK_ACTIVATE;
              callData.event         = hyperData->event;
@@ -2704,17 +2705,17 @@ void _DtHelpDialogHypertextCB (
              callData.specification = hyperData->specification;
              callData.hyperType     = hyperData->hyper_type;
              callData.windowHint    = hyperData->window_hint;
-          
+
              XtCallCallbackList ((Widget) hw,
                              hw->help_dialog.display.hyperLinkCallback, &callData);
 	  }
         else
-          { 
-             /* The application did not register a hypertext 
-              * callback so we must generate the proper error 
+          {
+             /* The application did not register a hypertext
+              * callback so we must generate the proper error
               * message and continue!
               */
-              XmeWarning((Widget)hw, (char*) HDMessage8); 
+              XmeWarning((Widget)hw, (char*) HDMessage8);
 
               if (hyperData->hyper_type == DtHELP_LINK_APP_DEFINE)
                 {
@@ -2730,10 +2731,10 @@ void _DtHelpDialogHypertextCB (
 
 		}
               XtFree(tmpErrorMsg);
-             
+
            }
 
-        _DtHelpTurnOffHourGlass(XtParent(hw));  
+        _DtHelpTurnOffHourGlass(XtParent(hw));
         break;
 
         default:  /* This catches bogus link types */
@@ -2741,7 +2742,7 @@ void _DtHelpDialogHypertextCB (
             /* Non valid link type so we are dropping it and are generating
              * the  proper error message.
              */
-             
+
              /* ERROR-MESSAGE */
              XmeWarning((Widget)hw, (char*) HDMessage7);
              break;
@@ -2754,7 +2755,7 @@ void _DtHelpDialogHypertextCB (
 
 
 
- 
+
 
 /*****************************************************************************
  * Function:	    void ResizeHelpDialogCB()
@@ -2769,7 +2770,7 @@ static void ResizeHelpDialogCB (
     XtPointer clientData)
 {
   DtHelpDialogWidget hw = (DtHelpDialogWidget) clientData ;
-    
+
 
   /* Re-Set our rows and colums values */
   if ((hw->help_dialog.help.pDisplayArea != NULL) &&
@@ -2788,7 +2789,7 @@ static void ResizeHelpDialogCB (
  *
  * Parameters:      nw    Specifies the widget ID of the current help dialog
  *                        widget.
- * 
+ *
  *                  hyperData Specifies the hypertext data callback struct.
  *
  * Return Value:    Void.
@@ -2803,37 +2804,37 @@ static void  ProcessJumpReuse(
 
   DtHelpDialogWidget hw = (DtHelpDialogWidget) nw;
   char         *pTempAccessPath;
-  char         *pTempLocationId;  
+  char         *pTempLocationId;
 
- 
-  /* Parse our specification into the proper fields in our instance 
-   * record.  
+
+  /* Parse our specification into the proper fields in our instance
+   * record.
    */
 
    pTempAccessPath = _DtHelpParseAccessFile(hyperData->specification);
-         
-   if (pTempAccessPath != NULL) 
+
+   if (pTempAccessPath != NULL)
      {
        /* Free the old one and assign the new path */
        XtFree(hw->help_dialog.display.helpVolume);
        hw->help_dialog.display.helpVolume = pTempAccessPath;
        hw->help_dialog.ghelp.volumeFlag = FALSE;
      }
- 
+
     /* Free old copy fisrt ??? */
     pTempLocationId = _DtHelpParseIdString(hyperData->specification);
     XtFree(hw->help_dialog.display.locationId);
     hw->help_dialog.display.locationId = pTempLocationId;
     hw->help_dialog.display.helpType = DtHELP_TYPE_TOPIC;
-   
+
     _DtHelpSetupDisplayType(hw, TRUE, DtHISTORY_AND_JUMP);
- 
+
 }
 
 
 
 /*****************************************************************************
- * Function:	    void _DtHelpTopicListFree (DtTopicListStruct *pHead);  
+ * Function:	    void _DtHelpTopicListFree (DtTopicListStruct *pHead);
  *
  *
  * Parameters:      pHead   Specifies the head pointer to the topic list.
@@ -2875,17 +2876,17 @@ void _DtHelpTopicListFree(
 
 /*****************************************************************************
  * Function:	    void CleanUpHelpDialog(DtHelpDialogWidget nw,
- *                                         int cleanUpKind);  
+ *                                         int cleanUpKind);
  *
  *
  * Parameters:      nw  Specifies the current help dialog widget.
- *                  cleanUpKind Specifies the type of clean up we are doing, 
+ *                  cleanUpKind Specifies the type of clean up we are doing,
  *                  celan up and reuse or clean up and destroy.
  *
  * Return Value:    Void.
  *
- * Purpose: 	    This function will re-initializes a Help Dialog Widget to 
- *                  known good starting values or clean up in prepretion for 
+ * Purpose: 	    This function will re-initializes a Help Dialog Widget to
+ *                  known good starting values or clean up in prepretion for
  *                  an impending destroy.
  *
  *****************************************************************************/
@@ -2909,16 +2910,16 @@ static void CleanUpHelpDialog(
   while (pTempVolume != NULL)
   {
       _DtHelpTopicListFree(pTempVolume->pTopicHead);
-      pTempVolumeCurrent = pTempVolume;   
+      pTempVolumeCurrent = pTempVolume;
       pTempVolume = pTempVolume->pNext;
-     
-      XmStringFree(pTempVolumeCurrent->itemTitle); 
+
+      XmStringFree(pTempVolumeCurrent->itemTitle);
       XtFree((char *)pTempVolumeCurrent);
   }
   hw->help_dialog.history.pHistoryListHead  = NULL;
- 
+
   _DtHelpTopicListFree(hw->help_dialog.history.pPathListHead);
-  hw->help_dialog.history.pPathListHead     = NULL; 
+  hw->help_dialog.history.pPathListHead     = NULL;
   hw->help_dialog.history.pPathListTale     = NULL;
   hw->help_dialog.history.totalPathNodes    = 0;
 
@@ -2939,17 +2940,17 @@ static void CleanUpHelpDialog(
       hw->help_dialog.display.volumeHandle = NULL;
     }
 
-  /* Depending on weither we are just closing this help dialog or destroying 
+  /* Depending on weither we are just closing this help dialog or destroying
    * it we will do the following!
    */
-  
+
   if (cleanUpKind == DtCLEAN_FOR_DESTROY)
     {
 
       /* Free any remaining char * values we malloc'ed in our help dialog */
       XtFree(hw->help_dialog.display.locationId);
-      XtFree(hw->help_dialog.display.helpVolume); 
-     
+      XtFree(hw->help_dialog.display.helpVolume);
+
       XtFree(hw->help_dialog.display.manPage);
       XtFree(hw->help_dialog.display.stringData);
       XtFree(hw->help_dialog.display.helpFile);
@@ -2979,7 +2980,7 @@ static void CleanUpHelpDialog(
 
       /* Clean and close our index search dialog */
       _DtHelpGlobSrchCleanAndClose(&hw->help_dialog.srch,False);
-    
+
       if (hw->help_dialog.history.historyWidget != NULL)
         {
           XtUnmanageChild(hw->help_dialog.history.historyWidget);
@@ -3003,10 +3004,10 @@ static void CleanUpHelpDialog(
           XtSetArg(args[1], XmNitemCount, 0);
           XtSetValues(hw->help_dialog.history.topicList, args, 2);
         }
-             
+
       /* Set our toc areay area to a null starting vlaues */
       _DtHelpDisplayAreaClean(hw->help_dialog.browser.pTocArea);
-  
+
       /* Set our current topic variables to initial values */
       _DtHelpCommonHelpClean(&hw->help_dialog.help,False);
     }
@@ -3018,8 +3019,8 @@ static void CleanUpHelpDialog(
 
 /****************************************************************************
  * Function:         CatchClose( Widget w);
- *                          
- * Parameters:      
+ *
+ * Parameters:
  *
  * Return Value:    Void.
  *
@@ -3043,8 +3044,8 @@ static void CatchClose (
   XmAddWMProtocolCallback(XtParent(widget),wm_delete_window,
                           (XtCallbackProc)CloseHelpCB, (XtPointer) widget);
   XtSetValues(XtParent(widget), args, 1);
-  
-} 
+
+}
 
 
 
@@ -3063,8 +3064,8 @@ static void CloseHelpCB (
 
   DtHelpDialogWidget hw = (DtHelpDialogWidget) clientData;
   DtHelpDialogCallbackStruct callDataInfo;
-  XmPushButtonCallbackStruct *callbackStruct = 
-                               (XmPushButtonCallbackStruct*) callData; 
+  XmPushButtonCallbackStruct *callbackStruct =
+                               (XmPushButtonCallbackStruct*) callData;
 
   /*
    * Check to see if a selection is in process.
@@ -3075,11 +3076,11 @@ static void CloseHelpCB (
 
   /* No selection in progress. Close the dialog.
    *
-   * ??? By definition, when a user closes a Help Dialog if it is 
-   * used again by the application the state will be new. So we should 
+   * ??? By definition, when a user closes a Help Dialog if it is
+   * used again by the application the state will be new. So we should
    * flush out any info currently in the help, history, and search dialogs.
    */
- 
+
   CleanUpHelpDialog((Widget)hw, DtCLEAN_FOR_REUSE);
 
   /* Look to see if they registered their own close callback */
@@ -3091,8 +3092,8 @@ static void CloseHelpCB (
        callDataInfo.helpVolume = NULL;
        callDataInfo.specification = NULL;
        callDataInfo.hyperType = 0;
-   
-       
+
+
        /* All we do is envoke the applications close callback */
        XtCallCallbackList((Widget)hw,hw->help_dialog.ghelp.closeCallback,
                          (XtPointer) &callDataInfo);
@@ -3100,7 +3101,7 @@ static void CloseHelpCB (
   else
    XtUnmanageChild((Widget)hw);
 
- 	
+
 }
 
 
@@ -3109,7 +3110,7 @@ static void CloseHelpCB (
 
 
 
- 
+
 
 /*********************************************************************
  * Function:  SetupHelpDialogMenus
@@ -3127,7 +3128,7 @@ static Widget SetupHelpDialogMenus(
    Widget	cascadeB5;
    Widget       menupane1, menupane2, menupane3, menupane4, menupane5;
    Widget       helpBtn1, helpBtn2, helpBtn3, helpBtn4, helpBtn5, helpBtn6;
-   Arg		args[10];	
+   Arg		args[10];
    int          n;
    XmString     labelStr;
    char        *mnemonic;
@@ -3138,19 +3139,19 @@ static Widget SetupHelpDialogMenus(
    /* Build the menubar */
 
    n = 0;
-   menuBar = XmCreateMenuBar (parent, "menuBar", args, n); 
+   menuBar = XmCreateMenuBar (parent, "menuBar", args, n);
    XtManageChild (menuBar);
 
 
   /*******************************************************
-   * Menupane:  Close, and related buttons 
+   * Menupane:  Close, and related buttons
    *******************************************************/
-   
+
   n = 0;
   XtSetArg(args[n], XmNmarginWidth, 0);		++n;
   XtSetArg(args[n], XmNmarginHeight, 0);		++n;
   menupane1 = XmCreatePulldownMenu(menuBar, "fileMenu", args, n);
-  
+
   /* Add callback for File Menu */
   pHelpInfo = _DtHelpListAdd(DtHELP_FileMenu_STR,
                        (Widget) hw, &hw->help_dialog.help,
@@ -3167,11 +3168,11 @@ static Widget SetupHelpDialogMenus(
   XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
   c[0] = hw->help_dialog.menu.printBtn = XmCreatePushButtonGadget(menupane1,
 						  "print", args, n);
-  XtAddCallback(hw->help_dialog.menu.printBtn,XmNactivateCallback, 
+  XtAddCallback(hw->help_dialog.menu.printBtn,XmNactivateCallback,
                  DisplayPrintCB, (XtPointer) hw);
-   
+
   XmStringFree(labelStr);
-  
+
 
   if (hw->help_dialog.menu.showDupBtn == True)
     {
@@ -3182,10 +3183,10 @@ static Widget SetupHelpDialogMenus(
       n = 0;
       XtSetArg(args[n], XmNlabelString, labelStr); n++;
       XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
-      c[1] = hw->help_dialog.menu.newWindowBtn = 
+      c[1] = hw->help_dialog.menu.newWindowBtn =
                   XmCreatePushButtonGadget(menupane1,"newWindowBtn", args, n);
-      XtAddCallback(hw->help_dialog.menu.newWindowBtn,XmNactivateCallback, 
-                    _DtHelpDuplicateWindowCB, (XtPointer) hw); 
+      XtAddCallback(hw->help_dialog.menu.newWindowBtn,XmNactivateCallback,
+                    _DtHelpDuplicateWindowCB, (XtPointer) hw);
       XmStringFree(labelStr);
 
       /* Exit button */
@@ -3196,18 +3197,18 @@ static Widget SetupHelpDialogMenus(
       XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
       c[2] = hw->help_dialog.menu.closeBtn =
 	       XmCreatePushButtonGadget(menupane1,"close", args, n);
-  
-      XtAddCallback(hw->help_dialog.menu.closeBtn,XmNactivateCallback, 
-                    CloseHelpCB, (XtPointer) hw); 
-      XmStringFree(labelStr); 
+
+      XtAddCallback(hw->help_dialog.menu.closeBtn,XmNactivateCallback,
+                    CloseHelpCB, (XtPointer) hw);
+      XmStringFree(labelStr);
 
       /* set the cancel button (for KCancel) */
       hw->bulletin_board.cancel_button= hw->help_dialog.menu.closeBtn;
 
- 
-      /* Manage the children for the File menu pane */ 
+
+      /* Manage the children for the File menu pane */
       XtManageChildren(c, 3);
-       
+
     }
   else
     {
@@ -3219,15 +3220,15 @@ static Widget SetupHelpDialogMenus(
       XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
       c[1] = hw->help_dialog.menu.closeBtn =
 	     XmCreatePushButtonGadget(menupane1,"close", args, n);
-  
-      XtAddCallback(hw->help_dialog.menu.closeBtn,XmNactivateCallback, 
-                 CloseHelpCB, (XtPointer) hw); 
-      XmStringFree(labelStr); 
- 
+
+      XtAddCallback(hw->help_dialog.menu.closeBtn,XmNactivateCallback,
+                 CloseHelpCB, (XtPointer) hw);
+      XmStringFree(labelStr);
+
       /* set the cancel button (for KCancel) */
       hw->bulletin_board.cancel_button= hw->help_dialog.menu.closeBtn;
-  
-      /* Manage the children for the File menu pane */ 
+
+      /* Manage the children for the File menu pane */
       XtManageChildren(c, 2);
     }
 
@@ -3257,11 +3258,11 @@ static Widget SetupHelpDialogMenus(
   XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
   c[0] = hw->help_dialog.menu.copyBtn = XmCreatePushButtonGadget
                                         (menupane2, "copy", args, n);
-  XtAddCallback(hw->help_dialog.menu.copyBtn,XmNactivateCallback, 
-                 CopyTextCB, (XtPointer) hw); 
- 
-  XmStringFree(labelStr); 
-   
+  XtAddCallback(hw->help_dialog.menu.copyBtn,XmNactivateCallback,
+                 CopyTextCB, (XtPointer) hw);
+
+  XmStringFree(labelStr);
+
   XtManageChildren(c, 1);
 
 
@@ -3290,17 +3291,17 @@ static Widget SetupHelpDialogMenus(
   XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
   c[0] = hw->help_dialog.menu.keyBtn = XmCreatePushButtonGadget
                                         (menupane3, "keyword", args, n);
-  XtAddCallback(hw->help_dialog.menu.keyBtn,XmNactivateCallback, 
-                 _DtHelpDisplayIndexCB, (XtPointer) hw); 
- 
-  XmStringFree(labelStr); 
-   
+  XtAddCallback(hw->help_dialog.menu.keyBtn,XmNactivateCallback,
+                 _DtHelpDisplayIndexCB, (XtPointer) hw);
+
+  XmStringFree(labelStr);
+
   XtManageChildren(c, 1);
 
 
 
   /*******************************************************
-   * Menupane:  Navigate, and related buttons 
+   * Menupane:  Navigate, and related buttons
    *******************************************************/
 
   n = 0;
@@ -3315,34 +3316,34 @@ static Widget SetupHelpDialogMenus(
   XtAddCallback((Widget) menupane4 , XmNhelpCallback,
                  _DtHelpCB, (XtPointer) pHelpInfo);
 
- 
+
   /* Back Button */
   labelStr = XmStringCreateLocalized(((char *)_DTGETMESSAGE(2, 13,"Backtrack")));
   mnemonic = ((char *)_DTGETMESSAGE(2, 14,"B"));
-  n = 0; 
+  n = 0;
   XtSetArg(args[n], XmNlabelString, labelStr); n++;
   XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
   c[0] =  hw->help_dialog.menu.backBtn  = XmCreatePushButtonGadget(menupane4,
                                             "backTrack", args, n);
-  XtAddCallback(hw->help_dialog.menu.backBtn,XmNactivateCallback, 
-                  _DtHelpDisplayBackCB, (XtPointer) hw); 
+  XtAddCallback(hw->help_dialog.menu.backBtn,XmNactivateCallback,
+                  _DtHelpDisplayBackCB, (XtPointer) hw);
   XtSetSensitive(hw->help_dialog.menu.backBtn, FALSE);
 
-  XmStringFree(labelStr); 
+  XmStringFree(labelStr);
 
 
   /* Top Button */
   labelStr = XmStringCreateLocalized(((char *)_DTGETMESSAGE(2, 11,"Home Topic")));
   mnemonic = ((char *)_DTGETMESSAGE(2, 12,"T"));
-  n = 0; 
+  n = 0;
   XtSetArg(args[n], XmNlabelString, labelStr); n++;
   XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
   c[1] =  hw->help_dialog.menu.topBtn  = XmCreatePushButtonGadget(menupane4,
                                             "homeTopic", args, n);
-  XtAddCallback(hw->help_dialog.menu.topBtn,XmNactivateCallback, 
-                 DisplayTopLevelCB, (XtPointer) hw); 
+  XtAddCallback(hw->help_dialog.menu.topBtn,XmNactivateCallback,
+                 DisplayTopLevelCB, (XtPointer) hw);
 
-  XmStringFree(labelStr); 
+  XmStringFree(labelStr);
 
 
   /* Place a menu break here  */
@@ -3358,20 +3359,20 @@ static Widget SetupHelpDialogMenus(
   c[3] = hw->help_dialog.menu.historyBtn = XmCreatePushButtonGadget(menupane4,
 				          "history",args, n);
 
-  XtAddCallback(hw->help_dialog.menu.historyBtn,XmNactivateCallback, 
-                 _DtHelpDisplayHistoryCB, (XtPointer) hw); 
+  XtAddCallback(hw->help_dialog.menu.historyBtn,XmNactivateCallback,
+                 _DtHelpDisplayHistoryCB, (XtPointer) hw);
 
-  XmStringFree(labelStr); 
- 
+  XmStringFree(labelStr);
 
-  /* Manage all the children of this manu pane */ 
+
+  /* Manage all the children of this manu pane */
   XtManageChildren(c, 4);
 
 
 
 
   /*******************************************************
-   * Menupane:  Help, and related buttons 
+   * Menupane:  Help, and related buttons
    *******************************************************/
   n = 0;
   XtSetArg(args[n], XmNmarginWidth, 0);		++n;
@@ -3388,7 +3389,7 @@ static Widget SetupHelpDialogMenus(
   /* On HELP button */
   labelStr = XmStringCreateLocalized(((char *)_DTGETMESSAGE(2, 17,"Overview - Using Help")));
   mnemonic = ((char *)_DTGETMESSAGE(2, 18,"v"));
-  n = 0; 
+  n = 0;
   XtSetArg(args[n], XmNlabelString, labelStr); n++;
   XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
   c[0] = helpBtn1 = XmCreatePushButtonGadget(menupane5,
@@ -3398,8 +3399,8 @@ static Widget SetupHelpDialogMenus(
 			&hw->help_dialog.help.pHelpListHead);
   XtAddCallback(helpBtn1, XmNactivateCallback,
                 _DtHelpCB, (XtPointer) pHelpInfo);
-  
-  XmStringFree(labelStr); 
+
+  XmStringFree(labelStr);
 
 
   /* Place a menu break here  */
@@ -3410,7 +3411,7 @@ static Widget SetupHelpDialogMenus(
   /* On Table Of Contents Help button */
   labelStr = XmStringCreateLocalized(((char *)_DTGETMESSAGE(2,19,"Table Of Contents")));
   mnemonic = ((char *)_DTGETMESSAGE(2, 20, "C"));
-  n = 0; 
+  n = 0;
   XtSetArg(args[n], XmNlabelString, labelStr); n++;
   XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
   c[2] = helpBtn2 = XmCreatePushButtonGadget(menupane5,
@@ -3420,14 +3421,14 @@ static Widget SetupHelpDialogMenus(
 			&hw->help_dialog.help.pHelpListHead);
   XtAddCallback(helpBtn2, XmNactivateCallback,
                 _DtHelpCB, (XtPointer) pHelpInfo);
-  
-  XmStringFree(labelStr); 
+
+  XmStringFree(labelStr);
 
 
   /* On Tasks Help button */
   labelStr = XmStringCreateLocalized(((char *)_DTGETMESSAGE(2, 21,"Tasks")));
   mnemonic = ((char *)_DTGETMESSAGE(2, 22, "T"));
-  n = 0; 
+  n = 0;
   XtSetArg(args[n], XmNlabelString, labelStr); n++;
   XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
   c[3] = helpBtn3 = XmCreatePushButtonGadget(menupane5,
@@ -3437,7 +3438,7 @@ static Widget SetupHelpDialogMenus(
 			&hw->help_dialog.help.pHelpListHead);
   XtAddCallback(helpBtn3, XmNactivateCallback,
                 _DtHelpCB, (XtPointer) pHelpInfo);
-  XmStringFree(labelStr); 
+  XmStringFree(labelStr);
 
 
   /* On Reference button */
@@ -3452,9 +3453,9 @@ static Widget SetupHelpDialogMenus(
   pHelpInfo = _DtHelpListAdd(DtHELP_onReferenceMenu_STR,
                         (Widget) hw,  &hw->help_dialog.help,
 			&hw->help_dialog.help.pHelpListHead);
-  XtAddCallback(helpBtn4, XmNactivateCallback, 
+  XtAddCallback(helpBtn4, XmNactivateCallback,
                 _DtHelpCB, (XtPointer) pHelpInfo);
-  XmStringFree(labelStr); 
+  XmStringFree(labelStr);
 
 
   /* On Mouse & Keyboard button */
@@ -3469,9 +3470,9 @@ static Widget SetupHelpDialogMenus(
   pHelpInfo = _DtHelpListAdd(DtHELP_onMouseAndKeysMenu_STR,
                         (Widget) hw,  &hw->help_dialog.help,
 			&hw->help_dialog.help.pHelpListHead);
-  XtAddCallback(helpBtn5, XmNactivateCallback, 
+  XtAddCallback(helpBtn5, XmNactivateCallback,
                 _DtHelpCB, (XtPointer) pHelpInfo);
-  XmStringFree(labelStr); 
+  XmStringFree(labelStr);
 
 
   /* Place a menu break here  */
@@ -3490,14 +3491,14 @@ static Widget SetupHelpDialogMenus(
   pHelpInfo = _DtHelpListAdd(DtHELP_onVersionMenu_STR,
                         (Widget) hw,  &hw->help_dialog.help,
 			&hw->help_dialog.help.pHelpListHead);
-  XtAddCallback(helpBtn6, XmNactivateCallback, 
+  XtAddCallback(helpBtn6, XmNactivateCallback,
                 _DtHelpCB, (XtPointer) pHelpInfo);
-  XmStringFree(labelStr); 
+  XmStringFree(labelStr);
 
 
   /* Manage the children for the Help menu pane */
   XtManageChildren(c, 8);
- 
+
 
 
   /* Create Cascade buttons for menubar */
@@ -3509,8 +3510,8 @@ static Widget SetupHelpDialogMenus(
   XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
   XtSetArg(args[n], XmNsubMenuId, menupane1); n++;
   XtSetArg(args[n], XmNlabelString, labelStr); n++;
-  c[0] = XmCreateCascadeButton(menuBar,"file",args, n); 
-  XmStringFree(labelStr); 
+  c[0] = XmCreateCascadeButton(menuBar,"file",args, n);
+  XmStringFree(labelStr);
 
   /* Edit Menu */
   labelStr = XmStringCreateLocalized(((char *) _DTGETMESSAGE(2, 37,"Edit")));
@@ -3519,8 +3520,8 @@ static Widget SetupHelpDialogMenus(
   XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
   XtSetArg(args[n], XmNsubMenuId, menupane2); n++;
   XtSetArg(args[n], XmNlabelString, labelStr); n++;
-  c[1] = XmCreateCascadeButton(menuBar, "edit", args, n); 
-  XmStringFree(labelStr); 
+  c[1] = XmCreateCascadeButton(menuBar, "edit", args, n);
+  XmStringFree(labelStr);
 
   /* Search Menu */
   labelStr = XmStringCreateLocalized(((char *) _DTGETMESSAGE(2, 31,"Search")));
@@ -3529,8 +3530,8 @@ static Widget SetupHelpDialogMenus(
   XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
   XtSetArg(args[n], XmNsubMenuId, menupane3); n++;
   XtSetArg(args[n], XmNlabelString, labelStr); n++;
-  c[2] = XmCreateCascadeButton(menuBar, "search", args, n); 
-  XmStringFree(labelStr); 
+  c[2] = XmCreateCascadeButton(menuBar, "search", args, n);
+  XmStringFree(labelStr);
 
   /* Navigate Menu */
   labelStr = XmStringCreateLocalized(((char *) _DTGETMESSAGE(2, 33,"Navigate")));
@@ -3539,8 +3540,8 @@ static Widget SetupHelpDialogMenus(
   XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
   XtSetArg(args[n], XmNsubMenuId, menupane4); n++;
   XtSetArg(args[n], XmNlabelString, labelStr); n++;
-  c[3] = XmCreateCascadeButton(menuBar, "navigate", args, n); 
-  XmStringFree(labelStr); 
+  c[3] = XmCreateCascadeButton(menuBar, "navigate", args, n);
+  XmStringFree(labelStr);
 
   /* Help Menu */
   labelStr = XmStringCreateLocalized(((char *) _DTGETMESSAGE(2, 35,"Help")));
@@ -3549,12 +3550,12 @@ static Widget SetupHelpDialogMenus(
   XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
   XtSetArg(args[n], XmNsubMenuId, menupane5); n++;
   XtSetArg(args[n], XmNlabelString, labelStr); n++;
-  c[4] = cascadeB5 = XmCreateCascadeButton(menuBar, "help", args, n); 
-  XmStringFree(labelStr); 
+  c[4] = cascadeB5 = XmCreateCascadeButton(menuBar, "help", args, n);
+  XmStringFree(labelStr);
 
   XtManageChildren(c, 5);
 
-   
+
   /* Attaches the Help menupane to the right side */
   n = 0;
   XtSetArg (args[n], XmNmenuHelpWidget, cascadeB5);  n++;
@@ -3580,7 +3581,7 @@ static Widget CreatePopupMenu(
 {
    Widget       popup;
    Widget       c[10];
-   Arg		args[10];	
+   Arg		args[10];
    int          n;
    XmString     labelStr;
    DtHelpDialogWidget hw = (DtHelpDialogWidget) nw;
@@ -3596,12 +3597,12 @@ static Widget CreatePopupMenu(
    }
    popup = XmCreatePopupMenu (
 		_DtHelpDisplayAreaWidget(hw->help_dialog.help.pDisplayArea),
-                             "popup", args, n); 
+                             "popup", args, n);
 
    /* Add our button three event handler to our newly created display area */
    XtAddEventHandler(
-		_DtHelpDisplayAreaWidget(hw->help_dialog.help.pDisplayArea), 
-                    ButtonPressMask, FALSE, 
+		_DtHelpDisplayAreaWidget(hw->help_dialog.help.pDisplayArea),
+                    ButtonPressMask, FALSE,
                     (XtEventHandler)ProcessBMenuBackCB, hw);
 
   /* Add Help callback for Popup Menu */
@@ -3615,43 +3616,43 @@ static Widget CreatePopupMenu(
 
   /* Popup Label*/
    labelStr = XmStringCreateLocalized(((char *) _DTGETMESSAGE(3, 4,"Help")));
-   n = 0; 
+   n = 0;
    XtSetArg(args[n], XmNlabelString, labelStr); n++;
    c[0] = XmCreateLabelGadget(popup, "popupLabel", args, n);
-   XmStringFree(labelStr); 
+   XmStringFree(labelStr);
 
    /* Place a menu break here  */
    n = 0;
    c[1] = XmCreateSeparatorGadget(popup, "seporator",args, n);
 
- 
+
    /* Back Button */
    labelStr = XmStringCreateLocalized(((char *) _DTGETMESSAGE(2, 13,"Backtrack")));
    mnemonic = ((char *)_DTGETMESSAGE(2, 14,"B"));
-   n = 0; 
+   n = 0;
    XtSetArg(args[n], XmNlabelString, labelStr); n++;
    XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
    c[2] =  hw->help_dialog.menu.popupBackBtn  = XmCreatePushButtonGadget(popup,
                                             "backTrack", args, n);
-   XmStringFree(labelStr); 
- 
-   XtAddCallback(hw->help_dialog.menu.popupBackBtn,XmNactivateCallback, 
-                   _DtHelpDisplayBackCB, (XtPointer) hw); 
+   XmStringFree(labelStr);
+
+   XtAddCallback(hw->help_dialog.menu.popupBackBtn,XmNactivateCallback,
+                   _DtHelpDisplayBackCB, (XtPointer) hw);
    XtSetSensitive(hw->help_dialog.menu.popupBackBtn, FALSE);
 
 
    /* Top Button */
    labelStr = XmStringCreateLocalized(((char *)_DTGETMESSAGE(2, 11,"Home Topic")));
    mnemonic = ((char *)_DTGETMESSAGE(2, 12,"T"));
-   n = 0; 
+   n = 0;
    XtSetArg(args[n], XmNlabelString, labelStr); n++;
    XtSetArg(args[n], XmNmnemonic, mnemonic[0]); n++;
    c[3] = hw->help_dialog.menu.popupTopBtn  = XmCreatePushButtonGadget(popup,
                                                      "homeTopic", args, n);
-   XmStringFree(labelStr); 
-   XtAddCallback(hw->help_dialog.menu.popupTopBtn,XmNactivateCallback, 
-                  DisplayTopLevelCB, (XtPointer) hw); 
-   
+   XmStringFree(labelStr);
+   XtAddCallback(hw->help_dialog.menu.popupTopBtn,XmNactivateCallback,
+                  DisplayTopLevelCB, (XtPointer) hw);
+
    XtManageChildren(c, 4);
 
   return(popup);

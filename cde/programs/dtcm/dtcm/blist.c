@@ -86,9 +86,9 @@ bl_pending_change(Widget w, XtPointer data, XtPointer cbs) {
 		   Attention Translator:
 
 		   Message 841 is used in the Menu Editor's footer.  The
-		   Menu Editor is accessed through the browse menu.  The 
+		   Menu Editor is accessed through the browse menu.  The
 		   message is displayed when something is typed into the User
-		   Name field in the editor.  If the translated footer message 
+		   Name field in the editor.  If the translated footer message
 		   is too long it causes the menu editor to grow horizontally
 		   which we do not want.  If you notice that the translated
 		   string causes the editor to grow horizontally please
@@ -141,7 +141,7 @@ bl_list_selection_cb(Widget w, XtPointer data, XtPointer cbs) {
 	int		*pos_list, pos_cnt;
 
 	XmListGetSelectedPos(bl->browse_list, &pos_list, &pos_cnt);
-	if (pos_cnt <= 0) 
+	if (pos_cnt <= 0)
 		XtSetSensitive(bl->remove_button, False);
 	else
 		XtSetSensitive(bl->remove_button, True);
@@ -201,20 +201,20 @@ blist_name_append(Calendar *c, char *name, BlistTag t) {
         BlistData       *bd;
         Browselist      *bl = (Browselist *)c->browselist;
 	char		*defname;
- 
 
-	/* This while loop is doing double duty here.  The primary 
-	   purpose of the list is to find out if the name we're 
-	   inserting is already in the list.  While looping thru, 
-	   the secondary purpose is to find the lexicographical 
-	   position of the name relative to the current set of entries.  
-	   The business about marked and location is related to that 
+
+	/* This while loop is doing double duty here.  The primary
+	   purpose of the list is to find out if the name we're
+	   inserting is already in the list.  While looping thru,
+	   the secondary purpose is to find the lexicographical
+	   position of the name relative to the current set of entries.
+	   The business about marked and location is related to that
 	   second purpose. */
 
         while ((bd = (BlistData *)CmDataListGetData(bl->blist_data, i)) &&
                strcmp(bd->name, name) != 0)
 	{
-                if ((marked == False) && (strcoll(name, bd->name) < 0) && 
+                if ((marked == False) && (strcoll(name, bd->name) < 0) &&
 		    (i != 1)) {
                         location = i;
 			marked = True;
@@ -231,10 +231,10 @@ blist_name_append(Calendar *c, char *name, BlistTag t) {
 
                 return -1;
 	}
-	
-	/* 2 special cases here.  If the name is that of the calendar 
-	   owner, it should always be at the head of the list.  If the 
-	   name wasn't maked against any of the people on the list, 
+
+	/* 2 special cases here.  If the name is that of the calendar
+	   owner, it should always be at the head of the list.  If the
+	   name wasn't maked against any of the people on the list,
 	   then it should be inserted at the end. */
 
 	defname = get_user_calendar();
@@ -244,13 +244,13 @@ blist_name_append(Calendar *c, char *name, BlistTag t) {
 		location = i;
 	}
 	free(defname);
- 
+
         bd = (BlistData *)ckalloc(sizeof(BlistData));
         bd->name = cm_strdup(name);
         bd->tag = t;
         bd->cal_handle = 0;
         CmDataListAdd(bl->blist_data, (void *)bd, location);
- 
+
         return location;
 
 }
@@ -275,9 +275,9 @@ blist_addname(Widget widget, XtPointer client_data, XtPointer cbs) {
 	set_message(bl->message, " ");
 	new_name = XmTextFieldGetString(bl->username);
 
-	/* crush out leading white space for the name 
+	/* crush out leading white space for the name
 	   comparison/insert process */
-	
+
 	while ((*new_name == ' ') || (*new_name == '\t'))
 		new_name++;
 
@@ -286,7 +286,7 @@ blist_addname(Widget widget, XtPointer client_data, XtPointer cbs) {
 	end_ptr = new_name;
 	while (*end_ptr)
 		end_ptr++;
-	while ((end_ptr > new_name) && 
+	while ((end_ptr > new_name) &&
 	       ((*(end_ptr - 1) == ' ') || (*(end_ptr - 1) == '\t')))
 		end_ptr--;
 
@@ -312,7 +312,7 @@ blist_addname(Widget widget, XtPointer client_data, XtPointer cbs) {
 		XmStringFree(xmstr);
 		cm_select_text(bl->username, e->xbutton.time);
 	} else {
-		sprintf(buf, "%s %s", new_name,
+		snprintf(buf, MAXNAMELEN, "%s %s", new_name,
 			catgets(c->DT_catd, 1, 604, "is already in the list"));
 		set_message(bl->message, buf);
 	}
@@ -349,8 +349,8 @@ blist_write_list(Browselist *bl, Props *p) {
 	for (i = 1; i <= bl->blist_data->count; i++) {
 		bd = (BlistData *)CmDataListGetData(bl->blist_data, i);
 		if (bd && bd->name && bd->tag != BLIST_DELETE) {
-			cm_strcat(buf, bd->name);
-			cm_strcat(buf, " ");
+			cm_strlcat(buf, bd->name, len);
+			cm_strlcat(buf, " ", len);
 			bd->tag = BLIST_ACTIVE;
 		}
 	}
@@ -432,7 +432,7 @@ blist_init_names(Calendar *c) {
         char		*name, *namelist;
         Props		*p = (Props*)c->properties;
 	Browselist	*bl = (Browselist *)c->browselist;
- 
+
 	if (!bl->blist_data)
 		bl->blist_data = CmDataListCreate();
 
@@ -540,7 +540,7 @@ make_browselist(Calendar *c)
 	if (!bl)
 		return;
 
-	title = XtNewString(catgets(c->DT_catd, 1, 963, 
+	title = XtNewString(catgets(c->DT_catd, 1, 963,
 				    "Calendar : Menu Editor"));
 	bl->frame = XtVaCreatePopupShell("menu_editor_frame",
                 xmDialogShellWidgetClass, c->frame,
@@ -594,7 +594,7 @@ make_browselist(Calendar *c)
 		XmNnavigationType, 	XmTAB_GROUP,
                 NULL);
 	XmStringFree(label_str);
-        XtAddCallback(bl->remove_button, XmNactivateCallback, 
+        XtAddCallback(bl->remove_button, XmNactivateCallback,
 				blist_removenames, (XtPointer)c);
 	ManageChildren(bl->edit_rc_mgr);
 
@@ -613,7 +613,7 @@ make_browselist(Calendar *c)
                	NULL);
 	XtAddCallback(bl->username, XmNactivateCallback, blist_addname,
 				(XtPointer)c);
-	XtAddCallback(bl->username, XmNvalueChangedCallback, 
+	XtAddCallback(bl->username, XmNvalueChangedCallback,
 				bl_pending_change, (XtPointer)c);
 
 	XtVaSetValues(bl->username_label,
@@ -627,7 +627,7 @@ make_browselist(Calendar *c)
 
 	label_str = XmStringCreateLocalized(
 			catgets(c->DT_catd, 1, 688, "Browse Menu Items"));
-       	bl->list_label = XtVaCreateWidget("list_label", 
+       	bl->list_label = XtVaCreateWidget("list_label",
 		xmLabelWidgetClass, bl->form,
 		XmNlabelString, 	label_str,
 		XmNtopAttachment, 	XmATTACH_WIDGET,
@@ -639,7 +639,7 @@ make_browselist(Calendar *c)
 	XmStringFree(label_str);
 
 	bl->message = XtVaCreateWidget("message_text",
-                xmLabelGadgetClass, 
+                xmLabelGadgetClass,
 		bl->form,
 		XmNalignment, 		XmALIGNMENT_BEGINNING,
                 XmNleftAttachment, 	XmATTACH_FORM,
@@ -664,7 +664,7 @@ make_browselist(Calendar *c)
                 XmNbottomWidget,        bl->message,
                 XmNbottomOffset,        5,
                 NULL);
-	
+
 	label_str = XmStringCreateLocalized(catgets(c->DT_catd, 1, 655, "OK"));
 	bl->ok_button = XtVaCreateWidget("ok_button",
 		xmPushButtonWidgetClass,
@@ -750,7 +750,7 @@ make_browselist(Calendar *c)
 		XmNbottomAttachment, 	XmATTACH_FORM,
                 NULL);
 	XmStringFree(label_str);
-        XtAddCallback(bl->help_button, XmNactivateCallback, 
+        XtAddCallback(bl->help_button, XmNactivateCallback,
 		(XtCallbackProc)help_cb, MENU_EDITOR_HELP_BUTTON);
         XtAddCallback(bl->form, XmNhelpCallback,
                 (XtCallbackProc)help_cb, (XtPointer) MENU_EDITOR_HELP_BUTTON);
@@ -791,7 +791,7 @@ make_browselist(Calendar *c)
 		NULL);
 	XtManageChild(bl->browse_list);
 
-        XtAddCallback(bl->browse_list, XmNmultipleSelectionCallback, 
+        XtAddCallback(bl->browse_list, XmNmultipleSelectionCallback,
 				bl_list_selection_cb, (XtPointer)c);
 
 	ManageChildren(bl->form);

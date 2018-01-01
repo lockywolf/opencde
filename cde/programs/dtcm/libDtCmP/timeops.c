@@ -213,14 +213,14 @@ timeok( Tick t)
 
 static DSTchange
 dst_changed(Tick old, Tick new)
-{	
+{
 	struct tm oldtm;
 	struct tm newtm;
 	_Xltimeparams localtime_buf;
 
 	oldtm	= *_XLocaltime(&old, localtime_buf);
 	newtm	= *_XLocaltime(&new, localtime_buf);
-	
+
 	if(oldtm.tm_isdst ==  newtm.tm_isdst) return(nochange);
 	switch(oldtm.tm_isdst) {
 		case 1:
@@ -231,7 +231,7 @@ dst_changed(Tick old, Tick new)
 			return(nochange);
 	}
 }
-	
+
 extern int
 seconds(int n, Unit unit)
 {
@@ -289,7 +289,7 @@ extern int
 leapyr(int y)
 {
 	return
-	 (y % 4 == 0 && y % 100 !=0 || y % 400 == 0);
+	 ((y % 4 == 0 && y % 100 !=0) || y % 400 == 0);
 }
 
 extern int
@@ -310,7 +310,7 @@ monthseconds(Tick t)
 	int mon;
 	struct tm tm;
 	_Xltimeparams localtime_buf;
-	
+
 	tm = *_XLocaltime(&t, localtime_buf);
 	mon = tm.tm_mon;
 	return(((mon==1) && leapyr(tm.tm_year+1900))? 29*daysec : monthsecs[mon]);
@@ -464,7 +464,7 @@ first_dow(Tick tick)
 
 	if ((d = dow(tick)) == 0)
 		d = 6;
-	else 
+	else
 		d--;
 
         return(lowerbound(last_ndays(tick, d)));
@@ -478,7 +478,7 @@ last_dow(Tick tick)
 
 	if ((d = dow(tick)) == 0)
 		d = 6;
-	else 
+	else
 		d--;
 	d = 6 - d;
 
@@ -492,7 +492,7 @@ numwks(Tick tick)
 }
 
 extern int
-adjust_dst(Tick start, Tick next) 
+adjust_dst(Tick start, Tick next)
 {
 	DSTchange change;
 	change = dst_changed(start, next);
@@ -519,7 +519,7 @@ next_nhours(Tick t, int n)
         tm              = *_XLocaltime(&t, localtime_buf);
         tm.tm_sec       = 0;
         tm.tm_min       = 0;
- 
+
 	next            = mktime(&tm);
 	next		= next + seconds(n, hrsec);
 	next		= adjust_dst(t, next);
@@ -636,12 +636,12 @@ prevmonth_exactday(Tick t)
 	_Xltimeparams localtime_buf;
 
 	tm = *_XLocaltime(&t, localtime_buf);
-	sdelta = tm.tm_hour * hrsec + tm.tm_min * minsec + tm.tm_sec; 
+	sdelta = tm.tm_hour * hrsec + tm.tm_min * minsec + tm.tm_sec;
 	day = tm.tm_mday;
 	if((tm.tm_mday < 31 && tm.tm_mon != 0) ||	/* at least 30 days everywhere, except Feb.*/
  	   (tm.tm_mday==31 && tm.tm_mon==6)    ||	/* two 31s -- Jul./Aug.		*/
 	   (tm.tm_mday==31 && tm.tm_mon==11)   ||	/* two 31s -- Dec./Jan.		*/
-	   (tm.tm_mon == 0 &&(tm.tm_mday < 29  ||(tm.tm_mday==29 && leapyr(tm.tm_year+1900))))) {	
+	   (tm.tm_mon == 0 &&(tm.tm_mday < 29  ||(tm.tm_mday==29 && leapyr(tm.tm_year+1900))))) {
 		prev = t-monthseconds(previousmonth(t));
 		prev = adjust_dst(t, prev);
 	}
@@ -670,12 +670,12 @@ nextmonth_exactday(Tick t)
 	_Xltimeparams localtime_buf;
 
 	tm = *_XLocaltime(&t, localtime_buf);
-	sdelta = tm.tm_hour * hrsec + tm.tm_min * minsec + tm.tm_sec; 
+	sdelta = tm.tm_hour * hrsec + tm.tm_min * minsec + tm.tm_sec;
 	day = tm.tm_mday;
 	if((tm.tm_mday < 31 && tm.tm_mon != 0) ||	/* at least 30 days everywhere, except Feb.*/
  	   (tm.tm_mday==31 && tm.tm_mon==6)    ||	/* two 31s -- Jul./Aug.		*/
 	   (tm.tm_mday==31 && tm.tm_mon==11)   ||	/* two 31s -- Dec./Jan.		*/
-	   (tm.tm_mon == 0 &&(tm.tm_mday < 29  ||(tm.tm_mday==29 && leapyr(tm.tm_year+1900))))) {	
+	   (tm.tm_mon == 0 &&(tm.tm_mday < 29  ||(tm.tm_mday==29 && leapyr(tm.tm_year+1900))))) {
 		next = t+monthseconds(t);
 		next = adjust_dst(t, next);
 	}
@@ -828,7 +828,7 @@ nextjan1(Tick t)
 	tm		= *_XLocaltime(&t, localtime_buf);
 	tm.tm_mon	= 0;
 	tm.tm_mday	= 1;
-	tm.tm_year++;	 
+	tm.tm_year++;
 #ifdef SVR4
 	tm.tm_isdst = -1;
 	return(mktime(&tm));
@@ -846,7 +846,7 @@ lastjan1(Tick t)
 	tm		= *_XLocaltime(&t, localtime_buf);
 	tm.tm_mon	= 0;
 	tm.tm_mday	= 1;
-	tm.tm_year--;	 
+	tm.tm_year--;
 #ifdef SVR4
 	tm.tm_isdst = -1;
 	return(mktime(&tm));
@@ -931,7 +931,7 @@ xytoclock(int x, int y, Tick t)
 	leaps	= leapsB4(yr);
 	ly	= leapyr(yr);
 
-	dd = 7*(y-1) + x - 
+	dd = 7*(y-1) + x -
 	 (yr+leaps+3055L*(mn+2)/100-84-(mn>2)*(2-ly))%7;
 
 	timestruct.tm_mon = tm.tm_mon;
@@ -965,19 +965,19 @@ set_timezone(char *tzname)
 #endif /* SVR4 */
 
 	else {
-		sprintf(tzenv, "TZ=%s", tzname);
+		snprintf(tzenv, MAXPATHLEN, "TZ=%s", tzname);
 		putenv(tzenv);
 		tzset();
 	}
 }
- 
+
 extern long
 gmt_off()
 {
         struct tm tm;
         Tick t;
         static Tick gmt;
- 
+
 #ifdef SVR4
 	extern long timezone;
 
@@ -1013,8 +1013,9 @@ init_time()
 	tzset();
 	if (getenv("TZ") == NULL){
 		char *tzptr;
-		tzptr = malloc(strlen(tzname[0]) + strlen(tzname[1]) + 10);
-		sprintf (tzptr,"TZ=%s%d%s", tzname[0], timezone/3600, tzname[1]);
+		int tz_size = strlen(tzname[0]) + strlen(tzname[1]) + 10;
+		tzptr = malloc(tz_size);
+		snprintf (tzptr, tz_size, "TZ=%s%d%s", tzname[0], timezone/3600, tzname[1]);
 		putenv(tzptr);
 		tzset();
 	}
@@ -1067,24 +1068,10 @@ days_to_seconds(int n)
         return(n *(int)daysec);
 }
 
-seconds_to_days(int n)
+int seconds_to_days(int n)
 {
         return(n/(int)daysec);
 }
-
-/*
-extern int
-weeks_to_seconds(int n)
-{
-        return(n *(int)wksec);
-}
-
-extern int
-seconds_to_weeks(int)
-{
-        return(n/(int)wksec);
-}
-*/
 
 extern Tick
 monthdayyear(int m, int d, int y)
@@ -1102,12 +1089,5 @@ monthdayyear(int m, int d, int y)
 	timestruct.tm_isdst = -1;
 
 	t = mktime(&timestruct);
-/*
-        sprintf(buf, "%d/%d/%d", m, d, y);
-        t = cm_getdate(buf, NULL);
-
-printf("monthdayyear, m= %d, d = %d, y = %d, t1 = %d, t = %d\n", m, d, y, t1, t);
-	
-*/
         return(t);
 }

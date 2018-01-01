@@ -71,11 +71,11 @@ get_date_from_widget(Tick t, Widget w, OrderingType order,
         char		*date = NULL;
 	WidgetClass	wc;
         static char	buf[80];
- 
+
 	memset(buf, '\0', 80);
 
 	if (!w)
-		format_tick(t, order, separator, buf);
+		format_tick(t, order, separator, buf, 80);
 	else {
 		wc = XtClass(w);
 		if (wc == xmTextWidgetClass)
@@ -86,8 +86,8 @@ get_date_from_widget(Tick t, Widget w, OrderingType order,
 			return NULL;
 
 		if (!date || *date == '\0')
-			format_tick(t, order, separator, buf);
-		else if (!datestr2mdy(date, order, separator, buf)) {
+			format_tick(t, order, separator, buf, 80);
+		else if (!datestr2mdy(date, order, separator, buf, 80)) {
 			XtFree(date);
 			return NULL;
 		}
@@ -105,7 +105,7 @@ set_date_in_widget(Tick t, Widget w, OrderingType order,
 	XmString	xmstr;
 	WidgetClass	wc = XtClass(w);
 
-        format_tick(t, order, separator, buf);
+        format_tick(t, order, separator, buf, 80);
 	if (wc == xmLabelGadgetClass || wc == xmLabelWidgetClass) {
 		xmstr = XmStringCreateLocalized(buf);
 		XtVaSetValues(w, XmNlabelString, xmstr,

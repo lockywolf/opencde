@@ -190,32 +190,32 @@ count_newlines(register char *string) {
 static void
 mini_err_msg(
 	nl_catd catd,
-	char *appt_what, 
+	char *appt_what,
 	Op_Type	type) {
 
 	char	*buf, *ptr;
 
 	if (type == TTY_Insert)
-		fprintf(stderr, "%s", 
+		fprintf(stderr, "%s",
 			catgets(catd, 1, 1042, "Insert Access Denied: "));
 	else if (type == TTY_Delete)
-		fprintf(stderr, "%s", 
+		fprintf(stderr, "%s",
 			catgets(catd, 1, 1043, "Delete Access Denied: "));
 	else
-		fprintf(stderr, "%s", 
+		fprintf(stderr, "%s",
 			catgets(catd, 1, 1044, "Lookup Access Denied: "));
 
 	if (appt_what && appt_what[0] != '\0') {
 		buf = cm_strdup(appt_what);
-		if (ptr = strrchr(buf, '\n'))
+		if ( (ptr = strrchr(buf, '\n')) )
 			*ptr = '\0';
-		fprintf(stderr, "%s '%s'\n", 
+		fprintf(stderr, "%s '%s'\n",
 				catgets(catd, 1, 1045, "Cancelled for"),
 				buf);
 		free(buf);
 	} else
-		fprintf(stderr, "%s\n", 
-				catgets(catd, 1, 1046, 
+		fprintf(stderr, "%s\n",
+				catgets(catd, 1, 1046,
 					"Appointment Cancelled\n"));
 }
 
@@ -224,15 +224,15 @@ query_user(void *client_data) {
 	char	ans[MAXNAMELEN], *what_str = (char *)client_data;
 
 	/* NL_COMMENT
-	   
-	   The following four messages (1047-1050) will be printed to stdout 
+
+	   The following four messages (1047-1050) will be printed to stdout
 	   and can have the following two forms:
 
 		"This appointment: '<appt text>' has an end
 		 time earlier than its begin time.  Do you
 		 want to schedule it into the next day? [Y/N]  "
 
-	   or 
+	   or
 
 		"This appointment has an end
 		 time earlier than its begin time.  Do you
@@ -243,12 +243,12 @@ query_user(void *client_data) {
 	*/
 
 	if (what_str && what_str[0] != '\0')
-		fprintf(stdout, catgets(catd_global, 1, 1047, 
+		fprintf(stdout, catgets(catd_global, 1, 1047,
 			"This appointment: '%s' has an end\n"), what_str);
 	else
-		fprintf(stdout, "%s", catgets(catd_global, 1, 1048, 
+		fprintf(stdout, "%s", catgets(catd_global, 1, 1048,
 			"This appointment has an end\n"));
-	fprintf(stdout, "%s", catgets(catd_global, 1, 1049, 
+	fprintf(stdout, "%s", catgets(catd_global, 1, 1049,
 			"time earlier than its begin time.  Do you\n"));
 	fprintf(stdout, "%s", catgets(catd_global, 1, 1050,
 			"want to schedule it into the next day? [Y/N]  "));
@@ -275,9 +275,9 @@ boolean_str(boolean_t val) {
 extern int
 cm_tty_delete(
 	nl_catd		catd,
-	CSA_session_handle session, 
-	int version, 
-	int index, 
+	CSA_session_handle session,
+	int version,
+	int index,
 	CSA_entry_handle *list) {
 
 	char			ans[10];
@@ -293,7 +293,7 @@ cm_tty_delete(
 				    NULL);
 
 	if (query_appt_struct(session, list[index], appt) != CSA_SUCCESS) {
-		mini_err_msg(catd, appt->what->value->item.string_value, 
+		mini_err_msg(catd, appt->what->value->item.string_value,
 			     TTY_Delete);
 		return(0);
 	}
@@ -314,13 +314,13 @@ cm_tty_delete(
 			Option [1-4]: "
 
 		*/
-		fprintf(stdout, catgets(catd, 1, 1051, 
+		fprintf(stdout, catgets(catd, 1, 1051,
 		     "The appointment '%s' is part of a repeating series.  "),
 		      appt->what->value->item.string_value);
 		fprintf(stdout, "%s", catgets(catd, 1, 1052, "Do you want to:"));
-		fprintf(stdout, "%s", catgets(catd, 1, 1053, 
+		fprintf(stdout, "%s", catgets(catd, 1, 1053,
 					"\n\t1.  Delete all of them"));
-		fprintf(stdout, "%s", catgets(catd, 1, 1054, 
+		fprintf(stdout, "%s", catgets(catd, 1, 1054,
 					"\n\t2.  Delete this one only"));
 		fprintf(stdout, "%s", catgets(catd, 1, 1055, "\n\t3.  Delete forward"));
 		fprintf(stdout, "%s", catgets(catd, 1, 1056, "\n\t4.  Cancel"));
@@ -373,15 +373,15 @@ cm_tty_format_header(Props *p, Tick tick, char *buf) {
 
 	switch(get_int_prop(p, CP_DATEORDERING)) {
 	case ORDER_MDY:
-		sprintf(buf, "%s %s %d, %d", day_str(d_op), month_str(m_op),
+		snprintf(buf, sizeof(buf), "%s %s %d, %d", day_str(d_op), month_str(m_op),
 			dom(tick), year(tick));
 		break;
 	case ORDER_DMY:
-		sprintf(buf, "%s %d %s, %d", day_str(d_op), dom(tick),
+		snprintf(buf, sizeof(buf), "%s %d %s, %d", day_str(d_op), dom(tick),
 			month_str(m_op), year(tick));
 		break;
 	case ORDER_YMD:
-		sprintf(buf, "%s, %d %s %d", day_str(d_op), year(tick),
+		snprintf(buf, sizeof(buf), "%s, %d %s %d", day_str(d_op), year(tick),
 			month_str(m_op), dom(tick));
 		break;
 	default:
@@ -397,7 +397,7 @@ scrub_attr_list(Dtcm_appointment *appt) {
 
 	for (i = 0; i < appt->count; i++) {
 		if (appt->attrs[i].value->type == CSA_VALUE_REMINDER) {
-			if ((appt->attrs[i].value->item.reminder_value->lead_time == NULL) || 
+			if ((appt->attrs[i].value->item.reminder_value->lead_time == NULL) ||
 			     (appt->attrs[i].value->item.reminder_value->lead_time[0] == '\0')) {
 				free(appt->attrs[i].name);
 				appt->attrs[i].name = NULL;
@@ -421,8 +421,8 @@ scrub_attr_list(Dtcm_appointment *appt) {
 /*
  * Insert an appointment!
  */
-extern int 
-cm_tty_insert(nl_catd catd, CSA_session_handle target, int version, 
+extern int
+cm_tty_insert(nl_catd catd, CSA_session_handle target, int version,
 	      char *date, char *start, char *end,
 	      char *repeat, char *repeatfor, char *what, char *filename,
 	      Props *p) {
@@ -441,7 +441,7 @@ cm_tty_insert(nl_catd catd, CSA_session_handle target, int version,
 	catd_global = catd;
 
 	if (filename) {
-		op = parse_appt_from_file(catd, filename, list, p, query_user, 
+		op = parse_appt_from_file(catd, filename, list, p, query_user,
 					  NULL, version);
 		appt = (Dtcm_appointment *)CmDataListGetData(list, 1);
 	} else {
@@ -456,39 +456,39 @@ cm_tty_insert(nl_catd catd, CSA_session_handle target, int version,
 	for (cnt = 1; cnt <= list->count; cnt++) {
 		if ((appt = (Dtcm_appointment *)CmDataListGetData(list, cnt)) == NULL)
 			continue;
-	
+
 		switch(op) {
 		case INVALID_DATE:
 			t1 = catgets(catd, 1, 1058, "Invalid Date specified.\n");
 			break;
 		case INVALID_START:
-			t1 = catgets(catd, 1, 1059, 
+			t1 = catgets(catd, 1, 1059,
 					"Invalid Start time specified.\n");
 			break;
 		case INVALID_TIME:
 			t1 = "Invalid Due time specified.\n";
 			break;
 		case INVALID_STOP:
-			t1 = catgets(catd, 1, 1060, 
+			t1 = catgets(catd, 1, 1060,
 					"Invalid Stop time specified.\n");
 			break;
 		case MISSING_DATE:
-			t1 = catgets(catd, 1, 1061, 
+			t1 = catgets(catd, 1, 1061,
 					"Empty or missing Date field.\n");
 			break;
 		case MISSING_START:
-			t1 = catgets(catd, 1, 1062, 
+			t1 = catgets(catd, 1, 1062,
 					"Empty or missing Start field.\n");
 			break;
 		case MISSING_TIME:
 			t1 = "Empty or missing Due time field.\n";
 			break;
 		case MISSING_WHAT:
-			t1 = catgets(catd, 1, 1063, 
+			t1 = catgets(catd, 1, 1063,
 					"Empty or missing What field.\n");
 			break;
 		case REPEAT_FOR_MISMATCH:
-			t1 = catgets(catd, 1, 1064, 
+			t1 = catgets(catd, 1, 1064,
 					"Repeat and For field mismatch.\n");
 			break;
 		case VALID_APPT:
@@ -497,24 +497,24 @@ cm_tty_insert(nl_catd catd, CSA_session_handle target, int version,
 			break;
 		default:
 			op = CANCEL_APPT;
-			t1 = catgets(catd, 1, 1065, 
+			t1 = catgets(catd, 1, 1065,
 					"Insert appointment was cancelled\n");
 			break;
 		}
-	
+
 		if (op == VALID_APPT) {
 			scrub_attr_list(appt);
-	
+
 			if ((status = csa_add_entry(target, appt->count, appt->attrs, &new_entry, NULL)) != CSA_SUCCESS) {
-				mini_err_msg(catd, 
-					appt->what->value->item.string_value, 
+				mini_err_msg(catd,
+					appt->what->value->item.string_value,
 					TTY_Insert);
 				ret_stat = -1;
 			} else
 				csa_free((CSA_buffer)new_entry);
 		} else {
 		  	char *msg = strdup(t1);
-			fprintf(stderr, "%s%s\n", msg, catgets(catd, 1, 1066, 
+			fprintf(stderr, "%s%s\n", msg, catgets(catd, 1, 1066,
 					"Appointment was not inserted."));
 			free(msg);
 			ret_stat = -1;
@@ -525,7 +525,7 @@ cm_tty_insert(nl_catd catd, CSA_session_handle target, int version,
 		ret_stat = -1;
 
 	for (cnt = 1; cnt <= list->count; cnt++)
-		if (appt = (Dtcm_appointment *)CmDataListGetData(list, cnt))
+		if ( (appt = (Dtcm_appointment *)CmDataListGetData(list, cnt)) )
 			free_appt_struct(&appt);
 	CmDataListDestroy(list, B_FALSE);
 
@@ -590,7 +590,7 @@ cm_tty_lookup(nl_catd catd, CSA_session_handle target, int version, char *date, 
 	if (!date)
 		tick = now();
 	else if ((tick = cm_getdate(date, NULL)) < 0) {
-		fprintf(stdout,	"\n%s %s\n\n", 
+		fprintf(stdout,	"\n%s %s\n\n",
 				catgets(catd, 1, 1067, "Invalid date specified:"),
 				date);
 		return(0);
@@ -639,7 +639,7 @@ cm_tty_lookup(nl_catd catd, CSA_session_handle target, int version, char *date, 
 		day = dom(start_tick);
 		if (day != last_day) {
 			cm_tty_format_header(p, start_tick, date_str);
-			fprintf(stdout,	"\n%s %s:\n", 
+			fprintf(stdout,	"\n%s %s:\n",
 				catgets(catd, 1, 1068, "Appointments for"),
 				date_str);
 		}
@@ -649,12 +649,12 @@ cm_tty_lookup(nl_catd catd, CSA_session_handle target, int version, char *date, 
 		if (appt->show_time->value->item.sint32_value &&
 		    !magic_time(start_tick)) {
 			dt = get_int_prop(p, CP_DEFAULTDISP);
-			format_time(start_tick, dt, start_buf);
+			format_time(start_tick, dt, start_buf, MAXNAMELEN);
 			if (appt->end_time)
-				format_time(end_tick, dt, end_buf);
+				format_time(end_tick, dt, end_buf, MAXNAMELEN);
 			else
 				*end_buf = '\0';
-			sprintf(buf, "%s%c%7s ", start_buf,
+			snprintf(buf, MAXNAMELEN, "%s%c%7s ", start_buf,
 				(*end_buf ? '-' : ' '), end_buf);
 		}
 
@@ -678,7 +678,7 @@ cm_tty_lookup(nl_catd catd, CSA_session_handle target, int version, char *date, 
 
 	if (*list == NULL) {
 		cm_tty_format_header(p, start + 1, date_str);
-		fprintf(stdout,	"\n%s %s\n\n", 
+		fprintf(stdout,	"\n%s %s\n\n",
 				catgets(catd, 1, 1069, "No Appointments for"),
 				date_str);
 	}
@@ -778,25 +778,25 @@ default_repeat_scope_str(
 {
 	if (!default_repeat_scope_strs[DAILY]) {
 		default_repeat_scope_strs[ONE_TIME] = strdup("\0");
-		default_repeat_scope_strs[DAILY] = 
-				strdup(catgets(catd, 1, 994, "days")); 
-		default_repeat_scope_strs[WEEKLY] = 
-				strdup(catgets(catd, 1, 995, "weeks")); 
-		default_repeat_scope_strs[EVERY_TWO_WEEKS] = 
-				strdup(catgets(catd, 1, 996, "biweeks")); 
-		default_repeat_scope_strs[MONTHLY_BY_DATE] = 
-				strdup(catgets(catd, 1, 997, "months")); 
-		default_repeat_scope_strs[MONTHLY_BY_WEEKDAY] = 
+		default_repeat_scope_strs[DAILY] =
+				strdup(catgets(catd, 1, 994, "days"));
+		default_repeat_scope_strs[WEEKLY] =
+				strdup(catgets(catd, 1, 995, "weeks"));
+		default_repeat_scope_strs[EVERY_TWO_WEEKS] =
+				strdup(catgets(catd, 1, 996, "biweeks"));
+		default_repeat_scope_strs[MONTHLY_BY_DATE] =
+				strdup(catgets(catd, 1, 997, "months"));
+		default_repeat_scope_strs[MONTHLY_BY_WEEKDAY] =
 				default_repeat_scope_strs[MONTHLY_BY_DATE];
-		default_repeat_scope_strs[YEARLY] = 
-				strdup(catgets(catd, 1, 998, "years")); 
-		default_repeat_scope_strs[MONDAY_THRU_FRIDAY] = 
+		default_repeat_scope_strs[YEARLY] =
+				strdup(catgets(catd, 1, 998, "years"));
+		default_repeat_scope_strs[MONDAY_THRU_FRIDAY] =
 				default_repeat_scope_strs[WEEKLY];
-		default_repeat_scope_strs[MON_WED_FRI] = 
+		default_repeat_scope_strs[MON_WED_FRI] =
 				default_repeat_scope_strs[WEEKLY];
-		default_repeat_scope_strs[TUESDAY_THURSDAY] = 
+		default_repeat_scope_strs[TUESDAY_THURSDAY] =
 				default_repeat_scope_strs[WEEKLY];
-		default_repeat_scope_strs[REPEAT_EVERY] = strdup("\0"); 
+		default_repeat_scope_strs[REPEAT_EVERY] = strdup("\0");
 	}
 
 	if (op >= ONE_TIME && op <= REPEAT_EVERY)
@@ -821,14 +821,14 @@ get_datemsg(OrderingType order, SeparatorType sep) {
 
 	switch (order) {
 	case ORDER_DMY:
-		sprintf(buf, "%s %s %s %s %s", "Day", str, "Month", str, "Year");
+		snprintf(buf, 20, "%s %s %s %s %s", "Day", str, "Month", str, "Year");
 		break;
 	case ORDER_YMD:
-		sprintf(buf, "%s %s %s %s %s", "Year", str, "Month", str, "Day");
+		snprintf(buf, 20, "%s %s %s %s %s", "Year", str, "Month", str, "Day");
 		break;
 	case ORDER_MDY:
 	default:
-		sprintf(buf, "%s %s %s %s %s", "Month", str, "Day", str, "Year");
+		snprintf(buf, 20, "%s %s %s %s %s", "Month", str, "Day", str, "Year");
 		break;
 	}
 	return(cm_strdup(buf));
@@ -842,9 +842,10 @@ extern Parse_key_op
 identify_parse_key(char *str) {
 
 	if (!new_appt_begin_delimiter) {
-		new_appt_begin_delimiter = malloc(strlen(CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER) + 14);
-		sprintf(new_appt_begin_delimiter, "%s%s", 
-			CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER, 
+		int size = strlen(CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER) + 14;
+		new_appt_begin_delimiter = malloc(size);
+		snprintf(new_appt_begin_delimiter, size, "%s%s",
+			CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER,
 			":string:begin");
 	}
 
@@ -984,9 +985,9 @@ build_new_attrval(CSA_attribute *attrval, char *name, char *tag, char *value)
 		vptr->type = CSA_VALUE_REMINDER;
 		s_ptr = strchr(value, ':');
 		*s_ptr = '\0';
-		
+
 		vptr->item.reminder_value = calloc(sizeof(CSA_reminder), 1);
-		
+
 		vptr->item.reminder_value->lead_time = malloc(BUFSIZ);
 		_csa_duration_to_iso8601(atoi(value), vptr->item.reminder_value->lead_time);
 		vptr->item.reminder_value->reminder_data.data = (CSA_uint8 *) strdup(s_ptr + 1);
@@ -995,10 +996,10 @@ build_new_attrval(CSA_attribute *attrval, char *name, char *tag, char *value)
 
 	if (!strcmp(tag, "accesslist")) {
 
-		/* The access list format is that each member in the 
-		   list is written out on a separate line.  So after 
-		   the initial newline in the value, the pattern is a 
-		   TAB followed by the mask value followed by a colon, 
+		/* The access list format is that each member in the
+		   list is written out on a separate line.  So after
+		   the initial newline in the value, the pattern is a
+		   TAB followed by the mask value followed by a colon,
 		   followed by the string. */
 
 		vptr->type = CSA_VALUE_ACCESS_LIST;
@@ -1017,7 +1018,7 @@ build_new_attrval(CSA_attribute *attrval, char *name, char *tag, char *value)
 				l_ptr->rights = atoi(b_ptr);
 
 				b_ptr = s_ptr + 1;
-				if (s_ptr = strchr(b_ptr, '\n'))
+				if ( (s_ptr = strchr(b_ptr, '\n')) )
 					*s_ptr = '\0';
 
 				l_ptr->user->user_name = cm_strdup(b_ptr);
@@ -1046,17 +1047,18 @@ read_new_appt(FILE *fp, Dtcm_appointment **appt, Props *p, int version)
 	Dtcm_appointment	*avlist;
 
 	if (!new_appt_end_delimiter) {
-		new_appt_end_delimiter = malloc(strlen(CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER) + 14);
-		sprintf(new_appt_end_delimiter, "%s%s", 
-			CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER, 
+		int size = strlen(CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER) + 14;
+		new_appt_end_delimiter = malloc(size);
+		snprintf(new_appt_end_delimiter, size, "%s%s",
+			CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER,
 			":string:end");
 	}
 	avlist = allocate_appt_struct(appt_write, DATAVER_ARCHIVE, NULL);
 	load_appt_defaults(avlist, p);
 
-	/* At this point, we really want to negate all of the links set 
-	   up by tha appointment allocation routine.  The following code is 
-	   almost certain to invalidate them, and some trailing links would 
+	/* At this point, we really want to negate all of the links set
+	   up by tha appointment allocation routine.  The following code is
+	   almost certain to invalidate them, and some trailing links would
 	   be harmful */
 
 	avlist->identifier = NULL;
@@ -1082,7 +1084,7 @@ read_new_appt(FILE *fp, Dtcm_appointment **appt, Props *p, int version)
 
 	attrs_allocated = avlist->count;
 
-	/* should be starting a new attribute definition */ 
+	/* should be starting a new attribute definition */
 
 	while (fgets(line, MAXNAMELEN - 1, fp))
 	{
@@ -1093,24 +1095,25 @@ read_new_appt(FILE *fp, Dtcm_appointment **appt, Props *p, int version)
 			break;
 
 		if (line[0] == '\t') {
-		
-			/* This is a continuation line from the previous 
-			   attribute definition.  The value here should 
+
+			/* This is a continuation line from the previous
+			   attribute definition.  The value here should
 			   be catenated onto the previously yanked value */
 
 			b_ptr = line + 1;
 
-			/* a line with only a tab on it, and no text 
-			   means that a newline should be inserted 
+			/* a line with only a tab on it, and no text
+			   means that a newline should be inserted
 			   into the stream */
 
 			if (!*b_ptr)
 				b_ptr = "\n";
 
+
 			a_value = realloc(a_value, strlen(a_value) +
 					  strlen(b_ptr) + 2);
-			strcat(a_value, "\n");
-			strcat(a_value, b_ptr);
+			strlcat(a_value, "\n", sizeof(a_value));
+			strlcat(a_value, b_ptr, sizeof(a_value));
 
 			a_value[strlen(a_value) - 1] = '\0';
 
@@ -1118,24 +1121,24 @@ read_new_appt(FILE *fp, Dtcm_appointment **appt, Props *p, int version)
 		}
 		else if (line[0] == '\n') {
 
-			/* An empty line.  This means the end of 
+			/* An empty line.  This means the end of
 			   the appointment definition */
 
 			break;
 		}
 
-		/* if the line is neither a termination line, nor 
-		   a continuation line, then the entry must be a new 
-		   attribute name.  We should declare the previous 
+		/* if the line is neither a termination line, nor
+		   a continuation line, then the entry must be a new
+		   attribute name.  We should declare the previous
 		   triple complete. */
 
 		if (a_name && a_tag && a_value)
 		{
 
-		/* see if the allocated buffer is large enough to 
-		   contain another attibute.  If not, make it a bit 
+		/* see if the allocated buffer is large enough to
+		   contain another attibute.  If not, make it a bit
 		   larger, and then copy the attribute. */
-	
+
 			if (ident_name_ro(a_name, DATAVER_ARCHIVE) == B_FALSE) {
 				if ((attrs_written) == attrs_allocated) {
 					attrs_allocated += 10;
@@ -1159,7 +1162,7 @@ read_new_appt(FILE *fp, Dtcm_appointment **appt, Props *p, int version)
 		a_name = a_tag = a_value = NULL;
 
 		b_ptr = line;
-		if (c_ptr = strchr(line, ':'))
+		if ( (c_ptr = strchr(line, ':')) )
 		{
 			*c_ptr = '\0';
 			a_name = cm_strdup(b_ptr);
@@ -1173,14 +1176,14 @@ read_new_appt(FILE *fp, Dtcm_appointment **appt, Props *p, int version)
 		if (!*b_ptr)
 			break;
 
-		if (c_ptr = strchr(b_ptr, ':'))
-                {       
+		if ( (c_ptr = strchr(b_ptr, ':')) )
+                {
                         *c_ptr = '\0';
                         a_tag = cm_strdup(b_ptr);
                 }
                 else
                         /* big problem.  Malformed attribute specification */
- 
+
                         break;
 
 		b_ptr = c_ptr + 1;
@@ -1197,8 +1200,8 @@ read_new_appt(FILE *fp, Dtcm_appointment **appt, Props *p, int version)
 	if (a_name && a_tag && a_value)
 	{
 
-	/* see if the allocated buffer is large enough to 
-	   contain another attibute.  If not, make it a bit 
+	/* see if the allocated buffer is large enough to
+	   contain another attibute.  If not, make it a bit
 	   larger, and then copy the attribute. */
 
 		if (ident_name_ro(a_name, DATAVER_ARCHIVE) == B_FALSE) {
@@ -1248,9 +1251,9 @@ dow_str(
 	}
 }
 
-/* this routine is designed to take in an appintment, and generate the 
-   DATAVER4 recurrence rule for that appointment.  It is also responsible 
-   for crushing out the old style attributes that may not be inserted 
+/* this routine is designed to take in an appintment, and generate the
+   DATAVER4 recurrence rule for that appointment.  It is also responsible
+   for crushing out the old style attributes that may not be inserted
    into a newer style data model. */
 
 static void
@@ -1259,6 +1262,7 @@ generate_recurrence_rule(Dtcm_appointment *appt, int version) {
 	char            *str,
                          rule_buf1[32],
                          rule_buf2[32];
+	int             rule_buf_size = 32;
 	CSA_sint32	repeat_type;
 	CSA_uint32	repeat_nth;
 	CSA_uint32	repeat_for;
@@ -1283,78 +1287,78 @@ generate_recurrence_rule(Dtcm_appointment *appt, int version) {
 
 	if (!appt->recurrence_rule || !appt->recurrence_rule->value) {
 		switch (repeat_type) {
-		
-		case CSA_X_DT_REPEAT_ONETIME : 
-			strcpy(rule_buf1, "D1 ");
+
+		case CSA_X_DT_REPEAT_ONETIME :
+			strlcpy(rule_buf1, "D1 ", rule_buf_size);
 			break;
-		
-		case CSA_X_DT_REPEAT_DAILY : 
-			strcpy(rule_buf1, "D1 ");
+
+		case CSA_X_DT_REPEAT_DAILY :
+			strlcpy(rule_buf1, "D1 ", rule_buf_size);
 			break;
-		
-		case CSA_X_DT_REPEAT_WEEKLY : 
-			strcpy(rule_buf1, "W1 ");
+
+		case CSA_X_DT_REPEAT_WEEKLY :
+			strlcpy(rule_buf1, "W1 ", rule_buf_size);
 			break;
-		
-		case CSA_X_DT_REPEAT_BIWEEKLY : 
-			strcpy(rule_buf1, "W2 ");
+
+		case CSA_X_DT_REPEAT_BIWEEKLY :
+			strlcpy(rule_buf1, "W2 ", rule_buf_size);
 			break;
-		
-		case CSA_X_DT_REPEAT_MONTHLY_BY_WEEKDAY : 
+
+		case CSA_X_DT_REPEAT_MONTHLY_BY_WEEKDAY :
 
 			if (weekofmonth(appt_time, &wk) && wk == 5)
-                       		sprintf(rule_buf1, "MP1 1- %s ", dow_str(appt_time));
+                       		snprintf(rule_buf1, rule_buf_size, "MP1 1- %s ", dow_str(appt_time));
                		else
-                       		strcpy(rule_buf1, "MP1 ");
+                       		strlcpy(rule_buf1, "MP1 ", rule_buf_size);
 
 			break;
-		
-		case CSA_X_DT_REPEAT_MONTHLY_BY_DATE : 
-			strcpy(rule_buf1, "MD1 ");
+
+		case CSA_X_DT_REPEAT_MONTHLY_BY_DATE :
+			strlcpy(rule_buf1, "MD1 ", rule_buf_size);
 			break;
-		
-		case CSA_X_DT_REPEAT_YEARLY : 
-			strcpy(rule_buf1, "YM1 ");
+
+		case CSA_X_DT_REPEAT_YEARLY :
+			strlcpy(rule_buf1, "YM1 ", rule_buf_size);
 			break;
-		
-		case CSA_X_DT_REPEAT_MON_TO_FRI : 
-			strcpy(rule_buf1, "W1 MO TU WE TH FR ");
+
+		case CSA_X_DT_REPEAT_MON_TO_FRI :
+			strlcpy(rule_buf1, "W1 MO TU WE TH FR ", rule_buf_size);
 			break;
-		
-		case CSA_X_DT_REPEAT_MONWEDFRI : 
-			strcpy(rule_buf1, "W1 MO WE FR ");
+
+		case CSA_X_DT_REPEAT_MONWEDFRI :
+			strlcpy(rule_buf1, "W1 MO WE FR ", rule_buf_size);
 			break;
-		
-		case CSA_X_DT_REPEAT_TUETHUR : 
-			strcpy(rule_buf1, "W1 TU TH ");
+
+		case CSA_X_DT_REPEAT_TUETHUR :
+			strlcpy(rule_buf1, "W1 TU TH ", rule_buf_size);
 			break;
-		
-		case CSA_X_DT_REPEAT_EVERY_NDAY : 
-			sprintf(rule_buf1, "D%ld ", repeat_nth);
+
+		case CSA_X_DT_REPEAT_EVERY_NDAY :
+			snprintf(rule_buf1, rule_buf_size, "D%ld ", repeat_nth);
 			break;
-		
-		case CSA_X_DT_REPEAT_EVERY_NWEEK : 
-			sprintf(rule_buf1, "W%ld ", repeat_nth);
+
+		case CSA_X_DT_REPEAT_EVERY_NWEEK :
+			snprintf(rule_buf1, rule_buf_size, "W%ld ", repeat_nth);
 			break;
-		
-		case CSA_X_DT_REPEAT_EVERY_NMONTH : 
-			sprintf(rule_buf1, "MD%ld ", repeat_nth);
+
+		case CSA_X_DT_REPEAT_EVERY_NMONTH :
+			snprintf(rule_buf1, rule_buf_size, "MD%ld ", repeat_nth);
 			break;
 		}
 
         	if (repeat_for == 0)
-                	strcat(rule_buf2, "#1");
+                	strlcat(rule_buf2, "#1", rule_buf_size);
         	else
-                	sprintf(rule_buf2, "#%ld", repeat_for);
-	
-		strcat (rule_buf1, rule_buf2);
+                	snprintf(rule_buf2, rule_buf_size, "#%ld", repeat_for);
+
+		strlcat (rule_buf1, rule_buf2, rule_buf_size);
 
 		appt->attrs = realloc(appt->attrs,
                                       sizeof(CSA_attribute) * (appt->count + 1));
 
 		build_new_attrval(&appt->attrs[appt->count],
-                                  CSA_ENTRY_ATTR_RECURRENCE_RULE, 
-				  "string", 
+                                  CSA_ENTRY_ATTR_RECURRENCE_RULE,
+				  "string",
 				  rule_buf1);
 
 		appt->count++;
@@ -1386,7 +1390,7 @@ generate_recurrence_rule(Dtcm_appointment *appt, int version) {
 		free(appt->repeat_week_num->name);
 		appt->repeat_week_num->name = NULL;
 	}
-		
+
 }
 
 /*
@@ -1432,12 +1436,12 @@ parse_appt_from_file(nl_catd catd, char *file, CmDataList *list, Props *p,
 			what_lines = 0;
 		}
 
-		/* 
+		/*
 		 * The check for '*' handles the case when the appt header
 		 * ``** Calendar Appointment **'' has no white space to its
 		 * left.
 		 */
-		if (*key_str == '\0' || 
+		if (*key_str == '\0' ||
 		    (!isspace((u_char)*key_str) && (u_char)*key_str != '*'))
 			continue;
 
@@ -1495,7 +1499,7 @@ parse_appt_from_file(nl_catd catd, char *file, CmDataList *list, Props *p,
 				 */
 				CmDataListAdd(list, (void *)appt, 0);
 
-				valid_op = validate_appt(catd, appt, s_buf, 
+				valid_op = validate_appt(catd, appt, s_buf,
 					e_buf, d_buf, dur, w_buf, r_buf, f_buf,
 					query, key_data, version);
 				if (valid_op == VALID_APPT) {
@@ -1520,19 +1524,19 @@ parse_appt_from_file(nl_catd catd, char *file, CmDataList *list, Props *p,
 			w_buf = NULL;
 			break;
 		case DATE_KEY:
-			cm_strcpy(d_buf, val_str);
+			cm_strlcpy(d_buf, val_str, MAXNAMELEN);
 			break;
 		case START_KEY:
-			cm_strcpy(s_buf, val_str);
+			cm_strlcpy(s_buf, val_str, MAXNAMELEN);
 			len = cm_strlen(s_buf) - 1;
 			if (s_buf[len] == 'a' || s_buf[len] == 'p')
-				cm_strcat(s_buf, "m");
+				cm_strlcat(s_buf, "m", MAXNAMELEN);
 			break;
 		case STOP_KEY:
-			cm_strcpy(e_buf, val_str);
+			cm_strlcpy(e_buf, val_str, MAXNAMELEN);
 			len = cm_strlen(e_buf) - 1;
 			if (e_buf[len] == 'a' || e_buf[len] == 'p')
-				cm_strcat(e_buf, "m");
+				cm_strlcat(e_buf, "m", MAXNAMELEN);
 			break;
 		case DURATION_KEY:
 			dur = atoi(val_str);
@@ -1581,11 +1585,11 @@ parse_appt_from_file(nl_catd catd, char *file, CmDataList *list, Props *p,
 				what_lines = 1;
 			} else {
 				tmp = w_buf;
-				w_buf = (char *)ckalloc(cm_strlen(tmp)
-					+ cm_strlen(key_str) + 2);
-				cm_strcpy(w_buf, tmp);
-				cm_strcat(w_buf, "\n");
-				cm_strcat(w_buf, key_str);
+				int size = cm_strlen(tmp) + cm_strlen(key_str) + 2;
+				w_buf = (char *)ckalloc(size);
+				cm_strlcpy(w_buf, tmp, size);
+				cm_strlcat(w_buf, "\n", size);
+				cm_strlcat(w_buf, key_str, size);
 				free(tmp);
 				what_lines++;
 			}
@@ -1593,13 +1597,13 @@ parse_appt_from_file(nl_catd catd, char *file, CmDataList *list, Props *p,
 			processing_what = B_TRUE;
 			break;
 		case REPEAT_KEY:
-			cm_strcpy(r_buf, val_str);
+			cm_strlcpy(r_buf, val_str, MAXNAMELEN);
 			break;
 		case FOR_KEY:
-			cm_strcpy(f_buf, val_str);
+			cm_strlcpy(f_buf, val_str, MAXNAMELEN);
 			break;
 		case NEW_APPT_KEY:
-			if ((version >= DATAVER4) || 
+			if ((version >= DATAVER4) ||
 			    (version == DATAVER_ARCHIVE)) {
 				read_new_appt(fp, &appt, p, version);
 				generate_recurrence_rule(appt, version);
@@ -1629,8 +1633,8 @@ parse_appt_from_file(nl_catd catd, char *file, CmDataList *list, Props *p,
 
 	if (processing_appt) {
 		CmDataListAdd(list, (void *)appt, 0);
-		valid_op = validate_appt(catd, appt, s_buf, e_buf, d_buf, dur, 
-					 w_buf, r_buf, f_buf, query, key_data, 
+		valid_op = validate_appt(catd, appt, s_buf, e_buf, d_buf, dur,
+					 w_buf, r_buf, f_buf, query, key_data,
 					 version);
 		if (w_buf)
 			free(w_buf);
@@ -1645,8 +1649,9 @@ parse_appt_from_file(nl_catd catd, char *file, CmDataList *list, Props *p,
 void
 growcat(char **source, char *new)
 {
-	*source = (char *) realloc(*source, strlen(*source) + strlen(new) + 2);
-	strcat(*source, new);
+	int length = strlen(*source) + strlen(new) + 2;
+	*source = (char *) realloc(*source, length);
+	strlcat(*source, new, length);
 }
 
 void
@@ -1689,74 +1694,74 @@ attrs_to_string(CSA_attribute * attrs, int num_attrs)
 			continue;
 
 		tmp_buf[0] = '\0';
-                sprintf(tmp_buf, "%s:", attrs[i].name);
+                snprintf(tmp_buf, MAXNAMELEN, "%s:", attrs[i].name);
 		switch (attrs[i].value->type) {
-		case CSA_VALUE_SINT32: 
+		case CSA_VALUE_SINT32:
 				growcat(&buffer, tmp_buf);
-				sprintf(tmp_buf, "sinteger:%ld\n",
+				snprintf(tmp_buf, MAXNAMELEN, "sinteger:%ld\n",
 					attrs[i].value->item.sint32_value);
 				growcat(&buffer, tmp_buf);
 				break;
 
-		case CSA_VALUE_UINT32: 
+		case CSA_VALUE_UINT32:
 				growcat(&buffer, tmp_buf);
-				sprintf(tmp_buf, "uinteger:%ld\n",
+				snprintf(tmp_buf, MAXNAMELEN, "uinteger:%ld\n",
 					attrs[i].value->item.uint32_value);
 				growcat(&buffer, tmp_buf);
 				break;
 
-		case CSA_VALUE_DATE_TIME: 
+		case CSA_VALUE_DATE_TIME:
 				if (attrs[i].value->item.string_value == NULL)
 					continue;
 
 				growcat(&buffer, tmp_buf);
 				growcat(&buffer, "datetime:");
-				if (attrs[i].value->item.date_time_value) 
+				if (attrs[i].value->item.date_time_value)
 					cat_indented_string(&buffer,
 						attrs[i].value->item.string_value);
 				growcat(&buffer, "\n");
 				break;
 
-		case CSA_VALUE_STRING: 
+		case CSA_VALUE_STRING:
 				if (attrs[i].value->item.string_value == NULL)
 					continue;
 
 				growcat(&buffer, tmp_buf);
 				growcat(&buffer, "string:");
-				if (attrs[i].value->item.string_value) 
+				if (attrs[i].value->item.string_value)
 					cat_indented_string(&buffer,
 						attrs[i].value->item.string_value);
 				growcat(&buffer, "\n");
 				break;
-		case CSA_VALUE_CALENDAR_USER: 
+		case CSA_VALUE_CALENDAR_USER:
 				if (attrs[i].value->item.calendar_user_value == NULL)
 					continue;
 
 				growcat(&buffer, tmp_buf);
-				sprintf(tmp_buf, "caluser:%ld:", attrs[i].value->item.calendar_user_value->user_type);
+				snprintf(tmp_buf, MAXNAMELEN, "caluser:%ld:", attrs[i].value->item.calendar_user_value->user_type);
 				growcat(&buffer, tmp_buf);
-				if (attrs[i].value->item.calendar_user_value->user_name) 
+				if (attrs[i].value->item.calendar_user_value->user_name)
 					cat_indented_string(&buffer,
 						attrs[i].value->item.calendar_user_value->user_name);
 
 				growcat(&buffer, "\n");
 				break;
 
-		case CSA_VALUE_REMINDER: 
+		case CSA_VALUE_REMINDER:
 				if (attrs[i].value->item.reminder_value->lead_time == NULL)
 					continue;
 
 				growcat(&buffer, tmp_buf);
 				_csa_iso8601_to_duration(attrs[i].value->item.reminder_value->lead_time, &advance_time);
-				sprintf(tmp_buf, "reminder:%d:", advance_time);
+				snprintf(tmp_buf, MAXNAMELEN, "reminder:%d:", advance_time);
 				growcat(&buffer, tmp_buf);
-				if (attrs[i].value->item.reminder_value->reminder_data.data) 
+				if (attrs[i].value->item.reminder_value->reminder_data.data)
 					cat_indented_string(&buffer,
 						(char *) attrs[i].value->item.reminder_value->reminder_data.data);
 				growcat(&buffer, "\n");
 				break;
 
-		case CSA_VALUE_ACCESS_LIST: 
+		case CSA_VALUE_ACCESS_LIST:
 				if (attrs[i].value->item.access_list_value == NULL)
 					continue;
 
@@ -1764,7 +1769,7 @@ attrs_to_string(CSA_attribute * attrs, int num_attrs)
 				growcat(&buffer, "accesslist:\n");
 				a_ptr = attrs[i].value->item.access_list_value;
 				while (a_ptr) {
-					sprintf(tmp_buf, "\t%d:%s\n",
+					snprintf(tmp_buf, MAXNAMELEN, "\t%d:%s\n",
 						(int) a_ptr->rights, a_ptr->user->user_name);
 					growcat(&buffer, tmp_buf);
 					a_ptr = a_ptr->next;
@@ -1861,7 +1866,7 @@ parse_attrs_to_string(Dtcm_appointment *appt, Props *p, char *attr_string) {
 			r_buf[MAXNAMELEN], f_buf[MAXNAMELEN], *appt_what,
 			*b_ptr;
 	time_t		tick, end_tick = 0;
-	CSA_sint32	repeat_type;
+	CSA_sint32	repeat_type = -1;
 	CSA_uint32	repeat_times;
         static char *format_string = "\n\n\t** Calendar Appointment **\n%s:string:begin\n%s%s:string:end\n\tDate: %s\n\tStart: %s\n\tEnd: %s\n\tRepeat: %s\n\tFor: %s\n\tWhat: %s";
 
@@ -1872,11 +1877,11 @@ parse_attrs_to_string(Dtcm_appointment *appt, Props *p, char *attr_string) {
 	f_buf[0] = '\0';
 
 	_csa_iso8601_to_tick(appt->time->value->item.date_time_value, &tick);
-	if (appt->end_time) 
+	if (appt->end_time)
 		if (appt->end_time->value != NULL)
 			_csa_iso8601_to_tick(appt->end_time->value->item.\
 				date_time_value, &end_tick);
-	
+
 	appt_what = appt->what->value->item.string_value;
 
 	if (appt->repeat_type && appt->repeat_type->value)
@@ -1900,9 +1905,9 @@ parse_attrs_to_string(Dtcm_appointment *appt, Props *p, char *attr_string) {
 	/*
 	 * Format the date and start/stop strings
 	 */
-        format_tick(tick, ORDER_MDY, SEPARATOR_SLASH, d_buf);
-	format_time(tick, get_int_prop(p, CP_DEFAULTDISP), s_buf);
-	format_time(end_tick, get_int_prop(p, CP_DEFAULTDISP), e_buf);
+        format_tick(tick, ORDER_MDY, SEPARATOR_SLASH, d_buf, MAXNAMELEN);
+	format_time(tick, get_int_prop(p, CP_DEFAULTDISP), s_buf, MAXNAMELEN);
+	format_time(end_tick, get_int_prop(p, CP_DEFAULTDISP), e_buf, MAXNAMELEN);
 
 	/*
 	 * Handle the what string
@@ -1913,44 +1918,46 @@ parse_attrs_to_string(Dtcm_appointment *appt, Props *p, char *attr_string) {
 		copy_and_pad_newlines(whatstr, appt_what);
 	}
         if (whatstr && !blank_buf(whatstr)) {
-                cm_strcat(w_buf, whatstr);
-                cm_strcat(w_buf, "\n\t");
+                cm_strlcat(w_buf, whatstr, MAXNAMELEN);
+                cm_strlcat(w_buf, "\n\t", MAXNAMELEN);
         }
- 
+
 	/*
 	 * Repeat and For stuff
 	 */
-        cm_strcpy(r_buf, periodstr_from_period(repeat_type, repeat_nth));
+        cm_strlcpy(r_buf, periodstr_from_period(repeat_type, repeat_nth), MAXNAMELEN);
 	if (repeat_type == CSA_X_DT_REPEAT_MONTHLY_BY_WEEKDAY) {
 		if (weekofmonth(tick, &wk) && wk == 4) {
 			if (repeat_wk == -1)
-				strcat(r_buf, ", last");
+				strlcat(r_buf, ", last", MAXNAMELEN);
 			else if (repeat_wk == 4)
-				strcat(r_buf, ", 4th");
+				strlcat(r_buf, ", 4th", MAXNAMELEN);
 		}
 	}
 
-        sprintf(f_buf, "%ld", repeat_times);
+        snprintf(f_buf, MAXNAMELEN, "%ld", repeat_times);
 
 	/*
 	 * Put it all together
 	 */
 
-	b_ptr = malloc(cm_strlen(d_buf) + 
-			(2 * cm_strlen(CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER)) +
-			cm_strlen(s_buf) +
-			cm_strlen(e_buf) +
-			cm_strlen(r_buf) +
-			cm_strlen(f_buf) +
-			cm_strlen(w_buf) +
-			cm_strlen(format_string) +
-			cm_strlen(attr_string) +
-			1);
+	int b_ptr_length = cm_strlen(d_buf) +
+                             (2 * cm_strlen(CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER)) +
+                             cm_strlen(s_buf) +
+                             cm_strlen(e_buf) +
+                             cm_strlen(r_buf) +
+                             cm_strlen(f_buf) +
+                             cm_strlen(w_buf) +
+                             cm_strlen(format_string) +
+                             cm_strlen(attr_string) +
+                             1;
 
-        sprintf(b_ptr, format_string,
-		CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER, 
-		attr_string, 
-		CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER, 
+	b_ptr = malloc(b_ptr_length);
+
+        snprintf(b_ptr, b_ptr_length, format_string,
+		CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER,
+		attr_string,
+		CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER,
 		d_buf, s_buf, e_buf, r_buf, f_buf, w_buf);
 
 	if (nlcount > 0)
@@ -1958,27 +1965,27 @@ parse_attrs_to_string(Dtcm_appointment *appt, Props *p, char *attr_string) {
 	return(b_ptr);
 }
 
-/* This routine takes a list of buffers that represent a number 
-   of message attachments, and glues them into a mime format 
-   message for eventual submission to the dtmail mailer.  These 
+/* This routine takes a list of buffers that represent a number
+   of message attachments, and glues them into a mime format
+   message for eventual submission to the dtmail mailer.  These
    objects do nor *need* to be cm appointment objects. */
 
 char *
-create_rfc_message(char *address_list, 
-		char *subject, 
+create_rfc_message(char *address_list,
+		char *subject,
 		char **appointment_objects,
 		int  num_objects) {
 
 	char *unique_label;
 
-	/* do *not* put these header strings in a message catalog.  
+	/* do *not* put these header strings in a message catalog.
 	   These are invariants specified by MIME */
 
 	char *address_header = "To: ";
 	char *subject_header = "Subject: ";
 	char *x_content_name = "X-Content-Name: CalendarAppointment\n";
 	char *content_label = "Mime-Version: 1.0\nContent-Type: multipart/mixed;boundary=";
-    	char divider_string[32];
+    	char divider_string[36];
 
 	int  buffer_size;
 	int  i;
@@ -1986,9 +1993,9 @@ create_rfc_message(char *address_list,
 	char *return_buffer;
 
 	/* A MIME mesage is a rather specialized beast.  It consists of
-	   a series of headers describing the mail message, followed by 
-	   the message, and then followed by a set of attachments.   
-	   Each attachments is separated by a magic unique string 
+	   a series of headers describing the mail message, followed by
+	   the message, and then followed by a set of attachments.
+	   Each attachments is separated by a magic unique string
 	   flagging the boundaries between the attached objects.  The
 	   first header is the address list.  The second header is the
 	   subject line for the message.  The third header describes the
@@ -2000,14 +2007,14 @@ create_rfc_message(char *address_list,
 	   The last dividing string is trailed by two more dashes. */
 
 
-	/* we need to generate a unique dividing string that will 
-	   not be found in any of the parts of the MIME message.  
-	   The following printf will be tried until it generates 
+	/* we need to generate a unique dividing string that will
+	   not be found in any of the parts of the MIME message.
+	   The following printf will be tried until it generates
 	   something that isn't in any of the body parts. */
 
 	while (done != B_TRUE) {
-    		sprintf(divider_string, "%x_%x-%x_%x-%x_%x", rand(), rand(), 
-			rand(), rand(), rand(), rand());
+    		snprintf(divider_string, sizeof(divider_string), "%x_%x-%x_%x-%x_%x", arc4random(), arc4random(),
+			arc4random(), arc4random(), arc4random(), arc4random());
 
 		done = B_TRUE;
 
@@ -2017,14 +2024,14 @@ create_rfc_message(char *address_list,
 		}
 	}
 
-	buffer_size = 	strlen(address_header) + 
-			strlen(address_list) + 
+	buffer_size = 	strlen(address_header) +
+			strlen(address_list) +
 			1 +			     /* newline */
 			strlen(subject_header) +
 			strlen(subject) +
 			1 +			     /* newline */
 			strlen(content_label) +  2 +
-			(num_objects + 2) * strlen(divider_string) + 
+			(num_objects + 2) * strlen(divider_string) +
 						     /* one definition copy,
 							one terminating copy,
 							and one per body
@@ -2037,7 +2044,7 @@ create_rfc_message(char *address_list,
 							line for each
 							body part */
 
-			(2 * num_objects) + 4 +	     /* bracketing on unique 
+			(2 * num_objects) + 4 +	     /* bracketing on unique
 							strings */
 			(num_objects * 3) + 2;	     /* newlines...3 per
 						        body part boundary
@@ -2050,11 +2057,11 @@ create_rfc_message(char *address_list,
 	/* extra byte is added for null char */
 	return_buffer = (char *)calloc(buffer_size + 1, 1);
 
-	sprintf(return_buffer, "%s%s\n%s%s\n%s%s\n\n", 
-			address_header, 
-			address_list, 
-			subject_header, 
-			subject, 
+	snprintf(return_buffer, buffer_size + 1, "%s%s\n%s%s\n%s%s\n\n",
+			address_header,
+			address_list,
+			subject_header,
+			subject,
 			content_label,
 			divider_string);
 
@@ -2062,29 +2069,29 @@ create_rfc_message(char *address_list,
 	 * Add an empty body part.  This is a hack to get dtmail to
 	 * display the object(s) as an attachment.
 	 */
-	strcat(return_buffer, "\n--");
-	strcat(return_buffer, divider_string);
-	strcat(return_buffer, "\n\n");
+	strlcat(return_buffer, "\n--", buffer_size + 1);
+	strlcat(return_buffer, divider_string, buffer_size + 1);
+	strlcat(return_buffer, "\n\n", buffer_size + 1);
 
 	for (i = 0; i <num_objects; i++) {
-		strcat(return_buffer, "\n--");
-		strcat(return_buffer, divider_string);
-		strcat(return_buffer, "\n");
-		strcat(return_buffer, x_content_name);
-		strcat(return_buffer, "\n");
-		strcat(return_buffer, appointment_objects[i]);
+		strlcat(return_buffer, "\n--", buffer_size + 1);
+		strlcat(return_buffer, divider_string, buffer_size + 1);
+		strlcat(return_buffer, "\n", buffer_size + 1);
+		strlcat(return_buffer, x_content_name, buffer_size + 1);
+		strlcat(return_buffer, "\n", buffer_size + 1);
+		strlcat(return_buffer, appointment_objects[i], buffer_size + 1);
 	}
-	strcat(return_buffer, "\n--");
-	strcat(return_buffer, divider_string);
-	strcat(return_buffer, "--");
-	strcat(return_buffer, "\n");
+	strlcat(return_buffer, "\n--", buffer_size + 1);
+	strlcat(return_buffer, divider_string, buffer_size + 1);
+	strlcat(return_buffer, "--", buffer_size + 1);
+	strlcat(return_buffer, "\n", buffer_size + 1);
 
 	return(return_buffer);
 }
 
 boolean_t
-appointments_to_file(CSA_session_handle target, CSA_entry_handle *appointment_list, 
-		     int num_appts, 
+appointments_to_file(CSA_session_handle target, CSA_entry_handle *appointment_list,
+		     int num_appts,
 		     char *file_name) {
 
 	int i;
@@ -2102,9 +2109,9 @@ appointments_to_file(CSA_session_handle target, CSA_entry_handle *appointment_li
 	for (i = 0; i < num_appts; i++) {
 		entry_string = entry_to_attrval_string(target, appointment_list[i]);
 
-		fprintf(f_ptr, "\n-%s:string:begin\n%s%s:string:end\n\n", 
-			CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER, 
-			entry_string, 
+		fprintf(f_ptr, "\n-%s:string:begin\n%s%s:string:end\n\n",
+			CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER,
+			entry_string,
 			CSA_X_DT_ENTRY_ATTR_ENTRY_DELIMITER);
 
 		free(entry_string);
@@ -2143,7 +2150,7 @@ extern void
 str_to_period(char *ps, CSA_sint32 *repeat_type, int *repeat_nth) {
 	boolean_t	compute_times = B_FALSE;
 	char		*ps2, *ptr, *ptr2, *unit;
- 
+
 	*repeat_type = '\0';
 	*repeat_nth = 0;
         if (ps == NULL)
@@ -2210,59 +2217,60 @@ str_to_period(char *ps, CSA_sint32 *repeat_type, int *repeat_nth) {
 
 extern char*
 periodstr_from_period(CSA_sint32 repeat_type, int repeat_nth) {
-        static char pstr[80];
- 
+        int length = 80;
+	static char pstr[80];
+
 	switch (repeat_type) {
         case CSA_X_DT_REPEAT_ONETIME:
-		sprintf(pstr, "%s", periodstrings[0]);
+		snprintf(pstr, length, "%s", periodstrings[0]);
 		break;
         case CSA_X_DT_REPEAT_DAILY:
-		sprintf(pstr, "%s", periodstrings[1]);
+		snprintf(pstr, length, "%s", periodstrings[1]);
 		break;
         case CSA_X_DT_REPEAT_WEEKLY:
-		sprintf(pstr, "%s", periodstrings[2]);
+		snprintf(pstr, length, "%s", periodstrings[2]);
 		break;
         case CSA_X_DT_REPEAT_BIWEEKLY:
-		sprintf(pstr, "%s", periodstrings[3]);
+		snprintf(pstr, length, "%s", periodstrings[3]);
 		break;
         case CSA_X_DT_REPEAT_MONTHLY_BY_DATE:
-		sprintf(pstr, "%s", periodstrings[4]);
+		snprintf(pstr, length, "%s", periodstrings[4]);
 		break;
         case CSA_X_DT_REPEAT_YEARLY:
-		sprintf(pstr, "%s", periodstrings[5]);
+		snprintf(pstr, length, "%s", periodstrings[5]);
 		break;
         case CSA_X_DT_REPEAT_MONTHLY_BY_WEEKDAY:
-		sprintf(pstr, "%s", periodstrings[6]);
+		snprintf(pstr, length, "%s", periodstrings[6]);
 		break;
         case CSA_X_DT_REPEAT_EVERY_NDAY:
-		sprintf(pstr, "Every %d %s", repeat_nth, periodstrings[7]);
+		snprintf(pstr, length, "Every %d %s", repeat_nth, periodstrings[7]);
 		break;
         case CSA_X_DT_REPEAT_EVERY_NWEEK:
-		sprintf(pstr, "Every %d %s", repeat_nth, periodstrings[8]);
+		snprintf(pstr, length, "Every %d %s", repeat_nth, periodstrings[8]);
 		break;
         case CSA_X_DT_REPEAT_EVERY_NMONTH:
-		sprintf(pstr, "Every %d %s", repeat_nth, periodstrings[9]);
+		snprintf(pstr, length, "Every %d %s", repeat_nth, periodstrings[9]);
 		break;
         case CSA_X_DT_REPEAT_OTHER:
-		sprintf(pstr, "%s", periodstrings[10]);
+		snprintf(pstr, length, "%s", periodstrings[10]);
 		break;
         case CSA_X_DT_REPEAT_MON_TO_FRI:
-		sprintf(pstr, "%s", periodstrings[11]);
+		snprintf(pstr, length, "%s", periodstrings[11]);
 		break;
         case CSA_X_DT_REPEAT_MONWEDFRI:
-		sprintf(pstr, "%s", periodstrings[12]);
+		snprintf(pstr, length, "%s", periodstrings[12]);
 		break;
         case CSA_X_DT_REPEAT_TUETHUR:
-		sprintf(pstr, "%s", periodstrings[13]);
+		snprintf(pstr, length, "%s", periodstrings[13]);
 		break;
         case CSA_X_DT_REPEAT_WEEKDAYCOMBO:
-		sprintf(pstr, "%s", periodstrings[14]);
+		snprintf(pstr, length, "%s", periodstrings[14]);
 		break;
 	default:
-		sprintf(pstr, "Unknown repeat type");
+		snprintf(pstr, length, "Unknown repeat type");
 		break;
 	}
- 
+
         return pstr;
 }
 
@@ -2309,25 +2317,25 @@ init_repeat_strs(
 	nl_catd		catd,
 	char	      **repeat_strs)
 {
-	repeat_strs[ONE_TIME] = strdup(catgets(catd, 1, 852, "One Time")); 
-	repeat_strs[DAILY] = strdup(catgets(catd, 1, 853, "Daily")); 
-	repeat_strs[WEEKLY] = strdup(catgets(catd, 1, 854, "Weekly")); 
-	repeat_strs[EVERY_TWO_WEEKS] = 
-			strdup(catgets(catd, 1, 855, "Every Two Weeks")); 
-	repeat_strs[MONTHLY_BY_DATE] = 
-			strdup(catgets(catd, 1, 856, "Monthly By Date")); 
-	repeat_strs[MONTHLY_BY_WEEKDAY] = 
-			strdup(catgets(catd, 1, 857, "Monthly By Weekday")); 
-	repeat_strs[YEARLY] = 
-			strdup(catgets(catd, 1, 858, "Yearly")); 
-	repeat_strs[MONDAY_THRU_FRIDAY] = 
-			strdup(catgets(catd, 1, 859, "Monday Thru Friday")); 
-	repeat_strs[MON_WED_FRI] = 
-			strdup(catgets(catd, 1, 860, "Mon, Wed, Fri")); 
-	repeat_strs[TUESDAY_THURSDAY] = 
-			strdup(catgets(catd, 1, 861, "Tuesday, Thursday")); 
-	repeat_strs[REPEAT_EVERY] = 
-			strdup(catgets(catd, 1, 862, "Repeat Every...")); 
+	repeat_strs[ONE_TIME] = strdup(catgets(catd, 1, 852, "One Time"));
+	repeat_strs[DAILY] = strdup(catgets(catd, 1, 853, "Daily"));
+	repeat_strs[WEEKLY] = strdup(catgets(catd, 1, 854, "Weekly"));
+	repeat_strs[EVERY_TWO_WEEKS] =
+			strdup(catgets(catd, 1, 855, "Every Two Weeks"));
+	repeat_strs[MONTHLY_BY_DATE] =
+			strdup(catgets(catd, 1, 856, "Monthly By Date"));
+	repeat_strs[MONTHLY_BY_WEEKDAY] =
+			strdup(catgets(catd, 1, 857, "Monthly By Weekday"));
+	repeat_strs[YEARLY] =
+			strdup(catgets(catd, 1, 858, "Yearly"));
+	repeat_strs[MONDAY_THRU_FRIDAY] =
+			strdup(catgets(catd, 1, 859, "Monday Thru Friday"));
+	repeat_strs[MON_WED_FRI] =
+			strdup(catgets(catd, 1, 860, "Mon, Wed, Fri"));
+	repeat_strs[TUESDAY_THURSDAY] =
+			strdup(catgets(catd, 1, 861, "Tuesday, Thursday"));
+	repeat_strs[REPEAT_EVERY] =
+			strdup(catgets(catd, 1, 862, "Repeat Every..."));
 }
 
 extern char*
@@ -2356,12 +2364,12 @@ repeat_scope_str(
 	Repeat_scope_menu_op op)
 {
 	if (!repeat_scope_strs[0]) {
-		repeat_scope_strs[REPEAT_DAYS] = 
-				strdup(catgets(catd, 1, 994, "days")); 
-		repeat_scope_strs[REPEAT_WEEKS] = 
-				strdup(catgets(catd, 1, 995, "weeks")); 
-		repeat_scope_strs[REPEAT_MONTHS] = 
-				strdup(catgets(catd, 1, 997, "months")); 
+		repeat_scope_strs[REPEAT_DAYS] =
+				strdup(catgets(catd, 1, 994, "days"));
+		repeat_scope_strs[REPEAT_WEEKS] =
+				strdup(catgets(catd, 1, 995, "weeks"));
+		repeat_scope_strs[REPEAT_MONTHS] =
+				strdup(catgets(catd, 1, 997, "months"));
 	}
 
 	if (op >= REPEAT_DAYS && op <= REPEAT_MONTHS)
@@ -2398,12 +2406,12 @@ time_scope_str_i18n(
 	Time_scope_menu_op 	op)
 {
 	if (!time_scope_strs_i18n[0]) {
-		time_scope_strs_i18n[TIME_MINS] = 
-					strdup(catgets(catd, 1, 877, "Mins")); 
-		time_scope_strs_i18n[TIME_HRS] = 
-					strdup(catgets(catd, 1, 878, "Hrs")); 
-		time_scope_strs_i18n[TIME_DAYS] = 
-					strdup(catgets(catd, 1, 879, "Days")); 
+		time_scope_strs_i18n[TIME_MINS] =
+					strdup(catgets(catd, 1, 877, "Mins"));
+		time_scope_strs_i18n[TIME_HRS] =
+					strdup(catgets(catd, 1, 878, "Hrs"));
+		time_scope_strs_i18n[TIME_DAYS] =
+					strdup(catgets(catd, 1, 879, "Days"));
 	}
 
 	if (op >= TIME_MINS && op <= TIME_DAYS)
@@ -2420,7 +2428,7 @@ valid_time(Props *p, char *time_str) {
 	register int	num_minutes = 0, num_colons = 0;
 	boolean_t	after_colon = B_FALSE;
 	DisplayType	dt = get_int_prop(p, CP_DEFAULTDISP);
- 
+
 	for (ptr = time_str; ptr != NULL && *ptr != '\0'; ptr++) {
 		if (dt == HOUR12) {
 			if (*ptr == ':') {
@@ -2479,7 +2487,7 @@ valid_time(Props *p, char *time_str) {
  * it should be canceled.
  */
 extern Validate_op
-validate_appt(nl_catd catd, Dtcm_appointment *a, char *s_buf, char *e_buf, 
+validate_appt(nl_catd catd, Dtcm_appointment *a, char *s_buf, char *e_buf,
 	      char *d_buf, int dur, char *w_buf, char *r_buf, char *f_buf,
 	      boolean_t(*query)(void*), void *key_data, int version) {
 	Validate_op	op;
@@ -2520,7 +2528,7 @@ validate_dssw(Dtcm_appointment *a, char *s_buf, char *e_buf, char *d_buf,
 		/*
 		 * We have something in the start buffer, is it valid?
 		 */
-		sprintf(buf, "%s %s", d_buf, s_buf);
+		snprintf(buf, MAXNAMELEN, "%s %s", d_buf, s_buf);
 		if ((appt_time = cm_getdate(buf, NULL)) < 0)
 			return INVALID_START;
 
@@ -2541,7 +2549,7 @@ validate_dssw(Dtcm_appointment *a, char *s_buf, char *e_buf, char *d_buf,
 			 * No duration, but something in the end buffer.  If
 			 * it's valid set the end tick to it's value.
 			 */
-			sprintf(buf, "%s %s", d_buf, e_buf);
+			snprintf(buf, MAXNAMELEN, "%s %s", d_buf, e_buf);
 			if ((end_tick = cm_getdate(buf, NULL)) < 0)
 				return INVALID_STOP;
 			a->end_time->value->item.date_time_value = malloc(BUFSIZ);
@@ -2551,7 +2559,7 @@ validate_dssw(Dtcm_appointment *a, char *s_buf, char *e_buf, char *d_buf,
 			 * No duration or end buffer - set end_tick to starting
 			 * tick and duration to 0
 			 */
-			a->end_time->value->item.date_time_value = 
+			a->end_time->value->item.date_time_value =
 				strdup(a->time->value->item.date_time_value);
 		}
 	} else if (dur > 0 || !blank_buf(e_buf))
@@ -2567,7 +2575,7 @@ validate_dssw(Dtcm_appointment *a, char *s_buf, char *e_buf, char *d_buf,
 		 * date was correct.  If so, set duration to 1 minute and
 		 * showtime to false.
 		 */
-		sprintf(buf, "%s 3:41am", d_buf);
+		snprintf(buf, MAXNAMELEN, "%s 3:41am", d_buf);
 
 		if ((appt_time = cm_getdate(buf, NULL)) < 0)
 			return INVALID_DATE;
@@ -2614,18 +2622,20 @@ validate_reminders(Dtcm_appointment *a) {
 extern Validate_op
 validate_rfp(
 	nl_catd 		 catd,
-	Dtcm_appointment 	*a, 
-	char 			*r_buf, 
-	char 			*f_buf, 
+	Dtcm_appointment 	*a,
+	char 			*r_buf,
+	char 			*f_buf,
 	int 			 version)
 {
-	int			 repeat_nth, 
+	int			 repeat_nth,
 				 repeat_wk = -1,
 				 repeat_every = 0,
 				 repeat_forever = False;
-	CSA_sint32		 repeat_type;
+	CSA_sint32		 repeat_type = -1;
 	CSA_uint32		 repeat_times = 0;
-	char			 rule_buf[32];
+
+	int rule_buf_size = 32;
+	char rule_buf[rule_buf_size];
 
 	if (r_buf) {
 		str_to_period(r_buf, &repeat_type, &repeat_nth);
@@ -2645,7 +2655,7 @@ validate_rfp(
 		/* Repeat forever is represented by either:
 			f_buf == ``forever''   or
 			f_buf == ``0''.
-		   If it is a CSA_X_DT_REPEAT_ONETIME then 
+		   If it is a CSA_X_DT_REPEAT_ONETIME then
 			f_buf == ``0''.
 		 */
 		if (strcasecmp(f_buf, catgets(catd, 1, 876, "forever")) == 0) {
@@ -2688,16 +2698,16 @@ validate_rfp(
 	switch(repeat_type) {
 	case CSA_X_DT_REPEAT_ONETIME:
 	case CSA_X_DT_REPEAT_DAILY:
-		strcpy(rule_buf, "D1 ");
+		strlcpy(rule_buf, "D1 ", rule_buf_size);
 		break;
 	case CSA_X_DT_REPEAT_WEEKLY:
-		strcpy(rule_buf, "W1 ");
+		strlcpy(rule_buf, "W1 ", rule_buf_size);
 		break;
 	case CSA_X_DT_REPEAT_BIWEEKLY:
-		strcpy(rule_buf, "W2 ");
+		strlcpy(rule_buf, "W2 ", rule_buf_size);
 		break;
 	case CSA_X_DT_REPEAT_MONTHLY_BY_DATE:
-		strcpy(rule_buf, "MD1 ");
+		strlcpy(rule_buf, "MD1 ", rule_buf_size);
 		break;
 	case CSA_X_DT_REPEAT_MONTHLY_BY_WEEKDAY: {
 		int 	wk;
@@ -2705,7 +2715,7 @@ validate_rfp(
 
 		if (a && a->time && a->time->value) {
 			_csa_iso8601_to_tick(
-					a->time->value->item.date_time_value, 
+					a->time->value->item.date_time_value,
 				     	&tick);
 		}
 
@@ -2715,33 +2725,33 @@ validate_rfp(
                  * last week of the month.
                  */
                 if (tick && weekofmonth(tick, &wk) && wk == 5)
-                        sprintf(rule_buf, "MP1 1- %s ", dow_str(tick));
+                        snprintf(rule_buf, rule_buf_size, "MP1 1- %s ", dow_str(tick));
                 else
-                        strcpy(rule_buf, "MP1 ");
+                        strlcpy(rule_buf, "MP1 ", rule_buf_size);
                 break;
         }
 	case CSA_X_DT_REPEAT_YEARLY:
-		strcpy(rule_buf, "YM1 ");
+		strlcpy(rule_buf, "YM1 ", rule_buf_size);
 		break;
 	case CSA_X_DT_REPEAT_MON_TO_FRI:
-		strcpy(rule_buf, "W1 MO TU WE TH FR ");
+		strlcpy(rule_buf, "W1 MO TU WE TH FR ", rule_buf_size);
 		break;
 	case CSA_X_DT_REPEAT_MONWEDFRI:
-		strcpy(rule_buf, "W1 MO WE FR ");
+		strlcpy(rule_buf, "W1 MO WE FR ", rule_buf_size);
 		break;
 	case CSA_X_DT_REPEAT_TUETHUR:
-		strcpy(rule_buf, "W1 TU TH ");
+		strlcpy(rule_buf, "W1 TU TH ", rule_buf_size);
 		break;
 	case CSA_X_DT_REPEAT_EVERY_NDAY:
-		sprintf(rule_buf, "D%d ", repeat_nth);
+		snprintf(rule_buf, rule_buf_size, "D%d ", repeat_nth);
 		repeat_every = True;
 		break;
 	case CSA_X_DT_REPEAT_EVERY_NWEEK:
-		sprintf(rule_buf, "W%d ", repeat_nth);
+		snprintf(rule_buf, rule_buf_size, "W%d ", repeat_nth);
 		repeat_every = True;
 		break;
 	case CSA_X_DT_REPEAT_EVERY_NMONTH:
-		sprintf(rule_buf, "MD%d ", repeat_nth);
+		snprintf(rule_buf, rule_buf_size, "MD%d ", repeat_nth);
 		repeat_every = True;
 		break;
 	default:
@@ -2750,15 +2760,16 @@ validate_rfp(
 
 	/* If the for buffer is NULL then we default to repeating one time.
 	 * If the repeat_type is onetime then we default repeat times to
-	 * one time. 
+	 * one time.
 	 */
 	if (!f_buf || repeat_type == CSA_X_DT_REPEAT_ONETIME)
 		repeat_times = 1;
 
 	if (repeat_times == CSA_X_DT_DT_REPEAT_FOREVER) {
-		strcat(rule_buf, "#0");
+		strlcat(rule_buf, "#0", rule_buf_size);
 	} else {
-		char	buf[16];
+		int buf_length = 16;
+		char buf[buf_length];
 
 		if (repeat_every) {
 			int duration;
@@ -2767,11 +2778,11 @@ validate_rfp(
 				duration = 1 + repeat_times/repeat_nth;
 			else
 				duration = repeat_times/repeat_nth;
-			sprintf(buf, "#%d", duration);
+			snprintf(buf, buf_length, "#%d", duration);
 		} else
-			sprintf(buf, "#%ld", repeat_times);
+			snprintf(buf, buf_length, "#%ld", repeat_times);
 
-		strcat(rule_buf, buf);
+		strlcat(rule_buf, buf, buf_length);
 	}
 	a->recurrence_rule->value->item.string_value = strdup(rule_buf);
 

@@ -47,10 +47,10 @@
 **
 *******************************************************************************/
 
-#define PROPS_REDO_DISPLAY	0x1 /* This is all displays.  The main 
-				       canvas, the appointment and todo 
+#define PROPS_REDO_DISPLAY	0x1 /* This is all displays.  The main
+				       canvas, the appointment and todo
 				       lists, and the multi-browse window. */
-#define PROPS_REDO_EDITORS	0x2 /* This is the todo and appointment 
+#define PROPS_REDO_EDITORS	0x2 /* This is the todo and appointment
 				       editor. */
 #define PROPS_REDO_PRINT_DIALOG 0x4 /* The print dialog. */
 
@@ -265,5 +265,10 @@ extern Boolean	p_flush_changes		P((Calendar*));
 extern void	show_print_props_pu	P((Calendar*));
 
 extern void p_defaults_proc_helper(XtPointer client_data);
+
+
+extern  void _i18n_HighestWidget( int num, Widget *ret, Dimension *dim, ... );
+extern  void _i18n_HighestWidgetAdjust( int num, Widget *ret, Dimension *dim, ... );
+extern  void _i18n_WidestWidget( int num, Widget *ret, Dimension *dim, ... );
 
 #endif

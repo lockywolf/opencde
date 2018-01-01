@@ -68,7 +68,7 @@ static caddr_t end;
 
 #define input_char()	((end == current_ptr)?0:(*(current_ptr++)))
 #define unput_char()    (((current_ptr>start_of_mmapped_area)?(current_ptr--):0))
-			  
+
 #define ALPHA  	1
 #define DIGIT  	2
 #define IGNORE 	3
@@ -79,9 +79,9 @@ static caddr_t end;
 #define NEWLINE	8
 #define DASH  	9
 
-/* 
+/*
   the following token entry allows us to combine the
-  hash table, token id and action on token recog 
+  hash table, token id and action on token recog
   together.
   */
 
@@ -92,7 +92,7 @@ typedef struct token_data {
 				   subsequent tokens may be found by following
 				   next_token field IN first_token. */
   short	 next_token;
-  void * info_to_change;	/* ptr to 4 byte value to change when token 
+  void * info_to_change;	/* ptr to 4 byte value to change when token
 				   is found.  Ignored if NULL */
   int token_value;		/* value to set above to.  */
   int return_value;		/* value to return from yyylex when this token
@@ -250,7 +250,7 @@ init()
 
   for(i=0;i<NUMTOKES;i++) {
     int bucket = hash_string((char *) tokens[i].name);
-    
+
     if(tokens[bucket].first_token == -1)
       tokens[bucket].first_token = i;
     else {
@@ -307,7 +307,7 @@ yyylex()
 
       *ptr = '\0';
 
-      externNumberVal=atoi((char *)parse_buffer); 
+      externNumberVal=atoi((char *)parse_buffer);
       return(NUMBER);
 
     case ALPHA:
@@ -331,7 +331,7 @@ yyylex()
 
 	while(strcmp(tokens[bucket].name, (char*)parse_buffer) != 0)
 	  if((bucket = tokens[bucket].next_token) == -1) /* end of chain */ {
-	    fprintf(stderr, "%s: cannot lex %s in callog file\n", 
+	    fprintf(stderr, "%s: cannot lex %s in callog file\n",
 		    pgname, parse_buffer);
 	    return(0);
 	  }
@@ -349,7 +349,7 @@ yyylex()
 	  {
 	  case '\\':
 	    *++ptr = input_char(); /* load next char in any case */
-		ptr++; 
+		ptr++;
 	    break;
 	  case '"':
 	    *ptr = 0;
@@ -365,9 +365,9 @@ yyylex()
 	    ptr++;
 	  }
       }
-      
-      
-      
+
+
+
     case EOFILE:
       return(0);
 
@@ -398,7 +398,7 @@ yyylex()
   }
 }
 
-  
+
 extern int
 yyywrap(FILE *f)
 {
@@ -416,9 +416,9 @@ setinput (FILE* f)
     perror("fstat");
     return(-1);
   }
-  
-  if((start_of_mmapped_area = 
-      mmap(NULL,  
+
+  if((start_of_mmapped_area =
+      mmap(NULL,
 	   len = buff.st_size,
 	   PROT_READ,
 	   MAP_PRIVATE,
@@ -435,22 +435,22 @@ setinput (FILE* f)
 
   end = start_of_mmapped_area + len;
   current_ptr = start_of_mmapped_area;
-  yyylineno = 1;	
-  
+  yyylineno = 1;
+
   return(0);
 }
 
 
 
-static int 
+static int
 hash_string(register char *s)
 {
   register unsigned result = 0;
   register int sum;
-  
-  while(sum = *s++)
+
+  while( (sum = *s++) )
     result = (result << 4) + sum;
-  
+
   return(result % NUMTOKES);
 }
 
@@ -458,7 +458,7 @@ hash_string(register char *s)
   Strescapes performs escape character processing in a manner similar to the C
   compiler.  It processes a character string passed to it and performs the
   following substitutions in place:
-  
+
   \\    ->   \
   \"    ->   "
   \e    ->   033
@@ -466,20 +466,20 @@ hash_string(register char *s)
   \n    ->   newline
   \0nn  ->   0nn
   \r    ->   cr
-  
+
   A single \ in front of other characters is ignored(&removed).  As with
   most string routines, strescapes returns it's argument.  Note that
   inserting a \0 will end the string at that location, but the remainder of
   the string will be processed.
-  
+
   ---------------------------------------------------------------------------*/
 
 
-static char * 
+static char *
 strescapes(char *s)
 {
   register char * in=s, * out=s;
-  
+
   while(*in)
     {
       if(*in == '\\')
@@ -489,12 +489,12 @@ strescapes(char *s)
 	    *out++ = '\033';
 	    in += 2;
 	    break;
-	    
+
 	  case 't':  /* a tab character */
 	    *out++ = '\t';
 	    in += 2;
 	    break;
-	    
+
 	  case 'n':  /* a newline */
 	    *out++ = '\n';
 	    in += 2;
@@ -519,7 +519,7 @@ strescapes(char *s)
 	      *out++ = result & 0377;
 	      break;
 	    }
-	    
+
 	  default:  /* not used as escape.... make it disappear */
 	    in++;   /* this also handles nulls */
 	    break;
@@ -560,5 +560,5 @@ main(int argc, char ** argv)
 
   exit(0);
 }
-    
-#endif  
+
+#endif

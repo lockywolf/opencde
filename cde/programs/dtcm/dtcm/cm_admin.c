@@ -91,14 +91,15 @@ static nl_catd	DT_catd;
 static char**
 grab(char**argv,				/* command line arguments */
     char *buf,				/* buffer for keyed data */
+    int buf_size,
     char stop_key)
 {
 	if (!argv || !*argv) return(argv);
-	cm_strcpy (buf,*argv++);
+	cm_strlcpy (buf, *argv++, buf_size);
 	while(argv && *argv) {
 		if (*(*argv) == stop_key) break;
-		cm_strcat(buf," ");
-		cm_strcat(buf,*argv++);
+		cm_strlcat(buf, " ", buf_size);
+		cm_strlcat(buf, *argv++, buf_size);
 	}
 	argv--;
 	return(argv);
@@ -128,16 +129,16 @@ cm_args(int argc, char **argv)
 			}
 			break;
 		case 'c':
-			argv = grab(++argv,cm_target,'-');
+			argv = grab(++argv, cm_target, MAXPATHLEN, '-');
 			break;
 		case 's':
-			argv = grab(++argv,cm_start,'-');
+			argv = grab(++argv, cm_start, MAXPATHLEN, '-');
 			break;
 		case 'e':
-			argv = grab(++argv,cm_end,'-');
+			argv = grab(++argv, cm_end, MAXPATHLEN, '-');
 			break;
 		case 'f':
-			argv = grab(++argv,cm_file,'-');
+			argv = grab(++argv, cm_file, MAXPATHLEN, '-');
 			break;
 		case 'd':
 			Delete = B_TRUE;
@@ -207,9 +208,9 @@ int main(int argc, char **argv)
 	stat = csa_logon(NULL, &csa_user, NULL, NULL, NULL, &c_handle, NULL);
 
 	if (stat != CSA_SUCCESS) {
-	  	char *format = XtNewString(catgets(DT_catd, 1, 208, 
+	  	char *format = XtNewString(catgets(DT_catd, 1, 208,
 					 "\nCould not open calendar \"%s\"\n"));
-		fprintf(stderr, format, 
+		fprintf(stderr, format,
 			target ? target : catgets(DT_catd, 1, 209, "UNKNOWN"));
 		XtFree(format);
 		free(uname);

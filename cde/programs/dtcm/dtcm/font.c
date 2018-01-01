@@ -40,7 +40,7 @@
 #endif /* ABS */
 
 /*
- * Walk a font_list looking for a FontSet with the 
+ * Walk a font_list looking for a FontSet with the
  * XmFONTLIST_DEFAULT_TAG set.  If we fail to find a FontSet with this tag,
  * return the first FontSet found.  If we fail to find a FontSet return
  * the first font found.
@@ -73,12 +73,12 @@ get_font(
 	do {
 		fl_entry = XmFontListNextEntry(fl_context);
 		if (fl_entry) {
-			fl_entry_font = 
+			fl_entry_font =
 				XmFontListEntryGetFont(fl_entry, type_return);
 			if (*type_return == XmFONT_IS_FONTSET) {
-				fl_entry_font_tag = 
+				fl_entry_font_tag =
 						XmFontListEntryGetTag(fl_entry);
-					/* 
+					/*
 					 * Save the first font set found in-
 					 * case the default tag is not set.
 					 */
@@ -90,7 +90,7 @@ get_font(
 					if (!strcmp(XmFONTLIST_DEFAULT_TAG,
 						    fl_entry_font_tag))
 						break;
-				} else if (!strcmp(XmFONTLIST_DEFAULT_TAG, 
+				} else if (!strcmp(XmFONTLIST_DEFAULT_TAG,
 						    fl_entry_font_tag)) {
 					/* Found right font set */
 					font_to_use = fl_entry_font;
@@ -123,7 +123,7 @@ fontlist_to_font(
 
 	font_data = get_font(font_list, &type_return);
 
-	if (!font_data) 
+	if (!font_data)
 		return False;
 
 	cal_font->cf_type = type_return;
@@ -142,15 +142,15 @@ fontlist_to_font(
  */
 static Boolean
 ProbeForFont(
-	Calendar	*cal, 
-	Font_Weight	 weight, 
-	unsigned long	 target_pixel_size, 
+	Calendar	*cal,
+	Font_Weight	 weight,
+	unsigned long	 target_pixel_size,
 	int		 with_foundry,
-	char	        *font_name)
+	char	        *font_name, int font_name_size)
 {
 	char	       **font_names,
 			 notused[48];
-	int		 i, 
+	int		 i,
 			 nnames,
 			 size = 0,
 			 closest_size_diff = 100000,
@@ -158,12 +158,12 @@ ProbeForFont(
 			 closest_index = -1;
 
 	if (!strcmp(cal->app_data->app_font_family, "application")) {
-		sprintf (font_name, "-%s-%s-%s-r-normal-sans-*-*-*-*-p-*",
+		snprintf (font_name, font_name_size, "-%s-%s-%s-r-normal-sans-*-*-*-*-p-*",
 				(with_foundry)?"dt":"*",
 				cal->app_data->app_font_family,
 				(weight == BOLD)?"bold":"medium");
 	} else {
-		sprintf (font_name, "-%s-%s-%s-r-normal--*-*-*-*-*-*",
+		snprintf (font_name, font_name_size, "-%s-%s-%s-r-normal--*-*-*-*-*-*",
 				(with_foundry)?"dt":"*",
 				cal->app_data->app_font_family,
 				(weight == BOLD)?"bold":"medium");
@@ -173,32 +173,32 @@ ProbeForFont(
 	font_names = XListFonts(XtDisplay(cal->frame), font_name, 80, &nnames);
 	if (!nnames) {
 		if (with_foundry)
-			return ProbeForFont(cal, weight, target_pixel_size, 
-							     FALSE, font_name);
+			return ProbeForFont(cal, weight, target_pixel_size,
+							     FALSE, font_name, font_name_size);
 		else
 			return FALSE;
 	}
 
-	/* For the fonts that match, get their pixel size and 
-	 * look for the one with the pixel size closest to the size we are 
+	/* For the fonts that match, get their pixel size and
+	 * look for the one with the pixel size closest to the size we are
 	 * looking for.
 	 */
 	for (i = 0; i < nnames; i++) {
-		sscanf(font_names[i], 
+		sscanf(font_names[i],
 		       "-%[^-]-%[^-]-%[^-]-%[^-]-%[^-]-%[^-]-%d-%s",
 			notused, notused, notused, notused, notused, notused,
 			&size, notused);
 
 		if (!size)
-			sscanf(font_names[i], 
+			sscanf(font_names[i],
 			    "-%[^-]-%[^-]-%[^-]-%[^-]-%[^-]--%d-%s",
 			     notused, notused, notused, notused, notused,
 			     &size, notused);
 
 		if (size) {
-			if ((ABS((int)(target_pixel_size - size)) <= 
+			if ((ABS((int)(target_pixel_size - size)) <=
 							closest_size_diff)) {
-				closest_size_diff = 
+				closest_size_diff =
 					ABS((int)(target_pixel_size - size));
 				closest_size = size;
 				closest_index = i;
@@ -213,14 +213,14 @@ ProbeForFont(
 		return FALSE;
 
 	/* This one is the closest in size */
-	sprintf (font_name, "-%s-%s-%s-r-normal-%s-%d-*-*-*-*-*",
+	snprintf (font_name, font_name_size, "-%s-%s-%s-r-normal-%s-%d-*-*-*-*-*",
 		 (with_foundry)?"dt":"*",
 		 cal->app_data->app_font_family,
 		 (weight == BOLD)?"bold":"medium",
 		 (!strcmp(cal->app_data->app_font_family, "application")) ?
 								"sans": "",
 		 closest_size);
-		
+
 	XFreeFontNames(font_names);
 
 	return TRUE;
@@ -228,7 +228,7 @@ ProbeForFont(
 
 extern void
 load_app_font(
-	Calendar	*cal, 
+	Calendar	*cal,
 	Font_Weight	 weight,
 	Cal_Font	*userfont,
 	Cal_Font	*return_font)
@@ -249,7 +249,7 @@ load_app_font(
 		/* If we can't get the pixel size from the user font we
 		 * defaults to a 12 pixel font.
 		 */
-		if (!XGetFontProperty(userfont->f.cf_font, pixel_atom, 
+		if (!XGetFontProperty(userfont->f.cf_font, pixel_atom,
 							&pixel_size))
 			pixel_size = 12;
 	} else {
@@ -264,7 +264,7 @@ load_app_font(
 		} else {
 			int i;
 			if (!XGetFontProperty(font_struct_list[0],
-					      pixel_atom, 
+					      pixel_atom,
 					      &pixel_size))
 				pixel_size = 12;
 		}
@@ -275,12 +275,12 @@ load_app_font(
 	 * version available.
 	 */
 	if (!strcmp(cal->app_data->app_font_family, "application")) {
-		sprintf (font_name, "-dt-%s-%s-r-normal-sans-%lu-*-*-*-p-*",
+		snprintf (font_name, 128, "-dt-%s-%s-r-normal-sans-%lu-*-*-*-p-*",
 				cal->app_data->app_font_family,
 				(weight == BOLD)?"bold":"medium",
 				pixel_size);
 	} else {
-		sprintf (font_name, "-dt-%s-%s-r-normal--%lu-*-*-*-*-*",
+		snprintf (font_name, 128, "-dt-%s-%s-r-normal--%lu-*-*-*-*-*",
 				cal->app_data->app_font_family,
 				(weight == BOLD)?"bold":"medium",
 				pixel_size);
@@ -289,8 +289,8 @@ load_app_font(
 	/* See if the font exists */
 	font_names = XListFonts(dpy, font_name, 1, &nnames);
 	if (!nnames) {
-		if (!ProbeForFont(cal, weight, pixel_size, TRUE, 
-							font_name_ptr)) {
+		if (!ProbeForFont(cal, weight, pixel_size, TRUE,
+							font_name_ptr, 128)) {
 			/* We didn't find anything */
 			*return_font = *userfont;
 			return;
@@ -298,7 +298,7 @@ load_app_font(
 	} else
 		XFreeFontNames(font_names);
 
-	strcat(font_name, ":");
+	strlcat(font_name, ":", 128);
 	in_font.size = strlen(font_name);
 	in_font.addr = font_name;
 	out_fontlist.size = sizeof(XmFontList);
@@ -328,7 +328,7 @@ CalTextExtents(
 	int		*width_return,
 	int		*height_return)
 {
-	
+
 	if (!font) return;
 
 	if (font->cf_type == XmFONT_IS_FONT) {
@@ -377,7 +377,7 @@ CalDrawString(
 		XSetFont(dpy, gc, font->f.cf_font->fid);
 		XDrawString(dpy, draw, gc, x, y, string, length);
 	} else {
-		XmbDrawString(dpy, draw, font->f.cf_fontset, gc, x, y, 
+		XmbDrawString(dpy, draw, font->f.cf_fontset, gc, x, y,
 							string, length);
 	}
 }
@@ -395,15 +395,15 @@ CalFontExtents(
 		fse->max_ink_extent.x = font->f.cf_font->min_bounds.lbearing;
 		fse->max_ink_extent.y = - font->f.cf_font->max_bounds.ascent;
 		fse->max_ink_extent.width = font->f.cf_font->min_bounds.width;
-		fse->max_ink_extent.height = 
+		fse->max_ink_extent.height =
 					 font->f.cf_font->max_bounds.ascent +
 					 font->f.cf_font->max_bounds.descent;
 
 		fse->max_logical_extent.x = 0;
 		fse->max_logical_extent.y = - font->f.cf_font->ascent;
-		fse->max_logical_extent.width = 
+		fse->max_logical_extent.width =
 					 font->f.cf_font->max_bounds.width;
-		fse->max_logical_extent.height = 
+		fse->max_logical_extent.height =
 					 font->f.cf_font->ascent +
 					 font->f.cf_font->descent;
 	} else {

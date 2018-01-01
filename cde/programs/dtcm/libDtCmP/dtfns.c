@@ -174,7 +174,7 @@ dtfns_init(void)
 
 {
 	char	*libfns = FNS_LIBRARY;
-	int	error;	
+	int	error;
 
 	if (libfns_handle != NULL) {
 		return 1;
@@ -290,7 +290,7 @@ dtfns_init(void)
  * Subsequent calls are very cheap.
  *
  * Returns
- *		1	Yes, FNS is available.  
+ *		1	Yes, FNS is available.
  *		0	No, FNS is not available.
  *		-1	You haven't called dtfns_init().
  */
@@ -350,7 +350,7 @@ dtfns_get_initial_ctx(void)
 }
 
 /*
- * Generate a full Helix name for a service. 
+ * Generate a full Helix name for a service.
  *
  *	'name' may be a relative Helix name.  I.e.:
  *		smith
@@ -383,7 +383,7 @@ dtfns_get_initial_ctx(void)
  *	is placed.
  *
  *	'size' is the size of 'buf'
- *	
+ *
  *
  * The string returned in buf may be used in calls to dtfns_lookup_str() and
  * dtfns_lookup_ref().
@@ -402,7 +402,7 @@ dtfns_service_name(
 	     			  /* (ie "SUNW_fns_calendar");	*/
 	const char *org,	/* Org name (ie "ssi").  NULL for default org */
 	char	   *buf,	/* Buffer to place name in */
-	const int  size)	/* Size of value_buf */
+	const int  size)	/* Size of _buf */
 
 {
 	char	*tmp_buf;
@@ -423,7 +423,7 @@ dtfns_service_name(
 		}
 
 		/*Construct Helix name from name and organization */
-		sprintf(buf,"%s:%s:%s:%s:%s:%s", DTFNS_ORG_NAME,
+		snprintf(buf, size, "%s:%s:%s:%s:%s:%s", DTFNS_ORG_NAME,
 			org, type, name, DTFNS_SERVICE_NAME, service);
 	} else if (dtfns_isa_helix_name(name)) {
 		/* Helix name. Expand it to point to calendar service */
@@ -437,7 +437,7 @@ dtfns_service_name(
 
 	} else {
 		/* Construct Helix name from name */
-		sprintf(buf,"%s:%s:%s:%s", type,
+		snprintf(buf, size, "%s:%s:%s:%s", type,
 			name, DTFNS_SERVICE_NAME, service);
 	}
 
@@ -570,14 +570,14 @@ dtfns_lookup_str(
 }
 
 /*
- * 
+ *
  *	Bind a string to a name.
  *
  *	name		Absolute Helix name to bind string to
  *
  *	ref_type	Reference type.  We need this to create
  *			the reference if it does not already exist.
- *	
+ *
  *	types		Array of address types. This routine looks for
  *			the address that matches at least one of these
  *			types.  The first type is used when the new
@@ -768,7 +768,7 @@ get_helix_service_name(
 		p++;
 	}
 
-	/* 
+	/*
 	 * If name is a service context or the "service" null context
 	 * then we want to append ":calendar"
 	 */
@@ -776,20 +776,20 @@ get_helix_service_name(
 	    (strcmp(type, DTFNS_NULL_CONTEXT_TYPE) == 0 && p != NULL &&
 	    strcmp(p, DTFNS_SERVICE_NAME) == 0)) {
 
-		*buf = (char *)malloc(n + strlen(service) + 2);
+		int buf_size = n + strlen(service) + 2;
+		*buf = (char *)malloc(buf_size);
 		if (*buf == NULL) {
 			return -1;
 		}
-		strcpy(*buf, tmp_name);
-		strcat(*buf, ":");
-		strcat(*buf, service);
+		strlcpy(*buf, tmp_name, buf_size);
+		strlcat(*buf, ":", buf_size);
+		strlcat(*buf, service, buf_size);
 		return 1;
 	} else {
 		/* Append ":service:calendar" */
-		*buf = (char *)malloc(n + 
-						   strlen(DTFNS_SERVICE_NAME) +
-						   strlen(service) + 3);
-		sprintf(*buf, "%s:%s:%s", tmp_name,
+		int buf_size = n + strlen(DTFNS_SERVICE_NAME) + strlen(service) + 3;
+		*buf = (char *)malloc(buf_size);
+		snprintf(*buf, buf_size, "%s:%s:%s", tmp_name,
 					DTFNS_SERVICE_NAME, service);
 		return 1;
 	}

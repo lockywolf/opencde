@@ -88,7 +88,7 @@ OpenLcxDb (void)
     /*
      * wait 30 sec. until another thread or enter is done modifying the table
      */
-    while (MyProcess == True) 
+    while (MyProcess == True)
       {
         /* if time out, return */
 	if (time(&time2) == (time_t)-1)
@@ -155,8 +155,9 @@ _DtI18NXlateOpToStdLocale (
     /* if failed, give default values */
     if (ret_stdLocale != NULL && *ret_stdLocale == NULL)
     {
-        *ret_stdLocale = (char *)malloc(strlen(DfltStdLang)+strlen(DfltStdCharset)+3);
-	sprintf(*ret_stdLocale,"%s.%s",DfltStdLang,DfltStdCharset);
+	int size = strlen(DfltStdLang) + strlen(DfltStdCharset) + 3;
+        *ret_stdLocale = (char *)malloc(size);
+	snprintf(*ret_stdLocale, size, "%s.%s", DfltStdLang,DfltStdCharset);
     }
     if (ret_stdLang != NULL && *ret_stdLang == NULL)
 	*ret_stdLang = (char *)strdup(DfltStdLang);

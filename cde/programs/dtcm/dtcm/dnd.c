@@ -79,7 +79,7 @@ extern char	*sys_errlist[];
 extern int	drag_load_proc(char*, Calendar *);
 static char	dnd_filename[20];
 
-static Boolean 
+static Boolean
 validate_dropped_appt(char *filename, Calendar *c) {
 	Props			*p = (Props *)c->properties;
 	Props_pu		*pu = (Props_pu *)c->properties_pu;
@@ -91,11 +91,11 @@ validate_dropped_appt(char *filename, Calendar *c) {
 	if (!filename || *filename == '\0')
 		return(False);
 
-	op = parse_appt_from_file(c->DT_catd, filename, list, p, query_user, 
+	op = parse_appt_from_file(c->DT_catd, filename, list, p, query_user,
 				  (void *)c, c->general->version);
 
 	for (i = 1; i <= list->count; i++)
-		if (a = (Dtcm_appointment *)CmDataListGetData(list, i))
+		if ( (a = (Dtcm_appointment *)CmDataListGetData(list, i)) )
 			free_appt_struct(&a);
 	CmDataListDestroy(list, B_FALSE);
 
@@ -129,18 +129,18 @@ handle_animate_cb(
 		switch(animateInfo->dropData->protocol) {
 		case DtDND_FILENAME_TRANSFER:
 			data = animateInfo->dropData->data.files[i];
-	
+
 #if defined(FNS) && defined(FNS_DEMO)
 			if (cmfns_use_fns(c->properties) &&
 			    cmfns_name_from_file(data, buf, sizeof(buf)) == 1) {
-				/* 
+				/*
 				 * Looks like an HFS file has been dropped on us.
 				 * Get the calendar service associated with the
 				 * FNS name and browse it
 				 */
 				if (cmfns_lookup_calendar(buf,
 						addr_buf, sizeof(addr_buf)) == 1) {
-					
+
 					switch_it(c, addr_buf, main_win);
 					return;
 				}
@@ -149,34 +149,18 @@ handle_animate_cb(
 			drag_load_proc(data, c);
 			break;
 		case DtDND_BUFFER_TRANSFER:
-	
+
 			/*
 			 * Save data to a file so we can pass it to drag_load_proc().
 			 */
 
-#ifdef NOT
-			strcpy(filename, "/tmp/cmXXXXXX");
-			mktemp(filename);
-#endif
 
 			if (!dnd_filename[0]){
 				return;
 			}
-	
-#ifdef NOT
-	
-			if ((fp = fopen(dnd_filename, "w")) == 0) {
-				return;
-			}
-	
-			data = animateInfo->dropData->data.buffers[0].bp;
-			size = animateInfo->dropData->data.buffers[0].size;
-			fwrite(data, 1, size, fp);
-			fclose(fp);
-#endif
-	
+
 			drag_load_proc(dnd_filename, c);
-	
+
 			unlink(dnd_filename);
 			dnd_filename[0] = '\0';
 			break;
@@ -215,49 +199,49 @@ handle_drop_cb(
 		switch(transfer_info->dropData->protocol) {
 		case DtDND_FILENAME_TRANSFER:
 			data = transfer_info->dropData->data.files[i];
-	
+
 #if defined(FNS) && defined(FNS_DEMO)
 			if (cmfns_use_fns(c->properties) &&
 			    cmfns_name_from_file(data, buf, sizeof(buf)) == 1) {
-				/* 
+				/*
 				 * Looks like an HFS file has been dropped on us.
 				 * Get the calendar service associated with the
 				 * FNS name and browse it
 				 */
 				if (cmfns_lookup_calendar(buf,
 						addr_buf, sizeof(addr_buf)) == 1) {
-					
+
 					switch_it(c, addr_buf, main_win);
 					return;
 				}
 			}
 #endif
-	
+
 			if (validate_dropped_appt(data, c) == False) {
 				transfer_info->status = DtDND_FAILURE;
 			}
 			break;
 		case DtDND_BUFFER_TRANSFER:
-	
+
 			/*
 			 * Save data to a file so we can pass it to drag_load_proc().
 			 */
-			strcpy(dnd_filename, "/tmp/cmXXXXXX");
-			mktemp(dnd_filename);
-	
+			strlcpy(dnd_filename, "/tmp/cmXXXXXX", 20);
+			mkstemp(dnd_filename);
+
 			if ((fp = fopen(dnd_filename, "w")) == 0) {
 				transfer_info->status = DtDND_FAILURE;
 				return;
 			}
-	
+
 			data = transfer_info->dropData->data.buffers[0].bp;
 			size = transfer_info->dropData->data.buffers[0].size;
 			fwrite(data, 1, size, fp);
 			fclose(fp);
-	
+
 			if (validate_dropped_appt(dnd_filename, c) == False) {
 				unlink(dnd_filename);
-				dnd_filename[0] = '\0';	
+				dnd_filename[0] = '\0';
 				transfer_info->status = DtDND_FAILURE;
 			}
 #ifdef NOT
@@ -296,7 +280,7 @@ cm_register_drop_site(
 
 	DtDndVaDropRegister(w, DtDND_FILENAME_TRANSFER | DtDND_BUFFER_TRANSFER,
 			XmDROP_COPY,
-			transfer_cb_rec, 
+			transfer_cb_rec,
 			DtNdropAnimateCallback, animateCBRec,
 			DtNtextIsBuffer, 	True,
 			NULL);
@@ -332,8 +316,8 @@ schedule_appt(Calendar *c, Dtcm_appointment *a) {
 		char *ident = XtNewString(catgets(c->DT_catd, 1, 923, "Cancel"));
 	  	char *title = XtNewString(catgets(c->DT_catd, 1, 212,
 				"Calendar : Schedule Appointment"));
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 210, "The appointment will be scheduled in the calendar\nyou are currently browsing.  Do you still want to schedule it?"));
-		sprintf(buf2, "%s %s", catgets(c->DT_catd, 1, 211, "Schedule in"),
+		snprintf(buf, BUFSIZ, "%s", catgets(c->DT_catd, 1, 210, "The appointment will be scheduled in the calendar\nyou are currently browsing.  Do you still want to schedule it?"));
+		snprintf(buf2, BUFSIZ, "%s %s", catgets(c->DT_catd, 1, 211, "Schedule in"),
 			c->view->current_calendar);
 		answer = dialog_popup(c->frame,
 			DIALOG_TITLE, title,
@@ -357,8 +341,8 @@ schedule_appt(Calendar *c, Dtcm_appointment *a) {
 	if ((rc = editor_insert(a, &entry, c)) == True) {
 
 		_csa_iso8601_to_tick(a->time->value->item.string_value, &tick);
-		format_tick(tick, ot, st, date_buf);
-		sprintf(buf, catgets(c->DT_catd, 1, 214,
+		format_tick(tick, ot, st, date_buf, MAXNAMELEN);
+		snprintf(buf, BUFSIZ, catgets(c->DT_catd, 1, 214,
 				     "Appointment scheduled: %s"), date_buf);
 		set_message(c->message_text, buf);
 		return 1;
@@ -392,9 +376,10 @@ schedule_appt(Calendar *c, Dtcm_appointment *a) {
 /*
  * Call the routines in file_parse (in libDtCm) to read the appointments!
  */
-extern int 
+extern int
 drag_load_proc(char *filename, Calendar *c) {
 	int			ret_val, i = 1;
+	int                     buf_size = MAXNAMELEN * 2;
 	char			buf[MAXNAMELEN * 2];
 	CmDataList		*list = CmDataListCreate();
 	Props			*p = (Props *)c->properties;
@@ -406,67 +391,67 @@ drag_load_proc(char *filename, Calendar *c) {
 	if (!filename || *filename == '\0')
 		return -1;
 
-	op = parse_appt_from_file(c->DT_catd, filename, list, p, query_user, 
+	op = parse_appt_from_file(c->DT_catd, filename, list, p, query_user,
 				  (void *)c, c->general->version);
 	if (list->count <= 0) {
 		op = CANCEL_APPT;
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 842, 
+		snprintf(buf, buf_size, "%s", catgets(c->DT_catd, 1, 842,
 	     "The information transferred did not\ncontain any appointments."));
 	}
 
 	switch(op) {
 	case COULD_NOT_OPEN_FILE:
-	  	msg = XtNewString(catgets(c->DT_catd, 1, 843, 
+	  	msg = XtNewString(catgets(c->DT_catd, 1, 843,
 					"Drag and Drop operation failed."));
-		sprintf(buf, "%s\n%s",
+		snprintf(buf, buf_size, "%s\n%s",
 			msg,
-			catgets(c->DT_catd, 1, 844, 
+			catgets(c->DT_catd, 1, 844,
 			      "Unable to locate the transferred information."));
 		XtFree(msg);
 		break;
 	case INVALID_DATE:
-		sprintf(buf, "%s",
+		snprintf(buf, buf_size, "%s",
 			catgets(c->DT_catd, 1, 218, "Invalid DATE specified"));
 		break;
 	case INVALID_START:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 219,
+		snprintf(buf, buf_size, "%s", catgets(c->DT_catd, 1, 219,
 					   "Invalid START time specified"));
 		break;
 	case INVALID_STOP:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 220,
+		snprintf(buf, buf_size, "%s", catgets(c->DT_catd, 1, 220,
 					   "Invalid END time specified"));
 		break;
 	case MISSING_DATE:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 221,
+		snprintf(buf, buf_size, "%s", catgets(c->DT_catd, 1, 221,
 					   "Empty or missing DATE field"));
 		break;
 	case MISSING_START:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 222,
+		snprintf(buf, buf_size, "%s", catgets(c->DT_catd, 1, 222,
 					   "Empty or missing START field"));
 		break;
 	case MISSING_WHAT:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 223,
+		snprintf(buf, buf_size, "%s", catgets(c->DT_catd, 1, 223,
 					   "Empty or missing WHAT field"));
 		break;
 	case REPEAT_FOR_MISMATCH:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 224,
+		snprintf(buf, buf_size, "%s", catgets(c->DT_catd, 1, 224,
 					   "REPEAT and FOR field mismatch"));
 		break;
 	case VALID_APPT:
 		break;
 	case CANCEL_APPT:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 225,
+		snprintf(buf, buf_size, "%s", catgets(c->DT_catd, 1, 225,
 					   "Schedule appointment was cancelled."));
 		break;
 	default:
 		op = CANCEL_APPT;
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 225,
+		snprintf(buf, buf_size, "%s", catgets(c->DT_catd, 1, 225,
 					   "Schedule appointment was cancelled."));
 		break;
 	}
 
 	while (op == VALID_APPT && i <= list->count) {
-		extern void scrub_attr_list(Dtcm_appointment *); 
+		extern void scrub_attr_list(Dtcm_appointment *);
 
 		a = (Dtcm_appointment *)CmDataListGetData(list, i);
 
@@ -475,18 +460,18 @@ drag_load_proc(char *filename, Calendar *c) {
 		ret_val = schedule_appt(c, a);
 		if (ret_val < 0) {
 			op = CANCEL_APPT;
-			sprintf(buf, "%s", catgets(c->DT_catd, 1, 226,
+			snprintf(buf, buf_size, "%s", catgets(c->DT_catd, 1, 226,
 				"Internal error scheduling appointment."));
 		} else if (ret_val == 0) {
 			op = CANCEL_APPT;
-			sprintf(buf, "%s", catgets(c->DT_catd, 1, 225,
+			snprintf(buf, buf_size, "%s", catgets(c->DT_catd, 1, 225,
 				"Schedule appointment was cancelled."));
 		}
 		++i;
 	}
 
 	for (i = 1; i <= list->count; i++)
-		if (a = (Dtcm_appointment *)CmDataListGetData(list, i))
+		if ( (a = (Dtcm_appointment *)CmDataListGetData(list, i)) )
 			free_appt_struct(&a);
 	CmDataListDestroy(list, B_FALSE);
 
@@ -509,8 +494,8 @@ drag_load_proc(char *filename, Calendar *c) {
 	return 0;
 }
 
-/* gets a pointer to the currently selected appointment in the editor.  
-   This will need to be changed if we ever allow more than one item 
+/* gets a pointer to the currently selected appointment in the editor.
+   This will need to be changed if we ever allow more than one item
    to be selected in the editor at a time. */
 
 CSA_entry_handle
@@ -521,6 +506,7 @@ get_appt_struct(DragContext *context) {
 	Calendar 	*c = context->calendar;
 	Props_pu	*pr;
 	CSA_entry_handle	entry;
+	int             entry_set = 1;
 	Access_data	*ad;
 
 	pr = (Props_pu *)(c->properties_pu);
@@ -531,9 +517,13 @@ get_appt_struct(DragContext *context) {
 		list = ((GEditor *) context->editor)->appt_list;
 	else if (context->editor_type == TodoEditorList)
 		list = ((ToDo *) context->editor)->todo_list;
+	else {
+	        fprintf(stderr, "Invalid editor type, aborting!");
+		exit(1);
+	}
 
         if (!XmListGetSelectedPos(list, &item_list, &item_cnt)) {
-	  	char *title = XtNewString(catgets(c->DT_catd, 1, 230, 
+	  	char *title = XtNewString(catgets(c->DT_catd, 1, 230,
 				"Calendar : Error - Drag Appointment"));
 		char *text = XtNewString(catgets(c->DT_catd, 1, 231, "Select an appointment and DRAG again."));
 		char *ident = XtNewString(catgets(c->DT_catd, 1, 95, "Continue"));
@@ -549,24 +539,29 @@ get_appt_struct(DragContext *context) {
 		XtFree(title);
                 return(0);
         }
- 
 
-	if (context->editor_type == SingleEditorList)
+
+	if (context->editor_type == SingleEditorList) {
 		entry = editor_nth_appt((Editor *)context->editor,
 					item_list[0] - 1);
-	else if (context->editor_type == GroupEditorList)
+		entry_set = !!entry;
+        } else if (context->editor_type == GroupEditorList) {
 		entry = geditor_nth_appt((GEditor *)context->editor,
 					 item_list[0] - 1, &ad);
-	else if (context->editor_type == TodoEditorList)
+		entry_set = !!entry;
+        } else if (context->editor_type == TodoEditorList) {
 		entry = t_nth_appt((ToDo *)context->editor,
 					 item_list[0] - 1);
+		entry_set = !!entry;
+	} else
+	        entry_set = 0;
 
 
-        if (!entry) {
-	  	char *title = XtNewString(catgets(c->DT_catd, 1, 230, 
+        if (!entry_set) {
+	  	char *title = XtNewString(catgets(c->DT_catd, 1, 230,
 					"Calendar : Error - Drag Appointment"));
 		char *ident = XtNewString(catgets(c->DT_catd, 1, 95, "Continue"));
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 845,
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 845,
 		"Drag and Drop operation Failed\nInternal consistency error."));
                 answer = dialog_popup(c->frame,
                         DIALOG_TITLE, title,
@@ -595,12 +590,12 @@ ApptConvertCB(
         XtPointer       clientData,
         XtPointer       callData)
 {
-        DtDndConvertCallbackStruct *convertInfo 
+        DtDndConvertCallbackStruct *convertInfo
 					= (DtDndConvertCallbackStruct*)callData;
         DtDndBuffer 	*data		= &(convertInfo->dragData->data.buffers[0]);
         DragContext     *context        = (DragContext *)clientData;
         Display         *display        = XtDisplay(dragContext);
-        Atom            CMAPPOINTMENT 	
+        Atom            CMAPPOINTMENT
 			= XmInternAtom(display, "CalendarAppointment", False);
 	Calendar	*c = context->calendar;
 
@@ -623,13 +618,13 @@ ApptConvertCB(
 static void
 GetIcon(Calendar *calendar)
 {
- 
+
         Display        *display = XtDisplay(calendar->frame);
         Window          window = XtWindow(calendar->frame);
         unsigned char  *bitmapData, *bitmapMask;
         Editor          *e = (Editor *) calendar->editor;
         GEditor         *ge = (GEditor *) calendar->geditor;
- 
+
         if (e->drag_bitmap == 0) {
                 e->drag_bitmap = XCreateBitmapFromData(display,
                         window, (char *) drag_xbm_bits,
@@ -654,7 +649,7 @@ GetIcon(Calendar *calendar)
                         ge->drag_mask = e->drag_mask;
         }
 }
- 
+
 /*
  * DragFinishCB
  *
@@ -679,7 +674,7 @@ DragFinishCB(
 		 (context->editor_type == TodoEditorIcon))
         	((ToDo *) context->editor)->doing_drag = False;
 	else if ((context->editor_type == GroupEditorList) ||
-		 (context->editor_type == GroupEditorIcon)) 
+		 (context->editor_type == GroupEditorIcon))
         	((GEditor *) context->editor)->doing_drag = False;
 
         if (context->data)
@@ -700,11 +695,11 @@ CreateDragSourceIcon(
         unsigned int    pixmapWidth, pixmapHeight, pixmapBorder, pixmapDepth;
         Arg             args[20];
         Cardinal        nn = 0;
- 
+
         XGetGeometry (XtDisplayOfObject(widget), pixmap, &rootWindow,
                 &pixmapX, &pixmapY, &pixmapWidth, &pixmapHeight,
                 &pixmapBorder, &pixmapDepth);
- 
+
         XtSetArg(args[nn], XmNwidth, pixmapWidth);  nn++;
         XtSetArg(args[nn], XmNheight, pixmapHeight);  nn++;
         XtSetArg(args[nn], XmNmaxWidth, pixmapWidth);  nn++;
@@ -728,23 +723,23 @@ TranslationDragStart(
                                                 {NULL, NULL} };
         static XtCallbackRec dragFinishCBRec[] =  { {DragFinishCB, NULL},
                                                     {NULL, NULL} };
- 
+
         Display        *display 	= XtDisplay(widget);
         DragContext     *context = calloc(sizeof(DragContext), 1);
         Editor          *e = (Editor *) calendar->editor;
 	CSA_entry_handle	entry;
 	char		*apptstr;
 	Props		*p = (Props *)calendar->properties;
- 
+
         context->calendar = calendar;
 
 	if (((Editor *)calendar->editor)->appt_list == widget) {
         	context->editor_type = SingleEditorList;
                 context->editor = (caddr_t) calendar->editor;
-	} else if (((GEditor *)calendar->geditor)->appt_list == widget) { 
+	} else if (((GEditor *)calendar->geditor)->appt_list == widget) {
 		context->editor_type = GroupEditorList;
 		context->editor = (caddr_t) calendar->geditor;
-	} else if (((ToDo *)calendar->todo)->todo_list == widget) { 
+	} else if (((ToDo *)calendar->todo)->todo_list == widget) {
 		context->editor_type = TodoEditorList;
 		context->editor = (caddr_t) calendar->todo;
 	}
@@ -787,22 +782,22 @@ TranslationDragStart(
         dragFinishCBRec[0].closure = (XtPointer)context;
 
         if (e->drag_icon == NULL) {
-                e->drag_icon = CreateDragSourceIcon(widget, 
-						    e->drag_bitmap, 
+                e->drag_icon = CreateDragSourceIcon(widget,
+						    e->drag_bitmap,
 						    e->drag_mask);
         }
 
         if (DtDndVaDragStart(widget, event, DtDND_BUFFER_TRANSFER, 1,
-            		     XmDROP_COPY, 
+            		     XmDROP_COPY,
 			     convertCBRec, dragFinishCBRec,
 			     DtNsourceIcon, e->drag_icon,
 			     NULL) == NULL) {
- 
-                printf("%s", catgets(calendar->DT_catd, 1, 239, 
+
+                printf("%s", catgets(calendar->DT_catd, 1, 239,
 					"DragStart returned NULL.\n"));
         }
 }
- 
+
 void
 ApptDragStart(
         Widget          widget,
@@ -814,7 +809,7 @@ ApptDragStart(
                                                 {NULL, NULL} };
         static XtCallbackRec dragFinishCBRec[] =  { {DragFinishCB, NULL},
                                                     {NULL, NULL} };
- 
+
         Display        *display 	= XtDisplay(widget);
         DragContext     *context = calloc(sizeof(DragContext), 1);
 	Editor		*e = (Editor *) calendar->editor;
@@ -823,10 +818,10 @@ ApptDragStart(
 	Dtcm_appointment        *appt;
 	char		*apptstr;
 	int		preDsswFlags, preRfpFlags;
- 
+
         context->calendar = calendar;
         context->editor_type = editor_type;
- 
+
         if (editor_type == SingleEditorIcon)
 	{
                 context->editor = (caddr_t) e;
@@ -875,7 +870,7 @@ ApptDragStart(
 	{
                 context->editor = (caddr_t) t;
 		if (t->cal->general->version < DATAVER4)
-		  appt = allocate_appt_struct(appt_write, DATAVER_ARCHIVE, 
+		  appt = allocate_appt_struct(appt_write, DATAVER_ARCHIVE,
 			      CSA_ENTRY_ATTR_REFERENCE_IDENTIFIER_I,
 			      CSA_ENTRY_ATTR_LAST_UPDATE_I,
 			      CSA_ENTRY_ATTR_ORGANIZER_I,
@@ -897,7 +892,7 @@ ApptDragStart(
 			      NULL);
 		else
 		  appt = allocate_appt_struct(appt_write,
-					      DATAVER_ARCHIVE, NULL); 
+					      DATAVER_ARCHIVE, NULL);
 
 		dssw_form_to_todo(&t->dssw, appt, calendar->calname, now());
 		preRfpFlags = t->rfpFlags;
@@ -913,10 +908,10 @@ ApptDragStart(
 		}
 		appt->type->value->item.sint32_value = CSA_TYPE_TODO;
 		appt->show_time->value->item.sint32_value = True;
-		t->completed_val = 
+		t->completed_val =
 		  XmToggleButtonGadgetGetState(t->completed_toggle);
-		appt->state->value->item.sint32_value = 
-		  (t->completed_val) ? 
+		appt->state->value->item.sint32_value =
+		  (t->completed_val) ?
 		    CSA_STATUS_COMPLETED : CSA_X_DT_STATUS_ACTIVE;
 	}
 	else
@@ -924,7 +919,7 @@ ApptDragStart(
 	  free(context);
 	  return;
 	}
-	apptstr = parse_attrs_to_string(appt, (Props *)calendar->properties, 
+	apptstr = parse_attrs_to_string(appt, (Props *)calendar->properties,
 					attrs_to_string(appt->attrs,
 							appt->count));
 	free_appt_struct(&appt);
@@ -932,22 +927,22 @@ ApptDragStart(
 	context->data = apptstr;
 
         GetIcon(calendar);
- 
+
         convertCBRec[0].closure = (XtPointer)context;
         dragFinishCBRec[0].closure = (XtPointer)context;
- 
+
         if (e->drag_icon == NULL) {
                 e->drag_icon = CreateDragSourceIcon(widget, e->drag_bitmap,
 						    e->drag_mask);
         }
- 
+
         if (DtDndVaDragStart(widget, event, DtDND_BUFFER_TRANSFER, 1,
-            	XmDROP_COPY, 
+            	XmDROP_COPY,
 		convertCBRec, dragFinishCBRec,
 		DtNsourceIcon,		e->drag_icon,
 		NULL)
             == NULL) {
- 
+
                 printf("%s", catgets(calendar->DT_catd, 1, 239,
 			       "DragStart returned NULL.\n"));
         }

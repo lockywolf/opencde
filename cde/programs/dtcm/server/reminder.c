@@ -34,7 +34,7 @@
 #include <string.h>
 #include <time.h>
 #include "cmscalendar.h"
-#include "reminder.h"		
+#include "reminder.h"
 #include "appt4.h"
 #include "repeat.h"
 #include "v4ops.h"
@@ -212,7 +212,7 @@ _DtCmsGetReminderInfoV4(Rm_que	*original)
 
 	if (original == NULL)
 		return (NULL);
-	
+
 	if ((copy = calloc(1, sizeof(Reminder_4))) != NULL) {
 		copy->tick = original->remind_at;
 		copy->next = NULL;
@@ -255,7 +255,7 @@ _DtCmsPrintReminderListV4(Rm_que *qhead)
 	fprintf (stderr, "--- Active Reminder Queue ---\n");
 	while (p_node != NULL) {
 
-		if (temp = strchr(p_node->appt->what, '\n'))
+		if ( (temp = strchr(p_node->appt->what, '\n')) )
 			*temp = '\0';
 
 		fprintf(stderr, "%s (%d) %s: %s\n", ctime(&p_node->remind_at),
@@ -278,9 +278,9 @@ _DtCmsPrintReminderListV4(Rm_que *qhead)
  */
 extern void
 _DtCmsObsoleteReminderV4(
-	Rm_que **qhead, 
-	Appt_4 *p_appt, 
-	int ord, 
+	Rm_que **qhead,
+	Appt_4 *p_appt,
+	int ord,
 	boolean_t delforward)
 {
 	Rm_que *p_prev;
@@ -365,7 +365,7 @@ _DtCmsAddReminders4Entry(
 			return;
 		}
 
-		if ((queue->active = (_DtCmsRemInfo **)calloc(1, 
+		if ((queue->active = (_DtCmsRemInfo **)calloc(1,
 		    sizeof(_DtCmsRemInfo) * _DtCms_NUM_REMINDERS)) == NULL) {
 			free(queue->names);
 			free(queue->aindex);
@@ -373,7 +373,7 @@ _DtCmsAddReminders4Entry(
 			return;
 		}
 
-		if ((queue->oldhead = (_DtCmsRemInfo **)calloc(1, 
+		if ((queue->oldhead = (_DtCmsRemInfo **)calloc(1,
 		    sizeof(_DtCmsRemInfo) * _DtCms_NUM_REMINDERS)) == NULL) {
 			free(queue->active);
 			free(queue->names);
@@ -404,7 +404,7 @@ _DtCmsAddReminders4Entry(
 	for (i = 1; i <= entry->num_attrs; i++) {
 
 		if (entry->attrs[i].value == NULL ||
-		    entry->attrs[i].value->type != CSA_VALUE_REMINDER) 
+		    entry->attrs[i].value->type != CSA_VALUE_REMINDER)
 			continue;
 
 		_DtCmsAddReminder4EntryToQ(*remq, entry, i, lnode);
@@ -563,7 +563,7 @@ _BuildReminder4Entry(
 			rptr2->rem.i = entry->attrs[aindex].name.num;
 			rptr2->lasttick = lnode->lasttick;
 			rptr2->starttime = tick;
-			rptr2->runtime = tick - lead; 
+			rptr2->runtime = tick - lead;
 			*active = rptr2;
 		}
 	}
@@ -729,15 +729,15 @@ _RemoveReminderFromQ(
 	} else {
 		tick = ClosestTick(entry->key.time, entry->key.time, lnode->re,
 			&restate);
-		if (do_old = (tick - lead < remq->cutoff))
+		if ( (do_old = (tick - lead < remq->cutoff)) )
 			rptr1 = _RemoveReminderFromList(&remq->oldhead[qindex],
 				entry, starttime, delfwd);
 
-		if (do_new = (lnode->lasttick - lead >= remq->cutoff))
+		if ( (do_new = (lnode->lasttick - lead >= remq->cutoff)) )
 			rptr2 = _RemoveReminderFromList(&remq->active[qindex],
 				entry, starttime, delfwd);
 
-		if (rptr = rptr1 ? rptr1 : rptr2) {
+		if ( (rptr = rptr1 ? rptr1 : rptr2) ) {
 			if (do_old && do_new) {
 				/* need to clean up the other queue
 				 * since add reminder will add to both
@@ -843,10 +843,10 @@ _UpdateReminderQ(_DtCmsRemQueue *remq, int qindex)
 				free(rptr);
 			} else {
 				rptr->starttime = tick;
-				rptr->runtime = tick - lead; 
+				rptr->runtime = tick - lead;
 				_InsertReminder(&remq->active[qindex], rptr);
 			}
-		} 
+		}
 	}
 }
 
@@ -909,7 +909,7 @@ _GetNextRemindersFromList(
 
 				if (head == NULL)
 					head = rptr;
-				else if (head->runtime = rptr->runtime) {
+				else if ( (head->runtime = rptr->runtime) ) {
 					rptr->next = head;
 					head = rptr;
 				} else {
@@ -932,7 +932,7 @@ _GetNextRemindersFromList(
 		/* now do lookup in the remaining list */
 
 		while (rlist != NULL) {
-			if (rptr = _GetReminderRefFromInfo(rlist, 0, 0)) {
+			if ( (rptr = _GetReminderRefFromInfo(rlist, 0, 0)) ) {
 				rptr->next = head;
 				head = rptr;
 			} else {

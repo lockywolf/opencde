@@ -67,6 +67,11 @@
 #include "lutil.h"
 #include "cmsdata.h"
 
+#if defined(CSRG_BASED)
+#include <signal.h>
+#include <sys/socket.h>
+#endif
+
 #ifndef	S_IRWXU
 #define	S_IRWXU		(S_IRUSR|S_IWUSR|S_IXUSR)
 #endif
@@ -132,7 +137,7 @@ parse_args(int argc, char **argv)
 {
 	int	opt;
 
-	if (pgname = strrchr (argv[0], '/'))
+	if ( (pgname = strrchr (argv[0], '/')) )
 		pgname++;
 	else
 		pgname = argv[0];
@@ -179,10 +184,10 @@ parse_args(int argc, char **argv)
 	{
 		int i,j;
 		char **argv_r;
-		
+
 		if (argc == 3)
 		  return;
-		  
+
 		argv_r = (char **) malloc(argc * sizeof(char *));
 
 		argv_r[0] = argv[0];
@@ -194,7 +199,7 @@ parse_args(int argc, char **argv)
 		return;
 	}
 #endif
-		
+
 error:
 	fprintf (stderr, "Usage: %s [-d] [-s] [-g hhmm]\n", pgname);
 	exit (-1);
@@ -224,10 +229,10 @@ init_dir()
 		if ((errno != ENOENT) || mkdir(dir, S_IRWXU|S_IRWXG|S_IRWXO))
 		{
 			if (errno == ENOENT)
-				sprintf(msgbuf, "%s: cannot create %s.\n%s: %s",
+				snprintf(msgbuf, BUFSIZ, "%s: cannot create %s.\n%s: %s",
 					pgname, dir, pgname, "System error");
 			else
-				sprintf(msgbuf, "%s: cannot access %s.\n%s: %s",
+				snprintf(msgbuf, BUFSIZ, "%s: cannot access %s.\n%s: %s",
 					pgname, dir, pgname, "System error");
 			perror (msgbuf);
 			exit (-1);
@@ -245,7 +250,7 @@ init_dir()
 
 		/* set directory permission to be "rwxrwsrwt" */
 		if (chmod(dir, mode)) {
-			sprintf(msgbuf, "%s: Permission on %s%s\n%s%s\n%s%s",
+			snprintf(msgbuf, BUFSIZ, "%s: Permission on %s%s\n%s%s\n%s%s",
 				pgname, dir,
 				" is wrong but cannot be corrected.", pgname,
 				": This might happen if you are mounting the directory.",
@@ -260,7 +265,7 @@ init_dir()
 	if (create_dir || info.st_uid!=daemon_uid || info.st_gid!=daemon_gid) {
 		/* set directory ownership to: owner = 1, group = 1 */
 		if (chown(dir, daemon_uid, daemon_gid)) {
-			sprintf(msgbuf, "%s: Ownership on %s%s\n%s%s\n%s%s",
+			snprintf(msgbuf, BUFSIZ, "%s: Ownership on %s%s\n%s%s\n%s%s",
 				pgname, dir,
 				" is wrong but cannot be corrected.", pgname,
 				": This might happen if you are mounting the directory.",
@@ -290,7 +295,7 @@ send_hup()
 	extern FILE *popen(const char *, const char *);
 	extern int pclose(FILE *);
 
-	sprintf(buf, "ps -e|grep rpc.cmsd|grep -v grep");
+	snprintf(buf, BUFSIZ, "ps -e|grep rpc.cmsd|grep -v grep");
 
 	if ((fp = popen(buf, "r")) == NULL) {
 		if (debug)
@@ -327,14 +332,14 @@ lock_it()
 	locker.l_len = 0;
 #endif /* SVR4 */
 
-	strcpy (buff, dir);
-	strcat (buff, "/.lock.");
+	strlcpy (buff, dir, MAXPATHLEN);
+	strlcat (buff, "/.lock.", MAXPATHLEN);
 
-	/* 
+	/*
 	 * /var/spool might be mounted.  Use .lock.hostname to
 	 * prevent more than one cms running in each host.
 	 */
-	strcat(buff, _DtCmGetLocalHost());
+	strlcat(buff, _DtCmGetLocalHost(), MAXPATHLEN);
 
 	fd = open(buff, O_WRONLY|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP);
 	if (fd < 0)
@@ -367,7 +372,7 @@ lock_it()
 			if (debug)
 				fprintf(stderr, "rpc.cmsd: %s\n",
 				    "lock_it failed due to another process");
-			
+
 			/* cms has been running.... */
 			return(error);
 		}
@@ -386,7 +391,7 @@ program(struct svc_req *rqstp, register SVCXPRT *transp)
 
 	/* set rpc_in_process so that sighup handler won't exit right away */
 	rpc_in_process = 1;
- 
+
         /* first do some bounds checking: */
         if (rqstp->rq_vers >= ph->nvers) {
                 svcerr_noproc(transp);
@@ -508,7 +513,7 @@ init_alarm()
 	alarm((unsigned) next);
 }
 
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
         u_long version;
         program_handle ph = newph();
@@ -532,13 +537,13 @@ main(int argc, char **argv)
 
 	pw = (struct passwd *)getpwnam("daemon");
 	gr = (struct group *)getgrnam("daemon");
-	if (pw != NULL) 
+	if (pw != NULL)
 		daemon_uid = pw->pw_uid;
 	else
 		daemon_uid = 1;
 	if (gr != NULL)
 		daemon_gid = gr->gr_gid;
-	else 
+	else
 		daemon_gid = 1;
 
 	parse_args(argc, argv);
@@ -648,7 +653,7 @@ main(int argc, char **argv)
 		/* brought up by inetd, use fd 0 which must be a TLI fd */
 		if (udp_transp == (SVCXPRT *)-1) {
 			udp_transp = svc_tli_create(standalone ? RPC_ANYFD : 0,
-				nconf_udp, (struct t_bind*) NULL, 0, 0); 
+				nconf_udp, (struct t_bind*) NULL, 0, 0);
 
 			if (udp_transp == NULL) {
 				t_error("rtable_main.c: svc_tli_create(udp)");

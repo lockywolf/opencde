@@ -108,8 +108,10 @@ DieFromToolTalkError(Calendar *c, char *errfmt, Tt_status status)
     if (! tt_is_err(status)) return;
 
     statmsg = tt_status_message(status);
-    errmsg = XtMalloc(strlen(errfmt) + strlen(statmsg) + 2);
-    sprintf(errmsg, errfmt, statmsg);
+
+    int errmsg_size = strlen(errfmt) + strlen(statmsg) + 2;
+    errmsg = XtMalloc(errmsg_size);
+    snprintf(errmsg, errmsg_size, errfmt, statmsg);
 
     xms_ok = XmStringCreateLocalized(catgets(c->DT_catd, 2, 3, "OK"));
     xms_errmsg = XmStringCreateLocalized(errmsg);
@@ -148,7 +150,7 @@ DieFromToolTalkError(Calendar *c, char *errfmt, Tt_status status)
 }
 
 
-/* 
+/*
  * Initialize tooltalk.  Can be called multiple times: the first call
  * initializes tooltalk, subsequent calls are no-ops.
  *

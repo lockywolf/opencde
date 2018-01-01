@@ -109,7 +109,7 @@ _DtCmsInsertEntry(_DtCmsCalendar *cal, cms_entry *entry)
 		_csa_iso8601_to_tick(date, &entry->key.time);
 
 		/* set reference id */
-		sprintf(buf, "%ld:%s@%s", entry->key.id, cal->calendar,
+		snprintf(buf, 80, "%ld:%s@%s", entry->key.id, cal->calendar,
 			_DtCmGetHostAtDomain());
 		opq.size = strlen(buf);
 		opq.data = (unsigned char *)buf;
@@ -181,7 +181,7 @@ _DtCmsInsertEntry(_DtCmsCalendar *cal, cms_entry *entry)
 
 	if ((stat = _RuleToRepeatInfo(entry, re)) != CSA_SUCCESS)
 		return (stat);
- 
+
 	if ((stat = _DtCm_copy_cms_entry(entry, &newptr)) != CSA_SUCCESS)
 		return (stat);
 
@@ -212,7 +212,7 @@ _DtCmsInsertEntryAndLog(_DtCmsCalendar *cal, cms_entry *entry)
 		if ((stat = _DtCmsV5TransactLog(cal, entry, _DtCmsLogAdd))
 		    != CSA_SUCCESS) {
 			(void)_DtCmsDeleteEntry(cal, NULL, 0, &entry->key,
-				NULL); 
+				NULL);
 		}
 	}
 	return (stat);
@@ -243,7 +243,7 @@ _RuleToRepeatInfo(cms_entry *entry, RepeatEvent *re)
 
 	if (re == NULL)
 	    return (_DtCm_set_sint32_attrval(CSA_X_DT_REPEAT_ONETIME,
-		&entry->attrs[CSA_X_DT_ENTRY_ATTR_REPEAT_TYPE_I].value)); 
+		&entry->attrs[CSA_X_DT_ENTRY_ATTR_REPEAT_TYPE_I].value));
 
 	if ((stat = _DtCm_set_sint32_attrval(_RuleToRepeatType(re),
 	    &entry->attrs[CSA_X_DT_ENTRY_ATTR_REPEAT_TYPE_I].value))

@@ -145,7 +145,7 @@ appt_to_form(ToDo *t, CSA_entry_handle a) {
 		t->completed_val = False;
 	XmToggleButtonGadgetSetState(t->completed_toggle,
 		t->completed_val, True);
-	sprintf(buf, "%s:  %s",	catgets(t->cal->DT_catd, 1, 565, "Author"),
+	snprintf(buf, MAXNAMELEN, "%s:  %s",	catgets(t->cal->DT_catd, 1, 565, "Author"),
 		appt->author->value->item.calendar_user_value->user_name);
 	set_message(t->message_text, buf);
 	free_appt_struct(&appt);
@@ -161,7 +161,7 @@ t_list_select_proc(Widget w, XtPointer client_data, XtPointer data) {
 	ToDo			*t = (ToDo *)client_data;
 	XmListCallbackStruct	*cbs = (XmListCallbackStruct *)data;
 
-	if (a = t_nth_appt(t, cbs->item_position - 1))
+	if ( (a = t_nth_appt(t, cbs->item_position - 1)) )
 		appt_to_form(t, a);
 	XtSetSensitive(t->delete_button, True);
         XtSetSensitive(t->change_button, True);
@@ -281,42 +281,42 @@ write_view_changes(ToDo *t){
 		return;
 
 	if (t->cal->general->version <= DATAVER3) {
-		appt = allocate_appt_struct(appt_write, 
+		appt = allocate_appt_struct(appt_write,
 	    				    t->cal->general->version,
-					    CSA_ENTRY_ATTR_STATUS_I, 
+					    CSA_ENTRY_ATTR_STATUS_I,
 					    CSA_X_DT_ENTRY_ATTR_REPEAT_TYPE_I,
 					    NULL);
-		appt->repeat_type->value->item.sint32_value = 
+		appt->repeat_type->value->item.sint32_value =
 						CSA_X_DT_REPEAT_ONETIME;
 	}
 	else {
-		appt = allocate_appt_struct(appt_write, 
+		appt = allocate_appt_struct(appt_write,
 	    				    t->cal->general->version,
-					    CSA_ENTRY_ATTR_STATUS_I, 
-					    CSA_ENTRY_ATTR_RECURRENCE_RULE_I, 
-					    NULL); 
-		appt->recurrence_rule->value->item.string_value = 
+					    CSA_ENTRY_ATTR_STATUS_I,
+					    CSA_ENTRY_ATTR_RECURRENCE_RULE_I,
+					    NULL);
+		appt->recurrence_rule->value->item.string_value =
 						strdup("D1 #1");
 	}
-		
-	_DtTurnOnHourGlass(t->view_frame); 
+
+	_DtTurnOnHourGlass(t->view_frame);
 
 	scope = CSA_SCOPE_ONE;
 
-	while (step) { 
+	while (step) {
 		if (step->modified) {
 
 			toggle_state = XmToggleButtonGadgetGetState(
 					step->view_item_toggle);
-			appt->state->value->item.sint32_value = 
+			appt->state->value->item.sint32_value =
 				(toggle_state) ?
 				  CSA_STATUS_COMPLETED : CSA_X_DT_STATUS_ACTIVE;
 
-			stat = csa_update_entry_attributes(c->cal_handle, 
-					step->appt, scope, 
-					CSA_FALSE, appt->count, 
+			stat = csa_update_entry_attributes(c->cal_handle,
+					step->appt, scope,
+					CSA_FALSE, appt->count,
 					appt->attrs, &updated_a, NULL);
-			backend_err_msg(t->view_frame, 
+			backend_err_msg(t->view_frame,
 					c->view->current_calendar, stat,
 					p->xm_error_pixmap);
 			if (stat != CSA_SUCCESS)
@@ -335,7 +335,7 @@ write_view_changes(ToDo *t){
 	}
 
 	free_appt_struct(&appt);
-		
+
 	if (todo_showing(t)) {
 		set_todo_msg_defaults(t);
 		add_all_todo(t);
@@ -425,7 +425,7 @@ t_view_apply_cb(
 
 	write_view_changes(t);
 
-	build_todo_view(t, t->view_list_glance, False); 
+	build_todo_view(t, t->view_list_glance, False);
 }
 
 static void
@@ -446,11 +446,11 @@ t_view_ok_cb(
 */
 static void
 t_view_filter_proc(Widget w, XtPointer client_data, XtPointer cbs) {
-	ToDo		*t = (ToDo *)client_data; 
+	ToDo		*t = (ToDo *)client_data;
 	int		op;
 
 	if (!t)
-		return; 
+		return;
 
 	XtVaGetValues(w, XmNuserData, &op, NULL);
 
@@ -459,7 +459,7 @@ t_view_filter_proc(Widget w, XtPointer client_data, XtPointer cbs) {
 
 	t->view_filter = op;
 
-	build_todo_view(t, t->view_list_glance, True); 
+	build_todo_view(t, t->view_list_glance, True);
 }
 
 extern Widget
@@ -661,7 +661,7 @@ t_build_view_popup(ToDo *t) {
 	t->view_list_label= XtVaCreateWidget("type_label",
                 xmLabelGadgetClass, 	t->view_form,
 		XmNtopAttachment, 	XmATTACH_WIDGET,
-		XmNtopWidget, 		t->view_filter_menu, 
+		XmNtopWidget, 		t->view_filter_menu,
 		XmNleftAttachment, 	XmATTACH_FORM,
 		XmNleftOffset, 		5,
 		XmNtopOffset, 		5,
@@ -679,10 +679,10 @@ t_build_view_popup(ToDo *t) {
 		XmNheight, 		200,
 		XmNleftAttachment, 	XmATTACH_FORM,
 		XmNleftOffset,          5,
-		XmNrightAttachment, 	XmATTACH_FORM, 
+		XmNrightAttachment, 	XmATTACH_FORM,
 		XmNrightOffset,         5,
 		XmNtopAttachment, 	XmATTACH_WIDGET,
-		XmNtopWidget, 		t->view_list_label, 
+		XmNtopWidget, 		t->view_list_label,
 		XmNbottomAttachment, 	XmATTACH_WIDGET,
 		XmNbottomWidget, 	separator,
 		XmNbottomOffset,	5,
@@ -696,9 +696,9 @@ t_build_view_popup(ToDo *t) {
         XtAddCallback(t->view_form, XmNhelpCallback,
                 (XtCallbackProc)help_cb, (XtPointer) TODO_LIST_HELP_BUTTON);
 
-	ManageChildren(t->view_form); 
+	ManageChildren(t->view_form);
 	XtManageChild(t->view_sw_mgr);
-	XtManageChild(t->view_form_mgr); 
+	XtManageChild(t->view_form_mgr);
 	XtManageChild(t->view_form);
 
 	t->view_list = NULL;
@@ -720,15 +720,15 @@ t_expand_ui_proc(Widget w, XtPointer client_data, XtPointer data) {
 	Dimension       h, height, width;
 	static Boolean	expand_state_closed = True;
 
-	/* This is really hokey.  There is a problem in the Motif code 
-	   that figures out traversals.  In the case of the appointment 
-	   editor, when the widgets are traversed, that the appointment 
-	   editor is them expanded, the traversal list is left in an 
-	   incorrect state.  The only way to straighten this out is 
-	   to trick the traversal code into re-evaluating the traversal 
-	   list.  We do this by setting one of the forms insensitive, 
-	   and then back to sensitive.  There is no visual impact, and 
-	   it seems to work.  Do *not* remove these calls to 
+	/* This is really hokey.  There is a problem in the Motif code
+	   that figures out traversals.  In the case of the appointment
+	   editor, when the widgets are traversed, that the appointment
+	   editor is them expanded, the traversal list is left in an
+	   incorrect state.  The only way to straighten this out is
+	   to trick the traversal code into re-evaluating the traversal
+	   list.  We do this by setting one of the forms insensitive,
+	   and then back to sensitive.  There is no visual impact, and
+	   it seems to work.  Do *not* remove these calls to
 	   XtSetSensitive(), of the synlib tests will stop working. */
 
 	XtVaGetValues(t->todo_list_sw, XmNwidth, &width, NULL);
@@ -807,7 +807,7 @@ t_form_to_appt(ToDo *t) {
 	Props_pu		*p = (Props_pu *)t->cal->properties_pu;
 
 	if (t->cal->general->version < DATAVER4)
-		appt = allocate_appt_struct(appt_write, t->cal->general->version, 
+		appt = allocate_appt_struct(appt_write, t->cal->general->version,
 				CSA_ENTRY_ATTR_REFERENCE_IDENTIFIER_I,
 	                        CSA_ENTRY_ATTR_LAST_UPDATE_I,
 	                        CSA_ENTRY_ATTR_ORGANIZER_I,
@@ -828,7 +828,7 @@ t_form_to_appt(ToDo *t) {
 	                        CSA_ENTRY_ATTR_POPUP_REMINDER_I,
 				NULL);
 	else
-		appt = allocate_appt_struct(appt_write, t->cal->general->version, 
+		appt = allocate_appt_struct(appt_write, t->cal->general->version,
 				CSA_ENTRY_ATTR_REFERENCE_IDENTIFIER_I,
 	                        CSA_ENTRY_ATTR_LAST_UPDATE_I,
 	                        CSA_ENTRY_ATTR_ORGANIZER_I,
@@ -850,14 +850,14 @@ t_form_to_appt(ToDo *t) {
 	                        CSA_ENTRY_ATTR_RECURRENCE_RULE_I,
 				NULL);
 
-	/* We have a special case in the "todo" department here.  The 
-	   dialog only has the concept of a start time.  The backing 
-	   widget structure dssw.* has an end time defined in it, and 
-	   the generic routine dssw_form_to_appt() wants to check it's 
-	   value.  Not good, as the unused widget may have an illegal 
-	   value left around in it.  To get around this problem, before 
-	   grabbing the results out of the form, we will copy the 
-	   "start time" value into the "end time" value.  This will 
+	/* We have a special case in the "todo" department here.  The
+	   dialog only has the concept of a start time.  The backing
+	   widget structure dssw.* has an end time defined in it, and
+	   the generic routine dssw_form_to_appt() wants to check it's
+	   value.  Not good, as the unused widget may have an illegal
+	   value left around in it.  To get around this problem, before
+	   grabbing the results out of the form, we will copy the
+	   "start time" value into the "end time" value.  This will
 	   make the check come out OK, and the duration appear to be 0. */
 
 	str = XmTextGetString(t->dssw.start_text);
@@ -866,9 +866,9 @@ t_form_to_appt(ToDo *t) {
 	XmToggleButtonSetState(t->dssw.stop_am, XmToggleButtonGetState(t->dssw.start_am), True);
 	XmToggleButtonSetState(t->dssw.stop_pm, XmToggleButtonGetState(t->dssw.start_pm), True);
 
-	/* For todo items, since no time shows up in the todo dialog 
-	   item chooser dialog, we really need the first line of the 
-	   summary to contain some text, otherwise there isn't anything 
+	/* For todo items, since no time shows up in the todo dialog
+	   item chooser dialog, we really need the first line of the
+	   summary to contain some text, otherwise there isn't anything
 	   visible to choose.  Check that here. */
 
 	str = XmTextGetString(t->dssw.what_text);
@@ -891,7 +891,7 @@ t_form_to_appt(ToDo *t) {
 	}
 	XtFree(str);
 
-	/* 
+	/*
 	 * Type needs to be set before dssw_form_to_appt() to insure
 	 * correct error message is used.
 	 */
@@ -912,8 +912,8 @@ t_form_to_appt(ToDo *t) {
 		return(NULL);
 	}
 
-	/* for todo appointments, we want to make sure that any reminder 
-	   other than the mail reminder is not set up.  This can happen 
+	/* for todo appointments, we want to make sure that any reminder
+	   other than the mail reminder is not set up.  This can happen
 	   if the users default reminders have been set in this way. */
 
 
@@ -1066,7 +1066,7 @@ t_delete_proc(Widget w, XtPointer client_data, XtPointer data) {
 		XtFree(title);
 		_DtTurnOffHourGlass(t->frame);
 		return;
-	} 
+	}
 
 	if (!(entry = t_nth_appt(t, item_list[0] - 1))) {
 	  	char *title = XtNewString(catgets(c->DT_catd, 1, 566, "Calendar : Error - To Do Editor"));
@@ -1089,9 +1089,9 @@ t_delete_proc(Widget w, XtPointer client_data, XtPointer data) {
 	XtFree((XtPointer)item_list);
 
 	answer = 0;
-	appt = allocate_appt_struct(appt_read, 
+	appt = allocate_appt_struct(appt_read,
 				    	c->general->version,
-					CSA_X_DT_ENTRY_ATTR_REPEAT_TYPE_I, 
+					CSA_X_DT_ENTRY_ATTR_REPEAT_TYPE_I,
 					NULL);
 	stat = query_appt_struct(c->cal_handle, entry, appt);
 	backend_err_msg(t->frame, c->view->current_calendar, stat,
@@ -1169,7 +1169,7 @@ t_delete_proc(Widget w, XtPointer client_data, XtPointer data) {
 
 	stat = csa_delete_entry(t->cal->cal_handle, entry, scope, NULL);
 	backend_err_msg(t->frame, t->cal->view->current_calendar, stat,
-			p->xm_error_pixmap);	
+			p->xm_error_pixmap);
 
 	set_todo_msg_defaults(t);
 	add_all_todo(t);
@@ -1236,7 +1236,7 @@ t_execute_change(ToDo *t, CSA_entry_handle old_a, Dtcm_appointment *new_a,
 		XtFree(text);
 		XtFree(title);
 	}
-	else if (appt->repeat_type->value->item.sint32_value != 
+	else if (appt->repeat_type->value->item.sint32_value !=
 		CSA_X_DT_REPEAT_ONETIME) {
 	  	char *title = XtNewString(catgets(c->DT_catd, 1, 591, "Calendar : To Do Editor"));
 	  	char *text = XtNewString(catgets(c->DT_catd, 1, 579,
@@ -1285,7 +1285,7 @@ t_execute_change(ToDo *t, CSA_entry_handle old_a, Dtcm_appointment *new_a,
 
 	/* We are not allowed to change the type of the entry, so we will
            remove that particular entry from the list for writing. */
- 
+
 	if (new_a->type) {
                 if (new_a->type->name){
                         free(new_a->type->name);
@@ -1381,7 +1381,7 @@ t_change_proc(Widget w, XtPointer client_data, XtPointer data) {
 		XtFree(title);
 		_DtTurnOffHourGlass(t->frame);
 		return;
-	} 
+	}
 
 	if (!(old_a = t_nth_appt(t, item_list[0] - 1))) {
 	  	char *title = XtNewString(catgets(c->DT_catd, 1, 566, "Calendar : Error - To Do Editor"));
@@ -1454,13 +1454,13 @@ FormApptDragMotionHandler(
 	ToDo		*t = (ToDo *) c->todo;
 	Dimension	source_height, source_width;
 	Position	source_x, source_y;
- 
+
         if (!t->doing_drag) {
 
-		/* check to see if the iniital value was within the 
+		/* check to see if the iniital value was within the
 		   bounds for the drag source icon. */
 
-		XtVaGetValues(t->drag_source, 
+		XtVaGetValues(t->drag_source,
 				XmNx, &source_x,
 				XmNy, &source_y,
 				XmNheight, &source_height,
@@ -1485,7 +1485,7 @@ FormApptDragMotionHandler(
                  */
                 diffX = t->initialX - event->xmotion.x;
                 diffY = t->initialY - event->xmotion.y;
- 
+
                 if ((ABS(diffX) >= DRAG_THRESHOLD) ||
                     (ABS(diffY) >= DRAG_THRESHOLD)) {
                         t->doing_drag = True;
@@ -1530,7 +1530,7 @@ t_make_todo(Calendar *c)
 	int		i = 0,
 			j = 0,
 			n;
-	
+
 
         new_translations = XtParseTranslationTable(translations);
 
@@ -1614,7 +1614,7 @@ t_make_todo(Calendar *c)
                 NULL);
 	XtAddCallback(t->change_button, XmNactivateCallback, t_change_proc, t);
 	XmStringFree(xmstr);
- 
+
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 802, "Delete"));
         t->delete_button = XtVaCreateWidget("delete",
 		xmPushButtonWidgetClass, t->base_form_mgr,
@@ -1709,7 +1709,7 @@ t_make_todo(Calendar *c)
 		XmNnavigationType, 	XmTAB_GROUP,
                 NULL);
 	XmStringFree(xmstr);
-	XtAddCallback(t->expand_ui_button, 
+	XtAddCallback(t->expand_ui_button,
 			XmNactivateCallback, t_expand_ui_proc, t);
 
 	/*
@@ -1784,7 +1784,7 @@ t_make_todo(Calendar *c)
 			XmNtopAttachment, XmATTACH_WIDGET,
 			XmNtopWidget, prev,
 			XmNleftOffset, _toLabel,
-			NULL );	
+			NULL );
 
 	/*
 	 * Add a drag source icon inside the dssw, lower right
@@ -1809,20 +1809,20 @@ t_make_todo(Calendar *c)
 			XmNleftOffset, _toText,
 			XmNrightAttachment, XmATTACH_WIDGET,
 			XmNrightWidget, t->drag_source,
-			NULL );	
+			NULL );
 
         XtAddEventHandler(XtParent(t->drag_source), Button1MotionMask, False,
                 (XtEventHandler)FormApptDragMotionHandler, (XtPointer) c);
-	
-        XtVaGetValues((Widget)XmGetXmDisplay(XtDisplay(c->frame)), 
-                "enableBtn1Transfer",   &btn1_transfer, 
-                NULL); 
 
-        /* btn1_transfer is a tri-state variable - see 1195846 */ 
+        XtVaGetValues((Widget)XmGetXmDisplay(XtDisplay(c->frame)),
+                "enableBtn1Transfer",   &btn1_transfer,
+                NULL);
+
+        /* btn1_transfer is a tri-state variable - see 1195846 */
 	if ((Boolean)btn1_transfer != True)
-                XtAddEventHandler(XtParent(t->drag_source), 
-                                Button2MotionMask, False, 
-                                (XtEventHandler)FormApptDragMotionHandler, 
+                XtAddEventHandler(XtParent(t->drag_source),
+                                Button2MotionMask, False,
+                                (XtEventHandler)FormApptDragMotionHandler,
                                 (XtPointer) c);
 
 
@@ -1887,10 +1887,10 @@ t_make_todo(Calendar *c)
 
 	cnt = 0;
 	XtSetArg(args[cnt], XmNlistSizePolicy, XmCONSTANT); 		++cnt;
-	XtSetArg(args[cnt], XmNwidth, 15 * 
+	XtSetArg(args[cnt], XmNwidth, 15 *
 		listfontextents.max_logical_extent.width); 		++cnt;
 	XtSetArg(args[cnt], XmNscrollBarDisplayPolicy, XmSTATIC); 	++cnt;
-	XtSetArg(args[cnt], XmNdoubleClickInterval, 5); 		++cnt; 
+	XtSetArg(args[cnt], XmNdoubleClickInterval, 5); 		++cnt;
         t->todo_list = (Widget)XmCreateScrolledList(t->base_form_mgr,
 						"todo_list", args, cnt);
 	t->todo_list_sw = XtParent(t->todo_list);
@@ -1898,8 +1898,8 @@ t_make_todo(Calendar *c)
         XtOverrideTranslations(t->todo_list, new_translations);
 
         /* Make btn 2 do dnd of appts */
-	/* btn1_transfer is a tri-state variable - see 1195846 */ 
-	if ((Boolean)btn1_transfer != True) {   
+	/* btn1_transfer is a tri-state variable - see 1195846 */
+	if ((Boolean)btn1_transfer != True) {
                 new_translations = XtParseTranslationTable(btn2_translations);
                 XtOverrideTranslations(t->todo_list, new_translations);
         }
@@ -1918,7 +1918,7 @@ t_make_todo(Calendar *c)
 
 	XtManageChild(t->todo_list);
 	XtAddCallback(t->todo_list,
-		XmNbrowseSelectionCallback, t_list_select_proc, t); 
+		XmNbrowseSelectionCallback, t_list_select_proc, t);
 
 	XtVaSetValues(t->list_label,
 		XmNleftAttachment, 	XmATTACH_OPPOSITE_WIDGET,
@@ -1926,17 +1926,17 @@ t_make_todo(Calendar *c)
 		NULL);
 
         /* set default button */
-        XtVaSetValues(t->base_form_mgr, 
-		XmNdefaultButton, 	t->insert_button, 
+        XtVaSetValues(t->base_form_mgr,
+		XmNdefaultButton, 	t->insert_button,
 		NULL);
 
-        XtVaSetValues(t->base_form_mgr, 
-		XmNcancelButton, 	t->close_button, 
+        XtVaSetValues(t->base_form_mgr,
+		XmNcancelButton, 	t->close_button,
 		NULL);
 
         XmProcessTraversal(t->dssw.what_text, XmTRAVERSE_CURRENT);
-        XtVaSetValues(t->base_form_mgr, 
-		XmNinitialFocus, 	t->dssw.what_text, 
+        XtVaSetValues(t->base_form_mgr,
+		XmNinitialFocus, 	t->dssw.what_text,
 		NULL);
 
 	ManageChildren(t->base_form_mgr);
@@ -1966,9 +1966,9 @@ add_to_todo_list(CSA_entry_handle entry, ToDo *t) {
 	CSA_return_code		stat;
 	Dtcm_appointment	*appt;
 
-	appt = allocate_appt_struct(appt_read, 
+	appt = allocate_appt_struct(appt_read,
 				    	t->cal->general->version,
-					CSA_ENTRY_ATTR_SUMMARY_I, 
+					CSA_ENTRY_ATTR_SUMMARY_I,
 					NULL);
 	stat = query_appt_struct(t->cal->cal_handle, entry, appt);
 	backend_err_msg(t->frame, t->cal->view->current_calendar, stat,
@@ -1980,8 +1980,9 @@ add_to_todo_list(CSA_entry_handle entry, ToDo *t) {
 
 	lines = text_to_lines(appt->what->value->item.string_value, 1);
 	if (lines && lines->s) {
-		buf = (char *)ckalloc(cm_strlen(lines->s) + 1);
-		strcpy(buf, lines->s);
+		int size = cm_strlen(lines->s) + 1;
+		buf = (char *)ckalloc(size);
+		strlcpy(buf, lines->s, size);
 		destroy_lines(lines);
 	} else {
 		buf = (char *)ckalloc(1);
@@ -2016,11 +2017,11 @@ add_all_todo(ToDo *t) {
 	if (!date)
 		return;
 
-	sprintf(date_str, "%s", date);
+	snprintf(date_str, MAXNAMELEN, "%s", date);
 	if ((strcasecmp(date, "today") == 0)
 		|| (strcasecmp(date, "tomorrow") == 0)
 		|| (strcasecmp(date, "yesterday") == 0))
-		sprintf(date_str, "12:00 am");
+		snprintf(date_str, MAXNAMELEN, "12:00 am");
 	if ((tick = cm_getdate(date_str, NULL)) <= 0)
 		return;
 	build_todo_list(t, tick, dayGlance, &entry_list, &count, VIEW_ALL);
@@ -2054,22 +2055,22 @@ set_list_title(ToDo *t) {
 	switch (t->view_list_glance) {
 		case yearGlance:
 				header = catgets(c->DT_catd, 1, 806, "Year of %d");
-				sprintf(buffer, header, year(t->view_list_date));
+				snprintf(buffer, BUFSIZ, header, year(t->view_list_date));
 				break;
 		case monthGlance:
-				format_date(t->view_list_date+1, get_int_prop(p, CP_DATEORDERING), buffer2, 0, 0, 0);
+				format_date(t->view_list_date+1, get_int_prop(p, CP_DATEORDERING), buffer2, BUFSIZ, 0, 0, 0);
 				header = catgets(c->DT_catd, 1, 807, "%s");
-				sprintf(buffer, header, buffer2);
+				snprintf(buffer, BUFSIZ, header, buffer2);
 				break;
 		case weekGlance:
-				format_date(t->view_list_date+1, get_int_prop(p, CP_DATEORDERING), buffer2, 1, 0, 0);
+				format_date(t->view_list_date+1, get_int_prop(p, CP_DATEORDERING), buffer2, BUFSIZ, 1, 0, 0);
 				header = catgets(c->DT_catd, 1, 808, "Week of %s");
-				sprintf(buffer, header, buffer2);
+				snprintf(buffer, BUFSIZ, header, buffer2);
 				break;
 		case dayGlance:
-				format_date(t->view_list_date+1, get_int_prop(p, CP_DATEORDERING), buffer2, 1, 0, 0);
+				format_date(t->view_list_date+1, get_int_prop(p, CP_DATEORDERING), buffer2, BUFSIZ, 1, 0, 0);
 				header = catgets(c->DT_catd, 1, 809, "%s");
-				sprintf(buffer, header, buffer2);
+				snprintf(buffer, BUFSIZ, header, buffer2);
 				break;
 	}
 
@@ -2120,8 +2121,10 @@ build_todo_list(ToDo *t, Tick date, Glance glance, CSA_entry_handle **a, CSA_uin
 		state = CSA_STATUS_COMPLETED;
 		use_state = B_TRUE;
 	}
-	else
+	else {
+		state = CSA_STATUS_COMPLETED; // not used
 		use_state = B_FALSE;
+	}
 
 	setup_range(&range_attrs, &ops, &range_count, start, stop,
 		    CSA_TYPE_TODO, state, use_state, t->cal->general->version);
@@ -2138,7 +2141,7 @@ build_todo_list(ToDo *t, Tick date, Glance glance, CSA_entry_handle **a, CSA_uin
 
 extern int
 build_todo_view(ToDo *t, Glance glance, Boolean redisplay) {
-	int			cnt; 
+	int			cnt;
 	CSA_uint32		entry_count;
 	char			*buf, *what_str, str1[MAXNAMELEN];
 	char			str2[MAXNAMELEN];
@@ -2158,10 +2161,10 @@ build_todo_view(ToDo *t, Glance glance, Boolean redisplay) {
 	*/
 
         if (redisplay == True) {
- 
+
                 /* On a redisplay, rebuild the list based on the
                    parameters of the last query. */
- 
+
 		build_todo_list(t, t->view_list_date, t->view_list_glance, &entry_list,
 				&entry_count, t->view_filter);
         }
@@ -2170,10 +2173,10 @@ build_todo_view(ToDo *t, Glance glance, Boolean redisplay) {
                    save the context so that a redisplay can be done if
                    something changes, like the display format or something
                    like that. */
- 
+
 		build_todo_list(t, t->cal->view->date, glance, &entry_list,
 				&entry_count, t->view_filter);
- 
+
                 t->view_list_glance = glance;
                 t->view_list_date = t->cal->view->date;
         }
@@ -2201,8 +2204,8 @@ build_todo_view(ToDo *t, Glance glance, Boolean redisplay) {
 		if (!step) {
 			step = (TodoView *)ckalloc(sizeof(TodoView));
 
-			sprintf(str1, "%d", cnt);
-			sprintf(str2, "%s.", str1);
+			snprintf(str1, MAXNAMELEN, "%d", cnt);
+			snprintf(str2, MAXNAMELEN, "%s.", str1);
 			str = XmStringCreateLocalized(str2);
 			step->view_item_number = XtVaCreateManagedWidget("cnt",
 				xmLabelGadgetClass, t->view_form_mgr,
@@ -2255,17 +2258,21 @@ build_todo_view(ToDo *t, Glance glance, Boolean redisplay) {
 			((Props_pu *)t->cal->properties_pu)->xm_error_pixmap);
 		if (stat == CSA_SUCCESS) {
 			_csa_iso8601_to_tick(appt->time->value->item.date_time_value, &start_tick);
-			format_tick(start_tick, o, s, str1);
+			format_tick(start_tick, o, s, str1, MAXNAMELEN);
 			lines = text_to_lines(appt->what->value->item.string_value, 1);
+
+			int buf_size;
+
 			if (lines && lines->s) {
-				buf = (char *)ckalloc(cm_strlen(str1)
-						      + cm_strlen(lines->s) + 3);
+				buf_size = cm_strlen(str1) + cm_strlen(lines->s) + 3;
+				buf = (char *)ckalloc(buf_size);
 				what_str = lines->s;
 			} else {
-				buf = (char *)ckalloc(cm_strlen(str1) + 4);
+				buf_size = cm_strlen(str1) + 4;
+				buf = (char *)ckalloc(buf_size);
 				what_str = "\0";
 			}
-			sprintf(buf, "%s  %s", str1, what_str);
+			snprintf(buf, buf_size, "%s  %s", str1, what_str);
 			str = XmStringCreateLocalized(buf);
 			XtVaSetValues(step->view_item_toggle,
 				XmNlabelString, str,
@@ -2302,9 +2309,9 @@ build_todo_view(ToDo *t, Glance glance, Boolean redisplay) {
 	}
 
 	if (entry_count > 0) {
-		XtManageChild(t->view_form); 
+		XtManageChild(t->view_form);
 		XtManageChild(t->view_sw_mgr);
-		XtManageChild(t->view_form_mgr); 
+		XtManageChild(t->view_form_mgr);
 	}
 
 	t->view_list_modified = False;
@@ -2358,7 +2365,7 @@ set_todo_title(ToDo *t, char *name) {
 	char		buf[MAXNAMELEN];
 
 	if (t->frame) {
-		sprintf(buf, "%s - %s", catgets(c->DT_catd, 1, 591, "Calendar : To Do Editor"), name);
+		snprintf(buf, MAXNAMELEN, "%s - %s", catgets(c->DT_catd, 1, 591, "Calendar : To Do Editor"), name);
 		XtVaSetValues(t->frame, XmNtitle, buf,
 			NULL);
 	}
@@ -2382,8 +2389,8 @@ show_todo(Calendar *c) {
 		ds_position_popup(c->frame, t->frame, DS_POPUP_LOR);
         	/* set default button */
         	XmProcessTraversal(t->dssw.what_text, XmTRAVERSE_CURRENT);
-        	XtVaSetValues(t->base_form_mgr, 
-			XmNinitialFocus, t->dssw.what_text, 
+        	XtVaSetValues(t->base_form_mgr,
+			XmNinitialFocus, t->dssw.what_text,
 			NULL);
 	}
 

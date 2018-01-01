@@ -85,14 +85,15 @@ static nl_catd	DT_catd;
 static char**
 grab(char**argv,				/* command line arguments */
     char *buf,				/* buffer for keyed data */
+    int buf_size,
     char stop_key)
 {
 	if (!argv || !*argv) return(argv);
-	cm_strcpy (buf,*argv++);
+	cm_strlcpy (buf, *argv++, buf_size);
 	while(argv && *argv) {
 		if (*(*argv) == stop_key) break;
-		cm_strcat(buf," ");
-		cm_strcat(buf,*argv++);
+		cm_strlcat(buf, " ", buf_size);
+		cm_strlcat(buf, *argv++, buf_size);
 	}
 	argv--;
 	return(argv);
@@ -106,13 +107,13 @@ cm_args(int argc, char **argv)
 		switch(*(*argv+1)) {
 		case 't':
 		case 'c':
-			argv = grab(++argv,cm_target,'-');
+			argv = grab(++argv, cm_target, 256, '-');
 			break;
 		case 'd':
-			argv = grab(++argv,cm_date,'-');
+			argv = grab(++argv, cm_date, 256, '-');
 			break;
 		case 'v':
-			argv = grab(++argv,cm_view,'-');
+			argv = grab(++argv, cm_view, 16, '-');
 			break;
 		default:
 			fprintf(stderr, "%s", catgets(DT_catd, 1, 207, "Usage:\n\tdtcm_lookup [ -c calendar ][ -d <mm/dd/yy> ] [ -v view ]\n"));
@@ -161,9 +162,9 @@ int main(int argc, char **argv)
 	stat = csa_logon(NULL, &csa_user, NULL, NULL, NULL, &c_handle, NULL);
 
 	if (stat != CSA_SUCCESS) {
-		char *format = cm_strdup(catgets(DT_catd, 1, 208, 
+		char *format = cm_strdup(catgets(DT_catd, 1, 208,
 				   "\nCould not open calendar \"%s\"\n"));
-		fprintf(stderr, format, 
+		fprintf(stderr, format,
 			target ? target : catgets(DT_catd, 1, 209, "UNKNOWN"));
 		free(format);
 		free(uname);
@@ -174,7 +175,7 @@ int main(int argc, char **argv)
 	if (cm_strlen(cm_date)) date = cm_date;
 	if (cm_strlen(cm_view)) view = cm_view;
 
-	if ((cnt = cm_tty_lookup(DT_catd, c_handle, version, date, view, 
+	if ((cnt = cm_tty_lookup(DT_catd, c_handle, version, date, view,
 				 &list, p)) > 0)
 		csa_free(list);
 	csa_logoff(c_handle, NULL);

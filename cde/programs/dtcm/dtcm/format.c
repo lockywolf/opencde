@@ -78,7 +78,7 @@ static char sccsid[] = "@(#)format.c 1.27 95/01/19 Copyr 1991 Sun Microsystems, 
  *  Convert tick to m, d, y string.  e.g. May 1, 1988
  */
 extern void
-format_date(Tick t, OrderingType order, char *buf, int day_and_date,
+format_date(Tick t, OrderingType order, char *buf, int buf_size, int day_and_date,
 	int and_date, int full_day)
 {
 	int m, d, y, wd;
@@ -93,54 +93,54 @@ format_date(Tick t, OrderingType order, char *buf, int day_and_date,
 	wd = tm->tm_wday;
 
 	switch(order) {
-                case ORDER_DMY:     
+                case ORDER_DMY:
 			/* STRING_EXTRACTION SUNW_DESKSET_CM_MSG :
 			 *
-			 * %s, %d %s %4d is a form of the date format. 
+			 * %s, %d %s %4d is a form of the date format.
 			 * Change this to reflect your local convention.
 			 * eg. In the German locale, "%s, %d %s %4d" may be changed
 			 * to "%s. %d %s %4d".
 			 */
 			if (day_and_date)
 				if (full_day)
-					(void)sprintf(buf, "%s, %d %s %4d", 
+					(void)snprintf(buf, buf_size, "%s, %d %s %4d",
 						days2[wd], d, months[m], y);
 				else
-					(void)sprintf(buf, "%s, %d %s %4d", 
+					(void)snprintf(buf, buf_size, "%s, %d %s %4d",
 						days[wd], d, months[m], y);
 			else if (and_date)
-				(void)sprintf(buf, "%d %s %4d", d, months[m], y);
+				(void)snprintf(buf, buf_size, "%d %s %4d", d, months[m], y);
 
-			else 
-				(void) sprintf(buf, "%s %4d", months[m], y);
+			else
+				(void) snprintf(buf, buf_size, "%s %4d", months[m], y);
                         break;
-                case ORDER_YMD:    
-			if (day_and_date) 
+                case ORDER_YMD:
+			if (day_and_date)
 				if (full_day)
-					(void)sprintf(buf, "%s, %4d %s %d", 
+					(void)snprintf(buf, buf_size, "%s, %4d %s %d",
 						days2[wd], y, months[m], d);
 				else
-					(void)sprintf(buf, "%s, %4d %s %d", 
+					(void)snprintf(buf, buf_size, "%s, %4d %s %d",
 						days[wd], y, months[m], d);
 			else if (and_date)
-				(void)sprintf(buf, "%4d %s %d", y, months[m], d);
-			else 
-				(void) sprintf(buf, "%4d %s", y, months[m]);
+				(void)snprintf(buf, buf_size, "%4d %s %d", y, months[m], d);
+			else
+				(void) snprintf(buf, buf_size, "%4d %s", y, months[m]);
                         break;
-                case ORDER_MDY:   
+                case ORDER_MDY:
                 default:
-			if (day_and_date) 
+			if (day_and_date)
 				if (full_day)
-					(void)sprintf(buf, "%s, %s %d %4d", 
+					(void)snprintf(buf, buf_size, "%s, %s %d %4d",
 						days2[wd], months[m], d, y);
 				else
-					(void)sprintf(buf, "%s, %s %d %4d", 
+					(void)snprintf(buf, buf_size, "%s, %s %d %4d",
 						days[wd], months[m], d, y);
 			else if (and_date)
-					(void)sprintf(buf, "%s %d %4d", 
+					(void)snprintf(buf, buf_size, "%s %d %4d",
 						months[m], d, y);
-			else 
-				(void) sprintf(buf, "%s %4d", months[m], y);
+			else
+				(void) snprintf(buf, buf_size, "%s %4d", months[m], y);
                         break;
 	}
 
@@ -150,26 +150,26 @@ format_date(Tick t, OrderingType order, char *buf, int day_and_date,
  *  Convert tick to m/d
  */
 extern void
-format_date3(Tick t, OrderingType order, SeparatorType sep, char *buf) 
+format_date3(Tick t, OrderingType order, SeparatorType sep, char *buf, int buf_size)
 {
 	int m, d;
-	struct tm *tm;  
+	struct tm *tm;
 	char *str = (char *) separator_str(sep);
 	_Xltimeparams localtime_buf;
 
 	buf[0] = '\0';
-	tm = _XLocaltime(&t, localtime_buf); 
+	tm = _XLocaltime(&t, localtime_buf);
 
-	m = tm->tm_mon+1; 
+	m = tm->tm_mon+1;
 	d = tm->tm_mday;
 	switch(order) {
-                case ORDER_YMD:    
-                case ORDER_MDY:   
+                case ORDER_YMD:
+                case ORDER_MDY:
                 default:
-			(void) sprintf(buf, "%d%s%.2d", m, str, d);
+			(void) snprintf(buf, buf_size, "%d%s%.2d", m, str, d);
                         break;
-                case ORDER_DMY:     
-			(void) sprintf(buf, "%.2d%s%d", d, str, m);
+                case ORDER_DMY:
+			(void) snprintf(buf, buf_size, "%.2d%s%d", d, str, m);
                         break;
 	}
 }
@@ -180,9 +180,10 @@ format_date3(Tick t, OrderingType order, SeparatorType sep, char *buf)
  */
 extern Boolean
 format_line(Tick tick,
-    char *what, 
-    char *buf, 
-    int end_tick, 
+    char *what,
+    char *buf,
+    int buf_size,
+    int end_tick,
     Boolean showtime,
     DisplayType display)
 {
@@ -207,17 +208,17 @@ format_line(Tick tick,
 			if (display == HOUR12) {
 				am_end = adjust_hour(&hr1);
 				if (am_end != am) {
-                        		(void) sprintf(buf, "%d:%.2d - %d:%.2d%s ", 
+                        		(void) snprintf(buf, buf_size, "%d:%.2d - %d:%.2d%s ",
 							hr, mn,
 							hr1, mn1, am_end ? "am" : "pm");
 				} else {
-                        		(void) sprintf(buf, "%d:%.2d - %d:%.2d ", 
+                        		(void) snprintf(buf, buf_size, "%d:%.2d - %d:%.2d ",
 							hr, mn, hr1, mn1);
 				}
 				if (hr < 10) pad = TRUE;
 			}
 			else
-                        	(void) sprintf(buf, "%02d%02d - %02d%02d ", 
+                        	(void) snprintf(buf, buf_size, "%02d%02d - %02d%02d ",
 						hr, mn, hr1, mn1);
                 }
                 else {
@@ -227,20 +228,20 @@ format_line(Tick tick,
                    	width, so I have to line it up myself.. */
 			if (display == HOUR12) {
                         	if (hr > 9)
-                               		sprintf(buf, "%2d:%.2d%s ", 
+                               		snprintf(buf, buf_size, "%2d:%.2d%s ",
 							hr, mn, am ? "a" : "p");
                         	else {
-                               		sprintf(buf, "%d:%.2d%s ", 
+                               		snprintf(buf, buf_size, "%d:%.2d%s ",
 							hr, mn, am ? "a" : "p");
 					pad = TRUE;
 				}
 			}
 			else
-				 sprintf(buf, "%02d%02d ", hr, mn);
+				 snprintf(buf, buf_size, "%02d%02d ", hr, mn);
                 }
         }
 	if (what)
-		(void) cm_strcat(buf, what);
+		(void) cm_strlcat(buf, what, buf_size);
 
 	return pad;
 }
@@ -249,7 +250,7 @@ format_line(Tick tick,
  *  Format 2 lines of appt data
  */
 extern void
-format_maxchars(Dtcm_appointment *appt, char *buf1, int maxchars,
+format_maxchars(Dtcm_appointment *appt, char *buf1, int buf_size, int maxchars,
 		DisplayType display) {
         Tick    tick, end_tick = 0;
         int     hour1, min1, hour2, min2;
@@ -257,7 +258,7 @@ format_maxchars(Dtcm_appointment *appt, char *buf1, int maxchars,
         char    *s1, *s2;
 	struct tm *tm;
 	_Xltimeparams localtime_buf;
- 
+
 	_csa_iso8601_to_tick(appt->time->value->item.string_value, &tick);
 	if (appt->end_time)
 		_csa_iso8601_to_tick(appt->end_time->value->item.string_value,
@@ -276,34 +277,34 @@ format_maxchars(Dtcm_appointment *appt, char *buf1, int maxchars,
 			hour2 = hour(end_tick);
 			if (display == HOUR12 && !adjust_hour(&hour2))
 				s2="pm";
-	 
+
 			min2 = minute(end_tick);
 		}
 
-		if (end_tick == 0 || hour1 == hour2 && min1 == min2) {
-			if (display == HOUR24) 
-				sprintf(buf1, "%02d%02d  ", hour1, min1);
+		if ((end_tick == 0 || hour1 == hour2) && min1 == min2) {
+			if (display == HOUR24)
+				snprintf(buf1, buf_size, "%02d%02d  ", hour1, min1);
 			else
-				sprintf(buf1, "%d:%.2d%s  ", hour1, min1, s1);
+				snprintf(buf1, buf_size, "%d:%.2d%s  ", hour1, min1, s1);
 		}
 		else {
 			if (display == HOUR12)
-				sprintf(buf1, "%d:%.2d%s-%d:%.2d%s  ", 
+				snprintf(buf1, buf_size, "%d:%.2d%s-%d:%.2d%s  ",
 					hour1, min1, s1, hour2, min2, s2);
 			else
-				sprintf(buf1, "%02d%02d-%02d%02d  ", 
+				snprintf(buf1, buf_size, "%02d%02d-%02d%02d  ",
 					hour1, min1, hour2, min2);
 		}
 	}
- 
+
         lines = (Lines *) text_to_lines(appt->what->value->item.string_value, 10);
- 
+
 	while (lines != NULL) {
 		if ((cm_strlen(buf1) + cm_strlen(lines->s)) < (maxchars-2)) {
-                	cm_strcat(buf1, lines->s);
+                	cm_strlcat(buf1, lines->s, buf_size);
 			lines = lines->next;
-			if (lines != NULL) 
-                		cm_strcat(buf1, " - ");
+			if (lines != NULL)
+                		cm_strlcat(buf1, " - ", buf_size);
 		}
 		else {
 			strncat(buf1, lines->s, (maxchars - cm_strlen(buf1)-1));
@@ -318,7 +319,7 @@ format_maxchars(Dtcm_appointment *appt, char *buf1, int maxchars,
  *  Format 2 lines of appt data
  */
 extern void
-format_line2(Dtcm_appointment *appt, char *buf1, char *buf2,
+format_line2(Dtcm_appointment *appt, char *buf1, int buf1_size, char *buf2, int buf2_size,
 	     DisplayType display) {
         Tick    tick, end_tick = 0;
         int     hour1, min1, hour2, min2;
@@ -327,11 +328,11 @@ format_line2(Dtcm_appointment *appt, char *buf1, char *buf2,
         struct tm *tm;
 	_Xltimeparams localtime_buf;
 
-	_csa_iso8601_to_tick(appt->time->value->item.string_value, &tick);	
+	_csa_iso8601_to_tick(appt->time->value->item.string_value, &tick);
 	if (appt->end_time)
 		_csa_iso8601_to_tick(appt->end_time->value->item.string_value,
-			&end_tick);	
- 
+			&end_tick);
+
         /*
          * Extract an appointment and format it into 2 lines of no more
          * then maxchars
@@ -341,15 +342,15 @@ format_line2(Dtcm_appointment *appt, char *buf1, char *buf2,
         tm = _XLocaltime(&tick, localtime_buf);
         hour1 = tm->tm_hour;
         min1  = tm->tm_min;
- 
+
         if (!showtime_set(appt) || magic_time(tick)) {
-                lines = (Lines *) text_to_lines(appt->what->value->item.string_value, 1);           
+                lines = (Lines *) text_to_lines(appt->what->value->item.string_value, 1);
                 if (lines==NULL) return;
                 strncpy(buf2, lines->s, 256);
                 destroy_lines(lines);
                 return;
         }
- 
+
         s1 = s2 = "am";
         if (display == HOUR12 && !adjust_hour(&hour1))
                 s1="pm";
@@ -364,64 +365,28 @@ format_line2(Dtcm_appointment *appt, char *buf1, char *buf2,
         if (end_tick == 0 ||
 	    (hour1 == hour2 && min1 == min2 && (strcmp(s1, s2) == 0))) {
                 if (display == HOUR24)
-                        sprintf(buf1, "%02d%.2d", hour1, min1);
+                        snprintf(buf1, buf1_size, "%02d%.2d", hour1, min1);
                 else
-                        sprintf(buf1, "%d:%.2d%s", hour1, min1, s1);
+                        snprintf(buf1, buf1_size, "%d:%.2d%s", hour1, min1, s1);
         }
         else {
                 if (display == HOUR12)
-                        sprintf(buf1, "%d:%.2d%s-%d:%.2d%s", hour1, min1, s1,
+                        snprintf(buf1, buf1_size, "%d:%.2d%s-%d:%.2d%s", hour1, min1, s1,
                                  hour2, min2, s2);
                 else
-                        sprintf(buf1, "%02d%02d-%02d%02d", hour1, min1,
+                        snprintf(buf1, buf1_size, "%02d%02d-%02d%02d", hour1, min1,
                                  hour2, min2);
         }
 
-          
+
         lines = (Lines *) text_to_lines(appt->what->value->item.string_value, 1);
-         
-        if (lines == NULL || lines->s == NULL ||                        
+
+        if (lines == NULL || lines->s == NULL ||
                 (cm_strlen(lines->s) == 1 && lines->s[0] == ' '))
                 buf2[0] = '\0';
         else
-                sprintf(buf2, " %s", lines->s);
+                snprintf(buf2, buf2_size, " %s", lines->s);
         destroy_lines(lines);
-}
-
-
-extern void
-format_abbrev_appt(Dtcm_appointment *appt, char *b, Boolean show_am,
-		   DisplayType display)
-{
-        int hr, mn;
-	Tick tick;
-        Lines *lines=NULL;
-        Boolean am = True;
-	struct tm *tm;
-	_Xltimeparams localtime_buf;
- 
-        if(appt==NULL || b==NULL) return;
-	_csa_iso8601_to_tick(appt->time->value->item.string_value, &tick);
-        tm = _XLocaltime(&tick, localtime_buf);
-        hr = tm->tm_hour;
-        mn = tm->tm_min;
-        if (showtime_set(appt) && !magic_time(tick)) {
-		if (display == HOUR12) {
-			am = adjust_hour(&hr);
-                	if (show_am)
-                        	sprintf(b, "%2d:%02d%s ", hr, mn, am ? 
-						"a" : "p");
-			else
-				sprintf(b, "%2d:%02d ", hr, mn);
-		}
-		else
-			sprintf(b, "%02d%02d ", hr, mn);
-        }
-        lines = text_to_lines(appt->what->value->item.string_value, 1);
-        if (lines != NULL && lines->s != NULL) {
-                (void) cm_strcat(b, lines->s);
-                destroy_lines(lines);
-        }
 }
 
 /*
@@ -431,13 +396,13 @@ format_abbrev_appt(Dtcm_appointment *appt, char *b, Boolean show_am,
  *  max is 0.
  */
 extern void
-format_appt(Dtcm_appointment *appt, char *b, DisplayType display, int max) {
+format_appt(Dtcm_appointment *appt, char *b, int b_size, DisplayType display, int max) {
         int		hr, mn, len, i = 0, j = 0;
 	Tick		tick;
 	struct tm	*tm;
 	register char		*what_ptr;
 	_Xltimeparams localtime_buf;
- 
+
 	if (!appt || !b)
 		return;
 
@@ -449,9 +414,9 @@ format_appt(Dtcm_appointment *appt, char *b, DisplayType display, int max) {
         if (showtime_set(appt) && !magic_time(tick)) {
 		if (display == HOUR12) {
 			adjust_hour(&hr);
-                	sprintf(b, "%2d:%02d ", hr, mn);
+                	snprintf(b, b_size, "%2d:%02d ", hr, mn);
 		} else
-                	sprintf(b, "%02d%02d ", hr, mn);
+                	snprintf(b, b_size, "%02d%02d ", hr, mn);
 		i = cm_strlen(b);
         }
 
@@ -473,14 +438,14 @@ format_appt(Dtcm_appointment *appt, char *b, DisplayType display, int max) {
  *  DEFAULT_GAPPT_LEN if max is 0.
  */
 extern void
-format_gappt(Dtcm_appointment *appt, char *name, char *b, DisplayType display,
+format_gappt(Dtcm_appointment *appt, char *name, char *b, int b_size, DisplayType display,
 	    int max) {
         int		hr, mn, i, j;
 	Tick		tick;
 	char		*what_ptr;
 	struct tm	*tm;
 	_Xltimeparams localtime_buf;
- 
+
 	if (!appt || !b)
 		return;
 
@@ -493,11 +458,11 @@ format_gappt(Dtcm_appointment *appt, char *name, char *b, DisplayType display,
 
 		if (display == HOUR12) {
 			adjust_hour(&hr);
-			sprintf(b, "%2d:%02d ", hr, mn);
+			snprintf(b, b_size, "%2d:%02d ", hr, mn);
 		} else
-			sprintf(b, "%02d%02d  ", hr, mn);
+			snprintf(b, b_size, "%02d%02d  ", hr, mn);
         } else
-		sprintf(b, "%6s", " ");
+		snprintf(b, b_size, "%6s", " ");
 
 	if (max <= 0)
 		max = DEFAULT_GAPPT_LEN;

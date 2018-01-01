@@ -106,138 +106,6 @@ cmfns_use_fns(Props *p)
 }
 
 /*
- * Takes an absolute FNS name and attempts to generate an English
- * description for it.  I.e:
- *
- *	org:ssi.eng:user:dipol		-> dipol (in ssi.eng)
- *	org:ssi.eng:site:b21		-> b21 (a Site in ssi.eng)
- *	org:ssi.eng	  		-> ssi.eng (Organization)
- *	host:sidewinder			-> sidewinder (Host)
- *	dipol				-> dipol
- *	dipol@sidewinder		-> dipol@sidewinder
- *	org:ssi.eng:host:sidewinder	-> sideiwnder (a Host in ssi.eng)
- *
- * Returns
- *		-1	buf not big enough
- *		0	name is not an FNS name.  No description generated
- *		1	Success.  Description is paced in buf
- */
-int
-cmfns_description(
-	const char	*name,
-	char*		buf,
-	int		size)	/* FNS name to generate description for */
-
-{
-	char	*tmp_buf;
-	char	*head;
-	char	*tail;
-	char	*s = NULL;
-	char	*org = NULL;
-	char	len;
-	char	*a_user_in = " (in %s)";
-	char	*a_site_in = " (a Site in %s)";
-	char	*a_host_in = " (a Host in %s)";
-	char	*an_org	  = " (Organization)";
-	char	*a_host    = " (Host)";
-	char	*a_site    = " (Site)";
-	char	*thisuser  = "Me";
-	char	*myorg	   = "My Organization";
-	char	*hostorg   = "This Host's Organization";
-
-
-	buf[size - 1] = '\0';
-	tmp_buf = strdup(name);
-	head = tmp_buf;
-	if ((tail = strchr(head, DTFNS_SEPERATOR)) == NULL) {
-		/*
-		 * No colon.  Either one of the special FNS names or
-		 * it is not an FNS name
-		 */
-		if (strcmp(head, DTFNS_MYORG_NAME) == 0) {
-			strncpy(buf, myorg, size);
-		} else if (strcmp(head, DTFNS_HOSTORG_NAME) == 0) {
-			strncpy(buf, hostorg, size);
-		} else if (strcmp(head, DTFNS_THISUSER_NAME) == 0) {
-			strncpy(buf, thisuser, size);
-		} else {
-			/* Not an FNS name */
-			free(tmp_buf);
-			return 0;
-		}
-		goto EXIT;
-	}
-
-	*tail = '\0';
-	tail++;
-
-	if (strcmp(head, DTFNS_ORG_NAME) == 0) {
-		/* Starts with org:.  Get org */
-		head = tail;
-		if ((tail = strchr(head, DTFNS_SEPERATOR)) == NULL) {
-			/* just org:orgname */
-			strncpy(buf, head, size);
-			size -= strlen(buf);
-			strncat(buf, an_org, size);
-			goto EXIT;
-		}
-
-		*tail = '\0';
-		org = head;
-		head = tail + 1;
-
-		if ((tail = strchr(head, DTFNS_SEPERATOR)) == NULL) {
-			/*
-		 	 * Hmmm... We have "org:orgname:something" 
-			 * Just return the description for an organization
-		 	 */
-			strncpy(buf, org, size);
-			size -= strlen(buf);
-			strncat(buf, an_org, size);
-			goto EXIT;
-		}
-
-		*tail = '\0';
-		tail++;
-	}
-			
-	if (strcmp(head, DTFNS_USER_NAME) == 0) {
-		s = org ? a_user_in : "";
-	} else if (strcmp(head, DTFNS_HOST_NAME) == 0) {
-		s = org ? a_host_in : a_host;
-	} else if (strcmp(head, DTFNS_SITE_NAME) == 0) {
-		s = org ? a_site_in : a_site;
-	}
-	
-
-	if (s != NULL) {
-		strncpy(buf, tail, size);
-		len = strlen(buf);
-		size -= len;
-
-		if (org) {
-			if (size > (int)(strlen(org) + strlen(s) + 2)) {
-				sprintf(buf + len, s, org);
-			} else {
-				/* Buffer too small */
-				goto ERROR_EXIT;
-			}
-		} else {
-			strncat(buf, s, size);
-		}
-	}
-
-EXIT:
-	free(tmp_buf);
-	return 1;
-
-ERROR_EXIT:
-
-	free(tmp_buf);
-	return -1;
-}
-
-/*
  *
  *	Get a calendar address from FNS
  *
@@ -335,7 +203,7 @@ cmfns_lookup_calendar(
 		*p = '\0';
 		while (*p != ':')
 			p--;
-		sprintf(addr_buf, "%s@%s", p + 1, tmp);
+		snprintf(addr_buf, addr_size, "%s@%s", p + 1, tmp);
 	}
 
 	if (org != NULL) {
@@ -350,8 +218,8 @@ cmfns_lookup_calendar(
 			 * Host does not appear to have domain
 			 * name.  Add it
 			 */
-			strcat(addr_buf, ".");
-			strcat(addr_buf, org);
+			strlcat(addr_buf, ".", addr_size);
+			strlcat(addr_buf, org, addr_size);
 		}
 	}
 

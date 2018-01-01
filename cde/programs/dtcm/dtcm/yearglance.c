@@ -97,18 +97,18 @@ static char sccsid[] = "@(#)yearglance.c 1.37 95/07/27 Copyr 1991 Sun Microsyste
 This specifies row and col for easy selection in year view */
 int month_row_col[12][2] =
 {
-  0, 0,
-  0, 1,
-  0, 2,
-  1, 0,
-  1, 1,
-  1, 2,
-  2, 0,
-  2, 1,
-  2, 2,
-  3, 0,
-  3, 1,
-  3, 2,
+  {0, 0},
+  {0, 1},
+  {0, 2},
+  {1, 0},
+  {1, 1},
+  {1, 2},
+  {2, 0},
+  {2, 1},
+  {2, 2},
+  {3, 0},
+  {3, 1},
+  {3, 2},
 };
 
 extern int prolog_found;
@@ -172,8 +172,8 @@ deallocator(Calendar *c)
 	for (i=0; i<12; i++)
 		XtDestroyWidget(y->month_panels[i]);
 */
- 
-        free(y->month_panels); 
+
+        free(y->month_panels);
 
 	/* free memory stored in calendar for year stuff */
 	free(y);
@@ -190,7 +190,7 @@ paint_year(Calendar *c)
 		return(CSA_E_INVALID_PARAMETER);
 
 	XmToggleButtonGadgetSetState(c->year_scope, True, False);
-	
+
 /*
  * Do memory allocation if necessary
  */
@@ -307,7 +307,7 @@ update_year(Calendar *c)
 
 	   Use the appropriate strftime conversion for your locale.
 	*/
-	strftime(buf, 100, catgets(c->DT_catd, 1, 1092, "%Y"), 
+	strftime(buf, 100, catgets(c->DT_catd, 1, 1092, "%Y"),
 		 _XLocaltime(&c->view->date, localtime_buf));
 	XtVaGetValues(y->year_label, XmNlabelString, &str, NULL);
 	XmStringFree(str);
@@ -356,7 +356,7 @@ static int anchors[] = {
 	75,	33,	100,	1,
 	75,	66,	100,	34,
 	75,	99,	100,	67
-}; 
+};
  /*
 static int anchors[] = {
 	0,	24,	33,	1,
@@ -400,7 +400,7 @@ static int anchors[] = {
 	XtManageChild(y->form);
 	XtUnmapWidget(y->form);
 
-	XtAddCallback(y->form, XmNhelpCallback, (XtCallbackProc)help_cb, 
+	XtAddCallback(y->form, XmNhelpCallback, (XtCallbackProc)help_cb,
 			(XtPointer) CALENDAR_HELP_YEAR_WINDOW);
 
 /*
@@ -420,12 +420,12 @@ static int anchors[] = {
 	XtSetArg(al[ac], XmNtopAttachment, XmATTACH_POSITION); ac++;
 	XtSetArg(al[ac], XmNrightAttachment, XmATTACH_POSITION); ac++;
 	XtSetArg(al[ac], XmNbottomAttachment, XmATTACH_POSITION); ac++;
-	XtSetArg(al[ac], XmNleftAttachment, XmATTACH_POSITION); 
+	XtSetArg(al[ac], XmNleftAttachment, XmATTACH_POSITION);
 
 	for (i=0; i<12; i++) {
 		char name[BUFSIZ];
 
-		sprintf(name, "panel%d", i+1);
+		snprintf(name, BUFSIZ, "panel%d", i+1);
 		ac=4;		/* start adding after fixed part */
 		XtSetArg(al[ac], XmNtopPosition, anchors[4*i]); ac++;
 		XtSetArg(al[ac], XmNrightPosition, anchors[4*i+1]); ac++;
@@ -451,7 +451,7 @@ year_btn_cb(Widget w, XtPointer client, XtPointer call)
         XmMonthPanelCallbackStruct *cbs = (XmMonthPanelCallbackStruct *) call;
 	Calendar *c = (Calendar *)client;
 	int monthno, year;
- 
+
 	XtVaGetValues(w, XmNmonth, &monthno, XmNyear, &year, NULL);
 
         if (cbs->type == MONTH_SELECTION) {
@@ -468,7 +468,7 @@ year_btn_cb(Widget w, XtPointer client, XtPointer call)
 			c->view->nwks = numwks(c->view->date);
 			calendar_select (c, monthSelect, NULL);
 		}
- 
+
 
 		/* switch to month view */
 		cleanup_after_yearview(c);
@@ -500,12 +500,12 @@ cleanup_after_yearview(Calendar *c)
 	XtUnmapWidget(y->form);
 	XtUnmapWidget(y->label_form);
 
-	/* Unmanaging the form is necessary to keep the stupid 
+	/* Unmanaging the form is necessary to keep the stupid
 	   traversal order right */
 
 	XtUnmanageChild(y->form);
 	XtUnmanageChild(y->label_form);
-       	XmProcessTraversal(c->appt_btn, XmTRAVERSE_CURRENT); 
+       	XmProcessTraversal(c->appt_btn, XmTRAVERSE_CURRENT);
 
 	XmToggleButtonGadgetSetState(c->year_scope, False, False);
 

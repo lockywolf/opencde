@@ -163,7 +163,7 @@ static void
 invalid_date_msg(Calendar *c, Widget widget)
 {
 	Browser *b = (Browser*)c->browser;
-	char *title = XtNewString(catgets(c->DT_catd, 1, 1070, 
+	char *title = XtNewString(catgets(c->DT_catd, 1, 1070,
 				  "Calendar : Error - Compare Calendars"));
 	char *text = XtNewString(catgets(c->DT_catd, 1, 20,
 					 "Invalid Date In Go To Field."));
@@ -181,7 +181,7 @@ invalid_date_msg(Calendar *c, Widget widget)
 	XtFree(title);
 }
 
-void 
+void
 set_entry_date(Calendar *c) {
         char *date = NULL;
         Browser *b;
@@ -271,13 +271,13 @@ make_browser(Calendar *c)
 		upform_min	= 200;
 	}
 
-	title = XtNewString(catgets(c->DT_catd, 1, 1010, 
+	title = XtNewString(catgets(c->DT_catd, 1, 1010,
 					"Calendar : Compare Calendars"));
 	b->frame = XtVaCreatePopupShell("frame",
                 xmDialogShellWidgetClass, c->frame,
                 XmNtitle, title,
                 XmNallowShellResize, True,
-                XmNmappedWhenManaged, False, 
+                XmNmappedWhenManaged, False,
 		XmNdeleteResponse, XmDO_NOTHING,
                 NULL);
 	XtFree(title);
@@ -309,7 +309,7 @@ make_browser(Calendar *c)
 		NULL);
 
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 22, "Browse Menu Items"));
-        b->list_label = XtVaCreateWidget("browseMenuLabel", 
+        b->list_label = XtVaCreateWidget("browseMenuLabel",
 		xmLabelGadgetClass, b->upper_form,
 		XmNlabelString, xmstr,
 		XmNleftAttachment, XmATTACH_FORM,
@@ -408,7 +408,7 @@ make_browser(Calendar *c)
 	b->datetext = XtVaCreateWidget("dateText",
 		xmTextWidgetClass, text_field_form,
                 NULL);
-	XtAddCallback(b->datetext, XmNactivateCallback, goto_date_cb, 
+	XtAddCallback(b->datetext, XmNactivateCallback, goto_date_cb,
 								(XtPointer)c);
 
 	/*
@@ -545,7 +545,7 @@ make_browser(Calendar *c)
 
 	gr_init(b->xcontext, b->canvas);
 
-        format_tick(b->date, ord_t, sep_t, buf);
+        format_tick(b->date, ord_t, sep_t, buf, BUFSIZ);
 	XmTextSetString(b->datetext, buf);
 
 	set_entry_date(c);
@@ -590,7 +590,7 @@ make_browser(Calendar *c)
 	init_browser(c);
 }
 
-static void 
+static void
 browselist_from_browser(Widget w, XtPointer client_data, XtPointer call_data)
 {
         Calendar *c = (Calendar *)client_data;
@@ -602,7 +602,7 @@ browselist_from_browser(Widget w, XtPointer client_data, XtPointer call_data)
 }
 
 static void
-goto_date_cb(Widget w, XtPointer client_data, XtPointer call_data) 
+goto_date_cb(Widget w, XtPointer client_data, XtPointer call_data)
 {
         Calendar *c = (Calendar *)client_data;
 	Browser *b;
@@ -648,7 +648,7 @@ goto_unit(Calendar *c, int item_no)
         ord_t = get_int_prop(p, CP_DATEORDERING);
         sep_t = get_int_prop(p, CP_DATESEPARATOR);
 
-        format_tick(b->date, ord_t, sep_t, buf);
+        format_tick(b->date, ord_t, sep_t, buf, BUFSIZ);
 	XmTextSetString(b->datetext, buf);
         br_display(c);
 }
@@ -680,7 +680,7 @@ bcanvas_repaint(Widget w, XtPointer client_data, XtPointer call_data)
         gr_clear_area(b->xcontext, 0, 0, b->canvas_w, b->canvas_h);
         gr_clear_clip_rectangles(xc);
 	mb_refresh_canvas(b, c);
- 
+
         XSync(XtDisplay(b->canvas), 0);
 }
 
@@ -692,10 +692,10 @@ mb_display_footermess(Browser *b, Calendar *c)
 
 	XtVaGetValues(b->browse_list, XmNselectedItemCount, &num_cals, NULL);
         if (num_cals == 1)
-                sprintf(buf, "%d %s", num_cals,
+                snprintf(buf, BUFSIZ, "%d %s", num_cals,
 			catgets(c->DT_catd, 1, 31, "Calendar Displayed"));
         else
-                sprintf(buf,  "%d %s", num_cals,
+                snprintf(buf, BUFSIZ, "%d %s", num_cals,
 			catgets(c->DT_catd, 1, 32, "Calendars Displayed"));
 	set_message(b->message_text, buf);
 }
@@ -713,8 +713,8 @@ browser_to_gaccess_list(Calendar *c) {
 	 */
 	XmListGetSelectedPos(b->browse_list, &pos_list, &pos_cnt);
 	for (i = 0; i < pos_cnt; i++) {
-		if (bd = (BlistData *)CmDataListGetData(bl->blist_data,
-							pos_list[i]))
+		if ( (bd = (BlistData *)CmDataListGetData(bl->blist_data,
+							pos_list[i])) )
 			add_to_gaccess_list(bd->name, bd->cal_handle,
 				bd->user_access, bd->version, ge, True);
 	}
@@ -740,16 +740,16 @@ void mb_update_busystatus(Browser *b, Calendar *c)
 	Tick			start_tick, end_tick;
 
 	j = 1;
-	while (bd = (BlistData *)CmDataListGetData(bl->blist_data, j)) {
+	while ( (bd = (BlistData *)CmDataListGetData(bl->blist_data, j)) ) {
 		if (!XmListPosSelected(b->browse_list, j++))
 			continue;
 
-		sprintf(buf, "  %s", bd->name);
+		snprintf(buf, BUFSIZ + 5, "  %s", bd->name);
 		start = b->begin_day_tick;
 		stop = b->end_hr_tick;
 
 		if (bd->cache == NULL) {
-			setup_range(&range_attrs, &ops, &r_cnt, start, stop, 
+			setup_range(&range_attrs, &ops, &r_cnt, start, stop,
 					CSA_TYPE_EVENT, 0, B_FALSE, bd->version);
 	        	stat = csa_list_entries(bd->cal_handle, r_cnt, range_attrs, ops, &num_entries, &entries, NULL);
         			free_range(&range_attrs, &ops, r_cnt);
@@ -769,8 +769,8 @@ void mb_update_busystatus(Browser *b, Calendar *c)
 
 			start_tick = bd->cache[i].start_time;
 			end_tick = bd->cache[i].end_time;
-			if ((start_tick+1 <= b->end_hr_tick) && 
-		    	    (end_tick-1 
+			if ((start_tick+1 <= b->end_hr_tick) &&
+		    	    (end_tick-1
 				>= b->begin_hr_tick)) {
 				buf[0] = '*';
 				break;
@@ -827,7 +827,7 @@ bcanvas_event(Widget w, XtPointer client_data, XtPointer call_data)
 			else if ((next_ndays(b->date, 1) > get_eot()) &&
 				 (b->col_sel > 3))
 				return;
- 
+
                         reset_ticks(c, True);
                         browser_select(c, b, &xy);
                         if (ds_is_double_click(&lastevent, event)) {
@@ -891,8 +891,8 @@ get_mail_address_list(Calendar *c) {
 		bd = (BlistData *)CmDataListGetData(bl->blist_data,
 						    pos_list[i]);
 		if (bd) {
-			strcat(address, bd->name);
-			strcat(address, " ");
+			strlcat(address, bd->name, address_len+1);
+			strlcat(address, " ", address_len+1);
 		}
 	}
 	if (pos_list)
@@ -925,7 +925,7 @@ mail_cb(Widget w, XtPointer client_data, XtPointer call_data)
 	char		*address = get_mail_address_list(c);
 	char		*address_list[1];
 	char		*mime_buf;
- 
+
         /* Send ToolTalk message to bring up compose GUI with buffer as attachme
 nt */
 
@@ -940,17 +940,17 @@ nt */
 	/* set up the start time from the dialog */
 
 	scrub_attr_list(appt);
- 
+
         appointment_buf = parse_attrs_to_string(appt, p, attrs_to_string(appt->attrs, appt->count));
 
 	free_appt_struct(&appt);
 
 	address_list[0] = appointment_buf;
- 
+
         mime_buf = create_rfc_message(address, "message", address_list, 1);
 
         msg = ttmedia_load(0, (Ttmedia_load_msg_cb)reply_cb, NULL, TTME_MAIL_EDIT, "RFC_822_MESSAGE", (unsigned char *)mime_buf, strlen(mime_buf), NULL, "dtcm_appointment_attachment", 0);
- 
+
         status = tt_ptr_error(msg);
         if (tt_is_err(status))
         {
@@ -971,7 +971,7 @@ nt */
 }
 
 static void
-gotomenu_cb(Widget w, XtPointer data, XtPointer cbs) 
+gotomenu_cb(Widget w, XtPointer data, XtPointer cbs)
 {
 	int	item_no = (int) (intptr_t) data;
 	/* should really be getting this from the widget */
@@ -985,17 +985,17 @@ mb_update_segs(Browser *b, Tick tick, Tick dur, int *start_index, int *end_index
 {
         int     num_segs, i, start, start_hour, duration, nday;
         Props *p;
- 
+
         p = (Props*)calendar->properties;
- 
+
         start_hour = hour(tick);
-        
+
         if (start_hour >= get_int_prop(p, CP_DAYEND)) {
                 *start_index = -1;
                 *end_index = -1;
                 return;
         }
- 
+
         if (start_hour < get_int_prop(p, CP_DAYBEGIN)) {
                 start = 0;
                 duration = dur - ((double)(get_int_prop(p, CP_DAYBEGIN) -
@@ -1006,7 +1006,7 @@ mb_update_segs(Browser *b, Tick tick, Tick dur, int *start_index, int *end_index
                         (double)60 + (double)minute(tick));
                 duration = dur;
         }
- 
+
         if (duration <= 0) {
                 *start_index = -1;
                 *end_index = -1;
@@ -1021,10 +1021,10 @@ mb_update_segs(Browser *b, Tick tick, Tick dur, int *start_index, int *end_index
         *end_index = num_segs + *start_index;
         if (((double)duration/(double)60-MINS_IN_SEG*num_segs) > 7)
                 (*end_index)++;
- 
+
         if (*end_index > (i = ((nday + 1) * (b->segs_in_array / 7))) )
                 *end_index = i;
- 
+
         for (i = *start_index; i < *end_index; i++)
                 if (b->add_to_array)
                         b->multi_array[i]++;
@@ -1060,10 +1060,10 @@ mb_update_array(char *entry_text, Calendar *c)
         stop = next_ndays(b->begin_week_tick, 7) - 1;
 
 	if (bd->cache == NULL) {
-		setup_range(&range_attrs, &ops, &r_cnt, start, 
+		setup_range(&range_attrs, &ops, &r_cnt, start,
 		    	stop, CSA_TYPE_EVENT,
 		    	0, B_FALSE, bd->version);
-        	stat = csa_list_entries(bd->cal_handle, r_cnt, range_attrs, 
+        	stat = csa_list_entries(bd->cal_handle, r_cnt, range_attrs,
 					ops, &num_entries, &entries, NULL);
 		free_range(&range_attrs, &ops, r_cnt);
         	backend_err_msg(b->frame, bd->name, stat,
@@ -1098,10 +1098,10 @@ register_names(char *name, Calendar *c)
 	BlistData	*bd = NULL;
         Browselist	*bl = (Browselist *)c->browselist;
         CSA_return_code	stat;
-	CSA_session_handle	cal = NULL;
+	CSA_session_handle	cal;
 	unsigned int		user_access;
 	CSA_calendar_user	csa_user;
-	CSA_flags		flags = NULL;
+	CSA_flags		flags;
 	CSA_extension   	cb_ext;
 	CSA_extension		logon_ext;
 	char			buf[BUFSIZ];
@@ -1153,7 +1153,7 @@ register_names(char *name, Calendar *c)
 			&logon_ext);
 		free(user);
 		free(location);
- 
+
         	if (stat != CSA_SUCCESS) {
 			backend_err_msg(b->frame, name, stat,
 			       ((Props_pu *)c->properties_pu)->xm_error_pixmap);
@@ -1255,12 +1255,12 @@ mb_box_notify(Widget widget, XtPointer client_data, XtPointer call_data)
 		return;
 	/* erase busy status if it was busy because it was deselected */
 	if (!XmListPosSelected(b->browse_list, cbs->item_position)) {
-		sprintf(name, "  %s", bd->name);
+		snprintf(name, BUFSIZ + 5, "  %s", bd->name);
 		xmstr = XmStringCreateLocalized(name);
 		XmListDeletePos(b->browse_list, cbs->item_position);
 		XmListAddItem(b->browse_list, xmstr, cbs->item_position);
 		XmStringFree(xmstr);
-	} 	
+	}
 
 #ifdef FNS
 	rcode = -1;
@@ -1271,7 +1271,7 @@ mb_box_notify(Widget widget, XtPointer client_data, XtPointer call_data)
 
 	if (rcode > 0)
 		addr = buf;
-	else 
+	else
 #endif
 		addr = bd->name;
 
@@ -1373,7 +1373,7 @@ mb_init_browchart(Browser *b, Calendar *c)
         Props		*p = (Props *)c->properties;
 	Dimension	canvas_width, canvas_height;
 	XFontSetExtents fontextents;
- 
+
 	mb_init_datefield(b, c);
 	XtVaGetValues(b->canvas,
 		      XmNwidth, &canvas_width,
@@ -1403,7 +1403,7 @@ mb_init_browchart(Browser *b, Calendar *c)
         b->chart_height = b->boxh * day_len;
         b->chart_x = c->view->outside_margin + label_width;
         b->chart_y = c->view->outside_margin + label_height + char_height;
-}       
+}
 
 extern void
 mb_draw_chartgrid(Browser *b, Calendar *c)
@@ -1420,8 +1420,8 @@ mb_draw_chartgrid(Browser *b, Calendar *c)
 	DisplayType 	dt;
 	int		nop;
 	int		s_width;
- 
- 
+
+
 	CalFontExtents(c->fonts->viewfont, &fontextents);
 	char_height = fontextents.max_logical_extent.height;
 	char_width = fontextents.max_logical_extent.width;
@@ -1430,26 +1430,26 @@ mb_draw_chartgrid(Browser *b, Calendar *c)
                 Draw grid lines and hourly labels.      */
         x = b->chart_x;
         y = b->chart_y;
- 
+
         /* clear header */
         gr_clear_area(xc, 0, 0, b->canvas_w, b->chart_y);
         label[0] = '\0';
 
         /* draw hour labels */
         for (n = get_int_prop(p, CP_DAYBEGIN); n <= get_int_prop(p, CP_DAYEND); n++) {
-	
+
 		dt = get_int_prop(p, CP_DEFAULTDISP);
                 if (dt == HOUR12)
-                        sprintf(label, "%2d", n > 12 ? n - 12 : n);
+                        snprintf(label, 5, "%2d", n > 12 ? n - 12 : n);
                 else
-                        sprintf(label, "%2d", n);
+                        snprintf(label, 5, "%2d", n);
                 gr_text(xc, c->view->outside_margin-char_width, y+3,
                         c->fonts->viewfont, label, NULL);
                 gr_draw_line(xc, x, y, x + b->chart_width,
                          y, gr_solid, NULL);
                 y += b->boxh;
         }
- 
+
         /*
          * Draw vertical lines and day labels
          */
@@ -1457,12 +1457,12 @@ mb_draw_chartgrid(Browser *b, Calendar *c)
         dayy = y - char_height - 4;
         dayweek = dow(b->date);
         daytick = last_ndays(b->date, dayweek == 0 ? 6 : dayweek-1);
- 
+
         /* draw month */
-        format_date(b->begin_week_tick+1, get_int_prop(p, CP_DATEORDERING), buf, 0, 0, 0);
+        format_date(b->begin_week_tick+1, get_int_prop(p, CP_DATEORDERING), buf, 160, 0, 0, 0);
         gr_text(xc, c->view->outside_margin+4,
                  dayy-char_height-4, c->fonts->labelfont, buf, NULL);
- 
+
         for (n = 0; n < 7; n++) {
 		if (daytick >= get_bot() && daytick < get_eot()) {
 
@@ -1482,7 +1482,7 @@ mb_draw_chartgrid(Browser *b, Calendar *c)
                         y, b->chart_x + (b->boxw * n),
                         y + b->chart_height, gr_solid, NULL);
         }
- 
+
         /*
          * Draw box around the whole thing.
          */
@@ -1503,10 +1503,10 @@ mb_draw_appts(Browser *b, int start, int end, Calendar *c)
 
         h = (b->boxh/BOX_SEG);
         end_of_day = (b->segs_in_array / 7);
- 
+
         y = b->chart_y + (start % end_of_day) * h;
         x = b->chart_x + (start/end_of_day * b->boxw);
- 
+
         i = start;
         while (i < end) {
                 if (b->multi_array[i] <= 0) {
@@ -1623,7 +1623,7 @@ browser_reset_list(Calendar *c) {
 		XmNselectedItems,	&list_selected_items,
 		NULL);
 
-	selected_items = (XmStringTable)calloc(selected_items_count, 
+	selected_items = (XmStringTable)calloc(selected_items_count,
 							sizeof(XmStringTable));
 	for (i = 0; i < selected_items_count; i++)
 		selected_items[i] = XmStringCopy(list_selected_items[i]);
@@ -1653,7 +1653,7 @@ browser_reset_list(Calendar *c) {
 			char 		buf[BUFSIZ + 5];
 			XmString	xmstr;
 
-			sprintf(buf, "  %s", bd->name); 
+			snprintf(buf, BUFSIZ + 5, "  %s", bd->name);
 			xmstr = XmStringCreateLocalized(buf);
 			if (!XmListItemExists(b->browse_list, xmstr))
 				XmListAddItem(b->browse_list, xmstr, 0);
@@ -1661,13 +1661,13 @@ browser_reset_list(Calendar *c) {
 		}
 	}
 	XtVaSetValues(b->upper_form, XmNresizePolicy, XmRESIZE_ANY, NULL);
-	
+
 	/*
 	 * Reselect the items that were selected before we changed the
 	 * contents of the mb.
 	 */
 	for (i = 0; i < selected_items_count; i++) {
-		int 	*pos_list, 
+		int 	*pos_list,
 			 pos_cnt;
 
 		if (XmListGetMatchPos(b->browse_list, selected_items[i],
@@ -1685,7 +1685,7 @@ init_browser(Calendar *c)
 {
 	pr_pos	xy;
         Browser *b = (Browser*)c->browser;
- 
+
         browser_reset_list(c);
         b->row_sel = b->col_sel = 0;
         mb_init_browchart(b, c);
@@ -1705,7 +1705,7 @@ cancel_cb(Widget w, XtPointer client, XtPointer call)
 	XtPopdown(b->frame);
 
 	XtDestroyWidget(b->frame);
-	XtFree(b->multi_array); 
+	XtFree(b->multi_array);
 	XtFree(c->browser); c->browser = NULL;
 }
 
@@ -1740,6 +1740,6 @@ mb_update_handler(CSA_session_handle cal, CSA_flags reason,
 		if (geditor_showing((GEditor *)c->geditor))
 			add_all_gappt((GEditor *)c->geditor);
 	}
- 
+
 }
 

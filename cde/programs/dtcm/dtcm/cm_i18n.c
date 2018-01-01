@@ -59,8 +59,8 @@
 #include <time.h>
 /*
 
-This include has been left out for the moment because of a 
-definition of the symbol "single" in rtable4.h.  This 
+This include has been left out for the moment because of a
+definition of the symbol "single" in rtable4.h.  This
 should be fixed in the future.
 
 #include <floatingpoint.h>
@@ -84,29 +84,29 @@ should be fixed in the future.
 #include "gettext.h"
 */
 
-char *fontset1[2]; 
+char *fontset1[2];
 char *fontset2[2];
 int use_octal = FALSE;
 
 
-int 
+int
 is_comment(char line[MAX_LINE_LEN])
 {
 	char ch[2];
 
 	strncpy(ch, line, 1);
 	if ( strcmp((char *)ch, COMMENT_SYMBOL) == 0 ) {
-		return 1;	
+		return 1;
 	} else {
-		return 0;	
+		return 0;
 	}
 }
 
 
-int 
+int
 match_locale(char *locale, char line[MAX_LINE_LEN])
 {
-	char loc[MAX_LINE_LEN];	
+	char loc[MAX_LINE_LEN];
 
 	if ( !isalpha(line[0]) ) {
 		return 0;
@@ -158,7 +158,7 @@ void _converter_( void *from, unsigned long from_len,
             _i18nwork1 = NULL;
             return;
         }
-        _i18nsize1 = WORKSIZE; 
+        _i18nsize1 = WORKSIZE;
         shouldAlloc1 = 0;
     }
 #ifdef _AIX
@@ -210,7 +210,7 @@ void _converter_( void *from, unsigned long from_len,
 	     * +----------------------------+
 	     * |XXXXXXXXXXXXXXXXXXXXXXXXXXXX|
 	     * +----------------------------+
-	     *                               
+	     *
 	     *                               InBytesLeft=0
 	     *
 	     * (_i18nwork1)
@@ -243,7 +243,7 @@ void _converter_( void *from, unsigned long from_len,
 		 * +----------------------------+
 		 * |XXXXXXXXXXXXXXXXXXXXXXXXXXX |
 		 * +----------------------------+
-		 *  <-------------------------> 
+		 *  <------------------------->
 		 *          converted_num      OutBytesLeft=?
 		 */
 		void *_p;
@@ -266,7 +266,7 @@ void _converter_( void *from, unsigned long from_len,
 		    _i18nwork1 = _p;
 		    OutBuf = (char *)((char*)_i18nwork1 + converted_num);
 		    OutBytesLeft += WORKSIZE;
-		}  
+		}
 	    } else {
 		*to = NULL;
 		*to_len = 0;
@@ -321,27 +321,21 @@ euc_to_octal(char *srcStr)
 		if (inKanji) {
 			if (!isEUC(srcStr[i])) {
 				inKanji = FALSE;
-				/* NOT NEEDED FOR FMapType 4 (or 5)
-				cm_strcat(dstStr, "\\377\\000");
-				*/
 			}
 		}
 		else {
 			if (isEUC(srcStr[i])) {
 				inKanji = TRUE;
-				/* NOT NEEDED FOR FMapType 4 (or 5)
-				cm_strcat(dstStr, "\\377\\001");
-				*/
 			}
 		}
 		if (inKanji) {
-			sprintf(buf, "\\%3.3o\\%3.3o", srcStr[i] & 0xff, srcStr[i+1] & 0xff);
+			snprintf(buf, 64, "\\%3.3o\\%3.3o", srcStr[i] & 0xff, srcStr[i+1] & 0xff);
 			i++;
 		}
 		else {
-			sprintf(buf, "%c", srcStr[i]);
+			snprintf(buf, 64, "%c", srcStr[i]);
 		}
-		cm_strcat(dstStr, buf);
+		cm_strlcat(dstStr, buf, 512);
 	}
 	return dstStr;
 }
@@ -383,7 +377,8 @@ cm_printf(double value, int decimal_pt)
 	if ( (buf = (char *)malloc(DBL_SIZE + decimal_pt)) == NULL ) {
 		return (char *)NULL;
 	}
-	if ( (formatted = (char *)calloc(1, DBL_SIZE + decimal_pt)) == NULL ) {
+	int formatted_size = DBL_SIZE + decimal_pt;
+	if ( (formatted = (char *)calloc(1, formatted_size)) == NULL ) {
 		free(buf);
 		return (char *)NULL;
 	}
@@ -397,24 +392,24 @@ cm_printf(double value, int decimal_pt)
 	strcpy(buf, fcvt(value, decimal_pt, &deci_pt, &sign));
 #endif
 	if ( sign ) {
-		strcpy(formatted, "-");
+		strlcpy(formatted, "-", formatted_size);
 	}
 	buf_len = deci_pt + decimal_pt;
 	if ( deci_pt ) {
 		strncat(formatted, buf, deci_pt);
 	} else {    /* zero */
-		strcat(formatted, "0");	
+		strlcat(formatted, "0", formatted_size);
 	}
 	if ( deci_pt == buf_len ) {
-		strcat(formatted, "\0");
+		strlcat(formatted, "\0", formatted_size);
 		free(buf);
 		return formatted;
 	}
-	strcat(formatted, ".");
+	strlcat(formatted, ".", formatted_size);
 	for ( formatted_cnt = strlen(formatted), buf_cnt = deci_pt;  buf_cnt < buf_len;  buf_cnt++, formatted_cnt++ ) {
 		formatted[formatted_cnt] = buf[buf_cnt];
 	}
 	formatted[formatted_cnt] = '\0';
 	free(buf);
-	return formatted;	
+	return formatted;
 }

@@ -74,7 +74,7 @@ v5_gap_pending_change(Widget w, XtPointer data, XtPointer cbs) {
 
 extern void
 v5_gap_clear_pending_change(Props_pu *p) {
- 
+
 	p->v5_gap_pending_message_up = False;
 	XtSetSensitive(p->gap2_add_button, False);
 }
@@ -92,7 +92,7 @@ p_create_v5_group_access_pane(
 	Dimension	 max_left_label_width,
 			 max_button_label_width,
 			 tmp;
-        Arg 		 args[20]; 
+        Arg 		 args[20];
 	XtWidgetGeometry geo;
 
 	gap2_form_mgr =
@@ -111,7 +111,7 @@ p_create_v5_group_access_pane(
 
 	p->pane_list[GROUP_ACCESS_PANE] = gap2_form_mgr;
 
-	/* 
+	/*
 	 * Create our three left hand side labels first in order to figure
 	 * out the offset required between the middle widgets and the left
 	 * side.
@@ -171,7 +171,7 @@ p_create_v5_group_access_pane(
 		NULL);
 	p->gap_user_text = p->gap2_user_text;
 
-	XtAddCallback(p->gap_user_text, XmNvalueChangedCallback, 
+	XtAddCallback(p->gap_user_text, XmNvalueChangedCallback,
 					v5_gap_pending_change, (XtPointer)p);
 
 	p->gap2_perm_form = CreatePermissions(p, gap2_form_mgr,
@@ -220,7 +220,7 @@ p_create_v5_group_access_pane(
                 XmNlabelType, 			XmSTRING,
                 XmNlabelString, 		xstr,
                 NULL);
-        p->gap_remove_button = p->gap2_delete_button; 
+        p->gap_remove_button = p->gap2_delete_button;
 
 	XmStringFree(xstr);
 	XtAddCallback(p->gap2_delete_button, XmNactivateCallback,
@@ -339,7 +339,7 @@ CreatePermissions(
 	Widget 		 parent,
 	Widget 		 widget_above,
 	Dimension	 left_gap,
-	Dimension	 right_gap) 
+	Dimension	 right_gap)
 {
 	Calendar *c = 	 calendar;
 	Widget 		 perm_form;
@@ -427,7 +427,7 @@ CreatePermissions(
 		XmNwidth,	&view_label_width,
 		NULL);
 
-	/* 
+	/*
 	 * If label is greater than the allocated space for the
 	 * label, then we use a 0 offset.
 	 */
@@ -461,7 +461,7 @@ CreatePermissions(
 
 	xstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 343, "Change"));
 
-	/* 
+	/*
 	 * If label is greater than the allocated space for the
 	 * label, then we use a 0 offset.
 	 */
@@ -539,7 +539,7 @@ CreatePermissions(
 		XmNlabelString, 		xstr_empty,
 		XmNleftAttachment, 		XmATTACH_OPPOSITE_WIDGET,
 		XmNleftWidget, 			p->gap2_change_label,
-		XmNleftOffset, 			change_label_width/2 - 
+		XmNleftOffset, 			change_label_width/2 -
 							(int)(tog_width * 3)/8,
 		XmNtopAttachment, 		XmATTACH_WIDGET,
 		XmNtopWidget, 			p->gap2_change_label,
@@ -572,7 +572,7 @@ CreatePermissions(
 		XmNtopOffset, 			TOG_GAP,
 		XmNindicatorSize, 		INDICATOR_SIZE,
 		NULL);
-		
+
 	p->gap2_semi_tog[GAP_CHANGE] =
 	    XtVaCreateWidget("gap2_semi_change_tog",
 		xmToggleButtonGadgetClass,
@@ -611,7 +611,7 @@ CreatePermissions(
 		XmNtopOffset, 			TOG_GAP,
 		XmNindicatorSize, 		INDICATOR_SIZE,
 		NULL);
-		
+
 	p->gap2_private_tog[GAP_CHANGE] =
 	    XtVaCreateWidget("gap2_private_change_tog",
 		xmToggleButtonGadgetClass,
@@ -685,7 +685,7 @@ GAPAddProc(
 	/* Get the user's name and host */
 	if (!(user_name = (char *)XmTextGetString(p->gap2_user_text)) ||
 	    !*user_name) {
-	  	char *title = XtNewString(catgets(c->DT_catd, 1, 750, 
+	  	char *title = XtNewString(catgets(c->DT_catd, 1, 750,
 			      "Calendar : Error - Access List and Permissions"));
 		char *text = XtNewString(catgets(c->DT_catd, 1, 749,
 		      "Name and Access Rights must be set to add an item to the Access List."));
@@ -738,20 +738,20 @@ GAPAddProc(
 					XmStringFree(xmstr);
 					return;
 				}
-			} while (access_list_ptr = access_list_ptr->next);
+			} while ( (access_list_ptr = access_list_ptr->next) );
 		}
 	}
 
 	/* Create a new access entry and add it to the end of the list */
-	access_entry = 
+	access_entry =
 		(CSA_access_rights *)ckalloc(sizeof(CSA_access_rights));
-	access_entry->user = 
+	access_entry->user =
 		(CSA_calendar_user *)ckalloc(sizeof(CSA_calendar_user));
 	access_entry->user->user_name = cm_strdup(user_name);
 	access_entry->rights = access_rights;
 	access_entry->next = NULL;
 
-	if (!p->gap_list) { 
+	if (!p->gap_list) {
 		p->gap_list = access_entry;
 	} else {
 		access_list_ptr = p->gap_list;
@@ -774,7 +774,7 @@ ChangeExistingGAPEntry(
 	Calendar 	*c = calendar;
 	int		 answer;
 
-	char *title = XtNewString(catgets(c->DT_catd, 1, 1078, 
+	char *title = XtNewString(catgets(c->DT_catd, 1, 1078,
 			"Calendar : Access List and Permissions - Add"));
 	char *text = XtNewString(catgets(c->DT_catd, 1, 751,
 		"This entry already exists in the Access List.  Do you wish to change it?"));
@@ -807,7 +807,7 @@ GAPChangeProc(
 {
 	Calendar 		*c = calendar;
 	Props_pu        	*p = (Props_pu *)client_data;
-	CSA_access_list 	 step = p->gap_list, 
+	CSA_access_list 	 step = p->gap_list,
 				 last = NULL;
 	int			*item_list = NULL,
 				 item_cnt = 0;
@@ -845,7 +845,7 @@ GAPChangeProc(
 	/* Get the user's name and host */
 	if (!(user_name = (char *)XmTextGetString(p->gap2_user_text)) ||
 	    !*user_name) {
-	  	char *title = XtNewString(catgets(c->DT_catd, 1, 750, 
+	  	char *title = XtNewString(catgets(c->DT_catd, 1, 750,
 			      "Calendar : Error - Access List and Permissions"));
 		char *text = XtNewString(catgets(c->DT_catd, 1, 756,
 	              "Name and Access rights must be set to change an item in the Access List"));
@@ -867,9 +867,9 @@ GAPChangeProc(
 	xmstr = XmStringCreateLocalized(user_name);
 
 	/* Create a new access entry and add it to the end of the list */
-	access_entry = 
+	access_entry =
 		(CSA_access_rights *)ckalloc(sizeof(CSA_access_rights));
-	access_entry->user = 
+	access_entry->user =
 		(CSA_calendar_user *)ckalloc(sizeof(CSA_calendar_user));
 	access_entry->user->user_name = cm_strdup(user_name);
 	access_entry->rights = access_rights;
@@ -887,14 +887,14 @@ GAPChangeProc(
 
 	if (last)
 		last->next = access_entry;
-	else     
+	else
 		p->gap_list = access_entry;
- 
+
 	access_entry->next = step->next;
 
 	free(step->user);
 	free(step);
- 
+
 	XmListReplaceItemsPos(p->gap2_access_list, &xmstr, 1, *item_list);
 
         p->changed_flag = True;

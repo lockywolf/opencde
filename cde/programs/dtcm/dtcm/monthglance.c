@@ -166,59 +166,59 @@ paint_day_entries(
         pfy = fontextents.max_ink_extent.height;
         maxlines = h / pfy;
 
-	/* loop thru the list of appointments twice, first displaying 
-	   the no time appointments, and then the appointments with times 
+	/* loop thru the list of appointments twice, first displaying
+	   the no time appointments, and then the appointments with times
 	   associated. */
 
 	for (loop = 0; loop < 2; loop++) {
 		for (i = 0; i < appt_total; i++) {
 			start_tick = cache[i].start_time;
-	                if (start_tick >= lower && 
-			    start_tick < upper && 
-			    (loop == cache[i].show_time)) {                        
+	                if (start_tick >= lower &&
+			    start_tick < upper &&
+			    (loop == cache[i].show_time)) {
 				if (nlines < maxlines) {
 					Boolean	pad;
 					static int pad_width = 0;
 
-	                                lines = 
+	                                lines =
 					     text_to_lines(cache[i].summary, 1);
 	                                if (lines != NULL) {
-	                                        buf = ckalloc(
-						      cm_strlen(lines->s) + 18);
-	                                        pad = format_line(start_tick, 
-							    lines->s, buf, 
-							    start_tick, 
-							    cache[i].show_time, 
+						int buf_size = cm_strlen(lines->s) + 18;
+	                                        buf = ckalloc(buf_size);
+	                                        pad = format_line(start_tick,
+							    lines->s, buf, buf_size,
+							    start_tick,
+							    cache[i].show_time,
 							    dt);
 	                                }
 	                                else {
 	                                        buf = ckalloc(15);
-	                                        pad = format_line(start_tick, 
-							    (char*)NULL, buf, 
-							    start_tick, 
+	                                        pad = format_line(start_tick,
+							    (char*)NULL, buf, 15,
+							    start_tick,
 							    cache[i].show_time,
 							    dt);
 	                                }
 	                                destroy_lines(lines); lines=NULL;
 
 					if (!pad_width) {
-						pad_width = 
+						pad_width =
 							compute_pad_width(pf);
 					}
 					if (pad) {
 	                                	maxchars = gr_nchars(
-								w - pad_width, 
+								w - pad_width,
 								buf, pf);
 	                                	if (cm_strlen(buf) > maxchars)
 							buf[maxchars] = '\0';
 	                                	(void)gr_text(xc, x + pad_width,
 							      y, pf, buf, rect);
 					} else {
-	                                	maxchars = gr_nchars(w, buf, 
+	                                	maxchars = gr_nchars(w, buf,
 								     pf);
 	                                	if (cm_strlen(buf) > maxchars)
 							buf[maxchars] = '\0';
-	                                	(void)gr_text(xc, x, y, pf, 
+	                                	(void)gr_text(xc, x, y, pf,
 							      buf, rect);
 					}
 	                                free(buf); buf=NULL;
@@ -283,7 +283,7 @@ paint_month(Calendar *c, Tick key, XRectangle *rect)
 	CSA_entry_handle *list = NULL;
 	XFontSetExtents fontextents;
 	_Xltimeparams	localtime_buf;
- 
+
         tm              = *_XLocaltime(&key, localtime_buf);
         tm.tm_mday      = 1;
 #ifdef SVR4
@@ -301,7 +301,7 @@ paint_month(Calendar *c, Tick key, XRectangle *rect)
         margin          = calendar->view->outside_margin;
 	dayname_height  = ((Month *) calendar->view->month_info)->dayname_height;
         xc              = calendar->xcontext;
- 
+
 
 	if (c->paint_cache == NULL) {
         	start = (time_t) lowerbound(day);
@@ -309,7 +309,7 @@ paint_month(Calendar *c, Tick key, XRectangle *rect)
 		setup_range(&range_attrs, &ops, &j, start, stop, CSA_TYPE_EVENT,
 		    	0, B_FALSE, c->general->version);
 		csa_list_entries(c->cal_handle, j, range_attrs, ops, &a_total, &list, NULL);
-	
+
 		free_range(&range_attrs, &ops, j);
 		allocate_paint_cache(list, a_total, &c->paint_cache);
 		c->paint_cache_size = a_total;
@@ -319,7 +319,7 @@ paint_month(Calendar *c, Tick key, XRectangle *rect)
 	CalFontExtents(c->fonts->viewfont, &fontextents);
 	default_height = fontextents.max_logical_extent.height;
         x = firstdom; y = 0;
- 
+
         for(i = 1; i <= m->ndays; i++) {
 		int box_origin_x=0, box_origin_y=0;
 
@@ -334,7 +334,7 @@ paint_month(Calendar *c, Tick key, XRectangle *rect)
 		 */
 		paint_day_entries(day,
 			box_origin_x + 2,
-                        box_origin_y + default_height + btn_ht, 
+                        box_origin_y + default_height + btn_ht,
 			boxw - 4, boxh - btn_ht - 4,
 			c->paint_cache, c->paint_cache_size, rect);
 
@@ -376,7 +376,7 @@ display_header(Calendar *c)
 
 	   Use the appropriate strftime conversion for your locale.
 	*/
-	sprintf( buf, "%s, %d", months[tm_ret->tm_mon+1],
+	snprintf(buf, BUFSIZ, "%s, %d", months[tm_ret->tm_mon+1],
 		tm_ret->tm_year + 1900 );
 
 	str = XmStringCreateLocalized(buf);
@@ -399,7 +399,7 @@ paint_daynames(Calendar *c, XRectangle    *rect)
         int 		i, middle;
         int 		boxw = c->view->boxw;
         int 		margin = c->view->outside_margin;
-        int 		dayname_height = 
+        int 		dayname_height =
 				((Month *)c->view->month_info)->dayname_height;
         Cal_Font 	*pf = c->fonts->viewfont;
         new_XContext 	*xc = c->xcontext;
@@ -409,7 +409,7 @@ paint_daynames(Calendar *c, XRectangle    *rect)
                         c->view->topoffset,
                         boxw, dayname_height, rect);
                 middle = gr_center(boxw, days[i], pf);
-                gr_text(xc, (boxw*i)+middle+margin, 
+                gr_text(xc, (boxw*i)+middle+margin,
 				c->view->topoffset+dayname_height-3,
                         	pf, days[i], rect);
         }
@@ -428,14 +428,14 @@ paint_grid(Calendar *c, XRectangle *rect)
         int bottomargin = c->view->topoffset+ dayname_height+boxh*nrows;
         new_XContext *xc    = c->xcontext;
 
-        /* horizontal */                   
+        /* horizontal */
         for (i = 1; i <= nrows; i++) {
                 gr_draw_line(xc, margin,
                         (i*boxh)+c->view->topoffset+dayname_height,
                          rightmargin, i*boxh+c->view->topoffset+dayname_height,
                         gr_solid, rect);
         }
- 
+
         /* vertical */
         for (i = 0; i < 8; i++) {
                 gr_draw_line(xc, margin+(i*boxw),
@@ -472,7 +472,7 @@ layout_month(
 #else
 	day = timelocal(&tm);
 #endif /* SVR4 */
-	m->ndays = ((tm.tm_mon==1) && 
+	m->ndays = ((tm.tm_mon==1) &&
 		    leapyr(tm.tm_year+1900))? 29 : monthdays[tm.tm_mon];
 	tm = *_XLocaltime(&day, localtime_buf);
 	firstdom = tm.tm_wday;
@@ -494,7 +494,7 @@ layout_month(
 			x = 0;
 			y++;
 		}
-		XtMoveWidget(m->hot_button[i-1], 
+		XtMoveWidget(m->hot_button[i-1],
 				m->button_loc[i-1].x, m->button_loc[i-1].y);
 	}
 
@@ -516,9 +516,9 @@ repaint_damaged_month(
 		allocator(c);
 		XmToggleButtonGadgetSetState(c->month_scope, True, False);
 		CalFontExtents(c->fonts->boldfont, &boldfontextents);
-		((Month *) c->view->month_info)->dayname_height =  
+		((Month *) c->view->month_info)->dayname_height =
 				boldfontextents.max_logical_extent.height + 6;
-		layout_month(c, c->view->date); 
+		layout_month(c, c->view->date);
 		display_header(c);
 		manage_children(c);
 	}
@@ -545,23 +545,23 @@ prepare_to_paint_monthview(Calendar *c, XRectangle *rect)
 
 		allocator(c);
 		CalFontExtents(c->fonts->boldfont, &boldfontextents);
-		((Month *) c->view->month_info)->dayname_height = 
+		((Month *) c->view->month_info)->dayname_height =
 				boldfontextents.max_logical_extent.height + 6;
 	}
- 
+
 	/*
 	 * need to unmanage buttons while drawing to avoid many exposures
 	 * when they are moved
 	 */
 	display_header(c);
-	layout_month(c, c->view->date); 
+	layout_month(c, c->view->date);
         gr_clear_area(c->xcontext, 0, 0, c->view->winw, c->view->winh);
 	manage_children(c);
 }
 
 /* ADDED FOR PRINTING */
 extern void
-get_time_str (Dtcm_appointment *appt, char *buf)
+get_time_str (Dtcm_appointment *appt, char *buf, int buf_size)
 {
         Calendar 	*c = calendar;
         Props 		*p = (Props*)c->properties;
@@ -583,10 +583,10 @@ get_time_str (Dtcm_appointment *appt, char *buf)
 
         if (dt == HOUR12) {
                 adjust_hour(&hr);
-                (void) sprintf(buf, "%2d:%02d ", hr, mn);
+                (void) snprintf(buf, buf_size, "%2d:%02d ", hr, mn);
         }
         else
-                (void) sprintf(buf, "%02d%02d ", hr, mn);
+                (void) snprintf(buf, buf_size, "%02d%02d ", hr, mn);
 }
 
 extern void
@@ -686,7 +686,7 @@ month_event(XEvent *event)
         };              /* switch */
         lastevent = *event;
 }
- 
+
 static int
 count_month_pages(Calendar *c, Tick start_date, int lines_per_box)
 {
@@ -711,13 +711,13 @@ count_month_pages(Calendar *c, Tick start_date, int lines_per_box)
 #endif /* SVR4 */
         ndays = ((tm.tm_mon==1) && leapyr(tm.tm_year+1900))? 29 :
                         monthdays[tm.tm_mon];
- 
+
         /* print days of the week at the top */
         rows = numwks (start_date);
- 
+
         /* need minimum 5 rows to paint miniature months */
         if (rows == 4) rows++;
- 
+
         /* print the times and text of appts */
         for (i = 1; i <= ndays; i++)
         {
@@ -734,20 +734,20 @@ count_month_pages(Calendar *c, Tick start_date, int lines_per_box)
                 num_appts = count_month_appts(list, a_total, c);
                 if (num_appts > max)
                         max = num_appts;
- 
+
                 day = nextday(day);
                 csa_free(list);
         }
- 
- 
+
+
         pages = max / lines_per_box;
         if ((max % lines_per_box) > 0)
                 pages++;
 
-        return(pages);   
+        return(pages);
 }
 
- 
+
 static Boolean
 print_month ( Calendar *c,
     int num_page,
@@ -774,10 +774,10 @@ print_month ( Calendar *c,
                 tick = first_date;
         if (num_page > 1)
                 tick = prevmonth_exactday(tick);
- 
+
         /* print days of the week at the top */
         rows = numwks (tick);
- 
+
         /* need minimum 5 rows to paint miniature months */
         if (rows == 4) rows++;
 
@@ -791,13 +791,13 @@ print_month ( Calendar *c,
 
 	day = first_dom(tick);
 	ndays = monthlength(tick);
- 
+
 	/* print month & year on top */
-	format_date(tick, ot, buf, 0, 0, 0);
+	format_date(tick, ot, buf, 50, 0, 0, 0);
 
 	x_print_header(xp, buf, num_page, total_pages);
 	x_month_daynames(xp, rows);
- 
+
 	/* print the times and text of appts */
 	for (i = 1; i <= ndays; i++)
 	{
@@ -836,7 +836,7 @@ print_month ( Calendar *c,
 	x_finish_printer(xp);
 
         tick = nextmonth(tick);
-         
+
         return(all_done);
 }
 
@@ -851,7 +851,7 @@ print_month_range(Calendar *c, Tick start_tick, Tick end_tick)
 	void		*xp = (void *)NULL;
 
 	/* counting up the month pages is a little trickier than in the day
-	   and week cases.  Months will have variable numbers of seconds in 
+	   and week cases.  Months will have variable numbers of seconds in
 	   them, simple dividing the difference by the number of seconds
 	   per month doesn't work.  We'll brute force this by grinding thru,
 	   adding seconds until we pass the end tick time. */
@@ -881,19 +881,19 @@ print_month_range(Calendar *c, Tick start_tick, Tick end_tick)
 	x_print_file(xp, c);
 }
 
-static int 
+static int
 count_month_appts(CSA_entry_handle *list, int a_total, Calendar *c)
 {
         int 			count = 0, i, meoval;
         Props 			*pr = (Props*)c->properties;
 	Dtcm_appointment 	*appt;
 	CSA_return_code 	stat;
- 
+
         meoval = get_int_prop(pr, CP_PRINTPRIVACY);
- 
-	appt = allocate_appt_struct(appt_read, 
+
+	appt = allocate_appt_struct(appt_read,
 				    	c->general->version,
-					CSA_ENTRY_ATTR_CLASSIFICATION_I, 
+					CSA_ENTRY_ATTR_CLASSIFICATION_I,
 					NULL);
         for (i = 0; i < a_total; i++) {
 
@@ -915,7 +915,7 @@ count_month_appts(CSA_entry_handle *list, int a_total, Calendar *c)
         }
 	free_appt_struct(&appt);
         return(count);
-}        
+}
 
 /*
  * Handler for "hot" buttons to navigate to day view
@@ -931,9 +931,9 @@ quick_button_cb(Widget widget, XtPointer client, XtPointer call)
 	c->view->date = next_ndays(first_dom(c->view->date), dom);
 
 	calendar_select(c, daySelect, NULL);
- 
+
 	cleanup_after_monthview(c);
-	
+
 	c->view->glance = dayGlance;
         init_mo(c);
         (void)init_dayview(c);
@@ -975,7 +975,7 @@ manage_children(Calendar *c)
 {
 	int 	i;
 	Month 	*m = (Month *)c->view->month_info;
- 
+
         /* manage the header widget */
         XtManageChild(m->month_label);
 	XtManageChildren(m->hot_button, m->ndays);
@@ -986,7 +986,7 @@ unmanage_children(Calendar *c)
 {
 	int 	i;
 	Month 	*m = (Month *)c->view->month_info;
- 
+
         /* unmanage the header widget */
         XtUnmanageChild(m->month_label);
 	XtUnmanageChildren(m->hot_button, 31);
@@ -1033,7 +1033,7 @@ allocated(Calendar *c)
 
 /*
  * allocate storage & subwidgets used by month view
- */ static void 
+ */ static void
 allocator(Calendar *c)
 {
 	int 	n;
@@ -1049,17 +1049,17 @@ allocator(Calendar *c)
 
 	/* label for month & navigation button to year */
 	m->month_label = XmCreateLabel(c->canvas, "monthLabel", NULL, 0);
-	
+
 	/* navigation buttons to day view */
 	m->hot_button = (Widget *) ckalloc(31 * sizeof(Widget));
 	for (n=0; n<31; n++) {
-		sprintf(buf, "%d", n+1);
+		snprintf(buf, BUFSIZ, "%d", n+1);
 		str = XmStringCreateLocalized(buf);
-		sprintf(buf, "month2day%d", n);
+		snprintf(buf, BUFSIZ, "month2day%d", n);
 		m->hot_button[n] =
 			XmCreatePushButton(c->canvas, buf, NULL, 0);
 		XtVaSetValues(m->hot_button[n], XmNlabelString, str, NULL);
-		XtAddCallback(m->hot_button[n],XmNactivateCallback, 
+		XtAddCallback(m->hot_button[n],XmNactivateCallback,
 			quick_button_cb, (XtPointer) (intptr_t) n);
 		XmStringFree(str);
 	}
@@ -1069,7 +1069,7 @@ allocator(Calendar *c)
  * (Not in service)
  * allocate storage & subwidgets used by month view
  */
-static void 
+static void
 deallocator(Calendar *c)
 {
         Month 	*m = (Month *)c->view->month_info;

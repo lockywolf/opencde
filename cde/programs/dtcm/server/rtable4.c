@@ -62,7 +62,7 @@
 #include "access.h"
 #include "laccess.h"
 #include "callback.h"
-#include "appt4.h"		
+#include "appt4.h"
 #include "log.h"
 #include "tree.h"
 #include "list.h"
@@ -625,7 +625,7 @@ _DtCm_rtable_delete_4_svc(Table_Args_4 *args, struct svc_req *svcrq)
 					access, &key,
 					(p_keys->option == CSA_SCOPE_ONE ?
 					CSA_SCOPE_ONE : CSA_SCOPE_FORWARD),
-					NULL, &entry); 
+					NULL, &entry);
 
 			if (stat == CSA_SUCCESS)
 				stat = _DtCm_cms_entry_to_appt4(entry, &a);
@@ -756,7 +756,7 @@ _DtCm_rtable_change_4_svc(Table_Args_4 *args, struct svc_req *svcrq)
 
 	option = args->args.Args_4_u.apptid.option;
 	if (option < do_all_4 || option > do_forward_4)
-		return (&res); 
+		return (&res);
 
 	if ((stat = _DtCmsV4LoadAndCheckAccess(svcrq, args->target, &user,
 	    &access, &cal)) == CSA_SUCCESS) {
@@ -1015,12 +1015,12 @@ _DtCm_rtable_flush_table_4_svc(Table_Args_4 *args, struct svc_req *svcrq)
 		fprintf(stderr, "%s: before flush.. rbsize= %d\n", pgname,
 			rb_size(APPT_TREE(cal))+hc_size(REPT_LIST(cal)));
 	}
-	
+
 	/* Flushing the single appointment tree. */
 	key.key = 0;
 	key.tick = args->args.Args_4_u.tick;
-	while (p_appt = (Appt_4 *) rb_lookup_next_larger(APPT_TREE(cal),
-	    (caddr_t)&key)) {
+	while ( (p_appt = (Appt_4 *) rb_lookup_next_larger(APPT_TREE(cal),
+	    (caddr_t)&key)) ) {
 		p_node = rb_delete (APPT_TREE(cal),
 				(caddr_t)&(p_appt->appt_id));
 		if (p_node != NULL)
@@ -1159,7 +1159,7 @@ _DtCm_deregister_callback_4_svc(Registration_4 *r, struct svc_req *svcrq)
 		regstat = failed_4;
                 return(&regstat);
 	}
- 
+
 	if ((stat = _DtCmsGetClientInfo(svcrq, &source)) != CSA_SUCCESS) {
 		regstat = csastat2regstat(stat);
 		return (&regstat);
@@ -1186,8 +1186,8 @@ _DtCm_deregister_callback_4_svc(Registration_4 *r, struct svc_req *svcrq)
 		 * 2) if the (transient) program, version, & procnum match
 		 * the original registration, and
 		 * 3) if the process id of the client matches the
-		 *  orignal registration 
-		 *  
+		 *  orignal registration
+		 *
 		 *  ... only then is it ok to decommission the ticket.
 		 */
 
@@ -1260,8 +1260,9 @@ _DtCm_rtable_set_access_4_svc(Access_Args_4 *args, struct svc_req *svcrq)
 		cms_attribute_value	attrval;
 		cms_access_entry	*alist;
 
-		if (args->access_list && (alist =
-		    _DtCmsConvertV4AccessList(args->access_list)) == NULL) {
+    alist = _DtCmsConvertV4AccessList(args->access_list);
+
+		if (args->access_list && alist == NULL) {
 			s = csastat2accessstat(CSA_E_INSUFFICIENT_MEMORY);
 			return (&s);
 		}
@@ -1339,7 +1340,7 @@ _DtCm_rtable_get_access_4_svc(Access_Args_4 *args, struct svc_req *svcrq)
 			_DtCmsShowAccessList (res.access_list);
 	}
 
-	res.target = strdup(args->target); 
+	res.target = strdup(args->target);
 
 	return (&res);
 }
@@ -1420,7 +1421,7 @@ _DtCm_rtable_gmtoff_4_svc(void *args, struct svc_req *svcrq)
 		fprintf(stderr, "_DtCm_rtable_gmtoff_4_svc called\n");
 
 #if defined(CSRG_BASED)
-	t = localtime(time(NULL));
+	t = localtime((const time_t *) time(NULL));
 	gmtoff = t->tm_gmtoff;
 #else
 	gmtoff = timezone;
@@ -1452,7 +1453,7 @@ _DtCm_rtable_create_4_svc(Table_Op_Args_4 *args, struct svc_req *svcrq)
 
 	/* check domain if domain info is available */
 	/* only user in the local domain can create file */
-	if (ptr = strchr(source, '.')) {
+	if ( (ptr = strchr(source, '.')) ) {
 		if (debug)
 			fprintf(stderr, "rpc.cmsd: %s %s(target) and %s(sender)\n",
 				"check domains, comparing",
@@ -1628,7 +1629,7 @@ rtable_lookup_internal(_DtCmsCalendar *cal, char **p_src, Id_4 *key)
 			return(NULL);
 		}
 	}
-	
+
 	/* Check if it hits an event in any repeating appointment */
 	p_appt = (Appt_4 *) hc_lookup (REPT_LIST(cal), (caddr_t)key);
 

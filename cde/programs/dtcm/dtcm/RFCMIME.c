@@ -70,7 +70,7 @@ static char sccsid[] = "$TOG: RFCMIME.c /main/11 1999/06/30 12:08:55 mgreess $";
 # define ICONV_INBUF_TYPE	char **
 #endif
 
-#define WORKSIZE 1024*10	
+#define WORKSIZE 1024*10
 /*
  * The following escape sequence is defined as "To ASCII".
  * But is it correct regardless of ISO-2022-XX ???
@@ -139,7 +139,7 @@ DtXlateOpToStdLocale (
      _DtXlateDb MyDb = NULL;
      char MyPlatform[_DtPLATFORM_MAX_LEN + 1];
      int	ExecVer;
-     int	CompVer;	
+     int	CompVer;
 
      if (_DtLcxOpenAllDbs(&MyDb) == 0 &&
          _DtXlateGetXlateEnv(MyDb,MyPlatform,&ExecVer,&CompVer) != 0)
@@ -149,7 +149,7 @@ DtXlateOpToStdLocale (
      }
 
 
-    if (MyDb != NULL)	
+    if (MyDb != NULL)
 	{
 	(void) _DtLcxXlateOpToStd(MyDb, MyPlatform, ExecVer,
 				operation,opLocale,
@@ -159,8 +159,9 @@ DtXlateOpToStdLocale (
     /* if failed, give default values */
     if (ret_stdLocale != NULL && *ret_stdLocale == NULL)
     {
-        *ret_stdLocale = (char *)malloc(strlen(DfltStdLang)+strlen(DfltStdCharset)+3);
-	sprintf(*ret_stdLocale,"%s.%s",DfltStdLang,DfltStdCharset);
+        int size = strlen(DfltStdLang) + strlen(DfltStdCharset) + 3;
+        *ret_stdLocale = (char *)malloc(size);
+	snprintf(*ret_stdLocale, size, "%s.%s", DfltStdLang,DfltStdCharset);
     }
     if (ret_stdLang != NULL && *ret_stdLang == NULL)
 	*ret_stdLang = (char *)strdup(DfltStdLang);
@@ -261,9 +262,9 @@ getCharSet(char * charset)
      mimeCS = targetTagName();
 
     if (mimeCS) {
-       strcpy(charset, mimeCS);
+       strlcpy(charset, mimeCS, sizeof(charset));
     } else {
-           strcpy(charset, "us-ascii");   /* default MIME codeset */
+           strlcpy(charset, "us-ascii", sizeof(charset));   /* default MIME codeset */
     }
 }
 
@@ -333,7 +334,7 @@ static void _converter_( iconv_t CD,
             _i18nwork1 = NULL;
             return;
         }
-        _i18nsize1 = WORKSIZE; 
+        _i18nsize1 = WORKSIZE;
         shouldAlloc1 = 0;
     }
 
@@ -379,7 +380,7 @@ static void _converter_( iconv_t CD,
 	     * +----------------------------+
 	     * |XXXXXXXXXXXXXXXXXXXXXXXXXXXX|
 	     * +----------------------------+
-	     *                               
+	     *
 	     *                               InBytesLeft=0
 	     *
 	     * (_i18nwork1)
@@ -412,7 +413,7 @@ static void _converter_( iconv_t CD,
 		 * +----------------------------+
 		 * |XXXXXXXXXXXXXXXXXXXXXXXXXXX |
 		 * +----------------------------+
-		 *  <-------------------------> 
+		 *  <------------------------->
 		 *          converted_num      OutBytesLeft=?
 		 */
 		void *_p;
@@ -435,7 +436,7 @@ static void _converter_( iconv_t CD,
 		    _i18nwork1 = _p;
 		    OutBuf = (char *)((char*)_i18nwork1 + converted_num);
 		    OutBytesLeft += WORKSIZE;
-		}  
+		}
 	    } else {
 		*to = NULL;
 		*to_len = 0;
@@ -472,7 +473,7 @@ CvtStr( char *charSet, void *from, unsigned long from_len,
 
 /*
  * If charSet is NULL, it means the passed string's charset in *from is
- * unknown by dtmail. In this case, this converter assumes that 
+ * unknown by dtmail. In this case, this converter assumes that
  * when dir = CURRENT_TO_INTERNET,
  *     *from's encoding is the current locale's one.
  * when dir = INTERNET_TO_CURRENT,
@@ -489,7 +490,7 @@ CvtStr( char *charSet, void *from, unsigned long from_len,
  */
 /*
  * ISO-2022-JP can be converted to either EUC-JP or IBM-932 practically.
- * But the current AIX.lcx says 
+ * But the current AIX.lcx says
  *       StdCodeSet      InterchangeCodeset
  *         EUC-JP   <-->   ISO-2022-JP
  *         IBM-932  --->   ISO-2022-JP
@@ -547,7 +548,7 @@ CvtStr( char *charSet, void *from, unsigned long from_len,
 		 (!strncasecmp(InterChCodeSet,"ISO-2022-JP",11) &&
 		  !strncasecmp(CuStdCodeSet,"EUC-JP",6)         )    ) {
 		ret_codeset = CuStdCodeSet;
-	    } else 
+	    } else
 #endif /* _AIX */
 	    {
 		/* Convert InterChCodeSet to StdCodeSet */
@@ -633,7 +634,7 @@ CvtStr( char *charSet, void *from, unsigned long from_len,
             _i18nwork2 = NULL;
             return( isASCII );
         }
-        _i18nsize2 = WORKSIZE; 
+        _i18nsize2 = WORKSIZE;
         shouldAlloc2 = 0;
     }
 
@@ -663,8 +664,6 @@ CvtStr( char *charSet, void *from, unsigned long from_len,
 		 */
 		for ( ; _passed < from_len; _passed += clen ) {
 		    clen = mblen(&(((char *)from)[_passed]), MB_CUR_MAX);
-		    if ( clen < 0 )
-			break;
 
 		    if ( ( clen > 1 ) || !isascii( ((char*)from)[_passed] ) ){
 			/* Here, maybe MB or non-ASCII */
@@ -697,7 +696,7 @@ CvtStr( char *charSet, void *from, unsigned long from_len,
 		 *     new_from_len             next new_from
 		 *  <------------------------------------------------->
 		 *  $                 from_len
-		 * from 
+		 * from
 		 */
 
 		/*
@@ -716,9 +715,9 @@ CvtStr( char *charSet, void *from, unsigned long from_len,
 		/*
 		 * _i18nwork2                 _tmp
 		 *  V                           V
-		 * +-----------------------+   +-------------+  
+		 * +-----------------------+   +-------------+
 		 * |XXXXXXXX               | + |             |
-		 * +-----------------------+   +-------------+  
+		 * +-----------------------+   +-------------+
 		 *  <------>
 		 *  converted_num
 		 *  <--------------------->     <----------->
@@ -730,7 +729,7 @@ CvtStr( char *charSet, void *from, unsigned long from_len,
 		    void *_i18n = NULL;
 
 		    _i18nsize2 += WORKSIZE;
-		    _i18n = realloc( _i18nwork2, _i18nsize2  ); 
+		    _i18n = realloc( _i18nwork2, _i18nsize2  );
 		    if ( !_i18n ) {
 			*to = NULL;
 			*to_len = 0;
@@ -746,14 +745,14 @@ CvtStr( char *charSet, void *from, unsigned long from_len,
 		/*
 		 * _i18nwork2  _tmp
 		 *  V          v
-		 * +---------------------------+  
+		 * +---------------------------+
 		 * |XXXXXXXXXXX(COPIED)XX      |
-		 * +---------------------------+  
+		 * +---------------------------+
 		 *  <---------><-------->
 		 *  (old)conv.  _tmp_len
 		 *  <------------------->
 		 *  (new)converted_num
-		 *  <--------------------------> 
+		 *  <-------------------------->
 		 *        _i18nsize2
 		 */
 		strncpy( (char *)_i18nwork2 + converted_num,
@@ -800,7 +799,7 @@ CvtStr( char *charSet, void *from, unsigned long from_len,
 				void *_i18n = NULL;
 
 				_i18nsize2 += WORKSIZE;
-				_i18n=realloc(_i18nwork2,_i18nsize2); 
+				_i18n=realloc(_i18nwork2,_i18nsize2);
 				if ( !_i18n ) {
 				    *to = NULL;
 				    *to_len = 0;
@@ -830,7 +829,7 @@ CvtStr( char *charSet, void *from, unsigned long from_len,
 				void *_i18n = NULL;
 
 				_i18nsize2 += WORKSIZE;
-				_i18n=realloc(_i18nwork2,_i18nsize2); 
+				_i18n=realloc(_i18nwork2,_i18nsize2);
 				if ( !_i18n ) {
 				    *to = NULL;
 				    *to_len = 0;
@@ -871,7 +870,7 @@ CvtStr( char *charSet, void *from, unsigned long from_len,
 				void *_i18n = NULL;
 
 				_i18nsize2 += WORKSIZE;
-				_i18n=realloc(_i18nwork2,_i18nsize2); 
+				_i18n=realloc(_i18nwork2,_i18nsize2);
 				if ( !_i18n ) {
 				    *to = NULL;
 				    *to_len = 0;
@@ -900,7 +899,7 @@ CvtStr( char *charSet, void *from, unsigned long from_len,
 				void *_i18n = NULL;
 
 				_i18nsize2 += WORKSIZE;
-				_i18n=realloc(_i18nwork2,_i18nsize2); 
+				_i18n=realloc(_i18nwork2,_i18nsize2);
 				if ( !_i18n ) {
 				    *to = NULL;
 				    *to_len = 0;
@@ -947,7 +946,7 @@ base64size(const unsigned long len)
     return(b_len);
 }
 
-getEncodingType(const char * body,
+Encoding getEncodingType(const char * body,
                          const unsigned int len,
                          boolean_t strict_mime)
 {
@@ -1072,41 +1071,41 @@ writeContentHeaders(char * hdr_buf,
 {
     char default_charset[64];
 
-    strcat(hdr_buf,"Content-Type: ");
-    strcat(hdr_buf,type);
+    strlcat(hdr_buf, "Content-Type: ", sizeof(hdr_buf));
+    strlcat(hdr_buf, type, sizeof(hdr_buf));
 
     if (isAllASCII)
-	strcpy(default_charset,"US-ASCII");
+	strlcpy(default_charset, "US-ASCII", sizeof(default_charset));
     else
         getCharSet(default_charset);
 
-    strcat(hdr_buf,"; charset=");
+    strlcat(hdr_buf, "; charset=", sizeof(hdr_buf));
 
-    strcat(hdr_buf,default_charset);
+    strlcat(hdr_buf, default_charset, sizeof(hdr_buf));
 
     crlf(hdr_buf);
 
-    strcat(hdr_buf,"Content-Transfer-Encoding: ");
+    strlcat(hdr_buf, "Content-Transfer-Encoding: ", sizeof(hdr_buf));
 
     switch (enc) {
       case MIME_7BIT:
-        strcat(hdr_buf,"7bit\n");
+        strlcat(hdr_buf, "7bit\n", sizeof(hdr_buf));
         break;
 
       case MIME_8BIT:
       default: /* Assume the worst. */
-        strcat(hdr_buf,"8bit\n");
+        strlcat(hdr_buf, "8bit\n", sizeof(hdr_buf));
         break;
       case MIME_QPRINT:
-        strcat(hdr_buf,"quoted-printable\n");
+        strlcat(hdr_buf, "quoted-printable\n", sizeof(hdr_buf));
         break;
 
       case MIME_BASE64:
-        strcat(hdr_buf,"base64\n");
+        strlcat(hdr_buf, "base64\n", sizeof(hdr_buf));
         break;
     }
 
-    strcat(hdr_buf,"Content-MD5: ");
+    strlcat(hdr_buf, "Content-MD5: ", sizeof(hdr_buf));
     writeBase64(hdr_buf, digest, 16);
 }
 /*
@@ -1268,7 +1267,7 @@ writeQPrint(char *buf, const char * bp, const unsigned long bp_len,
 	*/
 	if (*cur != (*cur & 0x7f) || *cur == '=') {
 	    char tmp[20];
-	    sprintf(tmp, "=%02X", (int)(unsigned char)*cur);
+	    snprintf(tmp, 20, "=%02X", (int)(unsigned char)*cur);
 	    memcpy(&line_buf[off], tmp, 3);
 	    off += 3;
 	    continue;
@@ -1282,7 +1281,7 @@ writeQPrint(char *buf, const char * bp, const unsigned long bp_len,
 	    if ( *cur == (char)0x1b ) {
 		/* Only 0x1b ????? */
 		char tmp[3];
-		sprintf(tmp, "=%02X", (int)(unsigned char)*cur);
+		snprintf(tmp, 3, "=%02X", (int)(unsigned char)*cur);
 		memcpy(&line_buf[off], tmp, 3);
 		off += 3;
 		continue;
@@ -1389,12 +1388,12 @@ writeQPrint(char *buf, const char * bp, const unsigned long bp_len,
 	    }
 	    else {
 		last_nl = off + 1;
-		
+
 		prev = *(cur - 1);
 		if ((prev == ' ' || prev == '\t') && prev != '\n') {
 		    off = off ? off - 1 : off;
-		    
-		    sprintf(tmpbuf, "=%02X", *(cur - 1));
+
+		    snprintf(tmpbuf, 20, "=%02X", *(cur - 1));
 		    memcpy(&line_buf[off], tmpbuf, 3);
 		    off += 3;
 		}
@@ -1443,7 +1442,7 @@ mbisspace(int c)
 }
 
 void
-rfc1522cpy(char * buf, const char * value)
+rfc1522cpy(char * buf, const char * value, int buf_size)
 {
     const char * cur;
     const char * scan_c;
@@ -1548,7 +1547,7 @@ rfc1522cpy(char * buf, const char * value)
 		if ( !strncasecmp( ret_codeset, "ISO-2022-JP", 11 ) ) {
 		    writeBase64( tmp, NewBuf, _len );
 		} else {
-		    writeQPrint( tmp, NewBuf, _len, 
+		    writeQPrint( tmp, NewBuf, _len,
 			   (!strncasecmp( ret_codeset, "ISO-2022-TW", 11 ) ||
 			    !strncasecmp( ret_codeset, "ISO-2022-CN", 11 )   ));
 		}
@@ -1556,7 +1555,7 @@ rfc1522cpy(char * buf, const char * value)
 		writeQPrint( tmp, cur, scan_c - cur, 0 );
 
 	    strncat(buf,tmp,strlen(tmp));
-	    strcat(buf,"?=");
+	    strlcat(buf, "?=", buf_size);
 	    cur = scan_c - 1;
 	}
     }

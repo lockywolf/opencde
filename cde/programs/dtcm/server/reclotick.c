@@ -48,17 +48,17 @@ static Tick DoWeek(const Tick, const Tick, const RepeatEvent *,
 			RepeatEventState *);
 static Tick DoMonthDay(const Tick, const Tick, const RepeatEvent *,
 			RepeatEventState *);
-static Tick DoMonthPos(const Tick, const Tick, const RepeatEvent *, 
+static Tick DoMonthPos(const Tick, const Tick, const RepeatEvent *,
 			RepeatEventState *);
-static Tick DoYearByMonth(const Tick, const Tick, const RepeatEvent *, 
+static Tick DoYearByMonth(const Tick, const Tick, const RepeatEvent *,
 			RepeatEventState *);
-static Tick DoYearByDay(const Tick, const Tick, const RepeatEvent *, 
+static Tick DoYearByDay(const Tick, const Tick, const RepeatEvent *,
 			RepeatEventState *);
 static void DoDSTAdjustment(const Tick, struct tm *);
 static RepeatEventState	*InitRepeatEventState(const RepeatEvent *);
 static Tick DSTAdjustment(const struct tm *, const struct tm *);
 static int GetMonthDiff(const struct tm *, const struct tm *);
-static int MonthDayNumIntervals(struct tm *, struct tm *, 
+static int MonthDayNumIntervals(struct tm *, struct tm *,
 				const RepeatEvent *, const unsigned int *,
 				struct tm *);
 static int MonthPosNumIntervals(struct tm *, struct tm *,
@@ -67,7 +67,7 @@ static int MonthPosNumIntervals(struct tm *, struct tm *,
 void FillInRepeatEvent(const Tick, RepeatEvent *);
 
 /*
- * Return the closest time following or equal to the target time given a 
+ * Return the closest time following or equal to the target time given a
  * recurrence rule.
  */
 Tick
@@ -104,13 +104,13 @@ ClosestTick(
 	case RT_MONTHLY_POSITION:
 		/* Establish the real start time */
 		real_start_time = DoMonthPos(start_time, start_time, re, *res);
-		if (target_time < real_start_time) 
+		if (target_time < real_start_time)
 			target_time = real_start_time;
 		if (target_time == real_start_time) {
 			(*res)->res_duration = re->re_duration - 1;
 			closest_tick = real_start_time;
 		} else
-			closest_tick = DoMonthPos(target_time, 
+			closest_tick = DoMonthPos(target_time,
 						real_start_time, re, *res);
 		break;
 	case RT_MONTHLY_DAY:
@@ -128,7 +128,7 @@ ClosestTick(
 	 * Make sure the closest time is not past the appt's end time.
 	 */
 	if ((!closest_tick) ||
-	    (re->re_end_date && re->re_end_date < closest_tick)) { 
+	    (re->re_end_date && re->re_end_date < closest_tick)) {
 		free (*res);
 		*res = NULL;
 		return (Tick)NULL;
@@ -168,7 +168,7 @@ DoMinute(
 		 */
 	num_intervals = delta_seconds / (re->re_interval * 60) + 1;
 
-	if (num_intervals > re->re_duration) { 
+	if (num_intervals > re->re_duration) {
 		/* The Minute portion of rule does not allow us to reach
 		 * the target_time because of the duration limit.
 		 */
@@ -249,7 +249,7 @@ DoDay(
 		 * forward one interval and take the earliest time.
 		 * XXX: This won't work with composite rules.
 	 	 */
-	if (!SAME_DAY(&base_tm, &target_tm)) { 
+	if (!SAME_DAY(&base_tm, &target_tm)) {
 		/* Add one interval to the base_time. */
 		base_time += 1 * (re->re_interval * daysec);
 		num_intervals++;
@@ -266,7 +266,7 @@ DoDay(
 		/* Take into account any specific times that are a part
 		 * of this daily repeating rule: e.g. D2 0100 1000 1400 #3.
 		 * We walk through the times for this appointment looking for
-		 * one later than the target time.  
+		 * one later than the target time.
 		 */
 	for (i = 0; i < ntime; i++) {
 			/* Add the hour that is to be tested to the normalized
@@ -277,7 +277,7 @@ DoDay(
 		base_tm.tm_isdst = -1;
 		next_time = mktime(&base_tm);
 		if (next_time >= target_time) {
-			res->res_duration = re->re_duration - 
+			res->res_duration = re->re_duration -
 							(num_intervals + 1);
 			RES_DSTATE(res).res_time = i;
 			goto done;
@@ -285,7 +285,7 @@ DoDay(
 	}
 
 		/* The target time falls after the latest time on
-		 * this appt day.  We must move forward one interval 
+		 * this appt day.  We must move forward one interval
 		 * and take the earliest time.
 		 * XXX: Composite rules issue.
 		 */
@@ -409,11 +409,11 @@ DoWeek(
 				/* If they are the same day, the day_list time
 				 * must be later than the target time.
 			 	 */
-				int day_time = (day_list[i].dt_time) ? 
+				int day_time = (day_list[i].dt_time) ?
 						day_list[i].dt_time[0]:
 						appt_time;
 				/* XXX: Must walk the time list too. */
-				if (TIME_OF_DAY(&target_tm) <= 
+				if (TIME_OF_DAY(&target_tm) <=
 						HOURTOSEC(day_time)) {
 					event_wday = day_list[i].dt_day;
 					break;
@@ -509,18 +509,19 @@ DoMonthDay(
 
 			if (day < target_tm.tm_mday)
 				continue;
-			if (day == target_tm.tm_mday)
+			if (day == target_tm.tm_mday) {
 				/* If it is on the same day, the event time
 				 * must be later than the target time.
 				 */
 				if (TIME_OF_DAY(&target_tm)
-						> TIME_OF_DAY(&start_tm))
+						> TIME_OF_DAY(&start_tm)) {
 					continue;
-				else {
+				} else {
 					event_day = day;
 					next_interval = FALSE;
 					break;
 				}
+			}
 			if (day > target_tm.tm_mday) {
 					event_day = day;
 					next_interval = FALSE;
@@ -538,7 +539,7 @@ DoMonthDay(
 			if (DayExists(event_day, base_tm.tm_mon,
 						 base_tm.tm_year)) {
 				/* Update repeat state info */
-				res->res_duration = re->re_duration 
+				res->res_duration = re->re_duration
 								- num_intervals;
 				RES_MSTATE(res).res_day = i;
 				next_time = mktime(&base_tm);
@@ -578,7 +579,7 @@ DoMonthDay(
 
 done:
 	return (next_time);
-		
+
 }
 
 /*
@@ -635,7 +636,7 @@ DoMonthPos(
 		base_time = WeekNumberToDay(base_time,
 					       wdt_list[0].wdt_week[0],
 					       wdt_list[0].wdt_day[0]);
-	} while (!base_time); 
+	} while (!base_time);
 
 	num_intervals++;
 
@@ -716,7 +717,7 @@ DoYearByMonth(
 				base_tm = *_XLocaltime(&base_time, localtime_buf);
 				if (TIMEOFMONTH(&base_tm) >=
 						       TIMEOFMONTH(&target_tm)){
-					res->res_duration = re->re_duration - 
+					res->res_duration = re->re_duration -
 								num_intervals;
 					RES_YSTATE(res).res_daymonth = i;
 					goto done;
@@ -725,7 +726,7 @@ DoYearByMonth(
 				base_tm.tm_mon = month_list[i] - 1;
 				base_tm.tm_isdst = -1;
 				base_time = mktime(&base_tm);
-				res->res_duration = re->re_duration - 
+				res->res_duration = re->re_duration -
 								num_intervals;
 				RES_YSTATE(res).res_daymonth = i;
 				goto done;
@@ -798,7 +799,7 @@ DoYearByDay(
 	 	goto done;
 	}
 
-	/* 
+	/*
 	 * XXX: day_list == 366 is a special case...that is not supported
 	 * right now.
 	 */
@@ -819,7 +820,7 @@ DoYearByDay(
 
 			/* We found the closest tick */
 			if (base_time >= target_time) {
-				res->res_duration = re->re_duration - 
+				res->res_duration = re->re_duration -
 								num_intervals;
 				RES_YSTATE(res).res_daymonth = i;
 				goto done;
@@ -827,7 +828,7 @@ DoYearByDay(
 		}
 	}
 
-	/* 
+	/*
 	 * We either were not on the same year or the above fell through
 	 * as we crossed into the next interval.
 	 */
@@ -854,7 +855,7 @@ done:
 }
 
 /* Calculate the number of months between two dates */
-/* 3/20/90 - 1/2/94 = 46 months */ 
+/* 3/20/90 - 1/2/94 = 46 months */
 static int
 GetMonthDiff(
 	const struct tm	*start_tm,
@@ -881,7 +882,7 @@ DSTAdjustment(
 	return 0;
 }
 
-static void 
+static void
 DoDSTAdjustment(
 	const Tick	 begin_time,
 	struct tm	*end_time)	/* Return */
@@ -931,9 +932,9 @@ MonthDayNumIntervals(
 	struct tm		*target_tm,
 	const RepeatEvent	*re,
 	const unsigned int	*md_days,
-	struct tm		*base_tm)	/* Return */ 
+	struct tm		*base_tm)	/* Return */
 {
-	int		 num_intervals = 0;	
+	int		 num_intervals = 0;
 	struct tm	 cur_tm;
 	Tick		 cur_time,
 			 base_time,
@@ -945,7 +946,7 @@ MonthDayNumIntervals(
          * days are specified in a rule it is necessary to calculate the
          * correct month by brute force versus using a mathematical calculation.
          */
-        if (md_days[0] > 28) {	
+        if (md_days[0] > 28) {
 		*base_tm = *start_tm;
 		cur_tm = *start_tm;
 		cur_tm.tm_mday = 1;
@@ -1011,7 +1012,7 @@ MonthPosNumIntervals(
 {
 	int		 num_intervals = 0,
 			 brute_force = TRUE,
-			 i, j;	
+			 i, j;
 	struct tm	 cur_tm;
 	Tick		 cur_time,
 			 base_time,
@@ -1096,14 +1097,14 @@ FillInRepeatEvent(
 	case RT_DAILY:
 		if (!RE_DAILY(re)->dd_ntime) {
 			RE_DAILY(re)->dd_time = (Time *)calloc(1, sizeof(Time));
-			RE_DAILY(re)->dd_time[0] = start_tm->tm_hour * 100 + 
+			RE_DAILY(re)->dd_time[0] = start_tm->tm_hour * 100 +
 						   start_tm->tm_min;
 			RE_DAILY(re)->dd_ntime = 1;
 		}
 		break;
 	case RT_WEEKLY:
 		if (!RE_WEEKLY(re)->wd_ndaytime) {
-			RE_WEEKLY(re)->wd_daytime = 
+			RE_WEEKLY(re)->wd_daytime =
 					  (DayTime *)calloc(1, sizeof(DayTime));
 			RE_WEEKLY(re)->wd_daytime[0].dt_day = start_tm->tm_wday;
 			RE_WEEKLY(re)->wd_daytime[0].dt_ntime = 1;
@@ -1147,15 +1148,15 @@ FillInRepeatEvent(
 		break;
 	case RT_MONTHLY_DAY:
 		if (!RE_MONTHLY(re)->md_nitems) {
-			RE_MONTHLY(re)->md_days = 
+			RE_MONTHLY(re)->md_days =
 				(unsigned int *)calloc(1, sizeof(unsigned int));
-			RE_MONTHLY(re)->md_days[0] = start_tm->tm_mday; 
+			RE_MONTHLY(re)->md_days[0] = start_tm->tm_mday;
 			RE_MONTHLY(re)->md_nitems = 1;
 		}
 		break;
 	case RT_YEARLY_MONTH:
 		if (!RE_YEARLY(re)->yd_nitems) {
-			RE_YEARLY(re)->yd_items = 
+			RE_YEARLY(re)->yd_items =
 				(unsigned int *)calloc(1, sizeof(unsigned int));
 			RE_YEARLY(re)->yd_items[0] = start_tm->tm_mon + 1;
 			RE_YEARLY(re)->yd_nitems = 1;
@@ -1163,7 +1164,7 @@ FillInRepeatEvent(
 		break;
 	case RT_YEARLY_DAY:
 		if (!RE_YEARLY(re)->yd_nitems) {
-			RE_YEARLY(re)->yd_items = 
+			RE_YEARLY(re)->yd_items =
 				(unsigned int *)calloc(1, sizeof(unsigned int));
 			RE_YEARLY(re)->yd_items[0] = start_tm->tm_yday;
 			RE_YEARLY(re)->yd_nitems = 1;

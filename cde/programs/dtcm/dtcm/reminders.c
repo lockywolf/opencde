@@ -84,19 +84,19 @@ r_validate_advance(char *advance_string) {
 
         /* crush out leading white space for the name
            comparison/insert process */
- 
+
         while ((*c_p == ' ') || (*c_p == '\t'))
                 c_p++;
- 
+
         /* compress off trailing whitespace */
- 
+
         end_ptr = c_p;
         while (*end_ptr)
                 end_ptr++;
         while ((end_ptr > c_p) &&
                ((*(end_ptr - 1) == ' ') || (*(end_ptr - 1) == '\t')))
                 end_ptr--;
- 
+
         *end_ptr = 0;
 
 
@@ -169,19 +169,19 @@ r_get_mailto_val(Reminders *r) {
 
 	c = XmTextGetString(r->mailto_text);
 	if (!blank_buf(c))
-		cm_strcpy(r->mailto_val, c);
+		cm_strlcpy(r->mailto_val, c, MAILTO_LEN);
 	else
-		cm_strcpy(r->mailto_val, cm_get_credentials());
+		cm_strlcpy(r->mailto_val, cm_get_credentials(), MAILTO_LEN);
 	XtFree(c);
 }
 
 static void
 r_set_bfpm_vals(
-	Widget 		toggle, 
-	Widget 		text, 
-	Widget 		menu, 
+	Widget 		toggle,
+	Widget 		text,
+	Widget 		menu,
 	Reminders_val  *val,
-	Boolean 	compute_best_fit) 
+	Boolean 	compute_best_fit)
 {
 	char		buf[128];
 	Calendar       *c = calendar;
@@ -198,7 +198,7 @@ r_set_bfpm_vals(
 	XtVaGetValues(menu,
 		XmNsubMenuId, 	&submenu,
 		NULL);
-	
+
 	XtVaGetValues(submenu,
 		XmNchildren,	&option_items,
 		XmNnumChildren,	&n,
@@ -235,16 +235,16 @@ r_set_bfpm_vals(
 	if (compute_best_fit) {
 		if (val->scope_val % daysec == 0) {
 			val->scope = TIME_DAYS;
-                	sprintf(buf, "%d", seconds_to_days(val->scope_val));
+                	snprintf(buf, 128, "%d", seconds_to_days(val->scope_val));
 		} else if (val->scope_val % hrsec == 0) {
 			val->scope = TIME_HRS;
-                	sprintf(buf, "%d", seconds_to_hours(val->scope_val));
+                	snprintf(buf, 128, "%d", seconds_to_hours(val->scope_val));
 		} else {
 			val->scope = TIME_MINS;
-               		sprintf(buf, "%d", seconds_to_minutes(val->scope_val));
+               		snprintf(buf, 128, "%d", seconds_to_minutes(val->scope_val));
 		}
 	} else
-		sprintf(buf, "%d", val->scope_val);
+		snprintf(buf, 128, "%d", val->scope_val);
 
 	switch ( scope ) {
 	  case TIME_MINS :
@@ -666,7 +666,7 @@ get_reminders_vals(Reminders *r, Boolean convert_to_secs) {
 }
 
 static void
-reminder_err_msg(Widget frame, char *name, Reminder_val_op op, Pixmap p) 
+reminder_err_msg(Widget frame, char *name, Reminder_val_op op, Pixmap p)
 {
         Calendar        *c = calendar;
         char            buf[MAXNAMELEN], buf2[MAXNAMELEN * 2];
@@ -675,21 +675,21 @@ reminder_err_msg(Widget frame, char *name, Reminder_val_op op, Pixmap p)
 
         switch(op) {
         case ADVANCE_BLANK:
-                sprintf(buf, "%s", catgets(c->DT_catd, 1, 775, "You must specify a reminder advance\nOperation was cancelled.  Calendar"));
+                snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 775, "You must specify a reminder advance\nOperation was cancelled.  Calendar"));
                 break;
         case ADVANCE_CONTAINS_BLANK:
-                sprintf(buf, "%s", catgets(c->DT_catd, 1, 776, "A reminder advance may not contain an embedded blank\nOperation was cancelled.  Calendar"));
+                snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 776, "A reminder advance may not contain an embedded blank\nOperation was cancelled.  Calendar"));
                 break;
         case ADVANCE_NONNUMERIC:
-                sprintf(buf, "%s", catgets(c->DT_catd, 1, 777, "Advance values must be a number with an optional sign\nOperation was cancelled.  Calendar"));
+                snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 777, "Advance values must be a number with an optional sign\nOperation was cancelled.  Calendar"));
                 break;
         case REMINDERS_OK:
         default:
                 return;
         }
 
- 
-        sprintf(buf2, "%s %s", buf, name);
+
+        snprintf(buf2, MAXNAMELEN, "%s %s", buf, name);
 	title = XtNewString(catgets(c->DT_catd, 1, 364,
                         "Calendar : Error - Editor"));
 	ident1 = XtNewString(catgets(c->DT_catd, 1, 95, "Continue"));
@@ -707,7 +707,7 @@ reminder_err_msg(Widget frame, char *name, Reminder_val_op op, Pixmap p)
 /*
 **  This function will consume form values and stuff them into an appointment.
 */
-extern Boolean 
+extern Boolean
 reminders_form_to_appt(Reminders *r, Dtcm_appointment *appt, char *name) {
 
 	Reminder_val_op	status;
@@ -715,7 +715,7 @@ reminders_form_to_appt(Reminders *r, Dtcm_appointment *appt, char *name) {
 
 	if (r->bfpm_form_mgr) {
 		if ((status = get_reminders_vals(r, True)) != REMINDERS_OK) {
-			reminder_err_msg(r->parent, name, status, 
+			reminder_err_msg(r->parent, name, status,
 							pu->xm_error_pixmap);
 			return(False);
 		}
@@ -734,7 +734,7 @@ reminders_form_to_appt(Reminders *r, Dtcm_appointment *appt, char *name) {
 	if (!r->flash_val.selected) {
 		free(appt->flash->value);
 		appt->flash->value = NULL;
-	} else { 
+	} else {
 		appt->flash->value->item.reminder_value->lead_time = (char *) malloc(BUFSIZ);
 		_csa_duration_to_iso8601(r->flash_val.scope_val, appt->flash->value->item.reminder_value->lead_time);
 		appt->flash->value->item.reminder_value->reminder_data.data = NULL;
@@ -860,7 +860,7 @@ set_reminders_defaults(Reminders *r) {
 	val->selected =	convert_boolean_str(get_char_prop(p, CP_MAILON));
 	val->scope = convert_time_scope_str(get_char_prop(p, CP_MAILUNIT));
 	val->scope_val = get_int_prop(p, CP_MAILADV);
-	strcpy(r->mailto_val, get_char_prop(p, CP_MAILTO));
+	strlcpy(r->mailto_val, get_char_prop(p, CP_MAILTO), MAILTO_LEN);
 
 	set_reminders_vals(r, False);
 }
@@ -911,27 +911,27 @@ reminders_init(
         val = &r->beep_val;
         val->selected = convert_boolean_str(get_char_prop(p, CP_BEEPON));
         val->scope = convert_time_scope_str(get_char_prop(p, CP_BEEPUNIT));
-        val->scope_val = convert_time_val(get_int_prop(p, CP_BEEPADV), 
+        val->scope_val = convert_time_val(get_int_prop(p, CP_BEEPADV),
 					  val->scope);
 
         val = &r->flash_val;
         val->selected = convert_boolean_str(get_char_prop(p, CP_FLASHON));
         val->scope = convert_time_scope_str(get_char_prop(p, CP_FLASHUNIT));
-        val->scope_val = convert_time_val(get_int_prop(p, CP_FLASHADV), 
+        val->scope_val = convert_time_val(get_int_prop(p, CP_FLASHADV),
 					  val->scope);
 
         val = &r->popup_val;
         val->selected = convert_boolean_str(get_char_prop(p, CP_OPENON));
         val->scope = convert_time_scope_str(get_char_prop(p, CP_OPENUNIT));
-        val->scope_val = convert_time_val(get_int_prop(p, CP_OPENADV), 
+        val->scope_val = convert_time_val(get_int_prop(p, CP_OPENADV),
 					  val->scope);
 
         val = &r->mail_val;
         val->selected = convert_boolean_str(get_char_prop(p, CP_MAILON));
         val->scope = convert_time_scope_str(get_char_prop(p, CP_MAILUNIT));
-        val->scope_val = convert_time_val(get_int_prop(p, CP_MAILADV), 
+        val->scope_val = convert_time_val(get_int_prop(p, CP_MAILADV),
 					  val->scope);
-        strcpy(r->mailto_val, get_char_prop(p, CP_MAILTO));
+        strlcpy(r->mailto_val, get_char_prop(p, CP_MAILTO), MAILTO_LEN);
 
 }
 

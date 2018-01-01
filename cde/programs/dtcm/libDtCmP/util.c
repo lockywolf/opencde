@@ -56,8 +56,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <unistd.h>
-#include <pwd.h> 
-#include <netdb.h> 
+#include <pwd.h>
+#include <netdb.h>
 #include <sys/utsname.h> /* SYS_NMLN */
 #if defined(sun) || defined(USL) || defined(__uxp__)
 #include <sys/systeminfo.h>
@@ -96,11 +96,11 @@ extern int   	pclose(FILE *);
  *
  *  Function:	cm_def_printer
  *
- *  Purpose:	get the default printer name for SVR4 	
+ *  Purpose:	get the default printer name for SVR4
  *
- *  Parameters:	none     
+ *  Parameters:	none
  *
- *  Returns:	char* (printer name)        
+ *  Returns:	char* (printer name)
  *
  */
 extern char*
@@ -114,11 +114,12 @@ cm_def_printer()
 #ifdef SVR4
 	tmp = (char*)getenv("LPDEST");
 	if (tmp != NULL && *tmp != NULL) {
-		printer_name = (char*)malloc(strlen(tmp)+1);
-		strcpy(printer_name, tmp);
+		int size = strlen(tmp) + 1;
+		printer_name = (char*)malloc(size);
+		strlcpy(printer_name, tmp, size);
 	}
 	else {
-	
+
 	/* This is really nasty.  lpstat -d does *not* work on the AIX
 	   machines.  Just fall back to "lp" here */
 
@@ -148,12 +149,13 @@ cm_def_printer()
 #else
 	tmp = (char*)getenv("PRINTER");
 	if (tmp != NULL && *tmp != '\0') {
-		printer_name = (char*)malloc(strlen(tmp)+1);
-		strcpy(printer_name, tmp);
+		int name_size = strlen(tmp) + 1;
+		printer_name = (char*)malloc(name_size);
+		strlcpy(printer_name, tmp, name_size);
 	}
 	else {
 		printer_name = (char*)malloc(3);
-		strcpy(printer_name, "lw");
+		strlcpy(printer_name, "lw", 3);
 	}
 #endif
 	return printer_name;
@@ -161,33 +163,33 @@ cm_def_printer()
 
 /*--------------------------------------------------------------------------
  * THE FOLLOWING STRING FUNCTION redefinitions are a HACK !
- * 
+ *
  * The cm code should be changed so that
  *   a) the redefined functions use the same headers as in <string.h>
  *   b) no redefinition of these library function is necessary
  *
  * The cm definitions use different function headers than in <string.h>
  * Prefixing the functions will get rid of the resulting compiler error.
- * Now cm functions will use the cm_ string functions, but library functions, 
- * e.g. fprintf, will use strlen etc. which leads to core dumps. 
+ * Now cm functions will use the cm_ string functions, but library functions,
+ * e.g. fprintf, will use strlen etc. which leads to core dumps.
  * As part of the bootstrapping process, I am including the below redefinitions
  * of the system functions. This should be fixed later.
  * [vmh - 5/31/90]
  *--------------------------------------------------------------------------*/
 
 extern char *
-cm_strcpy(register char *s1, register char *s2)
+cm_strlcpy(register char *s1, register char *s2, int size)
 {
 	if (s1==NULL || s2==NULL) return(NULL);
-	strcpy(s1, s2); 
+	strlcpy(s1, s2, size);
         return (s1);
 }
 
-extern int 
+extern int
 cm_strlen(register char *s)
 {
         register int n;
- 
+
 	if (s==NULL) return 0;
 	return (strlen(s));
 }
@@ -202,10 +204,10 @@ cm_strdup (char *s1)
 }
 
 extern char *
-cm_strcat(char *s1, char *s2)
+cm_strlcat(char *s1, char *s2, int size)
 {
 	if (s1==NULL || s2==NULL) return(s1);
-	strcat(s1, s2);
+	strlcat(s1, s2, size);
 	return s1;
 }
 
@@ -309,9 +311,9 @@ syserr(msg, a1, a2, a3)
 #if 0
 	/* print the error, if any */
 	if (saveerr != 0) {
-		if (saveerr < 0 || saveerr > sys_nerr) 
+		if (saveerr < 0 || saveerr > sys_nerr)
 			(void) fprintf(stderr, ":Unknown error %d", saveerr);
-		else 
+		else
 			(void) fprintf(stderr, ":%s", sys_errlist[saveerr]);
 	}
 #endif
@@ -350,13 +352,13 @@ ckalloc(unsigned int size)
 	return((char *)NULL);
 }
 
-	
+
 extern void
 print_tick(Tick t)
 {
         char *a;
 	_Xctimeparams ctime_buf;
- 
+
         a = _XCtime(&t, ctime_buf);
         (void) fprintf (stderr, "%ld %s\n", (long)t, a);
 }
@@ -376,7 +378,7 @@ max(int i1, int i2)
 	if (i1 < i2) return(i2);
 	return(i1);
 }
-	
+
 extern Lines *
 text_to_lines(char *s, int n)
 {
@@ -431,11 +433,11 @@ text_to_lines(char *s, int n)
 		}
 
 	} while (i < n);
-		
+
 	free(string);
 	return head;
 }
- 
+
 extern void
 destroy_lines(Lines *l)
 {
@@ -514,10 +516,10 @@ extern char *
 get_tail(char *str, char sep)
 {
         char *ptr;
- 
+
         if (str == NULL)
                 return(NULL);
- 
+
         while (*str && *str != sep)
                 str++;
         if (*str)
@@ -531,13 +533,16 @@ cm_get_credentials()
 {
 	char *name, *host;
 	static char *login = NULL;
+	int login_size;
 
 	if (login==NULL)
 	{
 		name = (char*)cm_get_uname();
 		host = (char*)cm_get_local_host();
-		login = (char *) ckalloc (cm_strlen(name) + cm_strlen(host) + 2);
-		sprintf(login, "%s@%s", name, host);
+
+		login_size = cm_strlen(name) + cm_strlen(host) + 2;
+		login = (char *) ckalloc (login_size);
+		snprintf(login, login_size, "%s@%s", name, host);
 	}
 	return (login);
 }
@@ -563,7 +568,7 @@ extern char *
 cm_get_uname()
 {
         static char *name;
-        struct passwd *pw; 
+        struct passwd *pw;
 
         if (name == NULL) {
                 if ((pw = (struct passwd *)getpwuid(geteuid())) == NULL)
@@ -572,7 +577,7 @@ cm_get_uname()
                         name = (char *) cm_strdup(pw->pw_name);
         }
         return name;
-    
+
 }
 
 extern char *
@@ -588,7 +593,7 @@ cm_get_local_domain()
 		if(-1 == getdomainname(local_domain, BUFSIZ)) {
 			fprintf(stderr, "getdomainname() failed %d '%s'\n", errno, strerror(errno));
 		}
-		
+
 #endif /* sun || USL || __uxp__ */
 	}
         return(local_domain);
@@ -599,17 +604,19 @@ extern char*
 cm_pqtarget(char *name)
 {
         char *host, *target=NULL;
- 
+	int target_size;
+
         host = (char*)strchr(name, '@');
         if (host == NULL) {
                 host = (char*)cm_get_local_host();
-                target = (char *)ckalloc(cm_strlen(name) +
-                                cm_strlen(host) + 2);
-                sprintf(target, "%s@%s", name, host);
+
+		target_size = cm_strlen(name) + cm_strlen(host) + 2;
+                target = (char *)ckalloc(target_size);
+                snprintf(target, target_size, "%s@%s", name, host);
         }
         else
                 target = (char *) cm_strdup(name);
- 
+
         return target;
 }
 /*
@@ -620,7 +627,7 @@ cm_target2name(char *target)
 {
         return(get_head(target, '@'));
 }
- 
+
 /*
  * calendar_name@host[.domain] -> host[.domain]
  */
@@ -629,7 +636,7 @@ cm_target2location(char *target)
 {
         return(get_tail(target, '@'));
 }
- 
+
 /*
  * calendar_name@host[.domain] -> host
  */
@@ -637,7 +644,7 @@ extern char *
 cm_target2host(char *target)
 {
         char *location, *host;
- 
+
         location = get_tail(target, '@');
         if (location != NULL) {
                 host = get_head(location, '.');
@@ -653,7 +660,7 @@ extern char *
 cm_target2domain(char *target)
 {
         char *location, *domain;
- 
+
         location = get_tail(target, '@');
         if (location != NULL) {
                 domain = get_tail(location, '.');
@@ -904,7 +911,7 @@ same_user(char *user1, char *user2)
 	/* assume user2=user@host[.domain] */
 	if (str1 == NULL) {
 		str1 = strchr(user1, '@');
-		sprintf(buf, "%s.%s", ++str1, cm_get_local_domain());
+		snprintf(buf, BUFSIZ, "%s.%s", ++str1, cm_get_local_domain());
 		str1 = buf;
 	} else {
 		str1 = strchr(user1, '@');
@@ -938,14 +945,14 @@ extern int
 embedded_blank(char *buf)
 {
         char *ptr = buf;
- 
+
         if (ptr == NULL) return B_TRUE;
         while (ptr && *ptr) {
                 if ((*ptr == ' ') || (*ptr == '\t'))
                         return B_TRUE;
                 *ptr++;
         }
- 
+
         return B_FALSE;
 }
 
@@ -960,11 +967,11 @@ get_data_version(CSA_session_handle session) {
 	names[0] = CSA_X_DT_CAL_ATTR_DATA_VERSION;
 
 
-	if (csa_read_calendar_attributes(session, 
-					 1, 
-					 names, 
-					 &number_attrs_returned, 
-					 &attrs_returned, 
+	if (csa_read_calendar_attributes(session,
+					 1,
+					 names,
+					 &number_attrs_returned,
+					 &attrs_returned,
 					 NULL) == CSA_SUCCESS) {
 		ver = attrs_returned[0].value->item.uint32_value;
 		csa_free(attrs_returned);
@@ -983,11 +990,11 @@ get_server_version(CSA_session_handle session) {
 
 	names[0] = CSA_X_DT_CAL_ATTR_SERVER_VERSION;
 
-	if (csa_read_calendar_attributes(session, 
-					 1, 
-					 names, 
-					 &number_attrs_returned, 
-					 &attrs_returned, 
+	if (csa_read_calendar_attributes(session,
+					 1,
+					 names,
+					 &number_attrs_returned,
+					 &attrs_returned,
 					 NULL) == CSA_SUCCESS) {
 		ver = attrs_returned[0].value->item.uint32_value;
 		csa_free(attrs_returned);
@@ -1017,21 +1024,21 @@ privacy_set(Dtcm_appointment *appt) {
 
 extern CSA_sint32
 showtime_set(Dtcm_appointment *appt) {
- 
+
         CSA_sint32	showtime = 0;
- 
+
         if (!appt)
                 return(showtime);
- 
+
         if (!appt->show_time)
                 return(showtime);
- 
+
         if (!appt->show_time->value)
                 return(showtime);
- 
+
         showtime = appt->show_time->value->item.sint32_value;
         return(showtime);
- 
+
 }
 
 /*
@@ -1040,18 +1047,18 @@ showtime_set(Dtcm_appointment *appt) {
 extern int
 parse_date(OrderingType order, SeparatorType sep, char *datestr, char *m,
         char *d, char *y) {
- 
+
         char *first, *second, *third;
         char *tmp_date, *str = separator_str(sep);
 	_Xstrtokparams strtok_buf;
- 
+
         m[0] = '\0';
         d[0] = '\0';
         y[0] = '\0';
- 
+
         if (datestr == NULL)
                 return 0;
- 
+
         tmp_date = cm_strdup(datestr);
         first = _XStrtok(tmp_date, str, strtok_buf);
                 /*
@@ -1063,32 +1070,32 @@ parse_date(OrderingType order, SeparatorType sep, char *datestr, char *m,
                 }
         second = _XStrtok(NULL, str, strtok_buf);
         third = _XStrtok(NULL, str, strtok_buf);
- 
+
         switch (order) {
         case ORDER_DMY:
                 if (second)
-                        cm_strcpy(m, second);
+                        cm_strlcpy(m, second, 3);
                 if (first)
-                        cm_strcpy(d, first);
+                        cm_strlcpy(d, first, 3);
                 if (third)
-                        cm_strcpy(y, third);
+                        cm_strlcpy(y, third, 5);
                 break;
         case ORDER_YMD:
                 if (second)
-                        cm_strcpy(m, second);
+                        cm_strlcpy(m, second, 3);
                 if (third)
-                        cm_strcpy(d, third);
+                        cm_strlcpy(d, third, 3);
                 if (first)
-                        cm_strcpy(y, first);
+                        cm_strlcpy(y, first, 5);
                 break;
         case ORDER_MDY:
         default:
                 if (first)
-                        cm_strcpy(m, first);
+                        cm_strlcpy(m, first, 3);
                 if (second)
-                        cm_strcpy(d, second);
+                        cm_strlcpy(d, second, 3);
                 if (third)
-                        cm_strcpy(y, third);
+                        cm_strlcpy(y, third, 5);
                 break;
         }
         free(tmp_date);
@@ -1099,22 +1106,22 @@ parse_date(OrderingType order, SeparatorType sep, char *datestr, char *m,
 **  Reformat the date string into m/d/y format and write it into the buffer
 */
 extern int
-datestr2mdy(char *datestr, OrderingType order, SeparatorType sep, char *buf) {
+datestr2mdy(char *datestr, OrderingType order, SeparatorType sep, char *buf, int buf_size) {
         char m[3], d[3], y[5];
- 
+
         buf[0] = '\0';
         if (datestr == NULL)
                 return 0;
- 
+
         if (order == ORDER_MDY && sep == SEPARATOR_SLASH)
-                cm_strcpy(buf, datestr);
+                cm_strlcpy(buf, datestr, buf_size);
         else {
                 if ( parse_date(order, sep, datestr, m, d, y) ) {
-                        sprintf(buf, "%s/%s/%s", m, d, y);
+                        snprintf(buf, buf_size, "%s/%s/%s", m, d, y);
                 } else {
                         return 0;
                 }
- 
+
         }
         return 1;
 }
@@ -1123,33 +1130,33 @@ datestr2mdy(char *datestr, OrderingType order, SeparatorType sep, char *buf) {
 **  Format the date according to display property and write it into buffer
 */
 extern void
-format_tick(Tick tick, OrderingType order, SeparatorType sep, char *buff) {
+format_tick(Tick tick, OrderingType order, SeparatorType sep, char *buff, int buff_size) {
 	char		*str = separator_str(sep);
         struct tm	*tm;
 	_Xltimeparams	localtime_buf;
- 
+
         buff[0] = '\0';
         tm = _XLocaltime(&tick, localtime_buf);
- 
+
         switch (order) {
         case ORDER_DMY:
-                sprintf(buff, "%d%s%d%s%d", tm->tm_mday, str,
+                snprintf(buff, buff_size, "%d%s%d%s%d", tm->tm_mday, str,
                         tm->tm_mon+1, str, tm->tm_year+1900);
                 break;
         case ORDER_YMD:
-                sprintf(buff, "%d%s%d%s%d", tm->tm_year+1900, str,
+                snprintf(buff, buff_size, "%d%s%d%s%d", tm->tm_year+1900, str,
                         tm->tm_mon+1, str, tm->tm_mday);
                 break;
         case ORDER_MDY:
         default:
-                sprintf(buff, "%d%s%d%s%d", tm->tm_mon+1, str,
+                snprintf(buff, buff_size, "%d%s%d%s%d", tm->tm_mon+1, str,
                         tm->tm_mday, str, tm->tm_year+1900);
                 break;
         }
 }
 
 extern void
-format_time(Tick t, DisplayType dt, char *buffer) {
+format_time(Tick t, DisplayType dt, char *buffer, int buffer_size) {
 	int		hr = hour(t);
 	boolean_t	am;
 
@@ -1158,10 +1165,10 @@ format_time(Tick t, DisplayType dt, char *buffer) {
 
 	} else if (dt == HOUR12) {
 		am = adjust_hour(&hr);
-                sprintf(buffer, "%2d:%02d%s",
+                snprintf(buffer, buffer_size, "%2d:%02d%s",
 			hr, minute(t), (am) ? "am" : "pm");
 	} else
-		sprintf(buffer, "%02d%02d", hr, minute(t));
+		snprintf(buffer, buffer_size, "%02d%02d", hr, minute(t));
 }
 
 /*
@@ -1268,6 +1275,10 @@ Dtcm_appointment *allocate_appt_struct (Allocation_reason reason, int version, .
 			def_attr_count = DEF_V5_APPT_ATTR_COUNT;
 		else if (version == DATAVER_ARCHIVE)
 			def_attr_count = DEF_V5_APPT_ATTR_COUNT;
+		else {
+			fprintf( stderr, "Invalid data version, aborting");
+			exit(1);
+		}
 
 		for (idx = 0; idx < def_attr_count; idx++) {
 			if ((reason == appt_write) && entry_ident_index_ro(default_appt_attrs[idx], version))
@@ -1278,7 +1289,7 @@ Dtcm_appointment *allocate_appt_struct (Allocation_reason reason, int version, .
 
 	/*
 	 * We've determined the number of attributes we're retrieving, so
-	 * allocate the name array, and the attribute array (if we are 
+	 * allocate the name array, and the attribute array (if we are
 	 * going to be writing attributes).
 	 */
 
@@ -1312,8 +1323,8 @@ Dtcm_appointment *allocate_appt_struct (Allocation_reason reason, int version, .
 }
 
 CSA_return_code
-query_appt_struct(CSA_session_handle session, 
-		  CSA_entry_handle entry_handle, 
+query_appt_struct(CSA_session_handle session,
+		  CSA_entry_handle entry_handle,
 		  Dtcm_appointment *appt) {
 
 	CSA_return_code 	status;
@@ -1326,12 +1337,12 @@ query_appt_struct(CSA_session_handle session,
 	}
 
 
-	if ((status = csa_read_entry_attributes(session, 
-					 entry_handle, 
-					 appt->num_names, 
-					 appt->names, 
-					 &appt->count, 
-					 &appt->attrs, 
+	if ((status = csa_read_entry_attributes(session,
+					 entry_handle,
+					 appt->num_names,
+					 appt->names,
+					 &appt->count,
+					 &appt->attrs,
 					 NULL)) == CSA_SUCCESS) {
 		set_appt_links(appt);
 		appt->filled = True;
@@ -1390,7 +1401,7 @@ allocate_cal_struct(Allocation_reason reason, int version, ...) {
 
 	/*
 	 * We've determined the number of attributes we're retrieving, so
-	 * allocate the name arrya, and the attribute array (if we are 
+	 * allocate the name arrya, and the attribute array (if we are
 	 * going to be writing attributes).
 	 */
 
@@ -1416,7 +1427,7 @@ allocate_cal_struct(Allocation_reason reason, int version, ...) {
 			initialize_cal_attr(api_idx, &cal->attrs[idx], reason, version);
 	}
 
-	if (reason == appt_write) 
+	if (reason == appt_write)
 		set_cal_links(cal);
 
 	CmDataListDestroy(api_ids, 0);
@@ -1426,7 +1437,7 @@ allocate_cal_struct(Allocation_reason reason, int version, ...) {
 }
 
 CSA_return_code
-query_cal_struct(CSA_session_handle session, 
+query_cal_struct(CSA_session_handle session,
 	         Dtcm_calendar *cal) {
 
 	CSA_return_code status;
@@ -1438,11 +1449,11 @@ query_cal_struct(CSA_session_handle session,
 		cal->filled = False;
 	}
 
-	if ((status = csa_read_calendar_attributes(session, 
-					 cal->num_names, 
-					 cal->names, 
-					 &cal->count, 
-					 &cal->attrs, 
+	if ((status = csa_read_calendar_attributes(session,
+					 cal->num_names,
+					 cal->names,
+					 &cal->count,
+					 &cal->attrs,
 					 NULL)) == CSA_SUCCESS) {
 		set_cal_links(cal);
 		cal->filled = True;
@@ -1458,7 +1469,7 @@ scrub_cal_attr_list(Dtcm_calendar *cal) {
 
 	for (i = 0; i < cal->count; i++) {
 		if (cal->attrs[i].value->type == CSA_VALUE_REMINDER) {
-			if ((cal->attrs[i].value->item.reminder_value->lead_time == NULL) || 
+			if ((cal->attrs[i].value->item.reminder_value->lead_time == NULL) ||
 			     (cal->attrs[i].value->item.reminder_value->lead_time[0] == '\0')) {
 				free(cal->attrs[i].name);
 				cal->attrs[i].name = NULL;
@@ -1735,16 +1746,16 @@ free_appt_struct(Dtcm_appointment **appt) {
 		free((*appt)->names);
 	}
 
-	/* potential memory leak here.  We must be careful, as results 
-	   from querys should be thrown away with csa_free(), while 
-	   structures we've set up to do update/write operations were 
+	/* potential memory leak here.  We must be careful, as results
+	   from querys should be thrown away with csa_free(), while
+	   structures we've set up to do update/write operations were
 	   allocated by the client, and need to be freed by that client. */
 
 	if (((*appt)->reason == appt_read) && ((*appt)->filled == True))
 		csa_free((*appt)->attrs);
-	else 
+	else
 		if ((*appt)->attrs) {
-			for (i = 0; i < (*appt)->count; i++) 
+			for (i = 0; i < (*appt)->count; i++)
 				free_attr(&((*appt)->attrs[i]));
 
 			free((*appt)->attrs);
@@ -1769,9 +1780,9 @@ free_cal_struct(Dtcm_calendar **cal) {
 		free((*cal)->names);
 	}
 
-	/* potential memory leak here.  We must be careful, as results 
-	   from querys should be thrown away with csa_free(), while 
-	   structures we've set up to do update/write operations were 
+	/* potential memory leak here.  We must be careful, as results
+	   from querys should be thrown away with csa_free(), while
+	   structures we've set up to do update/write operations were
 	   allocated by the client, and need to be freed by that client. */
 
 	if (((*cal)->reason == appt_read) && ((*cal)->filled == True))
@@ -1949,7 +1960,7 @@ free_range(CSA_attribute **attrs, CSA_enum **ops, int count) {
 		free((*attrs)[i].value);
 	}
 
-	/* This memory was allocated by the client, and must be freed 
+	/* This memory was allocated by the client, and must be freed
 	   by the client */
 
 	free(*attrs);
@@ -2099,7 +2110,7 @@ CmDataListDeletePos(CmDataList *list, int position, int free_data)
 		for (n = 2, p = list->head; p->next != NULL && n < position;
 		     p = p->next, n++)
 			;
-		
+
 		if (p->next == NULL) {
 			return NULL;
 		}
@@ -2117,7 +2128,7 @@ CmDataListDeletePos(CmDataList *list, int position, int free_data)
 	free(item);
 
 	if (free_data) {
-		if (data != NULL) 
+		if (data != NULL)
 			free(data);
 		return (void *)1;
 	} else {
@@ -2125,7 +2136,7 @@ CmDataListDeletePos(CmDataList *list, int position, int free_data)
 	}
 }
 
-/* 
+/*
  * Delete all nodes in the list.
  *
  * 	list		List to delete nodes from

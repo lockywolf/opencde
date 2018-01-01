@@ -115,7 +115,7 @@ make_goto(Calendar *c)
                 NULL);
 
         xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 293, "Date:"));
-        g->datelabel = XtVaCreateWidget("Date:", 
+        g->datelabel = XtVaCreateWidget("Date:",
 		xmLabelWidgetClass, 	g->form,
                 XmNleftAttachment, 	XmATTACH_FORM,
 		XmNleftOffset,          5,
@@ -125,7 +125,7 @@ make_goto(Calendar *c)
                 NULL);
 	XmStringFree(xmstr);
 
-        g->datetext = XtVaCreateWidget("text", 
+        g->datetext = XtVaCreateWidget("text",
 		xmTextWidgetClass, 	g->form,
                 XmNtopAttachment, 	XmATTACH_FORM,
 		XmNtopWidget, 		g->datelabel,
@@ -164,7 +164,7 @@ make_goto(Calendar *c)
                 NULL);
 
         xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 294, "Go To"));
-        g->datebutton = XtVaCreateWidget("goTo", 
+        g->datebutton = XtVaCreateWidget("goTo",
 		xmPushButtonWidgetClass, button_form,
                 XmNtopAttachment, 	XmATTACH_WIDGET,
 		XmNtopWidget, 		separator,
@@ -179,7 +179,7 @@ make_goto(Calendar *c)
 	XmStringFree(xmstr);
 
         xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 680, "Close"));
-        g->cancelbutton = XtVaCreateWidget("cancel", 
+        g->cancelbutton = XtVaCreateWidget("cancel",
 		xmPushButtonWidgetClass, button_form,
                 XmNtopAttachment, 	XmATTACH_WIDGET,
 		XmNtopWidget, 		separator,
@@ -194,7 +194,7 @@ make_goto(Calendar *c)
 
 
         xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 77, "Help"));
-        g->helpbutton = XtVaCreateWidget("help", 
+        g->helpbutton = XtVaCreateWidget("help",
 		xmPushButtonWidgetClass, button_form,
                 XmNtopAttachment, 	XmATTACH_WIDGET,
 		XmNtopWidget, 		separator,
@@ -204,7 +204,7 @@ make_goto(Calendar *c)
 		XmNrightPosition, 	3,
 		XmNlabelString, 	xmstr,
                 NULL);
-	XtAddCallback(g->helpbutton, XmNactivateCallback, 
+	XtAddCallback(g->helpbutton, XmNactivateCallback,
 				(XtCallbackProc)help_cb, GOTO_HELP_BUTTON);
         XtAddCallback(g->form, XmNhelpCallback,
                 (XtCallbackProc)help_cb, (XtPointer) GOTO_HELP_BUTTON);
@@ -251,19 +251,19 @@ goto_date(Widget widget, XtPointer client_data, XmPushButtonCallbackStruct *cbs)
 	Dimension w, h;
 	OrderingType ot;
 	SeparatorType st;
- 
+
         p = (Props*)c->properties;
 	ot = get_int_prop(p, CP_DATEORDERING);
 	st = get_int_prop(p, CP_DATESEPARATOR);
         g = (Goto*)c->goTo;
- 
+
 	date = XmTextGetString(g->datetext);
 	if ((date == NULL) || (*date == '\0')) {
-		sprintf(message, "%s", catgets(c->DT_catd, 1, 297, "Please type in a date"));
+		snprintf(message, 40, "%s", catgets(c->DT_catd, 1, 297, "Please type in a date"));
 		set_message(g->goto_message, message);
                 return;
 	}
-        format_tick(c->view->date, ot, st, today);
+        format_tick(c->view->date, ot, st, today, DATESIZ);
 	set_message(g->goto_message, "");
         date = get_date_from_widget(c->view->date, g->datetext, ot, st);
         if ( date == NULL ) {
@@ -272,30 +272,30 @@ goto_date(Widget widget, XtPointer client_data, XmPushButtonCallbackStruct *cbs)
                 gotodate = cm_getdate(date, NULL);
         }
 	if (!strcmp(today, date)) {
-		sprintf(message, catgets(c->DT_catd, 1, 298, "You are already viewing %s"), date);
+		snprintf(message, 40, catgets(c->DT_catd, 1, 298, "You are already viewing %s"), date);
 		set_message(g->goto_message, message);
 		return;
 	}
- 
+
 
 	if (gotodate == DATE_BBOT) {
-		sprintf(message, "%s", catgets(c->DT_catd, 1, 814, "You must enter a date after 1969 and before 2038"));
+		snprintf(message, 40, "%s", catgets(c->DT_catd, 1, 814, "You must enter a date after 1969 and before 2038"));
 		set_message(g->goto_message, message);
                 return;
 	}
 	else if (gotodate == DATE_AEOT) {
-		sprintf(message, "%s", catgets(c->DT_catd, 1, 814, "You must enter a date after 1969 and before 2038"));
+		snprintf(message, 40, "%s", catgets(c->DT_catd, 1, 814, "You must enter a date after 1969 and before 2038"));
 		set_message(g->goto_message, message);
                 return;
 	}
         else if (gotodate <= 0) {
-		sprintf(message, "%s", catgets(c->DT_catd, 1, 299, "Invalid Date"));
+		snprintf(message, 40, "%s", catgets(c->DT_catd, 1, 299, "Invalid Date"));
 		set_message(g->goto_message, message);
                 return;
         }
 
 	invalidate_cache(c);
-         
+
        	get_range(c->view->glance, c->view->date, &start, &stop);
         if (in_range(start, stop, gotodate)) {
                 /* date is in view; deselect and repaint new selection */
@@ -316,7 +316,7 @@ goto_date(Widget widget, XtPointer client_data, XmPushButtonCallbackStruct *cbs)
                         init_dayview(c);
                 }
                 paint_canvas(c, NULL, RENDER_UNMAP);
-        }        
+        }
 }
 
 void

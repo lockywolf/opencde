@@ -77,7 +77,7 @@ arpaPhrase(const char * name)
     char ** addrs;
     const char * comma;
     const char * start;
-    
+
     if (name == (char *) 0) {
 	return(NULL);
     }
@@ -132,7 +132,7 @@ arpaPhrase(const char * name)
 	  outcm:
 	    lastsp = 0;
 	    break;
-	    
+
 	  case '"':
 	    /*
 	      Start a quoted string.
@@ -166,7 +166,7 @@ arpaPhrase(const char * name)
 		*cp2++ = '"';
 	    lastsp = 0;
 	    break;
-	    
+
 	  case ' ':
 	  case '\t':
 	  case '\n':
@@ -178,7 +178,7 @@ arpaPhrase(const char * name)
 
 	    lastsp = 1;
 	    break;
-	    
+
 	  case ',':
 	    *cp2++ = c;
 	    if (gotlt != '<') {
@@ -186,21 +186,21 @@ arpaPhrase(const char * name)
 		goto done;
 	    }
 	    break;
-	    
+
 	  case '<':
 	    cp2 = addrs[cur_addr - 1];
 	    gotlt = c;
 	    lastsp = 0;
 	    break;
-	    
+
 	  case '>':
 	    if (gotlt == '<') {
 		gotlt = c;
 		break;
 	    }
-	    
+
 	    /* FALLTHROUGH . . . */
-	    
+
 	  default:
 	    if (gotlt == 0 || gotlt == '<') {
 		if (lastsp) {
@@ -259,38 +259,38 @@ formatMessage(char ** addrs, const char * subject, const char * body)
 
     msg = (char *)malloc(size);
 
-    strcpy(msg, "To: ");
+    strlcpy(msg, "To: ", size);
     line = 4;
 
     for (to = addrs; *to; to++) {
-	strcat(msg, *to);
+	strlcat(msg, *to, size);
 	if (*(to + 1) != NULL) {
-	    strcat(msg, ", ");
+	    strlcat(msg, ", ", size);
 	    line += strlen(*to);
 	    if (line > 72) {
-		strcat(msg, "\n    ");
+		strlcat(msg, "\n    ", size);
 		line = 0;
 	    }
 	}
     }
-    strcat(msg, "\nSubject: ");
+    strlcat(msg, "\nSubject: ", size);
 
     /* Encode the body of the message */
-    
+
     /* 1) Open Lcx data bases */
 
     if ((_DtLcxOpenAllDbs(&db) == 0) &&
         (_DtXlateGetXlateEnv(db,plat,&execver,&compver) != 0))
 	{
 		_DtLcxCloseDb(&db);
-    		strcat(msg, subject);
+    		strlcat(msg, subject, size);
     		if (msg[strlen(msg) - 1] == '\n') {
 			msg[strlen(msg) - 1] = 0;
     		}
 
-    		strcat(msg, "\nMime-Version: 1.0\n");
-    		strcat(msg, "Content-Type: text/plain;charset=us-ascii\n\n");
-    		strcat(msg, body);
+    		strlcat(msg, "\nMime-Version: 1.0\n", size);
+    		strlcat(msg, "Content-Type: text/plain;charset=us-ascii\n\n", size);
+    		strlcat(msg, body, size);
 	}
     else
 	{
@@ -298,10 +298,10 @@ formatMessage(char ** addrs, const char * subject, const char * body)
 		body_len = strlen(body);
 
 		hdr_buf[0]='\0';
-		
-		strcpy(mime_type,"text/plain");
-		rfc1522cpy(hdr_buf,subject);	
-		strcat(hdr_buf,"Mime-Version: 1.0\n");
+
+		strlcpy(mime_type, "text/plain", 64);
+		rfc1522cpy(hdr_buf, subject, 1024);
+		strlcat(hdr_buf, "Mime-Version: 1.0\n", 1024);
 		isAllASCII= CvtStr((char *)NULL,(void *)body,(unsigned long)body_len,(void**)&NewBuf, &_len, CURRENT_TO_INTERNET);
 
 		enc = getEncodingType(body,body_len,FALSE);
@@ -320,30 +320,30 @@ formatMessage(char ** addrs, const char * subject, const char * body)
                  ( !strncasecmp( ret_codeset, "ISO-2022-JP", 11 ) ||
                    !strncasecmp( ret_codeset, "ISO-2022-KR", 11 ) ||
                    !strncasecmp( ret_codeset, "ISO-2022-TW", 11 ) ||
-                   !strncasecmp( ret_codeset, "ISO-2022-CN", 11 )   ) ) 
+                   !strncasecmp( ret_codeset, "ISO-2022-CN", 11 )   ) )
                 	enc = MIME_7BIT;
 
 		memset(digest,0,sizeof(digest));
 		md5PlainText(body,body_len,digest);
 		writeContentHeaders(hdr_buf,mime_type,enc,(char *)digest,isAllASCII);
-		strcat(hdr_buf,"\n");
-		strcat(hdr_buf,"Content-Length: ");
+		strlcat(hdr_buf, "\n", 1024);
+		strlcat(hdr_buf, "Content-Length: ", 1024);
 		if (( NewBuf != NULL) && ( _len != 0))
 		{
-			sprintf(tmpbuf,"%ld",_len);
-			strcat(hdr_buf,tmpbuf);
-			strcat(hdr_buf,"\n");
-			strcat(msg,hdr_buf);
-			strncat(msg,NewBuf,_len);
-			strcat(hdr_buf,"\n");
+			snprintf(tmpbuf, 20, "%ld", _len);
+			strlcat(hdr_buf, tmpbuf, 1024);
+			strlcat(hdr_buf, "\n", 1024);
+			strlcat(msg, hdr_buf, size);
+			strncat(msg, NewBuf, _len);
+			strlcat(hdr_buf, "\n", 1024);
 		}
 		else
 		{
-			sprintf(tmpbuf,"%d",body_len);
-			strcat(hdr_buf,tmpbuf);
-			strcat(hdr_buf,"\n");
-			strcat(msg,hdr_buf);
-			strcat(msg,body);
+			snprintf(tmpbuf, 20, "%d", body_len);
+			strlcat(hdr_buf, tmpbuf, 1024);
+			strlcat(hdr_buf, "\n", 1024);
+			strlcat(msg, hdr_buf, size);
+			strlcat(msg, body, size);
 		}
 	}
 
@@ -375,7 +375,7 @@ deliver(char ** addrs, char * msg)
 
     if(-1 == pipe(fd)) {
 	fprintf(stderr, "pipe() failed %d '%s'\n", errno, strerror(errno));
-	exit(EXIT_FAILURE);    
+	exit(EXIT_FAILURE);
     }
 
     c_pid = fork();
@@ -392,7 +392,7 @@ deliver(char ** addrs, char * msg)
     else { /* The parent. */
 	if(-1 == write(fd[1], msg, strlen(msg))) {
 	    fprintf(stderr, "write() failed %d '%s'\n", errno, strerror(errno));
-	    exit(EXIT_FAILURE);    
+	    exit(EXIT_FAILURE);
 	}
 	close(fd[0]);
 	close(fd[1]);
@@ -413,7 +413,7 @@ submit_mail(const char * to,
     char *	msg;
     int		status;
 
-    /* 
+    /*
       Parse the address list so we can form a reasonable one
       for the user to see in the message.
       */

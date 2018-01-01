@@ -103,14 +103,15 @@ static void cm_args();			/* parse command line */
 static char**
 grab(char **argv,				/* command line arguments */
     char *buf,				/* buffer for keyed data */
+    int buf_size,
     char stop_key)
 {
 	if (!argv || !*argv) return(argv);
-	cm_strcpy (buf,*argv++);
+	cm_strlcpy (buf, *argv++, buf_size);
 	while(argv && *argv) {
 		if (*(*argv) == stop_key) break;
-		cm_strcat(buf," ");
-		cm_strcat(buf,*argv++);
+		cm_strlcat(buf, " ", buf_size);
+		cm_strlcat(buf, *argv++, buf_size);
 	}
 	argv--;
 	return(argv);
@@ -124,25 +125,25 @@ cm_args(int argc, char **argv)
 		switch(*(*argv+1)) {
 		case 't':
 		case 'c':
-			argv = grab(++argv,cm_target,'-');
+			argv = grab(++argv, cm_target, 256, '-');
 			break;
 		case 'd':
-			argv = grab(++argv,cm_date,'-');
+			argv = grab(++argv, cm_date, 256,'-');
 			break;
 		case 'v':
-			argv = grab(++argv,cm_view,'-');
+			argv = grab(++argv, cm_view, 16,'-');
 			break;
 		case 's':
-			argv = grab(++argv,cm_start,'-');
+			argv = grab(++argv, cm_start, 16,'-');
 			break;
 		case 'e':
-			argv = grab(++argv,cm_end,'-');
+			argv = grab(++argv, cm_end, 16,'-');
 			break;
 		case 'w':
-			argv = grab(++argv,cm_what,'-');
+			argv = grab(++argv, cm_what, 1024,'-');
 			break;
 		case 'a':
-			argv = grab(++argv,cm_appt_file,'-');
+			argv = grab(++argv, cm_appt_file, 1024,'-');
 			break;
 		default:
 			fprintf(stderr, "%s", catgets(DT_catd, 1, 191, "Usage:\n\tdtcm_insert [ -c calendar ] [-d <mm/dd/yy>] [ -v view ]\n"));
@@ -153,7 +154,7 @@ cm_args(int argc, char **argv)
 }
 
 static void
-prompt_for_line(char *prompt, char *defval, char *buffer)
+prompt_for_line(char *prompt, char *defval, char *buffer, int buffer_size)
 {
 	char input_buf[1024];
 
@@ -165,9 +166,9 @@ prompt_for_line(char *prompt, char *defval, char *buffer)
           input_buf[strlen(input_buf)-1] = '\0';
 
 	if (input_buf[0] && (input_buf[0] != '\n'))
-		cm_strcpy(buffer, input_buf);
+		cm_strlcpy(buffer, input_buf, buffer_size);
 	else
-		cm_strcpy(buffer, defval);
+		cm_strlcpy(buffer, defval, buffer_size);
 }
 
 static void
@@ -177,19 +178,19 @@ prompt_for_insert(Props *p) {
 	DisplayType	dt = get_int_prop(p, CP_DEFAULTDISP);
 
         format_tick(now(), get_int_prop(p, CP_DATEORDERING),
-		    get_int_prop(p, CP_DATESEPARATOR), date_str);
+		    get_int_prop(p, CP_DATESEPARATOR), date_str, BUFSIZ);
 
 	printf("%s", catgets(DT_catd, 1, 193, "Please enter the information for the appointment you wish to add.\nDefaults will be shown in parentheses.\n"));
-	prompt_for_line(catgets(DT_catd, 1, 194, 
-		"Calendar (%s): "), cm_get_credentials(), cm_target);
-	prompt_for_line(catgets(DT_catd, 1, 195, 
-		"Date (%s): "), date_str, cm_date);
+	prompt_for_line(catgets(DT_catd, 1, 194,
+		"Calendar (%s): "), cm_get_credentials(), cm_target, 256);
+	prompt_for_line(catgets(DT_catd, 1, 195,
+		"Date (%s): "), date_str, cm_date, 256);
 	while (valid != TRUE)
 	{
-		format_time(now(), dt, cm_start);
-		prompt_for_line(catgets(DT_catd, 1, 196, 
-			"Start (%s): "), cm_start, cm_start);
-		if (cm_start && cm_start[0])
+		format_time(now(), dt, cm_start, 16);
+		prompt_for_line(catgets(DT_catd, 1, 196,
+			"Start (%s): "), cm_start, cm_start, 16);
+		if (cm_start[0])
 		{
 			timecopy = (char *)cm_strdup(cm_start);
 			if (valid_time(p, timecopy))
@@ -200,30 +201,30 @@ prompt_for_insert(Props *p) {
 		}
 	}
 
-	sprintf(buf, "%s %s", date_str, cm_start);
+	snprintf(buf, BUFSIZ, "%s %s", date_str, cm_start);
 	next = (int) cm_getdate(buf, NULL);
         next = next + hrsec;
 
-	format_time(next, dt, cm_end);
-	if (cm_start && cm_start[0])
+	format_time(next, dt, cm_end, 16);
+	if (cm_start[0])
 		prompt_for_line(
-			catgets(DT_catd, 1, 198, "End (%s): "), cm_end, cm_end);
+			catgets(DT_catd, 1, 198, "End (%s): "), cm_end, cm_end, 16);
 	else
 		prompt_for_line(
-			catgets(DT_catd, 1, 199, "End (%s): "), "None", cm_end);
+			catgets(DT_catd, 1, 199, "End (%s): "), "None", cm_end, 16);
 
-	strcpy(cm_repeatstr, catgets(DT_catd, 1, 200, "One Time"));
+	strlcpy(cm_repeatstr, catgets(DT_catd, 1, 200, "One Time"), 256);
 
-	prompt_for_line(catgets(DT_catd, 1, 201, 
-			"Repeat (%s): "), cm_repeatstr, cm_repeatstr);
+	prompt_for_line(catgets(DT_catd, 1, 201,
+			"Repeat (%s): "), cm_repeatstr, cm_repeatstr, 256);
 
 	if (strcmp(cm_repeatstr, catgets(DT_catd, 1, 200, "One Time"))) {
 		sprintf(buf, "%s", catgets(DT_catd, 1, 203, "no default"));
 		prompt_for_line(
-			catgets(DT_catd, 1, 204, "For (%s): "), buf, cm_for);
+			catgets(DT_catd, 1, 204, "For (%s): "), buf, cm_for, 256);
 	}
 
-	printf("%s", catgets(DT_catd, 1, 205, 
+	printf("%s", catgets(DT_catd, 1, 205,
 		"What (you may enter up to 5 lines, use ^D to finish):\n"));
 	cm_what[0] = '\0';
 	for (index = 0; index < 5; index++)
@@ -238,15 +239,15 @@ prompt_for_insert(Props *p) {
 			break;
 		else
 		{
-			strcat(cm_what, what_buffer);
-			strcat(cm_what, "\\n");
+			strlcat(cm_what, what_buffer, sizeof(cm_what));
+			strlcat(cm_what, "\\n", sizeof(cm_what));
 		}
 		memset(what_buffer, '\000', 256);
 	}
-	
+
 }
 
-void
+int
 main(int argc, char **argv)
 {
 	int		cnt, status = 0;
@@ -278,7 +279,7 @@ main(int argc, char **argv)
 	if (argc > 1)
 	{
 		cm_args(argc,argv);		/* parse command line */
-		if (cm_strlen(cm_target)) 
+		if (cm_strlen(cm_target))
 			target = cm_target;
 		else
 			target = cm_get_credentials();
@@ -297,10 +298,10 @@ main(int argc, char **argv)
 		csa_user.calendar_address = target;
 		stat = csa_logon(NULL, &csa_user, NULL, NULL, NULL, &c_handle, NULL);
 		if (stat != CSA_SUCCESS) {
-		  	char *format = cm_strdup(catgets(DT_catd, 1, 206, 
+		  	char *format = cm_strdup(catgets(DT_catd, 1, 206,
 					   "\nCould not open calendar %s\n"));
 			fprintf(stderr, format,
-				target ? target : 
+				target ? target :
 				catgets(DT_catd, 1, 209, "UNKNOWN"));
 			free(format);
 			free(uname);
@@ -310,14 +311,14 @@ main(int argc, char **argv)
 		version = get_data_version(c_handle);
 		if (!cm_date[0])
         		format_tick(now(), get_int_prop(p, CP_DATEORDERING),
-		    		    get_int_prop(p, CP_DATESEPARATOR), cm_date);
+		    		    get_int_prop(p, CP_DATESEPARATOR), cm_date, 256);
 		if (cm_strlen(cm_date)) date = cm_date;
 		if (cm_strlen(cm_view)) view = cm_view;
 		if (cm_strlen(cm_start)) start = cm_start;
 
 		if (!cm_end[0] && cm_start[0]) {
 			format_time((int)cm_getdate(cm_start, NULL) + hrsec,
-				    dt, cm_end);
+				    dt, cm_end, 16);
 		}
 
 		if (cm_strlen(cm_end)) end = cm_end;
@@ -325,7 +326,7 @@ main(int argc, char **argv)
 		if (cm_strlen(cm_for)) numrepeat = cm_for;
 		if (cm_strlen(cm_what)) what = cm_what;
 		if (!cm_appt_file[0])
-			status = cm_tty_insert(DT_catd, c_handle, version, 
+			status = cm_tty_insert(DT_catd, c_handle, version,
 				      date, start, end, repeat, numrepeat,
 				      what, NULL, p);
 		else
@@ -344,10 +345,10 @@ main(int argc, char **argv)
 		csa_user.calendar_address = target;
 		stat = csa_logon(NULL, &csa_user, NULL, NULL, NULL, &c_handle, NULL);
 		if (stat !=CSA_SUCCESS) {
-		  	char *format = cm_strdup(catgets(DT_catd, 1, 206, 
+		  	char *format = cm_strdup(catgets(DT_catd, 1, 206,
 					   "\nCould not open calendar %s\n"));
-			fprintf(stderr, format, 
-				target ? target : 
+			fprintf(stderr, format,
+				target ? target :
 				catgets(DT_catd, 1, 209, "UNKNOWN"));
 			free(format);
 			free(uname);
@@ -362,10 +363,10 @@ main(int argc, char **argv)
 		if (cm_strlen(cm_repeatstr)) repeat = cm_repeatstr;
 		if (cm_strlen(cm_for)) numrepeat = cm_for;
 		if (cm_strlen(cm_what)) what = cm_what;
-		status = cm_tty_insert(DT_catd, c_handle, version, date, 
+		status = cm_tty_insert(DT_catd, c_handle, version, date,
 			      start, end, repeat, numrepeat, what, NULL, p);
 	}
-	if ((cnt = cm_tty_lookup(DT_catd, c_handle, version, date, view, 
+	if ((cnt = cm_tty_lookup(DT_catd, c_handle, version, date, view,
 					&list, p)) > 0)
 		csa_free(list);
 	csa_logoff(c_handle, NULL);

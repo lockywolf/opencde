@@ -24,7 +24,7 @@
 **
 **  dssw.h
 **
-**  static char sccsid[] = "@(#)dssw.h 1.18 94/11/07 Copyr 1991 Sun Microsystems, Inc."; 
+**  static char sccsid[] = "@(#)dssw.h 1.18 94/11/07 Copyr 1991 Sun Microsystems, Inc.";
 **
 **  $XConsortium: dssw.h /main/4 1996/05/23 11:18:54 rswiston $
 **

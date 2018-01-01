@@ -87,7 +87,7 @@ static int lastapptofweek(u_int mask);
 static int ntimes_this_week(u_int weekmask, int firstday);
 static boolean_t nthweekdayofmonth(time_t t, int *nth);
 static time_t next_nmonth(time_t t, int n);
-static int adjust_dst(time_t start, time_t next); 
+static int adjust_dst(time_t start, time_t next);
 static time_t prev_nmonth(time_t t, int n);
 static time_t nextnyear(time_t t, int n);
 static int timeok(time_t t);
@@ -138,8 +138,9 @@ init_time()
 	/* Fix for QAR 31607 */
 	if (getenv("TZ") == NULL){
 		tzset();
-		tzptr = malloc(strlen(tzname[0]) + strlen(tzname[1]) + 10);
-		sprintf (tzptr,"TZ=%s%d%s", tzname[0], timezone/3600, tzname[1]);
+		int tz_size = strlen(tzname[0]) + strlen(tzname[1]) + 10;
+		tzptr = malloc(tz_size);
+		snprintf (tzptr, tz_size, "TZ=%s%d%s", tzname[0], timezone/3600, tzname[1]);
 		putenv(tzptr);
 		tzset();
 	}
@@ -592,7 +593,7 @@ _DtCms_last_tick_v4(time_t ftick, Period_4 period, int ntimes)
 		ltick = lastnthweekday(ftick, period.nth, ntimes - 1);
 		break;
 	case everyNthDay_4:
-		ltick = nextnday_exacttime(ftick, period.nth * 
+		ltick = nextnday_exacttime(ftick, period.nth *
 			(((ntimes+(period.nth-1))/period.nth) - 1));
 		break;
 	case everyNthWeek_4:
@@ -634,6 +635,7 @@ _DtCms_last_tick_v4(time_t ftick, Period_4 period, int ntimes)
 			ltick = adjust_dst(ftick, (time_t)dltick);
 		break;
 	default:
+		return(EOT);
 		break;
 	}
 	if(timeok(ltick))
@@ -698,6 +700,7 @@ _DtCms_next_tick_v4(time_t tick, Period_4 period)
 			next = nextdaysofweek(tick, period.nth);
 			break;
                 default:
+			return(EOT);
                         break;
         }
         if(next != tick && timeok(next)) return(next);
@@ -760,6 +763,7 @@ _DtCms_prev_tick_v4(time_t tick, Period_4 period)
 			prev = prevdaysofweek(tick, period.nth);
 			break;
                 default:
+			return(bot-1);
                         break;
         }
         if(prev != tick && timeok(prev)) return(prev);
@@ -768,7 +772,7 @@ _DtCms_prev_tick_v4(time_t tick, Period_4 period)
 
 /*
  * dont_care_cancel:
- *	TRUE - it is a match regard_DtCmsIsLess the event is cancelled, 
+ *	TRUE - it is a match regard_DtCmsIsLess the event is cancelled,
  *	FALSE - it is not a match if the event is cancelled.
  */
 extern int
@@ -851,7 +855,7 @@ next_nmins(time_t t, int m)
         tm              = *_XLocaltime(&t, localtime_buf);
         tm.tm_sec       = 0;
         tm.tm_min       = 0;
- 
+
 	next            = mktime(&tm);
 	next		= next + m * minsec;
 	next		= adjust_dst(t, next);
@@ -981,7 +985,7 @@ next_nmonth(time_t t, int n)
 }
 
 static int
-adjust_dst(time_t start, time_t next) 
+adjust_dst(time_t start, time_t next)
 {
 	struct tm oldt;
 	struct tm newt;
@@ -1033,7 +1037,7 @@ extern int
 leapyr(int y)
 {
 	return
-	 (y % 4 == 0 && y % 100 !=0 || y % 400 == 0);
+	 ((y % 4 == 0 && y % 100 !=0) || y % 400 == 0);
 }
 
 extern int
@@ -1143,12 +1147,12 @@ prevmonth_exactday(time_t t)
 	_Xltimeparams localtime_buf;
 
 	tm = *_XLocaltime(&t, localtime_buf);
-	sdelta = tm.tm_hour * hrsec + tm.tm_min * minsec + tm.tm_sec; 
+	sdelta = tm.tm_hour * hrsec + tm.tm_min * minsec + tm.tm_sec;
 	day = tm.tm_mday;
 	if((tm.tm_mday < 31 && tm.tm_mon != 0) ||	/* at least 30 days everywhere, except Feb.*/
  	   (tm.tm_mday==31 && tm.tm_mon==6)    ||	/* two 31s -- Jul./Aug.		*/
 	   (tm.tm_mday==31 && tm.tm_mon==11)   ||	/* two 31s -- Dec./Jan.		*/
-	   (tm.tm_mon == 0 &&(tm.tm_mday < 29  ||(tm.tm_mday==29 && leapyr(tm.tm_year+1900))))) {	
+	   (tm.tm_mon == 0 &&(tm.tm_mday < 29  ||(tm.tm_mday==29 && leapyr(tm.tm_year+1900))))) {
 		prev = t-monthseconds(previousmonth(t));
 		prev = adjust_dst(t, prev);
 	}
@@ -1176,12 +1180,12 @@ nextmonth_exactday(time_t t)
 	_Xltimeparams localtime_buf;
 
 	tm = *_XLocaltime(&t, localtime_buf);
-	sdelta = tm.tm_hour * hrsec + tm.tm_min * minsec + tm.tm_sec; 
+	sdelta = tm.tm_hour * hrsec + tm.tm_min * minsec + tm.tm_sec;
 	day = tm.tm_mday;
 	if((tm.tm_mday < 31 && tm.tm_mon != 0) ||	/* at least 30 days everywhere, except Feb.*/
  	   (tm.tm_mday==31 && tm.tm_mon==6)    ||	/* two 31s -- Jul./Aug.		*/
 	   (tm.tm_mday==31 && tm.tm_mon==11)   ||	/* two 31s -- Dec./Jan.		*/
-	   (tm.tm_mon == 0 &&(tm.tm_mday < 29  ||(tm.tm_mday==29 && leapyr(tm.tm_year+1900))))) {	
+	   (tm.tm_mon == 0 &&(tm.tm_mday < 29  ||(tm.tm_mday==29 && leapyr(tm.tm_year+1900))))) {
 		next = t+monthseconds(t);
 		next = adjust_dst(t, next);
 	}
@@ -1232,7 +1236,7 @@ monthseconds(time_t t)
 	int mon;
 	struct tm tm;
 	_Xltimeparams localtime_buf;
-	
+
 	tm = *_XLocaltime(&t, localtime_buf);
 	mon = tm.tm_mon;
 	return(((mon==1) && leapyr(tm.tm_year+1900)) ?
@@ -1317,7 +1321,7 @@ lastnthweekday(time_t t, int nth, int ntimes)
 	}
 
 	tm1 = *_XLocaltime(&t, localtime_buf);
-	sdelta = tm1.tm_hour * hrsec + tm1.tm_min * minsec + tm1.tm_sec; 
+	sdelta = tm1.tm_hour * hrsec + tm1.tm_min * minsec + tm1.tm_sec;
 
 	if (nth > 0) {
 		if ((tick = next_nmonth(t, ntimes)) == EOT || tick < 0)
@@ -1367,7 +1371,7 @@ nextnthweekday(time_t t, int nth)
 	}
 
 	tm1 = *_XLocaltime(&t, localtime_buf);
-	sdelta = tm1.tm_hour * hrsec + tm1.tm_min * minsec + tm1.tm_sec; 
+	sdelta = tm1.tm_hour * hrsec + tm1.tm_min * minsec + tm1.tm_sec;
 
 	if (nth > 0) {
 		tick = next_nmonth(t, 1);
@@ -1413,7 +1417,7 @@ prevnthweekday(time_t t, int nth)
 	}
 
 	tm1 = *_XLocaltime(&t, localtime_buf);
-	sdelta = tm1.tm_hour * hrsec + tm1.tm_min * minsec + tm1.tm_sec; 
+	sdelta = tm1.tm_hour * hrsec + tm1.tm_min * minsec + tm1.tm_sec;
 
 	if (nth > 0) {
 		tick = prev_nmonth(t, 1);
@@ -1700,7 +1704,7 @@ static time_t
 nextdaysofweek(time_t t, int weekmask)
 {
 	unsigned int doublemask;
-	struct tm *tm; 
+	struct tm *tm;
 	int i, ndays, daymask;
 	time_t next;
 	_Xltimeparams localtime_buf;
@@ -1727,14 +1731,14 @@ static time_t
 prevdaysofweek(time_t t, int weekmask)
 {
 	unsigned int doublemask, daymask;
-	struct tm *tm; 
+	struct tm *tm;
 	int i, ndays;
 	time_t prev;
 	_Xltimeparams localtime_buf;
 
 	doublemask = weekmask | (weekmask << 7);
 	tm = _XLocaltime(&t, localtime_buf);
-	daymask = weekdaymasks[tm->tm_wday] << 6; 
+	daymask = weekdaymasks[tm->tm_wday] << 6;
 
 	for (i = 0, ndays = 1; i < 7; i++) {
 		if (daymask & doublemask)

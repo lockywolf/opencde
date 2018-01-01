@@ -42,7 +42,7 @@
 #include <Xm/Xm.h>
 #include "calendar.h"
 
-/* XXX: Defined in Xm/IconFile.h but the file isn't installed??? */ 
+/* XXX: Defined in Xm/IconFile.h but the file isn't installed??? */
 /*
  * values for icon magnitude
  */
@@ -51,7 +51,7 @@
 #define XmMEDIUM_ICON_SIZE      2
 #define XmSMALL_ICON_SIZE       3
 #define XmTINY_ICON_SIZE        4
-extern String XmGetIconFileName( 
+extern String XmGetIconFileName(
                         Screen *screen,
                         String imageInstanceName,
                         String imageClassName,
@@ -135,12 +135,12 @@ load_icons(
 	if (!c->icon_inverted)
 		c->icon_inverted = (IconInfo *) ckalloc(sizeof(IconInfo));
 
-	XtVaGetValues(c->canvas, 
-			XmNforeground,  &fg, 
+	XtVaGetValues(c->canvas,
+			XmNforeground,  &fg,
 			XmNbackground,  &bg,
 			NULL);
 
-	resolution = _DtGetDisplayResolution(XtDisplay(c->frame), 
+	resolution = _DtGetDisplayResolution(XtDisplay(c->frame),
 				XScreenNumberOfScreen(screen));
 
 	/*
@@ -168,20 +168,20 @@ load_icons(
 	if (!load_icon(c, c->icon, DTCM_STD_ICON, size, fg, bg))
 		return (FALSE);
 
-	/* 
+	/*
 	 * If we are color we load a color icon that has been inverted
-	 * by a graphic's artist.  If we are mono or reduced color we take 
+	 * by a graphic's artist.  If we are mono or reduced color we take
 	 * our one bit deep pixmap and invert it ourself by switching fg and
 	 * bg.
 	 */
 	if (c->icon->icon_depth >= 8) {
-		if (!load_icon(c, c->icon_inverted, DTCM_INV_ICON, size, 
+		if (!load_icon(c, c->icon_inverted, DTCM_INV_ICON, size,
 			       fg, bg))
 			return (FALSE);
 	} else {
 		/* Reverse fg/bg on STD_ICON to get inverted icon. */
 		/* XXX: This probably won't work on 1 < depth < 8 visuals */
-		if (!load_icon(c, c->icon_inverted, DTCM_STD_ICON, size, 
+		if (!load_icon(c, c->icon_inverted, DTCM_STD_ICON, size,
 			       bg, fg))
 			return (FALSE);
 	}
@@ -203,7 +203,7 @@ load_icon(
 	unsigned int	 border_width;
 	Screen		*screen = XtScreen(c->frame);
 
-	if (!(icon_filename = XmGetIconFileName(screen, NULL, icon_name, 
+	if (!(icon_filename = XmGetIconFileName(screen, NULL, icon_name,
 								NULL, size))) {
 		icon->icon = 0;
 		return (FALSE);
@@ -263,9 +263,9 @@ paint_icon_date(
         char 		 buf[25];
         Cal_Font 	*font = c->fonts->iconfont;
         new_XContext 	*xc;
-	int		 len, 
-			 x, y, 
-			 width, height, 
+	int		 len,
+			 x, y,
+			 width, height,
 			 nop;
 	Screen		*s = XtScreen(c->canvas);
 	Pixel		 fg, bg;
@@ -283,8 +283,8 @@ paint_icon_date(
         xc = c->xcontext;
 
 	if (c->icon->icon_depth == 1) {
-		XtVaGetValues(c->canvas, 
-			XmNforeground,  &fg, 
+		XtVaGetValues(c->canvas,
+			XmNforeground,  &fg,
 			XmNbackground,  &bg,
 			NULL);
 	} else {
@@ -300,7 +300,7 @@ paint_icon_date(
 
 	/* painting new date */
         /* day of the month */
-        (void) sprintf(buf, "%d", dom(current_time));
+        (void) snprintf(buf, 25, "%d", dom(current_time));
 	len = cm_strlen(buf);
 	CalTextExtents(font, buf, len, &nop, &nop, &width, &height);
 	x = c->icon->icon_width/2 - width/2 - 1;
@@ -310,15 +310,15 @@ paint_icon_date(
 
 	gc_vals.foreground = bg;
 	XChangeGC(xc->display, gc, GCForeground, &gc_vals);
-	if (c->icon_inverted && c->icon_inverted->icon 
+	if (c->icon_inverted && c->icon_inverted->icon
 			     && c->icon_inverted->icon_mask)
-		CalDrawString(dpy, c->icon_inverted->icon, font, 
+		CalDrawString(dpy, c->icon_inverted->icon, font,
 				   gc, x, y, buf, len);
 
 	XFreeGC(xc->display, gc);
 	XFlush(xc->display);
 }
- 
+
 void
 paint_icon(Calendar *c)
 {
@@ -337,7 +337,7 @@ paint_icon(Calendar *c)
         XtVaSetValues(c->frame, XmNiconPixmap, NULL, NULL);
 
 	if (c->icon && c->icon->icon && c->icon->icon_mask)
-        	XtVaSetValues(c->frame, 
+        	XtVaSetValues(c->frame,
 			XmNiconPixmap, c->icon->icon,
 			XmNiconMask, c->icon->icon_mask,
 			NULL);

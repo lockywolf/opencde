@@ -133,7 +133,7 @@ create_repeat_menu(Widget parent, XtCallbackProc cb_func, XtPointer data) {
 	XmComboBoxAddItem((Widget)cb, xmstr, 0, False);
 	XmStringFree(xmstr);
 
-	if (cb_func) 
+	if (cb_func)
 		XtAddCallback(cb, XmNselectionCallback, cb_func, data);
 
 	return cb;
@@ -254,14 +254,14 @@ create_privacy_menu(Widget parent) {
 
 
 extern void
-set_time_submenu(Widget parent, 
-	Widget option_menu, 
+set_time_submenu(Widget parent,
+	Widget option_menu,
 	Props *p,
-	XtCallbackProc callback, 
-	XtPointer client_data, 
-	Boolean nt, 
-	Boolean ad, 
-	Widget **widget_list, 
+	XtCallbackProc callback,
+	XtPointer client_data,
+	Boolean nt,
+	Boolean ad,
+	Widget **widget_list,
 	int *widget_count) {
 
 	XmString	xmstr;
@@ -299,18 +299,18 @@ set_time_submenu(Widget parent,
 	for (i = beg; i < end; i++) {
 		if (dt == HOUR12) {
 			if (i > 12)
-                       		 sprintf(buf, "%2d:", i-12);
+                       		 snprintf(buf, 4, "%2d:", i-12);
                 	else
                         	if (i == 0)
-                                	cm_strcpy(buf, "12:");
+                                	cm_strlcpy(buf, "12:", 4);
                 	else
-                       		 sprintf(buf, "%2d:", i);	
+                       		 snprintf(buf, 4, "%2d:", i);
 		}
 		else
-			sprintf(buf, "%02d", i);
+			snprintf(buf, 4, "%02d", i);
 
 		for (j = 0; j <= 45; j += 15) {
-			sprintf(buf2, "%s%02d", buf, j);
+			snprintf(buf2, 10, "%s%02d", buf, j);
 			(*widget_list)[allocation_counter++] =
 				menuitem = XtVaCreateWidget(buf2,
 				xmPushButtonGadgetClass, menu,
@@ -323,7 +323,7 @@ set_time_submenu(Widget parent,
 	}
 
 	if (nt) {
-		xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 353, 
+		xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 353,
 							"No Time"));
 		(*widget_list)[allocation_counter++] =
 		menuitem = XtVaCreateWidget("noTime",
@@ -356,14 +356,14 @@ set_time_submenu(Widget parent,
 }
 
 extern Widget
-create_start_stop_time_menu(Widget parent, 
+create_start_stop_time_menu(Widget parent,
 	XmString label,
-	XtCallbackProc callback, 
-	XtPointer client_data, 
-	Props *p, 
-	Boolean nt, 
-	Boolean ad, 
-	Widget **widget_list, 
+	XtCallbackProc callback,
+	XtPointer client_data,
+	Props *p,
+	Boolean nt,
+	Boolean ad,
+	Widget **widget_list,
 	int *widget_count) {
 
 	int		ac;
@@ -377,22 +377,22 @@ create_start_stop_time_menu(Widget parent,
 		XmNpacking, XmPACK_COLUMN,
 		XmNorientation, XmHORIZONTAL,
 		XmNnumColumns, (end - beg) + 1,
-		NULL); 
+		NULL);
 	ac = 0;
 	XtSetArg(args[ac], XmNsubMenuId, menu); ++ac;
 	XtSetArg(args[ac], XmNlabelString, label); ++ac;
 	option_m = XmCreateOptionMenu(parent, "option_m", args, ac);
 
-	set_time_submenu(parent, option_m, p, callback, 
+	set_time_submenu(parent, option_m, p, callback,
 			 client_data, nt, ad, widget_list, widget_count);
 
 	return option_m;
 }
 
 extern Widget
-create_time_scope_menu(Widget parent, 
-	XmString label, 
-	XtCallbackProc callback, 
+create_time_scope_menu(Widget parent,
+	XmString label,
+	XtCallbackProc callback,
 	XtPointer client_data) {
 	int			ac;
 	Arg			args[5];
@@ -478,7 +478,7 @@ create_repeat_scope_menu(Widget parent, XmString label,
 	option_m = XmCreateOptionMenu(parent, "option_m", args, ac);
 
 
-	sprintf(buf, "repeatscope%d", REPEAT_DAYS); 
+	snprintf(buf, MAXNAMELEN, "repeatscope%d", REPEAT_DAYS);
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 816, "Days"));;
 	menuitems[0] = XtVaCreateWidget(buf,
 		xmPushButtonGadgetClass, menu,
@@ -490,7 +490,7 @@ create_repeat_scope_menu(Widget parent, XmString label,
 			      callback, client_data);
 	XmStringFree(xmstr);
 
-	sprintf(buf, "repeatscope%d", REPEAT_WEEKS); 
+	snprintf(buf, MAXNAMELEN, "repeatscope%d", REPEAT_WEEKS);
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 817, "Weeks"));;
 	menuitems[1] = XtVaCreateWidget(buf,
 		xmPushButtonGadgetClass, menu,
@@ -502,7 +502,7 @@ create_repeat_scope_menu(Widget parent, XmString label,
 			      callback, client_data);
 	XmStringFree(xmstr);
 
-	sprintf(buf, "repeatscope%d", REPEAT_MONTHS); 
+	snprintf(buf, MAXNAMELEN, "repeatscope%d", REPEAT_MONTHS);
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 818, "Months"));;
 	menuitems[2] = XtVaCreateWidget(buf,
 		xmPushButtonGadgetClass, menu,
@@ -566,17 +566,17 @@ create_all_pixmaps(Props_pu *p, Widget w)
                 xm_error_xbm_bits);
         if (XmInstallImage(&eri, "err_pixmap"))
                 p->xm_error_pixmap = XmGetPixmap(s, "err_pixmap", fg, bg);
- 
+
         fill_pixmap(&ii, xm_information_xbm_width, xm_information_xbm_height,
                 xm_information_xbm_bits);
         if (XmInstallImage(&ii, "info_pixmap"))
                 p->xm_info_pixmap = XmGetPixmap(s, "info_pixmap", fg, bg);
- 
+
         fill_pixmap(&qi, xm_question_xbm_width, xm_question_xbm_height,
                 xm_question_xbm_bits);
         if (XmInstallImage(&qi, "q_pixmap"))
                 p->xm_question_pixmap = XmGetPixmap(s, "q_pixmap", fg, bg);
- 
+
         fill_pixmap(&wi, xm_warning_xbm_width, xm_warning_xbm_height,
                 xm_warning_xbm_bits);
         if (XmInstallImage(&wi, "w_pixmap"))
@@ -625,7 +625,7 @@ cm_mbchar(char *str) {
      static char *string_head;
      static char *buf;
      int num_byte = 0;
- 
+
      if ( str != NULL ) {
           if ( string != NULL ) {
                free(string_head);
@@ -649,7 +649,7 @@ cm_mbchar(char *str) {
           buf[num_byte] = '\0';
           string += num_byte;
      }
- 
+
      return buf;
 }
 
@@ -738,7 +738,7 @@ dialog_popup(Widget parent, ...) {
 			button_id = va_arg(pvar, int);
 			ptr = va_arg(pvar, char *);
 			xmstr = XmStringCreateLocalized(ptr);
-			sprintf(buf, "button%d", b_cnt);
+			snprintf(buf, MAXNAMELEN, "button%d", b_cnt);
 			button = XtVaCreateWidget(buf,
 				xmPushButtonGadgetClass, form,
 				XmNlabelString, xmstr,
@@ -802,7 +802,7 @@ dialog_popup(Widget parent, ...) {
 	ptr = strtok(text_str, "\n");
 	while (ptr) {
 		++t_cnt;
-		sprintf(buf, "text_label%d", t_cnt);
+		snprintf(buf, MAXNAMELEN, "text_label%d", t_cnt);
 		xmstr = XmStringCreateLocalized(ptr);
 		text = XtVaCreateWidget(buf,
 			xmLabelGadgetClass, form,
@@ -881,74 +881,74 @@ get_range(Glance glance, time_t date, time_t *start, time_t *stop) {
 extern void
 editor_err_msg(Widget frame, char *name, Validate_op op, Pixmap p) {
 	Calendar	*c = calendar;
-	char		buf[MAXNAMELEN], 
+	char		buf[MAXNAMELEN],
 			buf2[MAXNAMELEN * 2],
 			error_buf[64];
 	int		help_button = True;
 
 	switch(op) {
 	case COULD_NOT_OPEN_FILE:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 355, "Unable to open callog file.\nOperation was cancelled.  Calendar"));
-		sprintf(error_buf, CMSD_ERROR_HELP);
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 355, "Unable to open callog file.\nOperation was cancelled.  Calendar"));
+		snprintf(error_buf, 64, CMSD_ERROR_HELP);
 		break;
 	case CANCEL_APPT:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 356, "Per user request, Operation was cancelled.\nCalendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 356, "Per user request, Operation was cancelled.\nCalendar"));
 		help_button = False;
 		break;
 	case INVALID_DATE:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 357, "Invalid value in DATE field.\nOperation was cancelled.  Calendar"));
-		sprintf(error_buf, DATE_ERROR_HELP);
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 357, "Invalid value in DATE field.\nOperation was cancelled.  Calendar"));
+		snprintf(error_buf, 64, DATE_ERROR_HELP);
 		break;
 	case INVALID_START:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 358, "Invalid value in START field.\nOperation was cancelled.  Calendar"));
-		sprintf(error_buf, START_ERROR_HELP);
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 358, "Invalid value in START field.\nOperation was cancelled.  Calendar"));
+		snprintf(error_buf, 64, START_ERROR_HELP);
 		break;
 	case INVALID_TIME_DUE:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 1011, "Invalid value in the \"Time Due\" field.\nOperation was cancelled.  Calendar"));
-		sprintf(error_buf, START_ERROR_HELP);
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 1011, "Invalid value in the \"Time Due\" field.\nOperation was cancelled.  Calendar"));
+		snprintf(error_buf, 64, START_ERROR_HELP);
 		break;
 	case INVALID_STOP:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 359, "Invalid value in END field.\nOperation was cancelled.  Calendar"));
-		sprintf(error_buf, STOP_ERROR_HELP);
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 359, "Invalid value in END field.\nOperation was cancelled.  Calendar"));
+		snprintf(error_buf, 64, STOP_ERROR_HELP);
 		break;
 	case MISSING_DATE:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 360, "You must provide a DATE value.\nOperation was cancelled.  Calendar"));
-		sprintf(error_buf, MISSING_FIELD_ERROR_HELP);
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 360, "You must provide a DATE value.\nOperation was cancelled.  Calendar"));
+		snprintf(error_buf, 64, MISSING_FIELD_ERROR_HELP);
 		break;
 	case MISSING_START:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 361, "You must provide a START value.\nOperation was cancelled.  Calendar"));
-		sprintf(error_buf, MISSING_FIELD_ERROR_HELP);
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 361, "You must provide a START value.\nOperation was cancelled.  Calendar"));
+		snprintf(error_buf, 64, MISSING_FIELD_ERROR_HELP);
 		break;
 	case MISSING_WHAT:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 362, "You must provide a WHAT value.\nOperation was cancelled.  Calendar"));
-		sprintf(error_buf, MISSING_FIELD_ERROR_HELP);
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 362, "You must provide a WHAT value.\nOperation was cancelled.  Calendar"));
+		snprintf(error_buf, 64, MISSING_FIELD_ERROR_HELP);
 		break;
 	case REPEAT_FOR_MISMATCH:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 363, "Invalid or mismatched REPEAT and FOR values.\nOperation was cancelled.  Calendar"));
-		sprintf(error_buf, REPEAT_FOR_ERROR_HELP);
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 363, "Invalid or mismatched REPEAT and FOR values.\nOperation was cancelled.  Calendar"));
+		snprintf(error_buf, 64, REPEAT_FOR_ERROR_HELP);
 		break;
 	case INVALID_NOTIME_APPT:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 724, "No Time appointments must have a WHAT value specified.\nOperation was cancelled.  Calendar"));
-		sprintf(error_buf, NO_TIME_ERROR_HELP);
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 724, "No Time appointments must have a WHAT value specified.\nOperation was cancelled.  Calendar"));
+		snprintf(error_buf, 64, NO_TIME_ERROR_HELP);
 		break;
 	case INVALID_TIME:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 1104, "Invalid value in TIME DUE field.\nOperation was cancelled.  Calendar"));
-		sprintf(error_buf, START_ERROR_HELP);
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 1104, "Invalid value in TIME DUE field.\nOperation was cancelled.  Calendar"));
+		snprintf(error_buf, 64, START_ERROR_HELP);
 		break;
 	case MISSING_TIME:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 1105, "You must provide a TIME DUE value.\nOperation was cancelled.  Calendar"));
-		sprintf(error_buf, MISSING_FIELD_ERROR_HELP);
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 1105, "You must provide a TIME DUE value.\nOperation was cancelled.  Calendar"));
+		snprintf(error_buf, 64, MISSING_FIELD_ERROR_HELP);
 		break;
 	case VALID_APPT:
 	default:
 		return;
 	}
 
-	sprintf(buf2, "%s %s", buf, name);
+	snprintf(buf2, MAXNAMELEN * 2, "%s %s", buf, name);
 	if (help_button) {
 	  	char *title = XtNewString(catgets(c->DT_catd, 1, 914,
 					"Calendar : Error - Editor"));
-	  	char *ident1 = XtNewString(catgets(c->DT_catd, 1, 95, 
+	  	char *ident1 = XtNewString(catgets(c->DT_catd, 1, 95,
 						"Continue"));
 		dialog_popup(frame, DIALOG_TITLE, title,
 			DIALOG_TEXT, buf2,
@@ -962,7 +962,7 @@ editor_err_msg(Widget frame, char *name, Validate_op op, Pixmap p) {
 	else {
 	  	char *title = XtNewString(catgets(c->DT_catd, 1, 914,
 					"Calendar : Error - Editor"));
-	  	char *ident1 = XtNewString(catgets(c->DT_catd, 1, 95, 
+	  	char *ident1 = XtNewString(catgets(c->DT_catd, 1, 95,
 						"Continue"));
 		dialog_popup(frame, DIALOG_TITLE, title,
 			DIALOG_TEXT, buf2,
@@ -976,9 +976,9 @@ editor_err_msg(Widget frame, char *name, Validate_op op, Pixmap p) {
 
 extern void
 backend_err_msg(
-	Widget 		 frame, 
-	char 		*name, 
-	CSA_return_code	 stat, 
+	Widget 		 frame,
+	char 		*name,
+	CSA_return_code	 stat,
 	Pixmap 		 p)
 {
 	char		 buf[MAXNAMELEN],
@@ -987,87 +987,87 @@ backend_err_msg(
 	Calendar	*c = calendar;
 	int		 help_button = True;
 
-	sprintf(error_buf, BACK_END_ERROR_HELP);
+	snprintf(error_buf, 64, BACK_END_ERROR_HELP);
 
 	switch(stat) {
 	case CSA_E_CALENDAR_EXISTS:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 367, "Calendar already exists.\nOperation was cancelled.  Calendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 367, "Calendar already exists.\nOperation was cancelled.  Calendar"));
 		help_button = False;
 		break;
 	case CSA_E_CALENDAR_NOT_EXIST:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 368, "Calendar does not exist.\nOperation was cancelled.  Calendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 368, "Calendar does not exist.\nOperation was cancelled.  Calendar"));
 		help_button = False;
 		break;
 	case CSA_X_DT_E_ENTRY_NOT_FOUND:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 725, "Calendar Entry does not exist.\nOperation was cancelled.  Calendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 725, "Calendar Entry does not exist.\nOperation was cancelled.  Calendar"));
 		break;
 	case CSA_E_INVALID_ENTRY_HANDLE:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 881, "Internal Error #1: Invalid calendar/entry handle.\nOperation was cancelled.  Calendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 881, "Internal Error #1: Invalid calendar/entry handle.\nOperation was cancelled.  Calendar"));
 		break;
 	case CSA_E_INVALID_SESSION_HANDLE:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 882, "Internal Error #2: Invalid session handle.\nOperation was cancelled.  Calendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 882, "Internal Error #2: Invalid session handle.\nOperation was cancelled.  Calendar"));
 		break;
 	case CSA_E_NO_AUTHORITY:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 370, "Authorization error.  Permission denied.\nOperation was cancelled.  Calendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 370, "Authorization error.  Permission denied.\nOperation was cancelled.  Calendar"));
 		help_button = False;
 		break;
 	case CSA_E_INVALID_PARAMETER:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 883, "Internal Error #3: Invalid data value.\nOperation was cancelled.  Calendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 883, "Internal Error #3: Invalid data value.\nOperation was cancelled.  Calendar"));
 		break;
 	case CSA_E_READONLY:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 884, "Internal Error #4: Value specified for a read-only attribute.\nOperation was cancelled.  Calendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 884, "Internal Error #4: Value specified for a read-only attribute.\nOperation was cancelled.  Calendar"));
 		break;
 	case CSA_E_INVALID_ATTRIBUTE_VALUE:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 885, "Internal Error #5: Incorrect data type specified for an attribute value.\nOperation was cancelled.  Calendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 885, "Internal Error #5: Incorrect data type specified for an attribute value.\nOperation was cancelled.  Calendar"));
 		break;
 	case CSA_E_UNSUPPORTED_ATTRIBUTE:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 886, "Internal Error #6: Specified attribute is not supported on this calendar version.\nOperation was cancelled.  Calendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 886, "Internal Error #6: Specified attribute is not supported on this calendar version.\nOperation was cancelled.  Calendar"));
 		break;
 	case CSA_E_NOT_SUPPORTED:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 887, "Internal Error #7: Specified function is not supported on this calendar version.\nOperation was cancelled.  Calendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 887, "Internal Error #7: Specified function is not supported on this calendar version.\nOperation was cancelled.  Calendar"));
 		break;
 	case CSA_E_INVALID_ENUM:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 888, "Internal Error #8: Invalid operator specified.\nOperation was cancelled.  Calendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 888, "Internal Error #8: Invalid operator specified.\nOperation was cancelled.  Calendar"));
 		break;
 	case CSA_E_INSUFFICIENT_MEMORY:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 378, "Memory allocation error - not enough memory.\nOperation was cancelled.  Calendar"));
-		sprintf(error_buf, MEMORY_ALLOC_ERROR_HELP);
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 378, "Memory allocation error - not enough memory.\nOperation was cancelled.  Calendar"));
+		snprintf(error_buf, 64, MEMORY_ALLOC_ERROR_HELP);
 		break;
 	case CSA_E_DISK_FULL:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 907, "No space left for calendar file.\nOperation was cancelled.  Calendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 907, "No space left for calendar file.\nOperation was cancelled.  Calendar"));
 		break;
 	case CSA_E_SERVICE_UNAVAILABLE:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 921, "Couldn't access calendar: "));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 921, "Couldn't access calendar: "));
 		break;
 	case CSA_X_DT_E_INVALID_SERVER_LOCATION:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 641, "Server failed to get network address\nfor the specified location:  invalid hostname."));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 641, "Server failed to get network address\nfor the specified location:  invalid hostname."));
 		break;
 	case CSA_X_DT_E_SERVICE_NOT_REGISTERED:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 642, "rpc.cmsd daemon is not registered.\nPlease verify rpc.cmsd is installed correctly on your system."));
-		sprintf(error_buf, CMSD_ERROR_HELP);
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 642, "rpc.cmsd daemon is not registered.\nPlease verify rpc.cmsd is installed correctly on your system."));
+		snprintf(error_buf, 64, CMSD_ERROR_HELP);
 		break;
 	case CSA_X_DT_E_SERVER_TIMEOUT:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 727, "Your request timed out\nPlease verify rpc.cmsd is installed correctly on your system."));
-		sprintf(error_buf, CMSD_ERROR_HELP);
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 727, "Your request timed out\nPlease verify rpc.cmsd is installed correctly on your system."));
+		snprintf(error_buf, 64, CMSD_ERROR_HELP);
 		break;
 	case CSA_E_FAILURE:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 643, "Couldn't access calendar. Calendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 643, "Couldn't access calendar. Calendar"));
 		break;
 	case CSA_E_INVALID_RULE:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 1120, "The event cannot be scheduled in the given time frame.\nThe operation was cancelled."));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 1120, "The event cannot be scheduled in the given time frame.\nThe operation was cancelled."));
 		break;
 	case CSA_SUCCESS:
 		return;
 	default:
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 383, "Unknown error.\nOperation was cancelled.  Calendar"));
+		snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 383, "Unknown error.\nOperation was cancelled.  Calendar"));
 		break;
 	}
 
-	sprintf(buf2, "%s %s", buf, name);
+	snprintf(buf2, MAXNAMELEN * 2,"%s %s", buf, name);
 	if (help_button) {
 	  	char *title = XtNewString(catgets(c->DT_catd, 1, 890,
 						"Calendar : Error - Services"));
-	  	char *ident1 = XtNewString(catgets(c->DT_catd, 1, 95, 
+	  	char *ident1 = XtNewString(catgets(c->DT_catd, 1, 95,
 						"Continue"));
 		dialog_popup(frame, DIALOG_TITLE, title,
 			DIALOG_TEXT, buf2,
@@ -1081,7 +1081,7 @@ backend_err_msg(
 	else {
 		char *title = XtNewString(catgets(c->DT_catd, 1, 890,
 						"Calendar : Error - Services"));
-		char *ident1 = XtNewString(catgets(c->DT_catd, 1, 95, 
+		char *ident1 = XtNewString(catgets(c->DT_catd, 1, 95,
 						"Continue"));
 		dialog_popup(frame, DIALOG_TITLE, title,
 			DIALOG_TEXT, buf2,
@@ -1109,7 +1109,7 @@ query_user(void *user_data) {
 	char		*ident2;
 	static int	answer;
 
-	sprintf(buf, "%s", catgets(c->DT_catd, 1, 386,
+	snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 386,
 		"That appointment has an end time earlier than its begin time.\nDo you want to schedule it into the next day?"));
 	title = XtNewString(catgets(c->DT_catd, 1, 248, "Calendar : Schedule Appointment"));
 	ident1 = XtNewString(catgets(c->DT_catd, 1, 923, "Cancel"));
@@ -1188,14 +1188,14 @@ XEvent           *event;
 
 	if ((event->xbutton.type == ButtonPress) &&
 	    (last_event->xbutton.type == ButtonPress)) {
- 
+
 		delta_time = event->xbutton.time - last_event->xbutton.time;
 		delta_time += event->xbutton.time;
 		delta_time -= last_event->xbutton.time;
- 
+
                 /* is the time within bounds? */
                 if( delta_time <= time_threshold ) {
- 
+
                         /* check to see if the distance is ok */
 			delta_x = (last_event->xbutton.x > event->xbutton.x ?
 	 				   last_event->xbutton.x - event->xbutton.x :
@@ -1210,7 +1210,7 @@ XEvent           *event;
                 }
         }
         return ret_value;
-}        
+}
 
 
 /*
@@ -1410,10 +1410,10 @@ Dimension *dim,
  * |                   |       ^        +----------------+
  * |                   |       |                 ^
  * +-------------------+ ......|.................|........
- * 
- * Note : If you are using this function, as for Left/Right Attachment, 
+ *
+ * Note : If you are using this function, as for Left/Right Attachment,
  *        don't use these Widget as XmATTACHMENT_WIDGET's XmNwidget !
- * 
+ *
  * num <= MAX_NUM;
  */
 extern  void

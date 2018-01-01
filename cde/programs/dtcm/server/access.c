@@ -62,7 +62,7 @@ static	Uname_cache	*ucache_list = NULL;
 static Uname_cache * in_u_cache(uid_t uid);
 static char * get_uname(uid_t uid);
 static Access_Entry_4 * in_access_list(Access_Entry_4 *l, char *s);
-static Access_Entry_4 * combine_access_list(Access_Entry_4 *p_list, 
+static Access_Entry_4 * combine_access_list(Access_Entry_4 *p_list,
 				Access_Entry_4 *p_head, int type, int *p_world);
 static CSA_return_code _GetV4AccessRights(_DtCmsCalendar *cal, char *target,
 				char *sender, uint *access);
@@ -143,6 +143,7 @@ _DtCmsGetClientInfo(struct svc_req *svcrq, char **source)
 	char *name;
 	char *uname;
 	struct authunix_parms *unix_cred;
+  int uname_size;
 
 	if (source == NULL)
 	{
@@ -156,11 +157,11 @@ _DtCmsGetClientInfo(struct svc_req *svcrq, char **source)
 			return (CSA_E_NO_AUTHORITY);
 		if ((name = get_uname (unix_cred->aup_uid)) == NULL)
 			return (CSA_E_INSUFFICIENT_MEMORY);
-		if ((uname = malloc(strlen(name) +
-		    strlen(unix_cred->aup_machname) + 2)) == NULL)
+		uname_size = strlen(name) + strlen(unix_cred->aup_machname) + 2;
+		if ((uname = malloc(uname_size)) == NULL)
 			return (CSA_E_INSUFFICIENT_MEMORY);
 		else {
-			sprintf(uname, "%s@%s", name, unix_cred->aup_machname);
+			snprintf(uname, uname_size, "%s@%s", name, unix_cred->aup_machname);
 			*source = uname;
 			return (CSA_SUCCESS);
 		}
@@ -341,7 +342,7 @@ _DtCmsClassToViewAccess(cms_entry *entry)
 	case CSA_CLASS_CONFIDENTIAL:
 		return (CSA_VIEW_CONFIDENTIAL_ENTRIES);
 	}
-	
+
 	fprintf(stderr, "_DtCmsClassToInsertAccess: Unsupported Class %lu\n", val->item.uint32_value);
 	exit(EXIT_FAILURE);
 }
@@ -431,7 +432,7 @@ get_uname(uid_t uid)
 	{
 		if ((pw = getpwuid (uid)) == NULL) {
 			/* Can't map uid to name.  Don't cache the uid. */
-			sprintf (buff, "%ld", (long)uid);
+			snprintf (buff, sizeof(buff), "%ld", (long)uid);
 			return (strdup(buff));
 		}
 
@@ -468,9 +469,9 @@ in_access_list(Access_Entry_4 *l, char *s)
 
 static Access_Entry_4 *
 combine_access_list(
-	Access_Entry_4 *p_list, 
-	Access_Entry_4 *p_head, 
-	int type, 
+	Access_Entry_4 *p_list,
+	Access_Entry_4 *p_head,
+	int type,
 	int *p_world)
 {
 	Access_Entry_4	*a;
@@ -478,7 +479,7 @@ combine_access_list(
 
 	while (p_list != NULL)
 	{
-		/* Delay to put the WORLD into the combined list because 
+		/* Delay to put the WORLD into the combined list because
 		 * in_access_list() may return wrong result.
 		 */
 		if (strcmp (p_list->who, WORLD) == 0)

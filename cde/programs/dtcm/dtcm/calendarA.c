@@ -126,11 +126,13 @@ static  char sccsid[] = "@(#)calendarA.c 1.196 95/04/12 Copyr 1991 Sun Microsyst
 #include "dnd.h"
 #include "fallback.h"
 #include "rfp.h"
+
 #ifdef FNS
 #include "dtfns.h"
 #include "cmfns.h"
-#include "cmtt.h"
 #endif
+
+#include "cmtt.h"
 
 #if defined(linux)
 #undef SVR4
@@ -155,7 +157,6 @@ extern int errno;
 extern time_t timelocal();	/* LINT */
 extern char * getlogin();	/* LINT */
 extern void(*sigset())();
-extern int cmtt_init(char *, Calendar *, XtAppContext, Widget);
 extern void show_about(Widget, XtPointer, XtPointer);
 
 
@@ -243,7 +244,7 @@ invalidate_cache(Calendar *c) {
 
 	if (bl) {
 		i = 1;
-		while (bd = (BlistData *)CmDataListGetData(bl->blist_data, i)) {
+		while ( (bd = (BlistData *)CmDataListGetData(bl->blist_data, i)) ) {
 			if (bd->cal_handle == c->cal_handle) {
                 		destroy_paint_cache(bd->cache, bd->cache_size);
                 		bd->cache = NULL;
@@ -273,12 +274,12 @@ allocate_paint_cache(CSA_entry_handle *list, int num_entries, Paint_cache **retu
 				    CSA_X_DT_ENTRY_ATTR_SHOWTIME_I,
 				    NULL);
 
-	/* loop thru the list of appointments twice, first displaying 
-	   the no time appointments, and then the appointments with times 
+	/* loop thru the list of appointments twice, first displaying
+	   the no time appointments, and then the appointments with times
 	   associated. */
 
 	for (i = 0; i < num_entries; i++) {
-		
+
 		stat = query_appt_struct(c->cal_handle, list[i], appt);
 		if (stat != CSA_SUCCESS) {
 			destroy_paint_cache(cache, i);
@@ -304,7 +305,7 @@ allocate_paint_cache(CSA_entry_handle *list, int num_entries, Paint_cache **retu
 }
 
 extern void
-cache_dims(Calendar *c, Dimension w, Dimension h) 
+cache_dims(Calendar *c, Dimension w, Dimension h)
 {
 	Glance glance;
 	Props *p = (Props*)c->properties;
@@ -312,7 +313,7 @@ cache_dims(Calendar *c, Dimension w, Dimension h)
 	int end = get_int_prop(p, CP_DAYEND);
 	int margin;
 	XFontSetExtents regfontextents, boldfontextents;
-        
+
 	CalFontExtents(c->fonts->viewfont, &regfontextents);
 	CalFontExtents(c->fonts->boldfont, &boldfontextents);
 
@@ -337,7 +338,7 @@ cache_dims(Calendar *c, Dimension w, Dimension h)
 					regfontextents.max_logical_extent.width
 					+ margin;
 			c->view->boxh = 7 * (short)
-					regfontextents.max_ink_extent.height 
+					regfontextents.max_ink_extent.height
 					+ 2 * (short)
 					boldfontextents.max_ink_extent.height;
 			c->view->topoffset=20;
@@ -346,7 +347,7 @@ cache_dims(Calendar *c, Dimension w, Dimension h)
 			c->view->topoffset = boldfontextents.max_logical_extent.height + 15;
 			c->view->boxw = APPT_AREA_WIDTH;
 			c->view->boxh = (int)(h - c->view->topoffset)
-			 	/ (end - begin + 1); 
+			 	/ (end - begin + 1);
 			break;
 		default:
 			break;
@@ -355,11 +356,11 @@ cache_dims(Calendar *c, Dimension w, Dimension h)
 
 static void
 resize_proc(
-	Widget 		 w, 
-	XtPointer 	 client, 
+	Widget 		 w,
+	XtPointer 	 client,
 	XtPointer 	 call)
 {
-	Dimension 	 width, 
+	Dimension 	 width,
 			 height;
 	Calendar 	*c = calendar;
         Glance 		 glance = c->view->glance;
@@ -429,18 +430,18 @@ repaint_proc(Widget canvas, XtPointer unused, XtPointer data)
 	int		max_width, old_abs_width, new_abs_width;
 	unsigned long 	valuemask;
 	XSetWindowAttributes attrs;
-	static short	set_bit_gravity = True;	
+	static short	set_bit_gravity = True;
 
 	if (set_bit_gravity) {
 		set_bit_gravity = False;
-		/* 
-	 	 * Set the bit gravity on the canvas to ForgetGravity to 
-		 * insure we receive an exposure event when the canvas is 
+		/*
+	 	 * Set the bit gravity on the canvas to ForgetGravity to
+		 * insure we receive an exposure event when the canvas is
 		 * resized smaller.
 	 	 */
 		valuemask = CWBitGravity;
 		attrs.bit_gravity = ForgetGravity;;
-		XChangeWindowAttributes(calendar->xcontext->display, 
+		XChangeWindowAttributes(calendar->xcontext->display,
 				XtWindow(calendar->canvas), valuemask, &attrs);
 	}
 
@@ -451,12 +452,12 @@ repaint_proc(Widget canvas, XtPointer unused, XtPointer data)
 		old_abs_width = new_clip.x + new_clip.width;
 		new_abs_width = ev->xexpose.width + ev->xexpose.x;
 		max_width = new_abs_width > old_abs_width ? new_abs_width : old_abs_width;
-	
+
         	if (ev->xexpose.x < new_clip.x)
                 	new_clip.x = ev->xexpose.x;
         	if (ev->xexpose.y < new_clip.y)
                 	new_clip.y = ev->xexpose.y;
-	
+
 		new_clip.height = max_height - new_clip.y;
 		new_clip.width = max_width - new_clip.x;
 	}
@@ -479,7 +480,7 @@ repaint_proc(Widget canvas, XtPointer unused, XtPointer data)
 
 		XtVaGetValues(canvas, XmNwidth, &w, XmNheight, &h, NULL);
 
-                gr_set_clip_rectangles(calendar->xcontext, 0, 0, 
+                gr_set_clip_rectangles(calendar->xcontext, 0, 0,
 				       &new_clip, 1, Unsorted);
 
                 paint_canvas(c, &new_clip, RENDER_REPAINT);
@@ -487,7 +488,7 @@ repaint_proc(Widget canvas, XtPointer unused, XtPointer data)
 		clip.x = 0; clip.y = 0; clip.width = w; clip.height = h;
 		gr_set_clip_rectangles(calendar->xcontext, 0, 0, &clip, 1, Unsorted);
 
-		
+
 		clip_set = False;
 
 	}
@@ -499,11 +500,11 @@ show_tempbr(Calendar *c)
 {
 	Tempbr *t;
 
-	t = (Tempbr*)c->tempbr; 
+	t = (Tempbr*)c->tempbr;
 
 	if (t == NULL || t->frame == NULL) {
                 c->tempbr = (caddr_t)make_tempbr(c);
-		t = (Tempbr*)c->tempbr; 
+		t = (Tempbr*)c->tempbr;
         }
 	else {
 		XtManageChild(t->form);
@@ -526,11 +527,11 @@ show_browser(Calendar *c) {
 
 	if (c->browser == NULL)
                 make_browser(c);
-	b = (Browser *)c->browser; 
+	b = (Browser *)c->browser;
 
 
 	b->date = c->view->date;
-        format_tick(b->date, ord_t, sep_t, buf);
+        format_tick(b->date, ord_t, sep_t, buf, BUFSIZ);
 	XmTextSetString(b->datetext, buf);
 
 	set_entry_date(c);
@@ -543,17 +544,17 @@ show_goto(Calendar *c)
 {
 	Goto *g;
 
-	g = (Goto*)c->goTo; 
+	g = (Goto*)c->goTo;
 
 	if (g == NULL || g->frame == NULL) {
                 c->goTo = (caddr_t)make_goto(c);
-		g = (Goto*)c->goTo; 
+		g = (Goto*)c->goTo;
         }
 	else {
 		XtManageChild(g->form);
 		XtPopup(g->frame, XtGrabNone);
 	}
-	
+
         XmProcessTraversal(g->datetext, XmTRAVERSE_CURRENT);
         XtVaSetValues(g->form, XmNinitialFocus, g->datetext, NULL);
 
@@ -565,11 +566,11 @@ show_timezone(Calendar *c)
 {
 	Timezone *t;
 
-	t = (Timezone*)c->timezone; 
+	t = (Timezone*)c->timezone;
 
 	if (t == NULL || t->frame == NULL) {
                 c->timezone = (caddr_t)make_timezone(c);
-		t = (Timezone*)c->timezone; 
+		t = (Timezone*)c->timezone;
         }
 	else {
                 refresh_timezone(t);
@@ -613,7 +614,7 @@ event_proc(Notify_client     canvas,
 	Glance glance;
 	Find *f;
 
-	c = (Calendar *) xv_get(canvas, WIN_CLIENT_DATA); 
+	c = (Calendar *) xv_get(canvas, WIN_CLIENT_DATA);
 	XtVaGetValues(canvas, XmNuserData, c, NULL);
 	p = (Props *) c->properties;
 	glance = c->view->glance;
@@ -644,7 +645,7 @@ event_proc(Notify_client     canvas,
 		case ACTION_FIND_FORWARD:
 		case ACTION_FIND_BACKWARD:
         		f = (Find*)c->find;
-        		if (f == NULL || f->frame == NULL) { 
+        		if (f == NULL || f->frame == NULL) {
         	        	c->find = (caddr_t)make_find(c);
                 		f = (Find*)c->find;
 			}
@@ -654,7 +655,7 @@ event_proc(Notify_client     canvas,
 		default:
 			break;
 	}
-	
+
 	if (event_action(event) == ACTION_HELP && event_is_up(event))
 	{
 		switch(glance) {
@@ -716,7 +717,7 @@ prev_button(Widget w, XtPointer client_data, XtPointer cbs)
 			if (timeok(date)) {
 				c->view->olddate = c->view->date;
 				c->view->date = date;
-				c->view->nwks = numwks(c->view->date); 
+				c->view->nwks = numwks(c->view->date);
 /*
  * Since we know year view is already showing, just directly force a new
  * year to be displayed without first managing all the year stuff.
@@ -733,7 +734,7 @@ prev_button(Widget w, XtPointer client_data, XtPointer cbs)
 				c->view->nwks = numwks(c->view->date);
 				calendar_deselect(c);
 				if (c->view->date <
-				    lowerbound(((Day *)(c->view->day_info))->month1)) { 
+				    lowerbound(((Day *)(c->view->day_info))->month1)) {
         				((Day *)(c->view->day_info))->month3
 						= c->view->date;
 					((Day *)(c->view->day_info))->month2
@@ -742,7 +743,7 @@ prev_button(Widget w, XtPointer client_data, XtPointer cbs)
 						= previousmonth(((Day *)(c->view->day_info))->month2);
 					init_dayview(c);
 					paint_dayview(c, True, NULL, False);
-				} else { 
+				} else {
 					monthbox_deselect(c);
 					monthbox_datetoxy(c);
 					paint_dayview(c, False, NULL, False);
@@ -878,9 +879,9 @@ today_button(Widget w, XtPointer client_data, XtPointer cbs)
  * Since we know year view is already showing, just directly force a new
  * year to be displayed without first managing all the year stuff.
  */
-		if (year(date) != year(today)) 
+		if (year(date) != year(today))
 			paint_year(c);
-		else calendar_deselect(c); 
+		else calendar_deselect(c);
 		xy.y = month_row_col[mo_to-1][ROW];
 		xy.x = month_row_col[mo_to-1][COL];
 		calendar_select(c, monthSelect, (caddr_t)&xy);
@@ -920,7 +921,7 @@ gen_tzmenu(item, op)
 	static Menu pullright;
 
 	switch(op) {
-	case MENU_DISPLAY	: 
+	case MENU_DISPLAY	:
 		if (pullright == NULL) {
 */
 /*
@@ -950,7 +951,7 @@ set_default_view(Calendar *c)
 			calendar->view->glance = monthGlance;
 		else if (!strcmp(calendar->app_data->default_view, "week"))
 			calendar->view->glance = weekGlance;
-		else if (!strcmp(calendar->app_data->default_view, "day")) 
+		else if (!strcmp(calendar->app_data->default_view, "day"))
 			calendar->view->glance = dayGlance;
 		else
 			calendar->view->glance = dayGlance;
@@ -1047,9 +1048,9 @@ make_view_menu(Calendar *c)
 
         ac = 0;
         XtSetArg(al[ac], XmNlabelString, todo_str); ac++;
-        c->todo_view_menu = XmCreatePushButtonGadget(view_menu, "toDoList", 
+        c->todo_view_menu = XmCreatePushButtonGadget(view_menu, "toDoList",
 			al, ac);
-        XtAddCallback(c->todo_view_menu, XmNactivateCallback, 
+        XtAddCallback(c->todo_view_menu, XmNactivateCallback,
 			view_todo_cb, NULL);
 
 	ac = 0;
@@ -1075,7 +1076,7 @@ make_view_menu(Calendar *c)
 	XtSetArg(al[ac], XmNsubMenuId, view_menu); ac++;
 	XtSetArg(al[ac], XmNlabelString, view_str); ac++;
 	view_btn = (Widget) XmCreateCascadeButton(c->menu_bar, "view", al, ac);
-        XtAddCallback(view_btn, XmNhelpCallback, (XtCallbackProc)help_cb, 
+        XtAddCallback(view_btn, XmNhelpCallback, (XtCallbackProc)help_cb,
 			(XtPointer) CALENDAR_HELP_VIEW_BUTTON);
 
         XmStringFree(day_str);
@@ -1107,7 +1108,7 @@ print_current(Widget widget, XtPointer client_data, XtPointer reason)
   _DtTurnOffHourGlass(calendar->frame);
 }
 
-void 
+void
 edit_cb( Widget w, XtPointer item_no, XtPointer cbs)
 {
 	Calendar *c = calendar;
@@ -1120,7 +1121,7 @@ edit_cb( Widget w, XtPointer item_no, XtPointer cbs)
 	_DtTurnOffHourGlass(c->frame);
 }
 
-void 
+void
 find_cb(Widget w, XtPointer item_no, XtPointer cbs)
 {
 	Calendar *c = calendar;
@@ -1130,7 +1131,7 @@ find_cb(Widget w, XtPointer item_no, XtPointer cbs)
 	_DtTurnOffHourGlass(c->frame);
 }
 
-void 
+void
 goto_cb(Widget w, XtPointer item_no, XtPointer cbs)
 {
 	Calendar *c = calendar;
@@ -1140,7 +1141,7 @@ goto_cb(Widget w, XtPointer item_no, XtPointer cbs)
 	_DtTurnOffHourGlass(c->frame);
 }
 
-void 
+void
 timezone_cb(Widget w, XtPointer item_no, XtPointer cbs)
 {
 	Calendar *c = calendar;
@@ -1170,7 +1171,7 @@ view_todo_cb(Widget w, XtPointer item_no, XtPointer cbs)
 	_DtTurnOffHourGlass(c->frame);
 }
 
-void 
+void
 appt_cb(Widget w, XtPointer item_no, XtPointer cbs)
 {
 	Calendar *c = calendar;
@@ -1192,7 +1193,7 @@ appt_cb(Widget w, XtPointer item_no, XtPointer cbs)
 	_DtTurnOffHourGlass(c->frame);
 }
 
-static void 
+static void
 show_other_cb(Widget w, XtPointer cl_data, XtPointer cbs)
 {
 	Calendar *c = calendar;
@@ -1202,7 +1203,7 @@ show_other_cb(Widget w, XtPointer cl_data, XtPointer cbs)
 	_DtTurnOffHourGlass(c->frame);
 }
 
-static void 
+static void
 compare_cb(Widget w, XtPointer cl_data, XtPointer cbs)
 {
 	Calendar *c = calendar;
@@ -1212,7 +1213,7 @@ compare_cb(Widget w, XtPointer cl_data, XtPointer cbs)
 	_DtTurnOffHourGlass(c->frame);
 }
 
-static void 
+static void
 edit_menu_cb(Widget w, XtPointer cl_data, XtPointer cbs)
 {
 	Calendar	*c = (Calendar *)cl_data;
@@ -1222,7 +1223,7 @@ edit_menu_cb(Widget w, XtPointer cl_data, XtPointer cbs)
 	_DtTurnOffHourGlass(c->frame);
 }
 
-static void 
+static void
 browse_cb(Widget w, XtPointer client_data, XtPointer cbs) {
 	int		rcode, idx = (int) (intptr_t) client_data;
 	char		buf[MAXNAMELEN];
@@ -1279,7 +1280,7 @@ make_file_menu(Calendar *c)
 	xmstr = XmStringCreateLocalized(
 			catgets(c->DT_catd, 1, 68, "Print Current View"));
 	XtSetArg(al[ac], XmNlabelString, xmstr); ac++;
-	pr_current = XmCreatePushButtonGadget(file_menu, "printCurrent", 
+	pr_current = XmCreatePushButtonGadget(file_menu, "printCurrent",
 					      al, ac);
         XtAddCallback(pr_current, XmNactivateCallback, print_current, NULL);
 	XmStringFree(xmstr);
@@ -1319,7 +1320,7 @@ make_file_menu(Calendar *c)
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 65, "File"));
 	XtSetArg(al[ac], XmNlabelString, xmstr); ac++;
 	file_btn = (Widget) XmCreateCascadeButton(c->menu_bar, "file", al, ac);
-        XtAddCallback(file_btn, XmNhelpCallback, (XtCallbackProc)help_cb, 
+        XtAddCallback(file_btn, XmNhelpCallback, (XtCallbackProc)help_cb,
 					(XtPointer) CALENDAR_HELP_FILE_BUTTON);
 	XmStringFree(xmstr);
 }
@@ -1350,7 +1351,7 @@ make_edit_menu(Calendar *c)
 	ac = 0;
 	XtSetArg(al[ac], XmNlabelString, todo_str); ac++;
 	c->todo_edit_menu = XmCreatePushButtonGadget(edit_menu, "toDo", al, ac);
-	XtAddCallback(c->todo_edit_menu, XmNactivateCallback, 
+	XtAddCallback(c->todo_edit_menu, XmNactivateCallback,
 			appt_cb, (XtPointer) 2);
 
 	ManageChildren(edit_menu);
@@ -1373,7 +1374,7 @@ make_help_menu(Calendar *c)
 	Arg al[10];
 	int ac;
 	XmString help, overview, tasks, ref, onitem, using, about;
-	Widget	cascade, help_menu, w_overview, w_tasks, w_ref, w_onitem, 
+	Widget	cascade, help_menu, w_overview, w_tasks, w_ref, w_onitem,
 		w_using, w_about, w_sep;
 
         help = XmStringCreateLocalized(catgets(c->DT_catd, 1, 77, "Help"));
@@ -1387,15 +1388,15 @@ make_help_menu(Calendar *c)
         using = XmStringCreateLocalized(
 			catgets(c->DT_catd, 1, 82, "Using Help..."));
         about = XmStringCreateLocalized(
-			catgets(c->DT_catd, 1, 613, "About Calendar..."));   
+			catgets(c->DT_catd, 1, 613, "About Calendar..."));
 
         help_menu = XmCreatePulldownMenu(c->menu_bar, "helpMenu", NULL, 0);
 
         ac = 0;
         XtSetArg(al[ac], XmNlabelString, overview); ac++;
         w_overview = XmCreatePushButtonGadget(help_menu, "overview", al, ac);
-	XtAddCallback(w_overview, XmNactivateCallback, show_main_help, 
-			(XtPointer)HELP_OVERVIEW); 
+	XtAddCallback(w_overview, XmNactivateCallback, show_main_help,
+			(XtPointer)HELP_OVERVIEW);
 
 	ac = 0;
 	w_sep = XmCreateSeparatorGadget(help_menu, "separator1", al, ac);
@@ -1403,19 +1404,19 @@ make_help_menu(Calendar *c)
         ac = 0;
         XtSetArg(al[ac], XmNlabelString, tasks); ac++;
         w_tasks = XmCreatePushButtonGadget(help_menu, "tasks", al, ac);
-	XtAddCallback(w_tasks, XmNactivateCallback, show_main_help, 
+	XtAddCallback(w_tasks, XmNactivateCallback, show_main_help,
 			(XtPointer)HELP_TASKS);
 
         ac = 0;
         XtSetArg(al[ac], XmNlabelString, ref); ac++;
         w_ref = XmCreatePushButtonGadget(help_menu, "reference", al, ac);
-	XtAddCallback(w_ref, XmNactivateCallback, show_main_help, 
+	XtAddCallback(w_ref, XmNactivateCallback, show_main_help,
 			(XtPointer)HELP_REFERENCE);
 
         ac = 0;
         XtSetArg(al[ac], XmNlabelString, onitem); ac++;
         w_onitem = XmCreatePushButtonGadget(help_menu, "onItem", al, ac);
-	XtAddCallback(w_onitem, XmNactivateCallback, show_main_help, 
+	XtAddCallback(w_onitem, XmNactivateCallback, show_main_help,
 			(XtPointer)HELP_ONITEM);
 
 	ac = 0;
@@ -1424,7 +1425,7 @@ make_help_menu(Calendar *c)
         ac = 0;
         XtSetArg(al[ac], XmNlabelString, using); ac++;
         w_using = XmCreatePushButtonGadget(help_menu, "using", al, ac);
-	XtAddCallback(w_using, XmNactivateCallback, show_main_help, 
+	XtAddCallback(w_using, XmNactivateCallback, show_main_help,
 			(XtPointer)HELP_USINGHELP);
 
 	ac = 0;
@@ -1433,9 +1434,9 @@ make_help_menu(Calendar *c)
         ac = 0;
         XtSetArg(al[ac], XmNlabelString, about); ac++;
         w_about = XmCreatePushButtonGadget(help_menu, "about", al, ac);
-        XtAddCallback(w_about, XmNactivateCallback, show_about, 
+        XtAddCallback(w_about, XmNactivateCallback, show_about,
 			(XtPointer)NULL);
-        XtAddCallback(w_about, XmNactivateCallback, show_main_help, 
+        XtAddCallback(w_about, XmNactivateCallback, show_main_help,
 			(XtPointer)HELP_ABOUTCALENDAR);
 
 	ManageChildren(help_menu);
@@ -1444,7 +1445,7 @@ make_help_menu(Calendar *c)
 	XtSetArg(al[ac], XmNlabelString, help); ac++;
 	XtSetArg(al[ac], XmNsubMenuId, help_menu); ac++;
 	cascade = (Widget)XmCreateCascadeButton(c->menu_bar, "help", al, ac);
-        XtAddCallback(cascade, XmNhelpCallback, (XtCallbackProc)help_cb, 
+        XtAddCallback(cascade, XmNhelpCallback, (XtCallbackProc)help_cb,
 			(XtPointer) CALENDAR_HELP_HELP_BUTTON);
 
 	ac = 0;
@@ -1480,7 +1481,7 @@ map_browse_menu(Widget menu, XtPointer client_data, XtPointer call_data)
 
 	if ((int) (h + fudgefact) > ((int) screenheight / 2)) {
 
-	/* the menu is taller than half the screen.  We need to find out how 
+	/* the menu is taller than half the screen.  We need to find out how
 	   many more columns to specify for the menu to make it fit. */
 
 		newcols = (columns * (int) ((int) (h + fudgefact)/(int) (screenheight/2))) + 1;
@@ -1508,11 +1509,11 @@ update_browse_menu_names(Calendar *c) {
 	XmString	xmstr;
 	BlistData	*bd;
 	Browselist	*bl = (Browselist *)c->browselist;
- 
+
 	c->browse_menu =
 		XmCreatePulldownMenu(c->menu_bar, "browseMenu", NULL, 0);
-	XtVaSetValues(c->browse_menu, 
-		XmNnumColumns, 1, 
+	XtVaSetValues(c->browse_menu,
+		XmNnumColumns, 1,
                 XmNpacking, XmPACK_COLUMN,
                 XmNorientation, XmVERTICAL,
 		NULL);
@@ -1561,7 +1562,7 @@ update_browse_menu_names(Calendar *c) {
 		XmStringFree(xmstr);
 	}
 
-	XtAddCallback(c->browse_menu, XmNmapCallback, map_browse_menu, NULL); 
+	XtAddCallback(c->browse_menu, XmNmapCallback, map_browse_menu, NULL);
 	ManageChildren(c->browse_menu);
 }
 
@@ -1636,8 +1637,8 @@ make_buttons(Calendar *c)
 	calendar->toolbar = XmCreateFrame(c->form, "toolbar", al, ac);
 
 	s = XtScreen(calendar->toolbar);
-	XtVaGetValues(calendar->toolbar, 
-			XmNforeground, 	&fg, 
+	XtVaGetValues(calendar->toolbar,
+			XmNforeground, 	&fg,
 			XmNbackground, 	&bg,
 			NULL);
 
@@ -1662,7 +1663,7 @@ make_buttons(Calendar *c)
 	c->today = XmCreatePushButton(toolform, "today", al, ac);
 	XmStringFree(today_str);
         XtAddCallback(calendar->today, XmNactivateCallback, today_button, NULL);
-        XtAddCallback(c->today, XmNhelpCallback, (XtCallbackProc)help_cb, 
+        XtAddCallback(c->today, XmNhelpCallback, (XtCallbackProc)help_cb,
 			(XtPointer) CALENDAR_HELP_TODAY_BUTTON);
 
 	/*
@@ -1682,7 +1683,7 @@ make_buttons(Calendar *c)
         XtSetArg(al[ac], XmNnavigationType, XmTAB_GROUP); ac++;
         c->previous = XmCreateArrowButtonGadget(toolform, "previous", al, ac);
         XtAddCallback(c->previous, XmNactivateCallback, prev_button, NULL);
-        XtAddCallback(c->previous, XmNhelpCallback, (XtCallbackProc)help_cb, 
+        XtAddCallback(c->previous, XmNhelpCallback, (XtCallbackProc)help_cb,
 			(XtPointer) CALENDAR_HELP_PREV_BUTTON);
 
         ac=0;
@@ -1694,7 +1695,7 @@ make_buttons(Calendar *c)
         XtSetArg(al[ac], XmNnavigationType, XmTAB_GROUP); ac++;
         c->next = XmCreateArrowButtonGadget(toolform, "next", al, ac);
         XtAddCallback(c->next, XmNactivateCallback, next_button, NULL);
-        XtAddCallback(c->next, XmNhelpCallback, (XtCallbackProc)help_cb, 
+        XtAddCallback(c->next, XmNhelpCallback, (XtCallbackProc)help_cb,
 			(XtPointer) CALENDAR_HELP_NEXT_BUTTON);
 
 	/* toolbar "editor" buttons */
@@ -1707,7 +1708,7 @@ make_buttons(Calendar *c)
         XtSetArg(al[ac], XmNnavigationType, XmTAB_GROUP); ac++;
         c->appt_btn = XmCreatePushButtonGadget(toolform, "appt", al, ac);
 	XtAddCallback(c->appt_btn, XmNactivateCallback, appt_cb, (XtPointer) 0);
-        XtAddCallback(c->appt_btn, XmNhelpCallback, (XtCallbackProc)help_cb, 
+        XtAddCallback(c->appt_btn, XmNhelpCallback, (XtCallbackProc)help_cb,
 			(XtPointer) CALENDAR_HELP_APPT_BUTTON);
 
         ac=0;
@@ -1720,7 +1721,7 @@ make_buttons(Calendar *c)
         XtSetArg(al[ac], XmNnavigationType, XmTAB_GROUP); ac++;
         c->todo_btn = XmCreatePushButtonGadget(toolform, "todo", al, ac);
 	XtAddCallback(c->todo_btn, XmNactivateCallback, appt_cb, (XtPointer) 2);
-        XtAddCallback(c->todo_btn, XmNhelpCallback, (XtCallbackProc)help_cb, 
+        XtAddCallback(c->todo_btn, XmNhelpCallback, (XtCallbackProc)help_cb,
 			(XtPointer) CALENDAR_HELP_TODO_BUTTON);
 
 	ac=0;
@@ -1740,7 +1741,7 @@ make_buttons(Calendar *c)
         XtSetArg(al[ac], XmNnavigationType, XmTAB_GROUP); ac++;
         c->day_scope = XmCreateToggleButtonGadget(c->radio, "day", al, ac);
         XtAddCallback(c->day_scope, XmNvalueChangedCallback, day_button, NULL);
-        XtAddCallback(c->day_scope, XmNhelpCallback, (XtCallbackProc)help_cb, 
+        XtAddCallback(c->day_scope, XmNhelpCallback, (XtCallbackProc)help_cb,
 			(XtPointer) CALENDAR_HELP_DAY_BUTTON);
 
         ac=0;
@@ -1751,9 +1752,9 @@ make_buttons(Calendar *c)
         XtSetArg(al[ac], XmNshadowThickness, 1); ac++;
         XtSetArg(al[ac], XmNnavigationType, XmTAB_GROUP); ac++;
         c->week_scope = XmCreateToggleButtonGadget(c->radio, "week", al, ac);
-        XtAddCallback(c->week_scope, XmNvalueChangedCallback, 
+        XtAddCallback(c->week_scope, XmNvalueChangedCallback,
 						week_button, NULL);
-        XtAddCallback(c->week_scope, XmNhelpCallback, (XtCallbackProc)help_cb, 
+        XtAddCallback(c->week_scope, XmNhelpCallback, (XtCallbackProc)help_cb,
 			(XtPointer) CALENDAR_HELP_WEEK_BUTTON);
 
         ac=0;
@@ -1764,7 +1765,7 @@ make_buttons(Calendar *c)
         XtSetArg(al[ac], XmNshadowThickness, 1); ac++;
         XtSetArg(al[ac], XmNnavigationType, XmTAB_GROUP); ac++;
         c->month_scope = XmCreateToggleButtonGadget(c->radio, "month", al, ac);
-        XtAddCallback(c->month_scope, XmNvalueChangedCallback, 
+        XtAddCallback(c->month_scope, XmNvalueChangedCallback,
 			month_button, NULL);
         XtAddCallback(c->month_scope, XmNhelpCallback, (XtCallbackProc)help_cb,
 			(XtPointer) CALENDAR_HELP_MONTH_BUTTON);
@@ -1777,9 +1778,9 @@ make_buttons(Calendar *c)
         XtSetArg(al[ac], XmNshadowThickness, 1); ac++;
         XtSetArg(al[ac], XmNnavigationType, XmTAB_GROUP); ac++;
         c->year_scope = XmCreateToggleButtonGadget(c->radio, "year", al, ac);
-        XtAddCallback(c->year_scope, XmNvalueChangedCallback, 
+        XtAddCallback(c->year_scope, XmNvalueChangedCallback,
 			year_button, NULL);
-        XtAddCallback(c->year_scope, XmNhelpCallback, (XtCallbackProc)help_cb, 
+        XtAddCallback(c->year_scope, XmNhelpCallback, (XtCallbackProc)help_cb,
 			(XtPointer) CALENDAR_HELP_YEAR_BUTTON);
 
 	ManageChildren(c->radio);
@@ -1838,7 +1839,7 @@ reset_timer(Calendar *c) {
 	tick = now();
 	if (last_r)
 		_csa_iso8601_to_tick(last_r->run_time, &reminder_tick);
-	
+
 	if (last_r != NULL) {
 		if (tick > reminder_tick)
 			tick = reminder_tick;
@@ -1919,7 +1920,7 @@ setup_new_day_handler(c)
 	next_day = next_day * 1000;
         XtAppAddTimeOut(c->xcontext->app, next_day, move_to_new_day, c);
 }
-	
+
 
 /* ARGSUSED */
 /* Revisit ...
@@ -1941,7 +1942,7 @@ wait3_handler(frame, pid, status, rusage)
  *
  * This is used as the activateCallback handler form the File->Exit
  * menu item, and overloaded as the handler from termination by Motif/Xt as
- * the XmAddWMProtocolCallback handler for delete_window.  
+ * the XmAddWMProtocolCallback handler for delete_window.
  */
 void
 quit_handler(Widget w, XtPointer cdata, XtPointer cbs) {
@@ -1960,7 +1961,7 @@ quit_handler(Widget w, XtPointer cdata, XtPointer cbs) {
 	    if (NULL != c->frame)
 	      XBell(XtDisplayOfObject(c->frame), 50);
 	    return;
-	} 
+	}
 
 	if (c->view->next_alarm)
 	  csa_free(c->view->next_alarm);
@@ -2040,17 +2041,17 @@ error_open(Calendar *c) {
 	char *nl_user = XtNewString(catgets(c->DT_catd, 1, 92, "User name"));
 	char *nl_host = XtNewString(catgets(c->DT_catd, 1, 93, "Host"));
 	char *ident = XtNewString(catgets(c->DT_catd, 1, 95, "Continue"));
-	char *title = 
+	char *title =
 	  XtNewString(catgets(c->DT_catd, 1, 94, "Calendar : Error"));
 
 	name = cm_target2name(c->calname);
 	host = cm_target2host(c->calname);
 
-	sprintf(buf, "%s %s", catgets(c->DT_catd, 1, 90,
+	snprintf(buf, MAXNAMELEN, "%s %s", catgets(c->DT_catd, 1, 90,
 			"Error opening Calendar file"), c->calname);
 	set_message(c->message_text, buf);
 
-	sprintf(buf, "%s\n%s: %s, %s: %s", catgets(c->DT_catd, 1, 91,
+	snprintf(buf, MAXNAMELEN, "%s\n%s: %s, %s: %s", catgets(c->DT_catd, 1, 91,
 				   		"rpc.cmsd is not responding for your user name.\nMake sure the inetd process is running and the entry\nin inetd.conf for rpc.cmsd is correct for your host."),
 		nl_user, name,
 		nl_host, host);
@@ -2073,21 +2074,21 @@ error_open(Calendar *c) {
 }
 
 static void
-error_noloc(Calendar *c, char *name) 
+error_noloc(Calendar *c, char *name)
 {
         char            buf[BUFSIZ];
         Props_pu        *p = (Props_pu *)c->properties_pu;
 
 	char *ident = XtNewString(catgets(c->DT_catd, 1, 95, "Continue"));
-	char *title = 
+	char *title =
 	  XtNewString(catgets(c->DT_catd, 1, 94, "Calendar : Error"));
 
-        sprintf(buf, "%s %s",
+        snprintf(buf, MAXNAMELEN, "%s %s",
 		catgets(c->DT_catd, 1, 108, "No Calendar Location specified for"),
 		name);
         set_message(c->message_text, buf);
 
-	sprintf(buf, "%s", catgets(c->DT_catd, 1, 109, "No location specified; add a hostname to the\nInitial Calendar View in Properties/Display Settings.  If\nyou ran Calendar (dtcm) with the -c option, verify you specified a hostname."));
+	snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 109, "No location specified; add a hostname to the\nInitial Calendar View in Properties/Display Settings.  If\nyou ran Calendar (dtcm) with the -c option, verify you specified a hostname."));
         dialog_popup(c->frame,
                 DIALOG_TITLE, title,
                 DIALOG_TEXT, buf,
@@ -2210,10 +2211,10 @@ open_user_calendar(Calendar *c, Boolean retry)
 	if (!viewother) {
 		/* NL_COMMENT
 
-		   Message 113 : ``Calendar'' is used in the main titlebar 
+		   Message 113 : ``Calendar'' is used in the main titlebar
 		   of the tool: Calendar : user@host.
 		 */
-		sprintf(buf, "%s : %s", catgets(c->DT_catd, 1, 113, "Calendar"),
+		snprintf(buf, MAXNAMELEN, "%s : %s", catgets(c->DT_catd, 1, 113, "Calendar"),
 					c->calname);
         	XtVaSetValues(c->frame, XmNtitle, buf, NULL);
 	}
@@ -2227,7 +2228,7 @@ open_initial_calendar(
 	CSA_return_code *status)
 {
 	char		buf[MAXNAMELEN], *loc, *user;
-	CSA_flags	flags = NULL;
+	CSA_flags	flags;
 	CSA_extension	cb_ext;
 	CSA_extension	logon_ext;
 	CSA_calendar_user csa_user;
@@ -2257,7 +2258,7 @@ open_initial_calendar(
 	free(loc);
 	free(user);
 	if (*status != CSA_SUCCESS)
-		return False; 
+		return False;
 	else
 		c->user_access = logon_ext.item_data;
 
@@ -2280,7 +2281,7 @@ open_initial_calendar(
 	csa_register_callback(c->cal_handle, flags,
 			update_handler, NULL, &cb_ext);
 
-	sprintf(buf, "%s : %s", catgets(c->DT_catd, 1, 113, "Calendar"),
+	snprintf(buf, MAXNAMELEN, "%s : %s", catgets(c->DT_catd, 1, 113, "Calendar"),
 					c->view->current_calendar);
         XtVaSetValues(c->frame, XmNtitle, buf, NULL);
 
@@ -2348,7 +2349,7 @@ cm_usage()
 static void
 def_cal(Widget w, int offset, XrmValue *val_ret)
 {
-        val_ret->addr = cm_strdup(get_char_prop((Props *)calendar->properties, 
+        val_ret->addr = cm_strdup(get_char_prop((Props *)calendar->properties,
 								CP_DEFAULTCAL));
 }
 
@@ -2391,7 +2392,7 @@ static XrmOptionDescRec options[] = {
 static XtResource resources[] = {
 /* initial view */
 	{ "__defaultView", "__DefaultView", XtRString, sizeof(String),
-	XtOffset(DtCmAppResourcesPtr, default_view), XtRCallProc, 
+	XtOffset(DtCmAppResourcesPtr, default_view), XtRCallProc,
 	(XtPointer)def_view},
 /* default calendar */
 	{ "__defaultCalendar", "__DefaultCalendar", XtRString, sizeof(String),
@@ -2431,20 +2432,20 @@ static XtResource resources[] = {
 	XtOffset(DtCmAppResourcesPtr, boldfontlist), XtRString,
 	NULL},
 /* font for icon */
-        { "iconFont", "IconFont", XmRFontList, sizeof(XmFontList), 
-        XtOffset(DtCmAppResourcesPtr, iconfontlist), XtRString, 
-        NULL}, 
+        { "iconFont", "IconFont", XmRFontList, sizeof(XmFontList),
+        XtOffset(DtCmAppResourcesPtr, iconfontlist), XtRString,
+        NULL},
 /* application font family */
-	{ "applicationFontFamily", "ApplicationFontFamily", XtRString, 
-	sizeof(XmString), XtOffset(DtCmAppResourcesPtr, app_font_family), 
+	{ "applicationFontFamily", "ApplicationFontFamily", XtRString,
+	sizeof(XmString), XtOffset(DtCmAppResourcesPtr, app_font_family),
 	XtRString, "application"},
 /* Session file from -session option */
-	{ "__session", "__Session", XtRString, 
-	sizeof(XmString), XtOffset(DtCmAppResourcesPtr, session_file), 
+	{ "__session", "__Session", XtRString,
+	sizeof(XmString), XtOffset(DtCmAppResourcesPtr, session_file),
 	XtRString, NULL},
 /* trace flag */
-	{ "__trace", "__trace", XtRBoolean, 
-	sizeof(Boolean), XtOffset(DtCmAppResourcesPtr, debug), 
+	{ "__trace", "__trace", XtRBoolean,
+	sizeof(Boolean), XtOffset(DtCmAppResourcesPtr, debug),
 	XtRBoolean, FALSE},
 };
 
@@ -2468,8 +2469,9 @@ get_user_calendar()
 	} else
 		loc = cm_get_local_host();
 
-	name = malloc(strlen(uname) + strlen(loc) + 2);
-	sprintf(name, "%s@%s", uname, loc);
+	int name_size = strlen(uname) + strlen(loc) + 2;
+	name = malloc(name_size);
+	snprintf(name, name_size, "%s@%s", uname, loc);
 
 	if (needfree) free(loc);
 
@@ -2493,7 +2495,7 @@ init_calendar(argc, argv)
          	<Btn1Motion>: view_event()";
         static XtActionsRec action_table[] = {
                 {(String) "view_event", (XtActionProc) view_event},
-		{(String) "TranslationDragStart", 
+		{(String) "TranslationDragStart",
 		   TranslationDragStart},
 		{"dtcm-process-press",
 		   DtcmProcessPress}
@@ -2527,10 +2529,10 @@ init_calendar(argc, argv)
 
 	/*
 	 * Save the argv list into a WM_COMMAND format string for
-	 * later use when the application is asked to save itself.  
-	 * The format is a buffer with a series of null terminated 
-	 * strings within it, one for each string in the argv list.  
-	 * Thus the total length is that of the arguments plus a null 
+	 * later use when the application is asked to save itself.
+	 * The format is a buffer with a series of null terminated
+	 * strings within it, one for each string in the argv list.
+	 * Thus the total length is that of the arguments plus a null
 	 * byte for each argument.
 	 */
 	for (i = 0, calendar->view->wm_cmdstrlen = 0; i < argc; i++) {
@@ -2557,7 +2559,7 @@ init_calendar(argc, argv)
 			i++;
 			continue;
 		}
-		
+
 		while (*s_ptr)
 			*d_ptr++ = *s_ptr++;
 		*d_ptr++ = '\0';
@@ -2584,14 +2586,14 @@ init_calendar(argc, argv)
         calendar->frame = XtVaAppInitialize(&app, "Dtcm",
 				options, XtNumber(options), &argc, argv,
 				fallback_resources,
-				XmNwidth, 650, XmNheight, 730, 
+				XmNwidth, 650, XmNheight, 730,
 				XmNmappedWhenManaged, False,
 				NULL);
 
 	if (argc > 1)
 		cm_usage();
 
-	dpy = XtDisplayOfObject(calendar->frame); 
+	dpy = XtDisplayOfObject(calendar->frame);
 
 	/*
 	 * Initialize DtSvc for drag and drop stuff
@@ -2616,7 +2618,7 @@ init_calendar(argc, argv)
 
 	if (!init_fonts(calendar)) {
 		fprintf (stderr, "%s: Failed to find required fonts ", argv[0]);
-		fprintf (stderr, "(``fixed'' and ``variable'')...exiting.\n"); 
+		fprintf (stderr, "(``fixed'' and ``variable'')...exiting.\n");
 		exit(-1);
 	}
 
@@ -2642,7 +2644,7 @@ init_calendar(argc, argv)
 
 #if 0 	/* use this when we go with mapped names */
 	cm_get_yptarget(cm_get_uname(), &calendar->calname);
-	if (calendar->calname == NULL) 
+	if (calendar->calname == NULL)
 		/* No mapping in NIS+ db */
 		calendar->calname = cm_get_deftarget();
 #endif
@@ -2665,7 +2667,7 @@ init_calendar(argc, argv)
 	make_buttons(calendar);
 
 	ac=0;
-	XtSetArg(al[ac], XmNtranslations, 
+	XtSetArg(al[ac], XmNtranslations,
 			XtParseTranslationTable(translations)); ac++;
 	XtSetArg(al[ac], XmNresizePolicy, XmRESIZE_ANY); ac++;
 	XtSetArg(al[ac], XmNtopAttachment, XmATTACH_WIDGET); ac++;
@@ -2675,7 +2677,7 @@ init_calendar(argc, argv)
 	XtSetArg(al[ac], XmNleftOffset, 1); ac++;
       	calendar->canvas = XmCreateDrawingArea(calendar->form, "canvas",
 				al, ac);
-        XtAddCallback(calendar->canvas, XmNhelpCallback, 
+        XtAddCallback(calendar->canvas, XmNhelpCallback,
 					(XtCallbackProc)help_view_cb, NULL);
 	ac=0;
 	XtSetArg(al[ac], XmNalignment, XmALIGNMENT_BEGINNING); ac++;
@@ -2741,10 +2743,10 @@ init_calendar(argc, argv)
 	    char *errfmt;
     	    errfmt = catgets(calendar->DT_catd, 2, 2,
 			"Could not connect to ToolTalk:\n%s\n");
-            DieFromToolTalkError( calendar, errfmt, status );
+            DieFromToolTalkError( (Widget)calendar, errfmt, status );
 	}
 
-	/* 
+	/*
 	 * This needs to be done before we open the calendar because
 	 * if we fail to open the calendar an error dialog is displayed.
 	 * This causes the main canvas to be painted but this doesn't
@@ -2753,7 +2755,7 @@ init_calendar(argc, argv)
 	XtVaGetValues(calendar->canvas, XmNwidth, &w, XmNheight, &h, NULL);
 	cache_dims(calendar, w, h);
 
-	/* 
+	/*
 	 * Paint the icon before we log into the calendar to avoid the
 	 * user seeing the default icon while the logon process is
 	 * occurring.
@@ -2786,16 +2788,16 @@ init_calendar(argc, argv)
 				calendar->user_access = calendar->my_access;
 				calendar->general->version =
 					calendar->my_cal_version;
-				sprintf(buf, "%s : %s", 
-					catgets(calendar->DT_catd, 1, 113, 
+				snprintf(buf, MAXNAMELEN, "%s : %s",
+					catgets(calendar->DT_catd, 1, 113,
 								"Calendar"),
 					calendar->calname);
         			XtVaSetValues(calendar->frame, XmNtitle, buf,
 					NULL);
 			}
-			backend_err_msg(calendar->frame, 
+			backend_err_msg(calendar->frame,
 				calendar->view->current_calendar, status,
-				((Props_pu *) 
+				((Props_pu *)
 				     calendar->properties_pu)->xm_error_pixmap);
 		}
 	} else {
@@ -2894,11 +2896,11 @@ main(int argc, char **argv) {
 
 extern CSA_return_code
 paint_canvas(
-	Calendar 	*c, 
+	Calendar 	*c,
 	XRectangle 	*rect,
 	Render_Type	 render_type)
 {
-/* REPAINT, CLEAR_FIRST, UNMAP */ 
+/* REPAINT, CLEAR_FIRST, UNMAP */
         Glance glance = c->view->glance;
 	CSA_return_code stat = CSA_SUCCESS;
 
@@ -2909,7 +2911,7 @@ paint_canvas(
                 	repaint_damaged_month(c, rect);
 			break;
 		case RENDER_CLEAR_FIRST:
-			gr_clear_area(c->xcontext, 0, 0, 
+			gr_clear_area(c->xcontext, 0, 0,
 				      c->view->winw, c->view->winh);
                 	repaint_damaged_month(c, rect);
 			break;
@@ -2948,15 +2950,16 @@ cm_get_relname()
          * "Calendar Manager" with a release identifier
          */
 	if (CM_name == NULL) {
-                sprintf(s, "%s", catgets(calendar->DT_catd, 1, 113, "Calendar"));
-        	CM_name = (char*)ckalloc(cm_strlen(s) + 2);
-	 
-        	sprintf(CM_name, "%s", s);
+                snprintf(s, BUFSIZ, "%s", catgets(calendar->DT_catd, 1, 113, "Calendar"));
+        	int size = cm_strlen(s) + 2;
+		CM_name = (char*)ckalloc(size);
+
+        	snprintf(CM_name, size, "%s", s);
 	}
- 
+
         return (char*)CM_name;
 }
-#endif 
+#endif
 
 extern Boolean
 in_range(time_t start, time_t stop, time_t tick) {
@@ -3005,7 +3008,7 @@ init_strings()
 	months2[10] = strdup(catgets(calendar->DT_catd, 1, 135, "Oct"));
 	months2[11] = strdup(catgets(calendar->DT_catd, 1, 136, "Nov"));
 	months2[12] = strdup(catgets(calendar->DT_catd, 1, 137, "Dec"));
-	
+
 	/* NL_COMMENT
 	   Attention Translator:
 
@@ -3043,7 +3046,7 @@ init_strings()
 	/* NL_COMMENT
 	   Attention Translator:
 
-	   The strings (message number 154-160, 168) are one letter 
+	   The strings (message number 154-160, 168) are one letter
 	   abbreviations to the days of the week:
 
 		S --> Sunday (message 154)
@@ -3103,7 +3106,7 @@ switch_it(Calendar *c, char *new_calendar, WindowType win)
 	CSA_extension		logon_ext;
 
 	set_message(c->message_text, "\0");
- 
+
         /*
 	 * Check to see if we're already browsing the requested calendar ...
 	 * If we have a valid calendar handle, we can return otherwise
@@ -3111,7 +3114,7 @@ switch_it(Calendar *c, char *new_calendar, WindowType win)
 	 */
         if (strcmp(new_calendar, c->view->current_calendar) == 0 &&
 	    c->cal_handle) {
-		sprintf(buf, catgets(c->DT_catd, 1, 178,
+		snprintf(buf, MAXNAMELEN, catgets(c->DT_catd, 1, 178,
 			"You Are Already Browsing %s"), new_calendar);
 		set_message(c->message_text, buf);
 		if (tb && tb->show_message)
@@ -3137,9 +3140,9 @@ switch_it(Calendar *c, char *new_calendar, WindowType win)
 	} else {
 		if ((user = cm_target2name(new_calendar)) == NULL) {
 			if (!strcmp(new_calendar, ""))
-				sprintf(buf, "%s", catgets(c->DT_catd, 1, 619, "Please enter a calendar name in the format: <user>@<hostname>"));
+				snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 619, "Please enter a calendar name in the format: <user>@<hostname>"));
 			else
-				sprintf(buf, catgets(c->DT_catd, 1, 620,
+				snprintf(buf, MAXNAMELEN, catgets(c->DT_catd, 1, 620,
 		"Unknown calendar. Calendar name needed: <name>%s"),
 				new_calendar);
 			set_message(c->message_text, buf);
@@ -3150,9 +3153,9 @@ switch_it(Calendar *c, char *new_calendar, WindowType win)
 
 		if ((loc = cm_target2location(new_calendar)) == NULL) {
 			if (!strcmp(new_calendar, ""))
-				sprintf(buf, "%s", catgets(c->DT_catd, 1, 619, "Please enter a calendar name in the format: <user>@<hostname>"));
+				snprintf(buf, MAXNAMELEN, "%s", catgets(c->DT_catd, 1, 619, "Please enter a calendar name in the format: <user>@<hostname>"));
 			else
-				sprintf(buf, catgets(c->DT_catd, 1, 622,
+				snprintf(buf, MAXNAMELEN, catgets(c->DT_catd, 1, 622,
 	"Unknown calendar. Hostname needed: %s@<hostname>"),
 				user);
 			set_message(c->message_text, buf);
@@ -3192,7 +3195,7 @@ switch_it(Calendar *c, char *new_calendar, WindowType win)
 			c->user_access = logon_ext.item_data;
 	}
 
-        set_message(((Editor *)c->editor)->message_text, " ");      
+        set_message(((Editor *)c->editor)->message_text, " ");
         set_message(((GEditor *)c->geditor)->message_text, " ");
         set_message(((ToDo *)c->todo)->message_text, " ");
 
@@ -3216,7 +3219,7 @@ switch_it(Calendar *c, char *new_calendar, WindowType win)
 	if (new_cal_handle != c->my_cal_handle) {
 
 
-		CSA_flags	flags = NULL;
+		CSA_flags	flags;
 		CSA_extension	cb_ext;
 
 		flags = CSA_CB_ENTRY_ADDED | CSA_CB_ENTRY_DELETED |
@@ -3239,14 +3242,14 @@ switch_it(Calendar *c, char *new_calendar, WindowType win)
                 free(c->view->current_calendar);
         c->view->current_calendar = cm_strdup(new_calendar);
         paint_canvas(c, NULL, RENDER_CLEAR_FIRST);
- 
+
 	/*
 	 * Set the title bars on all the windows!
 	 */
-	sprintf(buf, "%s : %s", catgets(c->DT_catd, 1, 113, "Calendar"),
+	snprintf(buf, MAXNAMELEN, "%s : %s", catgets(c->DT_catd, 1, 113, "Calendar"),
 				new_calendar);
 	XtVaSetValues(c->frame, XmNtitle, buf, NULL);
- 
+
 	set_editor_title((Editor *)c->editor, new_calendar);
 	add_all_appt((Editor *)c->editor);
 	set_geditor_title((GEditor *)c->geditor, new_calendar);
@@ -3280,10 +3283,10 @@ switch_it(Calendar *c, char *new_calendar, WindowType win)
 
 	if (tb && tb->show_message) {
 		char	buf[128];
-		char *calendar = 
+		char *calendar =
 		  XtNewString(catgets(c->DT_catd, 1, 919, "Calendar"));
 
-		sprintf (buf, "%s %s %s",
+		snprintf (buf, 128, "%s %s %s",
 			calendar,
 			new_calendar,
 			catgets(c->DT_catd, 1, 920, "displayed."));
@@ -3336,11 +3339,11 @@ init_fonts(
 	 * Some of the scrolling lists contain formatted text and thus
 	 * require a fixed width font to display the text correctly.
 	 * We want to use the fixed width font defined by *.userFont as
-	 * it will be localized to the system calendar is running on. 
+	 * it will be localized to the system calendar is running on.
 	 */
 	db = XtScreenDatabase(XtScreen(cal->frame));
 	if (db) {
-		XrmPutStringResource(&db, "*find_list.fontList", 
+		XrmPutStringResource(&db, "*find_list.fontList",
 						       cal->app_data->userfont);
 		XrmPutStringResource(&db, "*view_list.fontList",
 						       cal->app_data->userfont);
@@ -3370,19 +3373,19 @@ init_fonts(
 
 	if (!fontlist_to_font(cal->app_data->systemfontlist, &systemfont)) {
 		/* Couldn't convert the system fontlist to a font - bad news. */
-		if (!(systemfont.f.cf_font = 
+		if (!(systemfont.f.cf_font =
 			     XLoadQueryFont(XtDisplay(cal->frame), "variable")))
 			return False;
 		else
-			systemfont.cf_type = XmFONT_IS_FONT; 
+			systemfont.cf_type = XmFONT_IS_FONT;
 	}
 	if (!fontlist_to_font(cal->app_data->userfontlist, &userfont)) {
 		/* Couldn't convert the user fontlist to a font - bad news. */
-		if (!(userfont.f.cf_font = 
+		if (!(userfont.f.cf_font =
 			     XLoadQueryFont(XtDisplay(cal->frame), "fixed")))
 			return False;
 		else
-			userfont.cf_type = XmFONT_IS_FONT; 
+			userfont.cf_type = XmFONT_IS_FONT;
 	}
 
 	*cal->fonts->userfont =  userfont;
@@ -3393,16 +3396,16 @@ init_fonts(
 	 * font for the views.
 	 */
 	if (cal->app_data->viewfontlist) {
-		if (!fontlist_to_font(cal->app_data->viewfontlist, 
+		if (!fontlist_to_font(cal->app_data->viewfontlist,
 				      cal->fonts->viewfont))
 			*cal->fonts->viewfont = userfont;
 	} else {
-			load_app_font(cal, MEDIUM, &userfont, 
+			load_app_font(cal, MEDIUM, &userfont,
 				      cal->fonts->viewfont);
 	}
 
 	if (cal->app_data->labelfontlist) {
-		if (!fontlist_to_font(cal->app_data->labelfontlist, 
+		if (!fontlist_to_font(cal->app_data->labelfontlist,
 				      cal->fonts->labelfont))
 			*cal->fonts->labelfont = systemfont;
 	} else {
@@ -3410,7 +3413,7 @@ init_fonts(
 	}
 
 	if (cal->app_data->iconfontlist) {
-		if (!fontlist_to_font(cal->app_data->iconfontlist, 
+		if (!fontlist_to_font(cal->app_data->iconfontlist,
 				      cal->fonts->iconfont))
 			*cal->fonts->iconfont = systemfont;
 	} else {
@@ -3418,11 +3421,11 @@ init_fonts(
 	}
 
 	if (cal->app_data->boldfontlist) {
-		if (!fontlist_to_font(cal->app_data->boldfontlist, 
+		if (!fontlist_to_font(cal->app_data->boldfontlist,
 				      cal->fonts->boldfont))
 			*cal->fonts->boldfont = userfont;
 	} else {
-			load_app_font(cal, BOLD, &userfont, 
+			load_app_font(cal, BOLD, &userfont,
 				      cal->fonts->boldfont);
 	}
 

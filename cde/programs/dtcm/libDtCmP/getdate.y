@@ -154,14 +154,14 @@ static int mdays[12] =
 #define epoch BOT_YEAR
 
 extern struct tm *localtime();
-time_t dateconv(int mm, 
-    int dd, 
-    int yy, 
-    int h, 
-    int m, 
-    int s, 
-    int mer, 
-    int zone, 
+time_t dateconv(int mm,
+    int dd,
+    int yy,
+    int h,
+    int m,
+    int s,
+    int mer,
+    int zone,
     int dayflag)
 {
 	time_t tod, jdate;
@@ -406,7 +406,7 @@ static int
 lookup(char *id)
 {
 #define gotit (yylval=i->value,  i->type)
-#define getid for(j=idvar, k=id; *j++ = *k++; )
+#define getid for(j=idvar, k=id; (*j++ = *k++); )
 
 	char idvar[20];
 	register char *j, *k;
@@ -463,7 +463,7 @@ lookup(char *id)
 
 static char *lptr;
 
-yylex()
+int yylex()
 {
 #if defined(__osf__)
 	extern long yylval;
@@ -554,7 +554,7 @@ time_t cm_getdate(char *p, struct timeb *now)
 	hh = mm = ss = 0;
 	merid = 24;
 
-	if (err = yyparse()) return (-1);
+	if ( (err = yyparse()) ) return (-1);
 
 	mcheck(timeflag);
 	mcheck(zoneflag);
@@ -572,7 +572,7 @@ time_t cm_getdate(char *p, struct timeb *now)
 		/*
 		  if more than 6 months ago, then probably means
 		  next year
-		 
+
 		if (noyear && sdate < now->time - daysec*(365/2)) {
 				year++;
 				sdate = dateconv(month, day, year, hh, mm, ss,

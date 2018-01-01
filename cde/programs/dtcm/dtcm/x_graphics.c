@@ -26,7 +26,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -55,6 +55,7 @@
 #include "format.h"
 #include "deskset.h"
 #include "print.h"
+#include "monthglance.h"
 
 #include <X11/Intrinsic.h>
 #if 0 && defined(PRINTING_SUPPORTED)
@@ -1012,9 +1013,9 @@ cm_load_font_error(CMGraphicsInfo *gInfo, char *fontPattern)
 
   errFmt = catgets(c->DT_catd, 1, 1119,
 		   "Warning - Unable to load font %s.");
-  errText = (char *)XtMalloc((strlen(errFmt) + strlen(fontPattern) + 1) *
-			     sizeof(char));
-  sprintf(errText, errFmt, fontPattern);
+  int size = (strlen(errFmt) + strlen(fontPattern) + 1) * sizeof(char);
+  errText = (char *)XtMalloc(size);
+  snprintf(errText, size, errFmt, fontPattern);
   label = XtNewString(catgets(c->DT_catd, 1, 95, "Continue"));
   title = XtNewString(catgets(c->DT_catd, 1, 1118,
 			      "Calendar : Warning - Print"));
@@ -1345,7 +1346,7 @@ cm_print_appt_text(CMGraphicsInfo *gInfo, char *str,
   unsigned long _len;
 
   _len = strlen(str);
-  _converter_( str, _len, &to, &to_len );
+  _converter_( str, _len, (void **)&to, &to_len );
   if ( ( to != NULL ) && ( to_len != 0 ) )
     str = to;
 
@@ -1442,7 +1443,7 @@ cm_week_sched_update(CMGraphicsInfo *gInfo, Dtcm_appointment *appt, Props *p)
 
   end_slider = (end_t - begin_t) * 4;
 
-  /* 
+  /*
    * Figure where the begin and end times should be in the array.
    */
   start = ((hour(tick) - begin_t) * 4) + (minute(tick) / 15);
@@ -1460,14 +1461,14 @@ cm_week_sched_update(CMGraphicsInfo *gInfo, Dtcm_appointment *appt, Props *p)
   if (start > end_slider) start = end_slider;
   if (end > end_slider) end = end_slider;
 
-  /* 
+  /*
    * Only map if some portion of time is between day boundaries.
    */
-  if ((start < 0 && end < 0) || 
+  if ((start < 0 && end < 0) ||
       (start >= end_slider && end >= end_slider))
     return;
 
-  /* 
+  /*
    * Mark the blocks of time affected in the array.
    */
   for (i = start; i < end; i++)
@@ -1518,12 +1519,12 @@ cm_print_todo_text(CMGraphicsInfo *gInfo, char *str1, CSA_sint32 as,
   maxDigitWd = 0;
   for (i = 0; i <= 9; i++)
   {
-    sprintf(buf, "%d", i);
+    snprintf(buf, 20, "%d", i);
     if ((digitWd = cm_string_width(gInfo, gInfo->curFont, buf)) > maxDigitWd)
       maxDigitWd = digitWd;
   }
 
-  sprintf(buf, "%d.", items);
+  snprintf(buf, 20, "%d.", items);
 
   indent = strlen(buf);
   if (indent < 4)
@@ -1572,7 +1573,7 @@ cm_print_todo_text(CMGraphicsInfo *gInfo, char *str1, CSA_sint32 as,
     unsigned long _len;
 
     _len = strlen(str1);
-    _converter_( str1, _len, &to, &to_len );
+    _converter_( str1, _len, (void **)&to, &to_len );
     if ( ( to != NULL ) && ( to_len != 0 ) )
       str1 = to;
   }
@@ -1905,7 +1906,7 @@ cm_std_month_dates(CMGraphicsInfo *gInfo, int first_dom, int monlen,
     dateX = x1 + (indent * colWd) + ((indent * extraWd) /
 				     (DAYS_IN_WEEK + 1));
     dateY = y1 + ((first_dom / DAYS_IN_WEEK) * (spacing + fontHt));
-    sprintf(dateStr, "%d", i + 1);
+    snprintf(dateStr, 3, "%d", i + 1);
     x_print_string(gInfo, dateStr,
 		   dateX, dateY, RIGHT_AT_X | TOP_AT_Y);
   }
@@ -2003,15 +2004,16 @@ local_dayname(Calendar *c, char **array_place, int dayNum)
 		   dayCatIndex[dayNum], defaultDays[dayNum]);
 
   _len = strlen( source );
-  _converter_( source, _len, &to, &to_len );
+  _converter_( source, _len, (void **)&to, &to_len );
   if ( ( to != NULL ) && ( to_len != 0 ) ) {
     str = euc_to_octal(to);
   } else {
     str = euc_to_octal(source);
   }
 
-  *array_place = (char *)malloc(sizeof(char) * (cm_strlen(str) + 1));
-  cm_strcpy(*array_place, str);
+  int size = sizeof(char) * (cm_strlen(str) + 1);
+  *array_place = (char *)malloc(size);
+  cm_strlcpy(*array_place, str, size);
 }
 
 static void
@@ -2035,15 +2037,16 @@ local_dayname3(Calendar *c, char **array_place, int dayNum)
 		   dayCatIndex[dayNum], defaultDays[dayNum]);
 
   _len = strlen( source );
-  _converter_( source, _len, &to, &to_len );
+  _converter_( source, _len, (void **)&to, &to_len );
   if ( ( to != NULL ) && ( to_len != 0 ) ) {
     str = euc_to_octal(to);
   } else {
     str = euc_to_octal(source);
   }
 
-  *array_place = (char *)malloc(sizeof(char) * (cm_strlen(str) + 1));
-  cm_strcpy(*array_place, str);
+  int size = sizeof(char) * (cm_strlen(str) + 1);
+  *array_place = (char *)malloc(size);
+  cm_strlcpy(*array_place, str, size);
 }
 
 static char *
@@ -2083,7 +2086,7 @@ get_report_type_string(CMGraphicsInfo *gInfo)
 		  defaultStrs[reportType]);
 
     _len = strlen( str );
-    _converter_( str, _len, &to, &to_len );
+    _converter_( str, _len, (void **)&to, &to_len );
     if ( ( to != NULL ) && ( to_len != 0 ) ) {
       str = to;
     }
@@ -2361,7 +2364,7 @@ x_open_file(Calendar *c)
     unsigned long _len;
 
     _len = strlen( gInfo->timestamp );
-    _converter_( gInfo->timestamp, _len, &to, &to_len );
+    _converter_( gInfo->timestamp, _len, (void **)&to, &to_len );
     if ( ( to != NULL ) && ( to_len != 0 ) )
       strncpy( gInfo->timestamp, to,
 	      ( BUFFERSIZE > to_len ) ? to_len : BUFFERSIZE - 1 );
@@ -2604,7 +2607,7 @@ x_print_header(void *gInfoP, char *buf, int pageNum, int numPages)
       unsigned long _len;
 
       _len = strlen( buf );
-      _converter_( buf, _len, &to, &to_len );
+      _converter_( buf, _len, (void **)&to, &to_len );
       if ( ( to != NULL ) && ( to_len != 0 ) ) {
 	str = euc_to_octal(to);
       } else {
@@ -2625,21 +2628,21 @@ x_print_header(void *gInfoP, char *buf, int pageNum, int numPages)
   if (numPages == 0)
     numPages++;
 
-  /* print creation notice at bottom */ 
-  cm_strcpy(str2, catgets(c->DT_catd, 1, 468, "Page"));
+  /* print creation notice at bottom */
+  cm_strlcpy(str2, catgets(c->DT_catd, 1, 468, "Page"), BUFFERSIZE);
   {
     char *to = NULL;
     unsigned long to_len = 0;
     unsigned long _len;
 
     _len = strlen( str2 );
-    _converter_( str2, _len, &to, &to_len );
+    _converter_( str2, _len, (void **)&to, &to_len );
     if ( ( to != NULL ) && ( to_len != 0 ) ) {
       strncpy( str2, to,
 	      ( BUFFERSIZE > to_len ) ? to_len : BUFFERSIZE );
     }
   }
-  cm_strcpy(str2, euc_to_octal(str2));
+  cm_strlcpy(str2, euc_to_octal(str2), BUFFERSIZE);
 
   str = catgets(c->DT_catd, 1, 476, "of");
   {
@@ -2648,13 +2651,13 @@ x_print_header(void *gInfoP, char *buf, int pageNum, int numPages)
     unsigned long _len;
 
     _len = strlen( str );
-    _converter_( str, _len, &to, &to_len );
+    _converter_( str, _len, (void **)&to, &to_len );
     if ( ( to != NULL ) && ( to_len != 0 ) ) {
       str = to;
     }
   }
 
-  sprintf(pageStr, "%s %d %s %d", str2, pageNum, str, numPages);
+  snprintf(pageStr, BUFFERSIZE, "%s %d %s %d", str2, pageNum, str, numPages);
 
   /* Header/footer strings are all set - print 'em! */
   cm_print_header_string(gInfo, CP_PRINTLHEADER,
@@ -2711,7 +2714,7 @@ x_day_header (void *gInfoP)
     unsigned long _len;
 
     _len = strlen( str );
-    _converter_( str, _len, &to, &to_len );
+    _converter_( str, _len, (void **)&to, &to_len );
     if ( ( to != NULL ) && ( to_len != 0 ) ) {
       str = to;
     }
@@ -2731,7 +2734,7 @@ x_day_header (void *gInfoP)
     unsigned long _len;
 
     _len = strlen( str );
-    _converter_( str, _len, &to, &to_len );
+    _converter_( str, _len, (void **)&to, &to_len );
     if ( ( to != NULL ) && ( to_len != 0 ) ) {
       str = to;
     }
@@ -2755,8 +2758,8 @@ x_day_timeslots(void *gInfoP, int i, Boolean more)
   char modbuf[6];
   Calendar *c = gInfo->c;
 
-  sprintf (hourbuf, "%d", (morning(i) || (i == 12)) ? i : (i - 12) );
-  sprintf (modbuf, "%s", morning(i) ? catgets(c->DT_catd, 1, 4, "am") :
+  snprintf (hourbuf, 6, "%d", (morning(i) || (i == 12)) ? i : (i - 12) );
+  snprintf (modbuf, 6, "%s", morning(i) ? catgets(c->DT_catd, 1, 4, "am") :
 	   catgets(c->DT_catd, 1, 3, "pm"));
 
   /* --- print hourly boxes for appt entries --- */
@@ -2822,9 +2825,9 @@ x_print_multi_appts(void *gInfoP,
 
   CMGraphicsInfo *gInfo = (CMGraphicsInfo *)gInfoP;
   int		indented, indentAmt, multlines=TRUE;
-  Lines		*lines, *lp;    
+  Lines		*lines, *lp;
   char		buf1[128], buf2[257];
-  Calendar	*c = gInfo->c;  
+  Calendar	*c = gInfo->c;
   Props		*pr = (Props*)c->properties;
   int		meoval = get_int_prop(pr, CP_PRINTPRIVACY);
   int		dt = get_int_prop(pr, CP_DEFAULTDISP);
@@ -2897,7 +2900,7 @@ x_print_multi_appts(void *gInfoP,
     }
 
     /* HH:MM xm - HH:MM xm format */
-    format_line2(appt, buf1, buf2, dt);
+    format_line2(appt, buf1, 128, buf2, 257, dt);
 
     indented = (*buf1 != '\0');
     indentAmt = (view == dayGlance) ? 0 : 1;
@@ -2996,13 +2999,13 @@ x_print_list_range(Calendar *c, CSA_sint32 appt_type, int item_data,
 	start = lowerbound(start_tick);
 	end = nextday(end_tick) - 1;
 
-	format_date(start + 1, ot, buf2, 1, 0, 0);
+	format_date(start + 1, ot, buf2, MAXNAMELEN, 1, 0, 0);
 
 	if (appt_type == CSA_TYPE_TODO)
-		sprintf(buf, catgets(c->DT_catd, 1, 899,
+		snprintf(buf, MAXNAMELEN, catgets(c->DT_catd, 1, 899,
 				     "To Do List Beginning: %s"), buf2);
 	else
-		sprintf(buf, catgets(c->DT_catd, 1, 900,
+		snprintf(buf, MAXNAMELEN, catgets(c->DT_catd, 1, 900,
 				     "Appt List Beginning: %s"), buf2);
 
 	setup_range(&range_attrs, &ops, &i, start, end, appt_type,
@@ -3083,7 +3086,7 @@ x_init_list(void *gInfoP)
 }
 
 void
-x_print_todo(void *gInfoP, CSA_entry_handle *list, int a_total, 
+x_print_todo(void *gInfoP, CSA_entry_handle *list, int a_total,
 	     CSA_sint32 appt_type, Boolean showDate, int vf,
 	     time_t end_time, char *buf)
 {
@@ -3166,15 +3169,15 @@ x_print_todo(void *gInfoP, CSA_entry_handle *list, int a_total,
 	  if (skip_appt)
 	    continue;
 
-	  format_maxchars(appt, buf1, BUFFERSIZE - 5, dt);
+	  format_maxchars(appt, buf1, BUFFERSIZE, BUFFERSIZE - 5, dt);
 	  if (showDate)
 	  {
 	    _csa_iso8601_to_tick(appt->time->value->item.date_time_value,
 				 &start_tick);
-	    format_date3(start_tick, ot, st, buf2);
-	    sprintf(buf3, "%s  %s", buf2, buf1);
+	    format_date3(start_tick, ot, st, buf2, BUFFERSIZE);
+	    snprintf(buf3, BUFFERSIZE, "%s  %s", buf2, buf1);
 	  } else
-	    cm_strcpy(buf3, buf1);
+	    cm_strlcpy(buf3, buf1, BUFFERSIZE);
 
 	  total_items++;
 	  cm_print_todo_text (gInfo, buf3,
@@ -3227,7 +3230,7 @@ x_print_month(void *gInfoP, int mon, int yr, int x1,
   cm_set_font(gInfo, cm_get_tiny_title_enum(gInfo));
   y1 += spacing;
 
-  cm_strcpy(str, months[mon]);
+  cm_strlcpy(str, months[mon], BUFFERSIZE);
 
   {
     char *to = NULL;
@@ -3235,13 +3238,13 @@ x_print_month(void *gInfoP, int mon, int yr, int x1,
     unsigned long _len;
 
     _len = strlen(str);
-    _converter_( str, _len, &to, &to_len );
+    _converter_( str, _len, (void **)&to, &to_len );
     if ( ( to != NULL ) && ( to_len != 0 ) ) {
-      cm_strcpy(str, to);
+      cm_strlcpy(str, to, BUFFERSIZE);
     }
   }
 
-  cm_strcpy(str, euc_to_octal(str));
+  cm_strlcpy(str, euc_to_octal(str), BUFFERSIZE);
   x_fill_light_box(gInfo, x1 + HMARGIN(gInfo), y1,
 		   x2 - HMARGIN(gInfo),
 		   y1 + cm_font_height(gInfo, gInfo->curFont),
@@ -3256,7 +3259,7 @@ x_print_month(void *gInfoP, int mon, int yr, int x1,
   colWd = 0;
   for (i = 0; i < monLen; i++)
   {
-    sprintf(str, "%d", i + 1);
+    snprintf(str, BUFFERSIZE, "%d", i + 1);
     if ((dateWd = cm_string_width(gInfo, fInfo, str)) > colWd)
       colWd = dateWd;
   }
@@ -3300,7 +3303,7 @@ x_std_year_name(void *gInfoP, int yr)
   char yearBuf[BUFFERSIZE];
 
   /* --- print year centered at top --- */
-  sprintf(yearBuf, "%d", yr);
+  snprintf(yearBuf, BUFFERSIZE, "%d", yr);
   x_print_header(gInfoP, yearBuf, 1, 1);
 }
 
@@ -3512,7 +3515,7 @@ x_week_sched_boxes(void *gInfoP)
       if (thisHour > 24)
 	thisHour %= 24;
     }
-    sprintf(hourBuf, "%d", thisHour);
+    snprintf(hourBuf, BUFFERSIZE, "%d", thisHour);
     y1 = boxY1 + ((i * boxHt) / num_hours);
 
     x_print_string(gInfo, hourBuf,
@@ -3560,13 +3563,13 @@ x_week_daynames(void *gInfoP, char *dayName, int dayIndex, Boolean more)
     unsigned long _len;
 
     _len = strlen(dayName);
-    _converter_( dayName, _len, &to, &to_len );
+    _converter_( dayName, _len, (void **)&to, &to_len );
     if ( ( to != NULL ) && ( to_len != 0 ) ) {
       dayName = to;
     }
   }
 
-  sprintf(dayBuf, more ? "%s *" : "%s", euc_to_octal(dayName));
+  snprintf(dayBuf, BUFFERSIZE, more ? "%s *" : "%s", euc_to_octal(dayName));
   x_print_string(gInfo, dayBuf, (x1 + x2) / 2, (y1 + y2) / 2,
 		 CENTER_AT_X | CENTER_AT_Y);
 
@@ -3768,7 +3771,7 @@ x_print_little_months(void *gInfoP, Tick tick)
   int dayRow, dayCol;
   int spacing;
 
-  /* 
+  /*
    * Print out miniature prev & next month on month grid.
    * Check if there is enough room at end;  if not then
    * print at beginning of grid.
@@ -3886,7 +3889,7 @@ x_month_timeslots(void *gInfoP, Tick tick, Boolean more)
   y1 = gInfo->u.monthInfo.lineY + ulOffset + HMARGIN(gInfo);
   x1 = gInfo->u.monthInfo.lineX + ulOffset + VMARGIN(gInfo);
 
-  sprintf(dateBuf, more ? "%d *" : "%d", thisDay);
+  snprintf(dateBuf, BUFFERSIZE, more ? "%d *" : "%d", thisDay);
   x_print_string(gInfo, dateBuf, x1, y1, LEFT_AT_X | TOP_AT_Y);
 
   gInfo->u.monthInfo.lineY =
@@ -3905,7 +3908,7 @@ x_print_month_appts(void *gInfoP, CSA_entry_handle *list,
   Calendar *c = gInfo->c;
   Props *pr = (Props *)c->properties;
   int meoval = get_int_prop(pr, CP_PRINTPRIVACY);
-  int i, start, pos = 1, line_counter = 0;	
+  int i, start, pos = 1, line_counter = 0;
   CSA_return_code stat;
   Dtcm_appointment *appt;
   Tick start_tick;
@@ -3934,7 +3937,7 @@ x_print_month_appts(void *gInfoP, CSA_entry_handle *list,
       free_appt_struct(&appt);
       return True;
     }
- 
+
     if ((privacy_set(appt) == CSA_CLASS_PUBLIC) &&
 	!(meoval & PRINT_PUBLIC))
       continue;
@@ -3951,7 +3954,7 @@ x_print_month_appts(void *gInfoP, CSA_entry_handle *list,
     }
     else
     {
-      get_time_str(appt, buf1);
+      get_time_str(appt, buf1, BUFFERSIZE);
 
       indented = (*buf1 != '\0');
 
@@ -3963,7 +3966,7 @@ x_print_month_appts(void *gInfoP, CSA_entry_handle *list,
 	return(False);
       }
 
-      /* only print if appt text found */ 
+      /* only print if appt text found */
       if ((lines != NULL) && (lines->s != NULL))
       {
 	if (indented)  	/* time found so print it */

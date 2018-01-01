@@ -52,7 +52,6 @@ int cmfns_name_from_file(const char *path, char *name, int len);
 extern int cmfns_use_fns(Props *);
 extern int cmfns_lookup_calendar(const char *name, char *addr_buf,
 				 int addr_size);
-extern int cmfns_description(const char	*, char *, int);
 extern int cmfns_register_calendar(const char *name, const char *calendar);
 
 #endif /* FNS */

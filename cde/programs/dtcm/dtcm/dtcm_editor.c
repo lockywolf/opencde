@@ -64,7 +64,7 @@ typedef enum {no_tt, file_tt, buffer_tt} Dtcm_editor_start;
 #ifndef ABS
 #define ABS(x) (((x) > 0) ? (x) : (-(x)))
 #endif
- 
+
 
 #include "drag_xbm"
 #include "drag_mask_xbm"
@@ -114,7 +114,7 @@ Calendar	*calendar;
 
 static void
 de_mark_change(Widget w, XtPointer data, XtPointer cbs) {
- 
+
         DTCM_editor        *de = (DTCM_editor *)data;
 
         de->modified = True;
@@ -134,10 +134,10 @@ de_mark_change(Widget w, XtPointer data, XtPointer cbs) {
 static void
 merge_old_values(Dtcm_appointment *original, Dtcm_appointment *new) {
 
-	/* This routine takes in the original appointment structure 
-	   from the edited appointment, and merges back in any attributes 
-	   that aren't controlled by our editor, so that when the 
-	   appointment is written back out to the buffering agent, those 
+	/* This routine takes in the original appointment structure
+	   from the edited appointment, and merges back in any attributes
+	   that aren't controlled by our editor, so that when the
+	   appointment is written back out to the buffering agent, those
 	   attributes are not lost. */
 
 	int	source_count, dest_count, new_attrs;
@@ -146,11 +146,11 @@ merge_old_values(Dtcm_appointment *original, Dtcm_appointment *new) {
 
 	if (original == NULL)
 		return;
-	
-	/* We need to see how much larger the attribute array needs to 
-	   get.  For each of the guys in the source attribute array, 
-	   we need to look and see if it's already a member of the 
-	   destination array.  Those that don't exist, we count, and 
+
+	/* We need to see how much larger the attribute array needs to
+	   get.  For each of the guys in the source attribute array,
+	   we need to look and see if it's already a member of the
+	   destination array.  Those that don't exist, we count, and
 	   later move. */
 
 	for (source_count = 0, new_attrs = 0; source_count < original->count; source_count++) {
@@ -171,7 +171,7 @@ merge_old_values(Dtcm_appointment *original, Dtcm_appointment *new) {
 	if (new_attrs == 0)
 		return;
 
-	/* realloc the attrs array to be large enough to accomodate the new 
+	/* realloc the attrs array to be large enough to accomodate the new
 	   attibutes */
 
 	new->attrs = (CSA_attribute *) realloc(new->attrs, (dest_attr_num + new_attrs) * sizeof(CSA_attribute));
@@ -195,7 +195,7 @@ merge_old_values(Dtcm_appointment *original, Dtcm_appointment *new) {
 		}
 	}
 
-	/* reset the appointment links, as the old ones have been 
+	/* reset the appointment links, as the old ones have been
 	   thrashed by reallocing the attribute array. */
 
 	set_appt_links(new);
@@ -213,11 +213,11 @@ CreateDragSourceIcon(
         unsigned int    pixmapWidth, pixmapHeight, pixmapBorder, pixmapDepth;
         Arg             args[20];
         Cardinal        nn = 0;
- 
+
         XGetGeometry (XtDisplayOfObject(widget), pixmap, &rootWindow,
                 &pixmapX, &pixmapY, &pixmapWidth, &pixmapHeight,
                 &pixmapBorder, &pixmapDepth);
- 
+
         XtSetArg(args[nn], XmNwidth, pixmapWidth);  nn++;
         XtSetArg(args[nn], XmNheight, pixmapHeight);  nn++;
         XtSetArg(args[nn], XmNmaxWidth, pixmapWidth);  nn++;
@@ -239,11 +239,11 @@ CreateDragSourceIcon(
 static void
 GetIcon(DTCM_editor *de)
 {
- 
+
         Display        *display = XtDisplay(calendar->frame);
         Window          window = XtWindow(calendar->frame);
         unsigned char  *bitmapData, *bitmapMask;
- 
+
         if (de->drag_bitmap == 0) {
                 de->drag_bitmap = XCreateBitmapFromData(display,
                         window, (char *) drag_xbm_bits,
@@ -264,8 +264,8 @@ GetIcon(DTCM_editor *de)
                 }
         }
 }
- 
- 
+
+
 /*
  * DragFinishCB
  *
@@ -304,12 +304,12 @@ ApptConvertCB(
         XtPointer       clientData,
         XtPointer       callData)
 {
-        DtDndConvertCallbackStruct *convertInfo 
+        DtDndConvertCallbackStruct *convertInfo
 					= (DtDndConvertCallbackStruct*)callData;
         DtDndBuffer 	*data		= &(convertInfo->dragData->data.buffers[0]);
         DragContext     *context        = (DragContext *)clientData;
         Display         *display        = XtDisplay(dragContext);
-        Atom            CMAPPOINTMENT 	
+        Atom            CMAPPOINTMENT
 			= XmInternAtom(display, "CalendarAppointment", False);
 	Calendar	*c = context->calendar;
 
@@ -334,7 +334,7 @@ StandaloneApptDragStart(
                                                 {NULL, NULL} };
         static XtCallbackRec dragFinishCBRec[] =  { {DragFinishCB, NULL},
                                                     {NULL, NULL} };
- 
+
         Display        *display 	= XtDisplay(widget);
         int             itemCount, selectedPos;
         DragContext     *context = calloc(sizeof(DragContext), 1);
@@ -362,8 +362,8 @@ StandaloneApptDragStart(
 	    return;
 	}
 
-	/* save the old count of attributes so that when this appointment 
-	   gets freed, we can prevent the added attribute references from 
+	/* save the old count of attributes so that when this appointment
+	   gets freed, we can prevent the added attribute references from
 	   being freed. */
 
 	old_attr_count = appt->count;
@@ -377,23 +377,23 @@ StandaloneApptDragStart(
         context->calendar = c;
         context->editor_type = editor_type;
         context->editor = (caddr_t) de;
- 
+
         GetIcon(de);
- 
+
         convertCBRec[0].closure = (XtPointer)context;
         dragFinishCBRec[0].closure = (XtPointer)context;
- 
+
         if (de->drag_icon == NULL) {
                 de->drag_icon = CreateDragSourceIcon(widget, de->drag_bitmap, de->drag_mask);
         }
- 
+
         if (DtDndVaDragStart(widget, event, DtDND_BUFFER_TRANSFER, 1,
-            	XmDROP_COPY, 
+            	XmDROP_COPY,
 		convertCBRec, dragFinishCBRec,
 		DtNsourceIcon,		de->drag_icon,
 		NULL)
             == NULL) {
- 
+
                 printf("%s", catgets(c->DT_catd, 1, 239, "DragStart returned NULL.\n"));
         }
 }
@@ -415,25 +415,25 @@ EditApptDragMotionHandler(
 	Calendar	*c = de->c;
         Dimension       source_height, source_width;
         Position        source_x, source_y;
- 
+
         if (!de->doing_drag) {
 
                 /* check to see if the iniital value was within the
                    bounds for the drag source icon. */
- 
+
                 XtVaGetValues(de->drag_source,
                                 XmNx, &source_x,
                                 XmNy, &source_y,
                                 XmNheight, &source_height,
                                 XmNwidth, &source_width,
                                 NULL);
- 
+
                 if ((event->xmotion.x < source_x) ||
                     (event->xmotion.y < source_y) ||
                     (event->xmotion.x > (int) (source_x + source_width)) ||
                     (event->xmotion.y > (int) (source_y + source_height)))
                         return;
- 
+
 
                 /*
                  * If the drag is just starting, set initial button down coords
@@ -447,7 +447,7 @@ EditApptDragMotionHandler(
                  */
                 diffX = de->initialX - event->xmotion.x;
                 diffY = de->initialY - event->xmotion.y;
- 
+
                 if ((ABS(diffX) >= DRAG_THRESHOLD) ||
                     (ABS(diffY) >= DRAG_THRESHOLD)) {
                         de->doing_drag = True;
@@ -524,15 +524,15 @@ load_from_file(DTCM_editor *de) {
 	Dtcm_appointment	*appt;
 
 	list = CmDataListCreate();
-	parse_appt_from_file(de->c->DT_catd, de->file, list, de->p, 
+	parse_appt_from_file(de->c->DT_catd, de->file, list, de->p,
 			     query_user, de->c, DATAVER_ARCHIVE);
-	if (appt = (Dtcm_appointment *)CmDataListGetData(list, 1)) {
+	if ( (appt = (Dtcm_appointment *)CmDataListGetData(list, 1)) ) {
 		dssw_attrs_to_form(de->dssw, appt);
 		rfp_attrs_to_form(de->rfp, appt);
 	}
 	for (i = 1; i <= list->count; i++)
-		if (appt = (Dtcm_appointment *)
-		    CmDataListGetData(list, i)) {
+		if ( (appt = (Dtcm_appointment *)
+		    CmDataListGetData(list, i)) ) {
 			if (de->orig_appt)
 				free_appt_struct(&de->orig_appt);
 
@@ -565,7 +565,7 @@ de_apply_proc(Widget w, XtPointer client_data, XtPointer data) {
 	int			old_attr_count;
 	Display			*dpy = XtDisplayOfObject(w);
 
-	appt = allocate_appt_struct(appt_write, 
+	appt = allocate_appt_struct(appt_write,
 				    	DATAVER_ARCHIVE,
 					NULL);
 	load_appt_defaults(appt, de->p);
@@ -574,8 +574,8 @@ de_apply_proc(Widget w, XtPointer client_data, XtPointer data) {
 	de->rfpFlags = 0;
 	rfp_form_to_appt(de->rfp, appt, de->c->calname);
 
-	/* save the old count of attributes so that when this appointment 
-	   gets freed, we can prevent the added attribute references from 
+	/* save the old count of attributes so that when this appointment
+	   gets freed, we can prevent the added attribute references from
 	   being freed. */
 
 	old_attr_count = appt->count;
@@ -587,13 +587,13 @@ de_apply_proc(Widget w, XtPointer client_data, XtPointer data) {
 	if (!str)
 		return;
 
-	/* we need to distinguish between whether the data is being 
-	   saved as part of application termination, or as part of 
-	   pressing the "Apply" button.  If it's is app termination, 
-	   we need to call ttmedia_load_reply, and if it is an 
-	   intermediate save, we are supposed to call ttmedia_Deposit.  
-	   Hmmph.  We also need to be pretty clear about saving it back 
-	   in the same fashion is was supplied.  If it came as part of 
+	/* we need to distinguish between whether the data is being
+	   saved as part of application termination, or as part of
+	   pressing the "Apply" button.  If it's is app termination,
+	   we need to call ttmedia_load_reply, and if it is an
+	   intermediate save, we are supposed to call ttmedia_Deposit.
+	   Hmmph.  We also need to be pretty clear about saving it back
+	   in the same fashion is was supplied.  If it came as part of
 	   a buffer, it needs to go back that way. */
 
 
@@ -601,8 +601,8 @@ de_apply_proc(Widget w, XtPointer client_data, XtPointer data) {
 
 	if (w == NULL) {
 
-		/* if it was a file transfer, we should write out the 
-		   file, and set the buffer to null.  If it came from 
+		/* if it was a file transfer, we should write out the
+		   file, and set the buffer to null.  If it came from
 		   a buffer, we don't bother to write out the file. */
 
 		if (de->read_only) {
@@ -628,9 +628,9 @@ de_apply_proc(Widget w, XtPointer client_data, XtPointer data) {
 	}
 	else {
 
-		/* This case is from the "Apply" button.  In this case, 
-		   if the app was started normally (no tt), then we 
-		   just write out the file.  If it was from tt, we then 
+		/* This case is from the "Apply" button.  In this case,
+		   if the app was started normally (no tt), then we
+		   just write out the file.  If it was from tt, we then
 		   use ttmedia_Deposit to send the data back. */
 
 		if ((de->init == no_tt) || (de->init == file_tt)) {
@@ -702,9 +702,11 @@ DieFromToolTalkError(DTCM_editor *de, char *errfmt, Tt_status status)
 
     if (! tt_is_err(status)) return;
 
+    int errmsg_size = strlen(errfmt) + strlen(statmsg) + 2;
+
     statmsg = tt_status_message(status);
-    errmsg = XtMalloc(strlen(errfmt) + strlen(statmsg) + 2);
-    sprintf(errmsg, errfmt, statmsg);
+    errmsg = XtMalloc(errmsg_size);
+    snprintf(errmsg, errmsg_size, errfmt, statmsg);
 
     xms_ok = XmStringCreateLocalized(catgets(de->c->DT_catd, 2, 3, "OK"));
     xms_errmsg = XmStringCreateLocalized(errmsg);
@@ -745,7 +747,7 @@ DieFromToolTalkError(DTCM_editor *de, char *errfmt, Tt_status status)
 
 
 
-/* 
+/*
  * Initialize tooltalk.  Can be called multiple times: the first call
  * initializes tooltalk, subsequent calls are no-ops.
  *
@@ -817,11 +819,11 @@ cmtt_init(
 }
 
 Tt_message
-reply_cb(Tt_message m, 
-	void *c_data, 
-	Tttk_op op, 
-	unsigned char *contents, 
-	int len, 
+reply_cb(Tt_message m,
+	void *c_data,
+	Tttk_op op,
+	unsigned char *contents,
+	int len,
 	char *file)
 {
         char *client_procID = tt_message_handler(m);
@@ -839,7 +841,7 @@ contract_cb(
 	Tt_message	contract)
 {
 
-	/* For now do nothing 
+	/* For now do nothing
 
 	switch (op) {
 	case TTDT_QUIT:
@@ -873,6 +875,7 @@ load_cb(
 	DTCM_editor	*de;
 	FILE		*fp;
 	char		filename[20];
+	int             filename_size = 20;
 	CmDataList		*list = NULL;
 	Dtcm_appointment	*appt;
 	int		i;
@@ -917,7 +920,7 @@ load_cb(
 			break;
 	case TTME_DISPLAY:
 	case TTME_EDIT:
-			/* for Display only messages, the "Attach" 
+			/* for Display only messages, the "Attach"
 			   button makes no sense */
 
 			if (op == TTME_EDIT)
@@ -932,9 +935,9 @@ load_cb(
 				/*
 				 * Save data to a file so we can pass it to parse_appt_from_file
 				 */
-				
-				strcpy(filename, "/tmp/cmXXXXXX");
-				mktemp(filename);
+
+				strlcpy(filename, "/tmp/cmXXXXXX", filename_size);
+				mkstemp(filename);
 				if ((fp = fopen(filename, "w")) == 0) {
 					tttk_message_fail( msg, TT_DESKTOP_ENODATA, 0, 1 );
 					return 0;
@@ -942,8 +945,8 @@ load_cb(
 
 				fwrite(contents, 1, len, fp);
 				fclose(fp);
-				parse_appt_from_file(de->c->DT_catd, filename, 
-						list, de->p, query_user, 
+				parse_appt_from_file(de->c->DT_catd, filename,
+						list, de->p, query_user,
 						de->c, DATAVER_ARCHIVE);
 				unlink(filename);
 				de->init = buffer_tt;
@@ -951,19 +954,19 @@ load_cb(
 			else
 			{
 				de->file = strdup(file);
-				parse_appt_from_file(de->c->DT_catd, de->file, 
-						list, de->p, query_user, 
+				parse_appt_from_file(de->c->DT_catd, de->file,
+						list, de->p, query_user,
 						de->c, DATAVER_ARCHIVE);
 				de->init = file_tt;
 			}
 
-			if (appt = (Dtcm_appointment *)CmDataListGetData(list, 1)) {
+			if ( (appt = (Dtcm_appointment *)CmDataListGetData(list, 1)) ) {
 				dssw_attrs_to_form(de->dssw, appt);
 				rfp_attrs_to_form(de->rfp, appt);
 			}
 			for (i = 1; i <= list->count; i++)
-				if (appt = (Dtcm_appointment *)
-			    	CmDataListGetData(list, i)) {
+				if ( (appt = (Dtcm_appointment *)
+			    	CmDataListGetData(list, i)) ) {
 					if (de->orig_appt)
 						free_appt_struct(&de->orig_appt);
 
@@ -1009,31 +1012,31 @@ handle_drop_cb(
 		case DtDND_FILENAME_TRANSFER:
 			/* REMIND -- handle multiple filenames */
 			data = transfer_info->dropData->data.files[0];
-	
+
 			de->file = strdup(data);
 			load_from_file(de);
 			break;
 		case DtDND_BUFFER_TRANSFER:
-	
+
 			/*
 			 * Save data to a file so we can pass it to drag_load_proc().
 			 */
-			strcpy(filename, "/tmp/cmXXXXXX");
-			mktemp(filename);
-	
+			strlcpy(filename, "/tmp/cmXXXXXX", 20);
+			mkstemp(filename);
+
 			if ((fp = fopen(filename, "w")) == 0) {
 				transfer_info->status = DtDND_FAILURE;
 				return;
 			}
-	
+
 			data = transfer_info->dropData->data.buffers[0].bp;
 			size = transfer_info->dropData->data.buffers[0].size;
 			fwrite(data, 1, size, fp);
 			fclose(fp);
-	
+
 			de->file = strdup(filename);
 			load_from_file(de);
-	
+
 			unlink(filename);
 			break;
 		default:
@@ -1060,8 +1063,8 @@ de_register_drop_site(
 
 	DtDndVaDropRegister(w, DtDND_FILENAME_TRANSFER | DtDND_BUFFER_TRANSFER,
 			XmDROP_COPY | XmDROP_MOVE,
-			transfer_cb_rec, 
-			DtNregisterChildren, registerchildren,  
+			transfer_cb_rec,
+			DtNregisterChildren, registerchildren,
 			NULL);
 	return;
 }
@@ -1069,7 +1072,7 @@ de_register_drop_site(
 /*
 **  Main line
 */
-int 
+int
 main(int argc, char **argv) {
 	int		dssw_loffset, rfp_loffset, start, stop;
 	Dimension	dssw_x, rfp_x;
@@ -1095,7 +1098,7 @@ main(int argc, char **argv) {
 		else if (argv[1][0] != '-')
 			de->file = cm_strdup(argv[1]);
 	}
-	
+
 	XtSetLanguageProc(NULL, NULL, NULL);
         _DtEnvControl(DT_ENV_SET); /* set up environment variables */
 
@@ -1138,9 +1141,9 @@ main(int argc, char **argv) {
 	/* Open the message catalog for internationalization */
 	calendar->DT_catd = catopen(DTCM_CAT, NL_CAT_LOCALE);
 
-	title = XtNewString(catgets(calendar->DT_catd, 1, 1074, 
+	title = XtNewString(catgets(calendar->DT_catd, 1, 1074,
 						"Calendar Appointment"));
-	XtVaSetValues(de->top_level, 
+	XtVaSetValues(de->top_level,
 		XmNtitle, title,
 		NULL);
 	XtFree(title);
@@ -1207,7 +1210,7 @@ main(int argc, char **argv) {
                     continue;
                 widgets[j++] = children[i];
         }
-        XtManageChildren(widgets, n - 2);	
+        XtManageChildren(widgets, n - 2);
 
 	/*
 	 * Add a drag source icon inside the dssw, lower right
@@ -1264,7 +1267,7 @@ main(int argc, char **argv) {
 		NULL);
 	ManageChildren(de->dssw->dssw_form_mgr);
 
-	/* set up callback to detect whether the appointment 
+	/* set up callback to detect whether the appointment
 	   definition has been modified */
 
 	XtAddCallback(de->dssw->start_text, XmNvalueChangedCallback, de_mark_change, de);
@@ -1300,7 +1303,7 @@ main(int argc, char **argv) {
 			NULL);
 	*/
 
-/* 	Don't need these any more.	
+/* 	Don't need these any more.
 	XtVaGetValues(de->dssw->date_label, XmNwidth, &longest_dssw_label, NULL);
 
 	XtVaGetValues(de->dssw->start_label, XmNwidth, &width, NULL);
@@ -1320,8 +1323,8 @@ main(int argc, char **argv) {
 	if (width > longest_rfp_label)
 		longest_rfp_label = width;
 
-	XtVaSetValues(de->dssw->dssw_form_mgr, 
-			XmNleftOffset, longest_rfp_label - longest_dssw_label, 
+	XtVaSetValues(de->dssw->dssw_form_mgr,
+			XmNleftOffset, longest_rfp_label - longest_dssw_label,
 			NULL);
 */
 
@@ -1329,7 +1332,7 @@ main(int argc, char **argv) {
 
 	de_register_drop_site(de, de->form, True);
 	de_register_drop_site(de, de->dssw->dssw_form_mgr, False);
-	de_register_drop_site(de, de->rfp->rfp_form_mgr, False); 
+	de_register_drop_site(de, de->rfp->rfp_form_mgr, False);
 
         XmProcessTraversal(de->dssw->what_text, XmTRAVERSE_CURRENT);
         XtVaSetValues(de->form, XmNinitialFocus, de->dssw->what_text, NULL);

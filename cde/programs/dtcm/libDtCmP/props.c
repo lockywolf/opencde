@@ -241,7 +241,7 @@ cal_convert_cmrc(Props *p) {
 	**  the old .cm.rc file then write it to .desksetdefaults.
 	*/
 	if (getenv("HOME") != NULL)
-		sprintf(fn, "%s%s", getenv("HOME"), RC_FILENAME);
+		snprintf(fn, MAXPATHLEN, "%s%s", getenv("HOME"), RC_FILENAME);
 	else
 		return B_TRUE;
 
@@ -281,8 +281,9 @@ get_char_prop_default(Props_op op) {
 	case CP_MAILTO:
 		user = (char *)cm_get_uname();
 		host = (char *)cm_get_local_host();
-		val = (char *)ckalloc(cm_strlen(user) + cm_strlen(host) + 2);
-		sprintf(val, "%s@%s", user, host);
+		int val_size = cm_strlen(user) + cm_strlen(host) + 2;
+		val = (char *)ckalloc(val_size);
+		snprintf(val, val_size, "%s@%s", user, host);
 		break;
 	case CP_PRINTERNAME:
 		val = cm_def_printer();
@@ -296,8 +297,9 @@ get_char_prop_default(Props_op op) {
 	case CP_DEFAULTCAL:
 		user = (char *)cm_get_uname();
 		host = (char *)cm_get_local_host();
-		val = (char *)ckalloc(cm_strlen(user) + cm_strlen(host) + 2);
-		sprintf(val, "%s@%s", user, host);
+		int val_size2 = cm_strlen(user) + cm_strlen(host) + 2;
+		val = (char *)ckalloc(val_size2);
+		snprintf(val, val_size2, "%s@%s", user, host);
 		break;
 	case CP_CALLOC:
 		val = (char *)cm_strdup(cm_get_local_host());
@@ -343,11 +345,11 @@ init_props()
 
     dflt = def_props[CP_DATEORDERING];
     str = catgets(libdtcm_catd, 1, 1, dflt);
-    def_props[CP_DATEORDERING] = strdup(str);
+    def_props[CP_DATEORDERING] = (const char *)cm_strdup((char *)str);
 
     dflt = def_props[CP_DEFAULTDISP];
     str = catgets(libdtcm_catd, 1, 2, dflt);
-    def_props[CP_DEFAULTDISP] = strdup(str);
+    def_props[CP_DEFAULTDISP] = (const char *)cm_strdup((char *)str);
 }
 
 extern boolean_t
@@ -373,22 +375,22 @@ read_props(Props *p) {
 		free_resources(p->rdb);
 	p->rdb = NULL;
 	if (ds_def)
-		sprintf(buf, "%s", ds_def);
+		snprintf(buf, MAXPATHLEN, "%s", ds_def);
 	else
-		sprintf(buf, "%s%s", home, DS_FILENAME);
+		snprintf(buf, MAXPATHLEN, "%s%s", home, DS_FILENAME);
 
 	load_resources(&p->rdb, buf);
 
 	if (ow_home) {
-		sprintf(buf, "%s%s", ow_home, OW_FILENAME);
+		snprintf(buf, MAXPATHLEN, "%s%s", ow_home, OW_FILENAME);
 		load_resources(&other_rdb, buf);
 	}
 	if (home) {
-		sprintf(buf, "%s%s", home, X_FILENAME);
+		snprintf(buf, MAXPATHLEN, "%s%s", home, X_FILENAME);
 		load_resources(&other_rdb, buf);
 	}
 	if (x_env) {
-		sprintf(buf, "%s%s", x_env, X_FILENAME);
+		snprintf(buf, MAXPATHLEN, "%s%s", x_env, X_FILENAME);
 		load_resources(&other_rdb, buf);
 	}
 
@@ -435,15 +437,15 @@ save_props(Props *p)
 	}
 
 	if (ds_def)
-		sprintf(buf, "%s", ds_def);
+		snprintf(buf, MAXPATHLEN, "%s", ds_def);
 	else
 		if (getenv("HOME") != NULL)
-			sprintf(buf, "%s%s", getenv("HOME"), DS_FILENAME);
+			snprintf(buf, MAXPATHLEN, "%s%s", getenv("HOME"), DS_FILENAME);
 		else
-			sprintf(buf, "/%s", DS_FILENAME);
+			snprintf(buf, MAXPATHLEN, "/%s", DS_FILENAME);
 
 	return (save_resources(p->rdb, buf));
-}        
+}
 
 extern boolean_t
 set_char_prop(Props *p, Props_op op, char *value) {
@@ -463,6 +465,6 @@ extern boolean_t
 set_int_prop(Props *p, Props_op op, int value) {
 	char buf[MAXNAMELEN];
 
-	sprintf(buf, "%d", value);
+	snprintf(buf, MAXPATHLEN, "%d", value);
 	return (set_char_prop(p, op, buf));
 }

@@ -26,7 +26,7 @@
  *	$TOG: EUSCompat.h /main/4 1998/04/03 17:11:57 mgreess $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement bertween
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -114,7 +114,7 @@ typedef enum {B_FALSE, B_TRUE} boolean_t;
 typedef enum {B_FALSE, B_TRUE} boolean_t;
 #define MAXNAMELEN      	256
 
-#if !defined(__FreeBSD__)
+#if !defined(CSRG_BASED)
 #define iconv_t			int
 #define iconv_open(a, b) 	((iconv_t) -1)
 #define iconv(a, b, c, d, e)	((size_t) 0)
@@ -181,7 +181,7 @@ typedef enum {B_FALSE, B_TRUE} boolean_t;
 #endif
 
  /*
- ** 
+ **
  */
 #if defined(__osf__)
 

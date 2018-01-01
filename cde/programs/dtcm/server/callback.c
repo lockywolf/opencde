@@ -111,9 +111,9 @@ _DtCmsGetRegistration(
 	u_long			procnum,
 	int			pid)
 {
-	_DtCmsRegistrationInfo	*rlist = *_rlist, 
-				*prev, 
-				*ptr, 
+	_DtCmsRegistrationInfo	*rlist = *_rlist,
+				*prev,
+				*ptr,
 				*tmp_ptr;
 
         for (prev = ptr = rlist; ptr != NULL; ) {
@@ -194,7 +194,7 @@ _DtCmsCheckRegistrationList(_DtCmsRegistrationInfo *rlist)
 			clnt_control(cl, CLSET_RETRY_TIMEOUT,
 				(char*)&timeout_tv);
 		}
-				
+
 		/* no client or client not responding */
 		if (cl == NULL || clnt_call(cl, 0, (xdrproc_t)xdr_void, (char *)NULL,
 			(xdrproc_t)xdr_void, (char *)NULL, timeout_tv) != RPC_SUCCESS)
@@ -371,7 +371,7 @@ _DtCmsDoOpenCalCallback(
 	if (rlist == NULL)
 		return (rlist);
 
-	sprintf(calendar, "%s@%s", cal, _DtCmGetLocalHost());
+	snprintf(calendar, BUFSIZ, "%s@%s", cal, _DtCmGetLocalHost());
 	args.calendar = calendar;
 	args.user = user;
 	args.data.reason = CSA_CB_CALENDAR_LOGON;
@@ -394,7 +394,7 @@ _DtCmsDoRemoveCalCallback(
 	if (rlist == NULL)
 		return (rlist);
 
-	sprintf(calendar, "%s@%s", cal, _DtCmGetLocalHost());
+	snprintf(calendar, BUFSIZ, "%s@%s", cal, _DtCmGetLocalHost());
 	args.calendar = calendar;
 	args.user = user;
 	args.data.reason = CSA_CB_CALENDAR_DELETED;
@@ -413,7 +413,7 @@ _DtCmsDoUpdateCalAttrsCallback(
 	int			pid)
 {
 	cmcb_update_callback_args	args;
-	cmcb_cal_attr_data		cdata; 
+	cmcb_cal_attr_data		cdata;
 	_DtCmsRegistrationInfo		*res;
 	char buf[80];
 	char calendar[BUFSIZ];
@@ -422,7 +422,7 @@ _DtCmsDoUpdateCalAttrsCallback(
 	if (rlist == NULL)
 		return (rlist);
 
-	sprintf(calendar, "%s@%s", cal, _DtCmGetLocalHost());
+	snprintf(calendar, BUFSIZ, "%s@%s", cal, _DtCmGetLocalHost());
 
 	/* set up update info */
 	if (num_attrs > 0 &&
@@ -457,17 +457,17 @@ _DtCmsDoInsertEntryCallback(
 	int			pid)
 {
 	cmcb_update_callback_args args;
-	cmcb_add_entry_data adata; 
+	cmcb_add_entry_data adata;
 	char buf[80];
 	char calendar[BUFSIZ];
 
 	if (rlist == NULL)
 		return (rlist);
 
-	sprintf(calendar, "%s@%s", cal, _DtCmGetLocalHost());
+	snprintf(calendar, BUFSIZ, "%s@%s", cal, _DtCmGetLocalHost());
 
 	/* set up update info */
-	sprintf(buf, "%ld", id);
+	snprintf(buf, 80, "%ld", id);
 	adata.id = buf;
 	args.calendar = calendar;
 	args.user = source;
@@ -489,17 +489,17 @@ _DtCmsDoDeleteEntryCallback(
 	int			pid)
 {
 	cmcb_update_callback_args args;
-	cmcb_delete_entry_data ddata; 
+	cmcb_delete_entry_data ddata;
 	char buf[80];
 	char calendar[BUFSIZ];
 
 	if (rlist == NULL)
 		return (rlist);
 
-	sprintf(calendar, "%s@%s", cal, _DtCmGetLocalHost());
+	snprintf(calendar, BUFSIZ, "%s@%s", cal, _DtCmGetLocalHost());
 
 	/* set up update info */
-	sprintf(buf, "%ld", id);
+	snprintf(buf, 80, "%ld", id);
 	ddata.id = buf;
 	ddata.scope = scope;
 	ddata.time = time;
@@ -524,20 +524,20 @@ _DtCmsDoUpdateEntryCallback(
 	int			pid)
 {
 	cmcb_update_callback_args args;
-	cmcb_update_entry_data udata; 
+	cmcb_update_entry_data udata;
 	char nbuf[80], obuf[80];
 	char calendar[BUFSIZ];
 
 	if (rlist == NULL)
 		return (rlist);
 
-	sprintf(calendar, "%s@%s", cal, _DtCmGetLocalHost());
+	snprintf(calendar, BUFSIZ, "%s@%s", cal, _DtCmGetLocalHost());
 
 	/* set up update info */
-	sprintf(obuf, "%ld", oldid);
+	snprintf(obuf, 80, "%ld", oldid);
 	udata.oldid = obuf;
 	if (newid > 0)
-		sprintf(nbuf, "%ld", newid);
+		snprintf(nbuf, 80, "%ld", newid);
 	else
 		nbuf[0] = '\0';
 	udata.newid = nbuf;
@@ -572,7 +572,7 @@ _DtCmsDoCallback(
 	struct timeval timeout_tv;
 	CLIENT *cl;
 	boolean_t advance = B_TRUE;
-        
+
 	/*
 	 * loop through the registration list looking for parties
 	 * interested in this transaction.

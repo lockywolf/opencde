@@ -31,6 +31,8 @@
  *   OBJECT CODE ONLY SOURCE MATERIALS
  */
 
+#include <EUSCompat.h>
+
 typedef enum {
 	MIME_7BIT,
 	MIME_8BIT,
@@ -42,3 +44,13 @@ typedef enum {
 	CURRENT_TO_INTERNET,
 	INTERNET_TO_CURRENT
 	} Direction;
+
+
+void rfc1522cpy(char *, const char *, int);
+int CvtStr( char *, void *, unsigned long,
+            void **, unsigned long *, Direction );
+void DtXlateOpToStdLocale (char *, char *, char **, char **, char **);
+void getCharSet(char *);
+Encoding getEncodingType(const char *, const unsigned int, boolean_t);
+void md5PlainText(const char *, const unsigned long, unsigned char *);
+void writeContentHeaders(char *, const char *, const Encoding, const char *, int);

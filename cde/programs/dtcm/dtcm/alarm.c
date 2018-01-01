@@ -82,7 +82,7 @@ typedef struct
    int state;
    Window icon;
 } WM_STATE;
- 
+
 
 
 extern int debug;
@@ -102,27 +102,27 @@ view_flasher(XtPointer client_data, XtIntervalId *interval_id) {
     int 	actualFormat;
     unsigned long nitems, leftover;
     WM_STATE *wmState;
- 
+
     /*  Getting the WM_STATE property to see if iconified or not */
     wmStateAtom = XInternAtom(XtDisplay(c->frame), "WM_STATE", False);
- 
-    XGetWindowProperty (XtDisplay(c->frame), XtWindow(c->frame), 
+
+    XGetWindowProperty (XtDisplay(c->frame), XtWindow(c->frame),
 			wmStateAtom, 0L,
                         (long)BUFSIZ, False, wmStateAtom, &actualType,
                         &actualFormat, &nitems, &leftover,
                         (unsigned char **) &wmState);
- 
+
     if (wmState->state == IconicState) {
 
 	XtVaSetValues(c->frame, XmNiconPixmap, NULL, NULL);
 	if (c->view->flashes % 2) {
 		if (c->icon && c->icon->icon && c->icon->icon_mask)
-			XtVaSetValues(c->frame, 
+			XtVaSetValues(c->frame,
 				XmNiconPixmap, c->icon->icon, NULL);
 	} else {
-		if (c->icon_inverted && c->icon_inverted->icon 
+		if (c->icon_inverted && c->icon_inverted->icon
 				     && c->icon_inverted->icon_mask)
-			XtVaSetValues(c->frame, 
+			XtVaSetValues(c->frame,
 				XmNiconPixmap, c->icon_inverted->icon, NULL);
 	}
 	XFlush(c->xcontext->display);
@@ -130,15 +130,15 @@ view_flasher(XtPointer client_data, XtIntervalId *interval_id) {
     else {
 	XWindowAttributes	window_attributes;
 
-	XGetWindowAttributes(c->xcontext->display, 
-				XtWindowOfObject(c->form), 
+	XGetWindowAttributes(c->xcontext->display,
+				XtWindowOfObject(c->form),
 				&window_attributes);
 
-       	XFillRectangle(c->xcontext->display, 
-				XtWindowOfObject(c->form), 
-				c->xcontext->invert_gc, 
-				0, 0, 
-				window_attributes.width, 
+       	XFillRectangle(c->xcontext->display,
+				XtWindowOfObject(c->form),
+				c->xcontext->invert_gc,
+				0, 0,
+				window_attributes.width,
 				window_attributes.height);
 	XFlush(c->xcontext->display);
     }
@@ -147,8 +147,8 @@ view_flasher(XtPointer client_data, XtIntervalId *interval_id) {
     if (c->view->flashes != 0)
         XtAppAddTimeOut(c->xcontext->app, 250, view_flasher, c);
     else {
-        /* really nasty kludge code to force a complete repaint of 
-           the form.  It is possible to have damage occur during 
+        /* really nasty kludge code to force a complete repaint of
+           the form.  It is possible to have damage occur during
            the flashing feedback, and this can clean it up. */
 
         XUnmapWindow(c->xcontext->display, XtWindowOfObject(c->form));
@@ -157,13 +157,13 @@ view_flasher(XtPointer client_data, XtIntervalId *interval_id) {
 	/* Make sure the correct icon is restored. */
 	if (wmState->state == IconicState) {
 		if (c->icon && c->icon->icon && c->icon->icon_mask)
-			XtVaSetValues(c->frame, 
+			XtVaSetValues(c->frame,
 				XmNiconPixmap, c->icon->icon, NULL);
 	}
     }
 }
 
-extern void 
+extern void
 flash_it(XtPointer client_data, XtIntervalId *interval_id) {
     int		i, j;
     Calendar	*c = (Calendar *)client_data;
@@ -173,11 +173,11 @@ flash_it(XtPointer client_data, XtIntervalId *interval_id) {
         XtAppAddTimeOut(c->xcontext->app, 250, view_flasher, c);
     }
 
-    /* if the application is busy delivering a flash reminder, 
+    /* if the application is busy delivering a flash reminder,
        don't deliver another one. */
 }
 
-extern void 
+extern void
 mail_it(XtPointer client_data, XtIntervalId *interval_id, CSA_reminder_reference *r) {
 	Calendar		*c = (Calendar *)client_data;
 	int			hr;
@@ -229,22 +229,22 @@ mail_it(XtPointer client_data, XtIntervalId *interval_id, CSA_reminder_reference
 
 	/* compose subject field */
 	lines = text_to_lines(appt->what->value->item.string_value, 5);
-	sprintf(subbuf, catgets(c->DT_catd, 1, 2, "Reminder- %s"),
+	snprintf(subbuf, BUFSIZ, catgets(c->DT_catd, 1, 2, "Reminder- %s"),
 		(lines) ? lines->s : "\0");
 
 	/* compose message body */
 	_csa_iso8601_to_tick(appt->time->value->item.date_time_value, &start);
-	format_tick(start, ORDER_MDY, SEPARATOR_SLASH, datebuf);
+	format_tick(start, ORDER_MDY, SEPARATOR_SLASH, datebuf, 200);
 
 	if (showtime_set(appt) && !magic_time(start)) {
 		hr = hour(start);
 		pm = (dt == HOUR12 && !adjust_hour(&hr)) ? True : False;
 		if (dt == HOUR12) {
-			sprintf(startbuf, "%2d:%02d %s", hr, minute(start),
+			snprintf(startbuf, 100, "%2d:%02d %s", hr, minute(start),
 				pm ? "pm" :
 				"am");
 		} else {
-			sprintf(startbuf, "%02d%02d", hr, minute(start));
+			snprintf(startbuf, 100, "%02d%02d", hr, minute(start));
 		}
 	} else
 		startbuf[0] = '\0';
@@ -255,35 +255,35 @@ mail_it(XtPointer client_data, XtIntervalId *interval_id, CSA_reminder_reference
 		hr = hour(stop);
 		pm = (dt == HOUR12 && !adjust_hour(&hr)) ? True : False;
 		if (dt == HOUR12) {
-			sprintf(stopbuf, "%2d:%02d %s", hr, minute(stop),
+			snprintf(stopbuf, 100, "%2d:%02d %s", hr, minute(stop),
 				pm ? catgets(c->DT_catd, 1, 3, "pm") :
 				catgets(c->DT_catd, 1, 4, "am"));
 		} else {
-			sprintf(stopbuf, "%02d%02d", hr, minute(stop));
+			snprintf(stopbuf, 100, "%02d%02d", hr, minute(stop));
 		}
 	} else
 		stopbuf[0] = '\0';
 
-	if (l = lines) {
-		sprintf(whatbuf, "%s\n", l->s);
+	if ( (l = lines) ) {
+		snprintf(whatbuf, BUFSIZ, "%s\n", l->s);
 		l = l->next;
 	} else
 		whatbuf[0] = '\0';
 
 	while(l != NULL) {
-		strcat(whatbuf, "\t\t");
-		strcat(whatbuf, l->s);
-		strcat(whatbuf, "\n");
+		strlcat(whatbuf, "\t\t", BUFSIZ);
+		strlcat(whatbuf, l->s, BUFSIZ);
+		strlcat(whatbuf, "\n", BUFSIZ);
 		l = l->next;
 	}
 	if (lines)
 		destroy_lines(lines);
 
 	if (stopbuf[0] != '\0') {
-		sprintf(bodybuf, catgets(c->DT_catd, 1, 7, "\n\n\t** Calendar Appointment **\n\n\tDate:\t%s\n\tStart:\t%s\n\tEnd:\t%s\n\tWhat:\t%s"),
+		snprintf(bodybuf, BUFSIZ, catgets(c->DT_catd, 1, 7, "\n\n\t** Calendar Appointment **\n\n\tDate:\t%s\n\tStart:\t%s\n\tEnd:\t%s\n\tWhat:\t%s"),
 			datebuf, startbuf, stopbuf, whatbuf);
 	} else {
-		sprintf(bodybuf, catgets(c->DT_catd, 1, 1100, "\n\n\t** Calendar To Do Item **\n\n\tDue Date:\t%s\n\tTime Due:\t%s\n\tWhat:\t\t%s"),
+		snprintf(bodybuf, BUFSIZ, catgets(c->DT_catd, 1, 1100, "\n\n\t** Calendar To Do Item **\n\n\tDue Date:\t%s\n\tTime Due:\t%s\n\tWhat:\t\t%s"),
 			datebuf, startbuf, whatbuf);
 	}
 
@@ -301,10 +301,10 @@ mail_it(XtPointer client_data, XtIntervalId *interval_id, CSA_reminder_reference
 		free(addr_data);
 }
 
-extern void 
+extern void
 open_it(XtPointer client_data, XtIntervalId *interval_id, CSA_reminder_reference *r) {
 	Calendar	*c = (Calendar *)client_data;
-	
+
 	postup_show_proc(c, r);
 }
 
@@ -329,13 +329,13 @@ reminder_driver(XtPointer client_data, XtIntervalId *interval_id) {
 	if (now() >= run_tick) {
 
 		for (i = 0; i < c->view->next_alarm_count; i++) {
-			if (strcmp(c->view->next_alarm[i].attribute_name, CSA_ENTRY_ATTR_AUDIO_REMINDER)==0) 
+			if (strcmp(c->view->next_alarm[i].attribute_name, CSA_ENTRY_ATTR_AUDIO_REMINDER)==0)
 				ring_it(client_data, interval_id);
-			else if (strcmp(c->view->next_alarm[i].attribute_name, CSA_ENTRY_ATTR_FLASHING_REMINDER)==0) 
+			else if (strcmp(c->view->next_alarm[i].attribute_name, CSA_ENTRY_ATTR_FLASHING_REMINDER)==0)
 				flash_it(client_data, interval_id);
-			else if (strcmp(c->view->next_alarm[i].attribute_name, CSA_ENTRY_ATTR_POPUP_REMINDER)==0) 
+			else if (strcmp(c->view->next_alarm[i].attribute_name, CSA_ENTRY_ATTR_POPUP_REMINDER)==0)
 				open_it(client_data, interval_id, &c->view->next_alarm[i]);
-			else if (strcmp(c->view->next_alarm[i].attribute_name, CSA_ENTRY_ATTR_MAIL_REMINDER)==0) 
+			else if (strcmp(c->view->next_alarm[i].attribute_name, CSA_ENTRY_ATTR_MAIL_REMINDER)==0)
 				mail_it(client_data, interval_id, &c->view->next_alarm[i]);
 
 		}
@@ -392,8 +392,8 @@ postup_show_proc(Calendar *c, CSA_reminder_reference *r) {
 	time_t			st, sp = 0;
 	Lines			*lines, *l = NULL;
 	Props			*p = (Props *)c->properties;
-	Widget			pu_frame, pu_base_form, 
-				pu_text_form, separator, 
+	Widget			pu_frame, pu_base_form,
+				pu_text_form, separator,
 				pu_form, button_form, pu_date,
 				pu_range, pu_image, pu_close, line, last_line;
 	Boolean			start_am, stop_am;
@@ -457,8 +457,8 @@ postup_show_proc(Calendar *c, CSA_reminder_reference *r) {
 		NULL);
 
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 680, "Close"));
-	pu_close = XtVaCreateManagedWidget("close", 
-		xmPushButtonWidgetClass, button_form, 
+	pu_close = XtVaCreateManagedWidget("close",
+		xmPushButtonWidgetClass, button_form,
                 XmNtopAttachment, 	XmATTACH_FORM,
 		XmNbottomAttachment, 	XmATTACH_FORM,
 		XmNleftAttachment, 	XmATTACH_POSITION,
@@ -541,13 +541,13 @@ postup_show_proc(Calendar *c, CSA_reminder_reference *r) {
 		XmStringFree(xmstr);
 
 		if (last_line)
-			XtVaSetValues(line, 
+			XtVaSetValues(line,
 				XmNtopAttachment, XmATTACH_WIDGET,
 				XmNtopWidget, last_line,
 				XmNtopOffset, 8,
 				NULL);
 		else
-			XtVaSetValues(line, 
+			XtVaSetValues(line,
 				XmNtopAttachment, XmATTACH_FORM,
 				XmNtopOffset, 8,
 				NULL);
@@ -563,7 +563,7 @@ postup_show_proc(Calendar *c, CSA_reminder_reference *r) {
 	*/
 	set_date_in_widget(st, pu_date, ord_t, sep_t);
 
-        if (!showtime_set(appt) || magic_time(st)) 
+        if (!showtime_set(appt) || magic_time(st))
                 text[0] = '\0';
 	else {
 		start_hr = hour(st);
@@ -590,12 +590,12 @@ postup_show_proc(Calendar *c, CSA_reminder_reference *r) {
 					$6	-> am or pm
 
 				*/
-			        char *am = XtNewString(catgets(c->DT_catd, 
+			        char *am = XtNewString(catgets(c->DT_catd,
 							       1, 4, "am"));
-			        char *pm = XtNewString(catgets(c->DT_catd, 
+			        char *pm = XtNewString(catgets(c->DT_catd,
 							       1, 3, "pm"));
 				stop_am = adjust_hour(&stop_hr);
-				sprintf(text, catgets(c->DT_catd, 1, 1087,
+				snprintf(text, BUFSIZ, catgets(c->DT_catd, 1, 1087,
 				   "From %1$2d:%2$02d%3$s to %4$2d:%5$02d%6$s"),
 					start_hr, minute(st),
 					(start_am) ? am : pm,
@@ -610,7 +610,7 @@ postup_show_proc(Calendar *c, CSA_reminder_reference *r) {
 				   Message 1088 : This message is used to form
 				   the alarm string that appears in the
 				   reminder popup.  It is used when an appt
-				   does not have and ``end'' time.  In the 
+				   does not have and ``end'' time.  In the
 				   C locale it would look something like this:
 
 				   ``11:00am''
@@ -622,13 +622,13 @@ postup_show_proc(Calendar *c, CSA_reminder_reference *r) {
 					$3	-> am or pm
 
 				*/
-			        char *meridian = 
-				  XtNewString ((start_am) ? 
+			        char *meridian =
+				  XtNewString ((start_am) ?
 					       catgets(c->DT_catd, 1, 4, "am"):
 					       catgets(c->DT_catd, 1, 3, "pm"));
-				
-				sprintf(text, catgets(c->DT_catd, 1, 1088,
-				   			"%1$2d:%2$02d%3$s"), 
+
+				snprintf(text, BUFSIZ, catgets(c->DT_catd, 1, 1088,
+				   			"%1$2d:%2$02d%3$s"),
 					start_hr, minute(st), meridian
 					);
 				XtFree(meridian);
@@ -641,7 +641,7 @@ postup_show_proc(Calendar *c, CSA_reminder_reference *r) {
 				   the alarm string that appears in the
 				   reminder popup.  This string is used when
 				   a user has asked that times be displayed
-				   in 24 hour format.  In the C locale it 
+				   in 24 hour format.  In the C locale it
 				   would look something like this:
 
 				   ``From 0100 to 1600''
@@ -654,9 +654,9 @@ postup_show_proc(Calendar *c, CSA_reminder_reference *r) {
 					$4	-> stop minute
 
 				*/
-				sprintf(text, catgets(c->DT_catd, 1, 1089,
+				snprintf(text, BUFSIZ, catgets(c->DT_catd, 1, 1089,
 				   "From %1$02d%2$02d to %3$02d%4$02d"),
-					start_hr, minute(st), stop_hr, 
+					start_hr, minute(st), stop_hr,
 					minute(sp));
 			} else {
 				/* NL_COMMENT
@@ -666,7 +666,7 @@ postup_show_proc(Calendar *c, CSA_reminder_reference *r) {
 				   reminder popup.  This string is used when
 				   an appt does not have an end time and the
 				   user has asked that times be displayed
-				   in 24 hour format.  In the C locale it 
+				   in 24 hour format.  In the C locale it
 				   would look something like this:
 
 				   ``1600''
@@ -677,8 +677,8 @@ postup_show_proc(Calendar *c, CSA_reminder_reference *r) {
 					$2	-> start minute
 
 				*/
-				sprintf(text, catgets(c->DT_catd, 1, 1090,
-							"%1$02d%2$02d"), 
+				snprintf(text, BUFSIZ, catgets(c->DT_catd, 1, 1090,
+							"%1$02d%2$02d"),
 					start_hr, minute(st));
 			}
 		}

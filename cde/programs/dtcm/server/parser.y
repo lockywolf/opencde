@@ -96,12 +96,12 @@ static int extend_entry_table(int hashednum, char *name, char *typestr);
 
 %type <s> quotedString what details mailto author
 %type <number> number tick key ntimes duration accesstype nth enddate
-%type <entry> appointmentBody 
+%type <entry> appointmentBody
 %type <attributelist_4> attributes_4 attributelist_4 attributeitem_4
-%type <periodVal> period 
+%type <periodVal> period
 %type <exceptionlist> exceptions exceptionlist exceptitem
 %type <accesslist> accesses accesslist accessitem
-%type <taglist> tags taglist tagitem 
+%type <taglist> tags taglist tagitem
 %type <apptstatVal> apptstat
 %type <privacyVal> privacy
 
@@ -113,7 +113,7 @@ calendar	: versionStamp eventlist
 
 versionStamp	: VERSION COLON number
 			{
-				if ($3 > _DtCMS_VERSION4) { 
+				if ($3 > _DtCMS_VERSION4) {
 					report_err("Unable to read callog file, unsupported version\n");
 					return -1;
 				} else {
@@ -141,8 +141,8 @@ eventlist	: event
 		;
 
 event		: name_type_table
-		| add 
-		| remove 
+		| add
+		| remove
 		| access
 		| calendar_attrs
 		;
@@ -265,7 +265,7 @@ appointmentBody	: tick key what details duration period nth enddate ntimes excep
 					newp->period.nth = $7;
 					newp->period.enddate = $8;
 					newp->ntimes = $9;
-					newp->exception = $10;  
+					newp->exception = $10;
 
 					temp = $11;
 
@@ -309,7 +309,7 @@ tick		: /* empty */
 			{
 				$$ = 0;
 			}
-		| quotedString 
+		| quotedString
 			{
 				time_t	time;
 
@@ -319,7 +319,7 @@ tick		: /* empty */
 					_csa_iso8601_to_tick($1, &time);
 					$$ = time;
 				}
-					
+
 			}
 		;
 
@@ -349,7 +349,7 @@ what		: /* empty */
 				free($3);
 			}
 		;
-				
+
 details		: /* empty */
 			{
 				$$ = "";
@@ -410,7 +410,7 @@ enddate		: /* empty */
 				free($3);
 			}
 		;
-				
+
 privacy		: /* empty */
 			{
 				$$ = public_4;
@@ -492,7 +492,7 @@ accesslist	: accessitem
 			}
 		;
 
-accessitem	: quotedString 
+accessitem	: quotedString
 			{
 				Access_Entry_4 *e =
 					(Access_Entry_4 *)malloc(
@@ -512,7 +512,7 @@ hashedattrlist : hashedattritem
 		;
 
 hashedattritem :OPENPAREN number quotedString CLOSEPAREN
-			{	
+			{
 				add_hashed_attr_to_array(&currentAttrs, $2, $3);
 			}
                 ;
@@ -526,7 +526,7 @@ attributelist_5 : attributeitem_5
 		;
 
 attributeitem_5 :OPENPAREN quotedString COMMA quotedString COMMA quotedString CLOSEPAREN
-			{	
+			{
 				if (currentAttrs.total == currentAttrs.current)
 				{
 					grow_attr_array(&currentAttrs);
@@ -557,7 +557,7 @@ attributelist_4  : attributeitem_4
 			}
 		;
 attributeitem_4	:OPENPAREN quotedString COMMA quotedString COMMA quotedString CLOSEPAREN
-			{	
+			{
 				Attr_4 newattr = _DtCm_make_attr4();
 				newattr->next = (Attr_4)NULL;
 				newattr->attr = $2;
@@ -652,7 +652,7 @@ yyerror(char *s)
         (void)fprintf (stderr, "%s: %s\n", pgname, s);
         (void)fprintf (stderr, "at line %d\n", yylineno);
 }
- 
+
 void
 report_err(char *s)
 {
@@ -751,7 +751,7 @@ get_month(char *month)
 		return (10);
 	if (strncmp(month, "Dec", 3) == 0)
 		return (11);
-		
+
 	return (-1);
 }
 
@@ -767,7 +767,7 @@ convert_2_tick(char *datestr)
 
 	memset((void *)&tmstr, 0, sizeof(struct tm));
 
-	strcpy(datebuf, datestr);
+	strlcpy(datebuf, datestr, BUFSIZ);
 
 	/* get week day */
 	ptr = strtok(datebuf, " ");
@@ -910,9 +910,9 @@ get_attr_value(int type, char *valstr, cms_attribute_value **attrval)
 		break;
 	case CSA_VALUE_REMINDER:
 		memset((void *)&remval, 0, sizeof (CSA_reminder));
-		if (ptr1 = strchr(valstr, ':')) {
+		if ( (ptr1 = strchr(valstr, ':')) ) {
 			*ptr1++ = '\0';
-			if (ptr2 = strchr(ptr1, ':')) {
+			if ( (ptr2 = strchr(ptr1, ':')) ) {
 				*ptr2++ = '\0';
 				ptr3 = strchr(ptr2, ':');
 			}
@@ -932,7 +932,7 @@ get_attr_value(int type, char *valstr, cms_attribute_value **attrval)
 		} else {
 			/* format = "string:string:number:number:string" */
 			*ptr3++ = '\0';
-			if (ptr4 = strchr(ptr3, ':')) {
+			if ( (ptr4 = strchr(ptr3, ':')) ) {
 				*ptr4++ = '\0';
 				remval.lead_time = valstr;
 				remval.snooze_time = ptr1;
@@ -954,7 +954,7 @@ get_attr_value(int type, char *valstr, cms_attribute_value **attrval)
 		stat = get_date_time_list_value(valstr, attrval);
 		break;
 	case CSA_VALUE_OPAQUE_DATA:
-		if (ptr1 = strchr(valstr, ':')) {
+		if ( (ptr1 = strchr(valstr, ':')) ) {
 			*ptr1++ = '\0';
 			opqval.size = atoi(valstr);
 			opqval.data = (unsigned char *)ptr1;
@@ -991,7 +991,7 @@ get_access_list_value(char *valstr, cms_attribute_value **attrval)
 	}
 
 	head = NULL;
-	while (ptr = strchr(valstr, ' ')) {
+	while ( (ptr = strchr(valstr, ' ')) ) {
 
 		*ptr = 0;
 		stat = get_user_access_entry(valstr, &a);
@@ -1096,7 +1096,7 @@ get_date_time_list_value(char *valstr, cms_attribute_value **attrval)
 	val->type = CSA_VALUE_DATE_TIME_LIST;
 
 	head = NULL;
-	while (ptr = strchr(valstr, ' ')) {
+	while ( (ptr = strchr(valstr, ' ')) ) {
 
 		*ptr = 0;
 		if (!(a = calloc(1, sizeof(CSA_date_time_entry))) ||

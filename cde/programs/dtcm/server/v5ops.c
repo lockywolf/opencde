@@ -138,7 +138,7 @@ _DtCmsConvertToOnetime(cms_entry *entry, RepeatEvent *re)
 			sint32_value = CSA_X_DT_REPEAT_ONETIME;
 	else
 		_DtCm_set_sint32_attrval(CSA_X_DT_REPEAT_ONETIME,
-			&entry->attrs[CSA_X_DT_ENTRY_ATTR_REPEAT_TYPE_I].value); 
+			&entry->attrs[CSA_X_DT_ENTRY_ATTR_REPEAT_TYPE_I].value);
 
 	_DtCmUpdateDateTimeListAttrVal(NULL, &entry->attrs\
 		[CSA_ENTRY_ATTR_EXCEPTION_DATES_I].value);
@@ -311,26 +311,28 @@ _DtCmsUpdateDurationInRule(cms_entry *entry, uint remain)
 {
 	char			*newrule, *ptr;
 	char			buf[BUFSIZ];
+	int       newrule_size;
 	cms_attribute_value	*vptr;
 
 	vptr = entry->attrs[CSA_ENTRY_ATTR_RECURRENCE_RULE_I].value;
-	if ((newrule = malloc(strlen(vptr->item.string_value) + 20)) == NULL)
+	newrule_size = strlen(vptr->item.string_value) + 20;
+	if ((newrule = malloc(newrule_size)) == NULL)
 		return (CSA_E_INSUFFICIENT_MEMORY);
 
-	sprintf(buf, "#%d", remain);
-	if (ptr = strchr(vptr->item.string_value, '#')) {
+	snprintf(buf, BUFSIZ, "#%d", remain);
+	if ( (ptr = strchr(vptr->item.string_value, '#')) ) {
 		*ptr = '\0';
-		strcpy(newrule, vptr->item.string_value);
-		strcat(newrule, buf);
-		if (ptr = strchr(ptr + 1, ' '))
-			strcat(newrule, ptr);
+		strlcpy(newrule, vptr->item.string_value, newrule_size);
+		strlcat(newrule, buf, newrule_size);
+		if ( (ptr = strchr(ptr + 1, ' ')) )
+			strlcat(newrule, ptr, newrule_size);
 	} else {
-		if (ptr = strchr(vptr->item.string_value, ' ')) {
+		if ( (ptr = strchr(vptr->item.string_value, ' ')) ) {
 			*ptr = '\0';
-			sprintf(newrule, "%s %s %s", vptr->item.string_value,
+			snprintf(newrule, newrule_size, "%s %s %s", vptr->item.string_value,
 				buf, ptr+1);
 		} else
-			sprintf(newrule, "%s %s", vptr->item.string_value, buf);
+			snprintf(newrule, newrule_size, "%s %s", vptr->item.string_value, buf);
 	}
 
 	free (vptr->item.string_value);
@@ -348,21 +350,22 @@ _DtCmsAddEndDateToRule(cms_attribute *attr, RepeatEvent *re, long time)
 {
 	char	*newrule, *ptr;
 	char	buf[20];
+	int   newrule_size;
 
 	if (_csa_tick_to_iso8601(time, buf))
 		return (CSA_E_INVALID_DATE_TIME);
 
-	if ((newrule = malloc(strlen(attr->value->item.string_value)+20))
-	    == NULL)
+	newrule_size = strlen(attr->value->item.string_value) + 20;
+	if ((newrule = malloc(newrule_size)) == NULL)
 		return (CSA_E_INSUFFICIENT_MEMORY);
 
 	if (re->re_end_date == 0) {
-		sprintf(newrule, "%s %s", attr->value->item.string_value, buf);
+		snprintf(newrule, newrule_size, "%s %s", attr->value->item.string_value, buf);
 	} else {
 		/* end date is always at the end of the rule */
-		strcpy(newrule, attr->value->item.string_value);
+		strlcpy(newrule, attr->value->item.string_value, newrule_size);
 		ptr = strrchr(newrule, ' ');
-		sprintf(ptr, " %s", buf);
+		snprintf(ptr, strlen(ptr), " %s", buf);
 	}
 
 	free(attr->value->item.string_value);

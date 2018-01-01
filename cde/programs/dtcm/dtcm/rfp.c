@@ -88,8 +88,8 @@ rfp_toggle_repeat_grey(RFP *rfp, Boolean status) {
 }
 
 
-/* This routine makes sure that the repeat menu has the right set 
-   of values in it for the connection version.  The REPEAT_EVERY 
+/* This routine makes sure that the repeat menu has the right set
+   of values in it for the connection version.  The REPEAT_EVERY
    item should not appear for vcalendars of version 3 and lower. */
 
 extern void
@@ -136,7 +136,7 @@ rfp_set_repeat_values(RFP *rfp)
         	xmstr = XmStringCreateLocalized(catgets(calendar->DT_catd, 1, 902, "Monday Thru Friday"));
         	XmComboBoxAddItem(rfp->repeat_menu, xmstr, 0, False);
         	XmStringFree(xmstr);
-	 
+
         	xmstr = XmStringCreateLocalized(catgets(calendar->DT_catd, 1, 903, "Mon, Wed, Fri"));
         	XmComboBoxAddItem(rfp->repeat_menu, xmstr, 0, False);
         	XmStringFree(xmstr);
@@ -192,19 +192,19 @@ rfp_repeat_scope_proc(Widget w, XtPointer client_data, XtPointer cbs) {
 
 static Boolean
 string_is_number(char *str) {
- 
- 
+
+
         if (blank_buf(str)) {
                 return(False);
         }
- 
+
         while (str && *str) {
                 if (!isdigit(*str) && *str != ' ' && *str != '\t')
                         return(False);
- 
+
                 str++;
         }
- 
+
         return(True);
 }
 
@@ -212,6 +212,7 @@ static void
 rfp_apply_proc(Widget w, XtPointer client_data, XtPointer cbs) {
 	RFP			*rfp = (RFP *)client_data;
 	char			*str, buf[128];
+	int                     buf_size = 128;
 	XmString		xmstr;
         Calendar 		*c = rfp->cal;
 	Props_pu		*pu = (Props_pu *)c->properties_pu;
@@ -270,7 +271,7 @@ rfp_apply_proc(Widget w, XtPointer client_data, XtPointer cbs) {
 	 */
 	{
 	  char *nl_repeat = XtNewString(repeat_str);
-	  sprintf(buf, catgets(c->DT_catd, 1, 531, "Every %d %s"),
+	  snprintf(buf, buf_size, catgets(c->DT_catd, 1, 531, "Every %d %s"),
 		  rfp->repeat_nth, nl_repeat);
 	  XtFree(nl_repeat);
 	}
@@ -360,9 +361,9 @@ rfp_repeat_every_popup(RFP *rfp) {
 		XmNbottomAttachment, XmATTACH_FORM,
                 NULL);
 	XmStringFree(label_str);
-	XtAddCallback(rfp->repeat_apply_button, 
+	XtAddCallback(rfp->repeat_apply_button,
 			XmNactivateCallback, rfp_apply_proc, rfp);
- 
+
 	label_str = XmStringCreateLocalized(catgets(c->DT_catd, 1, 680, "Close"));
         rfp->repeat_cancel_button = XtVaCreateWidget("repeat_cancel_button",
 		xmPushButtonWidgetClass, rfp->repeat_form_mgr,
@@ -375,7 +376,7 @@ rfp_repeat_every_popup(RFP *rfp) {
 		XmNbottomAttachment, XmATTACH_FORM,
                 NULL);
 	XmStringFree(label_str);
-	XtAddCallback(rfp->repeat_cancel_button, 
+	XtAddCallback(rfp->repeat_cancel_button,
 			XmNactivateCallback, rfp_cancel_proc, rfp);
 
 	separator = XtVaCreateWidget("separator",
@@ -415,8 +416,8 @@ rfp_repeat_every_popup(RFP *rfp) {
 		XmNbottomAttachment, XmATTACH_WIDGET,
 		XmNbottomWidget, separator,
                 NULL);
- 
-	rfp->repeat_popup_menu = 
+
+	rfp->repeat_popup_menu =
 		create_repeat_scope_menu(rfp->repeat_form_mgr, NULL,
 					 rfp_repeat_scope_proc, (XtPointer)rfp);
 
@@ -504,8 +505,8 @@ rfp_repeat_menu_proc(Widget w, XtPointer data, XtPointer cbs) {
 *******************************************************************************/
 extern void
 build_rfp(
-	RFP 		*rfp, 
-	Calendar 	*c, 
+	RFP 		*rfp,
+	Calendar 	*c,
 	Widget 		 parent)
 {
 	XmString	 tmp;
@@ -530,7 +531,7 @@ build_rfp(
 		XmNtopOffset, 		GAP,
 		NULL);
 	XmStringFree(label_str);
- 
+
 	tmp = XmStringCreateLocalized(catgets(c->DT_catd, 1, 534, "Occurs:"));
         rfp->repeat_label = XtVaCreateWidget("repeat",
 		xmLabelGadgetClass, 	rfp->rfp_form_mgr,
@@ -652,6 +653,7 @@ get_rfp_repeat_val(
 	char		*str,
 			 rule_buf1[32],
 			 rule_buf2[32];
+	int              rule_buf_size = 32;
 	Widget		 tf;
 	Repeat_menu_op	 op;
 	Boolean		 sensitive;
@@ -660,9 +662,9 @@ get_rfp_repeat_val(
 	memset (rule_buf1, 0, 32);
 	memset (rule_buf2, 0, 32);
 
-	/* This routine has to set up the recurrence values in two spots. 
+	/* This routine has to set up the recurrence values in two spots.
 	   It has to set up the old style recurrence values for a daemon
-	   in data versions 1-3, and it has to set up a recurrence rule for a 
+	   in data versions 1-3, and it has to set up a recurrence rule for a
 	   data version 4 daemon. */
 
 	/*
@@ -674,67 +676,67 @@ get_rfp_repeat_val(
 	switch(op) {
 	case ONE_TIME:
 		rfp->repeat_type = CSA_X_DT_REPEAT_ONETIME;
-		strcpy(rule_buf1, "D1 ");
+		strlcpy(rule_buf1, "D1 ", rule_buf_size);
 		break;
 	case DAILY:
 		rfp->repeat_type = CSA_X_DT_REPEAT_DAILY;
-		strcpy(rule_buf1, "D1 ");
+		strlcpy(rule_buf1, "D1 ", rule_buf_size);
 		break;
 	case WEEKLY:
 		rfp->repeat_type = CSA_X_DT_REPEAT_WEEKLY;
-		strcpy(rule_buf1, "W1 ");
+		strlcpy(rule_buf1, "W1 ", rule_buf_size);
 		break;
 	case EVERY_TWO_WEEKS:
 		rfp->repeat_type = CSA_X_DT_REPEAT_BIWEEKLY;
-		strcpy(rule_buf1, "W2 ");
+		strlcpy(rule_buf1, "W2 ", rule_buf_size);
 		break;
 	case MONTHLY_BY_DATE:
 		rfp->repeat_type = CSA_X_DT_REPEAT_MONTHLY_BY_DATE;
-		strcpy(rule_buf1, "MD1 ");
+		strlcpy(rule_buf1, "MD1 ", rule_buf_size);
 		break;
 	case MONTHLY_BY_WEEKDAY: {
 		int	wk;
 
 		rfp->repeat_type = CSA_X_DT_REPEAT_MONTHLY_BY_WEEKDAY;
-		/* 
+		/*
 		 * The current behavior of cm/dtcm is that if an appt is
 		 * scheduled for the 5 wk of the month, it repeats on the
 		 * last week of the month.
 		 */
 		if (weekofmonth(tick, &wk) && wk == 5)
-			sprintf(rule_buf1, "MP1 1- %s ", dow_str(tick));
+			snprintf(rule_buf1, rule_buf_size, "MP1 1- %s ", dow_str(tick));
 		else
-			strcpy(rule_buf1, "MP1 ");
+			strlcpy(rule_buf1, "MP1 ", rule_buf_size);
 		break;
 	}
 	case YEARLY:
 		rfp->repeat_type = CSA_X_DT_REPEAT_YEARLY;
-		strcpy(rule_buf1, "YM1 ");
+		strlcpy(rule_buf1, "YM1 ", rule_buf_size);
 		break;
 	case MONDAY_THRU_FRIDAY:
 		rfp->repeat_type = CSA_X_DT_REPEAT_MON_TO_FRI;
-		strcpy(rule_buf1, "W1 MO TU WE TH FR ");
+		strlcpy(rule_buf1, "W1 MO TU WE TH FR ", rule_buf_size);
 		break;
 	case MON_WED_FRI:
 		rfp->repeat_type = CSA_X_DT_REPEAT_MONWEDFRI;
-		strcpy(rule_buf1, "W1 MO WE FR ");
+		strlcpy(rule_buf1, "W1 MO WE FR ", rule_buf_size);
 		break;
 	case TUESDAY_THURSDAY:
 		rfp->repeat_type = CSA_X_DT_REPEAT_TUETHUR;
-		strcpy(rule_buf1, "W1 TU TH ");
+		strlcpy(rule_buf1, "W1 TU TH ", rule_buf_size);
 		break;
 	case REPEAT_EVERY:
 		/* REPEAT_EVERY is handled in rfp_apply_proc() */
 		switch(rfp->repeat_type) {
 		case CSA_X_DT_REPEAT_EVERY_NDAY:
-			sprintf(rule_buf1, "D%d ", rfp->repeat_nth);
+			snprintf(rule_buf1, rule_buf_size, "D%d ", rfp->repeat_nth);
 			break;
 		case CSA_X_DT_REPEAT_EVERY_NWEEK:
-			sprintf(rule_buf1, "W%d ", rfp->repeat_nth);
+			snprintf(rule_buf1, rule_buf_size, "W%d ", rfp->repeat_nth);
 			break;
 		case CSA_X_DT_REPEAT_EVERY_NMONTH:
 		default:
-			sprintf(rule_buf1, "MD%d ", rfp->repeat_nth);
+			snprintf(rule_buf1, rule_buf_size, "MD%d ", rfp->repeat_nth);
 			break;
 		}
 		break;
@@ -748,49 +750,49 @@ get_rfp_repeat_val(
 	/*
 	**  Now get the duration - the for menu and scope.
 	*/
-	XtVaGetValues(rfp->for_menu, 
-			XmNtextField, 	&tf, 
+	XtVaGetValues(rfp->for_menu,
+			XmNtextField, 	&tf,
 			NULL);
 	XtVaGetValues(tf,
 			XmNsensitive,	&sensitive,
 			NULL);
 
 	if (sensitive) {
-		char	*forever_str = catgets(calendar->DT_catd, 1, 876, 
-								   "forever"); 
+		char	*forever_str = catgets(calendar->DT_catd, 1, 876,
+								   "forever");
 		str = XmTextGetString(tf);
 		if (strcmp(str, forever_str) == 0) {
 			rfp->for_val = PRIVATE_FOREVER;
-			strcat(rule_buf2, "#0");
+			strlcat(rule_buf2, "#0", rule_buf_size);
 		} else {
 			rfp->for_val = atoi(str);
 			if (rfp->for_val == 0)
-				strcat(rule_buf2, "#1");
+				strlcat(rule_buf2, "#1", rule_buf_size);
 			else {
 				if (op != REPEAT_EVERY) {
-					sprintf(rule_buf2, "#%d", rfp->for_val);
+					snprintf(rule_buf2, rule_buf_size, "#%d", rfp->for_val);
 				} else {
 					int duration;
 
 					if (rfp->for_val % rfp->repeat_nth)
-						duration = 1 + 
+						duration = 1 +
 						   rfp->for_val/rfp->repeat_nth;
 					else
-						duration = 
+						duration =
 						   rfp->for_val/rfp->repeat_nth;
 
-					sprintf(rule_buf2, "#%d", duration);
+					snprintf(rule_buf2, rule_buf_size, "#%d", duration);
 				}
 			}
 		}
 		XtFree(str);
 	} else {
-		strcat(rule_buf2, "#1");
+		strlcat(rule_buf2, "#1", rule_buf_size);
 		rfp->for_val = 0;
 
 	}
 
-	strcat (rule_buf1, rule_buf2);
+	strlcat (rule_buf1, rule_buf2, rule_buf_size);
 
 	if (rfp->recurrence_rule)
 		free(rfp->recurrence_rule);
@@ -806,13 +808,13 @@ get_rfp_privacy_val(RFP *rfp) {
 	--i;
 
 	switch (i) {
-	
+
 		case 0: rfp->privacy_val = CSA_CLASS_PUBLIC;
 		   break;
-	
+
 		case 1: rfp->privacy_val = CSA_CLASS_CONFIDENTIAL;
 		   break;
-	
+
 		case 2: rfp->privacy_val = CSA_CLASS_PRIVATE;
 		   break;
 
@@ -868,7 +870,7 @@ rfp_form_flags_to_appt(RFP *rfp, Dtcm_appointment *a, char *name, int *flagsP)
 		}
 	}
 	else
-		a->recurrence_rule->value->item.string_value = 
+		a->recurrence_rule->value->item.string_value =
 						cm_strdup(rfp->recurrence_rule);
 
 	if (rfp->repeat_type != CSA_X_DT_REPEAT_ONETIME) {
@@ -981,20 +983,20 @@ change_to_last_week(
 		memset(duration_buf, 0, 10);
 
 		/* The new rule uses a little more memory than the old */
-		new_rule = (char *)calloc(1, 
-		      strlen(a->recurrence_rule->value->item.string_value) + 8);
+		int new_rule_size = strlen(a->recurrence_rule->value->item.string_value) + 8;
+		new_rule = (char *)calloc(1, new_rule_size);
 
 		/* Free the old rule */
 		free(a->recurrence_rule->value->item.string_value);
 
-		sprintf(new_rule, "MP1 1- %s", weekday);
+		snprintf(new_rule, new_rule_size, "MP1 1- %s", weekday);
 		if (rfp->for_val == PRIVATE_FOREVER)
-			strcat(new_rule, " #0");
+			strlcat(new_rule, " #0", new_rule_size);
 		else if (rfp->for_val == 0)
-			strcat(new_rule, " #1");
+			strlcat(new_rule, " #1", new_rule_size);
 		else {
-			sprintf(duration_buf, " #%d", rfp->for_val);
-			strcat(new_rule, duration_buf);
+			snprintf(duration_buf, 10, " #%d", rfp->for_val);
+			strlcat(new_rule, duration_buf, new_rule_size);
 		}
 
 		a->recurrence_rule->value->item.string_value = new_rule;
@@ -1042,7 +1044,7 @@ rfp_attrs_to_form(RFP *rfp, Dtcm_appointment *appt) {
 	   the old style reminder values are not set, we must have a client
 	   that either wrote out the appointment with no reminders, or with
 	   a recurrence rule set that will not map into what wee currently
-	   understand.  We should inactivate the rfp fields, and not set 
+	   understand.  We should inactivate the rfp fields, and not set
 	   any values.  On the other hand, if they are set, we should
 	   make sure the controls are made sensitive. */
 
@@ -1072,6 +1074,7 @@ rfp_attrs_to_form(RFP *rfp, Dtcm_appointment *appt) {
 extern void
 set_rfp_repeat_val(RFP *rfp) {
 	char		buf[128];
+	int             buf_size = 128;
 	Boolean		status = True;
 	XmString	xmstr;
 	Calendar	*c = rfp->cal;
@@ -1085,65 +1088,65 @@ set_rfp_repeat_val(RFP *rfp) {
 	if (rfp->repeat_type == CSA_X_DT_REPEAT_ONETIME) {
 		op = ONE_TIME;
 		repeat_scope = default_repeat_scope_str(c->DT_catd, ONE_TIME);
-		sprintf(buf, "%s", repeat_str(c->DT_catd, ONE_TIME));
+		snprintf(buf, buf_size, "%s", repeat_str(c->DT_catd, ONE_TIME));
 		status = False;
 	} else if (rfp->repeat_type == CSA_X_DT_REPEAT_DAILY) {
 		op = DAILY;
 		repeat_scope = default_repeat_scope_str(c->DT_catd, DAILY);
-		sprintf(buf, "%s", repeat_str(c->DT_catd, DAILY));
+		snprintf(buf, buf_size, "%s", repeat_str(c->DT_catd, DAILY));
 	} else if (rfp->repeat_type == CSA_X_DT_REPEAT_WEEKLY) {
 		op = WEEKLY;
 		repeat_scope = default_repeat_scope_str(c->DT_catd, WEEKLY);
-		sprintf(buf, "%s", repeat_str(c->DT_catd, WEEKLY));
+		snprintf(buf, buf_size, "%s", repeat_str(c->DT_catd, WEEKLY));
 	} else if (rfp->repeat_type == CSA_X_DT_REPEAT_BIWEEKLY) {
 		op = EVERY_TWO_WEEKS;
-		repeat_scope = 
+		repeat_scope =
 			default_repeat_scope_str(c->DT_catd, EVERY_TWO_WEEKS);
-		sprintf(buf, "%s", repeat_str(c->DT_catd, EVERY_TWO_WEEKS));
+		snprintf(buf, buf_size, "%s", repeat_str(c->DT_catd, EVERY_TWO_WEEKS));
 	} else if (rfp->repeat_type == CSA_X_DT_REPEAT_MONTHLY_BY_DATE) {
 		op = MONTHLY_BY_DATE;
-		repeat_scope = 
+		repeat_scope =
 			default_repeat_scope_str(c->DT_catd, MONTHLY_BY_DATE);
-		sprintf(buf, "%s", repeat_str(c->DT_catd, MONTHLY_BY_DATE));
+		snprintf(buf, buf_size, "%s", repeat_str(c->DT_catd, MONTHLY_BY_DATE));
 	} else if (rfp->repeat_type ==
 			  CSA_X_DT_REPEAT_MONTHLY_BY_WEEKDAY) {
 		op = MONTHLY_BY_WEEKDAY;
-		repeat_scope = default_repeat_scope_str(c->DT_catd, 
+		repeat_scope = default_repeat_scope_str(c->DT_catd,
 							MONTHLY_BY_WEEKDAY);
-		sprintf(buf, "%s", repeat_str(c->DT_catd, MONTHLY_BY_WEEKDAY));
+		snprintf(buf, buf_size, "%s", repeat_str(c->DT_catd, MONTHLY_BY_WEEKDAY));
 	} else if (rfp->repeat_type == CSA_X_DT_REPEAT_YEARLY) {
 		op = YEARLY;
 		repeat_scope = default_repeat_scope_str(c->DT_catd, YEARLY);
-		sprintf(buf, "%s", repeat_str(c->DT_catd, YEARLY));
+		snprintf(buf, buf_size, "%s", repeat_str(c->DT_catd, YEARLY));
 	} else if (rfp->repeat_type == CSA_X_DT_REPEAT_MON_TO_FRI) {
 		op = MONDAY_THRU_FRIDAY;
-		repeat_scope = default_repeat_scope_str(c->DT_catd, 
+		repeat_scope = default_repeat_scope_str(c->DT_catd,
 							MONDAY_THRU_FRIDAY);
-		sprintf(buf, "%s", repeat_str(c->DT_catd, MONDAY_THRU_FRIDAY));
+		snprintf(buf, buf_size, "%s", repeat_str(c->DT_catd, MONDAY_THRU_FRIDAY));
 	} else if (rfp->repeat_type == CSA_X_DT_REPEAT_MONWEDFRI) {
 		op = MON_WED_FRI;
-		repeat_scope = 
+		repeat_scope =
 			default_repeat_scope_str(c->DT_catd, MON_WED_FRI);
-		sprintf(buf, "%s", repeat_str(c->DT_catd, MON_WED_FRI));
+		snprintf(buf, buf_size, "%s", repeat_str(c->DT_catd, MON_WED_FRI));
 	} else if (rfp->repeat_type == CSA_X_DT_REPEAT_TUETHUR) {
 		op = TUESDAY_THURSDAY;
-		repeat_scope = 
+		repeat_scope =
 			default_repeat_scope_str(c->DT_catd, TUESDAY_THURSDAY);
-		sprintf(buf, "%s", repeat_str(c->DT_catd, TUESDAY_THURSDAY));
+		snprintf(buf, buf_size, "%s", repeat_str(c->DT_catd, TUESDAY_THURSDAY));
 	} else if (rfp->repeat_type == CSA_X_DT_REPEAT_EVERY_NDAY) {
 		op = REPEAT_EVERY;
 		repeat_scope = repeat_scope_str(c->DT_catd, REPEAT_DAYS);
-		sprintf(buf, catgets(c->DT_catd, 1, 542, "Every %d %s"),
+		snprintf(buf, buf_size, catgets(c->DT_catd, 1, 542, "Every %d %s"),
 			rfp->repeat_nth, repeat_scope);
 	} else if (rfp->repeat_type == CSA_X_DT_REPEAT_EVERY_NWEEK) {
 		op = REPEAT_EVERY;
 		repeat_scope = repeat_scope_str(c->DT_catd, REPEAT_WEEKS);
-		sprintf(buf, catgets(c->DT_catd, 1, 543, "Every %d %s"),
+		snprintf(buf, buf_size, catgets(c->DT_catd, 1, 543, "Every %d %s"),
 			rfp->repeat_nth, repeat_scope);
 	} else if (rfp->repeat_type == CSA_X_DT_REPEAT_EVERY_NMONTH) {
 		op = REPEAT_EVERY;
 		repeat_scope = repeat_scope_str(c->DT_catd, REPEAT_MONTHS);
-		sprintf(buf, catgets(c->DT_catd, 1, 544, "Every %d %s"),
+		snprintf(buf, buf_size, catgets(c->DT_catd, 1, 544, "Every %d %s"),
 			rfp->repeat_nth, repeat_scope);
 	} else
 		return;
@@ -1162,7 +1165,7 @@ set_rfp_repeat_val(RFP *rfp) {
 	if (rfp->for_val == CSA_X_DT_DT_REPEAT_FOREVER) {
 		if(rfp->repeat_type != CSA_X_DT_REPEAT_ONETIME)
 		{
-			sprintf(buf, "%s", catgets(c->DT_catd, 1, 876, "forever"));
+			snprintf(buf, buf_size, "%s", catgets(c->DT_catd, 1, 876, "forever"));
 			xmstr = XmStringCreateLocalized(buf);
 			XmComboBoxSetItem(rfp->for_menu, xmstr);
 			XmStringFree(xmstr);
@@ -1177,13 +1180,13 @@ set_rfp_repeat_val(RFP *rfp) {
 		}
 		repeat_scope = "\0";
 	} else if (rfp->for_val >= 2 && rfp->for_val <= 14) {
-		sprintf(buf, "%s", for_str(rfp->for_val - 2)); 
+		snprintf(buf, buf_size, "%s", for_str(rfp->for_val - 2));
 		xmstr = XmStringCreateLocalized(buf);
 		XmComboBoxSetItem(rfp->for_menu, xmstr);
 		XmStringFree(xmstr);
 	} else {
 		Widget		text;
-		sprintf(buf, "%d", rfp->for_val);
+		snprintf(buf, buf_size, "%d", rfp->for_val);
 		XtVaGetValues(rfp->for_menu, XmNtextField, &text, NULL);
 		XmTextFieldSetString(text, buf);
 	}

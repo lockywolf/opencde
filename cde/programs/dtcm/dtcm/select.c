@@ -122,9 +122,9 @@ weekchart_deselect(Calendar *c)
 	h =  (w->chart_hour_height/BOX_SEG);
 	wi =  w->chart_day_width-2;
 
-	gr_clear_area(c->xcontext, x, y, w->chart_day_width-1, 
+	gr_clear_area(c->xcontext, x, y, w->chart_day_width-1,
 			w->chart_hour_height-1 + w->add_pixels);
-	gr_draw_box(c->xcontext, x - 1, y - 1, w->chart_day_width, 
+	gr_draw_box(c->xcontext, x - 1, y - 1, w->chart_day_width,
 			w->chart_hour_height + w->add_pixels, NULL);
 	index = j * (w->segs_in_array / 7) + (BOX_SEG * k);
 	for (i = index;  i < (index + BOX_SEG); i++) {
@@ -133,26 +133,26 @@ weekchart_deselect(Calendar *c)
 		if (w->time_array[i] == 1) {
 			if ((c->xcontext->screen_depth < 8)  || FAKE_MONOCHROME)
 				gr_make_gray(c->xcontext, x, y, wi+1, h, 25);
-			else 
-				gr_make_grayshade(c->xcontext, x, y, wi+1, h, 
+			else
+				gr_make_grayshade(c->xcontext, x, y, wi+1, h,
 						LIGHTGREY);
 		}
 		else if (w->time_array[i] == 2) {
 			if ((c->xcontext->screen_depth < 8)  || FAKE_MONOCHROME)
-				gr_make_gray(c->xcontext, x, y, 
+				gr_make_gray(c->xcontext, x, y,
 					wi+1, h, 50);
 			else
-				gr_make_rgbcolor(c->xcontext, cms, x, y, wi+1, h, 
+				gr_make_rgbcolor(c->xcontext, cms, x, y, wi+1, h,
 						MIDGREY, MIDGREY, MIDGREY);
 		}
 		else if (w->time_array[i] >= 3) {
 			if ((c->xcontext->screen_depth < 8)  || FAKE_MONOCHROME)
 				gr_make_gray(c->xcontext, x, y, wi+1, h, 75);
-			else 
-				gr_make_grayshade(c->xcontext, x, y, wi+1, h, 
+			else
+				gr_make_grayshade(c->xcontext, x, y, wi+1, h,
 						DIMGREY);
 		}
-		/* compensate for grid line pixel */ 
+		/* compensate for grid line pixel */
 		if (i == (index+BOX_SEG-2))
 			y += (h-1);
 		else
@@ -189,18 +189,18 @@ weekchart_select(Calendar *c)
         	chart_y = w->chart_y - char_height - 4;
 		if (c->xcontext->screen_depth < 8) {
 			gr_draw_box(c->xcontext, (i * w->chart_day_width) +
-			 	w->chart_x + 1, (j * w->chart_hour_height) + 
-				(j * w->add_pixels) + w->chart_y + 1, 
-				w->chart_day_width - 2, 
+			 	w->chart_x + 1, (j * w->chart_hour_height) +
+				(j * w->add_pixels) + w->chart_y + 1,
+				w->chart_day_width - 2,
 				w->chart_hour_height - 2 + w->add_pixels, NULL);
-			gr_draw_box(c->xcontext, chart_x, chart_y, 
+			gr_draw_box(c->xcontext, chart_x, chart_y,
 				w->chart_day_width, char_height + 1, NULL);
 		}
-		else  { 
+		else  {
 			/* Select time slot */
 			gr_draw_rgb_box(c->xcontext, (i * w->chart_day_width)
-				+ w->chart_x, (j * w->chart_hour_height) 
-				+ (j * w->add_pixels) + w->chart_y, 
+				+ w->chart_x, (j * w->chart_hour_height)
+				+ (j * w->add_pixels) + w->chart_y,
 				w->chart_day_width, w->chart_hour_height
 				+ w->add_pixels, 1,  background_pixel, cms);
 
@@ -237,7 +237,7 @@ select_weekday(Calendar *c, Boolean select)
                 x = w->x + n * w->day_width + 2;
                 y = w->y + w->day_height + w->label_height + 2;
         }
- 
+
         if (select) {
                 if (c->xcontext->screen_depth < 8) {
                         gr_draw_box(xc, x, y, w->day_width - 2,
@@ -259,7 +259,7 @@ select_weekday(Calendar *c, Boolean select)
 				 w->day_height - w->label_height - 2, 2);
                 weekchart_deselect(c);
         }
- 
+
 }
 
 /*	selection service for all views.  ref is a client_data
@@ -302,15 +302,15 @@ calendar_select (Calendar *c, Selection_unit unit, caddr_t ref)
 				sel->row=j-1;
 				sel->col=i;
 				sel->nunits=1;
-				if (c->xcontext->screen_depth < 8) 
+				if (c->xcontext->screen_depth < 8)
 					gr_draw_box(xc, (i*boxw)+margin+
 					1, (sel->row*boxh)+topoff+
 					dayname_height+1, boxw-2, boxh-2, NULL);
 				else {
 					gr_draw_rgb_box(xc, (i*boxw)
-						+margin, 
+						+margin,
 						(sel->row*boxh)+topoff+
-                                        	dayname_height, boxw, 
+                                        	dayname_height, boxw,
 						boxh, 1,
 						foreground_pixel, cms);
 				}
@@ -326,17 +326,17 @@ calendar_select (Calendar *c, Selection_unit unit, caddr_t ref)
 			sel->col=i;
 			sel->nunits=j-i;
 			while (i < j) {
-				if (c->xcontext->screen_depth < 8) 
+				if (c->xcontext->screen_depth < 8)
 					gr_draw_box(xc, i*boxw+margin+1,
-					(int)ref*boxh+margin+topoff+1, 
+					(int)ref*boxh+margin+topoff+1,
 					boxw-2, boxh-2, NULL);
 				else {
 					gr_draw_rgb_box(xc, i*boxw+margin+2,
-					(int)ref*boxh+margin+topoff+2, 
+					(int)ref*boxh+margin+topoff+2,
 					boxw-4, boxh-4, 1,
 					foreground_pixel, cms);
 					gr_draw_rgb_box(xc, i*boxw+margin+1,
-					(int)ref*boxh+margin+topoff+1, 
+					(int)ref*boxh+margin+topoff+1,
 					boxw-2, boxh-2, 1,
 					foreground_pixel, cms);
 				}
@@ -355,7 +355,7 @@ calendar_select (Calendar *c, Selection_unit unit, caddr_t ref)
 				i = sel->col;
 				j = sel->row;
 			}
-			if (c->xcontext->screen_depth < 8) 
+			if (c->xcontext->screen_depth < 8)
 				gr_draw_box(xc, i*boxw+margin+10,
 					j*boxh+topoff-4, boxw-4, boxh-4, NULL);
 			else {
@@ -385,13 +385,13 @@ calendar_select (Calendar *c, Selection_unit unit, caddr_t ref)
 				j=((pr_pos *)ref)->y;
 			else
 				j = sel->row;
-			if (c->xcontext->screen_depth < 8) 
+			if (c->xcontext->screen_depth < 8)
 				gr_draw_box(xc, MOBOX_AREA_WIDTH+5,
 					j*boxh+topoff+1, c->view->boxw-4,
 					c->view->boxh-2, NULL);
 			else {
 				gr_draw_rgb_box(xc, MOBOX_AREA_WIDTH+3,
-					j*boxh+topoff, 
+					j*boxh+topoff,
 					c->view->boxw - 2,
 					c->view->boxh,
 					1,
@@ -419,7 +419,7 @@ calendar_select (Calendar *c, Selection_unit unit, caddr_t ref)
 	common_update_lists(c);
 */
 }
-	
+
 extern void
 calendar_deselect (Calendar *c)
 {
@@ -460,35 +460,35 @@ calendar_deselect (Calendar *c)
 				gr_draw_line(xc, x, y, x + boxw, y,
 						gr_solid, NULL);
 				y += boxh;
-				gr_draw_line(xc, x, y, x + boxw, y, 
+				gr_draw_line(xc, x, y, x + boxw, y,
 						gr_solid, NULL);
 			}
 
         		if (disp_t == HOUR12)
-                		CalTextExtents(pf, "12pm", 4, &nop, &nop, 
+                		CalTextExtents(pf, "12pm", 4, &nop, &nop,
 							   &hrbox_margin, &nop);
         		else
-                		CalTextExtents(pf, "24 ", 3, &nop, &nop, 
+                		CalTextExtents(pf, "24 ", 3, &nop, &nop,
 							   &hrbox_margin, &nop);
 
 			/* draw vertical line */
         		gr_draw_line(xc, MOBOX_AREA_WIDTH+2+hrbox_margin,
 			c->view->topoffset, MOBOX_AREA_WIDTH+2+hrbox_margin,
-			c->view->topoffset + num_hrs * c->view->boxh, 
+			c->view->topoffset + num_hrs * c->view->boxh,
 			gr_solid, NULL);
 			break;
 		}
 		case monthGlance:
-			dayname_height = 
+			dayname_height =
 				((Month *) c->view->month_info)->dayname_height;
 
 			for (i=0; i<nunits; i++) {
 				gr_dissolve_box(xc,
-					(j * boxw) + margin + 1, 
+					(j * boxw) + margin + 1,
 					(k * boxh) + topoff + dayname_height + 1,
                                         boxw - 2, boxh - 2, 2);
 				gr_draw_box(xc,
-					(j * boxw) + margin, 
+					(j * boxw) + margin,
 					(k * boxh) + topoff + dayname_height,
                                         boxw, boxh, NULL);
 				j++;
@@ -508,7 +508,7 @@ calendar_deselect (Calendar *c)
 					k*boxh+topoff-5,
 					boxw-2, boxh-2, 1);
 */
-				gr_dissolve_box(xc, xpos, 
+				gr_dissolve_box(xc, xpos,
                                    k*boxh+topoff+10, boxw-56, boxh+2, 1);
 
 /*
@@ -537,21 +537,21 @@ monthbox_deselect(Calendar *c)
 	y = day_info->day_selected_y + 2;
 
 	if (c->xcontext->screen_depth < 8)
-		gr_make_gray(c->xcontext, 
+		gr_make_gray(c->xcontext,
 			x,
 			y,
 			day_info->col_w+1,
 			day_info->row_h-1, 25);
 	else
-		gr_make_grayshade(c->xcontext, 
+		gr_make_grayshade(c->xcontext,
 			x,
 			y,
 			day_info->col_w+1,
 			day_info->row_h-1, LIGHTGREY);
 	buf [0] = '\0';
-	sprintf(buf, "%d", day_info->day_selected);
-	gr_text(c->xcontext, day_info->day_selected_x2+2, 
-			day_info->day_selected_y2, 
+	snprintf(buf, 3, "%d", day_info->day_selected);
+	gr_text(c->xcontext, day_info->day_selected_x2+2,
+			day_info->day_selected_y2,
 			c->fonts->viewfont, buf, NULL);
 }
 extern void
@@ -564,7 +564,7 @@ monthbox_select(Calendar *c)
 	x = day_info->day_selected_x + 2;
 	y = day_info->day_selected_y + 2;
 
-	gr_clear_box(c->xcontext, 
+	gr_clear_box(c->xcontext,
 			x,
 			y,
 			day_info->col_w,
@@ -575,9 +575,9 @@ monthbox_select(Calendar *c)
 			day_info->col_w,
 			day_info->row_h-3, NULL);
 	buf [0] = '\0';
-	sprintf(buf, "%d", day_info->day_selected);
-	gr_text(c->xcontext, day_info->day_selected_x2+2, 
-			day_info->day_selected_y2, 
+	snprintf(buf, 3, "%d", day_info->day_selected);
+	gr_text(c->xcontext, day_info->day_selected_x2+2,
+			day_info->day_selected_y2,
 			c->fonts->viewfont, buf, NULL);
 }
 
@@ -602,29 +602,29 @@ browser_deselect (Calendar *c, Browser *b)
 	for (i = index;  i < (index + BOX_SEG); i++) {
 		if (b->multi_array[i] == 1) {
 			if ((c->xcontext->screen_depth < 8)  || FAKE_MONOCHROME)
-				gr_make_gray(b->xcontext, x, y, w+1, 
+				gr_make_gray(b->xcontext, x, y, w+1,
 							h, 25);
-			else 
-				gr_make_grayshade(b->xcontext, x, y, 
+			else
+				gr_make_grayshade(b->xcontext, x, y,
 					w+1, h, LIGHTGREY);
 		}
 		else if (b->multi_array[i] == 2) {
 			if ((c->xcontext->screen_depth < 8)  || FAKE_MONOCHROME)
-				gr_make_gray(b->xcontext, x, y, 
+				gr_make_gray(b->xcontext, x, y,
 					w+1, h, 50);
 			else
-				gr_make_rgbcolor(b->xcontext, cms, x, y, 
+				gr_make_rgbcolor(b->xcontext, cms, x, y,
 					w+1, h, MIDGREY, MIDGREY, MIDGREY);
 		}
 		else if (b->multi_array[i] >= 3) {
 			if ((c->xcontext->screen_depth < 8)  || FAKE_MONOCHROME)
-				gr_make_gray(b->xcontext, x, y, 
+				gr_make_gray(b->xcontext, x, y,
 					w+1, h, 75);
-			else 
-				gr_make_grayshade(b->xcontext, x, y, 
+			else
+				gr_make_grayshade(b->xcontext, x, y,
 					w+1, h, DIMGREY);
 		}
-		/* compensate for grid line pixel */ 
+		/* compensate for grid line pixel */
 		if (i == (index+BOX_SEG-2))
 			y += (h-1);
 		else
@@ -652,19 +652,19 @@ browser_select(Calendar *c, Browser *b, pr_pos *xy)
 	}
 	if (j >= 0) {
 		if (c->xcontext->screen_depth < 8) {
-			gr_draw_box(b->xcontext, (i * b->boxw) + 
-				b->chart_x + 2, (j * b->boxh) + b->chart_y 
+			gr_draw_box(b->xcontext, (i * b->boxw) +
+				b->chart_x + 2, (j * b->boxh) + b->chart_y
 				+ 2, b->boxw - 4, b->boxh - 4, NULL);
 		}
 		else {
 			pixel = c->xcontext->hilight_color;
         		XtVaGetValues(b->canvas, XmNcolormap, &cms, NULL);
-			gr_draw_rgb_box(b->xcontext, (i * b->boxw) + 
-				b->chart_x + 2, (j * b->boxh) + b->chart_y 
+			gr_draw_rgb_box(b->xcontext, (i * b->boxw) +
+				b->chart_x + 2, (j * b->boxh) + b->chart_y
 				+ 2, b->boxw - 4, b->boxh - 4, 1,
 				pixel, cms);
-			gr_draw_rgb_box(b->xcontext, (i * b->boxw) + 
-				b->chart_x + 1, (j * b->boxh) + b->chart_y 
+			gr_draw_rgb_box(b->xcontext, (i * b->boxw) +
+				b->chart_x + 1, (j * b->boxh) + b->chart_y
 				+ 1, b->boxw - 2, b->boxh - 2, 1,
 				pixel, cms);
 		}
@@ -703,7 +703,7 @@ select_weekhotbox(Calendar *c)
                 x = w->x + n * w->day_width + 2;
                 y = w->y + w->day_height + 2;
         }
- 
+
 	if (c->xcontext->screen_depth < 8)
 		gr_draw_box(xc, x, y, w->day_width - 4, w->label_height - 4, NULL);
 	else {

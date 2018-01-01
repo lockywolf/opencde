@@ -117,9 +117,9 @@ appt_to_form(Editor *e, CSA_entry_handle a) {
 	if (!reminders_appt_to_form(&e->reminders, a))
 		return;
 
-	appt = allocate_appt_struct(appt_read, 
+	appt = allocate_appt_struct(appt_read,
 				        e->cal->general->version,
-					CSA_ENTRY_ATTR_ORGANIZER_I, 
+					CSA_ENTRY_ATTR_ORGANIZER_I,
 					NULL);
 	status = query_appt_struct(e->cal->cal_handle,a, appt);
 	backend_err_msg(e->frame, e->cal->view->current_calendar, status,
@@ -128,7 +128,7 @@ appt_to_form(Editor *e, CSA_entry_handle a) {
 		free_appt_struct(&appt);
 		return;
 	}
-	sprintf(buf, "%s:  %s",	catgets(e->cal->DT_catd, 1, 251, "Author"),
+	snprintf(buf, MAXNAMELEN, "%s:  %s",	catgets(e->cal->DT_catd, 1, 251, "Author"),
 		appt->author->value->item.calendar_user_value->user_name);
 	set_message(e->message_text, buf);
 	free_appt_struct(&appt);
@@ -144,7 +144,7 @@ e_list_select_proc(Widget w, XtPointer client_data, XtPointer data) {
 	Editor			*e = (Editor *)client_data;
 	XmListCallbackStruct	*cbs = (XmListCallbackStruct *) data;
 
-	if (a = editor_nth_appt(e, cbs->item_position - 1))
+	if ( (a = editor_nth_appt(e, cbs->item_position - 1)) )
 		appt_to_form(e, a);
 
 	XtSetSensitive(e->delete_button, True);
@@ -166,7 +166,9 @@ e_quit_handler(Widget w, XtPointer cdata, XtPointer data) {
 	{
 		e->editor_view_is_up = False;
 		popMeDown = e->view_form;
-	}
+	} else
+	  return;
+
 
 	XtUnmanageChild(popMeDown);
 }
@@ -198,7 +200,7 @@ e_build_view_popup(Editor *e) {
 	/*
 	**  Dialog shell and stuff
 	*/
-	title = XtNewString(catgets(c->DT_catd, 1, 1086, 
+	title = XtNewString(catgets(c->DT_catd, 1, 1086,
 				    "Calendar : Appointment List"));
 	e->view_frame = XtVaCreatePopupShell("appt_list",
 		xmDialogShellWidgetClass, 	e->cal->frame,
@@ -286,9 +288,9 @@ e_build_view_popup(Editor *e) {
 	e->view_list = XmCreateScrolledList(e->view_form, "view_list",
 					    args, ac);
 
-        XtAddCallback(e->view_help_button, XmNactivateCallback, 
+        XtAddCallback(e->view_help_button, XmNactivateCallback,
 		(XtCallbackProc)help_cb, APPT_LIST_HELP_BUTTON);
-        XtAddCallback(e->view_form, XmNhelpCallback, 
+        XtAddCallback(e->view_form, XmNhelpCallback,
 		(XtCallbackProc)help_cb, (XtPointer) APPT_LIST_HELP_BUTTON);
 
 	XtManageChild(e->view_list);
@@ -348,9 +350,9 @@ e_expand_ui_proc(Widget w, XtPointer client_data, XtPointer data) {
 	Dimension       h, height, width;
 	static Boolean	expand_state_closed = True;
 
-	XtVaGetValues(e->appt_list_sw, 
-			XmNheight, 	&height, 
-			XmNwidth, 	&width, 
+	XtVaGetValues(e->appt_list_sw,
+			XmNheight, 	&height,
+			XmNwidth, 	&width,
 			NULL);
 
 	if (expand_state_closed) {
@@ -391,9 +393,9 @@ e_expand_ui_proc(Widget w, XtPointer client_data, XtPointer data) {
 		XtVaSetValues(e->separator1, XmNbottomOffset, 0, NULL);
 		expand_state_closed = True;
 	}
-	XtVaSetValues(e->appt_list_sw, 
-		XmNheight, height, 
-		XmNwidth, width, 
+	XtVaSetValues(e->appt_list_sw,
+		XmNheight, height,
+		XmNwidth, width,
 		NULL);
 }
 
@@ -452,8 +454,8 @@ e_insert_proc(Widget w, XtPointer client_data, XtPointer data) {
 		 * Make sure user really meant to insert appointment
 		 * into somebody elses calendar.
 		 */
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 210, "The appointment will be scheduled in the calendar\nyou are currently browsing.  Do you still want to schedule it?"));
-		sprintf(buf2, "%s %s", catgets(c->DT_catd, 1, 211, "Schedule in"),
+		snprintf(buf, BUFSIZ, "%s", catgets(c->DT_catd, 1, 210, "The appointment will be scheduled in the calendar\nyou are currently browsing.  Do you still want to schedule it?"));
+		snprintf(buf2, BUFSIZ, "%s %s", catgets(c->DT_catd, 1, 211, "Schedule in"),
 			c->view->current_calendar);
 		title = XtNewString(catgets(c->DT_catd, 1, 212,
 					    "Calendar : Schedule Appointment"));
@@ -496,8 +498,8 @@ e_delete_proc(Widget w, XtPointer client_data, XtPointer data) {
 		 * Make sure user really meant to delete appointment
 		 * from somebody elses calendar.
 		 */
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 1004, "This appointment is in a calendar owned by someone else.\nDo you want to delete it anyway ?"));
-		sprintf(buf2, "%s %s", catgets(c->DT_catd, 1, 1005, "Delete from"),
+		snprintf(buf, BUFSIZ, "%s", catgets(c->DT_catd, 1, 1004, "This appointment is in a calendar owned by someone else.\nDo you want to delete it anyway ?"));
+		snprintf(buf2, BUFSIZ, "%s %s", catgets(c->DT_catd, 1, 1005, "Delete from"),
 			c->view->current_calendar);
 		title = XtNewString(catgets(c->DT_catd, 1, 252,
 				"Calendar : Appointment Editor - Delete"));
@@ -532,7 +534,7 @@ e_delete_proc(Widget w, XtPointer client_data, XtPointer data) {
 		XtFree(title);
 		_DtTurnOffHourGlass(e->frame);
 		return;
-	} 
+	}
 
 	if (!(a = editor_nth_appt(e, item_list[0] - 1))) {
 	  	char *title = XtNewString(catgets(c->DT_catd, 1, 252,
@@ -579,8 +581,8 @@ e_change_proc(Widget w, XtPointer client_data, XtPointer data) {
 		 * Make sure user really meant to insert appointment
 		 * into somebody elses calendar.
 		 */
-		sprintf(buf, "%s", catgets(c->DT_catd, 1, 1003, "This appointment is in a calendar owned by someone else.\nDo you want to change it anyway ?"));
-		sprintf(buf2, "%s %s", catgets(c->DT_catd, 1, 1006, "Change in"),
+		snprintf(buf, BUFSIZ, "%s", catgets(c->DT_catd, 1, 1003, "This appointment is in a calendar owned by someone else.\nDo you want to change it anyway ?"));
+		snprintf(buf2, BUFSIZ, "%s %s", catgets(c->DT_catd, 1, 1006, "Change in"),
 			c->view->current_calendar);
 		answer = dialog_popup(e->frame,
 			DIALOG_TITLE, title,
@@ -612,7 +614,7 @@ e_change_proc(Widget w, XtPointer client_data, XtPointer data) {
 		XtFree(title);
 		_DtTurnOffHourGlass(e->frame);
 		return;
-	} 
+	}
 
 	if (!(old_a = editor_nth_appt(e, item_list[0] - 1))) {
 		char *title = XtNewString(catgets(c->DT_catd, 1, 1075,
@@ -680,13 +682,13 @@ FormApptDragMotionHandler(
 	Editor		*e = (Editor *) c->editor;
 	Dimension	source_height, source_width;
 	Position	source_x, source_y;
- 
+
         if (!e->doing_drag) {
 
-		/* check to see if the iniital value was within the 
+		/* check to see if the iniital value was within the
 		   bounds for the drag source icon. */
 
-		XtVaGetValues(e->drag_source, 
+		XtVaGetValues(e->drag_source,
 				XmNx, &source_x,
 				XmNy, &source_y,
 				XmNheight, &source_height,
@@ -711,7 +713,7 @@ FormApptDragMotionHandler(
                  */
                 diffX = e->initialX - event->xmotion.x;
                 diffY = e->initialY - event->xmotion.y;
- 
+
                 if ((ABS(diffX) >= DRAG_THRESHOLD) ||
                     (ABS(diffY) >= DRAG_THRESHOLD)) {
                         e->doing_drag = True;
@@ -746,10 +748,10 @@ e_make_editor(Calendar *c)
 		<Btn2Motion>:ListButtonMotion()\n\
 		~c ~s ~m ~a <Btn2Up>:ListEndSelect()\n\
 		c ~s ~m ~a <Btn2Up>:ListEndToggle()";
-	Boolean 	btn1_transfer; 
+	Boolean 	btn1_transfer;
 
 	new_translations = XtParseTranslationTable(translations);
-			 
+
 	e->cal = c;
 
 	/*
@@ -828,7 +830,7 @@ e_make_editor(Calendar *c)
                 NULL);
 	XtAddCallback(e->change_button, XmNactivateCallback, e_change_proc, e);
 	XmStringFree(xmstr);
- 
+
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 419, "Delete"));
         e->delete_button = XtVaCreateWidget("Delete",
 		xmPushButtonWidgetClass, e->base_form_mgr,
@@ -967,26 +969,26 @@ e_make_editor(Calendar *c)
         XtAddEventHandler(XtParent(e->drag_source), Button1MotionMask, False,
                 (XtEventHandler)FormApptDragMotionHandler, (XtPointer) c);
 
-	XtVaGetValues((Widget)XmGetXmDisplay(XtDisplay(c->frame)), 
-		"enableBtn1Transfer", 	&btn1_transfer, 
-		NULL); 
+	XtVaGetValues((Widget)XmGetXmDisplay(XtDisplay(c->frame)),
+		"enableBtn1Transfer", 	&btn1_transfer,
+		NULL);
 
 	/* btn1_transfer is a tri-state variable - see 1195846 */
 	if ((Boolean)btn1_transfer != True) {
-        	XtAddEventHandler(XtParent(e->drag_source), 
-				Button2MotionMask, False, 
-				(XtEventHandler)FormApptDragMotionHandler, 
+        	XtAddEventHandler(XtParent(e->drag_source),
+				Button2MotionMask, False,
+				(XtEventHandler)FormApptDragMotionHandler,
 				(XtPointer) c);
 	}
 
 	if (p->drag_icon_xbm)
-		XtVaSetValues(e->drag_source, 
-				XmNpixmap, p->drag_icon_xbm, 
+		XtVaSetValues(e->drag_source,
+				XmNpixmap, p->drag_icon_xbm,
 				NULL);
 
-	XtVaSetValues(e->dssw.what_scrollwindow, 
+	XtVaSetValues(e->dssw.what_scrollwindow,
 		XmNrightAttachment, 	XmATTACH_WIDGET,
-		XmNrightWidget, 	e->drag_source, 
+		XmNrightWidget, 	e->drag_source,
 		NULL);
 
 	ManageChildren(e->dssw.dssw_form_mgr);
@@ -995,7 +997,7 @@ e_make_editor(Calendar *c)
 
 	cnt = 0;
 	XtSetArg(args[cnt], XmNlistSizePolicy, XmCONSTANT); 		++cnt;
-	XtSetArg(args[cnt], XmNwidth, 15 * 
+	XtSetArg(args[cnt], XmNwidth, 15 *
 		listfontextents.max_logical_extent.width); 		++cnt;
 	XtSetArg(args[cnt], XmNscrollBarDisplayPolicy, XmSTATIC); 	++cnt;
 	XtSetArg(args[cnt], XmNdoubleClickInterval, 5); 		++cnt;
@@ -1027,7 +1029,7 @@ e_make_editor(Calendar *c)
 
 	XtManageChild(e->appt_list);
 	XtAddCallback(e->appt_list,
-		XmNbrowseSelectionCallback, e_list_select_proc, e); 
+		XmNbrowseSelectionCallback, e_list_select_proc, e);
 
 	XtVaSetValues(e->list_label,
 		XmNleftAttachment, 	XmATTACH_OPPOSITE_WIDGET,
@@ -1039,17 +1041,17 @@ e_make_editor(Calendar *c)
         XtAddCallback(e->base_form_mgr, XmNhelpCallback,
                 (XtCallbackProc)help_cb, (XtPointer) APPT_EDITOR_HELP_BUTTON);
 
-       	XtVaSetValues(e->base_form_mgr, 
-		XmNdefaultButton, 	e->insert_button, 
+       	XtVaSetValues(e->base_form_mgr,
+		XmNdefaultButton, 	e->insert_button,
 		NULL);
 
-       	XtVaSetValues(e->base_form_mgr, 
-		XmNcancelButton, 	e->close_button, 
+       	XtVaSetValues(e->base_form_mgr,
+		XmNcancelButton, 	e->close_button,
 		NULL);
 
        	XmProcessTraversal(e->dssw.what_text, XmTRAVERSE_CURRENT);
-       	XtVaSetValues(e->base_form_mgr, 
-		XmNinitialFocus, 	e->dssw.what_text, 
+       	XtVaSetValues(e->base_form_mgr,
+		XmNinitialFocus, 	e->dssw.what_text,
 		NULL);
 
 	ManageChildren(e->base_form_mgr);
@@ -1096,7 +1098,7 @@ add_to_appt_list(CSA_entry_handle entry, Editor *e) {
 		return;
 	}
 
-	format_appt(appt, buf, dt, DEFAULT_APPT_LEN);
+	format_appt(appt, buf, DEFAULT_APPT_LEN, dt, DEFAULT_APPT_LEN);
 	str = XmStringCreateLocalized(buf);
 	XmListAddItem(e->appt_list, str, 0);
 	XmStringFree(str);
@@ -1131,7 +1133,7 @@ add_all_appt(Editor *e) {
 	XtSetSensitive(e->delete_button, False);
 	XtSetSensitive(e->change_button, False);
 	if (e->appt_head && e->appt_count >= 0)
-		csa_free(e->appt_head); 
+		csa_free(e->appt_head);
 	e->appt_head = entry_list;
 	e->appt_count = j;
 	for (i = 0; i < j; i++)
@@ -1155,22 +1157,22 @@ set_list_title(Editor *e) {
 	switch (e->view_list_glance) {
 		case yearGlance:
 				header = catgets(c->DT_catd, 1, 704, "Year of %d");
-				sprintf(buffer, header, year(e->view_list_date));
+				snprintf(buffer, BUFSIZ, header, year(e->view_list_date));
 				break;
 		case monthGlance:
 				header = catgets(c->DT_catd, 1, 705, "%s");
-				format_date(e->view_list_date+1, get_int_prop(p, CP_DATEORDERING), buffer2, 0, 0, 0);
-				sprintf(buffer, header, buffer2);
+				format_date(e->view_list_date+1, get_int_prop(p, CP_DATEORDERING), buffer2, BUFSIZ, 0, 0, 0);
+				snprintf(buffer, BUFSIZ, header, buffer2);
 				break;
 		case weekGlance:
 				header = catgets(c->DT_catd, 1, 706, "Week of %s");
-				format_date(e->view_list_date+1, get_int_prop(p, CP_DATEORDERING), buffer2, 1, 0, 0);
-				sprintf(buffer, header, buffer2);
+				format_date(e->view_list_date+1, get_int_prop(p, CP_DATEORDERING), buffer2, BUFSIZ, 1, 0, 0);
+				snprintf(buffer, BUFSIZ, header, buffer2);
 				break;
 		case dayGlance:
 				header = catgets(c->DT_catd, 1, 707, "%s");
-				format_date(e->view_list_date+1, get_int_prop(p, CP_DATEORDERING), buffer2, 1, 0, 0);
-				sprintf(buffer, header, buffer2);
+				format_date(e->view_list_date+1, get_int_prop(p, CP_DATEORDERING), buffer2, BUFSIZ, 1, 0, 0);
+				snprintf(buffer, BUFSIZ, header, buffer2);
 				break;
 	}
 	if (e->view_frame) {
@@ -1245,10 +1247,10 @@ build_editor_view(Editor *e, Glance glance, Boolean redisplay) {
 	*/
 
         if (redisplay == True) {
- 
+
                 /* On a redisplay, rebuild the list based on the
                    parameters of the last query. */
- 
+
                 build_editor_list(e, e->view_list_date, e->view_list_glance, &entry_list,
                                 &entry_count);
         }
@@ -1257,10 +1259,10 @@ build_editor_view(Editor *e, Glance glance, Boolean redisplay) {
                    save the context so that a redisplay can be done if
                    something changes, like the display format or something
                    like that. */
- 
+
                 build_editor_list(e, e->cal->view->date, glance, &entry_list,
                                 &entry_count);
- 
+
                 e->view_list_glance = glance;
                 e->view_list_date = e->cal->view->date;
         }
@@ -1293,20 +1295,22 @@ build_editor_view(Editor *e, Glance glance, Boolean redisplay) {
 		}
 
 		_csa_iso8601_to_tick(appt->time->value->item.date_time_value, &start_time);
-		format_tick(start_time, o, s, str1);
-		format_time(start_time, dt, str2);
+		format_tick(start_time, o, s, str1, MAXNAMELEN);
+		format_time(start_time, dt, str2, MAXNAMELEN);
 		lines = text_to_lines(appt->what->value->item.string_value, 1);
+
+		int buf_size;
 		if (lines && lines->s) {
-			buf = (char *)ckalloc(cm_strlen(str1) + cm_strlen(str2)
-					      + cm_strlen(lines->s) + 5);
+			buf_size = cm_strlen(str1) + cm_strlen(str2) + cm_strlen(lines->s) + 5;
+			buf = (char *)ckalloc(buf_size);
 			what_str = lines->s;
 		} else {
-			buf = (char *)ckalloc(cm_strlen(str1)
-					      + cm_strlen(str2) + 6);
+			buf_size = cm_strlen(str1) + cm_strlen(str2) + 6;
+			buf = (char *)ckalloc(buf_size);
 			what_str = "\0";
 		}
 
-		sprintf(buf, "%s  %s  %s", str1, str2, what_str);
+		snprintf(buf, buf_size, "%s  %s  %s", str1, str2, what_str);
 		str = XmStringCreateLocalized(buf);
 		XmListAddItem(e->view_list, str, 0);
 
@@ -1370,15 +1374,15 @@ compare_repeat_info(
                 free_appt_struct(&appt);
                 return TRUE;
         }
- 
+
         free_appt_struct(&appt);
- 
+
         /* We're not at the first event so we check to see if the rule
          * has changed.
          */
         if (!old_a->repeat_type->value)
                 return FALSE;
- 
+
         if (old_a->repeat_type->value->item.sint32_value !=
             rfp->repeat_type)
                 return FALSE;
@@ -1393,11 +1397,11 @@ compare_repeat_info(
                     rfp->repeat_nth)
                         return FALSE;
 
-        return TRUE;                  
+        return TRUE;
 }
 
 void
-trim_end_date_from_rule(char *rule, char *newrule)
+trim_end_date_from_rule(char *rule, char *newrule, int newrule_size)
 {
 	char	*ptr;
 
@@ -1406,12 +1410,12 @@ trim_end_date_from_rule(char *rule, char *newrule)
 	 * one end date in the rule and that the end date is
 	 * is always at the end of the rule
 	 */
-	if (ptr = strchr(rule, 'Z')) {
+	if ( (ptr = strchr(rule, 'Z')) ) {
 		while (*ptr != ' ')
 			ptr--;
 		*ptr = '\0';
 	}
-	strcpy(newrule, rule);
+	strlcpy(newrule, rule, newrule_size);
 
 	if (ptr)
 		*ptr = ' ';
@@ -1425,7 +1429,7 @@ trim_end_date_from_rule(char *rule, char *newrule)
 void
 change_rule_for_this_one_only(
 	Calendar	 *c,
-	Dtcm_appointment *new, 
+	Dtcm_appointment *new,
 	Dtcm_appointment *old)
 {
 	char	buf[BUFSIZ];
@@ -1447,7 +1451,7 @@ change_rule_for_this_one_only(
 		 * won't match
 		 */
 		trim_end_date_from_rule(old->recurrence_rule->value->\
-			item.string_value, buf); 
+			item.string_value, buf, BUFSIZ);
 		if (!strcmp(new->recurrence_rule->value->item.string_value,
 			    buf)) {
 			free (new->recurrence_rule->value->item.string_value);
@@ -1508,7 +1512,7 @@ editor_change(Dtcm_appointment *new_a, CSA_entry_handle old_a, CSA_entry_handle 
 		XtFree(text);
 		XtFree(title);
 	}
-	else if (appt->repeat_type->value->item.sint32_value != 
+	else if (appt->repeat_type->value->item.sint32_value !=
 		CSA_X_DT_REPEAT_ONETIME) {
 		char *title = XtNewString(catgets(c->DT_catd, 1, 258,
 				"Calendar : Appointment Editor - Change"));
@@ -1526,7 +1530,7 @@ editor_change(Dtcm_appointment *new_a, CSA_entry_handle old_a, CSA_entry_handle 
 			BUTTON_IDENT, 2, ident2,
 			BUTTON_IDENT, 3, ident3,
 			(compare_repeat_info(appt, &(e->rfp), c->cal_handle, c->general->version) ?
-				BUTTON_IDENT : BUTTON_INSENSITIVE), 
+				BUTTON_IDENT : BUTTON_INSENSITIVE),
 					4, ident4,
 			DIALOG_IMAGE, p->xm_question_pixmap,
 			NULL);
@@ -1556,7 +1560,7 @@ editor_change(Dtcm_appointment *new_a, CSA_entry_handle old_a, CSA_entry_handle 
 		break;
 	}
 
-	/* We are not allowed to change the type of the entry, so we will 
+	/* We are not allowed to change the type of the entry, so we will
 	   remove that particular entry from the list for writing. */
 
 	if (new_a->type) {
@@ -1623,7 +1627,7 @@ editor_change(Dtcm_appointment *new_a, CSA_entry_handle old_a, CSA_entry_handle 
 extern void
 editor_clean_up(Editor *e) {
 	if (e->appt_head && e->appt_count >= 0)
-		csa_free(e->appt_head); 
+		csa_free(e->appt_head);
 	e->appt_head = NULL;
 	e->appt_count = 0;
 }
@@ -1638,9 +1642,9 @@ editor_delete(CSA_entry_handle entry, Calendar *c) {
 	static int	answer;
 
 	answer = 0;
-	appt = allocate_appt_struct(appt_read, 
+	appt = allocate_appt_struct(appt_read,
 				c->general->version,
-				CSA_X_DT_ENTRY_ATTR_REPEAT_TYPE_I, 
+				CSA_X_DT_ENTRY_ATTR_REPEAT_TYPE_I,
 				NULL);
 	stat = query_appt_struct(c->cal_handle, entry, appt);
 	backend_err_msg(e->frame, c->view->current_calendar, stat,
@@ -1870,7 +1874,7 @@ set_editor_title(Editor *e, char *name) {
 	Calendar	*c = e->cal;
 
 	if (e->frame) {
-		sprintf(buf, "%s - %s", catgets(c->DT_catd, 1, 279,
+		snprintf(buf, MAXNAMELEN, "%s - %s", catgets(c->DT_catd, 1, 279,
 			"Calendar : Appointment Editor"), name);
 		XtVaSetValues(e->frame, XmNtitle, buf,
 			NULL);
@@ -1900,8 +1904,8 @@ show_editor(Calendar *c, time_t start, time_t stop, Boolean show_notime) {
 	if (!editor_showing(e)) {
 		ds_position_popup(c->frame, e->frame, DS_POPUP_LOR);
         	XmProcessTraversal(e->dssw.what_text, XmTRAVERSE_CURRENT);
-        	XtVaSetValues(e->base_form_mgr, 
-				XmNinitialFocus, e->dssw.what_text, 
+        	XtVaSetValues(e->base_form_mgr,
+				XmNinitialFocus, e->dssw.what_text,
 				NULL);
 	}
 

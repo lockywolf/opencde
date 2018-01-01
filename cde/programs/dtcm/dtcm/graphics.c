@@ -170,11 +170,11 @@ static unsigned char gray_data_25[] = {
         0x11
 };
 
-static Pixmap black_data_pixmap = NULL;
-static Pixmap gray_data_75_pixmap = NULL;
-static Pixmap gray_data_50_pixmap = NULL;
-static Pixmap gray_data_25_pixmap = NULL;
- 
+static Pixmap black_data_pixmap = -1;
+static Pixmap gray_data_75_pixmap = -1;
+static Pixmap gray_data_50_pixmap = -1;
+static Pixmap gray_data_25_pixmap = -1;
+
 static unsigned char solid[solid_list_length] = {1, 0};
 static unsigned char short_dotted[short_dotted_list_length] = {1, 1};
 static unsigned char dotted[dotted_list_length] = {3, 1};
@@ -217,9 +217,9 @@ extern void
 gr_make_grayshade(new_XContext *xc, int x, int y, int w, int h, int shade) {
 
         XColor colorcell_del, rgb_db_ref;
- 
+
 	XSetForeground((Display*)xc->display, (GC)xc->gc, (unsigned long)xc->colorcell_del[shade].pixel);
- 
+
         XSetFillStyle(xc->display, xc->gc, FillSolid);
         XFillRectangle(xc->display, xc->xid, xc->gc, x, y, w, h);
 }
@@ -242,14 +242,14 @@ gr_make_gray(new_XContext *xc, int x, int y, int w, int h, int percent) {
                 XSetStipple(xc->display, xc->gc, gray_data_25_pixmap);
                 break;
         }
- 
+
         XSetForeground(xc->display, xc->gc, xc->foreground);
         XSetFillStyle(xc->display, xc->gc, FillOpaqueStippled);
         XFillRectangle(xc->display, xc->xid, xc->gc, x, y, w, h);
 }
 
 extern void
-gr_make_rgbcolor(new_XContext *xc, Colormap cms, int x, int y, int w, int h, 
+gr_make_rgbcolor(new_XContext *xc, Colormap cms, int x, int y, int w, int h,
                  int r, int g, int b) {
 
         XColor colorcell_del;
@@ -354,7 +354,7 @@ gr_dissolve_box(
 
 /*  given an area of a certain length (in pixels), compute
     where to lay down a string such that it's centered */
- 
+
 extern int
 gr_center(int area, char *str, Cal_Font *font) {
 
@@ -376,16 +376,16 @@ gr_center(int area, char *str, Cal_Font *font) {
                 w += width;
         }
         return ((area - w)/2);
-}        
+}
 
 extern void
-gr_text(new_XContext *xc, int x, int y, Cal_Font *font, char *str, 
+gr_text(new_XContext *xc, int x, int y, Cal_Font *font, char *str,
         XRectangle *rect) {
- 
+
         int len = cm_strlen(str);
 	int x2, y2, w, h;
 	XRectangle overall_ink_return;
- 
+
         if (rect != NULL) {
 		CalTextExtents(font, str, len, &x2, &y2, &w, &h);
 
@@ -400,14 +400,14 @@ gr_text(new_XContext *xc, int x, int y, Cal_Font *font, char *str,
         CalDrawString(xc->display, xc->xid, font, xc->draw_gc, x, y,
                       str, cm_strlen(str));
 }
- 
+
 extern void
-gr_text_rgb(new_XContext *xc, int x, int y, Cal_Font *font, char *str, 
+gr_text_rgb(new_XContext *xc, int x, int y, Cal_Font *font, char *str,
             Pixel shade, Colormap cms, XRectangle *rect) {
 
 	XRectangle overall_ink_return;
 	int x2, y2, w, h;
- 
+
         if (rect != NULL) {
 		CalTextExtents(font, str, cm_strlen(str), &x2, &y2, &w, &h);
 
@@ -423,12 +423,12 @@ gr_text_rgb(new_XContext *xc, int x, int y, Cal_Font *font, char *str,
         XSetForeground((Display*)xc->display, (GC)xc->gc,
 			(unsigned long)shade);
 
-        CalDrawString(xc->display, xc->xid, font, xc->gc, x, y, 
+        CalDrawString(xc->display, xc->xid, font, xc->gc, x, y,
 			str, cm_strlen(str));
 }
 
-extern void 
-gr_draw_line(new_XContext *xc, int x1, int y1, int x2, int y2, 
+extern void
+gr_draw_line(new_XContext *xc, int x1, int y1, int x2, int y2,
              GR_Line_Style style, XRectangle *rect) {
 
         int dash_offset = 0;
@@ -458,15 +458,15 @@ y2);
                         LineOnOffDash, CapNotLast, JoinMiter);
                 XDrawLine(xc->display, xc->xid, xc->gc, x1, y1, x2, y2);
         }
- 
+
 }
 
-extern void 
+extern void
 gr_draw_box(new_XContext *xc, int x, int y, int w, int h, XRectangle *rect) {
 
         if (rect != NULL) {
                 XRectangle    gr_rect;
- 
+
                 gr_rect.x = x;
                 gr_rect.y = y;
                 gr_rect.width = w;
@@ -476,17 +476,17 @@ gr_draw_box(new_XContext *xc, int x, int y, int w, int h, XRectangle *rect) {
                         return;
         }
         XDrawRectangle(xc->display, xc->xid, xc->draw_gc, x, y, w, h);
-}        
+}
 
-extern void 
-gr_draw_glyph(new_XContext *src_xc, new_XContext *dst_xc, Pixmap pixmap, 
+extern void
+gr_draw_glyph(new_XContext *src_xc, new_XContext *dst_xc, Pixmap pixmap,
               int x, int y, int w, int h) {
 
         XSetStipple(src_xc->display, src_xc->gc, pixmap);
         XSetTSOrigin(src_xc->display, src_xc->gc, x, y);
         XFillRectangle(src_xc->display, dst_xc->xid, src_xc->gc, x, y, w, h);
 }
- 
+
 static void
 saturate(XColor *xclr)
 
@@ -504,7 +504,7 @@ saturate(XColor *xclr)
 
 	return;
 }
- 
+
 /*
  * Allocate and initialize an XContext
  */
@@ -513,19 +513,18 @@ gr_create_xcontext(Calendar *c, Widget widget, GR_depth depth, XtAppContext app)
 {
 
         new_XContext	*xc;
-        Colormap	cms = NULL;
         XGCValues	gc_vals, tmp_vals;
 	GC		hilight_gc;
 	XColor		exact_color;
 	XColor		def_color;
- 
+
         /* X Drawing Stuff */
         if ((xc = (new_XContext *) ckalloc(sizeof(new_XContext))) == NULL)
                 return NULL;
- 
+
         xc->display = (Display *) XtDisplay(widget);
         xc->app = app;
- 
+
         if (depth == gr_mono) {
                 xc->foreground = 1;
                 xc->background = 0;
@@ -544,11 +543,11 @@ gr_create_xcontext(Calendar *c, Widget widget, GR_depth depth, XtAppContext app)
 		XGetGCValues(xc->display, hilight_gc, GCForeground, &tmp_vals);
 		xc->hilight_color = tmp_vals.foreground;
         }
- 
+
         xc->xid = XtWindowOfObject(widget);
         xc->screen_depth = DefaultDepthOfScreen(XtScreen(widget));
 
-        /*                                                      
+        /*
          * Create general purpose gc.  This gc is changed as needed by
          * the drawing routines.
          */
@@ -564,7 +563,7 @@ gr_create_xcontext(Calendar *c, Widget widget, GR_depth depth, XtAppContext app)
                 xc->gcvals);
 
         /*
-         * Specialized GCs. We create a couple of specialized GCs to increase   
+         * Specialized GCs. We create a couple of specialized GCs to increase
          * the speed of common operations.  This way we don't need to change
          * the GC for every operation.
          */
@@ -572,7 +571,7 @@ gr_create_xcontext(Calendar *c, Widget widget, GR_depth depth, XtAppContext app)
         /* GC used for clearing */
         gc_vals.foreground = xc->background;
         xc->clear_gc = XCreateGC(xc->display, xc->xid, GCForeground, &gc_vals);
-	
+
         /* Create GC used for inverting */
         gc_vals.foreground = xc->background;
         gc_vals.function = GXinvert;
@@ -588,16 +587,16 @@ gr_create_xcontext(Calendar *c, Widget widget, GR_depth depth, XtAppContext app)
         XSetLineAttributes(xc->display, xc->draw_gc, 0,
                            LineSolid, CapNotLast, JoinMiter);
 
-        return xc;                                            
+        return xc;
 }
- 
- 
+
+
 /*
  * Set the clip mask for all gcs the graphics package uses
  */
 
-extern void 
-gr_set_clip_rectangles(new_XContext *xc, int x, int y, XRectangle *rectangles, 
+extern void
+gr_set_clip_rectangles(new_XContext *xc, int x, int y, XRectangle *rectangles,
                        int n, int ordering) {
 
         XSetClipRectangles(xc->display, xc->gc, x, y, rectangles, n, ordering);
@@ -610,7 +609,7 @@ gr_set_clip_rectangles(new_XContext *xc, int x, int y, XRectangle *rectangles,
         return;
 }
 
-extern void 
+extern void
 gr_clear_clip_rectangles(new_XContext *xc) {
 
         XSetClipMask(xc->display, xc->gc, None);
@@ -620,12 +619,12 @@ gr_clear_clip_rectangles(new_XContext *xc) {
 }
 
 extern Boolean
-gr_create_stipple(new_XContext *xc, unsigned char *data, int datawidth, int dataheight, 
+gr_create_stipple(new_XContext *xc, unsigned char *data, int datawidth, int dataheight,
                   Pixmap *stipple, unsigned int *width, unsigned int *height) {
 
- 
-        Boolean ok = True;  
- 
+
+        Boolean ok = True;
+
         if ((*stipple = XCreateBitmapFromData(xc->display,
                 xc->xid,
         /*      RootWindow(xc->display, DefaultScreen(xc->display)),  */
@@ -637,20 +636,20 @@ gr_create_stipple(new_XContext *xc, unsigned char *data, int datawidth, int data
                 *height = dataheight;
         }
         return(ok);
-}        
- 
+}
+
 extern Boolean
 gr_init(new_XContext *xc, Widget canvas) {
 
         unsigned int width, height;
         Boolean ok = True;
         XColor  rgb_db_ref;
- 
+
         Display *dpy = XtDisplay(canvas);
         int scr = DefaultScreen(dpy);
         Colormap cmap = DefaultColormap(dpy, scr);
 
-        ok = gr_create_stipple(xc, black_data,     
+        ok = gr_create_stipple(xc, black_data,
                 black_data_width, black_data_height,
                 &black_data_pixmap, &width, &height);
         ok = gr_create_stipple(xc, gray_data_75,
@@ -663,7 +662,7 @@ gr_init(new_XContext *xc, Widget canvas) {
                 gray_data_25_width, gray_data_25_height,
                 &gray_data_25_pixmap, &width, &height);
 
-        ok = XAllocNamedColor(dpy, cmap,                
+        ok = XAllocNamedColor(dpy, cmap,
                 "dark slate grey", &xc->colorcell_del[DARKGREY], &rgb_db_ref);
         ok = XAllocNamedColor(dpy, cmap,
                 "dim grey", &xc->colorcell_del[DIMGREY], &rgb_db_ref);
@@ -674,5 +673,5 @@ gr_init(new_XContext *xc, Widget canvas) {
         ok = XAllocNamedColor(dpy, cmap,
                 "red", &xc->colorcell_del[RED], &rgb_db_ref);
 
-        return(ok);                                           
+        return(ok);
 }

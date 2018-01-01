@@ -77,9 +77,6 @@ extern void p_create_v5_group_access_pane(Props_pu *);
 extern void v5_gap_clear_pending_change(Props_pu *p);
 extern Dimension ComputeMaxWidth(Widget, Widget, Widget, Widget);
 
-extern  void _i18n_HighestWidget( int num, Widget *ret, Dimension *dim, ... );
-extern  void _i18n_HighestWidgetAdjust( int num, Widget *ret, Dimension *dim, ... );
-extern  void _i18n_WidestWidget( int num, Widget *ret, Dimension *dim, ... );
 
 
 
@@ -104,16 +101,16 @@ static XmString	Pane_XmStrs[DATE_FORMAT_PANE + 1];
 static void
 v4_gap_pending_change(Widget w, XtPointer data, XtPointer cbs) {
         Props_pu *p = (Props_pu *) data;
- 
+
         if (p->v4_gap_pending_message_up == False) {
                 p->v4_gap_pending_message_up = True;
                 XtSetSensitive(p->gap_add_button, True);
         }
 }
- 
+
 static void
 v4_gap_clear_pending_change(Props_pu *p) {
- 
+
         if (p->v4_gap_pending_message_up == True) {
                 p->v4_gap_pending_message_up = False;
                 XtSetSensitive(p->gap_add_button, False);
@@ -180,9 +177,9 @@ set_menu_marker(Widget menu, Props_pu *p) {
 	Cardinal	num_c;
 
 	XtVaGetValues(menu, XmNsubMenuId, &submenu, NULL);
-        XtVaGetValues(submenu, 
-		XmNchildren, &children, 
-		XmNnumChildren, &num_c, 
+        XtVaGetValues(submenu,
+		XmNchildren, &children,
+		XmNnumChildren, &num_c,
 		NULL);
 
 	while (num_c > 0)
@@ -207,7 +204,7 @@ p_create_editor_pane(
 	Widget		 widgets[7];
 	Dimension	widest, highest;
 	Dimension	_toLabel, _toText, _toMenu, _toRC;
-	Widget		prev, curr;	
+	Widget		prev, curr;
 
 	/*
         **  Base form
@@ -242,7 +239,7 @@ p_create_editor_pane(
 	build_dssw(&pu->ep_dssw, c, ep_form_mgr, False, False);
 
 
-	
+
 	XtUnmanageChild(pu->ep_dssw.what_scrollwindow);
 
 	widgets[0] = pu->ep_dssw.start_label;
@@ -269,7 +266,7 @@ p_create_editor_pane(
 
 	for(ac = 15; ac <= 90; ac += 15) {
 		if (ac != 75) {
-			sprintf(buf, "%d", ac);
+			snprintf(buf, MAXNAMELEN, "%d", ac);
 			xmstr = XmStringCreateLocalized(buf);
 			XmComboBoxAddItem((Widget)pu->ep_dur_cb,
 					  xmstr, 0, False);
@@ -324,7 +321,7 @@ p_create_editor_pane(
 	prev = curr;
 
 	/*
-	 * pu->ep_dssw.start_label,  pu->ep_dssw.start_text, 
+	 * pu->ep_dssw.start_label,  pu->ep_dssw.start_text,
 	 * pu->ep_dssw.start_menu,  pu->ep_dssw.start_ampm_rc_mgr
 	 */
 	_i18n_WidestWidget( 1, &curr, &widest, pu->ep_dssw.start_label );
@@ -432,21 +429,21 @@ p_create_editor_pane(
 	XtAddCallback(pu->ep_reminders.beep_toggle, XmNvalueChangedCallback, p_mark_change, pu);
 
 	set_menu_marker(pu->ep_reminders.beep_menu, pu);
-	XtAddCallback(pu->ep_reminders.flash_text, 
+	XtAddCallback(pu->ep_reminders.flash_text,
 			XmNvalueChangedCallback, p_mark_change, pu);
-	XtAddCallback(pu->ep_reminders.flash_toggle, 
+	XtAddCallback(pu->ep_reminders.flash_toggle,
 			XmNvalueChangedCallback, p_mark_change, pu);
 	set_menu_marker(pu->ep_reminders.flash_menu, pu);
-	XtAddCallback(pu->ep_reminders.mail_text, 
+	XtAddCallback(pu->ep_reminders.mail_text,
 			XmNvalueChangedCallback, p_mark_change, pu);
-	XtAddCallback(pu->ep_reminders.mail_toggle, 
+	XtAddCallback(pu->ep_reminders.mail_toggle,
 			XmNvalueChangedCallback, p_mark_change, pu);
 	set_menu_marker(pu->ep_reminders.mail_menu, pu);
-	XtAddCallback(pu->ep_reminders.mailto_text, 
+	XtAddCallback(pu->ep_reminders.mailto_text,
 			XmNvalueChangedCallback, p_mark_change, pu);
-	XtAddCallback(pu->ep_reminders.popup_text, 
+	XtAddCallback(pu->ep_reminders.popup_text,
 			XmNvalueChangedCallback, p_mark_change, pu);
-	XtAddCallback(pu->ep_reminders.popup_toggle, 
+	XtAddCallback(pu->ep_reminders.popup_toggle,
 			XmNvalueChangedCallback, p_mark_change, pu);
 	set_menu_marker(pu->ep_reminders.popup_menu, pu);
 
@@ -454,21 +451,21 @@ p_create_editor_pane(
 }
 
 static void
-format_hour(char buffer[], int hour, DisplayType dt, Calendar *c)
+format_hour(char buffer[], int buffer_size, int hour, DisplayType dt, Calendar *c)
 
 {
 	if (dt == HOUR12) {
 		if ((hour == 24) || (hour == 0))
-			cm_strcpy(buffer, catgets(c->DT_catd, 1, 758,"midnight"));
+			cm_strlcpy(buffer, catgets(c->DT_catd, 1, 758,"midnight"), buffer_size);
 		else if (hour > 12)
-				sprintf(buffer, "%2d:00 %s", hour-12,
+				snprintf(buffer, buffer_size, "%2d:00 %s", hour-12,
 					catgets(c->DT_catd, 1, 3, "pm"));
 		else
-				sprintf(buffer, "%2d:00 %s", hour,
+				snprintf(buffer, buffer_size, "%2d:00 %s", hour,
 					catgets(c->DT_catd, 1, 4, "am"));
 	}
 	else
-		sprintf(buffer, " %02d00", hour);
+		snprintf(buffer, buffer_size, " %02d00", hour);
 }
 
 static void
@@ -480,7 +477,7 @@ set_scale_value(Widget w, int val, Props_pu *p)
 	Calendar		*c = p->cal;
 	Props			*props = (Props *) c->properties;
 
-	format_hour(label_buffer, val, (DisplayType) get_int_prop(props, CP_DEFAULTDISP), c);
+	format_hour(label_buffer, 50, val, (DisplayType) get_int_prop(props, CP_DEFAULTDISP), c);
 
 	xmstr = XmStringCreateLocalized(label_buffer);
 
@@ -576,23 +573,23 @@ p_create_display_pane(Props_pu *p) {
 		xmTextWidgetClass, dp_form_mgr,
                 NULL);
 
-	XtAddCallback(p->dp_loc_text, 
+	XtAddCallback(p->dp_loc_text,
 			XmNvalueChangedCallback, p_mark_change, p);
 
 	/*
 	**  Day Boundaries label and beginning/ending sliders
 	*/
 
-	/* There is some additional, very odd layout stuff that 
-	   happens elsewhere.  This is because sliders do not align 
-	   well with text widgets at all.  We want to align the 
-	   centers of the text and slider widgets.  This is done by 
-	   finding the relative heights of the widgets, and using half 
-	   the differenmce as a bottom offset.  Why don't you see that 
-	   below?  Well, it's because the stupid toolkit reports the 
-	   height of a slider as 0 unless that slider is mapped.  Thus, 
-	   this bit of alignment cannot happen until the panel with these 
-	   items is mapped.  Pretty stupid.  Thus the positioning happens 
+	/* There is some additional, very odd layout stuff that
+	   happens elsewhere.  This is because sliders do not align
+	   well with text widgets at all.  We want to align the
+	   centers of the text and slider widgets.  This is done by
+	   finding the relative heights of the widgets, and using half
+	   the differenmce as a bottom offset.  Why don't you see that
+	   below?  Well, it's because the stupid toolkit reports the
+	   height of a slider as 0 unless that slider is mapped.  Thus,
+	   this bit of alignment cannot happen until the panel with these
+	   items is mapped.  Pretty stupid.  Thus the positioning happens
 	   just after the panel is mapped. */
 	xmstr = XmStringCreateLocalized(
 				catgets(c->DT_catd, 1, 392, "Day Boundaries:"));
@@ -668,24 +665,24 @@ p_create_display_pane(Props_pu *p) {
 	XmStringFree(xmstr);
 
 	p->dp_hour_rc_mgr = XtVaCreateWidget("dp_hour_rc_mgr",
-                xmRowColumnWidgetClass, dp_form_mgr, 
+                xmRowColumnWidgetClass, dp_form_mgr,
                 XmNpacking, 		XmPACK_COLUMN,
                 XmNorientation, 	XmHORIZONTAL,
                 XmNradioBehavior, 	True,
                 XmNisHomogeneous, 	True,
                 XmNentryClass, 		xmToggleButtonGadgetClass,
                 NULL);
- 
+
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 396, "12 Hour"));
         p->dp_hour12_toggle = widgets[0] = XtVaCreateWidget("twelveHour",
                 xmToggleButtonGadgetClass, p->dp_hour_rc_mgr,
 		XmNlabelString, 	xmstr,
-                NULL);      
+                NULL);
 	XmStringFree(xmstr);
 
-	XtAddCallback(p->dp_hour12_toggle, 
+	XtAddCallback(p->dp_hour12_toggle,
 			XmNvalueChangedCallback, p_mark_change, p);
- 
+
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 397, "24 Hour"));
         p->dp_hour24_toggle = widgets[1] = XtVaCreateWidget("twentyFourHour",
                 xmToggleButtonGadgetClass, p->dp_hour_rc_mgr,
@@ -693,9 +690,9 @@ p_create_display_pane(Props_pu *p) {
                 NULL);
 	XmStringFree(xmstr);
 
-	XtAddCallback(p->dp_hour24_toggle, 
+	XtAddCallback(p->dp_hour24_toggle,
 			XmNvalueChangedCallback, p_mark_change, p);
- 
+
         XtManageChildren(widgets, 2);
 
 	/*
@@ -717,48 +714,48 @@ p_create_display_pane(Props_pu *p) {
                 XmNisHomogeneous, 	True,
                 XmNentryClass, 		xmToggleButtonGadgetClass,
                 NULL);
- 
- 
+
+
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 402, "Day"));
         p->dp_view_day_toggle = XtVaCreateWidget("day",
                 xmToggleButtonGadgetClass, p->dp_view_rc_mgr,
 		XmNlabelString, 	xmstr,
-                NULL);      
+                NULL);
 	XmStringFree(xmstr);
 
-	XtAddCallback(p->dp_view_day_toggle, 
+	XtAddCallback(p->dp_view_day_toggle,
 			XmNvalueChangedCallback, p_mark_change, p);
 
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 401, "Week"));
         p->dp_view_week_toggle = XtVaCreateWidget("week",
                 xmToggleButtonGadgetClass, p->dp_view_rc_mgr,
 		XmNlabelString, 	xmstr,
-                NULL);      
+                NULL);
 	XmStringFree(xmstr);
 
-	XtAddCallback(p->dp_view_week_toggle, 
+	XtAddCallback(p->dp_view_week_toggle,
 			XmNvalueChangedCallback, p_mark_change, p);
 
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 400, "Month"));
         p->dp_view_month_toggle = XtVaCreateWidget("month",
                 xmToggleButtonGadgetClass, p->dp_view_rc_mgr,
 		XmNlabelString, 	xmstr,
-                NULL);      
+                NULL);
 	XmStringFree(xmstr);
 
-	XtAddCallback(p->dp_view_month_toggle, 
+	XtAddCallback(p->dp_view_month_toggle,
 			XmNvalueChangedCallback, p_mark_change, p);
 
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 399, "Year"));
         p->dp_view_year_toggle = XtVaCreateWidget("year",
                 xmToggleButtonGadgetClass, p->dp_view_rc_mgr,
 		XmNlabelString, 	xmstr,
-                NULL);      
+                NULL);
 	XmStringFree(xmstr);
 
-	XtAddCallback(p->dp_view_year_toggle, 
+	XtAddCallback(p->dp_view_year_toggle,
 			XmNvalueChangedCallback, p_mark_change, p);
- 
+
 	ManageChildren(p->dp_view_rc_mgr);
 
 	/*
@@ -776,7 +773,7 @@ p_create_display_pane(Props_pu *p) {
 		xmTextWidgetClass, dp_form_mgr,
                 NULL);
 
-	XtAddCallback(p->dp_init_view_text, 
+	XtAddCallback(p->dp_init_view_text,
 			XmNvalueChangedCallback, p_mark_change, p);
 
 	/*
@@ -1001,11 +998,11 @@ p_gap_convert_permissions(
 	}
 
 	if (perm_val == 0) {
-	  	char *title = XtNewString(catgets(c->DT_catd, 1, 750, 
+	  	char *title = XtNewString(catgets(c->DT_catd, 1, 750,
 			      "Calendar : Error - Access List and Permissions"));
 	  	char *text = XtNewString(catgets(c->DT_catd, 1, 405,
 			      "Please select at least one permission.        "));
-	  	char *ident1 = XtNewString(catgets(c->DT_catd, 1, 95, 
+	  	char *ident1 = XtNewString(catgets(c->DT_catd, 1, 95,
 				"Continue"));
 		dialog_popup(p->frame,
 			DIALOG_TITLE, title,
@@ -1045,10 +1042,10 @@ p_gap_create_perm_str(CSA_flags perm_val) {
 
 static void
 p_gap_create_entry_string(Props_pu *p, char *who, char *p_str, XmString *val) {
-	char		*buf;
-
-	buf = (char *)ckalloc(NAME_LEN + PERMISSION_LEN + 1);
-	sprintf(buf, "%-*s%s", NAME_LEN, who, p_str);
+	char *buf;
+	int   buf_size = NAME_LEN + PERMISSION_LEN + 1;
+	buf = (char *)ckalloc(buf_size);
+	snprintf(buf, buf_size, "%-*s%s", NAME_LEN, who, p_str);
 	*val = XmStringCreateLocalized(buf);
 	free(buf);
 }
@@ -1182,7 +1179,7 @@ gap_list_select_proc(Widget w, XtPointer client_data, XtPointer data) {
 
 	if (!XmListGetSelectedPos(p->gap_access_list, &item_list, &item_cnt))
 		return;
- 
+
         if (item_cnt <= 0) {
 		if (p->cal->my_cal_version >= DATAVER4)
         		XtSetSensitive(p->gap2_change_button, False);
@@ -1212,7 +1209,7 @@ gap_list_select_proc(Widget w, XtPointer client_data, XtPointer data) {
 			(step->rights & CSA_INSERT_PUBLIC_ENTRIES) ?
 				True : False, True);
 		XmToggleButtonGadgetSetState(p->gap2_public_tog[GAP_CHANGE],
-			(step->rights & CSA_CHANGE_PUBLIC_ENTRIES) ? 
+			(step->rights & CSA_CHANGE_PUBLIC_ENTRIES) ?
 				True : False, True);
 		XmToggleButtonGadgetSetState(p->gap2_semi_tog[GAP_VIEW],
 			(step->rights & CSA_VIEW_CONFIDENTIAL_ENTRIES) ?
@@ -1221,16 +1218,16 @@ gap_list_select_proc(Widget w, XtPointer client_data, XtPointer data) {
 			(step->rights & CSA_INSERT_CONFIDENTIAL_ENTRIES) ?
 				True : False, True);
 		XmToggleButtonGadgetSetState(p->gap2_semi_tog[GAP_CHANGE],
-			(step->rights & CSA_CHANGE_CONFIDENTIAL_ENTRIES) ? 
+			(step->rights & CSA_CHANGE_CONFIDENTIAL_ENTRIES) ?
 				True : False, True);
 		XmToggleButtonGadgetSetState(p->gap2_private_tog[GAP_VIEW],
-			(step->rights & CSA_VIEW_PRIVATE_ENTRIES) ? 
+			(step->rights & CSA_VIEW_PRIVATE_ENTRIES) ?
 				True : False, True);
 		XmToggleButtonGadgetSetState(p->gap2_private_tog[GAP_INSERT],
 			(step->rights & CSA_INSERT_PRIVATE_ENTRIES) ?
 				True : False, True);
 		XmToggleButtonGadgetSetState(p->gap2_private_tog[GAP_CHANGE],
-			(step->rights & CSA_CHANGE_PRIVATE_ENTRIES) ? 
+			(step->rights & CSA_CHANGE_PRIVATE_ENTRIES) ?
 				True : False, True);
 	} else {
 		XmToggleButtonGadgetSetState(p->gap_browse_toggle,
@@ -1290,8 +1287,8 @@ p_create_v4_group_access_pane(Props_pu *p) {
 		xmTextWidgetClass, gap_form_mgr,
                 NULL);
 
-	XtAddCallback(p->gap_user_text, 
-			XmNvalueChangedCallback, v4_gap_pending_change, 
+	XtAddCallback(p->gap_user_text,
+			XmNvalueChangedCallback, v4_gap_pending_change,
 			(XtPointer)p);
 
 	xmstr = XmStringCreateLocalized(
@@ -1303,7 +1300,7 @@ p_create_v4_group_access_pane(Props_pu *p) {
 		XmNsensitive, 		False,
                 NULL);
 	XmStringFree(xmstr);
-	XtAddCallback(p->gap_add_button, 
+	XtAddCallback(p->gap_add_button,
 			XmNactivateCallback, p_gap_add_proc, p);
 
 	/*
@@ -1312,8 +1309,9 @@ p_create_v4_group_access_pane(Props_pu *p) {
 	{
 	  char *user = XtNewString(catgets(c->DT_catd, 1, 983, "User Name"));
 	  char *perm = XtNewString(catgets(c->DT_catd, 1, 413, "Permissions"));
-	  buf = (char *)ckalloc(cm_strlen(user) + cm_strlen(perm) + 10);
-	  sprintf(buf, "%-*s%s", NAME_LEN, user, perm);
+	  int buf_size = cm_strlen(user) + cm_strlen(perm) + 10;
+	  buf = (char *)ckalloc(buf_size);
+	  snprintf(buf, buf_size, "%-*s%s", NAME_LEN, user, perm);
 	  xmstr = XmStringCreateLocalized(buf);
 	  XtFree(perm);
 	  XtFree(user);
@@ -1382,21 +1380,21 @@ p_create_v4_group_access_pane(Props_pu *p) {
 		NULL);
 
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 417, "Browse"));
-        p->gap_browse_toggle = XtVaCreateWidget("browse", 
+        p->gap_browse_toggle = XtVaCreateWidget("browse",
 		xmToggleButtonGadgetClass, p->gap_perm_rc_mgr,
 		XmNlabelString, 	xmstr,
                 NULL);
 	XmStringFree(xmstr);
-	
+
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 342, "Insert"));
-        p->gap_insert_toggle = XtVaCreateWidget("insert", 
+        p->gap_insert_toggle = XtVaCreateWidget("insert",
 		xmToggleButtonGadgetClass, p->gap_perm_rc_mgr,
 		XmNlabelString, 	xmstr,
                 NULL);
 	XmStringFree(xmstr);
-	
+
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 419, "Delete"));
-        p->gap_delete_toggle = XtVaCreateWidget("delete", 
+        p->gap_delete_toggle = XtVaCreateWidget("delete",
 		xmToggleButtonGadgetClass, p->gap_perm_rc_mgr,
 		XmNlabelString, 	xmstr,
                 NULL);
@@ -1618,7 +1616,7 @@ p_create_printer_ops_pane(
 
 	xmstr = XmStringCreateLocalized(
 				catgets(c->DT_catd, 1, 434, "Include:"));
-        p->pop_privacy_label = XtVaCreateWidget("include", 
+        p->pop_privacy_label = XtVaCreateWidget("include",
 		xmLabelGadgetClass, pop_form_mgr,
 		XmNlabelString, xmstr,
 		XmNtopAttachment, XmATTACH_WIDGET,
@@ -1650,8 +1648,8 @@ p_create_printer_ops_pane(
                 XmNleftOffset, 		GAP,
                 XmNleftWidget, 		p->pop_privacy_label,
                 NULL);
- 
-	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 435, 
+
+	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 435,
 						"Show Time and Text Appts"));
         p->pop_privacy_public_toggle = XtVaCreateWidget(
 		"showTimeText",
@@ -1662,8 +1660,8 @@ p_create_printer_ops_pane(
 
 	XtAddCallback(p->pop_privacy_public_toggle,
 		      XmNvalueChangedCallback, p_mark_change, p);
- 
-	xmstr = XmStringCreateLocalized( catgets(c->DT_catd, 1, 436, 
+
+	xmstr = XmStringCreateLocalized( catgets(c->DT_catd, 1, 436,
 						"Show Time Only Appts"));
         p->pop_privacy_semi_toggle = XtVaCreateWidget(
 		"showTimeOnly",
@@ -1674,8 +1672,8 @@ p_create_printer_ops_pane(
 
 	XtAddCallback(p->pop_privacy_semi_toggle,
 		      XmNvalueChangedCallback, p_mark_change, p);
- 
-	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 437, 
+
+	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 437,
 						"Show Nothing Appts"));
         p->pop_privacy_private_toggle = XtVaCreateWidget(
 		"showNothing",
@@ -1686,7 +1684,7 @@ p_create_printer_ops_pane(
 
 	XtAddCallback(p->pop_privacy_private_toggle,
 		      XmNvalueChangedCallback, p_mark_change, p);
- 
+
         ManageChildren(p->pop_privacy_rc_mgr);
 	ManageChildren (pop_form_mgr);
 }
@@ -1696,7 +1694,7 @@ p_create_printer_ops_pane(
 */
 static void
 p_create_date_format_pane(
-	Props_pu 	*p) 
+	Props_pu 	*p)
 {
 	Calendar 	*c = calendar;
 	Widget		 dfp_form_mgr;
@@ -1738,7 +1736,7 @@ p_create_date_format_pane(
                 NULL);
 	XmStringFree(xmstr);
 
-	max_left_label_width = ComputeMaxWidth(p->dfp_order_label, 
+	max_left_label_width = ComputeMaxWidth(p->dfp_order_label,
 					       p->dfp_sep_label,
 					       NULL, NULL) + 2 * GAP;
 
@@ -1763,7 +1761,7 @@ p_create_date_format_pane(
                 NULL);
 	XmStringFree(xmstr);
 
-	XtAddCallback(p->dfp_order_mmddyy_toggle, 
+	XtAddCallback(p->dfp_order_mmddyy_toggle,
 				XmNvalueChangedCallback, p_mark_change, p);
 
 	xmstr = XmStringCreateLocalized(
@@ -1774,7 +1772,7 @@ p_create_date_format_pane(
                 NULL);
 	XmStringFree(xmstr);
 
-	XtAddCallback(p->dfp_order_ddmmyy_toggle, 
+	XtAddCallback(p->dfp_order_ddmmyy_toggle,
 				XmNvalueChangedCallback, p_mark_change, p);
 
 	xmstr = XmStringCreateLocalized(
@@ -1785,7 +1783,7 @@ p_create_date_format_pane(
                 NULL);
 	XmStringFree(xmstr);
 
-	XtAddCallback(p->dfp_order_yymmdd_toggle, 
+	XtAddCallback(p->dfp_order_yymmdd_toggle,
 				XmNvalueChangedCallback, p_mark_change, p);
 
         ManageChildren(p->dfp_order_rc_mgr);
@@ -1814,7 +1812,7 @@ p_create_date_format_pane(
                 NULL);
 	XmStringFree(xmstr);
 
-	XtAddCallback(p->dfp_sep_blank_toggle, 
+	XtAddCallback(p->dfp_sep_blank_toggle,
 				XmNvalueChangedCallback, p_mark_change, p);
 
 	xmstr = XmStringCreateLocalized("/");
@@ -1824,7 +1822,7 @@ p_create_date_format_pane(
                 NULL);
 	XmStringFree(xmstr);
 
-	XtAddCallback(p->dfp_sep_slash_toggle, 
+	XtAddCallback(p->dfp_sep_slash_toggle,
 				XmNvalueChangedCallback, p_mark_change, p);
 
 	xmstr = XmStringCreateLocalized(".");
@@ -1834,7 +1832,7 @@ p_create_date_format_pane(
                 NULL);
 	XmStringFree(xmstr);
 
-	XtAddCallback(p->dfp_sep_period_toggle, 
+	XtAddCallback(p->dfp_sep_period_toggle,
 				XmNvalueChangedCallback, p_mark_change, p);
 
 	xmstr = XmStringCreateLocalized("-");
@@ -1844,7 +1842,7 @@ p_create_date_format_pane(
                 NULL);
 	XmStringFree(xmstr);
 
-	XtAddCallback(p->dfp_sep_dash_toggle, 
+	XtAddCallback(p->dfp_sep_dash_toggle,
 				XmNvalueChangedCallback, p_mark_change, p);
 
         XtVaSetValues(p->dfp_order_label,
@@ -1931,7 +1929,7 @@ show_ui(Props_pu *p, PaneType item_no)
 	Calendar	*c;
 	Dimension	label_height, slider_height;
 
-	/* determine if there are uncommited changes in the property 
+	/* determine if there are uncommited changes in the property
 	   sheet that need to be flushed. */
 
 	c = p->cal;
@@ -1968,7 +1966,7 @@ show_ui(Props_pu *p, PaneType item_no)
 			p_create_display_pane(p);
 			break;
 		case GROUP_ACCESS_PANE:
-			if (p->cal->my_cal_version < DATAVER4) 
+			if (p->cal->my_cal_version < DATAVER4)
 				p_create_v4_group_access_pane(p);
 			else
 				p_create_v5_group_access_pane(p);
@@ -2018,13 +2016,13 @@ set_editor_defaults_later(XtPointer client_data, XtIntervalId *interval_id) {
 
 	if (((Editor *) c->editor)->base_form_mgr) {
 		Editor *e = (Editor *) c->editor;
-	
+
 		set_editor_defaults(e, 0, 0, False);
 	}
 
 	if (((GEditor *) c->geditor)->base_form_mgr) {
 		GEditor *ge = (GEditor *) c->geditor;
-	
+
 		set_geditor_defaults(ge, 0, 0);
 	}
 
@@ -2055,7 +2053,7 @@ p_save_changes(Calendar *c) {
 	if (b) {
         	ot = get_int_prop(p, CP_DATEORDERING);
         	st = get_int_prop(p, CP_DATESEPARATOR);
- 
+
 		date = get_date_from_widget(c->view->date, b->datetext, ot, st);
 
 		if (date)
@@ -2089,27 +2087,27 @@ p_save_changes(Calendar *c) {
 	if (redisplay_mask & PROPS_REDO_DISPLAY) {
 		Dimension width, height;
 
-		/* If this bit is set then it means that things controlling 
-		   the day boundaries, or some detail of date representation 
-		   has changed.  All the things that paint get changed here.  
-		   This is the main canvas, the multi-browse window, and 
+		/* If this bit is set then it means that things controlling
+		   the day boundaries, or some detail of date representation
+		   has changed.  All the things that paint get changed here.
+		   This is the main canvas, the multi-browse window, and
 		   the todo and appointment list dialogs. */
 
-		XtVaGetValues(c->canvas, 
-				XmNwidth, 	&width, 
-				XmNheight, 	&height, 
+		XtVaGetValues(c->canvas,
+				XmNwidth, 	&width,
+				XmNheight, 	&height,
 				NULL);
 		cache_dims(c, width, height);
 
-		if (c->view->glance != yearGlance) 
+		if (c->view->glance != yearGlance)
 			paint_canvas(c, NULL, RENDER_CLEAR_FIRST);
 
 		if (c->browser)
 			mb_refigure_chart(c);
 
-		/* reformat the display values in the property sheet.  
-		   The property sheet must exist is we have to refigure 
-		   out the hour mode, so we don't need to check whether 
+		/* reformat the display values in the property sheet.
+		   The property sheet must exist is we have to refigure
+		   out the hour mode, so we don't need to check whether
 		   it exists or not. */
 
 		XmScaleGetValue(pu->dp_end_scale, &val);
@@ -2124,12 +2122,12 @@ p_save_changes(Calendar *c) {
 			build_todo_view((ToDo *) c->todo, ((ToDo *) (c->todo))->view_list_glance, True);
 
 
-		/* redo date entry in the multi-browser */	
+		/* redo date entry in the multi-browser */
 
 		if (b && current_mb_date) {
         		ot = get_int_prop(p, CP_DATEORDERING);
         		st = get_int_prop(p, CP_DATESEPARATOR);
-        		format_tick(b->date, ot, st, buf);
+        		format_tick(b->date, ot, st, buf, BUFSIZ);
         		XmTextSetString(b->datetext, buf);
 		}
 	}
@@ -2157,7 +2155,7 @@ p_save_changes(Calendar *c) {
 			add_all_gappt(ge);
 
 		}
-	
+
 
 		if (((ToDo *) c->todo)->base_form_mgr) {
 			ToDo *t = (ToDo *)c->todo;
@@ -2175,16 +2173,16 @@ p_save_changes(Calendar *c) {
 		XtVaSetValues(c->browse_button, XmNsubMenuId, c->browse_menu, NULL);
 		if (c->browser)
 			browser_reset_list(c);
-	
-		/* This is really hateful.  The deal is that something 
-		   about the code that redefines the start and stop time 
-		   menus has a timing hole in it.  If I reset the values 
-		   for these two menus before the application returns to 
-		   the toolkit, the values will get clobbered later.  
-		   There seems to be no way to force the toolkit to 
-		   complete the restrucutring of the menus immediately, 
-		   so I have to add a timer proc to reset the defaults on 
-		   the dialog a little bit after returning to the notifier 
+
+		/* This is really hateful.  The deal is that something
+		   about the code that redefines the start and stop time
+		   menus has a timing hole in it.  If I reset the values
+		   for these two menus before the application returns to
+		   the toolkit, the values will get clobbered later.
+		   There seems to be no way to force the toolkit to
+		   complete the restrucutring of the menus immediately,
+		   so I have to add a timer proc to reset the defaults on
+		   the dialog a little bit after returning to the notifier
 		   loop.  Urk.  This really needs to be fixed some day. */
 
 		XtAppAddTimeOut(c->xcontext->app, 50, set_editor_defaults_later, c);
@@ -2214,7 +2212,7 @@ p_apply_proc(Widget w, XtPointer client_data, XtPointer data) {
 static void
 p_ok_proc(
 	Widget 		 w,
-	XtPointer 	 client_data, 
+	XtPointer 	 client_data,
 	XtPointer 	 data)
 {
 	Calendar	*c = (Calendar *)client_data;
@@ -2330,7 +2328,7 @@ p_quit_handler(Widget w, XtPointer cdata, XtPointer data) {
 static void
 p_make_props_pu(Calendar *c) {
 	char		*buf;
-	char		*popuplabel = 
+	char		*popuplabel =
 			     catgets(c->DT_catd, 1, 458, "Calendar : Options");
 	PaneType	pt;
 	Props_pu	*p = (Props_pu *)c->properties_pu;
@@ -2349,9 +2347,9 @@ p_make_props_pu(Calendar *c) {
 	/*
         **  Create the base frame and form manager
 	*/
-        buf = (char *)ckalloc(cm_strlen(popuplabel)
-			      + cm_strlen(c->calname) + 4);
-        sprintf(buf, "%s - %s", popuplabel, c->calname);
+	int buf_size = cm_strlen(popuplabel) + cm_strlen(c->calname) + 4;
+        buf = (char *)ckalloc(buf_size);
+        snprintf(buf, buf_size, "%s - %s", popuplabel, c->calname);
 
 	p->frame = XtVaCreatePopupShell("frame",
 		xmDialogShellWidgetClass, c->frame,
@@ -2384,26 +2382,26 @@ p_make_props_pu(Calendar *c) {
 	**  Now the "top" portion - the category menu and the first separator
 	*/
 
-	Pane_XmStrs[EDITOR_PANE] = 
-	  XmStringCreateLocalized(catgets(c->DT_catd, 1, 762, 
+	Pane_XmStrs[EDITOR_PANE] =
+	  XmStringCreateLocalized(catgets(c->DT_catd, 1, 762,
 					  "Editor Defaults"));
-	Pane_XmStrs[DISPLAY_PANE] = 
-	  XmStringCreateLocalized(catgets(c->DT_catd, 1, 763, 
+	Pane_XmStrs[DISPLAY_PANE] =
+	  XmStringCreateLocalized(catgets(c->DT_catd, 1, 763,
 					  "Display Settings"));
-	Pane_XmStrs[GROUP_ACCESS_PANE] = 
-	  XmStringCreateLocalized(catgets(c->DT_catd, 1, 764, 
+	Pane_XmStrs[GROUP_ACCESS_PANE] =
+	  XmStringCreateLocalized(catgets(c->DT_catd, 1, 764,
 					  "Access List and Permissions"));
-	Pane_XmStrs[PRINTER_OPS_PANE] = 
-	  XmStringCreateLocalized(catgets(c->DT_catd, 1, 765, 
+	Pane_XmStrs[PRINTER_OPS_PANE] =
+	  XmStringCreateLocalized(catgets(c->DT_catd, 1, 765,
 					  "Printer Settings"));
-	Pane_XmStrs[DATE_FORMAT_PANE] = 
-	  XmStringCreateLocalized(catgets(c->DT_catd, 1, 766, 
+	Pane_XmStrs[DATE_FORMAT_PANE] =
+	  XmStringCreateLocalized(catgets(c->DT_catd, 1, 766,
 					  "Date Format"));
 
 	label = XmStringCreateLocalized(
 				catgets(c->DT_catd, 1, 459, "Category:"));
 
-	p->category_menu = widgets[0] = 
+	p->category_menu = widgets[0] =
 		XmVaCreateSimpleOptionMenu(p->base_form_mgr,
 		"category_menu",  label, 0, 0, p_category_notify,
 		XmVaPUSHBUTTON, Pane_XmStrs[EDITOR_PANE], NULL, NULL, NULL,
@@ -2486,7 +2484,7 @@ p_make_props_pu(Calendar *c) {
 		NULL);
 	XmStringFree(xmstr);
 	XtAddCallback(p->apply_button, XmNactivateCallback, p_apply_proc, c);
- 
+
 	xmstr = XmStringCreateLocalized(catgets(c->DT_catd, 1, 691, "Reset"));
 	p->defaults_button = widgets[5] = XtVaCreateWidget("reset",
 		xmPushButtonGadgetClass, p->base_form_mgr,
@@ -2535,7 +2533,7 @@ p_make_props_pu(Calendar *c) {
 	XmStringFree(xmstr);
 	XtAddCallback(p->help_button, XmNactivateCallback,
 		(XtCallbackProc)help_cb, OPTIONS_HELP_BUTTON);
-        XtAddCallback(p->base_form_mgr, XmNhelpCallback, 
+        XtAddCallback(p->base_form_mgr, XmNhelpCallback,
                (XtCallbackProc)help_cb, (XtPointer) OPTIONS_HELP_BUTTON);
 
 
@@ -2543,7 +2541,7 @@ p_make_props_pu(Calendar *c) {
 	**  Last, create the remaining panes
 	*/
 	p_create_display_pane(p);
-	if (p->cal->my_cal_version < DATAVER4) 
+	if (p->cal->my_cal_version < DATAVER4)
 		p_create_v4_group_access_pane(p);
 	else
 		p_create_v5_group_access_pane(p);
@@ -2618,8 +2616,8 @@ string_is_time(char *str) {
 
 		str++;
 	}
-	
-	if ((found_colon == True) && 
+
+	if ((found_colon == True) &&
 	    ((((found_first_number > 2) || (found_first_number < 1)) || (found_second_number != 2))))
 		return(False);
 	else if ((found_colon == False) && ((found_first_number > 4) || found_first_number < 3))
@@ -2811,7 +2809,7 @@ get_display_vals_from_ui(Props_pu *pu, Props *p) {
 		XtFree(title);
 		XtFree(str);
 		return(True);
-	
+
 	}
 	XtFree(str);
 
@@ -2853,7 +2851,7 @@ get_display_vals_from_ui(Props_pu *pu, Props *p) {
 		XtFree(title);
 		XtFree(str);
 		return(True);
-	
+
 	}
 	XtFree(str);
 
@@ -2865,9 +2863,9 @@ get_gap_vals_from_ui(Props_pu *pu, Props *p) {
 	CSA_return_code	stat;
 	Dtcm_calendar	*cal;
 
-	cal = allocate_cal_struct(appt_write, 
+	cal = allocate_cal_struct(appt_write,
 				    	pu->cal->my_cal_version,
-					CSA_CAL_ATTR_ACCESS_LIST_I, 
+					CSA_CAL_ATTR_ACCESS_LIST_I,
 					NULL);
 	cal->access_list->value->item.access_list_value = pu->gap_list;
 	pu->gap_list = NULL;
@@ -3022,8 +3020,8 @@ get_props_from_ui(Props_pu *pu, Props *p, int *redisplay_mask) {
 
 	*redisplay_mask = 0;
 
-	/* we only ever have to get the values for one of the categories, 
-	   as changing the nanes causes the values for the existing 
+	/* we only ever have to get the values for one of the categories,
+	   as changing the nanes causes the values for the existing
 	   category to be flushed. */
 
 	switch(pu->last_props_pane) {
@@ -3070,7 +3068,7 @@ set_editor_vals_on_ui(Props_pu *pu, Props *p) {
 	set_dssw_defaults(&pu->ep_dssw, now(), True);
 	XtVaGetValues(pu->ep_dur_cb, XmNtextField, &text, NULL);
 	if (text) {
-		sprintf(buf, "%d", get_int_prop(p, CP_APPTDURATION));
+		snprintf(buf, MAXNAMELEN, "%d", get_int_prop(p, CP_APPTDURATION));
 		XmTextSetString(text, buf);
 	}
 
@@ -3093,7 +3091,7 @@ set_editor_vals_on_ui(Props_pu *pu, Props *p) {
 	val->selected =	convert_boolean_str(get_char_prop(p, CP_MAILON));
 	val->scope = convert_time_scope_str(get_char_prop(p, CP_MAILUNIT));
 	val->scope_val = get_int_prop(p, CP_MAILADV);
-	strcpy(pu->ep_reminders.mailto_val, get_char_prop(p, CP_MAILTO));
+	strlcpy(pu->ep_reminders.mailto_val, get_char_prop(p, CP_MAILTO), MAILTO_LEN);
 
 	set_reminders_vals(&pu->ep_reminders, False);
 
@@ -3147,9 +3145,9 @@ set_gap_vals_on_ui(Props_pu *pu, Props *p) {
 	Dtcm_calendar	*cal;
 	CSA_access_list	step = NULL, holder = NULL, last;
 
-	cal = allocate_cal_struct(appt_read, 
+	cal = allocate_cal_struct(appt_read,
 				    	pu->cal->my_cal_version,
-					CSA_CAL_ATTR_ACCESS_LIST_I, 
+					CSA_CAL_ATTR_ACCESS_LIST_I,
 					NULL);
 	stat = query_cal_struct(pu->cal->my_cal_handle, cal);
 	backend_err_msg(pu->frame, pu->cal->calname, stat, pu->xm_error_pixmap);
@@ -3165,7 +3163,7 @@ set_gap_vals_on_ui(Props_pu *pu, Props *p) {
 	while (step) {
 		if (pu->cal->my_cal_version < DATAVER4) {
 			p_str = p_gap_create_perm_str(step->rights);
-			p_gap_create_entry_string(pu, step->user->user_name, 
+			p_gap_create_entry_string(pu, step->user->user_name,
 							p_str, &xmstr);
 			free(p_str);
 		} else

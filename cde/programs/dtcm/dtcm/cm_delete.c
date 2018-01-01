@@ -88,14 +88,15 @@ static int cm_index = 0;		/* index to change/delete */
 static char**
 grab(char**argv,				/* command line arguments */
     char *buf,				/* buffer for keyed data */
+    int buf_size,
     char stop_key)
 {
 	if (!argv || !*argv) return(argv);
-	cm_strcpy (buf,*argv++);
+	cm_strlcpy (buf, *argv++, buf_size);
 	while(argv && *argv) {
 		if (*(*argv) == stop_key) break;
-		cm_strcat(buf," ");
-		cm_strcat(buf,*argv++);
+		cm_strlcat(buf, " ", buf_size);
+		cm_strlcat(buf, *argv++, buf_size);
 	}
 	argv--;
 	return(argv);
@@ -109,13 +110,13 @@ cm_args(int argc, char **argv)
 		switch(*(*argv+1)) {
 		case 't':
 		case 'c':
-			argv = grab(++argv,cm_target,'-');
+			argv = grab(++argv, cm_target, 256, '-');
 			break;
 		case 'd':
-			argv = grab(++argv,cm_date,'-');
+			argv = grab(++argv, cm_date, 256, '-');
 			break;
 		case 'v':
-			argv = grab(++argv,cm_view,'-');
+			argv = grab(++argv, cm_view, 16, '-');
 			break;
 		default:
 			fprintf(stderr, "%s", catgets(DT_catd, 1, 187, "Usage:\n\tdtcm_delete [-c calendar] [-d <mm/dd/yy>] [-v view]\n"));
@@ -179,7 +180,7 @@ int main(int argc, char **argv)
 	version = get_data_version(c_handle);
 
 	while (!cm_index) {
-		if ((cnt = cm_tty_lookup(DT_catd, c_handle, version, date, 
+		if ((cnt = cm_tty_lookup(DT_catd, c_handle, version, date,
 					view, &list, p)) <= 0) {
 			csa_logoff(c_handle, NULL);
 			free(uname);
@@ -196,7 +197,7 @@ int main(int argc, char **argv)
 		}
 		cm_index = atoi(index);
 		if (cnt >= cm_index)
-			cm_tty_delete(DT_catd, c_handle, version, 
+			cm_tty_delete(DT_catd, c_handle, version,
 				      cm_index - 1, list);
 		memset(index, '\0', 10);
 		csa_free(list);
