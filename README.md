@@ -9,46 +9,47 @@ better/easier packaging
 
 ## Todo
 
-[ ] Eliminate all compiler warnings
-  [ ] Dtaction
-  [ ] DtappBuilder
-  [ ] Dtappintegrate
-  [ ] Dtcalc
-  [x] Dtcm
-  [ ] Dtconfig
-  [ ] Dtcreate
-  [ ] Dtdbcache
-  [ ] Dtdocbook
-  [ ] Dtdspmsg
-  [ ] Dtexec
-  [ ] Dtfile
-  [ ] Dthello
-  [ ] Dthelp
-  [ ] Dticon
-  [ ] Dtimstart
-  [ ] Dtinfo
-  [ ] Dtksh
-  [ ] Dtlogin
-  [ ] Dtmail
-  [ ] Dtpad
-  [ ] Dtpdm
-  [ ] Dtpdmd
-  [ ] Dtprintigrate
-  [ ] Dtprintinfo
-  [ ] Dtscreen
-  [ ] Dtsearchpath
-  [ ] Dtsession
-  [ ] Dtspcd
-  [ ] Dtsr
-  [ ] Dtstyle
-  [ ] Dtterm
-  [ ] Dtudcexch
-  [ ] Dtudcfonted
-  [ ] Dtwm
-[ ] Fix known security issues (see: https://www.cert.org/historical/advisories/CA-1999-11.cfm)
-[ ] Fix installing to directories other than /usr/dt
-[ ] Fix Dtlogin text entry issue
-[ ] Fix screen lock issues
+- [ ] Fix known security issues (see: https://www.cert.org/historical/advisories/CA-1999-11.cfm)
+- [ ] Fix installing to directories other than /usr/dt
+- [ ] Fix Dtlogin text entry issue
+- [ ] Fix screen lock issues
+
+- [ ] Eliminate all compiler warnings in the following:
+-   [ ] Dtaction
+-   [ ] DtappBuilder
+-   [ ] Dtappintegrate
+-   [ ] Dtcalc
+-   [x] Dtcm
+-   [ ] Dtconfig
+-   [ ] Dtcreate
+-   [ ] Dtdbcache
+-   [ ] Dtdocbook
+-   [ ] Dtdspmsg
+-   [ ] Dtexec
+-   [ ] Dtfile
+-   [ ] Dthello
+-   [ ] Dthelp
+-   [ ] Dticon
+-   [ ] Dtimstart
+-   [ ] Dtinfo
+-   [ ] Dtksh
+-   [ ] Dtlogin
+-   [ ] Dtmail
+-   [ ] Dtpad
+-   [ ] Dtpdm
+-   [ ] Dtpdmd
+-   [ ] Dtprintigrate
+-   [ ] Dtprintinfo
+-   [ ] Dtscreen
+-   [ ] Dtsearchpath
+-   [ ] Dtsession
+-   [ ] Dtspcd
+-   [ ] Dtsr
+-   [ ] Dtstyle
+-   [ ] Dtterm
+-   [ ] Dtudcexch
+-   [ ] Dtudcfonted
+-   [ ] Dtwm
 
 ## Future
 
