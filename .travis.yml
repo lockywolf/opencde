@@ -1,0 +1,31 @@
+language: c
+compiler: clang
+
+addons:
+  apt:
+    packages:
+      - libxt-dev
+      - libxmu-dev
+      - libxft-dev
+      - libxinerama-dev
+      - libxpm-dev
+      - libmotif-common
+      - libmotif-dev
+      - libxaw7-dev
+      - libx11-dev
+      - libxss-dev
+      - libtirpc-dev
+      - x11-xserver-utils
+      - libjpeg62-dev
+      - libfreetype6-dev
+      - libssl-dev
+      - tcl-dev
+      - ksh
+      - m4
+      - ncompress
+      - rpcbind
+      - bison
+      - xbitmaps
+
+script:
+  cd cde && make World
