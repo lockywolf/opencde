@@ -43,7 +43,7 @@
 #undef DEC
 #endif /* DEC */
 #endif /* __osf__ */
- 
+
 #ifdef XGETTEXT
 #define  MSGFILE_LABEL    "dtcalc.label"
 #define  MSGFILE_MESSAGE  "dtcalc.message"
@@ -116,7 +116,6 @@ extern char *_DtGetMessage(char *filename, int set, int n, char *s);
 #endif
 
 extern char *getenv   P((const char *)) ;
-extern char *mktemp   P((char *)) ;
 
 extern double drand48 P(()) ;
 
@@ -133,11 +132,8 @@ extern double drand48 P(()) ;
 #define  FPUTS        (void) fputs
 #define  FREE         (void) free
 #define  MEMCPY       (void) memcpy
-#define  MKTEMP       (void) mktemp
 #define  REWIND       (void) rewind
-#define  SPRINTF      (void) sprintf
 #define  SSCANF       (void) sscanf
-#define  STRCPY       (void) strcpy
 #define  STRNCAT      (void) strncat
 #define  UNLINK       (void) unlink
 
@@ -145,7 +141,7 @@ extern double drand48 P(()) ;
 #define  KEYBOARD_DOWN    100    /* Keyboard character was pressed. */
 #define  KEYBOARD_UP      101    /* Keyboard character was released. */
 #define  LASTEVENTPLUSONE 102    /* Not one of the above. */
-#define  F4_PRESS         103    
+#define  F4_PRESS         103
 #define  ARROW            104
 #define  TAB              105
 #define  CONTROL          106
@@ -226,9 +222,9 @@ enum prop_type { P_CHAR, P_ASCIIT, P_DUMMY } ;
 /* Resources. */
 enum res_type { R_ACCURACY, R_BASE,    R_DISPLAY, R_MODE,  R_FREGS,
                 R_REGS,     R_TRIG,    R_BEEP,    R_ICON,  R_WORKSPACE,
-                R_HEIGHT,   R_WIDTH,   R_X,       R_Y,     R_DISPLAYED,    
-                R_REG0,     R_REG1,    R_REG2,    R_REG3,  R_REG4,    
-                R_REG5,     R_REG6,    R_REG7,    R_REG8,  R_REG9,    
+                R_HEIGHT,   R_WIDTH,   R_X,       R_Y,     R_DISPLAYED,
+                R_REG0,     R_REG1,    R_REG2,    R_REG3,  R_REG4,
+                R_REG5,     R_REG6,    R_REG7,    R_REG8,  R_REG9,
                 R_FREG0,    R_FREG1,   R_FREG2,   R_FREG3, R_FREG4,
                 R_FREG5,    R_MENUBAR, R_KEYS,    R_DUMMY } ;
 
@@ -485,6 +481,7 @@ struct menu {
   int  defval ;             /* Default menu item position (from 1). */
 } ;
 
+
 struct calcVars {                     /* Calctool variables and options. */
   char *appname ;                     /* Application name for resources. */
   char con_names[MAXREGS][MAXLINE] ;  /* Selectable constant names. */
@@ -552,7 +549,7 @@ struct calcVars {                     /* Calctool variables and options. */
   int pointed ;       /* Whether a decimal point has been given. */
   int row ;           /* Row number of current key/mouse press. */
   int rstate ;        /* Indicates if memory register frame is displayed. */
-  int frstate ;       /* Indicates if financial memory register 
+  int frstate ;       /* Indicates if financial memory register
                          frame is displayed. */
   int show_paren ;    /* Set if we wish to show DISPLAYITEM during parens. */
   int started ;       /* Set just before window is displayed. */
@@ -608,7 +605,7 @@ int char_val               P((char)) ;
 int get_bool_resource      P((enum res_type, int *)) ;
 int get_index              P((char)) ;
 int get_int_resource       P((enum res_type, int *)) ;
-int get_str_resource       P((enum res_type, char *)) ;
+int get_str_resource       P((enum res_type, char *, int)) ;
 int main                   P((int, char **)) ;
 
 void beep                  P(()) ;
@@ -652,7 +649,7 @@ void get_display           P(()) ;
 void get_key_val           P((char *, char *)) ;
 void get_label             P((int)) ;
 void get_options           P((int, char **)) ;
-void getparam              P((char *, char **, char *)) ;
+void getparam              P((char *, int, char **, char *)) ;
 void get_rcfile            P((char *)) ;
 void grey_button           P((int, int, int)) ;
 void grey_buttons          P((enum base_type)) ;
@@ -717,7 +714,7 @@ int mpcmpi        P((int *, int *)) ;
 int mpcmpr        P((int *, float *)) ;
 int mpcomp        P((int *, int *)) ;
 int pow_ii        P((int *, int *)) ;
- 
+
 int mpeq          P((int *, int *)) ;
 int mpge          P((int *, int *)) ;
 int mpgt          P((int *, int *)) ;

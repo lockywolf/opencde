@@ -59,6 +59,13 @@ double mods[] = { 1.0, 1.0e-1, 1.0e-2, 1.0e-3, 1.0e-4,
 static void compute_i(double *target);
 static int count_sign_changes(double *cf, int count);
 
+/* Default math library exception handling routine. */
+int
+matherr()
+{
+  doerr(vstrs[(int) V_ERROR]) ;
+  return(1) ;                     /* Value ignored. */
+}
 
 void
 do_accuracy(void)     /* Set display accuracy. */
@@ -333,7 +340,7 @@ do_business(void)     /* Perform special business mode calculations. */
           make_registers(FIN) ;
       v->funstate = 1;
 
-      STRCPY(v->display, display_number);
+      strlcpy(v->display, display_number, MAXLINE);
       set_item(DISPLAYITEM, v->display);
       need_show = FALSE;
     }
@@ -547,7 +554,8 @@ do_calc(void)      /* Perform arithmetic calculation and display result. */
       mpcdm(&dres, v->MPresult) ;
     }
 
-  else if (IS_KEY(v->cur_op, KEY_EQ)) /* do nothing. */ ;   /* Equals */
+  else if (IS_KEY(v->cur_op, KEY_EQ))
+    /* do nothing. */ ;   /* Equals */
 
   show_display(v->MPresult) ;
 
@@ -638,7 +646,7 @@ do_expno(void)           /* Get exponential number. */
   v->pointed = (strchr(v->display, '.') != NULL) ;
   if (!v->new_input)
     {
-      STRCPY(v->display, "1.0 +") ;
+      strlcpy(v->display, "1.0 +", MAXLINE) ;
       v->new_input = v->pointed = 1 ;
     }
   else if (!v->pointed)
@@ -684,7 +692,7 @@ do_factorial(int *MPval, int *MPres)     /* Calculate the factorial of MPval. */
         }
       mpcim(&i, MPa) ;
       mpcmi(MP1, &i) ;
-      if (!i) matherr((struct exception *) NULL) ;
+      if (!i) matherr() ;
       else
         while (i > 0)
           {
@@ -694,7 +702,7 @@ do_factorial(int *MPval, int *MPres)     /* Calculate the factorial of MPval. */
             i-- ;
           }
     }
-  else matherr((struct exception *) NULL) ;
+  else matherr() ;
   mpstr(MPa, MPres) ;
 }
 
@@ -907,7 +915,7 @@ do_number(void)
 
   if (v->toclear)
     {
-      SPRINTF(v->display, "%c", nextchar) ;
+      snprintf(v->display, MAXLINE, "%c", nextchar) ;
       v->toclear = 0 ;
     }
   else
@@ -978,8 +986,8 @@ do_paren(void)
                v->current = 'x';
                do_calc();
             }
- 
-             /* if the current op is an '=' and the result in the display is 
+
+             /* if the current op is an '=' and the result in the display is
                 zero, we want to ignore the display */
              if(v->cur_op == '=')
              {
@@ -987,7 +995,7 @@ do_paren(void)
                 if(tmpdb == 0.0)
                 {
                    v->cur_op = '?';
-                   STRCPY(v->display, "") ;
+                   strlcpy(v->display, "", MAXLINE) ;
                    set_item(DISPLAYITEM, v->display) ;
                 }
                 else
@@ -1006,7 +1014,7 @@ do_paren(void)
           }
           else
           {
-             STRCPY(v->display, "") ;
+             strlcpy(v->display, "", MAXLINE) ;
              set_item(DISPLAYITEM, v->display) ;
          }
       }
@@ -1124,7 +1132,7 @@ do_point(void)                   /* Handle numeric point. */
     {
       if (v->toclear)
         {
-          STRCPY(v->display, ".") ;
+          strlcpy(v->display, ".", MAXLINE) ;
           v->toclear = 0 ;
         }
       else STRNCAT(v->display, ".", 1) ;
@@ -1641,7 +1649,7 @@ process_parens(char current)
             {
               set_item(DISPLAYITEM, vstrs[(int) V_ERROR]) ;
               set_item(OPITEM,      vstrs[(int) V_CLR]) ;
-              STRCPY(v->display,    vstrs[(int) V_ERROR]) ;
+              strlcpy(v->display,   vstrs[(int) V_ERROR], MAXLINE) ;
             }
           else
             {
@@ -1661,7 +1669,7 @@ push_num(int *MPval)            /* Try to push value onto the numeric stack. */
   if (v->numsptr < 0) return ;
   if (v->numsptr >= MAXSTACK)
     {
-      STRCPY(v->display, vstrs[(int) V_NUMSTACK]) ;
+      strlcpy(v->display, vstrs[(int) V_NUMSTACK], MAXLINE) ;
       set_item(DISPLAYITEM, v->display) ;
       v->error = 1 ;
       beep() ;
@@ -1683,7 +1691,7 @@ push_op(int val)     /* Try to push value onto the operand stack. */
   if (v->opsptr < 0) return ;
   if (v->opsptr >= MAXSTACK)
     {
-      STRCPY(v->display, vstrs[(int) V_OPSTACK]) ;
+      strlcpy(v->display, vstrs[(int) V_OPSTACK], MAXLINE) ;
       set_item(DISPLAYITEM, v->display) ;
       v->error = 1 ;
       set_item(OPITEM, vstrs[(int) V_CLR]) ;
@@ -1749,8 +1757,8 @@ do_round(double result, int ndigits)
         result -= fmod(result, mods[ndigits]);
     }
 
-    sprintf(buf2, "%%.%dlg", MAX_DIGITS);
-    sprintf(buffer, buf2, result);
+    snprintf(buf2, 40, "%%.%dlg", MAX_DIGITS);
+    snprintf(buffer, 100, buf2, result);
     return atof(buffer);
 }
 

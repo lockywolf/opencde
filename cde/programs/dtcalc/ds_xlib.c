@@ -47,8 +47,6 @@
 #define  FREE         (void) free
 #define  FPRINTF      (void) fprintf
 #define  GETHOSTNAME  (void) gethostname
-#define  SPRINTF      (void) sprintf
-#define  STRCPY       (void) strcpy
 
 #define  EQUAL(a, b)  !strncmp(a, b, strlen(b))
 #define  MAXLINE      120        /* Maximum length for character strings. */
@@ -88,21 +86,21 @@ ds_beep(Display *display)
  */
 
 char *
-ds_get_resource(XrmDatabase rDB, char *appname, char *resource)                          
+ds_get_resource(XrmDatabase rDB, char *appname, char *resource)
 {
   char app[MAXLINE], res[MAXLINE] ;
   char cstr[MAXLINE], nstr[MAXLINE] ;
   char *str_type[20] ;
   XrmValue value ;
 
-  STRCPY(app, appname) ;
-  STRCPY(res, resource) ;
+  strlcpy(app, appname, MAXLINE) ;
+  strlcpy(res, resource, MAXLINE) ;
   if (isupper(app[0])) app[0] = tolower(app[0]) ;
-  SPRINTF(nstr, "%s.%s", app, res) ;
+  snprintf(nstr, MAXLINE, "%s.%s", app, res) ;
 
   if (islower(res[0])) res[0] = toupper(res[0]) ;
   if (islower(app[0])) app[0] = toupper(app[0]) ;
-  SPRINTF(cstr, "%s.%s", app, res) ;
+  snprintf(cstr, MAXLINE, "%s.%s", app, res) ;
 
   if (XrmGetResource(rDB, nstr, cstr, str_type, &value) == 0)
     return((char *) NULL) ;
@@ -115,7 +113,7 @@ ds_get_resource(XrmDatabase rDB, char *appname, char *resource)
  *  Purpose:      Get the resource databases. These are looked for in the
  *                following ways:
  *
- *                Classname file in the app-defaults directory. 
+ *                Classname file in the app-defaults directory.
  *
  *                Classname file in the directory specified by the
  *                XUSERFILESEARCHPATH or XAPPLRESDIR environment variable.
@@ -152,8 +150,8 @@ ds_load_resources(Display *display)
   if (XResourceManagerString(display) != NULL)
     db = XrmGetStringDatabase(XResourceManagerString(display)) ;
   else
-    { 
-      SPRINTF(name, "%s/.Xdefaults", home) ;
+    {
+      snprintf(name, MAXPATHLEN, "%s/.Xdefaults", home) ;
       db = XrmGetFileDatabase(name) ;
     }
   XrmMergeDatabases(db, &rDB) ;
@@ -164,7 +162,7 @@ ds_load_resources(Display *display)
 
   if ((ptr = getenv("XENVIRONMENT")) == NULL)
     {
-      SPRINTF(name, "%s/.Xdefaults-", home) ;
+      snprintf(name, MAXPATHLEN, "%s/.Xdefaults-", home) ;
       len = strlen(name) ;
       GETHOSTNAME(name+len, 1024-len) ;
       db = XrmGetFileDatabase(name) ;
@@ -211,9 +209,9 @@ ds_put_resource(XrmDatabase *rDB, char *appname, char *rstr, char *rval)
 {
   char app[MAXLINE], resource[MAXLINE] ;
 
-  STRCPY(app, appname) ;
+  strlcpy(app, appname, MAXLINE) ;
   if (isupper(app[0])) app[0] = tolower(app[0]) ;
-  SPRINTF(resource, "%s.%s", app, rstr) ;
+  snprintf(resource, MAXLINE, "%s.%s", app, rstr) ;
 
   XrmPutStringResource(rDB, resource, rval) ;
 }
@@ -266,15 +264,16 @@ ds_save_resources(XrmDatabase rDB, char *filename)
     if ((filename = getenv("DTCALCDEF")) == NULL)
       {
         home = getenv("HOME") ;
-        filename = (char*) calloc(1, strlen(home) + 18) ;
-        SPRINTF(filename, "%s/.dtcalcdef", home) ;
+        int filename_size = strlen(home) + 18;
+        filename = (char*) calloc(1, filename_size) ;
+        snprintf(filename, filename_size, "%s/.dtcalcdef", home) ;
       }
   }
 
 /* If file exists but user does not have access. */
 
   if (stat(filename, &statbuf) != -1 && access(filename, W_OK) != 0)
-    { 
+    {
       FREE(filename) ;
       return(1) ;
     }

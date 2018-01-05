@@ -109,7 +109,7 @@ init_text()   /* Setup text strings depending upon language. */
 
   i = 0 ;
   read_str(&buttons[i++].str, LGET("")) ;                          /* Row 1.*/
-  read_str(&buttons[i++].str, LGET(GETMESSAGE(3, 5, "Functions"))) ; 
+  read_str(&buttons[i++].str, LGET(GETMESSAGE(3, 5, "Functions"))) ;
   read_str(&buttons[i++].str, LGET(GETMESSAGE(3, 6, "Constants"))) ;
   read_str(&buttons[i++].str, LGET(GETMESSAGE(3, 7, "Keys"))) ;
 
@@ -190,10 +190,10 @@ init_text()   /* Setup text strings depending upon language. */
   read_str(&buttons[i++].str2, LGET(GETMESSAGE(3, 53, "# - Const"))) ;
   read_str(&buttons[i++].str2, LGET(GETMESSAGE(3, 54, "k - Keys"))) ;
 
-  read_str(&buttons[i++].str2, LGET(GETMESSAGE(3, 55, "I - Int"))) ; 
+  read_str(&buttons[i++].str2, LGET(GETMESSAGE(3, 55, "I - Int"))) ;
 
 /* CTL('f') */
-  read_str(&buttons[i++].str2, LGET(GETMESSAGE(3, 56, "^f - Frac"))) ; 
+  read_str(&buttons[i++].str2, LGET(GETMESSAGE(3, 56, "^f - Frac"))) ;
 
 /* CTL('u') */
   read_str(&buttons[i++].str2, LGET(GETMESSAGE(3, 57, "^u - Abs"))) ;
@@ -249,8 +249,8 @@ init_text()   /* Setup text strings depending upon language. */
   read_str(&buttons[i++].str2, LGET(GETMESSAGE(3, 74, "C - +/-"))) ;
 
   read_str(&buttons[i++].str2, LGET(GETMESSAGE(3, 75, "a"))) ;
-  read_str(&buttons[i++].str2, LGET(GETMESSAGE(3, 76, "b"))) ; 
-  read_str(&buttons[i++].str2, LGET(GETMESSAGE(3, 77, "c"))) ; 
+  read_str(&buttons[i++].str2, LGET(GETMESSAGE(3, 76, "b"))) ;
+  read_str(&buttons[i++].str2, LGET(GETMESSAGE(3, 77, "c"))) ;
   read_str(&buttons[i++].str2, LGET(GETMESSAGE(3, 78, "x"))) ;
 
   read_str(&buttons[i++].str2, LGET(GETMESSAGE(3, 79, "7"))) ;
@@ -284,10 +284,10 @@ init_text()   /* Setup text strings depending upon language. */
   get_key_val(&buttons[i++].value, LGET(GETMESSAGE(3, 453, "#"))) ;
   get_key_val(&buttons[i++].value, LGET(GETMESSAGE(3, 454, "k"))) ;
 
-  get_key_val(&buttons[i++].value, LGET(GETMESSAGE(3, 455, "I"))) ; 
+  get_key_val(&buttons[i++].value, LGET(GETMESSAGE(3, 455, "I"))) ;
 
 /* CTL('f') */
-  get_key_val(&buttons[i++].value, LGET(GETMESSAGE(3, 456, "\006"))) ; 
+  get_key_val(&buttons[i++].value, LGET(GETMESSAGE(3, 456, "\006"))) ;
 
 /* CTL('u') */
   get_key_val(&buttons[i++].value, LGET(GETMESSAGE(3, 457, "\025"))) ;
@@ -404,16 +404,16 @@ init_text()   /* Setup text strings depending upon language. */
   calc_res[(int) R_MENUBAR]  = DGET("postMenuBar") ;
   calc_res[(int) R_KEYS]     = DGET("keys") ;
 
-  STRCPY(v->con_names[0], LGET(GETMESSAGE(3, 119, "kilometers per hour <=> miles per hour."))) ;
-  STRCPY(v->con_names[1], LGET(GETMESSAGE(3, 120, "square root of 2."))) ;
-  STRCPY(v->con_names[2], LGET(GETMESSAGE(3, 121, "e."))) ;
-  STRCPY(v->con_names[3], LGET(GETMESSAGE(3, 122, "pi."))) ;
-  STRCPY(v->con_names[4], LGET(GETMESSAGE(3, 123, "centimeters <=> inch."))) ;
-  STRCPY(v->con_names[5], LGET(GETMESSAGE(3, 124, "degrees in a radian."))) ;
-  STRCPY(v->con_names[6], LGET(GETMESSAGE(3, 125, "2 ^ 20."))) ;
-  STRCPY(v->con_names[7], LGET(GETMESSAGE(3, 126, "grams <=> ounce."))) ;
-  STRCPY(v->con_names[8], LGET(GETMESSAGE(3, 127, "kilojoules <=> British thermal units."))) ;
-  STRCPY(v->con_names[9], LGET(GETMESSAGE(3, 128, "cubic centimeters <=> cubic inches."))) ;
+  strlcpy(v->con_names[0], LGET(GETMESSAGE(3, 119, "kilometers per hour <=> miles per hour.")), MAXLINE) ;
+  strlcpy(v->con_names[1], LGET(GETMESSAGE(3, 120, "square root of 2.")), MAXLINE) ;
+  strlcpy(v->con_names[2], LGET(GETMESSAGE(3, 121, "e.")), MAXLINE) ;
+  strlcpy(v->con_names[3], LGET(GETMESSAGE(3, 122, "pi.")), MAXLINE) ;
+  strlcpy(v->con_names[4], LGET(GETMESSAGE(3, 123, "centimeters <=> inch.")), MAXLINE) ;
+  strlcpy(v->con_names[5], LGET(GETMESSAGE(3, 124, "degrees in a radian.")), MAXLINE) ;
+  strlcpy(v->con_names[6], LGET(GETMESSAGE(3, 125, "2 ^ 20.")), MAXLINE) ;
+  strlcpy(v->con_names[7], LGET(GETMESSAGE(3, 126, "grams <=> ounce.")), MAXLINE) ;
+  strlcpy(v->con_names[8], LGET(GETMESSAGE(3, 127, "kilojoules <=> British thermal units.")), MAXLINE) ;
+  strlcpy(v->con_names[9], LGET(GETMESSAGE(3, 128, "cubic centimeters <=> cubic inches.")), MAXLINE) ;
 
 /* Keyboard equivalents for the dtcalc menu entries. */
 
@@ -624,7 +624,7 @@ init_text()   /* Setup text strings depending upon language. */
   get_key_val(&mode_buttons[i++].value, LGET(GETMESSAGE(3, 504, "y"))) ;
   get_key_val(&mode_buttons[i++].value, LGET(GETMESSAGE(3, 505, "!"))) ;
 /* CTL('c') */
-  get_key_val(&mode_buttons[i++].value, LGET(GETMESSAGE(3, 506, "\003"))) ;     
+  get_key_val(&mode_buttons[i++].value, LGET(GETMESSAGE(3, 506, "\003"))) ;
 /* CTL('s') */
   get_key_val(&mode_buttons[i++].value, LGET(GETMESSAGE(3, 507, "\023"))) ;
 /* CTL('t') */
@@ -710,23 +710,23 @@ init_mess()   /* Setup text strings depending upon language. */
 /* 19 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 172, "Register 9"))) ;
 
 /* BASE */
-/* 20 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 188, "Binary"))) ;      
+/* 20 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 188, "Binary"))) ;
 /* 21 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 189, "Octal"))) ;
 /* 22 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 190, "Decimal"))) ;
 /* 23 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 191, "Hexadecimal"))) ;
 
 /* Display type. */
-/* 24 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 192, "Engineering"))) ; 
+/* 24 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 192, "Engineering"))) ;
 /* 25 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 193, "Fixed point"))) ;
 /* 26 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 194, "Scientific"))) ;
 
 /* Trig. type. */
-/* 27 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 195, "Degrees"))) ;     
+/* 27 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 195, "Degrees"))) ;
 /* 28 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 196, "Gradients"))) ;
 /* 29 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 197, "Radians"))) ;
 
 /* MODE */
-/* 30 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 198, "Basic"))) ;       
+/* 30 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 198, "Basic"))) ;
 /* 31 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 199, "Financial"))) ;
 /* 32 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 200, "Logical"))) ;
 /* 33 */  menu_entries[i++].str = XtNewString(LGET(GETMESSAGE(3, 201, "Scientific"))) ;

@@ -48,11 +48,7 @@
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include <X11/Xatom.h>
-
-/*
-  #include <wchar.h>
-  #include <mbstr.h>
-  */
+#include <X11/XKBlib.h>
 
 /* #ifdef hpux */
 #ifdef HP_EXTENSIONS
@@ -527,7 +523,7 @@ dtcalc_initialize_rframe(Widget owner, int type)
                    XmNdefaultPosition,  FALSE,
                    NULL) ;
 
-     SPRINTF(str, "register%1d", 0) ;
+     snprintf(str, MAXLINE, "register%1d", 0) ;
      X->registers[0] = XtVaCreateManagedWidget(str,
                                    xmLabelWidgetClass,
                                    form,
@@ -541,7 +537,7 @@ dtcalc_initialize_rframe(Widget owner, int type)
 
      for (i = 1; i < MAXREGS; i++)
        {
-         SPRINTF(str, "register%1d", i) ;
+         snprintf(str, MAXLINE, "register%1d", i) ;
          X->registers[i] = XtVaCreateManagedWidget(str,
                                        xmLabelWidgetClass,
                                        form,
@@ -610,7 +606,7 @@ dtcalc_initialize_rframe(Widget owner, int type)
                    XmNdefaultPosition,  FALSE,
                    NULL) ;
 
-     SPRINTF(str, "fregister%1d", 0) ;
+     snprintf(str, MAXLINE, "fregister%1d", 0) ;
      X->fregisters[0] = XtVaCreateManagedWidget(str,
                                    xmLabelWidgetClass,
                                    form,
@@ -624,7 +620,7 @@ dtcalc_initialize_rframe(Widget owner, int type)
 
      for (i = 1; i < FINREGS; i++)
        {
-         SPRINTF(str, "fregister%1d", i) ;
+         snprintf(str, MAXLINE, "fregister%1d", i) ;
          X->fregisters[i] = XtVaCreateManagedWidget(str,
                                        xmLabelWidgetClass,
                                        form,
@@ -638,7 +634,7 @@ dtcalc_initialize_rframe(Widget owner, int type)
                                        NULL) ;
        }
 
-     SPRINTF(str, "fregistervals%1d", 0) ;
+     snprintf(str, MAXLINE, "fregistervals%1d", 0) ;
      X->fregistersvals[0] = XtVaCreateManagedWidget(str,
                                    xmLabelWidgetClass,
                                    form,
@@ -655,7 +651,7 @@ dtcalc_initialize_rframe(Widget owner, int type)
 
      for (i = 1; i < FINREGS; i++)
        {
-         SPRINTF(str, "fregistervals%1d", i) ;
+         snprintf(str, MAXLINE, "fregistervals%1d", i) ;
          X->fregistersvals[i] = XtVaCreateManagedWidget(str,
                                        xmLabelWidgetClass,
                                        form,
@@ -1600,9 +1596,9 @@ draw_button(int n, enum fcp_type fcptype, int row, int column, int inverted)
   }
 
   if (inverted)
-     strcpy(str, "Arm");
+     strlcpy(str, "Arm", 10);
   else
-     strcpy(str, "Disarm");
+     strlcpy(str, "Disarm", 10);
 
   /* go call the correct arm/disarm function from Motif */
   XtCallActionProc(widget, str, X->event, NULL, 0) ;
@@ -1845,7 +1841,7 @@ ProcessMotifSelection(Widget W)
             display[i+1] = '\0';
         }
 
-        STRCPY(v->display, display);
+        strlcpy(v->display, display, MAXLINE);
         XtFree(display);
     }
 
@@ -2081,7 +2077,7 @@ get_resource(enum res_type rtype)
 {
   char str[MAXLINE] ;
 
-  STRCPY(str, calc_res[(int) rtype]) ;
+  strlcpy(str, calc_res[(int) rtype], MAXLINE) ;
   return(ds_get_resource(X->rDB, v->appname, str)) ;
 }
 
@@ -2152,7 +2148,7 @@ key_init(void)
       X->kparray[i - X->kcmin] = 0 ;
       for (j = 0; j < X->keysyms_per_key; ++j)
         {
-          ks = XKeycodeToKeysym(X->dpy, i, j) ;
+          ks = XkbKeycodeToKeysym(X->dpy, i, 0, j) ;
           if (IsKeypadKey(ks))
             {
               X->kparray[i - X->kcmin] = 1 ;
@@ -2172,7 +2168,7 @@ keypad_keysym(XEvent *xevent)
 
   for (i = 0; i < X->keysyms_per_key; ++i)
     {
-      ks = XKeycodeToKeysym(X->dpy, keycode, i) ;
+      ks = XkbKeycodeToKeysym(X->dpy, keycode, 0, i) ;
       if (IsKeypadKey(ks))
       {
 #ifdef sun
@@ -2195,13 +2191,14 @@ void
 make_frames(void)
 {
   char *tool_label = NULL ;
-  int depth ;
+  int depth, tool_label_size ;
 
   if (v->titleline == NULL)
     {
-      tool_label = (char *) calloc(1, strlen(lstrs[(int) L_UCALC]) + 3);
+      tool_label_size = strlen(lstrs[(int) L_UCALC]) + 3;
+      tool_label = (char *) calloc(1, tool_label_size);
 
-      SPRINTF(tool_label, "%s", lstrs[(int) L_UCALC]);
+      snprintf(tool_label, tool_label_size, "%s", lstrs[(int) L_UCALC]);
     }
   else read_str(&tool_label, v->titleline) ;
 
@@ -2254,7 +2251,7 @@ make_registers(int type)
   {
      for (i = 0; i < MAXREGS; i++)
        {
-         SPRINTF(line, "%s:   %s", menu_entries[i + 10].str,
+         snprintf(line, MAXLINE, "%s:   %s", menu_entries[i + 10].str,
                                       make_number(v->MPmvals[i], FALSE))  ;
 
          {
@@ -2486,7 +2483,7 @@ set_item(enum item_type itemno, char *str)
          if(str != NULL && (strcmp(str, "") != 0))
          {
             /* Let's get the decimal point, in some languages it's a , */
-            strcpy(displayStr, str);
+            strlcpy(displayStr, str, 50);
             tmpStr = GETMESSAGE(3, 45, ".");
             if(strcmp(tmpStr, ".") != 0)
             {
@@ -3002,12 +2999,12 @@ update_cf_value(void)
                    }
                    /* need to run a "compute" of what was typed in */
                    len = strlen(X->vval) ;
-                   STRCPY(str, X->vval);
+                   strlcpy(str, X->vval, MAXLINE);
                    if(X->vval[len - 1] != '=')
                    {
                       /* need to add an '=' at the end of the string so it
                          computes correctly */
-                      strcat(str, "=");
+                      strlcat(str, "=", MAXLINE);
                       len = strlen(str);
                    }
 
@@ -3034,8 +3031,8 @@ update_cf_value(void)
                    toclear = v->toclear;
                    tstate = v->tstate;
                    pending = v->pending;
-                   STRCPY(display, v->display);
-                   STRCPY(fnum, v->fnum);
+                   strlcpy(display, v->display, MAXLINE);
+                   strlcpy(fnum, v->fnum, MAX_DIGITS+1);
                    mpstr(v->MPdisp_val, MPdisp_val);
                    mpstr(v->MPlast_input, MPlast_input);
                    mpstr(v->MPresult, MPresult);
@@ -3052,7 +3049,7 @@ update_cf_value(void)
                    /* get the computed value */
                    accuracy = v->accuracy;
                    v->accuracy = 9 ;
-                   STRCPY(result, make_number(v->MPresult, FALSE)) ;
+                   strlcpy(result, make_number(v->MPresult, FALSE), MAXLINE) ;
                    v->accuracy = accuracy ;
 
                    /* return to previous state */
@@ -3063,8 +3060,8 @@ update_cf_value(void)
                    v->toclear = toclear;
                    v->tstate = tstate;
                    v->pending = pending;
-                   STRCPY(v->display, display);
-                   STRCPY(v->fnum, fnum);
+                   strlcpy(v->display, display, MAXLINE);
+                   strlcpy(v->fnum, fnum, MAX_DIGITS+1);
                    mpstr(MPdisp_val, v->MPdisp_val);
                    mpstr(MPlast_input, v->MPlast_input);
                    mpstr(MPresult, v->MPresult);
@@ -3075,7 +3072,7 @@ update_cf_value(void)
                    ptr = DtStrchr(result, 'e');
                    if (n != 1 || ptr != NULL || v->error == TRUE)
                      {
-                       SPRINTF(message, "%s\n%s", vstrs[(int) V_INVCON],
+                       snprintf(message, MAXLINE, "%s\n%s", vstrs[(int) V_INVCON],
                                vstrs[(int) V_NOCHANGE]) ;
                        do_continue_notice(X->CFframe, message) ;
                        set_item(OPITEM, "") ;
@@ -3093,7 +3090,7 @@ update_cf_value(void)
                    {
                       len = strlen(result);
 
-                      STRCPY(str, result);
+                      strlcpy(str, result, MAXLINE);
                       for(i=0; i < len; i++)
                          str[i] = str[i+1];
                       MPstr_to_num(str, DEC, v->MPcon_vals[X->cfno]) ;
@@ -3112,7 +3109,7 @@ update_cf_value(void)
                           len--;
                       }
                    }
-                   SPRINTF(v->con_names[X->cfno], "%1d: %s [%s]",
+                   snprintf(v->con_names[X->cfno], MAXLINE, "%1d: %s [%s]",
                            X->cfno, result, X->dval) ;
                    break ;
       case M_FUN : tmpStr = GETMESSAGE(3, 45, ".");
@@ -3127,14 +3124,14 @@ update_cf_value(void)
                          ptr = DtStrchr(X->vval, tmpStr[0]);
                       }
                    }
-                   STRCPY(v->fun_vals[X->cfno], convert(X->vval)) ;
+                   strlcpy(v->fun_vals[X->cfno], convert(X->vval), MAXLINE) ;
                    if(strcmp(X->vval, "") != 0)
                    {
-                      SPRINTF(v->fun_names[X->cfno], "%1d: %s [%s]",
+                      snprintf(v->fun_names[X->cfno], MAXLINE, "%1d: %s [%s]",
                               X->cfno, X->vval, X->dval) ;
                    }
                    else
-                      STRCPY(v->fun_names[X->cfno], "");
+                      strlcpy(v->fun_names[X->cfno], "", MAXLINE);
                    break;
       default : break;
     }
@@ -3242,9 +3239,9 @@ write_cf_value(Widget widget, XtPointer client_data, XtPointer call_data)
   if ((strcmp(X->cfval, "") == 0) || X->cfval[0] < '0' || X->cfval[0] > '9' ||
                                      X->cfno < 0 || X->cfno > 9)
     {
-      SPRINTF(str, "%s", (X->CFtype == M_CON) ? vstrs[(int) V_LCON]
+      snprintf(str, MAXLINE, "%s", (X->CFtype == M_CON) ? vstrs[(int) V_LCON]
                                    : vstrs[(int) V_LFUN]) ;
-      SPRINTF(message, "%s\n%s", str, vstrs[(int) V_RANGE]) ;
+      snprintf(message, MAXLINE, "%s\n%s", str, vstrs[(int) V_RANGE]) ;
       do_continue_notice(X->CFframe, message) ;
       return ;
     }
@@ -3261,10 +3258,10 @@ write_cf_value(Widget widget, XtPointer client_data, XtPointer call_data)
     }
   if (X->cfexists)
     {
-      SPRINTF(str, mess[(int) MESS_CON],
+      snprintf(str, MAXLINE, mess[(int) MESS_CON],
                    (X->CFtype == M_CON) ? vstrs[(int) V_UCON]
                                         : vstrs[(int) V_UFUN], X->cfno) ;
-      SPRINTF(message, "%s\n%s", str, vstrs[(int) V_OWRITE]) ;
+      snprintf(message, MAXLINE, "%s\n%s", str, vstrs[(int) V_OWRITE]) ;
       XtUnmanageChild(X->CFframe) ;
       do_confirm_notice(X->CFframe, message) ;
     }
@@ -3286,7 +3283,7 @@ xerror_interpose(Display *display, XErrorEvent *error)
   char msg[1024];
 
   XGetErrorText(display, error->error_code, msg1, 80) ;
-  sprintf(msg, "\nX Error (intercepted): %s\nMajor Request Code   : %d\nMinor Request Code   : %d\nResource ID (XID)    : %lu\nError Serial Number  : %lu\n", msg1, error->request_code, error->minor_code, error->resourceid, error->serial);
+  snprintf(msg, 1024, "\nX Error (intercepted): %s\nMajor Request Code   : %d\nMinor Request Code   : %d\nResource ID (XID)    : %lu\nError Serial Number  : %lu\n", msg1, error->request_code, error->minor_code, error->resourceid, error->serial);
   _DtSimpleError (v->appname, DtError, NULL, msg);
   abort() ;
 }
@@ -3616,6 +3613,7 @@ read_resources(void)    /* Read all possible resources from the database. */
 {
   char str[MAXLINE] ;
   char *msg;
+  int msg_size;
 
   /* set the accuracy variable */
   if(application_args.accuracy > 9)
@@ -3640,8 +3638,9 @@ read_resources(void)    /* Read all possible resources from the database. */
      v->base = (enum base_type) 3 ;
   else
   {
-     msg = (char *) XtMalloc(strlen( opts[(int) O_BASE]) + 3);
-     sprintf(msg, "%s", opts[(int) O_BASE]);
+     msg_size = strlen( opts[(int) O_BASE]) + 3;
+     msg = (char *) XtMalloc(msg_size);
+     snprintf(msg, msg_size, "%s", opts[(int) O_BASE]);
      _DtSimpleError (v->appname, DtWarning, NULL, msg);
      XtFree(msg);
      v->base = (enum base_type) 2;
@@ -3658,8 +3657,9 @@ read_resources(void)    /* Read all possible resources from the database. */
      v->dtype = (enum num_type) 2 ;
   else
   {
-     msg = (char *) XtMalloc(strlen( opts[(int) O_DISPLAY]) + strlen(str) + 3);
-     sprintf(msg, opts[(int) O_DISPLAY], str);
+     msg_size = strlen( opts[(int) O_DISPLAY]) + strlen(str) + 3;
+     msg = (char *) XtMalloc(msg_size);
+     snprintf(msg, msg_size, opts[(int) O_DISPLAY], str);
      _DtSimpleError (v->appname, DtWarning, NULL, msg);
      XtFree(msg);
      v->dtype = (enum num_type) 1;
@@ -3674,8 +3674,9 @@ read_resources(void)    /* Read all possible resources from the database. */
      v->modetype = (enum mode_type) 1 ;
   else
   {
-     msg = (char *) XtMalloc(strlen( opts[(int) O_MODE]) + strlen(str) + 3);
-     sprintf(msg, opts[(int) O_MODE], str);
+     msg_size = strlen( opts[(int) O_MODE]) + strlen(str) + 3;
+     msg = (char *) XtMalloc(msg_size);
+     snprintf(msg, msg_size, opts[(int) O_MODE], str);
      _DtSimpleError (v->appname, DtWarning, NULL, msg);
      XtFree(msg);
      v->modetype = (enum mode_type) 2;
@@ -3693,8 +3694,9 @@ read_resources(void)    /* Read all possible resources from the database. */
      v->ttype = (enum trig_type) 1 ;
   else
   {
-     msg = (char *) XtMalloc(strlen( opts[(int) O_TRIG]) + strlen(str) + 3);
-     sprintf(msg, opts[(int) O_TRIG], str);
+     msg_size = strlen( opts[(int) O_TRIG]) + strlen(str) + 3;
+     msg = (char *) XtMalloc(msg_size);
+     snprintf(msg, msg_size, opts[(int) O_TRIG], str);
      _DtSimpleError (v->appname, DtWarning, NULL, msg);
      XtFree(msg);
      v->ttype = (enum trig_type) 0;
@@ -4135,8 +4137,9 @@ save_state(Widget widget, XtPointer client_data, XtPointer call_data)
    else
    {
      XtFree( (char *)full_path);
-     full_path = (char *) XtMalloc (sizeof (char) * MAX_PATH);
-     sprintf( full_path, "%s/%s", dt_path, DTCALC_CLASS_NAME);
+     int full_path_size = sizeof (char) * MAX_PATH;
+     full_path = (char *) XtMalloc (full_path_size);
+     snprintf(full_path, full_path_size, "%s/%s", dt_path, DTCALC_CLASS_NAME);
      sessionFileName = full_path;
    }
 
@@ -4251,17 +4254,17 @@ SaveSession(char *path, char *file_name)
                                   &ws_presence, &num_workspaces) == Success)
    {
       char *string;
-
-      string = (char *)XtMalloc(num_workspaces * 40);
+      int string_size = num_workspaces * 40;
+      string = (char *)XtMalloc(string_size);
       for (j = 0; j < num_workspaces; j++)
       {
          workspace_name = XGetAtomName (X->dpy, ws_presence[j]);
          if(j == 0)
-            strcpy(string, workspace_name);
+            strlcpy(string, workspace_name, string_size);
          else
-            strcat(string, workspace_name);
+            strlcat(string, workspace_name, string_size);
          if(j + 1 != num_workspaces)
-            strcat(string, " ");
+            strlcat(string, " ", string_size);
          XtFree ((char *) workspace_name);
       }
       put_resource(R_WORKSPACE,     string) ;
@@ -4290,13 +4293,13 @@ SaveSession(char *path, char *file_name)
    x -= vendorExt->vendor.xOffset;
    y -= vendorExt->vendor.yOffset;
 
-   sprintf(tempStr, "%d", width);
+   snprintf(tempStr, 50, "%d", width);
    put_resource(R_WIDTH,     tempStr) ;
-   sprintf(tempStr, "%d", height);
+   snprintf(tempStr, 50, "%d", height);
    put_resource(R_HEIGHT,     tempStr) ;
-   sprintf(tempStr, "%d", x);
+   snprintf(tempStr, 50, "%d", x);
    put_resource(R_X,     tempStr) ;
-   sprintf(tempStr, "%d", y);
+   snprintf(tempStr, 50, "%d", y);
    put_resource(R_Y,     tempStr) ;
 
    write_resources(path);
@@ -4307,6 +4310,7 @@ RestoreSession(void)
 {
    Boolean status=False;
    char *path, *msg;
+   int msg_size;
    char str[MAXLINE] ;
    char * full_path = NULL;
    XrmDatabase db;
@@ -4328,8 +4332,9 @@ RestoreSession(void)
       v->accuracy = intval ;
       if (v->accuracy < 0 || v->accuracy > 9)
         {
-          msg = (char *) XtMalloc(strlen( opts[(int) O_ACCRANGE]) + 3);
-          sprintf(msg, "%s", opts[(int) O_ACCRANGE]);
+          msg_size = strlen( opts[(int) O_ACCRANGE]) + 3;
+          msg = (char *) XtMalloc(msg_size);
+          snprintf(msg, msg_size, "%s", opts[(int) O_ACCRANGE]);
           _DtSimpleError (v->appname, DtWarning, NULL, msg);
           XtFree(msg);
           v->accuracy = 2 ;
@@ -4343,8 +4348,9 @@ RestoreSession(void)
 
       if (i == MAXBASES)
       {
-          msg = (char *) XtMalloc(strlen( opts[(int) O_BASE]) + 3);
-          sprintf(msg, "%s", opts[(int) O_BASE]);
+          msg_size = strlen( opts[(int) O_BASE]) + 3;
+          msg = (char *) XtMalloc(msg_size);
+          snprintf(msg, msg_size, "%s", opts[(int) O_BASE]);
           _DtSimpleError (v->appname, DtWarning, NULL, msg);
           XtFree(msg);
       }
@@ -4354,46 +4360,48 @@ RestoreSession(void)
         }
     }
 
-   if (get_str_resource(R_DISPLAY, str))
+   if (get_str_resource(R_DISPLAY, str, MAXLINE))
     {
       for (i = 0; i < MAXDISPMODES; i++)
         if (EQUAL(str, dtype_str[i])) break ;
 
       if (i == MAXDISPMODES)
       {
-          msg = (char *) XtMalloc(strlen( opts[(int) O_DISPLAY]) +
-                                                          strlen(str) + 3);
-          sprintf(msg, opts[(int) O_DISPLAY], str);
+          msg_size = strlen( opts[(int) O_DISPLAY]) + strlen(str) + 3;
+          msg = (char *) XtMalloc(msg_size);
+          snprintf(msg, msg_size, opts[(int) O_DISPLAY], str);
           _DtSimpleError (v->appname, DtWarning, NULL, msg);
           XtFree(msg);
       }
       else v->dtype = (enum num_type) i ;
     }
 
-   if (get_str_resource(R_MODE, str))
+   if (get_str_resource(R_MODE, str, MAXLINE))
     {
       for (i = 0; i < MAXMODES; i++)
         if (EQUAL(str, mode_str[i])) break ;
 
       if (i == MAXMODES)
       {
-          msg = (char *)XtMalloc(strlen( opts[(int) O_MODE]) + strlen(str) + 3);
-          sprintf(msg, opts[(int) O_MODE], str);
+          msg_size = strlen( opts[(int) O_MODE]) + strlen(str) + 3;
+          msg = (char *)XtMalloc(msg_size);
+          snprintf(msg, msg_size, opts[(int) O_MODE], str);
           _DtSimpleError (v->appname, DtWarning, NULL, msg);
           XtFree(msg);
       }
       else v->modetype = (enum mode_type) i ;
     }
 
-   if (get_str_resource(R_TRIG, str))
+   if (get_str_resource(R_TRIG, str, MAXLINE))
     {
       for (i = 0; i < MAXTRIGMODES; i++)
         if (EQUAL(str, ttype_str[i])) break ;
 
       if (i == MAXTRIGMODES)
       {
-          msg = (char *)XtMalloc(strlen( opts[(int) O_TRIG]) + strlen(str) + 3);
-          sprintf(msg, opts[(int) O_TRIG], str);
+          msg_size = strlen( opts[(int) O_TRIG]) + strlen(str) + 3;
+          msg = (char *)XtMalloc(msg_size);
+          snprintf(msg, msg_size, opts[(int) O_TRIG], str);
           _DtSimpleError (v->appname, DtWarning, NULL, msg);
           XtFree(msg);
       }
@@ -4426,59 +4434,59 @@ RestoreSession(void)
    if (get_int_resource(R_Y, &intval))
       v->y = intval ;
 
-   if (get_str_resource(R_DISPLAYED, str))
+   if (get_str_resource(R_DISPLAYED, str, MAXLINE))
    {
-      STRCPY(v->display, str);
+      strlcpy(v->display, str, MAXLINE);
       MPstr_to_num(str, v->base, v->MPdisp_val) ;
    }
 
-   if (get_str_resource(R_REG0, str))
+   if (get_str_resource(R_REG0, str, MAXLINE))
       MPstr_to_num(str, v->base, v->MPmvals[0]) ;
-   if (get_str_resource(R_REG1, str))
+   if (get_str_resource(R_REG1, str, MAXLINE))
       MPstr_to_num(str, v->base, v->MPmvals[1]) ;
-   if (get_str_resource(R_REG2, str))
+   if (get_str_resource(R_REG2, str, MAXLINE))
       MPstr_to_num(str, v->base, v->MPmvals[2]) ;
-   if (get_str_resource(R_REG3, str))
+   if (get_str_resource(R_REG3, str, MAXLINE))
       MPstr_to_num(str, v->base, v->MPmvals[3]) ;
-   if (get_str_resource(R_REG4, str))
+   if (get_str_resource(R_REG4, str, MAXLINE))
       MPstr_to_num(str, v->base, v->MPmvals[4]) ;
-   if (get_str_resource(R_REG5, str))
+   if (get_str_resource(R_REG5, str, MAXLINE))
       MPstr_to_num(str, v->base, v->MPmvals[5]) ;
-   if (get_str_resource(R_REG6, str))
+   if (get_str_resource(R_REG6, str, MAXLINE))
       MPstr_to_num(str, v->base, v->MPmvals[6]) ;
-   if (get_str_resource(R_REG7, str))
+   if (get_str_resource(R_REG7, str, MAXLINE))
       MPstr_to_num(str, v->base, v->MPmvals[7]) ;
-   if (get_str_resource(R_REG8, str))
+   if (get_str_resource(R_REG8, str, MAXLINE))
       MPstr_to_num(str, v->base, v->MPmvals[8]) ;
-   if (get_str_resource(R_REG9, str))
+   if (get_str_resource(R_REG9, str, MAXLINE))
       MPstr_to_num(str, v->base, v->MPmvals[9]) ;
 
-   if (get_str_resource(R_FREG0, str))
+   if (get_str_resource(R_FREG0, str, MAXLINE))
    {
       MPstr_to_num(str, v->base, MPtemp) ;
       mpcmd(MPtemp, &(v->MPfvals[0]));
    }
-   if (get_str_resource(R_FREG1, str))
+   if (get_str_resource(R_FREG1, str, MAXLINE))
    {
       MPstr_to_num(str, v->base, MPtemp) ;
       mpcmd(MPtemp, &(v->MPfvals[1]));
    }
-   if (get_str_resource(R_FREG2, str))
+   if (get_str_resource(R_FREG2, str, MAXLINE))
    {
       MPstr_to_num(str, v->base, MPtemp) ;
       mpcmd(MPtemp, &(v->MPfvals[2]));
    }
-   if (get_str_resource(R_FREG3, str))
+   if (get_str_resource(R_FREG3, str, MAXLINE))
    {
       MPstr_to_num(str, v->base, MPtemp) ;
       mpcmd(MPtemp, &(v->MPfvals[3]));
    }
-   if (get_str_resource(R_FREG4, str))
+   if (get_str_resource(R_FREG4, str, MAXLINE))
    {
       MPstr_to_num(str, v->base, MPtemp) ;
       mpcmd(MPtemp, &(v->MPfvals[4]));
    }
-   if (get_str_resource(R_FREG5, str))
+   if (get_str_resource(R_FREG5, str, MAXLINE))
    {
       MPstr_to_num(str, v->base, MPtemp) ;
       mpcmd(MPtemp, &(v->MPfvals[5]));

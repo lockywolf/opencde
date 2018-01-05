@@ -186,13 +186,13 @@ struct button buttons[TITEMS] = {
 { (char *)NULL, (char *)NULL, 0, OP_SET,   M_NONE,   "blank",  do_none },
 { (char *)NULL, (char *)NULL, 0, OP_SET,   M_NONE,   "blank",  do_none },
 
-/* Row 5. */ 
+/* Row 5. */
 { (char *)NULL, (char *)NULL, 0, OP_SET,   M_NONE,   "blank",  do_none },
 { (char *)NULL, (char *)NULL, 0, OP_SET,   M_NONE,   "blank",  do_none },
 { (char *)NULL, (char *)NULL, 0, OP_SET,   M_NONE,   "blank",  do_none },
 { (char *)NULL, (char *)NULL, 0, OP_SET,   M_NONE,   "blank",  do_none },
 
-/* Row 6. */ 
+/* Row 6. */
 { (char *)NULL, (char *)NULL, 0, OP_SET,   M_NONE,   "blank",  do_none },
 { (char *)NULL, (char *)NULL, 0, OP_SET,   M_NONE,   "blank",  do_none },
 { (char *)NULL, (char *)NULL, 0, OP_SET,   M_NONE,   "blank",  do_none },
@@ -250,7 +250,7 @@ struct button buttons[TITEMS] = {
 { (char *)NULL, (char *)NULL, 0, OP_SET,   M_NUM,    "disp",   do_pending },
 { (char *)NULL, (char *)NULL, 0, OP_SET,   M_MODE,   "mode",   do_pending },
 { (char *)NULL, (char *)NULL, 0, OP_SET,   M_TRIG,   "trig",   do_pending },
-} ; 
+} ;
 
 struct button mode_buttons[MAXMODES * MODEKEYS] = {
 /*     str       str2      value opdisp   menutype   resname  func */
@@ -325,15 +325,15 @@ void
 clear_display(void)
 {
   int i ;
- 
+
   v->pointed = 0 ;
   v->toclear = 1 ;
   v->defState = 1 ;
   i = 0 ;
   mpcim(&i, v->MPdisp_val) ;
-  STRCPY(v->display, make_number(v->MPdisp_val, FALSE)) ;
+  strlcpy(v->display, make_number(v->MPdisp_val, FALSE), MAXLINE) ;
   set_item(DISPLAYITEM, v->display) ;
-  
+
   v->hyperbolic = 0 ;
   v->inverse    = 0 ;
   v->show_paren = 0 ;
@@ -353,7 +353,7 @@ convert(char *line)
   int i ;                  /* Position within input line. */
   int len ;
   int n = 0 ;              /* Position within output line. */
- 
+
   len = strlen(line) ;
   for (i = 0; i < len; i++)
     {
@@ -392,7 +392,7 @@ do_dtcalc(int argc, char **argv)
   get_options(argc, argv) ;   /* Get command line arguments. */
   if(application_args.session != NULL)
   {
-      RestoreSession(); 
+      RestoreSession();
   }
   read_rcfiles() ;            /* Read .dtcalcrc's files. */
   init_graphics() ;
@@ -432,7 +432,7 @@ void
 doerr(char *errmes)
 {
   if (!v->started) return ;
-  STRCPY(v->display, errmes) ;
+  strlcpy(v->display, errmes, MAXLINE) ;
   set_item(DISPLAYITEM, v->display) ;
   v->error = 1 ;
   beep() ;
@@ -445,9 +445,9 @@ get_bool_resource(enum res_type rtype, int *boolval)
 {
   char *val, tempstr[MAXLINE] ;
   int len, n ;
- 
+
   if ((val = get_resource(rtype)) == NULL) return(0) ;
-  STRCPY(tempstr, val) ;
+  strlcpy(tempstr, val, MAXLINE) ;
   len = strlen(tempstr) ;
   for (n = 0; n < len; n++)
     if (isupper(tempstr[n])) tempstr[n] = tolower(tempstr[n]) ;
@@ -464,17 +464,17 @@ get_bool_resource(enum res_type rtype, int *boolval)
  *
  *  XXX: This routine can be improved by using a hash lookup table.
  */
- 
+
 int
 get_index(char ch)
 {
   int n ;
- 
+
   for (n = 0; n < TITEMS; n++) {
-    if (ch == buttons[n].value)  
+    if (ch == buttons[n].value)
        break ;
   }
-  if (n < TITEMS) 
+  if (n < TITEMS)
      v->curwin = FCP_KEY ;
   else
   {
@@ -513,13 +513,13 @@ get_label(int n)
 
   if (v->tstate)
      temp = buttons[n].str2;
-  else 
+  else
      temp = buttons[n].str;
 
   if(temp != NULL)
-     STRCPY(v->pstr, temp) ;
+     strlcpy(v->pstr, temp, 5) ;
   else
-     STRCPY(v->pstr, "");
+     strlcpy(v->pstr, "", 5);
 }
 
 /* Extract command line options. */
@@ -529,7 +529,7 @@ get_options(int argc, char *argv[])
   char next[MAXLINE] ;       /* The next command line parameter. */
   char strval[MAXLINE] ;
   char *msg;
-  int i, len;
+  int i, len, msg_size;
 
   INC ;
   while (argc > 0)
@@ -541,29 +541,29 @@ get_options(int argc, char *argv[])
               case 'D' : v->MPdebug = TRUE ;   /* MP debug info. to stderr. */
                          break ;
               case 'a' : INC ;
-                         getparam(next, argv, opts[(int) O_ACCVAL]) ;
+                         getparam(next, MAXLINE, argv, opts[(int) O_ACCVAL]) ;
                          v->accuracy = atoi(next) ;
                          if (v->accuracy < 0 || v->accuracy > 9)
                            {
-                             msg = (char *) XtMalloc(strlen(
-                                                   opts[(int) O_ACCRANGE]) + 3);
-                             sprintf(msg, "%s", opts[(int) O_ACCRANGE]);
+                             msg_size = strlen(opts[(int) O_ACCRANGE]) + 3;
+                             msg = (char *) XtMalloc(msg_size);
+                             snprintf(msg, msg_size, "%s", opts[(int) O_ACCRANGE]);
                              _DtSimpleError (v->appname, DtWarning, NULL, msg);
                              XtFree(msg);
                              v->accuracy = 2 ;
                            }
                          break ;
               case 'm' : INC ;
-                         msg = (char *) XtMalloc(strlen(opts[(int) O_MODE])+
-                                                             strlen(next) + 3);
-                         sprintf(msg, opts[(int) O_MODE], next);
-                         getparam(next, argv, msg) ;
+                         msg_size = strlen(opts[(int) O_MODE]) + strlen(next) + 3;
+                         msg = (char *) XtMalloc(msg_size);
+                         snprintf(msg, msg_size, opts[(int) O_MODE], next);
+                         getparam(next, MAXLINE, argv, msg) ;
                          XtFree(msg);
-                         STRCPY(strval, next) ;
+                         strlcpy(strval, next, MAXLINE) ;
                          len = strlen(strval) ;
                          for (i = 0; i < len; i++)
                          {
-                           if (islower(strval[i])) 
+                           if (islower(strval[i]))
                               strval[i] = toupper(strval[i]) ;
                          }
                          if(strcmp(strval, "FINANCIAL") == 0)
@@ -574,17 +574,17 @@ get_options(int argc, char *argv[])
                              v->modetype = SCIENTIFIC ;
                          else
                            {
-                             msg = (char *) XtMalloc(strlen(opts[(int) O_MODE])+
-                                                    strlen(next) + 3);
-                             sprintf(msg, opts[(int) O_MODE], next);
+                             msg_size = strlen(opts[(int) O_MODE]) + strlen(next) + 3;
+                             msg = (char *) XtMalloc(msg_size);
+                             snprintf(msg, msg_size, opts[(int) O_MODE], next);
                              _DtSimpleError (v->appname, DtWarning, NULL, msg);
                              XtFree(msg);
                              v->modetype = SCIENTIFIC ;
                            }
                          break ;
               case 'b' : INC ;
-                         getparam(next, argv, opts[(int) O_BASE]) ;
-                         STRCPY(strval, next) ;
+                         getparam(next, MAXLINE, argv, opts[(int) O_BASE]) ;
+                         strlcpy(strval, next, MAXLINE) ;
                          len = strlen(strval) ;
                          for (i = 0; i < len; i++)
                          {
@@ -601,24 +601,23 @@ get_options(int argc, char *argv[])
                              v->base = HEX ;
                          else
                            {
-                             msg = (char *) XtMalloc(strlen(
-                                                    opts[(int) O_BASE]) + 3);
-                             sprintf(msg, "%s", opts[(int) O_BASE]);
+                             msg_size = strlen(opts[(int) O_BASE]) + 3;
+                             msg = (char *) XtMalloc(msg_size);
+                             snprintf(msg, msg_size, "%s", opts[(int) O_BASE]);
                              _DtSimpleError (v->appname, DtWarning, NULL, msg);
                              XtFree(msg);
                              v->base = DEC ;
                            }
                          break ;
-              case 'n' : if(strcmp(&argv[0][1], "notation") == 0) 
+              case 'n' : if(strcmp(&argv[0][1], "notation") == 0)
                          {
                             INC ;
-                            msg = (char *) XtMalloc(strlen(
-                                                 opts[(int) O_DISPLAY]) + 
-                                                 strlen(next) + 3);
-                            sprintf(msg, opts[(int) O_DISPLAY], next);
-                            getparam(next, argv, msg) ;
+                            msg_size = strlen(opts[(int) O_DISPLAY]) + strlen(next) + 3;
+                            msg = (char *) XtMalloc(msg_size);
+                            snprintf(msg, msg_size, opts[(int) O_DISPLAY], next);
+                            getparam(next, MAXLINE, argv, msg) ;
                             XtFree(msg);
-                            STRCPY(strval, next) ;
+                            strlcpy(strval, next, MAXLINE) ;
                             len = strlen(strval) ;
                             for (i = 0; i < len; i++)
                             {
@@ -633,10 +632,9 @@ get_options(int argc, char *argv[])
                                 v->dtype = SCI ;
                             else
                               {
-                                msg = (char *) XtMalloc(strlen(
-                                                    opts[(int) O_DISPLAY]) + 
-                                                    strlen(next) + 3);
-                                sprintf(msg, opts[(int) O_DISPLAY], next);
+                                msg_size = strlen(opts[(int) O_DISPLAY]) + strlen(next) + 3;
+                                msg = (char *) XtMalloc(msg_size);
+                                snprintf(msg, msg_size, opts[(int) O_DISPLAY], next);
                                 _DtSimpleError (v->appname, DtWarning, NULL, msg);
                                 XtFree(msg);
                                 v->dtype = FIX ;
@@ -652,13 +650,12 @@ get_options(int argc, char *argv[])
               case 't' : if(strcmp(&argv[0][1], "trig") == 0)
                          {
                             INC ;
-                            msg = (char *) XtMalloc(strlen(
-                                                    opts[(int) O_TRIG]) + 
-                                                    strlen(next) + 3);
-                            sprintf(msg, opts[(int) O_TRIG], next);
-                            getparam(next, argv, msg) ;
+                            msg_size = strlen(opts[(int) O_TRIG]) + strlen(next) + 3;
+                            msg = (char *) XtMalloc(msg_size);
+                            snprintf(msg, msg_size, opts[(int) O_TRIG], next);
+                            getparam(next, MAXLINE, argv, msg) ;
                             XtFree(msg);
-                            STRCPY(strval, next) ;
+                            strlcpy(strval, next, MAXLINE) ;
                             len = strlen(strval) ;
                             for (i = 0; i < len; i++)
                             {
@@ -673,10 +670,9 @@ get_options(int argc, char *argv[])
                                 v->ttype = GRAD ;
                             else
                               {
-                                msg = (char *) XtMalloc(strlen(
-                                                    opts[(int) O_TRIG]) + 
-                                                    strlen(next) + 3);
-                                sprintf(msg, opts[(int) O_TRIG], next);
+                                msg_size = strlen(opts[(int) O_TRIG]) + strlen(next) + 3;
+                                msg = (char *) XtMalloc(msg_size);
+                                snprintf(msg, msg_size, opts[(int) O_TRIG], next);
                                 _DtSimpleError (v->appname, DtWarning, NULL, msg);
                                 XtFree(msg);
                                 v->ttype = DEG ;
@@ -686,7 +682,7 @@ get_options(int argc, char *argv[])
               case 's' : if(strcmp(&argv[0][1], "session") == 0)
                          {
                             INC ;
-                            getparam(next, argv, opts[(int) O_SESSION]) ;
+                            getparam(next, MAXLINE, argv, opts[(int) O_SESSION]) ;
                             application_args.session = XtNewString(next);
                             break ;
                          }
@@ -704,16 +700,18 @@ get_options(int argc, char *argv[])
 
 
 void
-getparam(char *s, char *argv[], char *errmes)
+getparam(char *s, int s_size, char *argv[], char *errmes)
 {
   char *msg;
+  int msg_size;
 
-  if (*argv != NULL && argv[0][0] != '-') STRCPY(s, *argv) ;
+  if (*argv != NULL && argv[0][0] != '-')
+    strlcpy(s, *argv, s_size) ;
   else
-    { 
-      msg = (char *) XtMalloc(strlen(mess[(int) MESS_PARAM]) + 
-                              strlen(errmes) + 3);
-      sprintf(msg, mess[(int) MESS_PARAM], errmes);
+    {
+      msg_size = strlen(mess[(int) MESS_PARAM]) + strlen(errmes) + 3;
+      msg = (char *) XtMalloc(msg_size);
+      snprintf(msg, msg_size, mess[(int) MESS_PARAM], errmes);
       _DtSimpleError (v->appname, DtError, NULL, msg);
       FPRINTF(stderr, mess[(int) MESS_PARAM], errmes) ;
       exit(1) ;
@@ -730,11 +728,11 @@ get_rcfile(char *name)
   double cval ;           /* Current constant value being converted. */
   int i ;                 /* Index to constant or function array. */
   int isval ;             /* Set to 'c' or 'f' for convertable line. */
-  int len, n ;            
+  int len, n ;
   FILE *rcfd ;            /* File descriptor for dtcalc rc file. */
- 
+
   if ((rcfd = fopen(name, "r")) == NULL) return ;
- 
+
 /*  Process the .dtcalcrc file. There are currently four types of
  *  records to look for:
  *
@@ -781,9 +779,9 @@ get_rcfile(char *name)
           {
             i = char_val(line[1]) ;
             if (isval == 'c')
-              {  
+              {
                 n = sscanf(&line[3], "%lf", &cval) ;
-                if (n == 1) 
+                if (n == 1)
                 {
                    if(line[3] == '-')
                    {
@@ -793,18 +791,18 @@ get_rcfile(char *name)
                    else
                       MPstr_to_num(&line[3], DEC, v->MPcon_vals[i]) ;
                 }
-              }  
+              }
             else if (isval == 'f')
               {
                 SSCANF(&line[3], "%s", tmp) ;
-                STRCPY(v->fun_vals[i], convert(tmp)) ;
-              }  
+                strlcpy(v->fun_vals[i], convert(tmp), MAXLINE) ;
+              }
             else if (isval == 'r')
-              {  
+              {
                 n = sscanf(&line[3], "%lf", &cval) ;
                 if (n == 1) MPstr_to_num(&line[3], DEC, v->MPmvals[i]) ;
                 continue ;
-              }  
+              }
             len = strlen(line) ;
             for (n = 3; n < len; n++)
               if (line[n] == ' ' || line[n] == '\n')
@@ -813,12 +811,12 @@ get_rcfile(char *name)
                   line[strlen(line)-1] = '\0' ;
                   if (isval == 'c')
                     {
-                      STRCPY(tmp, make_number(v->MPcon_vals[i], TRUE)) ;
-                      SPRINTF(v->con_names[i], "%1d: %s [%s]",
+                      strlcpy(tmp, make_number(v->MPcon_vals[i], TRUE), MAXLINE) ;
+                      snprintf(v->con_names[i], MAXLINE, "%1d: %s [%s]",
                               i, tmp, &line[n]) ;
                     }
                   else
-                    SPRINTF(v->fun_names[i], "%1d: %s [%s]",
+                    snprintf(v->fun_names[i], MAXLINE, "%1d: %s [%s]",
                             i, tmp, &line[n]) ;
                   break ;
                 }
@@ -829,13 +827,13 @@ get_rcfile(char *name)
 
 /* Get a string resource from database. */
 int
-get_str_resource(enum res_type rtype, char *strval)
+get_str_resource(enum res_type rtype, char *strval, int strval_size)
 {
   char *val ;
   int i, len ;
 
   if ((val = get_resource(rtype)) == NULL) return(0) ;
-  STRCPY(strval, val) ;
+  strlcpy(strval, val, strval_size) ;
   len = strlen(strval) ;
   if(rtype != R_TRIG && rtype != R_DISPLAY)
   {
@@ -881,7 +879,7 @@ handle_menu_selection(int n, int item)
           do_paren() ;
         }
       else
-        { 
+        {
           save_pending_values(buttons[n].value) ;
           v->current = item ;
           v->ismenu = 1 ;       /* To prevent grey buttons being redrawn. */
@@ -903,7 +901,7 @@ init_vars(void)
   v->ttype      = DEG ;      /* Initial trigonometric type. */
   v->modetype   = SCIENTIFIC;    /* Initial calculator mode. */
   v->rstate     = 0 ;        /* No memory register frame display initially. */
-  v->frstate    = 0 ;        /* No fin. memory register frame display 
+  v->frstate    = 0 ;        /* No fin. memory register frame display
                                 initially. */
   v->iconic     = FALSE ;    /* Calctool not iconic by default. */
   v->MPdebug    = FALSE ;    /* No debug info by default. */
@@ -918,14 +916,14 @@ init_vars(void)
   v->key_exp     = 0 ;            /* Not entering an exponent number. */
   v->pending_op  = 0 ;            /* No pending arithmetic operation. */
   v->titleline   = NULL ;         /* No User supplied title line. */
-  v->display[0]  = 0 ;         
+  v->display[0]  = 0 ;
 
   v->x  = 0;
   v->x  = 0;
   v->width  = 0;
-  v->height = 0; 
+  v->height = 0;
 
-  v->workspaces = NULL; 
+  v->workspaces = NULL;
 
   read_str(&v->iconlabel, lstrs[(int) L_LCALC]) ;  /* Default icon label. */
 
@@ -942,7 +940,7 @@ init_vars(void)
 
   n = 0 ;
   for (i = 0; i < MAXREGS; i++) mpcim(&n, v->MPmvals[i]) ;
-  for (i = 0; i < FINREGS; i++)  
+  for (i = 0; i < FINREGS; i++)
      v->MPfvals[i] = (double)n;
   v->MPfvals[FINREGS - 1] = (double)12;
 }
@@ -974,7 +972,7 @@ make_eng_sci(int *MPnumber)
   int ddig ;                   /* Number of digits in exponent. */
   int eng = 0 ;                /* Set if this is an engineering number. */
   int exp = 0 ;                /* Exponent */
- 
+
   if (v->dtype == ENG) eng = 1 ;
   optr = v->snum ;
   mpabs(MPnumber, MPval) ;
@@ -982,18 +980,18 @@ make_eng_sci(int *MPnumber)
   mpcim(&n, MP1) ;
   if (mplt(MPnumber, MP1)) *optr++ = '-' ;
   mpstr(MPval, MPmant) ;
- 
+
   mpcim(&basevals[(int) v->base], MP1base) ;
   n = 3 ;
   mppwr(MP1base, &n, MP3base) ;
- 
+
   n = 10 ;
   mppwr(MP1base, &n, MP10base) ;
- 
+
   n = 1 ;
   mpcim(&n, MP1) ;
   mpdiv(MP1, MP10base, MPatmp) ;
- 
+
   n = 0 ;
   mpcim(&n, MP1) ;
   if (!mpeq(MPmant, MP1))
@@ -1024,9 +1022,9 @@ make_eng_sci(int *MPnumber)
           exp -= 1 ;
           mpmul(MPmant, MP1base, MPmant) ;
         }
-    }    
+    }
 
-  STRCPY(fixed, make_fixed(MPmant, MAX_DIGITS-6)) ;
+  strlcpy(fixed, make_fixed(MPmant, MAX_DIGITS-6), MAX_DIGITS+1) ;
   len = strlen(fixed) ;
   for (i = 0; i < len; i++) *optr++ = fixed[i] ;
 
@@ -1072,20 +1070,20 @@ make_fixed(int *MPnumber, int cmax)
   int ndig ;                   /* Total number of digits to generate. */
   int ddig ;                   /* Number of digits to left of . */
   int dval, n ;
- 
+
   optr = v->fnum ;
   mpabs(MPnumber, MPval) ;
   n = 0 ;
   mpcim(&n, MP1) ;
   if (mplt(MPnumber, MP1)) *optr++ = '-' ;
- 
+
   mpcim(&basevals[(int) v->base], MP1base) ;
- 
+
   mppwr(MP1base, &v->accuracy, MP1) ;
   MPstr_to_num("0.5", DEC, MP2) ;
   mpdiv(MP2, MP1, MP1) ;
   mpadd(MPval, MP1, MPval) ;
- 
+
   n = 1 ;
   mpcim(&n, MP2) ;
   if (mplt(MPval, MP2))
@@ -1137,8 +1135,8 @@ make_number(int *MPnumber, BOOLEAN mkFix)
  *
  *  XXX:  Needs to be improved. Shouldn't need to convert to a double in
  *        order to do these tests.
- */  
-     
+ */
+
   mpcmd(MPnumber, &number) ;
   val = fabs(number) ;
   if (v->error) return(vstrs[(int) V_ERROR]) ;
@@ -1217,48 +1215,13 @@ make_number(int *MPnumber, BOOLEAN mkFix)
         else
            return(make_fixed(MPnumber, MAX_DIGITS)) ;
      }
-     else 
+     else
      {
         return(make_fixed(MPnumber, MAX_DIGITS)) ;
      }
   }
-  else 
+  else
      return(make_fixed(MPnumber, MAX_DIGITS)) ;
-}
-
-
-/*ARGSUSED*/
-/* Default math library exception handling routine. */
-int
-matherr(struct exception *exc)
-{
-#if 0
-  char msg[100];
-  
-  if (exc) {
-	  strcpy(msg, exc->name);
-	  strcat(msg, ": ");
-	  if(exc->type == DOMAIN)
-	     strcat(msg, "DOMAIN ");
-	  else if(exc->type == SING)
-	     strcat(msg, "SING ");
-	  else if(exc->type == OVERFLOW)
-	     strcat(msg, "OVERFLOW ");
-	  else if(exc->type == UNDERFLOW)
-	     strcat(msg, "UNDERFLOW ");
-	  else if(exc->type == TLOSS)
-	     strcat(msg, "TLOSS ");
-	  else if(exc->type == PLOSS)
-	     strcat(msg, "PLOSS ");
-	  
-	  strcat(msg, vstrs[(int) V_ERROR]);
-
-	  _DtSimpleError (v->appname, DtWarning, NULL, msg);
-  }
-#endif
-
-  doerr(vstrs[(int) V_ERROR]) ;
-  return(1) ;                     /* Value ignored. */
 }
 
 /* Convert string into an MP number. */
@@ -1292,13 +1255,13 @@ MPstr_to_num(char *str, enum base_type base, int *MPval)
 
   if (*optr == '.')
     for (i = 1; (inum = char_val(*++optr)) >= 0; i++)
-      {  
+      {
         mppwr(MPbase, &i, MP1) ;
         mpcim(&inum, MP2) ;
         mpdiv(MP2, MP1, MP1) ;
         mpadd(MPval, MP1, MPval) ;
       }
- 
+
   while (*optr == ' ') optr++ ;
 
   if (*optr != '\0')
@@ -1310,7 +1273,7 @@ MPstr_to_num(char *str, enum base_type base, int *MPval)
     }
   exp *= exp_sign ;
 
-  if (v->key_exp || exp_sign == -1) 
+  if (v->key_exp || exp_sign == -1)
     {
       mppwr(MPbase, &exp, MP1) ;
       mpmul(MPval, MP1, MPval) ;
@@ -1340,7 +1303,7 @@ paren_disp(char c)
  *
  *  Otherwise just append the character.
  */
- 
+
   n = strlen(v->display) ;
   if (IS_KEY(c, KEY_CLR))             /* Is it a Delete character? */
     {
@@ -1383,7 +1346,7 @@ paren_disp(char c)
           v->display[n+1] = c + 96 ;
           v->display[n+2] = '\0' ;
         }
-    }    
+    }
   else                                /* It must be an ordinary character. */
     {
       if (n < MAXLINE-1)
@@ -1391,7 +1354,7 @@ paren_disp(char c)
           v->display[n]   = c ;
           v->display[n+1] = '\0' ;
         }
-    }    
+    }
 
   n = (n < MAX_DIGITS) ? 0 : n - MAX_DIGITS ;
   v->show_paren = 1 ;       /* Hack to get set_item to really display it. */
@@ -1413,18 +1376,18 @@ process_event(int type)
                                  do_pending() ;
                                }
                              else
-                               { 
+                               {
                                  ival = get_index(v->cur_ch) ;
                                  if (ival < TITEMS - EXTRA) {
-                                    if ((v->modetype == FINANCIAL && 
+                                    if ((v->modetype == FINANCIAL &&
                                                                  ival == 23) ||
                                         (v->modetype == LOGICAL && (
-                                                    ival == 21 || ival == 22 || 
+                                                    ival == 21 || ival == 22 ||
                                                                  ival == 23)))
                                        break;
                                     else
                                        /* go arm the button */
-                                       draw_button(ival, v->curwin, v->row, 
+                                       draw_button(ival, v->curwin, v->row,
                                                    v->column, TRUE) ;
                                  }
                                  process_item(ival) ;
@@ -1433,7 +1396,7 @@ process_event(int type)
 
       case KEYBOARD_UP     : ival = get_index(v->cur_ch) ;
                              if (ival < TITEMS - EXTRA) {
-                                 if ((v->modetype == FINANCIAL && 
+                                 if ((v->modetype == FINANCIAL &&
                                                               ival == 23) ||
                                      (v->modetype == LOGICAL && (
                                                  ival == 21 || ival == 22 ||
@@ -1441,14 +1404,14 @@ process_event(int type)
                                     break;
                                  else
                                     /* go disarm the button */
-                                    draw_button(ival, v->curwin, v->row, 
+                                    draw_button(ival, v->curwin, v->row,
                                                 v->column, FALSE) ;
                              }
                              /* go disarm the button */
-                             draw_button(ival, v->curwin, v->row, 
+                             draw_button(ival, v->curwin, v->row,
                                                 v->column, FALSE) ;
                              break ;
- 
+
     }
 }
 
@@ -1488,8 +1451,8 @@ process_item(int n)
     }
   switch (buttons[n].opdisp)
     {
-      case OP_SET   : 
-         if (v->current == 'T') 
+      case OP_SET   :
+         if (v->current == 'T')
          {
              if (v->modetype == SCIENTIFIC)
                 set_item(OPITEM, buttons[n].str) ;
@@ -1499,10 +1462,10 @@ process_item(int n)
          else
             set_item(OPITEM, buttons[n].str) ;
          break ;
-      case OP_CLEAR : 
-         if (v->error) 
+      case OP_CLEAR :
+         if (v->error)
             set_item(OPITEM, vstrs[(int) V_CLR]) ;
-         else 
+         else
             set_item(OPITEM, "") ;
          break;
       default:
@@ -1528,7 +1491,7 @@ process_stack(int startop, int startnum, int n)
   int i ;
   int nptr ;                /* Pointer to next number from numeric stack. */
 
-  STRCPY(sdisp, v->display) ;  /* Save current display. */
+  strlcpy(sdisp, v->display, MAXLINE) ;  /* Save current display. */
   nptr = startnum ;
   v->pending = 0 ;
   v->cur_op = '?' ;            /* Current operation is initially undefined. */
@@ -1539,7 +1502,7 @@ process_stack(int startop, int startnum, int n)
           mpstr(v->MPnumstack[nptr++], v->MPdisp_val) ;
         }
       else
-        { 
+        {
           v->cur_ch = v->opstack[startop + i] ;
           if (v->cur_ch == '^')                    /* Control character? */
             {
@@ -1553,13 +1516,13 @@ process_stack(int startop, int startnum, int n)
             }
           else process_item(get_index(v->cur_ch)) ;
         }
-    }    
+    }
   v->numsptr = startnum ;
   push_num(v->MPdisp_val) ;
   v->opsptr = startop - 1 ;
   push_op(-1) ;
   save_pending_values(KEY_LPAR) ;
-  STRCPY(v->display, sdisp) ;  /* Restore current display. */
+  strlcpy(v->display, sdisp, MAXLINE) ;  /* Restore current display. */
 }
 
 
@@ -1570,18 +1533,18 @@ process_str(char *str, enum menu_type mtype)
   char save[80];
 
   len = strlen(str) ;
-  STRCPY(save, v->display) ;
-  STRCPY(v->display, " ") ;
+  strlcpy(save, v->display, 80) ;
+  strlcpy(v->display, " ", MAXLINE) ;
   set_item(DISPLAYITEM, v->display);
   for (i = 0 ; i < len; i++)
-    {    
+    {
       if(str[i] == '*')
          str[i] = 'x';
-      if (v->error) 
+      if (v->error)
       {
         if(mtype == M_FUN)
         {
-           STRCPY(v->display, save);
+           strlcpy(v->display, save, MAXLINE);
            set_item(DISPLAYITEM, v->display);
            v->error = 0;
         }
@@ -1592,7 +1555,7 @@ process_str(char *str, enum menu_type mtype)
           v->current = str[i] ;
           do_pending() ;
         }
-      else 
+      else
         switch(v->base)
         {
            case DEC:
@@ -1626,11 +1589,11 @@ read_rcfiles(void)   /* Read .dtcalcrc's from home and current directories. */
 
   for (n = 0; n < MAXREGS; n++)
     {
-      STRCPY(tmp, make_number(v->MPcon_vals[n], FALSE)) ;
-      SPRINTF(name, "%1d: %s [%s]", n, tmp, v->con_names[n]) ;
+      strlcpy(tmp, make_number(v->MPcon_vals[n], FALSE), MAXLINE) ;
+      snprintf(name, MAXPATHLEN + 50, "%1d: %s [%s]", n, tmp, v->con_names[n]) ;
 
-      STRCPY(v->con_names[n], name) ;
-      STRCPY(v->fun_vals[n], "") ;    /* Initially empty function strings. */
+      strlcpy(v->con_names[n], name, MAXLINE) ;
+      strlcpy(v->fun_vals[n], "", MAXLINE) ;    /* Initially empty function strings. */
     }
 
   if ((home = getenv("HOME")) == NULL)
@@ -1640,7 +1603,7 @@ read_rcfiles(void)   /* Read .dtcalcrc's from home and current directories. */
     }
   snprintf(name, MAXPATHLEN, "%s/%s", home, RCNAME) ;
   get_rcfile(name) ;      /* Read .dtcalcrc from users home directory. */
- 
+
   snprintf(name, MAXPATHLEN, "%s/%s", getcwd(pathname, MAXPATHLEN+1), RCNAME) ;
   get_rcfile(name) ;      /* Read .dtcalcrc file from current directory. */
 }
@@ -1651,7 +1614,7 @@ show_display(int *MPval)
 {
   if (!v->error)
     {
-      STRCPY(v->display, make_number(MPval, TRUE)) ;
+      strlcpy(v->display, make_number(MPval, TRUE), MAXLINE) ;
       set_item(DISPLAYITEM, v->display) ;
     }
 }
@@ -1681,26 +1644,26 @@ write_rcfile(enum menu_type mtype, int exists, int cfno, char *val, char *commen
   struct passwd *entry ;        /* The user's /etc/passwd entry. */
 
   rcexists = 0 ;
-  SPRINTF(rcname, "%s/%s", getcwd(pathname, MAXPATHLEN), RCNAME) ;
+  snprintf(rcname, MAXPATHLEN, "%s/%s", getcwd(pathname, MAXPATHLEN), RCNAME) ;
   if (access(rcname, F_OK) == 0) rcexists = 1 ;
   else
-    { 
+    {
       if ((home = getenv("HOME")) == NULL)
         {
           if ((entry = getpwuid(getuid())) == NULL) return ;
           home = entry->pw_dir ;
         }
-      SPRINTF(rcname, "%s/%s", home, RCNAME) ;
+      snprintf(rcname, MAXPATHLEN, "%s/%s", home, RCNAME) ;
       if (access(rcname, F_OK) == 0) rcexists = 1 ;
     }
-  STRCPY(tmp_filename, "/tmp/.dtcalcrcXXXXXX") ;
-  MKTEMP(tmp_filename) ;
+  strlcpy(tmp_filename, "/tmp/.dtcalcrcXXXXXX", MAXLINE) ;
+  mkstemp(tmp_filename) ;
   if ((tmpfd = fopen(tmp_filename, "w+")) == NULL) return ;
 
   if (rcexists)
     {
       rcfd = fopen(rcname, "r") ;
-      SPRINTF(sval, " %1d", cfno) ;
+      snprintf(sval, 3, " %1d", cfno) ;
       while (fgets(str, MAXLINE, rcfd))
         {
           if (exists)
@@ -1719,7 +1682,7 @@ write_rcfile(enum menu_type mtype, int exists, int cfno, char *val, char *commen
                                break;
                   default: break;
                 }
-            }    
+            }
           FPRINTF(tmpfd, "%s", str) ;
         }
       FCLOSE(rcfd) ;
@@ -1729,7 +1692,7 @@ write_rcfile(enum menu_type mtype, int exists, int cfno, char *val, char *commen
     {
       case M_CON : FPRINTF(tmpfd, "\nC%1d %s %s\n", cfno, val, comment) ;
                    break ;
-      case M_FUN : 
+      case M_FUN :
                if(strcmp(val, "") != 0)
                   FPRINTF(tmpfd, "\nF%1d %s %s\n", cfno, val, comment) ;
                break;
@@ -1751,7 +1714,7 @@ write_resources(char *filename)
   char intval[5] ;
   int MPtemp[MP_SIZE];
 
-  SPRINTF(intval, "%d", v->accuracy) ;
+  snprintf(intval, 5, "%d", v->accuracy) ;
   put_resource(R_ACCURACY, intval) ;
   put_resource(R_DISPLAYED, v->display) ;
   put_resource(R_BASE,     base_str[(int) v->base]) ;

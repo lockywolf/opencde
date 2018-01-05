@@ -875,13 +875,15 @@ L100:
   if (v->MPerrors)
     {
       char *msg;
+      int msg_size;
 
       _DtSimpleError (v->appname, DtWarning, NULL, mpstrs[(int) MP_CHKJ]) ;
       _DtSimpleError (v->appname, DtWarning, NULL, mpstrs[(int) MP_CHKL]) ;
-      msg = (char *) XtMalloc(strlen( mpstrs[(int) MP_CHKM]) + 200);
-      sprintf(msg, mpstrs[(int) MP_CHKM], *i, *j, mx) ;
+      msg_size = strlen( mpstrs[(int) MP_CHKM]) + 200;
+      msg = (char *) XtMalloc(msg_size);
+      snprintf(msg, msg_size, mpstrs[(int) MP_CHKM], *i, *j, mx) ;
       _DtSimpleError (v->appname, DtWarning, NULL, msg);
-      sprintf(msg, mpstrs[(int) MP_CHKN], MP.mxr, MP.t) ;
+      snprintf(msg, msg_size, mpstrs[(int) MP_CHKN], MP.mxr, MP.t) ;
       _DtSimpleError (v->appname, DtWarning, NULL, msg);
       XtFree(msg);
     }
@@ -1157,7 +1159,7 @@ mpcmim(int *x, int *y)
   static int i, il ;
 
 /* RETURNS Y = INTEGER PART OF X (TRUNCATED TOWARDS 0), FOR MP X AND Y.
- * USE IF Y TOO LARGE TO BE REPRESENTABLE AS A SINGLE-PRECISION INTEGER. 
+ * USE IF Y TOO LARGE TO BE REPRESENTABLE AS A SINGLE-PRECISION INTEGER.
  * (ELSE COULD USE MPCMI).
  * CHECK LEGALITY OF B, T, M AND MXR
  */
@@ -2183,7 +2185,7 @@ L40:
 
 /* COMPUTE APPROXIMATELY OPTIMAL Q (AND DIVIDE X BY 2**Q) */
 
-  q = (int) (sqrt((float) MP.t * (float).48 * rlb) + (float) x[2] * 
+  q = (int) (sqrt((float) MP.t * (float).48 * rlb) + (float) x[2] *
           (float)1.44 * rlb) ;
 
 /* HALVE Q TIMES */
@@ -3478,7 +3480,7 @@ L40:
 /* RETURN IF NEWTON ITERATION WAS CONVERGING */
 
 L50:
-  if (MP.r[i3 - 1] == 0 || (MP.r[i2] - MP.r[i3]) << 1 >= 
+  if (MP.r[i3 - 1] == 0 || (MP.r[i2] - MP.r[i3]) << 1 >=
           MP.t - it0)
     goto L70 ;
 
@@ -3676,8 +3678,8 @@ L130:
  */
 
 L140:
-  if (MP.r[i3 - 1] == 0 || (MP.r[i2] - MP.r[i3]) << 1 >= 
-      MP.t - it0) 
+  if (MP.r[i3 - 1] == 0 || (MP.r[i2] - MP.r[i3]) << 1 >=
+      MP.t - it0)
     goto L160 ;
 
 /*  THE FOLLOWING MESSAGE MAY INDICATE THAT B**(T-1) IS TOO SMALL,
@@ -3727,7 +3729,7 @@ mpset(int *idecpl, int *itmax2, int *maxdr)
  *          M = (W-1)/4 (MAXIMUM ALLOWABLE EXPONENT),
  *  WHERE W IS THE LARGEST INTEGER OF THE FORM 2**K-1 WHICH IS
  *  REPRESENTABLE IN THE MACHINE, K .LE. 47
- *  THE COMPUTED B AND T SATISFY THE CONDITIONS 
+ *  THE COMPUTED B AND T SATISFY THE CONDITIONS
  *  (T-1)*LN(B)/LN(10) .GE. IDECPL   AND   8*B*B-1 .LE. W .
  *  APPROXIMATELY MINIMAL T AND MAXIMAL B SATISFYING
  *  THESE CONDITIONS ARE CHOSEN.
@@ -3790,7 +3792,7 @@ L60:
 
 /* 2E0 BELOW ENSURES AT LEAST ONE GUARD DIGIT */
 
-  MP.t = (int) ((float) (*idecpl) * log((float)10.) / log((float) 
+  MP.t = (int) ((float) (*idecpl) * log((float)10.) / log((float)
           MP.b) + (float)2.0) ;
 
 /* SEE IF T TOO LARGE FOR DIMENSION STATEMENTS */
@@ -3801,11 +3803,13 @@ L60:
   if (v->MPerrors)
     {
       char *msg;
+      int msg_size;
 
       _DtSimpleError (v->appname, DtWarning, NULL, mpstrs[(int) MP_SETC]) ;
       _DtSimpleError (v->appname, DtWarning, NULL, mpstrs[(int) MP_SETD]) ;
-      msg = (char *) XtMalloc(strlen( mpstrs[(int) MP_SETE]) + 200);
-      sprintf(msg, mpstrs[(int) MP_SETE], i2) ;
+      msg_size = strlen( mpstrs[(int) MP_SETE]) + 200;
+      msg = (char *) XtMalloc(msg_size);
+      snprintf(msg, msg_size, mpstrs[(int) MP_SETE], i2) ;
       _DtSimpleError (v->appname, DtWarning, NULL, msg);
       XtFree(msg);
     }
@@ -3890,7 +3894,7 @@ L30:
 
 /* IF NOT LESS THAN 1, SUBTRACT FROM 2 */
 
-  if (MP.r[i2] > 0) 
+  if (MP.r[i2] > 0)
     mpaddi(&MP.r[i2 - 1], &c_n2, &MP.r[i2 - 1]) ;
 
   if (MP.r[i2 - 1] == 0) goto L10 ;
@@ -4309,7 +4313,7 @@ mppow_di(double *ap, int *bp)
   n   = *bp ;
 
   if (n != 0)
-    { 
+    {
       if (n < 0)
         {
           if (x == 0) return(pow) ;
@@ -4317,7 +4321,7 @@ mppow_di(double *ap, int *bp)
           x = 1/x;
         }
       for (;;)
-        { 
+        {
           if (n & 01) pow *= x;
           if (n >>= 1) x *= x ;
           else break ;
@@ -4338,7 +4342,7 @@ pow_ii(int *ap, int *bp)
 
   if (n > 0)
     for (;;)
-      { 
+      {
         if (n & 01)  pow *= x ;
         if (n >>= 1) x *= x ;
         else         break ;
@@ -4358,7 +4362,7 @@ mppow_ri(float *ap, int *bp)
   n   = *bp ;
 
   if (n != 0)
-    { 
+    {
       if (n < 0)
         {
           if (x == 0) return(pow) ;
@@ -4366,7 +4370,7 @@ mppow_ri(float *ap, int *bp)
           x = 1/x ;
         }
       for (;;)
-        { 
+        {
           if (n & 01)  pow *= x ;
           if (n >>= 1) x *= x ;
           else break ;
