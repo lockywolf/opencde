@@ -23,7 +23,7 @@ for programs to function properly.
 -   [ ] Dtaction
 -   [ ] DtappBuilder
 -   [ ] Dtappintegrate
--   [ ] Dtcalc
+-   [x] Dtcalc
 -   [x] Dtcm
 -   [ ] Dtconfig
 -   [ ] Dtcreate
@@ -33,7 +33,7 @@ for programs to function properly.
 -   [ ] Dtexec
 -   [ ] Dtfile
 -   [ ] Dthello
--   [ ] Dthelp
+-   [x] Dthelp
 -   [ ] Dticon
 -   [ ] Dtimstart
 -   [ ] Dtinfo
