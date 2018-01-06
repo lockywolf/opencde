@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/wmoxam/opencde.svg?branch=master)](https://travis-ci.org/wmoxam/opencde)
-
 # Open Common Desktop Environment
 
 Forked from https://sourceforge.net/p/cdesktopenv
