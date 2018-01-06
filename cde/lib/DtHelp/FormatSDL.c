@@ -657,19 +657,19 @@ static const	_DtCvContainer	DefFrmtSpecs =
 	_DtCvDYNAMIC,		/* _DtCvFrmtOption  type     */
 	_DtCvBORDER_NONE,	/* _DtCvFrmtOption  border   */
 	_DtCvINHERIT,		/* _DtCvFrmtOption  justify  */
-	_DtCvJUSTIFY_TOP,	/* _DtCvFrmtOption  vjustify */
+	_DtCvJUSTIFY_TOP,       /* _DtCvFrmtOption  vjustify */
+	_DtCvWRAP_NONE,         /* _DtCvFrmtOption  flow     */
 	_DtCvJUSTIFY_CENTER,	/* _DtCvFrmtOption  orient   */
-	_DtCvJUSTIFY_TOP,	/* _DtCvFrmtOption  vorient  */
-	_DtCvWRAP_NONE,		/* _DtCvFrmtOption  flow     */
-	DefPercent,		/* int           percent  */
+	_DtCvJUSTIFY_TOP,       /* _DtCvFrmtOption  vorient  */
+	DefPercent,		/* int              percent  */
 	0,			/* _DtCvUnit        leading  */
 	0,			/* _DtCvUnit        fmargin  */
 	0,			/* _DtCvUnit        lmargin  */
 	0,			/* _DtCvUnit        rmargin  */
 	0,			/* _DtCvUnit        tmargin  */
 	0,			/* _DtCvUnit        bmargin  */
-	{0, NULL},              /* _DtCvLine     bdr_info;      */
-	NULL,			/* _DtCvSegment    *seg_list */
+	{0, NULL},              /* _DtCvLine        bdr_info;      */
+	NULL,		        /* _DtCvSegment    *seg_list */
   };
 
 static	const	_FrmtUiInfo	DefUiInfo =
@@ -743,7 +743,7 @@ static	const	_FrmtUiInfo	DefUiInfo =
 	{ "mach-out" , SdlClassMachOut  }, \
 	{ "mach-cont", SdlClassMachCont }, \
 	{ "pub-lit"  , SdlClassPubLit   }, \
-	{ UdefKeyStr , SdlClassUdefkey  }  
+	{ UdefKeyStr , SdlClassUdefkey  }
 /*-----------------------------------------------------------------------------
 <!ENTITY % head-class    "label     | head      | caption  | annotation |
 			  phead     | udefhead" >
@@ -948,19 +948,19 @@ static _CEInterpData	InterpData[] =
 	{ SdlInterpCsh,	"csh" },
 	{ SdlInterpSh ,	"sh"  },
 	{ SdlInterpTcl,	"tcl" },
-	{ _DtCvOPTION_BAD, NULL  },
+	{ SdlOptionBad, NULL  },
     };
 
 /******************************************************************************
  * Private Variables
  *****************************************************************************/
-static OptionList hclass[]  = { SDL_ENTITY_CLASSH, {NULL, _DtCvOPTION_BAD}};
-static OptionList fclass[]  = { SDL_ENTITY_CLASSF, {NULL, _DtCvOPTION_BAD}};
-static OptionList kclass[]  = { SDL_ENTITY_CLASSK, {NULL, _DtCvOPTION_BAD}};
-static OptionList pclass[]  = { SDL_ENTITY_CLASSP, {NULL, _DtCvOPTION_BAD}};
-static OptionList gclass[]  = { SDL_ENTITY_CLASSG, {NULL, _DtCvOPTION_BAD}};
+static OptionList hclass[]  = { SDL_ENTITY_CLASSH, {NULL, SdlOptionBad}};
+static OptionList fclass[]  = { SDL_ENTITY_CLASSF, {NULL, SdlOptionBad}};
+static OptionList kclass[]  = { SDL_ENTITY_CLASSK, {NULL, SdlOptionBad}};
+static OptionList pclass[]  = { SDL_ENTITY_CLASSP, {NULL, SdlOptionBad}};
+static OptionList gclass[]  = { SDL_ENTITY_CLASSG, {NULL, SdlOptionBad}};
 static OptionList fgclass[] =
-	{ SDL_ENTITY_CLASSF, SDL_ENTITY_CLASSG, {NULL, _DtCvOPTION_BAD}};
+	{ SDL_ENTITY_CLASSF, SDL_ENTITY_CLASSG, {NULL, SdlOptionBad}};
 
 static OptionList apps[] =
     {
@@ -969,13 +969,13 @@ static OptionList apps[] =
 	{ "tutorial", SdlAppTutorial },
 	{ "ref"     , SdlAppRef      },
 	{ "sys"     , SdlAppSys      },
-	{  NULL     , _DtCvOPTION_BAD   }
+	{  NULL     , SdlOptionBad   }
     };
 static OptionList timing[] =
     {
 	{ (ASyncStr+1), SdlTimingSync  },
 	{ ASyncStr    , SdlTimingAsync },
-	{  NULL       , _DtCvOPTION_BAD   },
+	{  NULL       , SdlOptionBad   },
     };
 
 static OptionList frmtTypes[] =
@@ -983,7 +983,7 @@ static OptionList frmtTypes[] =
 	{ "literal" , SdlTypeLiteral },
 	{ "lined"   , SdlTypeLined   },
 	{ DynamicStr, SdlTypeDynamic },
-	{  NULL     , _DtCvOPTION_BAD   }
+	{  NULL     , SdlOptionBad   }
     };
 
 static OptionList idTypes[] =
@@ -1009,94 +1009,94 @@ static OptionList idTypes[] =
 	{ (SyscmdStr+1)  , SdlIdSysCmd    },
 	{ (ScriptStr+1)  , SdlIdScript    },
 	{ (CallbackStr+1), SdlIdCallback  },
-	{ NULL           , _DtCvOPTION_BAD   },
+	{ NULL           , SdlOptionBad   },
     };
 
 static OptionList bool_types[] =
     {
 	{ "YES", SdlBoolYes   },
 	{ "NO" , SdlBoolNo    },
-	{ NULL , _DtCvOPTION_BAD },
+	{ NULL , SdlOptionBad },
     };
 
 static OptionList borders[] =
     {
-	{ NoBorderStr        , _DtCvBORDER_NONE   },
-	{ "full-border"      , _DtCvBORDER_FULL   },
-	{ "horizontal-border", _DtCvBORDER_HORZ   },
-	{ "vertical-border"  , _DtCvBORDER_VERT   },
-	{ "top-border"       , _DtCvBORDER_TOP    },
-	{ "bottom-border"    , _DtCvBORDER_BOTTOM },
-	{ "left-border"      , _DtCvBORDER_LEFT   },
-	{ "right-border"     , _DtCvBORDER_RIGHT  },
-	{ NULL               , _DtCvOPTION_BAD    },
+	{ NoBorderStr        , SdlBorderNone   },
+	{ "full-border"      , SdlBorderFull   },
+	{ "horizontal-border", SdlBorderHorz   },
+	{ "vertical-border"  , SdlBorderVert   },
+	{ "top-border"       , SdlBorderTop    },
+	{ "bottom-border"    , SdlBorderBottom },
+	{ "left-border"      , SdlBorderLeft   },
+	{ "right-border"     , SdlBorderRight  },
+	{ NULL               , SdlOptionBad    },
     };
 
 static OptionList justify1[] =
     {
-	{ LeftJustifyStr   , _DtCvJUSTIFY_LEFT   },
-	{ RightJustifyStr  , _DtCvJUSTIFY_RIGHT  },
-	{ CenterJustifyStr , _DtCvJUSTIFY_CENTER },
-	{ "numeric-justify", _DtCvJUSTIFY_NUM    },
-	{ NULL             , _DtCvOPTION_BAD    },
+	{ LeftJustifyStr   , SdlJustifyLeft   },
+	{ RightJustifyStr  , SdlJustifyRight  },
+	{ CenterJustifyStr , SdlJustifyCenter },
+	{ "numeric-justify", SdlJustifyNum    },
+	{ NULL             , SdlOptionBad     },
     };
 
 static OptionList justify2[] =
     {
-	{ LeftJustifyStr   , _DtCvJUSTIFY_LEFT   },
-	{ RightJustifyStr  , _DtCvJUSTIFY_RIGHT  },
-	{ CenterJustifyStr , _DtCvJUSTIFY_CENTER },
-	{ NULL             , _DtCvOPTION_BAD    },
+	{ LeftJustifyStr   , SdlJustifyLeft   },
+	{ RightJustifyStr  , SdlJustifyRight  },
+	{ CenterJustifyStr , SdlJustifyCenter },
+	{ NULL             , SdlOptionBad    },
     };
 
 static OptionList vjust[] =
     {
-	{ TopVJustStr   , _DtCvJUSTIFY_TOP    },
-	{ "bottom-vjust", _DtCvJUSTIFY_BOTTOM },
-	{ "center-vjust", _DtCvJUSTIFY_CENTER },
-	{ NULL          , _DtCvOPTION_BAD     },
+	{ TopVJustStr   , SdlJustifyTop    },
+	{ "bottom-vjust", SdlJustifyBottom },
+	{ "center-vjust", SdlJustifyCenter },
+	{ NULL          , SdlOptionBad     },
     };
 
 static OptionList orient[] =
     {
-	{ "left-orient"        , _DtCvJUSTIFY_LEFT        },
-	{ CenterOrientStr      , _DtCvJUSTIFY_CENTER      },
-	{ "right-orient"       , _DtCvJUSTIFY_RIGHT       },
-	{ "left-margin-orient" , _DtCvJUSTIFY_LEFT_MARGIN },
-	{ "right-margin-orient", _DtCvJUSTIFY_RIGHT_MARGIN},
-	{ "left-corner-orient" , _DtCvJUSTIFY_LEFT_CORNER },
-	{ "right-corner-orient", _DtCvJUSTIFY_RIGHT_CORNER},
-	{ NULL                 , _DtCvOPTION_BAD         },
+	{ "left-orient"        , SdlJustifyLeft       },
+	{ CenterOrientStr      , SdlJustifyCenter     },
+	{ "right-orient"       , SdlJustifyRight      },
+	{ "left-margin-orient" , SdlJustifyLeftMargin },
+	{ "right-margin-orient", SdlJustifyRightMargin },
+	{ "left-corner-orient" , SdlJustifyLeftCorner },
+	{ "right-corner-orient", SdlJustifyRightCorner},
+	{ NULL                 , SdlOptionBad         },
     };
 
 static OptionList vorient[] =
     {
-	{ TopVOrientStr   , _DtCvJUSTIFY_TOP    },
-	{ "bottom-vorient", _DtCvJUSTIFY_BOTTOM },
-	{ "center-vorient", _DtCvJUSTIFY_CENTER },
-	{ NULL            , _DtCvOPTION_BAD     },
+	{ TopVOrientStr   , SdlJustifyTop    },
+	{ "bottom-vorient", SdlJustifyBottom },
+	{ "center-vorient", SdlJustifyCenter },
+	{ NULL            , SdlOptionBad     },
     };
 
 static OptionList placement[] =
     {
 	{ "object"     , SdlPlaceObject },
 	{ ParentStr    , SdlPlaceParent },
-	{  NULL        , _DtCvOPTION_BAD   },
+	{  NULL        , SdlOptionBad   },
     };
 
 static OptionList stacking[] =
     {
 	{ "horiz"  , SdlStackHoriz },
 	{ "vert"   , SdlStackVert  },
-	{  NULL    , _DtCvOPTION_BAD  },
+	{  NULL    , SdlOptionBad  },
     };
 
 static OptionList flow[] =
     {
-	{ (NoWrapStr+2), _DtCvWRAP       },
-	{  NoWrapStr   , _DtCvWRAP_NONE  },
-	{  "join"      , _DtCvWRAP_JOIN  },
-	{  NULL        , _DtCvOPTION_BAD },
+	{ (NoWrapStr+2), SdlWrap       },
+	{  NoWrapStr   , SdlNoWrap  },
+	{  "join"      , SdlWrapJoin  },
+	{  NULL        , SdlOptionBad },
     };
 
 static OptionList window[] =
@@ -1104,15 +1104,16 @@ static OptionList window[] =
 	{ "current", SdlWindowCurrent },
 	{ "new"    , SdlWindowNew     },
 	{ "popup"  , SdlWindowPopup   },
-	{ NULL    , _DtCvOPTION_BAD },
+	{ NULL    , SdlOptionBad },
     };
 
 static OptionList traversal[] =
     {
 	{ "return"  , SdlTraversalReturn   },
 	{ "noreturn", SdlTraversalNoReturn },
-	{ NULL      , _DtCvOPTION_BAD         },
+	{ NULL      , SdlOptionBad         },
     };
+
 
 static OptionList interpreters[] =
     {
@@ -1120,7 +1121,7 @@ static OptionList interpreters[] =
 	{ "tcl"     , SdlInterpTcl },
 	{ "csh"     , SdlInterpCsh },
 	{ "sh"      , SdlInterpSh  },
-	{ NULL      , _DtCvOPTION_BAD },
+	{ NULL      , SdlOptionBad },
     };
 
 static	SDLAttributeOptions SDLOptionsList[] =
@@ -2743,7 +2744,7 @@ static SDLElementAttrList  HeadStyleAttrList[] =
 	{ SDL_ATTR_FLOW     , SdlAttrValueImplied   , NoWrapStr      },
 	font_stylesAttrList ,
 	formt_stylesAttrList,
-	{ SDL_ATTR_JUSTIFY1 , SdlAttrValueImplied   , LeftJustifyStr }, 
+	{ SDL_ATTR_JUSTIFY1 , SdlAttrValueImplied   , LeftJustifyStr },
 	{ -1                , SdlAttrValueBad       , NULL           }
     };
 
@@ -2873,7 +2874,7 @@ static SDLElementAttrList  FrmtStyleAttrList[] =
 	{ SDL_ATTR_FMARGIN  , SdlAttrValueImplied   , ZeroStr        },
 	font_stylesAttrList ,
 	formt_stylesAttrList,
-	{ SDL_ATTR_JUSTIFY1 , SdlAttrValueImplied   , LeftJustifyStr }, 
+	{ SDL_ATTR_JUSTIFY1 , SdlAttrValueImplied   , LeftJustifyStr },
 	{ -1                , SdlAttrValueBad       , NULL           }
     };
 /*----------------------------------------------------------------------------- <!ELEMENT grphstyle - O EMPTY    >
@@ -2907,7 +2908,7 @@ static SDLElementAttrList  GrphStyleAttrList[] =
 	{ SDL_ATTR_RLEVEL   , SdlAttrValueImplied   , NegativeOneStr },
 	{ SDL_ATTR_PHRASE   , SdlAttrValueImplied   , NULL           },
 	formt_stylesAttrList,
-	{ SDL_ATTR_JUSTIFY2 , SdlAttrValueImplied   , LeftJustifyStr }, 
+	{ SDL_ATTR_JUSTIFY2 , SdlAttrValueImplied   , LeftJustifyStr },
 	{ -1                , SdlAttrValueBad       , NULL           }
     };
 
@@ -3464,7 +3465,7 @@ PropagateJustification(
  *
  * Parameters:
  *
- * Returns:     
+ * Returns:
  *
  * Purpose:
  *
@@ -3649,7 +3650,7 @@ DuplicateElement(
 			 */
 			if (line_height > 0)
 			  {
-			    TMarginOfSeg(newSeg) = 
+			    TMarginOfSeg(newSeg) =
 					TMarginOfSeg(newSeg) * line_height;
 			    BMarginOfSeg(newSeg) =
 					BMarginOfSeg(newSeg) * line_height;
@@ -4158,7 +4159,7 @@ FreeFontInfo(
  *
  * Returns:     0 if successful, -1 if errors
  *
- * Purpose:     
+ * Purpose:
  *
  ******************************************************************************/
 static	int
@@ -4326,7 +4327,7 @@ ResolveAsyncBlock(
  *
  * Returns:     0 if successful, -1 if errors
  *
- * Purpose:     
+ * Purpose:
  *
  ******************************************************************************/
 static	_DtCvSegment *
@@ -4359,7 +4360,7 @@ FindSnbEntry(
 /* A little helper function, acts like strcpy
  * but safe for overlapping regions.
  */
-static void *strmove(void *dest, const void *src) {
+static void strmove(void *dest, const void *src) {
     memmove(dest, src, strlen(src) + 1);
 }
 
@@ -4370,7 +4371,7 @@ static void *strmove(void *dest, const void *src) {
  *
  * Returns:     0 if successful, -1 if errors
  *
- * Purpose:     
+ * Purpose:
  *
  ******************************************************************************/
 static	int
@@ -4515,7 +4516,7 @@ ProcessNonBreakChar(
  *
  * Returns:     0 if successful, -1 if errors
  *
- * Purpose:     
+ * Purpose:
  *
  ******************************************************************************/
 static	int
@@ -4663,7 +4664,7 @@ AddToAsyncList (
 
 	while (_DtCvNextSeg(pSeg) != NULL)
 	    pSeg = _DtCvNextSeg(pSeg);
-	
+
         _DtCvNextSeg(pSeg) = block_seg;
       }
     else
@@ -4923,7 +4924,7 @@ InitAttributes(
    char		 *varOffset1;
    SDLNumber	 *numPtr1;
    SdlOption	 *enumPtr1;
-   SdlOption	  defNum = _DtCvOPTION_BAD;
+   SdlOption	  defNum = SdlOptionBad;
    const SDLAttribute *pAttr;
 
    while (attr_list->sdl_attr_define != -1)
@@ -5152,7 +5153,7 @@ ProcessSDLAttribute(
 		    if (result != -1)
 			result = CheckOptionList (attr_list->sdl_attr_define,
 						    attrValue, False,
-						    (SdlOption) _DtCvOPTION_BAD,
+						    SdlOptionBad,
 						    &attrNum);
 		    break;
 
@@ -5177,6 +5178,10 @@ ProcessSDLAttribute(
 		    varOffset1 = ((char *) element_info);
 		else if (pAttr->struct_type == SdlTableSpecific)
 		    varOffset1 = ((char *) element_info->w.table_info);
+		else {
+		  fprintf(stderr, "DtHelp: couldn't determine which structure the information goes in, aborting");
+		  exit(1);
+		}
 
 		varOffset1 = varOffset1 + pAttr->field_ptr;
 		if (pAttr->data_type == SdlAttrDataTypeNumber)
@@ -5188,14 +5193,14 @@ ProcessSDLAttribute(
 		  {
 		    enumPtr1  = (SdlOption *) varOffset1;
 		    *enumPtr1 = attrNum;
-    
+
 		    free(attrValue);
 		  }
 		else if (pAttr->data_type == SdlAttrDataTypeFont)
 		  {
 		    fontPtr1  = (_DtHelpFontValue *) varOffset1;
 		    *fontPtr1 = fontNum;
-    
+
 		    free(attrValue);
 		  }
 		else
@@ -5324,7 +5329,7 @@ ParseElementStart(
     if (MatchSDLElement (my_struct, element.element_str, element.sdl_element,
 					element.str_sig_chars, False) != 0)
 	return -1;
-	
+
     /*
      * remember what we are currently parsing
      */
@@ -5375,7 +5380,7 @@ ParseElementStart(
 		_DtCvContainerOfSeg(segPtr) = DefFrmtSpecs;
 		_DtCvContainerLeadingOfSeg(segPtr) =
 						my_struct->ui_info->leading;
-	
+
 		/*
 		 * if this is a formatting type container, do some more work.
 		 */
@@ -5406,14 +5411,14 @@ ParseElementStart(
 		     */
 		    my_struct->prev_data = NULL;
 		    _DtCvContainerListOfSeg(segPtr) = NULL;
-	
+
 		    /*
 		     * check to see if these are controllers.
 		     */
 		    if (element.sdl_element == SdlElementHead ||
 				SdlElementSubHead == element.sdl_element)
 			segPtr->type = _DtCvSetTypeToController(segPtr->type);
-		    
+
 		    /*
 		     * make this the currently active formatting information
 		     */
@@ -5990,7 +5995,7 @@ FindAndFix(
     _DtCvSegment *lastSeg  = my_struct->last_seg;
     _DtCvSegment *tmpSeg;
 
-    _DtHelpFontHints *oldFonts = my_struct->my_fonts; 
+    _DtHelpFontHints *oldFonts = my_struct->my_fonts;
 
     /*
      * If the head has an snref in it, get the snb and resolve them
@@ -6118,7 +6123,7 @@ GetInterpCmd(SdlOption	interp_type)
 {
     const _CEInterpData *interp = InterpData;
 
-    while (interp->type != _DtCvOPTION_BAD)
+    while (interp->type != SdlOptionBad)
       {
 	if (interp->type == interp_type)
 	    return interp->cmd;
@@ -7068,7 +7073,7 @@ Cdata(
 
                 if (string[i] == '\t')
                     string[i] = ' ';
-    
+
                 if (string[i] == '&')
                   {
                     strmove (&string[i], &string[i+1]);
@@ -7079,7 +7084,7 @@ Cdata(
                             return -1;
                         string[i+1] = '\0';
                       }
-    
+
 		    /*
 		     * is this an SGML numeric character reference
 		     * entity?  if so, it should have the format
@@ -7215,7 +7220,7 @@ Cdata(
                             MyFree(string);
                             return -1;
                           }
-    
+
                         strmove (string, &string[i+1]);
                         i = 0;
                       }
@@ -7336,7 +7341,7 @@ Cdata(
 	     * null the temp buffer.
 	     */
 	    string[0] = '\0';
- 
+
 	    /*
 	     * reset flags if we stopped because of a newline.
 	     */
@@ -7971,7 +7976,7 @@ RegisterSnbLink(
 	case SdlElementTextFile:
 			if (SDLIsAttrSet(my_struct->el_info, SDL_ATTR_OFFSET))
 			  {
-			    sprintf(buffer, " %d", ElOffset(my_struct));
+			    snprintf(buffer, 64, " %d", ElOffset(my_struct));
 			    len += strlen(buffer);
 			  }
 			if (SDLIsAttrSet(my_struct->el_info, SDL_ATTR_FORMAT))
@@ -7984,13 +7989,13 @@ RegisterSnbLink(
 			  {
 			    len += strlen(ElSnbXid(my_struct) + 1);
 
-			    fileSpec = malloc(sizeof(char) * len);
+			    fileSpec = malloc(len);
 			    if (NULL == fileSpec)
 				return -1;
-			
-			    strcpy(fileSpec, ElSnbXid(my_struct));
-			    strcat(fileSpec, buffer);
-			    strcat(fileSpec, ElSnbFormat(my_struct));
+
+			    strlcpy(fileSpec, ElSnbXid(my_struct), len);
+			    strlcat(fileSpec, buffer, len);
+			    strlcat(fileSpec, ElSnbFormat(my_struct), len);
 			  }
 			linkType = _DtCvLinkType_TextFile;
 			break;
@@ -8135,7 +8140,7 @@ ResolveSpcInfo(
 	    pReg = (_DtHelpDARegion *) malloc (sizeof(_DtHelpDARegion));
 	    if (NULL == pReg)
 		return -1;
-	    
+
 	    /*
 	     * malloc the structure to hold the information needed to
 	     * create the spc later.
@@ -8649,7 +8654,7 @@ ProcessContent(
 }
 
 /******************************************************************************
- * Function:    int SearchForController (_DtCvSegment p_seg, 
+ * Function:    int SearchForController (_DtCvSegment p_seg,
  *
  * Parameters:
  *
@@ -8732,7 +8737,7 @@ FormatSDLTitle(
  * Purpose:
  *
  ******************************************************************************/
-static	int
+static	void
 SetGhostLink(
     _DtCvLinkDb		 link_data,
     _DtCvSegment	*segments,
@@ -8812,7 +8817,7 @@ CreateAsciiString(
 	      }
 
 	    if (*nl_flag == True)
-		strcat(*ret_string, " ");
+		strlcat(*ret_string, " ", len);
 
 	    /*
 	     * back up to the insertion point.
@@ -8828,7 +8833,7 @@ CreateAsciiString(
 				(wchar_t *) _DtCvStringOfStringSeg(p_seg),
 				newLen + 1);
 	    else
-	        strcpy (&((*ret_string)[len]), _DtCvStringOfStringSeg(p_seg));
+	        strlcpy (&((*ret_string)[len]), _DtCvStringOfStringSeg(p_seg), newLen);
 
 	    *nl_flag = False;
 	    if (p_seg->next_disp == NULL)
@@ -9287,7 +9292,7 @@ ExpandToc(
 					_DtCvContainerIdOfSeg(pEl) != NULL)
 		    tst   = _DtCvStrCaseCmpLatin1(*path_list,
 						_DtCvContainerIdOfSeg(pEl));
-			
+
 		/*
 		 * the only time tst == 0 is when the next item in the
 		 * path_list matches this element. Check to see if the
@@ -9773,7 +9778,7 @@ _DtHelpCeFrmtSdlPathAndChildren(
         _DtCvFreeArray((void **) topicMap);
         return -1;
       }
-    
+
     /*
      * format the top topic entry.
      */
@@ -9885,7 +9890,7 @@ _DtHelpCeFrmtSdlVolumeInfo(
 	    if (frmtStruct.remember != NULL)
 		free(frmtStruct.remember);
 	  }
-    
+
 	if (result != -1)
 	  {
 	    /*

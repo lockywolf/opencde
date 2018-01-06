@@ -507,18 +507,18 @@ int _DtHelpCeStrHashToKey(
  * Parameters:  none
  *
  * Returns:	Ptr to the proper collation function to use
- *              If the codeset of the locale is "C", then it is 
+ *              If the codeset of the locale is "C", then it is
  *              strcasecmp(). If it's not, then it is strcoll().
  *
- * Purpose:	When the codeset of the locale "C", strcoll() 
- *              performs collation identical to strcmp(), which is 
+ * Purpose:	When the codeset of the locale "C", strcoll()
+ *              performs collation identical to strcmp(), which is
  *              strictly bitwise.
  *
  *              To get case-insensitive collation, you need to use
- *              strcasecmp() instead.  If codeset != "C", then 
+ *              strcasecmp() instead.  If codeset != "C", then
  *              strcoll() collates according to the language
  *              setting.
- * 
+ *
  * Warning:     This code is not multi-thread safe.  The multi-thread
  *              safe setlocale must be used instead to make it so.
  *
@@ -556,7 +556,7 @@ int _DtHelpCeStrHashToKey(
 #if defined(_AIX) || defined(USL) || defined(__uxp__)
      return _DtHelpCeStrCaseCmp;
 #else
-     return strcasecmp; 
+     return strcasecmp;
 #endif
    return strcoll;
 }
@@ -583,6 +583,8 @@ char * _DtHelpCeStripSpaces (
    if (string == NULL)
       return (string);
 
+   int size = strlen(string);
+
    /* Strip off leading spaces first */
    i = 0;
    while ((multiLen == 1 || (mblen(string + i, MB_LEN_MAX) == 1)) &&
@@ -591,7 +593,7 @@ char * _DtHelpCeStripSpaces (
       i++;
    }
    /* Copy over the leading spaces */
-   strcpy(string, string + i);
+   strlcpy(string, string + i, size);
 
    /* Drop out, if the string is now empty */
    if ((i = strlen(string) - 1) < 0)
@@ -615,7 +617,7 @@ char * _DtHelpCeStripSpaces (
 
       while (string[i])
       {
-         if (    ((len =mblen(string + i, MB_LEN_MAX)) == 1) 
+         if (    ((len =mblen(string + i, MB_LEN_MAX)) == 1)
               && isspace((unsigned char) string[i]))
          {
             /* Found a space */
@@ -683,7 +685,7 @@ void _DtHelpCeCompressSpace (
 /*****************************************************************************
  * Function:        void _DtHelpCeIconvStr1Step (string)
  *
- * Parameters:      
+ * Parameters:
  *    fromCode;      codeset name
  *    fromStr;       string to convert
  *    toCode;        codeset name
@@ -692,12 +694,12 @@ void _DtHelpCeCompressSpace (
  *    dflt1;         1-byte default char
  *    dflt2;         2-byte default char
  *
- * Return Value:    
+ * Return Value:
  *                  0: ok
  *                 -1: missing (NULL) argument
  *                 -2: no translation available from fromCode to toCode
- *                 -3: couldn't allocate memory 
- *                 -4: couldn't start conversion 
+ *                 -3: couldn't allocate memory
+ *                 -4: couldn't start conversion
  *                 -5: incomplete multibyte char
  *                 -6: invalid char found
  *
@@ -709,8 +711,8 @@ void _DtHelpCeCompressSpace (
  *
  * Comments:
  *                  iconv(3) is standardized in XPG4, which is just starting
- *                  to be supported.  Below are several different implementations 
- *                  of _DtHelpCeIconvStr, each using what is available on different 
+ *                  to be supported.  Below are several different implementations
+ *                  of _DtHelpCeIconvStr, each using what is available on different
  *                  platforms.  If no code is #ifdef'd, the XPG4 code defaults.
  *****************************************************************************/
 
@@ -727,7 +729,7 @@ int _DtHelpCeIconvStr1Step(
    int ret;
 
    ret = _DtHelpCeIconvOpen(&iconvContext,fromCode,toCode,dflt1,dflt2);
-   if (0 == ret) 
+   if (0 == ret)
       ret = _DtHelpCeIconvStr(iconvContext,fromStr, ret_toStr,NULL,NULL,0);
    _DtHelpCeIconvClose(&iconvContext);
    return ret;
@@ -737,25 +739,25 @@ int _DtHelpCeIconvStr1Step(
 /*****************************************************************************
  * Function:        void _DtHelpCeIconvOpen (string)
  *
- * Parameters:      
- *    iconvContext   context 
+ * Parameters:
+ *    iconvContext   context
  *    fromStr;       string to convert
  *    ret_toStr;     converted str; this string is malloc'd by this routine
  *                   and the CALLER MUST FREE it when no longer needed.
  *    dflt1;         1-byte default char
  *    dflt2;         2-byte default char
  *
- * Return Value:    
+ * Return Value:
  *                  0: ok
  *                 -1: missing (NULL) argument
  *                 -2: no translation available from fromCode to toCode
- *                 -3: couldn't allocate memory 
- *                 -4: couldn't start conversion 
+ *                 -3: couldn't allocate memory
+ *                 -4: couldn't start conversion
  *                 -5: incomplete multibyte char
  *                 -6: invalid char found
  *
  * Purpose:
- *              Opens an iconv table/algorithm to convert string from 
+ *              Opens an iconv table/algorithm to convert string from
  *              fromCode to toCode using iconv(3)
  *              It expects the codeset strings to be iconv(3) compatible.
  *		Generally, compatible strings can be retrieved using
@@ -763,8 +765,8 @@ int _DtHelpCeIconvStr1Step(
  *
  * Comments:
  *              iconv(3) is standardized in XPG4, which is just starting
- *              to be supported.  Below are several different implementations 
- *              of _DtHelpCeIconvStr, each using what is available on different 
+ *              to be supported.  Below are several different implementations
+ *              of _DtHelpCeIconvStr, each using what is available on different
  *              platforms.  If no code is #ifdef'd, the XPG4 code defaults.
  *****************************************************************************/
 int _DtHelpCeIconvOpen(
@@ -798,7 +800,7 @@ int _DtHelpCeIconvOpen(
    }
 
    ic->cd = iconv_open(toCode,fromCode);
-   if ( ic->cd == (iconv_t) BAD ) 
+   if ( ic->cd == (iconv_t) BAD )
    {
       err = -4;                         /* error */
       goto success;
@@ -813,20 +815,20 @@ success:
 /*****************************************************************************
  * Function:        void _DtHelpCeIconvStr (string)
  *
- * Parameters:      
+ * Parameters:
  *    iconvContext   context for the conversion
  *    fromStr;       string to convert
  *    ret_toStr;     converted str; this string is malloc'd by this routine
  *                   and the CALLER MUST FREE it when no longer needed.
- *    toStrBuf;      for efficiency, can pass in a buf 
+ *    toStrBuf;      for efficiency, can pass in a buf
  *    toStrBufLen;   length of buf
  *
- * Return Value:    
+ * Return Value:
  *                  0: ok
  *                 -1: missing (NULL) argument
  *                 -2: no translation available from fromCode to toCode
- *                 -3: couldn't allocate memory 
- *                 -4: couldn't start conversion 
+ *                 -3: couldn't allocate memory
+ *                 -4: couldn't start conversion
  *                 -5: incomplete multibyte char
  *                 -6: invalid char found
  *
@@ -834,7 +836,7 @@ success:
  *              Converts string from fromCode to toCode using iconv(3)
  *              If toStrBuf is NULL, memory for the converted string
  *                will be malloced as needed.
- *              If toStrBuf is not NULL, the conversion will use up 
+ *              If toStrBuf is not NULL, the conversion will use up
  *                to toStrBufLen bytes of the buffer and then realloc
  *                more memory if needed.
  *              If toStrBuf is not NULL, the size of the buf is
@@ -850,8 +852,8 @@ success:
  *                is not returned.
  * Comments:
  *              iconv(3) is standardized in XPG4, which is just starting
- *              to be supported.  Below are several different implementations 
- *              of _DtHelpCeIconvStr, each using what is available on different 
+ *              to be supported.  Below are several different implementations
+ *              of _DtHelpCeIconvStr, each using what is available on different
  *              platforms.  If no code is #ifdef'd, the XPG4 code defaults.
  *****************************************************************************/
 int _DtHelpCeIconvStr(
@@ -883,7 +885,7 @@ int _DtHelpCeIconvStr(
       return -1;                         /* RETURN error */
 
    /* just do a straight copy if codesets the same or invalid context */
-   if ( iconvContext->cd == (iconv_t) BAD ) 
+   if ( iconvContext->cd == (iconv_t) BAD )
    {
       if (NULL == toStrBuf)
       {
@@ -894,13 +896,13 @@ int _DtHelpCeIconvStr(
          int len = strlen(fromStr) + 1;
          if (len > toStrBufLen)
             *ret_toStr = realloc(toStrBuf,len);
-         else 
+         else
          {
             *ret_toStr = toStrBuf;
             len = toStrBufLen;
          }
          /* set return values */
-         strcpy(*ret_toStr,fromStr);
+         strlcpy(*ret_toStr, fromStr, len);
          *ret_toStrLen = len;
       }
       return (NULL != *ret_toStr ? 0 : -3);    /* RETURN result */
@@ -940,7 +942,7 @@ int _DtHelpCeIconvStr(
             if (outBytesLeft < sizeof(wchar_t))
             {
                size_t offset = outChar - (char *) toStr;
-   
+
                outBytesLeft += MEM_INC;
                toStrSize += MEM_INC;
                toStr = realloc(toStr,toStrSize * sizeof(char));
@@ -974,7 +976,7 @@ int _DtHelpCeIconvStr(
 /*****************************************************************************
  * Function:        void _DtHelpCeIconvClose()
  *
- * Parameters:      
+ * Parameters:
  *    io_iconvContext;      context
  *
  * Return Value:    none
@@ -985,8 +987,8 @@ int _DtHelpCeIconvStr(
  *
  * Comments:
  *              iconv(3) is standardized in XPG4, which is just starting
- *              to be supported.  Below are several different implementations 
- *              of _DtHelpCeIconvStr, each using what is available on different 
+ *              to be supported.  Below are several different implementations
+ *              of _DtHelpCeIconvStr, each using what is available on different
  *              platforms.  If no code is #ifdef'd, the XPG4 code defaults.
  *****************************************************************************/
 void _DtHelpCeIconvClose(
@@ -997,7 +999,7 @@ void _DtHelpCeIconvClose(
    if (!io_iconvContext || NULL == *io_iconvContext) return;
    ic = *io_iconvContext;
 
-   if ( ic->cd != (iconv_t) BAD ) 
+   if ( ic->cd != (iconv_t) BAD )
         iconv_close(ic->cd);
    if (ic->fromCodeset) free(ic->fromCodeset);
    if (ic->toCodeset) free(ic->toCodeset);
@@ -1009,7 +1011,7 @@ void _DtHelpCeIconvClose(
 /*****************************************************************************
  * Function:        void _DtHelpCeIconvContextSuitable()
  *
- * Parameters:      
+ * Parameters:
  *    iconvContext:   context
  *    fromCode:       proposed fromCodeset
  *    toCode:         proposed toCodeset
@@ -1033,11 +1035,11 @@ int _DtHelpCeIconvContextSuitable(
          const char *          fromCode,
          const char *          toCode)
 {
-   if (   !iconvContext 
-       || !iconvContext->fromCodeset 
+   if (   !iconvContext
+       || !iconvContext->fromCodeset
        || !iconvContext->toCodeset
-       || !fromCode 
-       || !toCode) 
+       || !fromCode
+       || !toCode)
        return False;
 
    if (   strcmp(iconvContext->fromCodeset,fromCode) == 0

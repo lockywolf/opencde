@@ -28,7 +28,7 @@
  **
  **   Project:     CacheCreeek (Rivers) Project.
  **
- **   
+ **
  **   Description: Private header file for Dts.
  **
  **
@@ -99,8 +99,8 @@
 		"%s/.dt/help/%%H.sdl:" \
 		"%s/.dt/help/%%H.hv"
 
-/* this path expects a sprintf usage as follows:
-    sprintf(buf,DtDEFAULT_USER_PATH_FORMAT,
+/* this path expects a snprintf usage as follows:
+    snprintf(buf, buf_size, DtDEFAULT_USER_PATH_FORMAT,
    			homedir, dtusersessionname,
 			homedir, dtusersessionname,
 			homedir, dtusersessionname,

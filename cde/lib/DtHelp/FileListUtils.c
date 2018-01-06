@@ -28,7 +28,7 @@
  **
  **   Project:    DtHelp library
  **
- **   Description: Locates and lists all files (volumes) accessible via the 
+ **   Description: Locates and lists all files (volumes) accessible via the
  **             known paths
  **
  **  (c) Copyright 1993, 1994 Hewlett-Packard Company
@@ -174,9 +174,9 @@ Boolean _DtHelpFileIsSameP(
     Boolean   ret;
 
    /* get filenames without path */
-   if (_DtHelpCeStrrchr(fileName1, DirSlashStr, MB_CUR_MAX, &fileName) == 0) 
+   if (_DtHelpCeStrrchr(fileName1, DirSlashStr, MB_CUR_MAX, &fileName) == 0)
        fileName1 = fileName + 1;
-   if (_DtHelpCeStrrchr(fileName2, DirSlashStr, MB_CUR_MAX, &fileName) == 0) 
+   if (_DtHelpCeStrrchr(fileName2, DirSlashStr, MB_CUR_MAX, &fileName) == 0)
        fileName2 = fileName + 1;
 
     /* init the structs */
@@ -237,9 +237,10 @@ static int ScanDirForFiles(
     if (pDir == NULL) return 0;                        /* RETURN */
 
     /* build the pathname */
-    strcpy (fullName, dirpath);
-    strcat (fullName, DirSlashStr);
+    strlcpy (fullName, dirpath, MAXPATHLEN + 2);
+    strlcat (fullName, DirSlashStr, MAXPATHLEN + 2);
     ptr = fullName + strlen (fullName);
+    int ptr_size = MAXPATHLEN + 2 - strlen (fullName);
 
     /*
      * Scan through the files looking for matching suffixes
@@ -262,8 +263,8 @@ static int ScanDirForFiles(
         {
           const char * * pSuffix;
           matchedSuffix = NULL;
-          for (pSuffix = suffixList; 
-               NULL != *pSuffix && NULL == matchedSuffix; 
+          for (pSuffix = suffixList;
+               NULL != *pSuffix && NULL == matchedSuffix;
                pSuffix++ )
           {
             if (strcmp(ext,*pSuffix) == 0)
@@ -272,12 +273,12 @@ static int ScanDirForFiles(
         }
 
         /* and a match is found */
-	if ( NULL != matchedSuffix ) 
+	if ( NULL != matchedSuffix )
 	{
            Boolean mod;
 
            /* then generate the full path and add to the list */
-	   strcpy (ptr, result->d_name);
+	   strlcpy(ptr, result->d_name, ptr_size);
 	   if (_DtHelpFileListAddFile(in_out_list,io_fontList,&mod,
                   fullName,ptr,infoProc,compareFlags,sortFlags,pDisplayArea))
            {
@@ -316,9 +317,9 @@ static int ScanDirForFiles(
  *              than one file with the same name to be in
  *              the list and be discriminated on the basis
  *              of the info.
- * 
+ *
  *****************************************************************************/
-_DtHelpFileList _DtHelpFileListGetMatch ( 
+_DtHelpFileList _DtHelpFileListGetMatch (
         _DtHelpFileList     fileListHead,
         char *              fullFilePath,
         _DtHelpFileInfoProc infoProc,
@@ -335,11 +336,11 @@ _DtHelpFileList _DtHelpFileListGetMatch (
 
    /* get filename without path */
    file.fileName = fullFilePath;
-   if (_DtHelpCeStrrchr(fullFilePath,DirSlashStr,MB_CUR_MAX,&file.fileName) == 0) 
+   if (_DtHelpCeStrrchr(fullFilePath,DirSlashStr,MB_CUR_MAX,&file.fileName) == 0)
        file.fileName++;
 
    /* if an info proc, use it, otherwise make due */
-   if (infoProc) 
+   if (infoProc)
       (*infoProc)(pDisplayArea,fullFilePath,
                      NULL,NULL,&file.docId,&file.timeStamp,&file.nameKey,
                      NULL,NULL);
@@ -374,9 +375,9 @@ _DtHelpFileList _DtHelpFileListGetMatch (
  *              or NULL if end of list has been reached
  *
  * Purpose:	Gets the next file in the list
- * 
+ *
  *****************************************************************************/
-_DtHelpFileList _DtHelpFileListGetNext ( 
+_DtHelpFileList _DtHelpFileListGetNext (
         _DtHelpFileList fileListHead,
         _DtHelpFileList curFile)
 {
@@ -393,7 +394,7 @@ _DtHelpFileList _DtHelpFileListGetNext (
  * Parameters:
  *
  * Purpose:	free the contents of an entry
- * 
+ *
  *****************************************************************************/
 void _DtHelpFileFreeEntry (
         _DtHelpFileEntry entry)
@@ -426,7 +427,7 @@ void _DtHelpFileFreeEntry (
  *		ENOMEM   memory allocation error
  *
  * Purpose:	adds a file to the file list if its not already present
- * 
+ *
  *****************************************************************************/
 Boolean _DtHelpFileListAddFile (
         _DtHelpFileList * in_out_list,
@@ -454,7 +455,7 @@ Boolean _DtHelpFileListAddFile (
    memset(&addFile, 0, sizeof(addFile));
 
    /* if no full file path, go look for it */
-   if (NULL == fullFilePath || fullFilePath[0] == EOS) 
+   if (NULL == fullFilePath || fullFilePath[0] == EOS)
        return False;       /* RETURN : incomplete file spec */
 
    /* trace any links; _DtHelpFileTraceLinks may chg actualPath ptr */
@@ -467,7 +468,7 @@ Boolean _DtHelpFileListAddFile (
    fullFilePath = actualPath;
 
    /* if no filespec, get it */
-   if (NULL == fileName) 
+   if (NULL == fileName)
    {
       fileName = fullFilePath;
       if(_DtHelpCeStrrchr(fullFilePath, DirSlashStr, MB_CUR_MAX,&fileName)==0)
@@ -476,7 +477,7 @@ Boolean _DtHelpFileListAddFile (
    addFile.fileName = fileName;
 
    /* if an info proc, use it, otherwise make due */
-   if (infoProc) 
+   if (infoProc)
    {
       (*infoProc)(pDisplayArea,fullFilePath,
                        &addFile.fileTitle,&addFile.fileTitleXmStr,
@@ -484,7 +485,7 @@ Boolean _DtHelpFileListAddFile (
                        io_fontList,ret_mod);
    }
    else
-   { 
+   {
       nameKey = _DtHelpCeStrHashToKey(fileName);
    }
 
@@ -504,7 +505,7 @@ Boolean _DtHelpFileListAddFile (
 
       /* insert lexically according to title */
       /* use case insensitive NLS collating for ordering */
-      if (   (sortFlags & _DtHELP_FILE_TITLE) 
+      if (   (sortFlags & _DtHELP_FILE_TITLE)
           && (*strcollfn) (addFile.fileTitle, next->fileTitle) <= 0 )
          break;          /* BREAK: insert after prev, before next */
 
@@ -520,7 +521,7 @@ Boolean _DtHelpFileListAddFile (
 
    /* no matching path, so create, initialize, and append to list */
    newList = (_DtHelpFileList) XtCalloc(1, sizeof(_DtHelpFileRec));
-   if (NULL == newList) 
+   if (NULL == newList)
    {
       XtFree(addFile.docId);
       XtFree(addFile.timeStamp);
@@ -562,7 +563,7 @@ Boolean _DtHelpFileListAddFile (
  *		EINVAL
  *
  * Purpose:	Scans all paths of given type looking for files with the suffixes
- * 
+ *
  *****************************************************************************/
 int _DtHelpFileListScanPaths (
         _DtHelpFileList * in_out_list,
@@ -604,7 +605,7 @@ int _DtHelpFileListScanPaths (
     /* outer loop is once for each path */
     foundFilesCnt = 0;
     for ( curPathIndex = 0;
-          curPathIndex < _DtHELP_FILE_NUM_PATHS; 
+          curPathIndex < _DtHELP_FILE_NUM_PATHS;
           curPathIndex++ )
     {
        curPath = paths[curPathIndex];
@@ -617,9 +618,9 @@ int _DtHelpFileListScanPaths (
           same named files that have different times & ids in the
           USER PATH. */
        compareFlags = sysPathCompareFlags;
-       if (_DtHELP_FILE_SYS_PATH != curPathIndex) 
+       if (_DtHELP_FILE_SYS_PATH != curPathIndex)
           compareFlags = otherPathCompareFlags;
-    
+
        /* find the files in that path */
        do
        {
@@ -628,21 +629,21 @@ int _DtHelpFileListScanPaths (
 	  if (_DtHelpCeStrchr(curPath,PathSeparator,MB_CUR_MAX,&ptr)==0)
 	      *ptr = EOS;
 
-          /* generate the (directory) path using all the variables 
+          /* generate the (directory) path using all the variables
              and fix it up to remove the unwanted stuff involving the filename*/
-	  pathName = _DtHelpCeExpandPathname(curPath, 
+	  pathName = _DtHelpCeExpandPathname(curPath,
                                      NULL, type, NULL, loc, NULL, 0);
-          if(   pathName 
+          if(   pathName
              && _DtHelpCeStrrchr(pathName,DirSlashStr,MB_CUR_MAX,&slashptr) == 0)
-             slashptr[0] = EOS; 
+             slashptr[0] = EOS;
 
           /* restore the subpath separator and advance past it */
 	  if (ptr) *ptr++ = *PathSeparator;
 
           /* if its a directory; scan for matching files in it */
-	  if (     pathName != NULL 
-                && *pathName != EOS 
-                && access (pathName, R_OK | X_OK) == 0 
+	  if (     pathName != NULL
+                && *pathName != EOS
+                && access (pathName, R_OK | X_OK) == 0
                 && stat (pathName, &status) == 0
 		&& S_ISDIR(status.st_mode))        /* a dir */
           {

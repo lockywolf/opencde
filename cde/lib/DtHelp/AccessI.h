@@ -134,6 +134,6 @@ extern	int	 _DtHelpCeLockVolume(
 extern	int	 _DtHelpCeMapTargetToId (
 			_DtHelpVolumeHdl  volume,
 			char		 *target_id,
-			char		**ret_id);
+			char		 *ret_id);
 extern	int	 _DtHelpCeUnlockVolume(_DtHelpCeLockInfo lock_info);
 #endif /* _DtHelpAccessI_h */

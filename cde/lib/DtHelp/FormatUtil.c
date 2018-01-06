@@ -28,7 +28,7 @@
  **
  **   Project:     Text Graphic Display Library
  **
- **  
+ **
  **   Description: Semi private format utility functions that do not
  **		   require the Display Area, Motif, Xt or X11.
  **
@@ -316,7 +316,7 @@ _DtHelpCeAddCharToBuf(
 /******************************************************************************
  * Function: int _DtHelpCeAddStrToBuf (char **src, char **dst, int *dst_size,
  *				int *dst_max, int copy_size, int grow_size)
- * 
+ *
  * Parameters:
  *		src		Specifies a pointer to a string.
  *		dst		Specifies a pointer to the buffer to
@@ -420,7 +420,7 @@ _DtHelpCeAddStrToBuf (
 /******************************************************************************
  * Function: int _DtHelpCeGetNxtBuf (FILE *file, char *dst, char **src,
  *					int max_size)
- * 
+ *
  * Parameters:
  *		file		Specifies a stream to read from.
  *		dst		Specifies the buffer where new information
@@ -459,7 +459,7 @@ _DtHelpCeGetNxtBuf(
 	return -1;
       }
 
-    (void ) strcpy (dst, (*src));
+    strlcpy (dst, *src, max_size);
     leftOver = strlen (dst);
 
     result = _DtHelpCeReadBuf (file, &(dst[leftOver]), (max_size - leftOver));

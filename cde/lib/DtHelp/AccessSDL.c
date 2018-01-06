@@ -312,7 +312,7 @@ ProcessSubEntries (
  * Purpose:
  *
  ******************************************************************************/
-static char * 
+static char *
 AsciiKeyword (
     _DtCvSegment	*p_list,
     char		*parent_str,
@@ -420,8 +420,8 @@ AsciiKeyword (
 		len += newLen;
 	  }
 	    else
-	        strcpy(&goodStr[len - newLen - 1],
-				(char *) _DtCvStringOfStringSeg(p_list));
+	        strlcpy(&goodStr[len - newLen - 1],
+				(char *) _DtCvStringOfStringSeg(p_list), newLen + 1);
 	  }
 
 	/*
@@ -458,7 +458,7 @@ AsciiKeyword (
  * Purpose:
  *
  ******************************************************************************/
-static int 
+static int
 ProcessLocations (
     char	*locs,
     char	***list)
@@ -489,7 +489,7 @@ ProcessLocations (
  * Function:	int ProcessEntry (_DtHelpVolume vol)
  *
  * Parameters:	vol	Specifies the volume whose keywords need to be
- *			loaded from disk.  Once loaded, they can be 
+ *			loaded from disk.  Once loaded, they can be
  *			accessed through the fields of the volume structure.
  *
  * Return Value:	0 if successful, -1 if a failure occurs
@@ -507,7 +507,7 @@ ProcessLocations (
  * Purpose:	Load the keywords associated with a volume.
  *
  ******************************************************************************/
-static int 
+static int
 ProcessEntry (
     _DtHelpVolume	 vol,
     _DtCvSegment	*p_seg,
@@ -517,7 +517,7 @@ ProcessEntry (
     char	**topics;
     char	 *nextKey = NULL;
 
-    /* Now parse the string into the appropriate arrays.  The string has the 
+    /* Now parse the string into the appropriate arrays.  The string has the
        following syntax:
 
 	<!ELEMENT entry     - - ((%simple; | #PCDATA)*, entry*)       >
@@ -615,7 +615,7 @@ ProcessEntry (
  *		target id.
  *
  ******************************************************************************/
-static int 
+static int
 MapPath (
     _DtCvSegment  **cur_id,
     _DtCvSegment   *target_el,
@@ -1174,7 +1174,7 @@ _DtHelpCeMapSdlIdToSegment(
 	else
           {
 	    target_id++;
-	    strcat(resStr, target_id);
+	    strlcat(resStr, target_id, 128);
 	    target_id = resStr;
           }
       }
@@ -1321,14 +1321,16 @@ _DtHelpCeGetSdlVolumeLocale(
     charSet = _DtHelpCeGetSdlVolCharSet(volume);
 
     langLen = strlen(lang);
-    locale  = (char *) malloc (langLen + strlen(charSet) + 2);
+
+    int locale_size = langLen + strlen(charSet) + 2;
+    locale  = (char *) malloc(locale_size);
     if (locale != NULL)
       {
-	strcpy(locale, lang);
+	strlcpy(locale, lang, locale_size);
 	if (langLen != 0 && *charSet != '\0')
 	  {
 	    locale[langLen++] = '.';
-	    strcpy(&(locale[langLen]), charSet);
+	    strlcpy(&(locale[langLen]), charSet, locale_size - langLen);
 	  }
       }
 

@@ -177,7 +177,7 @@ GetNextState (
        looks like a bold +, backspace, and then a bold _.
        However, the nroff output indicates <c>bs_ as an italic, so
        this sequence has to be treated as a special case. */
-       
+
     if (*str == '+')
       {
 	if (str[7] == '\010' && str[8] == '_' &&
@@ -186,7 +186,7 @@ GetNextState (
 	    str[13] == '\010' && str[14] == '_' )
 	  {
 	    *ret_flag = TRUE;
-	  } 
+	  }
       }
 
     /* We need to eat the bold '_' -- continuation of aforementioned hack */
@@ -203,7 +203,7 @@ GetNextState (
 	    return Bold;
 	  }
       }
-    
+
     /*
      * check for multi-byte italic which is '_ _bsbs<c>'
      */
@@ -280,7 +280,7 @@ GetNextState (
 	*ret_wc_len  = len;
 	return Italic;
       }
-    
+
     /*
      * failed all the tests.
      * It could be a character followed by backspaces
@@ -293,7 +293,7 @@ GetNextState (
 /******************************************************************************
  *
  *  Formatting a man page is done based on the current input and the
- *  current state of the processing. 
+ *  current state of the processing.
  *
  * Note:
  *	Bold multi-byte characters have one backspace per byte. Therefore,
@@ -395,7 +395,7 @@ GetNextState (
  *			_bs<c><?>	<c> -> buf	Italic
  *					lastChar = <c>
  *					inc to <?>
- *					
+ *
  *			<c><?>		<\> ->buf	Char
  *					<c> -> buf
  *					lastChar = <c>
@@ -805,13 +805,13 @@ _DtHelpFormatManPage(
     /*
      * pre-append the man command to man specification
      */
-    ptr = (char *) malloc(sizeof(manString) + strlen(man_spec) +
-						   sizeof(devNullString) - 1);
+    int ptr_size = sizeof(manString) + strlen(man_spec) + sizeof(devNullString) - 1;
+    ptr = (char *) malloc(ptr_size);
     if (!ptr)
 	return -1;
-    strcpy (ptr, manString);
-    strcat (ptr, man_spec);
-    strcat (ptr, devNullString);
+    strlcpy(ptr, manString, ptr_size);
+    strlcat(ptr, man_spec, ptr_size);
+    strlcat(ptr, devNullString, ptr_size);
 
     myFile = popen(ptr, "r");
 

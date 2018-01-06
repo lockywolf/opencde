@@ -27,7 +27,7 @@
  **   File:	   FormatTerm.c
  **
  **   Project:     CDE Help System
- **  
+ **
  **   Description: This code uses the core engine functionality of the
  **		   the help system to get topics into a form understood
  **		   by ASCII based applications.
@@ -247,20 +247,22 @@ TermFindGraphic (
 {
     char		 *ptr;
     char		 *fileName = file_xid;
+    int                   filename_size;
 
     if (fileName != NULL && *fileName != '/')
       {
-	fileName = (char *) malloc (strlen(vol_xid) + strlen (file_xid) + 2);
+	filename_size = strlen(vol_xid) + strlen (file_xid) + 2;
+	fileName = (char *) malloc(filename_size);
 	if (fileName == NULL)
 	    return -1;
 
-	strcpy(fileName, vol_xid);
+	strlcpy(fileName, vol_xid, filename_size);
 
 	if (_DtHelpCeStrrchr(fileName, "/", MB_CUR_MAX, &ptr) != -1)
 	    *ptr = '\0';
 
-	strcat(fileName, "/");
-	strcat(fileName, file_xid);
+	strlcat(fileName, "/", filename_size);
+	strlcat(fileName, file_xid, filename_size);
       }
 
     if (access(fileName, R_OK) != 0)
@@ -325,7 +327,7 @@ TermStrDraw (
 		wcStr[i] = WcSpace;
 	    _DtHelpProcessUnlock();
 	    /*
-	     * this will leave a hole that will be plugged by the next 
+	     * this will leave a hole that will be plugged by the next
 	     * mbstowc call.
 	     */
 	    wcStr[length] = 0;
@@ -605,7 +607,7 @@ TermStrWidth (
  *		DtErrorMalloc
  *
  * Purpose:	Add a hypertext link to an array of DtHelpHyperLines.
- * 
+ *
  *****************************************************************************/
 static	DtHelpHyperLines *
 AddHyperToArray(
@@ -685,7 +687,7 @@ DeallocateHyperArray(
 
 /******************************************************************************
  * Function: int AddHyperToList(
- * 
+ *
  * Parameters:
  *
  * Returns:	 0 if successful.
@@ -708,7 +710,7 @@ DeallocateHyperArray(
  *
  * Purpose:	Process the result of a hypertext link, filling out
  *		a hypertext structure element with the information.
- *			
+ *
  *****************************************************************************/
 static	int
 AddHyperToList(
@@ -723,6 +725,7 @@ AddHyperToList(
     _DtHelpVolumeHdl     useVol    = volume;
     char		*volName   = NULL;
     char		*title     = NULL;
+    int                  title_size;
     char		*allocName = NULL;
     char		*spec      = NULL;
     char		*id;
@@ -753,7 +756,7 @@ AddHyperToList(
                                 /* find the volume (volName is malloc'd) */
                                 allocName = _DtHelpFileLocate(DtHelpVOLUME_TYPE, volName,
                                                  _DtHelpFileSuffixList,False,R_OK);
-                                if (allocName == NULL) 
+                                if (allocName == NULL)
                                      result = -2;
 
 				if (_DtHelpOpenVolume(allocName, &newVol)==0)
@@ -785,23 +788,27 @@ AddHyperToList(
 			break;
 
 	        case _DtCvLinkType_Execute:
-			title = (char *) malloc(strlen(id) + 11);
-			sprintf(title, "Execute \"%s\"", id);
+			title_size = strlen(id) + 11;
+			title = (char *) malloc(title_size);
+			snprintf(title, title_size, "Execute \"%s\"", id);
 			break;
 
 	        case _DtCvLinkType_ManPage:
+			title_size = strlen(id) + 13;
 			title = (char *) malloc(strlen(id) + 13);
-			sprintf(title, "Man Page \"%s\"", id);
+			snprintf(title, title_size,"Man Page \"%s\"", id);
 			break;
 
 	        case _DtCvLinkType_AppDefine:
+			title_size = strlen(id) + 26;
 			title = (char *) malloc(strlen(id) + 26);
-		        sprintf(title, "Application Link Type \"%s\"", id);
+		        snprintf(title, title_size,"Application Link Type \"%s\"", id);
 			break;
 
 	        case _DtCvLinkType_TextFile:
+			title_size = strlen(id) + 12;
 			title = (char *) malloc(strlen(id) + 12);
-		        sprintf(title, "Text File \"%s\"", id);
+		        snprintf(title, title_size,"Text File \"%s\"", id);
 			break;
 	        default:
 			title = strdup ("Unkown link type");
@@ -848,7 +855,7 @@ AddHyperToList(
  * Returns:	0 for success, -1 for failure.
  *
  ******************************************************************************/
-static TerminalInfo * 
+static TerminalInfo *
 GetTermInfo(
            _DtCvHandle canvasHandle)
 {
@@ -878,7 +885,7 @@ GetTermInfo(
  *              ENOMEM		unable to allocate necessary memory
  *              DtErrorMalloc
  *
- * Purpose:	_DtHelpTermCreateCanvas creates a canvas that use 
+ * Purpose:	_DtHelpTermCreateCanvas creates a canvas that use
  *		text-only content processing routines
  *
  *****************************************************************************/
@@ -1076,11 +1083,11 @@ _DtHelpTermGetTopicData(
         {
            _DtCanvasSetTopic(canvasHandle, topic, _DtCvIGNORE_BOUNDARY,
 						&maxWidth, &maxRows, NULL);
-   
+
 	   /*
 	    * The 'maxRows' variable is really misnamed; it's really the
 	    * 'maxY', and is 0-based.  Thus, the 'lines' and 'wc_num'
-	    * arrays need to be 'maxRows+1', in order to hold all the 
+	    * arrays need to be 'maxRows+1', in order to hold all the
 	    * entries.  Likewise, 'strList' must be 'maxRows+2', because
 	    * it also needs to be NULL terminated.
 	    */
@@ -1100,16 +1107,16 @@ _DtHelpTermGetTopicData(
    	      _DtHelpCeUnlockVolume(lockInfo);
    	      return -1;
            }
-   
+
    	   for (i = 0; i <= maxRows; i++)
 	     {
    	       termInfo->lines[i]  = NULL;
    	       termInfo->wc_num[i] = 0;
 	     }
-   
+
    	   _DtCanvasRender(canvasHandle, 0, 0, maxWidth, maxRows,
 				_DtCvRENDER_PARTIAL, _DtCvFALSE, NULL, NULL);
-   
+
    	   *helpList = strList;
    	   wcList    = termInfo->lines;
    	   for (i = 0; i <= maxRows; i++, wcList++, strList++)
@@ -1127,7 +1134,7 @@ _DtHelpTermGetTopicData(
 		    wcstombs(*strList, *wcList, len);
 	      }
    	   }
-   
+
 	  *strList = NULL;
 
 	   /*
@@ -1436,7 +1443,7 @@ _DtHelpProcessLinkData (
     } /* if at least one token exists */
 
     free (linkSpec);
-         
+
     return ( (*ret_helpVolume && *ret_locationId) ? 0 : -1 );
 
 }  /* End _DtHelpProcessLinkData */

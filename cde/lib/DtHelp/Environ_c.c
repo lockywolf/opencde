@@ -64,7 +64,7 @@ char * _DtCliSrvGetDtUserSession()
     char * logname = getenv("LOGNAME");
 
     if (logname == NULL) {
-      strcpy(logname_local,"generic");
+      strlcpy(logname_local, "generic", 8);
       logname = logname_local;
     }
 
@@ -90,43 +90,46 @@ char * _DtCliSrvGetDtUserSession()
 	*display = 0;
 	if(NULL == fgets(display, BUFSIZ, pp)) {
 	   perror("fgets() failed to read");
-	   return NULL;	
+	   return NULL;
 	}
 	while (isspace(display[strlen(display)-1]))
 	  display[strlen(display)-1] = 0;
 	pclose(pp);
       }
       else {
-	display = malloc(strlen(localDisplayVar) + 1);
-	strcpy(display, localDisplayVar);
+	int display_size = strlen(localDisplayVar) + 1;
+	display = malloc(display_size);
+	strlcpy(display, localDisplayVar, display_size);
       }
-	  
+
 
       /* Now determine the screen number. Throw away .0 */
 
       {
 	char * s = strchr(display,':');
 	if (s && strlen(s) < (size_t)BUFSIZ) {
-	  strcpy(screen,s+1);
+	  strlcpy(screen, s+1, BUFSIZ);
 	  *s = 0;
 	  if ((s = strchr(screen,'.')) && *(s+1) == '0')
 	    *s = 0;
 	}
 	else {
-	  strcpy(screen,"0");
+	  strlcpy(screen, "0", BUFSIZ);
 	}
       }
-      envVar = malloc(strlen(logname) + strlen(display) + strlen(screen) + 3);
+      int envVar_size = strlen(logname) + strlen(display) + strlen(screen) + 3;
+      envVar = malloc(envVar_size);
       if (envVar)
-	sprintf (envVar, "%s-%s-%s", logname, display, screen);
+	snprintf(envVar, envVar_size, "%s-%s-%s", logname, display, screen);
 
       return envVar;
     }
   }
 
-  ret_envVar = malloc(strlen(envVar) + 1);
+  int ret_envVar_size = strlen(envVar) + 1;
+  ret_envVar = malloc(ret_envVar_size);
   if (ret_envVar)
-    strcpy(ret_envVar, envVar);
+    strlcpy(ret_envVar, envVar, ret_envVar_size);
   return ret_envVar;
 
 }

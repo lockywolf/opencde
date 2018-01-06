@@ -22,9 +22,9 @@
  */
 /* $XConsortium: ildecompg4.c /main/6 1996/06/19 12:23:48 ageorge $ */
 /**---------------------------------------------------------------------
-***	
+***
 ***    (c)Copyright 1991 Hewlett-Packard Co.
-***    
+***
 ***                             RESTRICTED RIGHTS LEGEND
 ***    Use, duplication, or disclosure by the U.S. Government is subject to
 ***    restrictions as set forth in sub-paragraph (c)(1)(ii) of the Rights in
@@ -39,7 +39,7 @@
 
 
 #include <math.h>
-#include <stdio.h>       
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "ilint.h"
@@ -49,9 +49,9 @@
 #include "ildecompg4.h"
 #include "ildecompg4table.h"
 
-/*  Table containing (array) the number of consecutive zeros 
-    from the start (msb first), in chars  for 0x00 to 0xff 
-    for e.g  number of consecutive zeros in 0x00 = 8 
+/*  Table containing (array) the number of consecutive zeros
+    from the start (msb first), in chars  for 0x00 to 0xff
+    for e.g  number of consecutive zeros in 0x00 = 8
                                          in 0x0f = 4               */
 
 static unsigned char zeroruns[256] = {
@@ -74,9 +74,9 @@ static unsigned char zeroruns[256] = {
 };
 
 
-/*  Table containing (array) the number of consecutive ones 
-    from the start (msb first), in chars  for 0x00 to 0xff         
-    for e.g  number of consecutive ones  in 0x00 = 0 
+/*  Table containing (array) the number of consecutive ones
+    from the start (msb first), in chars  for 0x00 to 0xff
+    for e.g  number of consecutive ones  in 0x00 = 0
                                          in 0xff = 8               */
 
 
@@ -100,10 +100,10 @@ static unsigned char oneruns[256] = {
 };
 
 
-/*  This module G4 Decompression has been totally rewritten ...  
+/*  This module G4 Decompression has been totally rewritten ...
      Earlier module handled images with LSB first only,
      and failing while handling  images Compressed in Strips.
-     
+
      The present implementation uses the same tables, and takes care of the
      above issues. Additionally, it has been designed in such a way as that
      these decompression can be used for G3 - 2D decompression also.
@@ -121,8 +121,8 @@ static unsigned char oneruns[256] = {
    *sByte, from the position startPixel; Used to fill the Destination
    image while De-Compressing. Initially the Destination image is filled
    with Zeros 0's ; While De-Compressing,  1's are filled appropriately
-   to construct the Image..                              
- 
+   to construct the Image..
+
      ** used in G3 & G4 Decompression
 
    ======================================================================== */
@@ -135,7 +135,7 @@ register int  no_of_ones )
 
 {
 	static const unsigned char masks[] =
-	{ 
+	{
 		0, 0x80, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc, 0xfe, 0xff 	};
 
 	/* fill 1's in  the current  Byte */
@@ -166,16 +166,16 @@ register int  no_of_ones )
           startPixel from which the diff. is to be found
           endPixel i.e upto which the diff can be checked.
           color of the current pixel (startPixel)
-          nTimes - no. of times the counting is to be repeated i.e for 
+          nTimes - no. of times the counting is to be repeated i.e for
                    how many changing elements, the operation is to be
                    performed.
 
-  Does : 
+  Does :
     Calculates the count of pixels of the same color  and returns the absolute
-    position of the next    changing element and Returns the Absolute Position 
+    position of the next    changing element and Returns the Absolute Position
     of the element
 
-      **  used for G4,G3-2d compression and de-comression    
+      **  used for G4,G3-2d compression and de-comression
    ======================================================================== */
 
 static int
@@ -197,7 +197,7 @@ int nTimes)
 
 	do {
 
-		if ((startPixel == -1) ) {
+		if (startPixel == -1) {
 			fin_diff = 1;
 			bp       = sByte;
 			goto done;
@@ -263,7 +263,7 @@ done:
 
 /* ========================================================================
        -------------------- _ilDeCompressG4Init -------------------
-   Routine defined in ilDeCompG4 for initializing CCITT Group3  
+   Routine defined in ilDeCompG4 for initializing CCITT Group3
    compression when the pipe gets executed.
 
    ======================================================================== */
@@ -331,7 +331,7 @@ ilImageInfo            *pDstImage
     } while (pDecodeTemp->type != G4K_CodetypeTerminator) ;     \
 }
 
-/* ========================================================================    
+/* ========================================================================
     -------------------- _ilDecompG4Line -------------------
    Input : pointer to the Private data record or decompG3G4
            pointer to the Reference line
@@ -441,7 +441,7 @@ ilPtr          dstImageP
 			break;
 
 
-			/* State mode is codeword, codeword type is TERMINATOR, 
+			/* State mode is codeword, codeword type is TERMINATOR,
                      codeword value is VERTICAL */
 
 		case G4K_CodevalueV0:
@@ -477,8 +477,8 @@ ilPtr          dstImageP
 
 }
 
-/* ========================================================================    
-          
+/* ========================================================================
+
     -------------------- ilDecompG4Execute -------------------
     Routine defined in ilDecompG4 for executing CCITT Group4
     decompression when the pipe gets executed.
@@ -513,7 +513,7 @@ unsigned long      *pNLines
 	pPriv   = (ilDecompG3G4PrivPtr) pData->pPrivate;
 
 	if ( *pNLines <= 0 ) return IL_OK ;
-	if ( pData->compressed.nBytesToRead <= 0 ) return IL_OK ;                         
+	if ( pData->compressed.nBytesToRead <= 0 ) return IL_OK ;
     nLines  = *pNLines;
 
 	/* Exit if pointer to pPixels is NULL */
@@ -528,8 +528,8 @@ unsigned long      *pNLines
 	dstBytesPerRow     = pDstPlane->nBytesPerRow ;
 
 	/* ========================================================================
-    Zero the output (dst) buffer.  _ilPutOnes()  writes only ones, and expects 
-    that    the dst lines have already been zeroed. 
+    Zero the output (dst) buffer.  _ilPutOnes()  writes only ones, and expects
+    that    the dst lines have already been zeroed.
     ======================================================================== */
 	bzero ((char *)dstImageP, (pDstPlane->nBytesPerRow * *pNLines) );
 
@@ -590,7 +590,7 @@ unsigned long      *pNLines
 IL_PRIVATE
 ilBool _ilDecompG4 (
 ilPipe              pipe,
-ilPipeInfo         *pinfo,                              
+ilPipeInfo         *pinfo,
 ilImageDes         *pimdes
 )
 {
@@ -628,7 +628,7 @@ ilImageDes         *pimdes
 
 	dstdata.pCompData       =  (ilPtr)NULL;
 
-	pPriv = (ilDecompG3G4PrivPtr) ilAddPipeElement(pipe, IL_FILTER, 
+	pPriv = (ilDecompG3G4PrivPtr) ilAddPipeElement(pipe, IL_FILTER,
 	    sizeof(ilDecompG3G4PrivRec), 0,
 	    (ilSrcElementData *)NULL,
 	    &dstdata, _ilDecompG4Init,_ilDecompG4Cleanup,

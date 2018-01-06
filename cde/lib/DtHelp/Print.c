@@ -29,8 +29,8 @@
  **   Project:     Cache Creek (Rivers) Project
  **
  **   Description: Builds and displays an instance of a Cache Creek Print
- **                Dialog.  
- ** 
+ **                Dialog.
+ **
  **  (c) Copyright 1987, 1988, 1989, 1990, 1991, 1992 Hewlett-Packard Company
  **
  **  (c) Copyright 1993, 1994 Hewlett-Packard Company
@@ -139,7 +139,7 @@ static void CreatePrintDialog(
 /************************************************************************
  * Function: CreatePrintCBRec()
  *
- *	Create the data required by a print callback 
+ *	Create the data required by a print callback
  *
  * This routine allocates memory for the callback record using XtCalloc().
  * When the record is no longer needed, free it with XtFree().
@@ -152,7 +152,7 @@ _DtHelpPrintCBRec * CreatePrintCBRec(
    _DtHelpPrintStuff *		print)
 {
    _DtHelpPrintCBRec * rec = NULL;
- 
+
    rec = (_DtHelpPrintCBRec *) XtCalloc(1,sizeof(_DtHelpPrintCBRec));
    if (NULL == rec) return NULL;
    rec->widget = widget;
@@ -175,13 +175,13 @@ void _DtHelpInitPrintStuff (
     /* Set our print display stuff to initial values */
     if (print->printer != NULL)
       print->printer = XtNewString(print->printer);
-  
+
     if (print->helpPrint != _DtHelpDefaultHelpPrint)
       print->helpPrint = XtNewString(print->helpPrint);
-  
+
     print->paperSize      = DtHELP_PAPERSIZE_LETTER;
     print->printVolume    = NULL;
-  
+
     /* print dialog widgets */
     print->printForm      = NULL;
     print->subject        = NULL;
@@ -279,7 +279,7 @@ static void ClosePrintCB (
     XtPointer callData)
 {
   _DtHelpPrintCBRec * printrec = (_DtHelpPrintCBRec *) clientData;
- 
+
   /* We unmap the print dialog */
   XtUnmanageChild(printrec->print->printForm);
 }
@@ -404,7 +404,7 @@ static void StartPrintingCB(
               printTopic = printrec->display->stringData;
               titleLbl   = printrec->display->topicTitleLbl;
             break;
-   
+
           }  /* End Switch Statement */
      }
 
@@ -435,7 +435,7 @@ static void StartPrintingCB(
 	          topicTitle = XtRealloc(topicTitle, len + 1);
 	          if (topicTitle != NULL)
 		    {
-	              strcpy(&topicTitle[newLen], newTxt);
+	              strlcpy(&topicTitle[newLen], newTxt, len + 1);
 		      newLen += len;
 		    }
 		}
@@ -446,21 +446,21 @@ static void StartPrintingCB(
 
    /* get printer */
    printer = XmTextFieldGetString(printrec->print->printerField);
-   if (printer && printer[0] == EOS) 
+   if (printer && printer[0] == EOS)
      { XtFree(printer); printer = NULL; }
 
    /* get copies */
    copies = XmTextFieldGetString(printrec->print->copiesField);
    copyCnt = 1;
    if (   NULL == copies
-       || (copies && copies[0] == EOS) 
+       || (copies && copies[0] == EOS)
        || (copies && sscanf(copies,"%d",&copyCnt) != 1 )
        || (copyCnt < 0 || copyCnt > 500) )
      { XtFree(copies);  copies = XtNewString("1"); }
 
    /* get paper size */
     /* Get the chosen size */
-    XtSetArg (args[0], XmNmenuHistory, &dfltSize); 
+    XtSetArg (args[0], XmNmenuHistory, &dfltSize);
     XtGetValues (printrec->print->paperSizeOptMenu, args, 1);
     if (dfltSize == printrec->print->legalBtn)
        paperSize = DtHELP_PAPERSIZE_LEGAL;
@@ -548,23 +548,11 @@ void _DtHelpUpdatePrintDialog(
    n = 0;
    if ( display->helpType == DtHELP_TYPE_TOPIC )
    {
-#if 1
       XtSetSensitive(print->topicsFrame,True);
-#else
-      XtManageChild(print->topicsFrame);
-      XtSetArg (args[n], XmNtopAttachment, XmATTACH_WIDGET);          n++;
-      XtSetArg (args[n], XmNtopWidget, print->topicsFrame);           n++;
-#endif
    }
    else
    {
-#if 1
       XtSetSensitive(print->topicsFrame,False);
-#else
-      XtUnmanageChild(print->topicsFrame);
-      XtSetArg (args[n], XmNtopAttachment, XmATTACH_WIDGET);          n++;
-      XtSetArg (args[n], XmNtopWidget, print->paperTopicsSeparator);  n++;
-#endif
    }
    XtSetValues (print->topicsBtnsSeparator, args, n);
 
@@ -582,7 +570,7 @@ void _DtHelpUpdatePrintDialog(
          XtGetValues (print->subject, args, 1);
 
 #if defined(DONT_USE_CDExc22774)
-	 /* Don't need to copy, _DtHelpFormatVolumeTitle copies 
+	 /* Don't need to copy, _DtHelpFormatVolumeTitle copies
 	  * before modifying.
 	  */
 
@@ -594,7 +582,7 @@ void _DtHelpUpdatePrintDialog(
          /* get formated volume title; volumeString is owned by caller */
          _DtHelpFormatVolumeTitle(help->pDisplayArea,display->volumeHandle,
                                     &volumeString,&fontList,&mod);
- 
+
          /* if volumeString caused a font list change, add it back */
          if (mod)
          { /* Add the title's font to the label */
@@ -613,7 +601,7 @@ void _DtHelpUpdatePrintDialog(
          break;
       case DtHELP_TYPE_MAN_PAGE:
          /* assumption: buf won't overflow */
-         sprintf(buf,"%s%s", _DTGETMESSAGE(PRSET, 53,"Manual Page: "),
+         snprintf(buf, 400, "%s%s", _DTGETMESSAGE(PRSET, 53,"Manual Page: "),
                  display->manPage);
          titleStr = buf;
          break;
@@ -649,9 +637,9 @@ void _DtHelpUpdatePrintDialog(
 
 /*****************************************************************************
  * Function:	    void _DtHelpDisplayPrintDialog();
- *                             
- * 
- * Parameters:	
+ *
+ *
+ * Parameters:
  *	new     	Specifies the help widget.
  *	print		print stuff
  *	display 	display widget stuff
@@ -698,7 +686,7 @@ void _DtHelpDisplayPrintDialog(
              break;
       }
       /* Set the default size */
-      XtSetArg (args[0], XmNmenuHistory, dfltSize); 
+      XtSetArg (args[0], XmNmenuHistory, dfltSize);
       XtSetValues (print->paperSizeOptMenu, args, 1);
 
       /* update the variable contents of the dialog; do set defaults */
@@ -730,9 +718,9 @@ void _DtHelpDisplayPrintDialog(
 
 /*****************************************************************************
  * Function:	    Widget CreatePrintDialog(Widget nw);
- *                             
- * 
- * Parameters:      
+ *
+ *
+ * Parameters:
  *
  * Return Value:
  *
@@ -804,7 +792,7 @@ static void CreatePrintDialog(
    XtSetArg (args[n], XmNrightOffset, 10);                               n++;
 #endif
    XtSetArg (args[n], XmNalignment, XmALIGNMENT_BEGINNING);             n++;
-   print->subject = 
+   print->subject =
                     XmCreateLabelGadget (printForm, "printSubject", args, n);
    XtManageChild (print->subject);
    XmStringFree (labelString);
@@ -841,7 +829,7 @@ static void CreatePrintDialog(
    XtSetArg (args[n], XmNrightAttachment, XmATTACH_POSITION);		n++;
    XtSetArg (args[n], XmNrightPosition, 60);				n++;
    XtSetArg(args[n], XmNhighlightOnEnter, True);                        n++;
-   print->printerField = 
+   print->printerField =
                         XmCreateTextField (printForm,"printerField",args, n);
    XtManageChild (print->printerField);
    XtAddCallback (print->printerField, XmNactivateCallback,
@@ -877,7 +865,7 @@ static void CreatePrintDialog(
    XtSetArg (args[n], XmNrightAttachment, XmATTACH_FORM);		n++;
    XtSetArg (args[n], XmNrightOffset, 10);				n++;
    XtSetArg(args[n], XmNhighlightOnEnter, True);                        n++;
-   print->copiesField = 
+   print->copiesField =
                         XmCreateTextField (printForm,"copiesField",args, n);
    XtManageChild (print->copiesField);
    XtAddCallback (print->copiesField, XmNactivateCallback,
@@ -888,14 +876,14 @@ static void CreatePrintDialog(
    /* papersize option menu */
   /*******************************************************
    * Menupane:  Papersize buttons
-   * No callback on each button is needed because we compare widget ptrs 
+   * No callback on each button is needed because we compare widget ptrs
    *******************************************************/
- 
+
    n = 0;
    XtSetArg(args[n], XmNmarginWidth, 0);         ++n;
    XtSetArg(args[n], XmNmarginHeight, 0);        ++n;
    menupane = XmCreatePulldownMenu(printForm, "paperSizeMenu", args, n);
- 
+
    /* Letter button */
    labelString = XmStringCreateLocalized(((char *)_DTGETMESSAGE(PRSET, 21,"Letter 8.5 x 11 in")));
    n = 0;
@@ -903,7 +891,7 @@ static void CreatePrintDialog(
    print->letterBtn = XmCreatePushButtonGadget(menupane, "letter", args, n);
    XtManageChild(print->letterBtn);
    XmStringFree(labelString);
- 
+
    /* Legal button */
    labelString = XmStringCreateLocalized(((char *)_DTGETMESSAGE(PRSET, 22,"Legal 8.5 x 14 in")));
    n = 0;
@@ -911,7 +899,7 @@ static void CreatePrintDialog(
    print->legalBtn = XmCreatePushButtonGadget(menupane, "legal", args, n);
    XtManageChild(print->legalBtn);
    XmStringFree(labelString);
- 
+
    /* Executive button */
    labelString = XmStringCreateLocalized(((char *)_DTGETMESSAGE(PRSET, 23,"Executive 7.25 x 10.5 in")));
    n = 0;
@@ -919,7 +907,7 @@ static void CreatePrintDialog(
    print->execBtn = XmCreatePushButtonGadget(menupane, "executive", args, n);
    XtManageChild(print->execBtn);
    XmStringFree(labelString);
- 
+
    /* A4 button */
    labelString = XmStringCreateLocalized(((char *)_DTGETMESSAGE(PRSET, 24,"A4 210 x 297 mm")));
    n = 0;
@@ -927,7 +915,7 @@ static void CreatePrintDialog(
    print->a4Btn = XmCreatePushButtonGadget(menupane, "A4", args, n);
    XtManageChild(print->a4Btn);
    XmStringFree(labelString);
- 
+
    /* B5 button */
    labelString = XmStringCreateLocalized(((char *)_DTGETMESSAGE(PRSET, 25,"B5 182 x 257 mm")));
    n = 0;
@@ -966,7 +954,7 @@ static void CreatePrintDialog(
    XtSetArg (args[n], XmNtopWidget, print->paperSizeOptMenu);          	n++;
    XtSetArg (args[n], XmNtopOffset, 0);					n++;
    XtSetArg (args[n], XmNseparatorType, XmNO_LINE);			n++;
-   print->paperTopicsSeparator =  
+   print->paperTopicsSeparator =
               XmCreateSeparatorGadget (printForm, "separator", args, n);
    XtManageChild (print->paperTopicsSeparator);
 
@@ -983,7 +971,7 @@ static void CreatePrintDialog(
    XtSetArg (args[n], XmNmarginWidth, 5);				n++;
    XtSetArg (args[n], XmNmarginHeight, 2);				n++;
    XtSetArg (args[n], XmNalignment, XmALIGNMENT_BEGINNING);		n++;/*EXP*/
-   print->topicsFrame = 
+   print->topicsFrame =
                           XmCreateFrame(printForm, "topicsFrame", args, n);
    XtManageChild (print->topicsFrame);
 
@@ -1016,13 +1004,13 @@ static void CreatePrintDialog(
    XtSetArg (args[n], XmNrightAttachment, XmATTACH_FORM);	      n++;
    radioBox = XmCreateRadioBox(topicsForm, "radioBox", args, n);
    XtManageChild (radioBox);
-  
+
    /* Create the print current topic button */
    labelString = XmStringCreateLocalized(((char *)_DTGETMESSAGE
                      (PRSET, 31,"Current Topic")));
    n = 0;
    XtSetArg (args[n], XmNlabelString, labelString);		      n++;
-   print->curTopicBtn = 
+   print->curTopicBtn =
            XmCreateToggleButtonGadget(radioBox,"printCurTopicBtn",args,n);
    XtManageChild (print->curTopicBtn);
    XmStringFree (labelString);
@@ -1032,7 +1020,7 @@ static void CreatePrintDialog(
                      (PRSET, 32,"Current and Subtopics")));
    n = 0;
    XtSetArg (args[n], XmNlabelString, labelString);		      n++;
-   print->subTopicsBtn = 
+   print->subTopicsBtn =
            XmCreateToggleButtonGadget(radioBox,"print.subTopicsBtn",args,n);
    XtManageChild (print->subTopicsBtn);
    XmStringFree (labelString);
@@ -1042,7 +1030,7 @@ static void CreatePrintDialog(
                      (PRSET, 33,"Table of Contents and Index")));
    n = 0;
    XtSetArg (args[n], XmNlabelString, labelString);	              n++;
-   print->tocBtn = XmCreateToggleButtonGadget 
+   print->tocBtn = XmCreateToggleButtonGadget
                        (radioBox, "printTocBtn", args, n);
    XtManageChild (print->tocBtn);
    XmStringFree (labelString);
@@ -1052,7 +1040,7 @@ static void CreatePrintDialog(
                      (PRSET, 34,"Entire Volume")));
    n = 0;
    XtSetArg (args[n], XmNlabelString, labelString);	              n++;
-   print->allTopicsBtn = XmCreateToggleButtonGadget 
+   print->allTopicsBtn = XmCreateToggleButtonGadget
                        (radioBox, "printAllTopicsBtn", args, n);
    XtManageChild (print->allTopicsBtn);
    XmStringFree (labelString);
@@ -1064,7 +1052,7 @@ static void CreatePrintDialog(
    XtSetArg (args[n], XmNtopAttachment, XmATTACH_WIDGET);               n++;
    XtSetArg (args[n], XmNtopWidget, print->topicsFrame); n++;
    XtSetArg (args[n], XmNtopOffset, 10);				n++;
-   print->topicsBtnsSeparator = 
+   print->topicsBtnsSeparator =
                     XmCreateSeparatorGadget (printForm, "separator", args, n);
    XtManageChild (print->topicsBtnsSeparator);
 
@@ -1130,7 +1118,7 @@ static void CreatePrintDialog(
    XtManageChild (helpBtn);
    pHelpInfo = _DtHelpListAdd(DtHELP_printHelpBtn_STR,
                         widget, help, &help->pHelpListHead);
-   XtAddCallback(helpBtn, XmNactivateCallback, 
+   XtAddCallback(helpBtn, XmNactivateCallback,
                 _DtHelpCB, (XtPointer) pHelpInfo);
    XmStringFree (labelString);
 
@@ -1147,7 +1135,7 @@ static void CreatePrintDialog(
    /*  Adjust the decorations for the dialog shell of the dialog  */
    n = 0;
    XtSetArg(args[n], XmNmwmFunctions,  MWM_FUNC_MOVE);                  n++;
-   XtSetArg (args[n], XmNmwmDecorations, 
+   XtSetArg (args[n], XmNmwmDecorations,
              MWM_DECOR_BORDER | MWM_DECOR_TITLE);			n++;
    XtSetValues (printShell, args, n);
 
@@ -1158,7 +1146,7 @@ static void CreatePrintDialog(
    /* Add the proper help callback to the print dialog shell "F1" support */
    pHelpInfo = _DtHelpListAdd(DtHELP_printShell_STR,
                         widget, help, &help->pHelpListHead);
-   XtAddCallback(printForm, XmNhelpCallback, 
+   XtAddCallback(printForm, XmNhelpCallback,
                 _DtHelpCB, (XtPointer) pHelpInfo);
 
    /* Assign our new print dialog to our widget instance */
@@ -1180,10 +1168,10 @@ static void CreatePrintDialog(
 
 /*****************************************************************************
  * Function:	    void _DtHelpPrintJob(
- *                   
- *                            
  *
- * Parameters:  
+ *
+ *
+ * Parameters:
  *
  * Return Value:    Void.
  *
@@ -1219,13 +1207,13 @@ void _DtHelpPrintJob(
         argv[i++] = "-printer";
         argv[i++] = printer;
    }
- 
+
    if (copies != NULL && copies[0] != EOS)
    {
         argv[i++] = "-copies";
         argv[i++] = copies;
    }
- 
+
    if (NULL != topicTitle)
    {
       argv[i++] = "-topicTitle";
@@ -1235,27 +1223,27 @@ void _DtHelpPrintJob(
    if (paperSize >= _DtHelpPaperSizeNamesCnt) paperSize = 0;
    argv[i++] = "-paperSize";
    argv[i++] = _DtHelpPaperSizeNames[paperSize];
- 
+
    argv[i++] = "-display";
    argv[i++] = (char*)XDisplayString(XtDisplay(widget));
- 
+
    argv[i++] = "-helpType";
-   sprintf(tmpHelpType, "%d", helpType);
+   snprintf(tmpHelpType, 4, "%d", helpType);
    argv[i++] = tmpHelpType;
- 
+
    if (printAll)
       argv[i++] = "-allTopics";
-  
+
    if (printSub)
       argv[i++] = "-subTopics";
-  
+
    if (printTocIndex)
    {
       argv[i++] = "-toc";
       argv[i++] = "-index";
       argv[i++] = "-frontMatter";
    }
-  
+
    if (!printSub && !printAll && !printTocIndex)
       argv[i++] = "-oneTopic";
 
@@ -1268,32 +1256,32 @@ void _DtHelpPrintJob(
         argv[i++] = "-helpVolume";
         argv[i++] = helpVolume;
         break;
- 
+
      case DtHELP_TYPE_MAN_PAGE:
         argv[i++] = "-manPage";
         argv[i++] = helpData;
         break;
- 
+
      case DtHELP_TYPE_FILE:
          argv[i++] = "-helpFile";
          argv[i++] = helpData;
          break;
- 
+
       case DtHELP_TYPE_STRING:
       case DtHELP_TYPE_DYNAMIC_STRING:
          argv[i++] = "-stringData";
          argv[i++] = helpData;
          break;
-    
-      default:  
+
+      default:
          /* ERROR-MESSAGE */
          /* We should never get here, but just in case... */
          XmeWarning(widget, (char*)PrintMessage001);
          break;
    }  /* End Switch Statement */
- 
+
    argv[i++] = NULL;
- 	
+
 #if 0	/* DBG */
    { /* for debugging, print out the command line */
      char * * tmpargv;
@@ -1307,13 +1295,13 @@ void _DtHelpPrintJob(
 #else
    pid = fork();
 #endif /* __hpux */
- 
+
    if (pid == 0)
    {
       (void) execvp (argv[0], argv);
       _exit (1);
    }
- 
+
   /* Return an error if bad pid? */
 }
 

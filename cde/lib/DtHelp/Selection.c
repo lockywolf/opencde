@@ -271,7 +271,7 @@ MarkLinesOutsideBoundary (
 	        if (canvas->txt_lst[i].max_x <= top_x)
 		    _DtCvSetProcessed(lines[i]);
 	      }
-	
+
 	    /*
 	     * does it straddle the bottom?
 	     */
@@ -379,7 +379,7 @@ SkipOtherLines(
  * Function: CheckAndSwitchPoints
  *
  *****************************************************************************/
-static int
+static void
 CheckAndSwitchPoints(
     _DtCvSelectData *pt1,
     _DtCvSelectData *pt2)
@@ -449,7 +449,7 @@ AddSegmentToData(
 	    char_idx -= cnt;
 	    start     = 0;
 	  }
-        else 
+        else
           {
             _DtCvGetWidthOfSegment(canvas, pSeg, start, char_idx,
 							&cnt, &segWidth, NULL);
@@ -981,7 +981,7 @@ GetSegsInArea (
         *ret_segs = (_DtCvSegPts **) _DtCvAddPtrToArray((void **) *ret_segs,
 							(void  *) NULL);
 	if (NULL == *ret_segs)
-	    result = -1; 
+	    result = -1;
       }
 
     /*
@@ -1000,7 +1000,7 @@ GetSegsInArea (
 
     if (NULL != ret_y1)
 	*ret_y1 = minY;
-    
+
     if (NULL != ret_y2)
 	*ret_y2 = minY;
 

@@ -28,7 +28,7 @@
  **
  **   Project:     File locating
  **
- **   Description: Locates files (volumes) accessible via the 
+ **   Description: Locates files (volumes) accessible via the
  **             known paths
  **
  **   NOTE: this file must remain free of Xt & Xm calls.
@@ -166,7 +166,7 @@ static int SpecialStrcmp(
  *          If a file is found, foundPath is set to the same pointer
  *          as pathName, otherwise it is set to NULL.
  ***********************************************************************/
-Boolean 
+Boolean
 _DtHelpFileTraceLinks (
              char * *  pPathName)
 {
@@ -179,7 +179,7 @@ _DtHelpFileTraceLinks (
    if ( NULL == *pPathName ) return False;         /* RETURN */
 
    /* init */
-   strcpy(buf[0],*pPathName);
+   strlcpy(buf[0], *pPathName, MAXPATHLEN+2);
    linkPath = buf[0];        /* will be assigned to filePath below */
    curBuf = 1;               /* next valid buf */
 
@@ -209,11 +209,12 @@ _DtHelpFileTraceLinks (
 	    * pPathName had memory allocated before this function was called.
 	    * only increase the memory if needed.
 	    */
-           if ( strlen (*pPathName) < strlen(filePath) )
-                *pPathName = (char *)realloc((void *)*pPathName, (sizeof(char)
-                                * (strlen(filePath) +1)));
+           int pPathName_size = strlen(*pPathName);
+           if ( pPathName_size < strlen(filePath) )
+                pPathName_size = strlen(filePath) + 1;
+                *pPathName = (char *)realloc((void *)*pPathName, pPathName_size);
 
-           strcpy(*pPathName, filePath);
+           strlcpy(*pPathName, filePath, pPathName_size);
         }
         /* printf("actual is: %s\n", filePath);  ** DBG */
         return True;                        /* RETURN */
@@ -230,10 +231,11 @@ _DtHelpFileTraceLinks (
            char * slash = NULL;
 
            /* get last slash in the current file path */
-           if(_DtHelpCeStrrchr(filePath,DirSlashStr,MB_CUR_MAX,&slash) == 0)
+           if(_DtHelpCeStrrchr(filePath, DirSlashStr, MB_CUR_MAX, &slash) == 0)
            { /* there is a path comonent in filePath; use it with linkPath */
-              strcpy(++slash,linkPath);
-              strcpy(linkPath,filePath);       /* leave result in linkPath */
+              int remaining_size = MAXPATHLEN + 2 - (strlen(filePath) - (strlen(slash) + 1));
+              strlcpy(++slash, linkPath, remaining_size);
+              strlcpy(linkPath, filePath, MAXPATHLEN + 2);       /* leave result in linkPath */
            }
         } /* if path is relative */
         /* printf("traced to: %s\n", linkPath);  ** DBG */
@@ -257,7 +259,7 @@ _DtHelpFileTraceLinks (
  *   True:  file found
  *   False: file not found or error
  ***********************************************************************/
-Boolean 
+Boolean
 _DtHelpFileTraceToFile (
              char * *  pPathName,
              int       accessMode,
@@ -269,29 +271,29 @@ _DtHelpFileTraceToFile (
    *pFoundPath = NULL;
    if ( pathName == NULL || pathName[0] == EOS )
       return False;
- 
+
    /* if it's a file, trace its links */
-   if (   access (pathName, accessMode) == 0 
+   if (   access (pathName, accessMode) == 0
        && stat (pathName, &status) == 0
        && S_ISREG(status.st_mode) )    /* a file */
    {
       /* trace any links */
-      if ( _DtHelpFileTraceLinks(pPathName) == False ) 
+      if ( _DtHelpFileTraceLinks(pPathName) == False )
       {
           /* don't free pPathName here */
           return False;                           /* RETURN: no file */
       }
       pathName = *pPathName;
-      
+
       /* find out if its an accessible file */
-      if (   pathName != NULL 
+      if (   pathName != NULL
           && pathName[0] != EOS
-          && access (pathName, accessMode) == 0 
+          && access (pathName, accessMode) == 0
           && stat (pathName, &status) == 0
   	           && S_ISREG(status.st_mode))    /* a file */
       {
          /* point foundPath at the path */
-         *pFoundPath = pathName;     
+         *pFoundPath = pathName;
          return True;               /* RETURN:  its a file */
       }  /* if a valid path */
    } /* if a path */
@@ -326,7 +328,7 @@ _DtHelpFileTraceToFile (
  *        caller and should not be freed or modified
  *
  * Purpose:	make the search paths available
- * 
+ *
  *****************************************************************************/
 void _DtHelpFileGetSearchPaths(
          char *  paths[],
@@ -341,9 +343,9 @@ static char * pathsSet[_DtHELP_FILE_NUM_PATHS];
        _DtHelpOSGetHomeDirName(tmpPath, sizeof(tmpPath));
        pathsSet[_DtHELP_FILE_HOME_PATH] = strdup(tmpPath);
     }
-    if (searchHomeDir) 
+    if (searchHomeDir)
        paths[_DtHELP_FILE_HOME_PATH] = pathsSet[_DtHELP_FILE_HOME_PATH];
-    else 
+    else
        paths[_DtHELP_FILE_HOME_PATH] = NULL;
 
     /* generate the user path */
@@ -377,7 +379,7 @@ static char * pathsSet[_DtHELP_FILE_NUM_PATHS];
  * Purpose:	Scans all paths of given type looking for a matching file
  *              If file contains a valid absolute path, that is also
  *              acceptible.
- * 
+ *
  * FIX: merge _DtHelpFileLocate() and _DtHelpFileListScanPaths()
  *****************************************************************************/
 char * _DtHelpFileLocate (
@@ -408,23 +410,24 @@ char * _DtHelpFileLocate (
     if (NULL == filespec) return NULL;
 
     /* init suffix list to empty if not specified */
-    if (suffixList == NULL) 
-    { 
-       sufList[0] = &empty; 
+    if (suffixList == NULL)
+    {
+       sufList[0] = &empty;
        sufList[1] = NULL;
        suffixList = sufList; /* override initial argument setting */
     }
 
     /*** first look for file as specified ***/
     /* if filespec begins with . or .. then stop after the cwd path */
-    if (   (   MB_CUR_MAX == 1 
+    if (   (   MB_CUR_MAX == 1
             || mblen(filespec, MB_CUR_MAX) == 1)	/* 1st char is 1 byte */
          && *filespec == '/')  			/* and its a / */
     {
        /* _DtHelpFileTraceToFile() needs a malloc'd string */
        /* 10: leaves room for add'l suffixes */
-       pathName = MyMalloc(sizeof(char) * (strlen(filespec)+10)); 
-       pathName = strcpy(pathName,filespec);
+       int pathName_size = strlen(filespec) + 10;
+       pathName = MyMalloc(pathName_size);
+       strlcpy(pathName, filespec, pathName_size);
        _DtHelpCeCompressPathname(pathName); /* compress out relative paths */
        if ( _DtHelpFileTraceToFile(&pathName,accessMode,&foundPath) )
           return foundPath;                         /* RETURN */
@@ -433,7 +436,7 @@ char * _DtHelpFileLocate (
        eos = pathName + strlen(pathName);
        for ( pSuffix = suffixList; NULL != *pSuffix; pSuffix++ )
        {
-          strcpy(eos,(char *) *pSuffix);
+          strlcpy(eos,(char *) *pSuffix, pathName_size - strlen(pathName));
           /*recall: _DtHelpFileTraceToFile() requires pathName to be malloc'd*/
           if ( _DtHelpFileTraceToFile(&pathName,accessMode,&foundPath) )
              return foundPath;                           /* RETURN: found */
@@ -444,9 +447,9 @@ char * _DtHelpFileLocate (
 
     /*** second, check if its relative to the current directory ***/
     /* if filespec begins with . or .. then stop after the cwd path */
-    if (    searchCurDir
-         || (      MB_CUR_MAX == 1 
-                || mblen(filespec, MB_CUR_MAX) == 1)  /* 1st char is 1 byte */
+    if ( ( searchCurDir
+           || ( MB_CUR_MAX == 1
+                || mblen(filespec, MB_CUR_MAX) == 1))  /* 1st char is 1 byte */
              && *filespec == '.')  		      /* and its a . */
     {     /* we're looking at a cwd-relative path; ignore others */
        /*** this is monstrously inefficient--but it shouldn't get called often ***/
@@ -454,7 +457,7 @@ char * _DtHelpFileLocate (
        /* get user's current working directory */
        /* JET - CERT VU#575804 */
        if (getcwd(tmpPath, MAXPATHLEN - 1) == NULL) return NULL; /* RETURN: error */
-       
+
        /* make path end in a slash */
        eos = tmpPath + strlen(tmpPath);
        _DtHelpCeStrrchr(tmpPath,DirSlashStr,MB_CUR_MAX,&slash);
@@ -462,13 +465,14 @@ char * _DtHelpFileLocate (
 
        /* make a malloc'd copy of the path with room to grow */
        slash = filespec + strlen(filespec);
-       pathName = malloc(sizeof(char) * 
-                    ((eos-tmpPath) + (slash-filespec) + 50) ); /* 50: arbitrary */
+
+       int pathName_size = (eos - tmpPath) + (slash - filespec) + 50;
+       pathName = malloc(pathName_size);
        if (NULL == pathName) return NULL;		/* RETURN: error */
-       strcpy(pathName,tmpPath);
+       strlcpy(pathName, tmpPath, pathName_size);
 
        /* cat on the relative path */
-       strcat(pathName,filespec);
+       strlcat(pathName, filespec, pathName_size);
 
        /* compress out any relative paths */
        _DtHelpCeCompressPathname(pathName);
@@ -482,7 +486,7 @@ char * _DtHelpFileLocate (
        eos = pathName + strlen(pathName);
        for ( pSuffix = suffixList; NULL != *pSuffix; pSuffix++ )
        {
-         strcpy(eos,(char *) *pSuffix);
+         strlcpy(eos,(char *) *pSuffix, pathName_size - strlen(pathName));
          /* recall: _DtHelpFileTraceToFile() requires pathName to be malloc'd */
          if ( _DtHelpFileTraceToFile(&pathName,accessMode,&foundPath) )
             return foundPath;                           /* RETURN: found */
@@ -499,7 +503,7 @@ char * _DtHelpFileLocate (
     /*** prep variables to pass through the path search loop ***/
     /* we're not looking at a cwd-relative path and
        we know that 'filespec' isn't a valid path to a volume
-       (from _DtHelpFileTraceToFile), so just pick off the 
+       (from _DtHelpFileTraceToFile), so just pick off the
        basename of the spec */
     base = filespec;
     if ( _DtHelpCeStrrchr(filespec,DirSlashStr,MB_CUR_MAX,&ptr) == 0 )
@@ -516,12 +520,12 @@ char * _DtHelpFileLocate (
     /* outer loop is once for each path */
     foundPath = NULL;
     for ( curPathIndex = 0;
-          curPathIndex < _DtHELP_FILE_NUM_PATHS && NULL == foundPath; 
+          curPathIndex < _DtHELP_FILE_NUM_PATHS && NULL == foundPath;
           curPathIndex++ )
     {
        curPath = paths[curPathIndex];
        if (NULL == curPath) continue;			/* continue */
-    
+
        /* look for the file in that path */
        if (NULL != curPath) do
        {
@@ -537,25 +541,25 @@ char * _DtHelpFileLocate (
 
           /* test all suffixes */
           for ( pSuffix = suffixList, foundPath = NULL;
-                NULL == foundPath && NULL != *pSuffix; 
+                NULL == foundPath && NULL != *pSuffix;
                 pSuffix++ )
           {
-             /* generate the (directory) path using all the variables and fix 
+             /* generate the (directory) path using all the variables and fix
                 it up to remove the unwanted stuff involving the filename */
-             pathName = _DtHelpCeExpandPathname (curPath, base, type, 
+             pathName = _DtHelpCeExpandPathname (curPath, base, type,
                             (char *) *pSuffix, loc, bugFixSubs, NUM_BUGS);
-  
+
              if (   _DtHelpFileTraceToFile(&pathName,accessMode,&foundPath)==False
                  && NULL != pathName)
                 free(pathName);
 
           } /* for all suffixes */
- 
+
           /* restore the subpath separator and advance past it */
           if (ptr) *ptr++ = *PathSeparator;
 
 	  curPath = ptr;
-       } while (curPath && *curPath && NULL == foundPath); 
+       } while (curPath && *curPath && NULL == foundPath);
         /* do while more subpaths */
 
    }  /* for all paths */
@@ -574,7 +578,7 @@ char * _DtHelpFileLocate (
  *		ENOTDIR	if the directory is invalid.
  *
  * Purpose:	To check a directory only once and remember the result.
- * 
+ *
  *****************************************************************************/
 int
 _DtHelpCeCheckAndCacheDir (char *dir)
@@ -630,7 +634,7 @@ _DtHelpCeCheckAndCacheDir (char *dir)
 		/*
 		 * is this a directory?
 		 */
-		if (access(dir, R_OK) == 0 && 
+		if (access(dir, R_OK) == 0 &&
 				stat(dir, &buf) == 0 && S_ISDIR(buf.st_mode))
 		    curDir->type = 0;
 
@@ -648,7 +652,7 @@ _DtHelpCeCheckAndCacheDir (char *dir)
      * This should never happen, but just in case the directory
      * can't be cached, go ahead and check it anyway.
      */
-    if (result == ENOMEM && access(dir, R_OK) == 0 && 
+    if (result == ENOMEM && access(dir, R_OK) == 0 &&
 				stat(dir, &buf) == 0 && S_ISDIR(buf.st_mode))
 	result = 0;
 
@@ -665,7 +669,7 @@ _DtHelpCeCheckAndCacheDir (char *dir)
  * Returns:	A pointer to the cached directories.
  *
  * Purpose:	To allow access to the cached directories.
- * 
+ *
  *****************************************************************************/
 _DtHelpCeDirStruct *
 _DtHelpCeGetCachedDirs (void)

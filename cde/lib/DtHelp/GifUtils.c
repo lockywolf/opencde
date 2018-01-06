@@ -27,13 +27,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -43,7 +43,7 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
 
 
@@ -295,7 +295,7 @@ DoExtension(byte **inbuf, int label, GifState *g)
         return FALSE;
     default:
         str = buf;
-        sprintf(buf, "UNKNOWN (0x%02x)", label);
+        snprintf(buf, 256, "UNKNOWN (0x%02x)", label);
         break;
     }
 
@@ -371,7 +371,7 @@ LWZReadByte(byte **inbuf, int flag, int input_code_size, GifState *g)
         g->max_code = g->clear_code+2;
 
         GetCode(inbuf, 0, TRUE, g);
-        
+
         g->fresh = TRUE;
 
         for (i = 0; i < g->clear_code; ++i) {
@@ -467,7 +467,7 @@ LWZReadByte(byte **inbuf, int flag, int input_code_size, GifState *g)
 pixel **
 ReadImage(byte **inbuf, int len, int height, unsigned char cmap[3][MAXCOLORMAPSIZE], int interlace, int ignore, GifState *g)
 {
-    unsigned char    c;    
+    unsigned char    c;
     int              v;
     int              xpos = 0, ypos = 0, pass = 0;
     pixel            **image;
@@ -555,21 +555,21 @@ fini:
 // ////////////////////////////////////////////////////////// */
 
 enum _DtGrLoadStatus InitGifObject (
-    GifObj               *go, 
-    Display              *dpy, 
+    GifObj               *go,
+    Display              *dpy,
     Drawable             drawable,
     Screen               *screen,
     int                  depth,
     Colormap             colormap,
     Visual               *visual,
     GC                   gc,
-    enum _DtGrColorModel colorModel, 
+    enum _DtGrColorModel colorModel,
     Boolean              allowReducedColors)
 {
     int r, g, b, i, visualsMatched;
     XVisualInfo vTemplate, *visualList;
 
-    /* 
+    /*
     ** Initialize structure values
     */
     go->bits_per_pixel = 2;
@@ -587,7 +587,7 @@ enum _DtGrLoadStatus InitGifObject (
     go->f_visual    = visual;
     go->f_ncells    = DisplayCells(go->f_dpy, go->f_screen);
     go->f_nplanes   = DisplayPlanes(go->f_dpy,go->f_screen);
-    go->f_white     = WhitePixel(go->f_dpy, go->f_screen); 
+    go->f_white     = WhitePixel(go->f_dpy, go->f_screen);
     go->f_black     = BlackPixel(go->f_dpy, go->f_screen);
     go->f_allow_reduced_colors = allowReducedColors;
     go->f_color_reduction_used = FALSE;
@@ -625,19 +625,19 @@ enum _DtGrLoadStatus InitGifObject (
     vTemplate.screen = go->f_screen;
     vTemplate.depth = go->f_dft_depth;
 
-    visualList = XGetVisualInfo( go->f_dpy, 
+    visualList = XGetVisualInfo( go->f_dpy,
                                  VisualScreenMask | VisualDepthMask,
                                  &vTemplate, &visualsMatched );
 
     /* Return failure if we can't find a matching visual */
-    if ( visualsMatched == 0 ) 
+    if ( visualsMatched == 0 )
         return (_DtGrCONVERT_FAILURE);
 
     go->f_visual_class = StaticGray;
 
-    for ( i=0; i<visualsMatched; i++ ) 
+    for ( i=0; i<visualsMatched; i++ )
     {
-        if ( visualList[i].visual == go->f_visual ) 
+        if ( visualList[i].visual == go->f_visual )
         {
             go->f_visual_class = visualList[i].class;
             break;
@@ -658,11 +658,11 @@ enum _DtGrLoadStatus InitGifObject (
                i++;
            }
 
-    /* 
+    /*
     ** Allocate X pixels, either color or greyscale values depending upon
     ** visual class and color model.
     */
-    switch ( go->f_visual_class ) 
+    switch ( go->f_visual_class )
     {
         case StaticGray:
         case GrayScale:
@@ -735,7 +735,7 @@ int allocate_colors(GifObj *g)
       color.red   = g->GifCMap[i].red;
       color.green = g->GifCMap[i].green;
       color.blue  = g->GifCMap[i].blue;
-    
+
       /*printf ("Allocating %3d: ", i); */
       if ( !XAllocColor (g->f_dpy, g->f_cmap, &color) ) {
 
@@ -791,14 +791,14 @@ debug1(cerr, 0.299 * GifCMap[i].red + 0.587 * GifCMap[i].green +
 debug1(cerr, GifCMap[i].grey);
 */
 
-      g->GifCMap[i].grey = (unsigned short)(0.299 * g->GifCMap[i].red +     
-                                         0.587 * g->GifCMap[i].green +     
-                                         0.114 * g->GifCMap[i].blue);     
+      g->GifCMap[i].grey = (unsigned short)(0.299 * g->GifCMap[i].red +
+                                         0.587 * g->GifCMap[i].green +
+                                         0.114 * g->GifCMap[i].blue);
    }
 
-/*   
+/*
    if ( StaticColor == g->f_visual_class ||
-        TrueColor == g->f_visual_class ) 
+        TrueColor == g->f_visual_class )
 */
    if ( StaticColor == g->f_visual_class)
    {
@@ -808,25 +808,25 @@ debug1(cerr, GifCMap[i].grey);
    }
 
 
-   for ( g->f_total_greys=g->f_init_total_greys; g->f_total_greys>=2; 
-         g->f_total_greys/=2 ) 
+   for ( g->f_total_greys=g->f_init_total_greys; g->f_total_greys>=2;
+         g->f_total_greys/=2 )
    {
       /*fprintf(stderr, "f_total_greys = %d\n", g->f_total_greys); */
 
       /*
       ** Return failure if we're about to downgrade from greyscale
       ** to dithered monochrome and we don't allow reduced colors.
-      */ 
+      */
       if ((g->f_total_greys == 2) && (g->f_init_total_greys > 2) &&
           (!g->f_allow_reduced_colors))
           return -1;
 
       for (i = 0; i<g->f_total_greys; i++) {
 
-         color.red = 
-         color.green = 
+         color.red =
+         color.green =
          color.blue  = (i*65535)/(g->f_total_greys - 1);
-   
+
          /*fprintf (stderr, "Allocating %3d: ", i);*/
          if ( !XAllocColor (g->f_dpy, g->f_cmap, &color) ) {
 
@@ -839,7 +839,7 @@ debug1(cerr, GifCMap[i].grey);
             XFreeColors (g->f_dpy, g->f_cmap, colors, i, 0);
 
             free(colors);
-     
+
             break;
          }
 
@@ -1018,7 +1018,7 @@ create_raw_image( byte *inbuf, unsigned int buflen, int *width, int *height, int
 
 /* from "Computer Graphics" by Foley, VanDam, Feiner, Hughes */
 /*       2nd edition */
-static int dither_8X8[8][8] = 
+static int dither_8X8[8][8] =
 {
  { 0,  32,  8, 40,  2, 34, 10, 42 },
  { 48, 16, 56, 24, 50, 18, 58, 26 },
@@ -1042,7 +1042,7 @@ static int dither_8X8[8][8] =
 */
 
 /*
-static int dither_4X4[4][4] = 
+static int dither_4X4[4][4] =
 {
  { 0, 8, 2, 10 },
  { 12, 4, 14, 6},
@@ -1051,7 +1051,7 @@ static int dither_4X4[4][4] =
 };
 
 
-static int dither_3X3[3][3] = 
+static int dither_3X3[3][3] =
 {
  { 6, 8, 4 },
  { 1, 0, 3},
@@ -1059,7 +1059,7 @@ static int dither_3X3[3][3] =
 };
 
 
-static int dither_2X2[2][2] = 
+static int dither_2X2[2][2] =
 {
  { 0, 2 },
  { 3, 1}
@@ -1076,7 +1076,7 @@ Pixmap
 create_pixmap( GifObj *g, pixel **image, int width, int height, Pixel fg, Pixel bg, float ratio)
 {
   int nullCount = (4 - (width % 4)) & 0x03;
-  int ximWidth = width + nullCount; 
+  int ximWidth = width + nullCount;
   byte *ximData = 0;
   pixel *ipp = *image;
   int spacing;
@@ -1104,7 +1104,7 @@ create_pixmap( GifObj *g, pixel **image, int width, int height, Pixel fg, Pixel 
   /*else if (g->f_nplanes == 8) */
 
   /* non-mono display */
-  else  
+  else
      g->f_ximage = XCreateImage(g->f_dpy, g->f_visual, g->f_nplanes, ZPixmap,
                           0, (char *)ximData, width, height, 32, 0);
 
@@ -1116,7 +1116,7 @@ create_pixmap( GifObj *g, pixel **image, int width, int height, Pixel fg, Pixel 
 
 /* RGB to Pixel Conversion */
 
-  if ( g->f_total_greys == 2 ) 
+  if ( g->f_total_greys == 2 )
      spacing = 65536 / (dither_matrix_sz * dither_matrix_sz);
   else
      spacing = 65536 / g->f_total_greys;
@@ -1125,7 +1125,7 @@ create_pixmap( GifObj *g, pixel **image, int width, int height, Pixel fg, Pixel 
 
   for (y=0; y < height; y++) {
     for (x=0; x < width; x++) {
-      pixval = (long)*ipp; 
+      pixval = (long)*ipp;
 
 /*      XColor cellDef; */
 /*      cellDef.red   = (short)PPM_GETR(pixval);    */
@@ -1161,7 +1161,7 @@ create_pixmap( GifObj *g, pixel **image, int width, int height, Pixel fg, Pixel 
 
            XPutPixel(g->f_ximage,x,y, g->GifGMap[g->GifCMap[index].grey / spacing]);
          }
-         
+
          break;
 
 
@@ -1171,12 +1171,12 @@ fprintf(stderr, "%03d %03d %03d -- %03d %03d %03d ",
 (short)PPM_GETR(pixval),(short)PPM_GETG(pixval),(short)PPM_GETB(pixval),
 g->GifCMap[index].red>>8, g->GifCMap[index].green>>8, g->GifCMap[index].blue>>8
                             );
-if ((short)PPM_GETR(pixval) != (GifCMap[index].red>>8) || 
-    (short)PPM_GETG(pixval) != (GifCMap[index].green>>8) || 
+if ((short)PPM_GETR(pixval) != (GifCMap[index].red>>8) ||
+    (short)PPM_GETG(pixval) != (GifCMap[index].green>>8) ||
     (short)PPM_GETB(pixval) != (GifCMap[index].blue>>8))
   puts (" *");
 else
-  puts (" -"); 
+  puts (" -");
 #endif
 
 
@@ -1208,7 +1208,7 @@ else
   if (scaledWidth == 0)
       scaledWidth = 1;
   if (scaledHeight == 0)
-     scaledHeight = 1; 
+     scaledHeight = 1;
   pm = XCreatePixmap(g->f_dpy,g->f_drawable,
 		     scaledWidth,scaledHeight,
 		     g->f_nplanes);
@@ -1224,7 +1224,7 @@ else
 
   XDestroyImage(g->f_ximage);
   g->f_ximage = NULL;
-  
+
   return(pm);
 }
 

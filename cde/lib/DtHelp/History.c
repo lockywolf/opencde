@@ -29,7 +29,7 @@
  **   Project:     Cache Creek (Rivers) Project
  **
  **   Description: Creates an instance of a Cache Creek History Dialog.
- ** 
+ **
  **
  **  (c) Copyright 1987, 1988, 1989, 1990, 1991, 1992 Hewlett-Packard Company
  **
@@ -110,7 +110,7 @@ static DtTopicListStruct *PullTopicListFromSelVolumeList(
 static void UpdateTopicList(
     DtHistoryListStruct *pHistoryList,
     Widget nw,
-    int topicType);    
+    int topicType);
 static Boolean IsTopicInHistoryList(
     DtTopicListStruct *pTopicList,
     XmString topicTitle);
@@ -127,10 +127,10 @@ static void CloseHistoryCB (
     XtPointer call_data)
 {
   DtHelpDialogWidget hw = (DtHelpDialogWidget) client_data;
- 
+
   /* We unmap the history dialog */
   XtUnmanageChild(hw->help_dialog.history.historyWidget);
-  
+
   /* Re-sensatize the search button so the user can select it agan */
   XtSetSensitive(hw->help_dialog.menu.historyBtn, TRUE);
   XtSetSensitive(hw->help_dialog.browser.btnBoxHistoryBtn, TRUE);
@@ -139,9 +139,9 @@ static void CloseHistoryCB (
 
 /*****************************************************************************
  * Function:	    Boolean _DtHelpDisplayHistoryInfo(Widget nw);
- *                             
- * 
- * Parameters:      nw        Specifies the name of the current help dialog 
+ *
+ *
+ * Parameters:      nw        Specifies the name of the current help dialog
  *                            widget.
  *
  * Return Value:
@@ -154,10 +154,10 @@ void _DtHelpDisplayHistoryInfo(
 {
 
   DtHelpDialogWidget hw = (DtHelpDialogWidget) nw;
- 
+
   if (hw->help_dialog.history.historyWidget == NULL)
      CreateHistoryDialog((Widget) hw);
-  
+
    /* if its not managed, manage it */
    if ( XtIsManaged(hw->help_dialog.history.historyWidget) == False )
    {
@@ -176,9 +176,9 @@ void _DtHelpDisplayHistoryInfo(
 
 /*****************************************************************************
  * Function:	    Boolean IsTopicInHistoryList(nw)
- *                             
- * 
- * Parameters:      nw        Specifies the name of the current help dialog 
+ *
+ *
+ * Parameters:      nw        Specifies the name of the current help dialog
  *                            widget.
  *
  * Return Value:
@@ -193,7 +193,7 @@ static Boolean IsTopicInHistoryList(
 {
 
   Boolean done=FALSE;
-  
+
   while (!done && (pTopicList != NULL))
     {
       if (XmStringCompare (topicTitle, pTopicList->topicTitleLbl) == True)
@@ -213,7 +213,7 @@ static Boolean IsTopicInHistoryList(
  *
  *
  *
- * Parameters:  
+ * Parameters:
  *
  * Return Value:    Void.
  *
@@ -223,7 +223,7 @@ static Boolean IsTopicInHistoryList(
 static void UpdateTopicList(
     DtHistoryListStruct *pHistoryList,
     Widget nw,
-    int topicType)    
+    int topicType)
 {
    int i;
    int n;
@@ -232,7 +232,7 @@ static void UpdateTopicList(
    XmString *items;
    DtTopicListStruct *pTopicList=NULL;
    DtHelpDialogWidget hw = (DtHelpDialogWidget) nw;
-   
+
 
    /* Flush the current history topic list */
    XmListDeselectAllItems(hw->help_dialog.history.topicList);
@@ -240,7 +240,7 @@ static void UpdateTopicList(
 
    /* Grab the top of our current topic list from our history list struct */
    pTopicList = pHistoryList->pTopicHead;
-   
+
    /* Loop through and build up a new visible topics list */
    items = (XmString *) XtMalloc(sizeof(XmString) * pHistoryList->totalNodes);
    for (i = 0; i < pHistoryList->totalNodes; i++)
@@ -262,7 +262,7 @@ static void UpdateTopicList(
        case DtHELP_TYPE_TOPIC:
          labelString = XmStringCreateLocalized(((char *)_DTGETMESSAGE
                             (3, 8,"Help Topics Visited:")));
-         break;  
+         break;
 
 
        case DtHELP_TYPE_FILE:
@@ -282,8 +282,10 @@ static void UpdateTopicList(
         labelString = XmStringCreateLocalized(((char *)_DTGETMESSAGE
                             (3, 11,"Help Messages Visited:")));
          break;
- 
-      default:  
+
+      default:
+        fprintf(stderr, "Bogus type, how did we ever get here ???");
+        exit(1);
         /* Bogus type, how did we ever get here ??? */
         break;
 
@@ -305,7 +307,7 @@ static void UpdateTopicList(
  *
  *
  *
- * Parameters:  
+ * Parameters:
  *
  * Return Value:    Void.
  *
@@ -321,8 +323,8 @@ static void ProcessVolumeSelectionCB(
    XmListCallbackStruct *selectedItem = (XmListCallbackStruct *) call_data;
    DtHelpDialogWidget hw = (DtHelpDialogWidget) client_data;
    DtHistoryListStruct *pTemp= NULL;
-   int topicPosition=0;  
-   int i;   
+   int topicPosition=0;
+   int i;
    XmString labelString;
    int * topicPosList = NULL;
    int   topicCnt = 0;
@@ -352,10 +354,10 @@ static void ProcessVolumeSelectionCB(
    pTemp = hw->help_dialog.history.pHistoryListHead;
    for (i=1;i < topicPosition; i++)
       pTemp = pTemp->pNext;
-  
-  
+
+
    UpdateTopicList(pTemp, (Widget)hw, pTemp->topicType);
-      
+
    /* Look to see if we have the current visible topic matches something in
     * in the topic list. If so, highlight the item in the topic list
     */
@@ -365,7 +367,7 @@ static void ProcessVolumeSelectionCB(
    if (   _DtHelpFormatTopicTitle (hw->help_dialog.help.pDisplayArea,
 				   hw->help_dialog.display.volumeHandle,
 				   hw->help_dialog.display.locationId,
-				   &labelString, &fontList, &mod) != 0 
+				   &labelString, &fontList, &mod) != 0
        || NULL == labelString)
    {
        labelString = XmStringCreateLocalized(hw->help_dialog.display.locationId);
@@ -395,7 +397,7 @@ static void ProcessVolumeSelectionCB(
  *
  *
  *
- * Parameters:  
+ * Parameters:
  *
  * Return Value:    Void.
  *
@@ -409,18 +411,18 @@ static void ProcessTopicSelectionCB(
 {
    XmListCallbackStruct *selectedItem = (XmListCallbackStruct *) call_data;
    DtHelpDialogWidget hw = (DtHelpDialogWidget) client_data;
-   
+
    DtTopicListStruct *pTemp= NULL;
-   int topicPosition=0;  
+   int topicPosition=0;
    int i;
 
 
-   /* First, find out what item is currently selected in our 
+   /* First, find out what item is currently selected in our
     * volume list.  From this, we can get the proper topic list to
     * travers.
     */
 
-   pTemp = PullTopicListFromSelVolumeList((Widget)hw); 
+   pTemp = PullTopicListFromSelVolumeList((Widget)hw);
 
    if (pTemp == NULL)
      {
@@ -431,10 +433,10 @@ static void ProcessTopicSelectionCB(
 
    /* Determin the item selected and find that item in our list */
    topicPosition = selectedItem->item_position;
-   
+
    for (i=1;i < topicPosition; i++)
       pTemp = pTemp->pNext;
-  
+
    hw->help_dialog.display.helpType = pTemp->topicType;
 
    if (hw->help_dialog.display.helpType != DtHELP_TYPE_TOPIC)
@@ -444,7 +446,7 @@ static void ProcessTopicSelectionCB(
        hw->help_dialog.display.topicTitleLbl =
 					XmStringCopy(pTemp->topicTitleLbl);
      }
-   
+
 
    switch (pTemp->topicType)
      {
@@ -456,14 +458,14 @@ static void ProcessTopicSelectionCB(
          {
            XtFree(hw->help_dialog.display.helpVolume);
            hw->help_dialog.display.helpVolume  = XtNewString(pTemp->helpVolume);
-         
+
            /* Set our help volume flag so we open the proper volume */
            hw->help_dialog.ghelp.volumeFlag         = FALSE;
          }
 
          XtFree(hw->help_dialog.display.locationId);
          hw->help_dialog.display.locationId = XtNewString(pTemp->locationId);
-        
+
          /* set the topicType flag to process correctly */
          hw->help_dialog.display.helpType = DtHELP_TYPE_TOPIC;
 
@@ -472,16 +474,16 @@ static void ProcessTopicSelectionCB(
        case DtHELP_TYPE_STRING:
          XtFree(hw->help_dialog.display.stringData);
          hw->help_dialog.display.stringData = XtNewString(pTemp->locationId);
-        
+
          /* set the topicType flag to process correctly */
          hw->help_dialog.display.helpType = DtHELP_TYPE_STRING;
 
          break;
-  
+
        case DtHELP_TYPE_DYNAMIC_STRING:
          XtFree(hw->help_dialog.display.stringData);
          hw->help_dialog.display.stringData = XtNewString(pTemp->locationId);
-        
+
          /* set the topicType flag to process correctly */
          hw->help_dialog.display.helpType = DtHELP_TYPE_DYNAMIC_STRING;
 
@@ -490,7 +492,7 @@ static void ProcessTopicSelectionCB(
        case DtHELP_TYPE_MAN_PAGE:
          XtFree(hw->help_dialog.display.manPage);
          hw->help_dialog.display.manPage = XtNewString(pTemp->locationId);
-        
+
          /* set the topicType flag to process correctly */
          hw->help_dialog.display.helpType = DtHELP_TYPE_MAN_PAGE;
 
@@ -499,21 +501,21 @@ static void ProcessTopicSelectionCB(
        case DtHELP_TYPE_FILE:
          XtFree(hw->help_dialog.display.helpFile);
          hw->help_dialog.display.helpFile = XtNewString(pTemp->locationId);
-        
+
          /* set the topicType flag to process correctly */
          hw->help_dialog.display.helpType = DtHELP_TYPE_FILE;
 
          break;
 
-       default:  
- 
+       default:
+
         /* ERROR-MESSAGE */
         /* We should never get here, because we using the proper types */
         return;
 
     }  /* End Switch Statement */
-  
-    _DtHelpSetupDisplayType(hw, FALSE, DtHISTORY_AND_JUMP);   
+
+    _DtHelpSetupDisplayType(hw, FALSE, DtHISTORY_AND_JUMP);
 
 }
 
@@ -526,11 +528,11 @@ static void ProcessTopicSelectionCB(
  *                             Widget nw);
  *
  *
- * Parameters:      helpDialogWidget   Specifies the current Help Dialog to 
+ * Parameters:      helpDialogWidget   Specifies the current Help Dialog to
  *                                     create the history dialog for.
  *
  *
- * Return Value:   
+ * Return Value:
  *
  * Purpose: 	    Create and display an instance of a history dialog.
  *
@@ -543,7 +545,7 @@ static void CreateHistoryDialog(
   Widget separator;
   Widget cancelBtn, helpBtn;
   Widget historyShell;
-  
+
 
   XmString labelString;
   Arg args[20];
@@ -579,7 +581,7 @@ static void CreateHistoryDialog(
    XtSetArg (args[n], XmNautoUnmanage, False);				n++;
    historyForm = XmCreateForm (historyShell, "historyForm", args, n);
 
- 
+
    labelString = XmStringCreateLocalized(((char *)_DTGETMESSAGE
                             (3, 2,"Help Volumes Visited:")));
    n = 0;
@@ -588,7 +590,7 @@ static void CreateHistoryDialog(
    XtSetArg (args[n], XmNleftOffset, 5);				n++;
    XtSetArg (args[n], XmNtopAttachment, XmATTACH_FORM);			n++;
    XtSetArg (args[n], XmNtopOffset, 10);                                n++;
-   volumeListLabel = 
+   volumeListLabel =
          XmCreateLabelGadget (historyForm, "volumeListLabel", args, n);
    XtManageChild (volumeListLabel);
    XmStringFree (labelString);
@@ -603,10 +605,10 @@ static void CreateHistoryDialog(
             XmCreateScrolledList (historyForm, "historyVolumeList", args, n);
    XtManageChild (hw->help_dialog.history.volumeList);
 
-   XtAddCallback (hw->help_dialog.history.volumeList, 
-                 XmNsingleSelectionCallback, 
+   XtAddCallback (hw->help_dialog.history.volumeList,
+                 XmNsingleSelectionCallback,
                  (XtCallbackProc)ProcessVolumeSelectionCB, (XtPointer) hw);
-   
+
    /* Set the constraints on our scrolled list */
    n = 0;
    XtSetArg (args[n], XmNtopAttachment, XmATTACH_WIDGET);		n++;
@@ -626,13 +628,13 @@ static void CreateHistoryDialog(
                      (3, 8,"Help Topics Visited:")));
    n = 0;
    XtSetArg (args[n], XmNtopAttachment, XmATTACH_WIDGET);		n++;
-   XtSetArg (args[n], XmNtopWidget, 
+   XtSetArg (args[n], XmNtopWidget,
                   XtParent(hw->help_dialog.history.volumeList));        n++;
    XtSetArg (args[n], XmNtopOffset, 10);		        	n++;
    XtSetArg (args[n], XmNleftAttachment, XmATTACH_FORM);		n++;
    XtSetArg (args[n], XmNleftOffset, 10);				n++;
    XtSetArg (args[n], XmNlabelString, labelString);			n++;
-   hw->help_dialog.history.topicsListLabel = 
+   hw->help_dialog.history.topicsListLabel =
          XmCreateLabelGadget (historyForm, "topicsListLabel", args, n);
    XtManageChild (hw->help_dialog.history.topicsListLabel);
    XmStringFree (labelString);
@@ -647,13 +649,13 @@ static void CreateHistoryDialog(
             XmCreateScrolledList (historyForm, "historyTopicList", args, n);
    XtManageChild (hw->help_dialog.history.topicList);
 
-   XtAddCallback (hw->help_dialog.history.topicList, 
-                  XmNsingleSelectionCallback, 
+   XtAddCallback (hw->help_dialog.history.topicList,
+                  XmNsingleSelectionCallback,
                   (XtCallbackProc)ProcessTopicSelectionCB,
                   (XtPointer) hw);
-  
-   XtAddCallback (hw->help_dialog.history.topicList, 
-                  XmNdefaultActionCallback, 
+
+   XtAddCallback (hw->help_dialog.history.topicList,
+                  XmNdefaultActionCallback,
                   (XtCallbackProc)ProcessTopicSelectionCB,
                   (XtPointer) hw);
 
@@ -670,7 +672,7 @@ static void CreateHistoryDialog(
    XtSetArg (args[n], XmNbottomOffset, 70);				n++;
    XtSetValues (XtParent (hw->help_dialog.history.topicList), args, n);
 
-  
+
    /*  Create a separator between the buttons  */
 
    n = 0;
@@ -700,10 +702,10 @@ static void CreateHistoryDialog(
     *XtSetArg (args[n], XmNbottomOffset, 3);				n++;
     */
    cancelBtn = XmCreatePushButtonGadget (historyForm, "cancelBtn", args, n);
-   
-   XtAddCallback(cancelBtn, XmNactivateCallback, 
+
+   XtAddCallback(cancelBtn, XmNactivateCallback,
                 (XtCallbackProc)CloseHistoryCB, (XtPointer) hw);
-  	     
+
    XtManageChild (cancelBtn);
    XmStringFree (labelString);
 
@@ -734,22 +736,22 @@ static void CreateHistoryDialog(
 
    /* Setup and add our help callback for this button */
    pHelpInfo = _DtHelpListAdd(DtHELP_historyHelpBtn_STR,
-                        (Widget) hw, &hw->help_dialog.help, 
+                        (Widget) hw, &hw->help_dialog.help,
 			&hw->help_dialog.help.pHelpListHead);
    XtAddCallback (helpBtn, XmNactivateCallback,
                   _DtHelpCB, (XtPointer) pHelpInfo);
-   
+
    XmStringFree (labelString);
 
 
    /*  Adjust the decorations for the dialog shell of the dialog  */
     n = 0;
-    XtSetArg(args[n], XmNmwmFunctions,  
+    XtSetArg(args[n], XmNmwmFunctions,
              MWM_FUNC_MOVE |MWM_FUNC_RESIZE);                           n++;
-    XtSetArg (args[n], XmNmwmDecorations, 
+    XtSetArg (args[n], XmNmwmDecorations,
              MWM_DECOR_BORDER | MWM_DECOR_TITLE | MWM_DECOR_RESIZEH);	n++;
     XtSetValues (historyShell, args, n);
-    
+
    /* calculate and set the buttons' positions on the form */
    {
    Widget btnList[2];
@@ -785,13 +787,13 @@ static void CreateHistoryDialog(
    XtGetValues(cancelBtn, args, n);
    offset = btnHeight + widgetBorderHeight + 15;
                     /* 20 =='s fudge factor */
-  
+
    n = 0;
    XtSetArg(args[n], XmNborderWidth, &widgetBorderHeight);	n++;
    XtSetArg(args[n], XmNheight, &btnHeight);			n++;
    XtGetValues(separator, args, n);
    offset += btnHeight + widgetBorderHeight;
- 
+
 
 
    /* make the bottom attachment for the seporator such that things will fit,
@@ -800,24 +802,24 @@ static void CreateHistoryDialog(
    n = 0;
    XtSetArg (args[n], XmNbottomAttachment, XmATTACH_FORM);		n++;
    XtSetArg (args[n], XmNbottomOffset, offset);				n++;
-   XtSetValues (XtParent (hw->help_dialog.history.topicList), args, n); 
-   
-   /* We may have some history values already, so update our newlly 
+   XtSetValues (XtParent (hw->help_dialog.history.topicList), args, n);
+
+   /* We may have some history values already, so update our newlly
     * created scrolled list widget.
     */
-   
-  
+
+
    /* Add the popup position callback to our history dialog */
    XtAddCallback (historyShell, XmNpopupCallback, (XtCallbackProc)_DtHelpMapCB,
                   (XtPointer) XtParent(hw));
- 
+
    /* Add our help callback to the shell of the dialog  */
    pHelpInfo = _DtHelpListAdd(DtHELP_historyShell_STR,
-                        (Widget) hw, &hw->help_dialog.help, 
+                        (Widget) hw, &hw->help_dialog.help,
 			&hw->help_dialog.help.pHelpListHead);
    XtAddCallback(historyForm, XmNhelpCallback,
                  _DtHelpCB, (XtPointer) pHelpInfo);
-   
+
   /* Assign our new search dialog to our widget instance */
   hw->help_dialog.history.historyWidget = historyForm;
 
@@ -829,7 +831,7 @@ static void CreateHistoryDialog(
 /*****************************************************************************
  * Function:	    void _DtHelpUpdateHistoryList(char *locationId,
  *                                 int topicType,
- *                                 Widget nw);  
+ *                                 Widget nw);
  *
  *
  * Parameters:      parent      Specifies the ID string for the new topic we
@@ -862,8 +864,8 @@ void _DtHelpUpdateHistoryList(
   DtHelpDialogWidget hw = (DtHelpDialogWidget) nw;
 
 
-   /* Lets just build a history dialog so we can start populating it. 
-    * We won't manage it tell we need it 
+   /* Lets just build a history dialog so we can start populating it.
+    * We won't manage it tell we need it
     */
    if (hw->help_dialog.history.historyWidget == NULL)
      CreateHistoryDialog((Widget) hw);
@@ -906,7 +908,7 @@ void _DtHelpUpdateHistoryList(
 	mod = False;
         _DtHelpFormatVolumeTitle (hw->help_dialog.help.pDisplayArea,
                                  hw->help_dialog.display.volumeHandle,
-                                 &currentItemTitle, &fontList, &mod);   
+                                 &currentItemTitle, &fontList, &mod);
 
         if(currentItemTitle == NULL &&
 				NULL != hw->help_dialog.display.helpVolume)
@@ -919,7 +921,7 @@ void _DtHelpUpdateHistoryList(
 	    XmFontListFree(fontList);
 	  }
 
-        break;  
+        break;
 
 
       case DtHELP_TYPE_FILE:
@@ -942,8 +944,8 @@ void _DtHelpUpdateHistoryList(
 				((char *)_DTGETMESSAGE(3, 7, "Help Messages")));
         topicTitle       = hw->help_dialog.display.topicTitleLbl;
         break;
- 
-      default:  
+
+      default:
         /* Bogus type, how did we ever get here ??? */
         break;
 
@@ -982,7 +984,7 @@ void _DtHelpUpdateHistoryList(
       if (!IsTopicInHistoryList(pCurrentHistoryList->pTopicHead, topicTitle))
         {
           /* Add the new topic to the history top of the history list */
-          _DtHelpTopicListAddToHead(locationId, topicTitle,topicType, 
+          _DtHelpTopicListAddToHead(locationId, topicTitle,topicType,
                              DtHISTORY_LIST_MAX,
                              hw->help_dialog.display.helpVolume,
                              &(pCurrentHistoryList->pTopicHead),
@@ -993,7 +995,7 @@ void _DtHelpUpdateHistoryList(
           XmUpdateDisplay((Widget) hw);
           UpdateTopicList(pCurrentHistoryList, (Widget)hw, topicType);
 
-      
+
           /* Force the top item to be selected */
           XmListSelectPos(hw->help_dialog.history.topicList,1, FALSE);
         }
@@ -1017,7 +1019,7 @@ void _DtHelpUpdateHistoryList(
 
 /*****************************************************************************
  * Function:	    static DtHistoryListStruct *AddItemToHistoryList(
- *                                
+ *
  * Parameters:
  *              title   Specifies the XmString of the title.  If
  *			'duplicateItem' returns False, the caller
@@ -1042,9 +1044,9 @@ static DtHistoryListStruct *AddItemToHistoryList(
    /*
     * Walk the list.
     */
-   pTemp = (*pHead); 
+   pTemp = (*pHead);
    *duplicateItem = False;
- 
+
    while (!done && (pTemp != NULL))
      {
        if (XmStringCompare (title, pTemp->itemTitle) == True)
@@ -1060,12 +1062,12 @@ static DtHistoryListStruct *AddItemToHistoryList(
 
    if (pTemp == NULL)
      {
-       /* We did not find a match, so lets add one to the top of 
+       /* We did not find a match, so lets add one to the top of
         * our current list.
         */
        pTemp =(DtHistoryListStruct *) XtMalloc((sizeof(DtHistoryListStruct)));
-    
-       
+
+
        pTemp->itemTitle        = title;
        pTemp->totalNodes       = 0;
        pTemp->topicType        = topicType;
@@ -1073,7 +1075,7 @@ static DtHistoryListStruct *AddItemToHistoryList(
        pTemp->pTopicHead       = NULL;
        pTemp->pTopicTale       = NULL;
 
-       /* Re-Assign our head pointer to point to the new 
+       /* Re-Assign our head pointer to point to the new
         * head of the list
         */
        (*pHead) = pTemp;
@@ -1086,7 +1088,7 @@ static DtHistoryListStruct *AddItemToHistoryList(
 
 /*****************************************************************************
  * Function:	    static DtHistoryListStruct PullTopicListFromSelVolumeList
- *                                
+ *
  *
  *
  *
@@ -1106,7 +1108,7 @@ static DtTopicListStruct *PullTopicListFromSelVolumeList(
   int *positionList;  /* Should always be only one item */
   int i;
 
-  
+
   pTemp = hw->help_dialog.history.pHistoryListHead;
 
   /* Find out what item is currently selected in our visited volumes list */
@@ -1117,11 +1119,11 @@ static DtTopicListStruct *PullTopicListFromSelVolumeList(
   if (itemsSelected)
     {
       /* We should get in here every time */
-         
+
       for (i=1;i < positionList[0]; i++)
         pTemp = pTemp->pNext;
 
-      free(positionList);  
+      free(positionList);
       return (pTemp->pTopicHead);
     }
   else
@@ -1131,7 +1133,7 @@ static DtTopicListStruct *PullTopicListFromSelVolumeList(
       /* error condition we must account for */
     }
 
- 
+
 }
 
 

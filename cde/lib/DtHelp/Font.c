@@ -419,7 +419,7 @@ LoadFont (
 	      }
 	    else if (len != 1 || *strPtr != ' ')
 	        colon = False;
-	
+
 	    strPtr += len;
           }
       }
@@ -541,7 +541,7 @@ __DtHelpFontIndexGet (
 	/*
 	 * remember the character set for this font.
 	 */
-	sprintf (buffer, "%ld", fontIndex);
+	snprintf(buffer, 10, "%ld", fontIndex);
 	retValue.size = sizeof (XrmQuark);
 	retValue.addr = (XtPointer) &xrm_list[_DT_HELP_FONT_CHAR_SET];
 	xrmList[0] = XrmStringToQuark (buffer);
@@ -593,7 +593,7 @@ __DtHelpFontCharSetQuarkGet (
     /*
      * quarkize the font index
      */
-    sprintf (buffer, "%ld", font_index);
+    snprintf(buffer, 10, "%ld", font_index);
     xrmList[0] = XrmStringToQuark (buffer);
     xrmList[1] = XrmStringToQuark ("code_set");
     xrmList[2] = 0;
@@ -637,7 +637,7 @@ __DtHelpFontLangQuarkGet (
     /*
      * quarkize the font index
      */
-    sprintf (buffer, "%ld", font_index);
+    snprintf(buffer, 10, "%ld", font_index);
     xrmList[0] = XrmStringToQuark (buffer);
     xrmList[1] = XrmStringToQuark ("language");
     xrmList[2] = 0;
@@ -1033,22 +1033,22 @@ _DtHelpGetExactFontIndex (
 		else if ((i + 1) % REALLOC_INCR == 0)
 		    fontInfo->exact_idx = (int *) realloc(fontInfo->exact_idx,
 				    sizeof(int) * (i + 1 + REALLOC_INCR));
-    
+
 		if (NULL != fontInfo->exact_idx)
 		  {
 		    char       buffer[10];
 		    XrmValue   retValue;
 		    XrmName    xrmList[3];
 		    XrmQuark   myQuark;
-    
+
 		    fontInfo->exact_idx[i] = fontIndex;
 		    result = 0;
-    
+
 		    /*
 		     * remember the character set for this font.
 		     */
 		    myQuark = XrmStringToQuark(char_set);
-		    sprintf (buffer, "%ld", fontIndex);
+		    snprintf(buffer, 10, "%ld", fontIndex);
 		    retValue.size = sizeof (XrmQuark);
 		    retValue.addr = (XtPointer) &myQuark;
 		    xrmList[0] = XrmStringToQuark (buffer);
@@ -1057,7 +1057,7 @@ _DtHelpGetExactFontIndex (
 		    XrmQPutResource (&(fontInfo->font_idx_db),
 				    ((XrmBindingList) FontBindings),
 				    xrmList, _DtHelpXrmQuark, &retValue);
-	    
+
 		    /*
 		     * remember the language for this font.
 		     */

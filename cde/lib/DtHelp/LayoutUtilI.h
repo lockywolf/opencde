@@ -181,7 +181,7 @@ extern	int		_DtCvSetTravEntryPos (
 extern	void		_DtCvSortTraversalList (
 			      _DtCanvasStruct	 *canvas,
 			      _DtCvValue	  retain);
-extern	int		_DtCvSetSearchEntryInfo (
+extern  void		_DtCvSetSearchEntryInfo (
 			      _DtCanvasStruct* canvas,
 			      int line_idx);
 

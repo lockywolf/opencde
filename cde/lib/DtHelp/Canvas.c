@@ -321,7 +321,7 @@ FindChar (
     myIndex = x_pos / charWidth;
     if (myIndex >= max_len)
 	myIndex = max_len - 1;
-    
+
     while (!triedBack || !triedForward)
       {
 	len = _DtCvGetStringWidth(canvas, segment, string, myIndex + 1);
@@ -1466,7 +1466,7 @@ _DtCvGetWidthOfSegment(
 	    if (ret_w != NULL)
                 *ret_w = _DtCvWidthOfRegionSeg(p_seg);
           }
-	else 
+	else
 	  {
             pChar    = _DtCvStrPtr(_DtCvStringOfStringSeg(p_seg),
 					_DtCvIsSegWideChar(p_seg), start);
@@ -1816,7 +1816,7 @@ _DtCvDrawSegments(
 				break;
 	      }
 	  }
-	
+
     	/*
 	 * rememeber this link index.
          */
@@ -1835,7 +1835,7 @@ _DtCvDrawSegments(
 	  {
 	    _DtCvSetSearchBegin(old_flag, p_seg);
 	    _DtCvSetSearchBegin(new_flag, p_seg);
-	    
+
 	  }
 
 	old_flag &= ~_DtCvAPP_FLAG2;
@@ -1860,7 +1860,7 @@ _DtCvDrawSegments(
 	else if (_DtCvIsSegSubScript(p_seg))
 	    yPos += *sub_y;
 
-	elemType = -1;
+	int hasElemType = 0;
 	switch (_DtCvPrimaryTypeOfSeg(p_seg))
 	  {
 	    case _DtCvSTRING:
@@ -1868,6 +1868,7 @@ _DtCvDrawSegments(
 		 * set the type
 		 */
 		elemType = _DtCvSTRING_TYPE;
+		hasElemType = 1;
 
 		/*
 		 * get the string and its length.
@@ -1916,6 +1917,7 @@ _DtCvDrawSegments(
 		 * set the type, length and width
 		 */
 		elemType = _DtCvREGION_TYPE;
+		hasElemType = 1;
 		len      = 1;
 		segWidth = _DtCvWidthOfRegionSeg(p_seg);
 
@@ -1930,7 +1932,7 @@ _DtCvDrawSegments(
 	/*
 	 * do we have valid information?
 	 */
-	if (-1 != elemType)
+	if (hasElemType)
 	  {
 	    /*
 	     * now set up the position information
@@ -2146,7 +2148,7 @@ _DtCanvasDestroy (_DtCvHandle canvas_handle)
       free ((void*) canvas->searchs);
     if (NULL != canvas->pg_breaks)
       free ((void*) canvas->pg_breaks);
-      
+
     free ((void *) canvas);
     return;
 
@@ -2240,7 +2242,7 @@ _DtCanvasRender (
 	     * if doing complete printing, get any other lines that exist
 	     * next to this one, but don't fit the [y1,y2] pair. This will
 	     * catch scrolling problems using _DtCvRENDER_COMPLETE.
-	     * 
+	     *
 	     * The previous CheckAround() call will have set sideCk to
 	     * _DtCvFALSE if there are other items to the side, but these
 	     * items did not violate the maximum y.
@@ -2495,7 +2497,7 @@ _DtCanvasGetPosLink (
 	    count     = canvas->txt_lst[line].length;
 	    pSeg      = canvas->txt_lst[line].seg_ptr;
 	    startChar = canvas->txt_lst[line].byte_index;
-    
+
 	    while (count > 0 && _DtCvSTATUS_NONE == found)
 	      {
 		/*
@@ -2533,7 +2535,7 @@ _DtCanvasGetPosLink (
 		     */
                     pChar = _DtCvStrPtr(_DtCvStringOfStringSeg(pSeg),
 					_DtCvIsSegWideChar(pSeg), startChar);
-    
+
 		    /*
 		     * get the length of the current string.
 		     * If it is longer than the line count indicates,
@@ -2544,7 +2546,7 @@ _DtCanvasGetPosLink (
 		    len = _DtCvStrLen (pChar, _DtCvIsSegWideChar(pSeg));
 		    if (len > count)
 			len = count;
-    
+
 		    /*
 		     * calculate the ending pixel postion for
 		     * this string segment.
@@ -2552,7 +2554,7 @@ _DtCanvasGetPosLink (
 		    endX = startX + _DtCvGetStringWidth(canvas, pSeg,
 								pChar, len);
 		  }
-    
+
 		/*
 		 * test to see if the selected segment was this segment.
 		 */
@@ -2577,7 +2579,7 @@ _DtCanvasGetPosLink (
 		     * go to the next segment.
 		     */
 		    pSeg = pSeg->next_disp;
-    
+
 		    /*
 		     * adjust for the new begining.
 		     */
@@ -2591,7 +2593,7 @@ _DtCanvasGetPosLink (
       }
 
     /*
-     * check to see if we found a segment and 
+     * check to see if we found a segment and
      * see if it is a hypertext segment
      */
     if (_DtCvSTATUS_OK == found)
@@ -2770,7 +2772,7 @@ _DtCanvasGetSpotInfo (
 	    count     = canvas->txt_lst[line].length;
 	    pSeg      = canvas->txt_lst[line].seg_ptr;
 	    startChar = canvas->txt_lst[line].byte_index;
-    
+
 	    while (count > 0 && _DtCvSTATUS_NONE == found)
 	      {
 		/*
@@ -2808,7 +2810,7 @@ _DtCanvasGetSpotInfo (
 		     */
                     pChar = _DtCvStrPtr(_DtCvStringOfStringSeg(pSeg),
 					_DtCvIsSegWideChar(pSeg), startChar);
-    
+
 		    /*
 		     * get the length of the current string.
 		     * If it is longer than the line count indicates,
@@ -2819,7 +2821,7 @@ _DtCanvasGetSpotInfo (
 		    len = _DtCvStrLen (pChar, _DtCvIsSegWideChar(pSeg));
 		    if (len > count)
 			len = count;
-    
+
 		    /*
 		     * calculate the ending pixel postion for
 		     * this string segment.
@@ -2827,7 +2829,7 @@ _DtCanvasGetSpotInfo (
 		    endX = startX + _DtCvGetStringWidth(canvas, pSeg,
 								pChar, len);
 		  }
-    
+
 		/*
 		 * test to see if the selected segment was this segment.
 		 */
@@ -2839,7 +2841,7 @@ _DtCanvasGetSpotInfo (
 		     * go to the next segment.
 		     */
 		    pSeg = pSeg->next_disp;
-    
+
 		    /*
 		     * adjust for the new begining.
 		     */

@@ -36,9 +36,9 @@
  **  (c) Copyright 1993, 1994, 1996 International Business Machines Corp.
  **  (c) Copyright 1993, 1994, 1996 Sun Microsystems, Inc.
  **  (c) Copyright 1993, 1994, 1996 Novell, Inc.
- **  (c) Copyright 1996 Digital Equipment Corporation.	
- **  (c) Copyright 1996 FUJITSU LIMITED.	
- **  (c) Copyright 1996 Hitachi.	
+ **  (c) Copyright 1996 Digital Equipment Corporation.
+ **  (c) Copyright 1996 FUJITSU LIMITED.
+ **  (c) Copyright 1996 Hitachi.
  **
  **
  ****************************************************************************
@@ -102,10 +102,10 @@ extern int errno;
 
 /********    Private Function Declarations    ********/
 static	int	  GetVolumeKeywords (
-			_DtHelpVolume     vol, 
+			_DtHelpVolume     vol,
 			char	***retKeywords);
 static	int	  VolumeLoad (
-			char        *volFile, 
+			char        *volFile,
 			_DtHelpVolume  *retVol);
 static	int	  VolumeUnload (
 			_DtHelpVolume vol);
@@ -187,12 +187,12 @@ CheckVolList (
  *
  * Purpose:	This function must be called to load a Help Volume file
  *		before any of the information in the volume can be
- *		accessed. 
+ *		accessed.
  *
  ******************************************************************************/
-static int 
+static int
 VolumeLoad (
-    char        *volFile, 
+    char        *volFile,
     _DtHelpVolume  *retVol)
 {
     /* Allocate the volume structure and initialize it. */
@@ -245,12 +245,12 @@ VolumeLoad (
  *		any handles on the volume become invalid.)
  *
  ******************************************************************************/
-static int 
+static int
 VolumeUnload (
      _DtHelpVolume vol)
 {
     char	***topicList;
-    
+
     if (vol != NULL)
       {
 
@@ -294,13 +294,13 @@ VolumeUnload (
  *		any handles on the volume become invalid.)
  *
  ******************************************************************************/
-static int 
+static int
 RereadVolume (
      _DtHelpVolume vol)
 {
     int            result;
     char	***topicList;
-    
+
     if (vol->keywords != NULL)
       {
         _DtHelpCeFreeStringArray (vol->keywords);
@@ -356,10 +356,10 @@ RereadVolume (
  * Purpose:	Find which topic contains a specified locationId.
  *
  ******************************************************************************/
-static int 
+static int
 GetKeywordTopics (
-   _DtHelpVolume     vol, 
-   char		  *keyword, 
+   _DtHelpVolume     vol,
+   char		  *keyword,
    char		***retTopics)
 {
     char	**keywords;
@@ -425,9 +425,9 @@ GetKeywordTopics (
  * Purpose:	Get the list of keywords defined in a volume.
  *
  ******************************************************************************/
-static int 
+static int
 GetVolumeKeywords (
-    _DtHelpVolume     vol, 
+    _DtHelpVolume     vol,
     char	***retKeywords)
 {
     int   result;
@@ -595,14 +595,15 @@ FileOpenRtnFd (
 	/*
 	 * malloc memory for the dot Z file name.
 	 */
-	inFile = (char *) malloc (strlen (name) + 3);
+	int inFile_size = strlen (name) + 3;
+	inFile = (char *) malloc(inFile_size);
 	if (inFile != NULL)
 	  {
 	    /*
 	     * make the dot Z file
 	     */
-	    strcpy (inFile, name);
-	    strcat (inFile, ".Z");
+	    strlcpy(inFile, name, inFile_size);
+	    strlcat(inFile, ".Z", inFile_size);
 
 	    /*
 	     * do the uncompress
@@ -761,7 +762,7 @@ _DtHelpCeExpandPathname (
 
 		default:
 			i = 0;
-			while (i < MY_NUM && mySubs && mySubs[i].match != *spec)
+			while (i < MY_NUM && mySubs[i].match != *spec)
 			    i++;
 
 			if (i < MY_NUM)
@@ -811,7 +812,7 @@ _DtHelpCeExpandPathname (
 	else
 	  {
 	    previousSlash = False;
-	    do 
+	    do
 	      {
 	        *ptr++ = *spec++;
 		len--;
@@ -917,10 +918,10 @@ _DtHelpCeGetLangSubParts (
 	     */
 	    else
 		sLang = lang;
-    
+
 	    lang = ptr + 1;
 	  }
-    
+
 	/*
 	 * look for lang.codeset
 	 */
@@ -928,7 +929,7 @@ _DtHelpCeGetLangSubParts (
 	if (ptr)
 	  {
 	    len = ptr - lang;
-    
+
 	    /*
 	     * if it was in the form lang_ter.codeset, sLang will non-null
 	     */
@@ -982,7 +983,7 @@ _DtHelpCeGetLangSubParts (
 	    else
 		sLang = lang;
 	  }
-    
+
        /*
 	* currently pointing at the dot?
 	*/
@@ -1094,14 +1095,15 @@ _DtHelpCeGetUncompressedFileName (
 	/*
 	 * malloc memory for the dot Z file name.
 	 */
-	inFile = (char *) malloc (strlen (name) + 3);
+	int inFile_size = strlen (name) + 3;
+	inFile = (char *) malloc(inFile_size);
 	if (inFile != NULL)
 	  {
 	    /*
 	     * make the dot Z file
 	     */
-	    strcpy (inFile, name);
-	    strcat (inFile, ".Z");
+	    strlcpy (inFile, name, inFile_size);
+	    strlcat (inFile, ".Z", inFile_size);
 
 	    /*
 	     * do the uncompress
@@ -1189,13 +1191,13 @@ _DtHelpCeCompressPathname ( char	*basePath )
 	 * check for //
 	 */
 	if (char1 == True && ptr[1] == '/')
-	    strcpy (ptr, (ptr + 1));
+	    memmove(ptr, ptr+1, strlen(ptr));
 
 	/*
 	 * check for /./
 	 */
 	else if (char2 == True && ptr[1] == '.' && ptr[2] == '/')
-	    strcpy (ptr, (ptr + 2));
+	   memmove(ptr, ptr+2, strlen(ptr));
 
 	/*
 	 * check for /../
@@ -1207,13 +1209,13 @@ _DtHelpCeCompressPathname ( char	*basePath )
 	     * directory change.
 	     */
 	    if (prevPtr == NULL)
-	        strcpy (ptr, (ptr + 3));
+	        memmove(ptr, ptr+3, strlen(ptr));
 	    else
 	      {
 		/*
 		 * compress the /../
 		 */
-		strcpy (prevPtr, (ptr + 3));
+		memmove(prevPtr, (ptr + 3), strlen(ptr));
 
 		/*
 		 * reset the current pointer
@@ -1325,14 +1327,14 @@ _DtHelpCeTracePathName (char *path)
 	if (getcwd (newPath, MAXPATHLEN) == NULL)
 	    return NULL;
 
-	strcat (newPath, "/");
+	strlcat(newPath, "/", 2 * MAXPATHLEN + 2);
       }
 
     /*
      * put the path in the working path buffer (or append it to
      * the current working directory).
      */
-    strcat (newPath, path);
+    strlcat(newPath, path, 2 * MAXPATHLEN + 2);
 
     /*
      * Compress out the slashes and directory changes.
@@ -1396,14 +1398,14 @@ _DtHelpCeTracePathName (char *path)
 	     * for tacking on after the new link path has been
 	     * dropped into the path.
 	     */
-	    strcpy (tempPath, ptr);
+	    strlcpy(tempPath, ptr, MAXPATHLEN + 2);
 
 	    /*
 	     * is it an absolute path? Simply replace the path
 	     * being search with the new link path.
 	     */
 	    if (*linkPath == '/')
-		strcpy (newPath, linkPath);
+		strlcpy(newPath, linkPath, 2 * MAXPATHLEN + 2);
 	    else
 	      {
 		/*
@@ -1411,13 +1413,13 @@ _DtHelpCeTracePathName (char *path)
 		 * prev is looking at the first character of this directory.
 		 * replace with the link.
 		 */
-		strcpy (prev, linkPath);
+		strlcpy(prev, linkPath, (2 * MAXPATHLEN + 2) - strlen(newPath) + strlen(prev));
 	      }
 
 	    /*
 	     * now tack on the rest of the name
 	     */
-	    strcat (newPath, tempPath);
+	    strlcat(newPath, tempPath, 2 * MAXPATHLEN + 2);
 
 	    /*
 	     * compress out the directory changes.
@@ -1486,10 +1488,10 @@ _DtHelpCeTraceFilenamePath (char *file_path)
 	if (getcwd(workName, MAXPATHLEN) == NULL)
 	   return NULL;
 
-	strcat(workName, "/");
+	strlcat(workName, "/", MAXPATHLEN + 2);
       }
 
-    strcat (workName, file_path);
+    strlcat(workName, file_path, MAXPATHLEN + 2);
 
     do
       {
@@ -1520,8 +1522,8 @@ _DtHelpCeTraceFilenamePath (char *file_path)
 	    /*
 	     * copy the new path and free the allocated copy
 	     */
-	    strcpy (newName, newPath);
-	    free (newPath);
+	    strlcpy(newName, newPath, MAXPATHLEN + 2);
+	    free(newPath);
 	  }
 
 	/*
@@ -1534,7 +1536,7 @@ _DtHelpCeTraceFilenamePath (char *file_path)
 	 * onto the end of the new path.
 	 */
 	namePlace = newName + strlen (newName);
-	strcpy (namePlace, oldName);
+	strlcpy(namePlace, oldName, MAXPATHLEN + 2 - strlen (newName));
 
 	/*
 	 * See if the absolute path/filename is a symbolic link.
@@ -1555,20 +1557,20 @@ _DtHelpCeTraceFilenamePath (char *file_path)
 	     */
 	    linkName [result] = '\0';
 	    if (*linkName == '/')
-		strcpy (newName, linkName);
+		strlcpy(newName, linkName, MAXPATHLEN + 2);
 	    else
 	      {
 		/*
 		 * overwrite the filename with the link
 		 * but don't overwrite the slash.
 		 */
-		strcpy ((namePlace + 1), linkName);
+		strlcpy((namePlace + 1), linkName, MAXPATHLEN + 2 - strlen (newName) - 1);
 	      }
 
 	    /*
 	     * make a copy of the new name to work on
 	     */
-	    strcpy (workName, newName);
+	    strlcpy(workName, newName, MAXPATHLEN + 2);
 	  }
       } while (!done);
 
@@ -1785,12 +1787,12 @@ _DtHelpCeFileOpenAndSeek (
  *
  * Purpose:	This function must be called to open a Help Volume file
  *		before any of the information in the volume can be
- *		accessed. 
+ *		accessed.
  *
  ******************************************************************************/
-int 
+int
 _DtHelpOpenVolume (
-    char	*volFile, 
+    char	*volFile,
     _DtHelpVolumeHdl  *retVol)
 {
     int     result  = 0;
@@ -1817,7 +1819,7 @@ _DtHelpOpenVolume (
 
     /* Search the volume chain to see if it is already open. */
     prevVol = NULL;
-    vol = volChain; 
+    vol = volChain;
     while (vol != NULL && strcmp (vol->volFile, volFile))
       {
 	prevVol = vol;
@@ -1860,13 +1862,13 @@ _DtHelpOpenVolume (
  *
  * Purpose:	When the volume is no longer needed, it should be
  *		closed with this call.  If the volume has been opened
- *		several times, closing it will just decrement the 
+ *		several times, closing it will just decrement the
  *		reference count.  When it has been closed as many times
  *		as it was opened, the memory it is using will be freed
  *		and any handles to the volume will be invalid.
  *
  ******************************************************************************/
-int 
+int
 _DtHelpCeUpVolumeOpenCnt (
      _DtHelpVolumeHdl	volume)
 {
@@ -1915,13 +1917,13 @@ _DtHelpCeUpVolumeOpenCnt (
  *
  * Purpose:	When the volume is no longer needed, it should be
  *		closed with this call.  If the volume has been opened
- *		several times, closing it will just decrement the 
+ *		several times, closing it will just decrement the
  *		reference count.  When it has been closed as many times
  *		as it was opened, the memory it is using will be freed
  *		and any handles to the volume will be invalid.
  *
  ******************************************************************************/
-int 
+int
 _DtHelpCloseVolume (
      _DtHelpVolumeHdl	volume)
 {
@@ -1959,7 +1961,7 @@ _DtHelpCloseVolume (
 	/* The volume is no longer needed.  Unlink it from the chain
 	   and free it. */
 
-	if (vol == volChain) 
+	if (vol == volChain)
 	    volChain = volChain->nextVol;
 
 	else
@@ -2285,7 +2287,7 @@ int
 _DtHelpCeMapTargetToId (
 	_DtHelpVolumeHdl	volume,
 	char		*target_id,
-	char		**ret_id)
+	char		*ret_id)
 {
     _DtHelpVolume vol = (_DtHelpVolume)volume;
     int result;
@@ -2308,11 +2310,11 @@ _DtHelpCeMapTargetToId (
      */
     if (vol->sdl_flag == False)
       {
-	result = _DtHelpCeMapCcdfTargetToId(vol, target_id, ret_id);
+	result = _DtHelpCeMapCcdfTargetToId(vol, target_id, &ret_id);
       }
     else
       {
-	result = _DtHelpCeMapIdToSdlTopicId(vol, target_id, ret_id);
+	result = _DtHelpCeMapIdToSdlTopicId(vol, target_id, &ret_id);
       }
 
     _DtHelpProcessUnlock();
@@ -2439,7 +2441,7 @@ _DtHelpCeGetDocStamp (
  * Purpose:	Get the children of a topic.
  *
  *****************************************************************************/
-int 
+int
 _DtHelpCeGetTopicChildren (
     _DtHelpVolumeHdl   volume,
     char	  *topic_id,
@@ -2487,7 +2489,7 @@ _DtHelpCeGetTopicChildren (
  * Purpose:	Determine the type of volume.
  *
  *****************************************************************************/
-int 
+int
 _DtHelpCeGetVolumeFlag (
     _DtHelpVolumeHdl   volume)
 {
@@ -2520,7 +2522,7 @@ _DtHelpCeGetVolumeFlag (
  *		under the caller.
  *
  *****************************************************************************/
-int 
+int
 _DtHelpCeLockVolume (
     _DtHelpVolumeHdl	 volume,
     _DtHelpCeLockInfo	*lock_info)
@@ -2582,7 +2584,7 @@ _DtHelpCeLockVolume (
  * Purpose:	Unlock the volume.
  *
  *****************************************************************************/
-int 
+int
 _DtHelpCeUnlockVolume (
     _DtHelpCeLockInfo	lock_info)
 {
@@ -2626,7 +2628,7 @@ _DtHelpCeUnlockVolume (
  *		the volume.
  *
  *****************************************************************************/
-int 
+int
 _DtHelpCeIsTopTopic (
     _DtHelpVolumeHdl	 volume,
     const char		*id)

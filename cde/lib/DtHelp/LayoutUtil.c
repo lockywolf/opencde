@@ -532,10 +532,10 @@ _DtCvCheckLineSyntax (
 	/*
 	 * If this is wide char string, check the list of multi-byte
 	 * that can't begin a line.
-	 * 
+	 *
 	 * But only if the last character wasn't a hypen!  Otherwise
 	 * it's a character after a hypen and should not be broken on.
-	 * 
+	 *
 	 * if this character is in the 'cannot begin line' list, then it
 	 * can't be broken on (a return value of true).  (A wide char
 	 * encoding of a single byte character should come back as False
@@ -638,7 +638,7 @@ _DtCvCheckLineSyntax (
     if (False == lstCharMb &&
 	_DtCvCheckOneByteCantEndList((char)lastChar,OneByteCantEndList) == True)
         return False;
-    
+
     /*
      * or was the last character a multibyte and is followed by single byte
      * punctuation?
@@ -747,7 +747,7 @@ _DtCvGetNextWidth (
 	wcFlag   = _DtCvIsSegWideChar (pSeg);
 	pChar    = _DtCvStrPtr(_DtCvStringOfStringSeg(pSeg), wcFlag, start);
 	myLength = _DtCvStrLen (pChar, wcFlag);
-    
+
 	    /*
 	 * if a single byte string, zoom through it looking for
 	 * specific breaking characters.
@@ -764,7 +764,7 @@ _DtCvGetNextWidth (
 		good_len = True;
 		result = _DtCvStrcspn ((void *) tChar, " -", 0, &tLen);
 		len += tLen;
-    
+
 		/*
 		 * check for '-'. Some of the possible combinations are:
 		 *    -text
@@ -791,17 +791,17 @@ _DtCvGetNextWidth (
 		    good_len = False;
 		  }
 	      } while (!good_len);
-    
+
 	    /*
 	     * found either a space or a hypen or null byte.
 	     * If we found a hypen, include it.
 	     */
 	    if ('-' == *tChar)
 		len++;
-    
+
 	    curWidth = _DtCvGetStringWidth (canvas, pSeg, pChar, len)
 			+ _DtCvGetTraversalWidth(canvas, pSeg, lst_hyper);
-    
+
 	    /*
 	     * Did we find a space or hypen?
 	     * If not, can this segment stand alone?
@@ -833,7 +833,7 @@ _DtCvGetNextWidth (
 					_DtCvIsSegWideChar(pSeg), start);
 		    curWidth = _DtCvGetStringWidth(canvas,pSeg,pChar,len)
 			    + _DtCvGetTraversalWidth(canvas,pSeg,lst_hyper);
-    
+
 		    if (nextSeg != NULL)
 		        *nextSeg    = pSeg;
 		    if (nextStart != NULL)
@@ -843,7 +843,7 @@ _DtCvGetNextWidth (
 		    return curWidth;
 		  }
 	      }
-    
+
 	    /*
 	     * Didn't find a smaller segment that satisfied the requirements.
 	     * Determine the length of the current segment.
@@ -863,7 +863,7 @@ _DtCvGetNextWidth (
     if (pSeg != NULL)
       {
         start = 0;
-        curWidth += _DtCvGetNextWidth (canvas, 
+        curWidth += _DtCvGetNextWidth (canvas,
 			_DtCvPrimaryTypeOfSeg (prev_seg), lst_hyper,
 				pSeg, start, prev_seg,
 				nextSeg, nextStart, &nextLen);
@@ -894,7 +894,7 @@ _DtCvSaveInfo (
      *
      * The descent for a line is described as the number of units
      * below the baseline.
-     * 
+     *
      * Neither the ascent or decent value includes the baseline
      ****************************************************************/
     int    len;
@@ -945,7 +945,7 @@ _DtCvSaveInfo (
 	 */
 	if ((void *) -1 == pSeg->internal_use)
 	    pSeg->internal_use = (void *) txtCnt;
-	
+
 	/*
 	 * now get the segment's sizing so we can determine
 	 * the height and depth of the line.
@@ -1379,7 +1379,7 @@ _DtCvProcessStringSegment(
 	    pChar     = _DtCvStrPtr(_DtCvStringOfStringSeg(cur_seg),
 				_DtCvIsSegWideChar(cur_seg), *cur_start);
 	    stringLen = _DtCvStrLen (pChar, _DtCvIsSegWideChar(cur_seg));
-    
+
 	    /*
 	     * get the pixel width of the text string.
 	     */
@@ -1435,7 +1435,7 @@ _DtCvProcessStringSegment(
 
 		    return 0;
 		  }
-    
+
 		/*
 		 * CheckLineSyntax says that either this line couldn't
 		 * end a line or the next segment couldn't start a line.
@@ -1469,11 +1469,11 @@ _DtCvProcessStringSegment(
 		    lay_info->line_bytes += stringLen;
 		    lay_info->cur_len    += textWidth;
 		    _DtCvSetJoinInfo(lay_info, False, -1);
-    
+
 		    return 0;
 		  }
 	      }
-    
+
 	    /*
 	     * the text width plus the next segment is tooo big
 	     * to fit. Reduce the current segment if possible
@@ -1821,7 +1821,7 @@ _DtCvGetNextSearchEntry(_DtCanvasStruct* canvas)
     return canvas->search_cnt++;
 }
 
-int
+void
 _DtCvSetSearchEntryInfo(_DtCanvasStruct* canvas, int line_idx)
 {
     int search_idx;
@@ -2148,7 +2148,7 @@ _DtCvCvtSegsToPts (
 	    /*
 	     * go to the next line containing the segment
 	     */
-	    do { 
+	    do {
 		/*
 		 * does this line have the minium y?
 		 */
@@ -2156,7 +2156,7 @@ _DtCvCvtSegsToPts (
 			minY > lines[lineIdx].baseline - lines[lineIdx].ascent)
 		   minY = lines[lineIdx].baseline - lines[lineIdx].ascent;
 
-		 lineIdx++; 
+		 lineIdx++;
 	      } while (lineIdx < canvas->txt_cnt
 					&& pSeg != lines[lineIdx].seg_ptr);
 	    /*
@@ -2164,7 +2164,7 @@ _DtCvCvtSegsToPts (
 	     */
 	    if (lineIdx >= canvas->txt_cnt)
 		return _DtCvSTATUS_BAD;
-		
+
 	    /*
 	     * start over on this line
 	     */

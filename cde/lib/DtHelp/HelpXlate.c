@@ -47,7 +47,7 @@ $END$
 /*=================================================================
 $SHAREDBEG$:  This header appears in all appropriate DtXlate topics
 =======================================================$SKIP$======*/
-/*$INCLUDE$*/ 
+/*$INCLUDE$*/
 #include "HelpXlate.h"
 #include "Lock.h"
 /*$END$*/
@@ -205,9 +205,9 @@ _DtHelpCeXlateOpToStdLocale (
     /* if failed, give default values */
     if (ret_stdLocale != NULL && (result != 0 || *ret_stdLocale == NULL))
       {
-        *ret_stdLocale = malloc(
-                                strlen(DfltStdLang)+strlen(DfltStdCharset)+3);
-        sprintf(*ret_stdLocale,"%s.%s",DfltStdLang,DfltStdCharset);
+        int size = strlen(DfltStdLang)+strlen(DfltStdCharset)+3;
+        *ret_stdLocale = malloc(size);
+        snprintf(*ret_stdLocale, size, "%s.%s", DfltStdLang, DfltStdCharset);
       }
     if (ret_stdLang != NULL && (result != 0 || *ret_stdLang == NULL))
         *ret_stdLang = strdup(DfltStdLang);

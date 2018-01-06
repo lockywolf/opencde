@@ -139,7 +139,7 @@
  */
 typedef	_DtCvUnit	TopDims[DIMS_BOTTOM+1][DIMS_RM+1][DIMS_HEIGHT+1];
 
-/* 
+/*
  * left/right side dimension array - contains only the height or y_pos.
  *             ----------------------------
  * DIMS_TOP    |  DIMS_LEFT | DIMS_RIGHT  |
@@ -693,7 +693,7 @@ GetLinkInfo (
 	 */
 	if (_DtCvIsSegNoop(pSeg))
 	    len = 0;
-  
+
 	/*
 	 * check region
 	 */
@@ -709,7 +709,7 @@ GetLinkInfo (
 	     */
 	    pChar = _DtCvStrPtr(_DtCvStringOfStringSeg(pSeg),
 					_DtCvIsSegWideChar(pSeg), startChar);
- 
+
 	    /*
 	     * get the length of the current string.
 	     * If it is longer than the line count indicates,
@@ -720,7 +720,7 @@ GetLinkInfo (
 	    len = _DtCvStrLen (pChar, _DtCvIsSegWideChar(pSeg));
 	    if (len > count)
 		len = count;
-	 
+
 	    /*
 	     * calculate the ending pixel postion for
 	     * this string segment.
@@ -1078,7 +1078,7 @@ SetMargins (
     if (layout->data_pts != NULL)
       {
 	/*
-	 * base 
+	 * base
 	 */
 	layout->lmargin = layout->data_pts->left;
 	layout->rmargin = layout->data_pts->right;
@@ -1390,7 +1390,7 @@ ResolveHeight(
  *
  * Parameters:
  *
- * Purpose: Determines the height of rows that are spanned but the 
+ * Purpose: Determines the height of rows that are spanned but the
  *          the spanner needs more room than the calculated row height
  *          allow.
  *****************************************************************************/
@@ -1822,7 +1822,7 @@ ResolveCell(
 		    ret_info[i * max_cols + myCol + k].col_spn = -1;
 		    ret_info[i * max_cols + myCol + k].row_spn = -1;
 		  }
-		
+
 		idRefs  = row_specs[i].next_id;
 		do
 		  {
@@ -1930,7 +1930,7 @@ ResolveCell(
 	for (j = 0, cellMax = 0;
 			j < thisCell->col_spn && j + myCol < max_cols; j++)
 	    cellMax += col_specs[myCol+j].max;
-	
+
 	/*
 	 * determine the maximum available space from the neighbors.
 	 */
@@ -2494,7 +2494,7 @@ ProcessTable(
 	      }
 
           } while (redo == True);
-	
+
 	/*
 	 * push the next column to the right by size of this column
 	 */
@@ -2557,7 +2557,7 @@ ProcessTable(
 			redo = True;
 	      }
 	  }
-	
+
 	/*
 	 * if any of the rows comes up unresolved, force to an average
 	 * line height.
@@ -3232,7 +3232,7 @@ ProcessController(
 	ObjVertOrient(cur_seg)  = _DtCvJUSTIFY_TOP;
 	ObjHorizOrient(cur_seg) = _DtCvJUSTIFY_LEFT_MARGIN;
       }
-    
+
     /*
      * malloc a formatting dimension structure and initialize it with
      * default values. This will be returned to the caller.
@@ -3305,7 +3305,7 @@ ProcessController(
 	    myMaxWidth = maxXPos + _DtCvContainerRMarginOfSeg(cur_seg);
 	  }
       } while (True == redo);
-    
+
     /*
      * remove this element's data points from the stack.
      */
@@ -3489,7 +3489,7 @@ DrawBorders(
 					|| brdr == _DtCvBORDER_BOTTOM_LEFT
 					|| brdr == _DtCvBORDER_BOTTOM_RIGHT)
 			    break;
-    
+
 	    case _DtCvBORDER_TOP:
 	    case _DtCvBORDER_TOP_LEFT:
 	    case _DtCvBORDER_TOP_RIGHT:
@@ -3497,7 +3497,7 @@ DrawBorders(
 						data, line_width,
 						left_x, top_y, width);
 	  }
-    
+
 	/*
 	 * for vertical lines, the coordinates are the top, right most
 	 * unit of the line.
@@ -3522,7 +3522,7 @@ DrawBorders(
 					|| brdr == _DtCvBORDER_TOP_LEFT
 					|| brdr == _DtCvBORDER_BOTTOM_LEFT)
 			    break;
-    
+
 	    case _DtCvBORDER_BOTTOM_RIGHT:
 			/*
 			 * if we didn't fall thru from above, we need to
@@ -3612,7 +3612,7 @@ AdjustObjectPosition(
         if (justify == _DtCvJUSTIFY_CENTER)
             yOff /= 2;
       }
-    
+
     yOff += y_adj;
     yOff += internal_y;
 
@@ -4340,7 +4340,7 @@ ProcessSegmentList(
 			 * up counts on the buffered information.
 			 */
 			layout->info.line_bytes += 1;
-			layout->info.cur_len    += 
+			layout->info.cur_len    +=
 				(_DtCvWidthOfRegionSeg(cur_seg) + nWidth);
 
 			/*
@@ -4382,7 +4382,7 @@ ProcessSegmentList(
 			 * now save the standalone figure
 			 */
 			layout->info.line_bytes += 1;
-			layout->info.cur_len    += 
+			layout->info.cur_len    +=
 				_DtCvWidthOfRegionSeg(cur_seg) + nWidth;
 			SaveInfo(canvas, layout, cur_seg->next_seg, 0);
 
@@ -4543,7 +4543,7 @@ ProcessSegmentList(
 		    int  count    = canvas->txt_lst[joinLine].length;
 		    _DtCvSegmentI *pSeg = canvas->txt_lst[joinLine].seg_ptr;
 		    _DtCvUnit	  tmpWidth;
-	
+
 		    /*
 		     * change the starting location of the following text.
 		     * take into account the left margin that *hasn't*
@@ -4552,7 +4552,7 @@ ProcessSegmentList(
 		    layout->info.text_x_pos  = canvas->txt_lst[joinLine].text_x
 							+ layout->lmargin;
 		    layout->info.cur_len = 0;
-	
+
 		    /*
 		     * now calculate the width of this line.
 		     */
@@ -4732,7 +4732,7 @@ MaxOfGroup (
  *		False	if the object is not before (x wise) the text object.
  *
  * Purpose:
- * 
+ *
  *****************************************************************************/
 static _DtCvStatus
 TestSpacing (
@@ -4808,7 +4808,7 @@ TestSpacing (
  * Returns:
  *
  * Purpose:	Moves the object's rules/lines and text lines to the left.
- * 
+ *
  *****************************************************************************/
 static void
 MoveLeft (
@@ -4972,7 +4972,7 @@ CheckSpacing (
  *
  * Purpose:	To move groupings (container, tables, etc.) as a group to
  *		honor boundaries.
- * 
+ *
  *****************************************************************************/
 static _DtCvUnit
 MoveGroup (
@@ -5006,7 +5006,7 @@ MoveGroup (
  * Function:    static _DtCvUnit MoveText (_DtCanvasStruct canvas);
  *
  * Purpose: To move text lines to honor boundaries.
- * 
+ *
  *****************************************************************************/
 static _DtCvUnit
 MoveText (
@@ -5040,7 +5040,7 @@ MoveText (
  *
  * Purpose: To move groupings (container, tables, etc.) as a group to
  *	    honor boundaries.
- * 
+ *
  *****************************************************************************/
 static _DtCvUnit
 MoveLines (
@@ -5075,7 +5075,7 @@ MoveLines (
  *
  * Purpose:	To move each of the groupings, rules and text lines to
  *		honor boundaries.
- * 
+ *
  *****************************************************************************/
 static void
 CheckMoveInfo (
@@ -5161,7 +5161,7 @@ CheckMoveInfo (
  * Returns:
  *
  * Purpose:
- * 
+ *
  *****************************************************************************/
 static int
 CompareUnits (
@@ -5185,7 +5185,7 @@ CompareUnits (
  * Returns:
  *
  * Purpose:
- * 
+ *
  *****************************************************************************/
 static int
 CompareSearchs (
@@ -5232,7 +5232,7 @@ CompareSearchs (
  * Returns:
  *
  * Purpose:
- * 
+ *
  *****************************************************************************/
 static _DtCvStatus
 LayoutCanvasInfo (
@@ -5296,7 +5296,7 @@ LayoutCanvasInfo (
  * Returns:
  *
  * Purpose:
- * 
+ *
  *****************************************************************************/
 static _DtCvStatus
 LayoutCanvas (
@@ -5309,7 +5309,7 @@ LayoutCanvas (
     _DtCvStatus		 result;
 
     int i, search_cnt = canvas->search_cnt;
-    
+
     do {
 	redo = False;
         result = LayoutCanvasInfo(canvas, layout, divisor, target_id);
@@ -5414,7 +5414,7 @@ LayoutCanvas (
  * Returns:
  *
  * Purpose:
- * 
+ *
  *****************************************************************************/
 static void
 SortTraversal (_DtCanvasStruct *canvas)
@@ -5451,7 +5451,7 @@ SortTraversal (_DtCanvasStruct *canvas)
  * Returns:
  *
  * Purpose:
- * 
+ *
  *****************************************************************************/
 static _DtCvStatus
 ProcessMarks (
@@ -5515,7 +5515,7 @@ ProcessMarks (
  * Returns:
  *
  * Purpose:
- * 
+ *
  *****************************************************************************/
 _DtCvStatus
 _DtCanvasResize (
@@ -5574,7 +5574,7 @@ _DtCanvasResize (
          */
         if (_DtCvSTATUS_BAD == LayoutCanvas (canvas, &layOut, NULL))
 	    return _DtCvSTATUS_BAD;
-    
+
         /*
          * restore the current selection.
          */
@@ -5623,7 +5623,7 @@ _DtCanvasResize (
  * Returns:
  *
  * Purpose:
- * 
+ *
  *****************************************************************************/
 _DtCvStatus
 _DtCanvasSetTopic (
@@ -5664,7 +5664,7 @@ _DtCanvasSetTopic (
     canvas->constraint = honor_size;
     if (_DtCvSTATUS_BAD == LayoutCanvas (canvas, &layOut, topic->id_str))
 	return _DtCvSTATUS_BAD;
-    
+
     /*
      * add the marks to the mark and traversal lists
      */

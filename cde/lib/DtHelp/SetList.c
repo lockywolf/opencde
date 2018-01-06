@@ -40,7 +40,7 @@
                  1993, 1994, 1996 Hewlett-Packard Company.
  * (c) Copyright 1993, 1994, 1996 International Business Machines Corp.
  * (c) Copyright 1993, 1994, 1996 Sun Microsystems, Inc.
- * (c) Copyright 1993, 1994, 1996 Novell, Inc. 
+ * (c) Copyright 1993, 1994, 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -589,7 +589,7 @@ _DtHelpSetScrollBars (
 	slideSize = pDAS->dispUseHeight;
 	if (slideSize < 1)
     	slideSize = 1;
-    
+
 	/*
 	 * determine the maximum size
 	 */
@@ -600,7 +600,7 @@ _DtHelpSetScrollBars (
 
 	if (maximum < 1)
     	maximum = 1;
-    
+
 	/*
 	 * determine the page increment.
 	 */

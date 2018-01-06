@@ -28,8 +28,8 @@
  **
  **   Project:     Rivers Project
  **
- **   Description: All system/os dependent calls are placed in here. 
- ** 
+ **   Description: All system/os dependent calls are placed in here.
+ **
  **
  ** WARNING:  Do NOT put any Xt or Xm dependencies in this code.
  **
@@ -83,12 +83,12 @@ static char *CatFileName=NULL;
  * Function:	   Boolean _DtHelpOSGetHomeDirName(
  *
  *
- * Parameters:    Output string, size of output string 
+ * Parameters:    Output string, size of output string
  *
  * Return Value:    String.
  *
  *
- * Description: 
+ * Description:
  *
  *****************************************************************************/
 void _DtHelpOSGetHomeDirName(
@@ -106,15 +106,15 @@ void _DtHelpOSGetHomeDirName(
     _DtHelpProcessLock();
     if (ptr == NULL) {
 	if((ptr = (char *)getenv("HOME")) == NULL) {
-	    if((ptr = (char *)getenv("USER")) != NULL) 
+	    if((ptr = (char *)getenv("USER")) != NULL)
 		pwd_ret = _XGetpwnam(ptr, pwd_buf);
 	    else {
 		uid = getuid();
 		pwd_ret = _XGetpwuid(uid, pwd_buf);
 	    }
-	    if (pwd_ret != NULL) 
+	    if (pwd_ret != NULL)
 		ptr = pwd_ret->pw_dir;
-	    else 
+	    else
 		ptr = NULL;
 	}
     }
@@ -123,7 +123,7 @@ void _DtHelpOSGetHomeDirName(
         strncpy(outptr, ptr, len);
         outptr[len-1] = '\0';		/* Make sure it is Null terminated */
     }
-    else 
+    else
         outptr[0] = '\0' ;
     _DtHelpProcessUnlock();
 }
@@ -137,16 +137,16 @@ void _DtHelpOSGetHomeDirName(
  * Function:	   _DtHelpGetUserSearchPath(
  *
  *
- * Parameters:     
+ * Parameters:
  *
  * Return Value:    String, owned by caller.
  *
  *
- * Description: 
+ * Description:
  *                  Gets the user search path for use
  *                  when searching for a volume.
- *                  Takes path from the environment, 
- *                  or uses the default path. 
+ *                  Takes path from the environment,
+ *                  or uses the default path.
  *
  *****************************************************************************/
 String _DtHelpGetUserSearchPath(void)
@@ -157,7 +157,7 @@ String _DtHelpGetUserSearchPath(void)
   extern char * _DtCliSrvGetDtUserSession();  /* in libCliSrv */
 
    localPath = (char *)getenv (DtUSER_FILE_SEARCH_ENV);
-   if (localPath  == NULL) 
+   if (localPath  == NULL)
    {
        char * session;
 
@@ -165,9 +165,9 @@ String _DtHelpGetUserSearchPath(void)
        _DtHelpOSGetHomeDirName(homedir, sizeof(homedir));
        session = _DtCliSrvGetDtUserSession();
 
-       path = calloc(1, 3*strlen(session) + 6*strlen(homedir) +
-                        strlen(DtDEFAULT_USER_PATH_FORMAT));
-       sprintf(path, DtDEFAULT_USER_PATH_FORMAT, 
+      int path_size = 3*strlen(session) + 6*strlen(homedir) + strlen(DtDEFAULT_USER_PATH_FORMAT);
+       path = calloc(1, path_size);
+       snprintf(path, path_size, DtDEFAULT_USER_PATH_FORMAT,
                      homedir, session, homedir, session, homedir, session,
                      homedir, homedir, homedir);
        free(session);
@@ -193,16 +193,16 @@ String _DtHelpGetUserSearchPath(void)
  * Function:	   _DtHelpGetSystemSearchPath(
  *
  *
- * Parameters:     
+ * Parameters:
  *
  * Return Value:    String, owned by caller.
  *
  *
- * Description: 
+ * Description:
  *                  Gets the system search path for use
  *                  when searching for a volume.
- *                  Takes path from the environment, 
- *                  or uses the default path. 
+ *                  Takes path from the environment,
+ *                  or uses the default path.
  *
  *****************************************************************************/
 String _DtHelpGetSystemSearchPath(void)
@@ -227,18 +227,18 @@ String _DtHelpGetSystemSearchPath(void)
  *
  *
  * Parameters:     catFile   Specifies the name of the message catalog file
- *                           to use.  
+ *                           to use.
  *
  * Return Value:   void
  *
  *
  * Description:    This function will set the name of the message catalog file
- *                 within the Dt help system environment. 
- *      
+ *                 within the Dt help system environment.
+ *
  *                 The new name must be of the format <name>.cat and the file
  *                 must be installed such that the NLS search path can find it.
- *           
- *                 If this function is not called then the default value of 
+ *
+ *                 If this function is not called then the default value of
  *                 Dt.cat will be used.
  *
  *
@@ -253,39 +253,10 @@ void DtHelpSetCatalogName(
   if (catFile == NULL)
     {
       /* Setup the short and long versions */
-#ifdef __ultrix
-      CatFileName = strdup("DtHelp.cat");  
-#else
       CatFileName = strdup("DtHelp");
-#endif
     }
   else
-    { 
-#ifdef __ultrix
-
-      /* If we have a full path, just use it */
-      if (*catFile == '/')
-        CatFileName = strdup(catFile);
-      else
-        {
-          /* We don't have a full path, and the ultirx os needs the 
-           * ".cat" extention so let's make sure its there.
-           */
-          if (strcmp(&catFile[strlen(catFile) -4], ".cat") == 0)
-            CatFileName = strdup(catFile);
-          else
-            {
-              /* Create our CatFileName with the extention */
-              CatFileName = malloc (strlen(catFile) + 5);    
-                                    /* +5, 1 for NULL, 4 for ".cat" */
-              strcpy(CatFileName, catFile);
-              strcat(CatFileName, ".cat");
-	    }
-         }
-
-        
-#else
-
+    {
       /* If we have a full path, just use it */
       if (*catFile == '/')
         CatFileName = strdup(catFile);
@@ -294,7 +265,7 @@ void DtHelpSetCatalogName(
           /* hp-ux os does not work with the ".cat" extention, so
            * if one exists, remove it.
            */
-          
+
            if (strcmp(&catFile[strlen(catFile) -4], ".cat") != 0)
             CatFileName = strdup(catFile);
           else
@@ -306,7 +277,6 @@ void DtHelpSetCatalogName(
               CatFileName[len]= '\0';
             }
         }
-#endif
     }
   _DtHelpProcessUnlock();
 }
@@ -318,7 +288,7 @@ void DtHelpSetCatalogName(
  * Function:	   Boolean _DtHelpGetMessage(
  *
  *
- * Parameters:     
+ * Parameters:
  *
  * Return Value:   char *
  *
@@ -340,7 +310,7 @@ char *_DtHelpGetMessage(
    static nl_catd nlmsg_fd;
 
    _DtHelpProcessLock();
-   if ( first ) 
+   if ( first )
    {
 
      /* Setup our default message catalog names if none have been set! */
@@ -348,14 +318,14 @@ char *_DtHelpGetMessage(
        {
          /* Setup the short and long versions */
 #ifdef __ultrix
-         CatFileName = strdup("DtHelp.cat"); 
-#else 
+         CatFileName = strdup("DtHelp.cat");
+#else
          CatFileName = strdup("DtHelp");
 #endif
        }
-		
+
      loc = _DtHelpGetLocale();
-     if (!loc || !(strcmp (loc, "C"))) 
+     if (!loc || !(strcmp (loc, "C")))
 	/*
 	 * If LANG is not set or if LANG=C, then there
 	 * is no need to open the message catalog - just
@@ -367,7 +337,7 @@ char *_DtHelpGetMessage(
 
      first = 0;
    }
-   
+
    msg=catgets(nlmsg_fd,set,n,s);
    _DtHelpProcessUnlock();
    return (msg);
@@ -380,7 +350,7 @@ char *_DtHelpGetMessage(
  * Function:	   char * _DtHelpGetLocale(
  *
  *
- * Parameters:     
+ * Parameters:
  *
  * Return Value:   char *
  *

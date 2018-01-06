@@ -28,7 +28,7 @@
  **
  **   Project:     Display Area Library
  **
- **  
+ **
  **   Description: This body of code handles the callbacks for the
  **                Display Area.
  **
@@ -39,7 +39,7 @@
  * (c) Copyright 1987-1994, 1996 Hewlett-Packard Company.
  * (c) Copyright 1993, 1994, 1996 International Business Machines Corp.
  * (c) Copyright 1993, 1994, 1996 Sun Microsystems, Inc.
- * (c) Copyright 1993, 1994, 1996 Novell, Inc. 
+ * (c) Copyright 1993, 1994, 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -240,7 +240,7 @@ ConvertSelectionCB (
 	/*
 	 * get the string
 	 */
-	_DtCanvasGetSelection (pDAS->canvas, 
+	_DtCanvasGetSelection (pDAS->canvas,
 				(_DtCvSELECTED_TEXT | _DtCvSELECTED_REGION),
 						(_DtCvPointer *)(&tmpString));
 
@@ -276,7 +276,7 @@ ConvertSelectionCB (
 	*type   = LOCALE;
 	*format = 8;
 
-	_DtCanvasGetSelection (pDAS->canvas, 
+	_DtCanvasGetSelection (pDAS->canvas,
 				(_DtCvSELECTED_TEXT | _DtCvSELECTED_REGION),
 						(_DtCvPointer *)(value));
 	*length = 0;
@@ -291,7 +291,7 @@ ConvertSelectionCB (
 	/*
 	 * get the selected text.
 	 */
-	_DtCanvasGetSelection (pDAS->canvas, 
+	_DtCanvasGetSelection (pDAS->canvas,
 				(_DtCvSELECTED_TEXT | _DtCvSELECTED_REGION),
 						(_DtCvPointer *)(&tmpString));
 
@@ -415,8 +415,12 @@ ScrollTimerCB (
 	    if (pDAS->virtualX + diffX < 0)
 		diffX = -(pDAS->virtualX);
           }
+	else {
+	    fprintf(stderr, "ScrollTimerCB: impossible condition, aborting");
+	    exit(1);
+	}
       }
-   
+
     _DtCanvasProcessSelection (pDAS->canvas,
 			(x + diffX + pDAS->virtualX - pDAS->decorThickness),
 			y, _DtCvSELECTION_UPDATE);
@@ -733,7 +737,7 @@ _DtHelpResizeCB(
  * _DtHelpVertScrollCB is called when the vertical scroll bar is changed.
  *
  **************************************************************************/
-void 
+void
 _DtHelpVertScrollCB(
         Widget widget,
         XtPointer clientData,
@@ -750,7 +754,7 @@ _DtHelpVertScrollCB(
     _DtCvUnit   absBot;
     Display    *dpy;
     Window      win;
-  
+
     /*
      * if the policy is XmEXPLICIT, don't want the focus on the scrollbar
      */
@@ -797,13 +801,13 @@ _DtHelpVertScrollCB(
     /* For page increment and decrement, call _DtHelpCleanAndDrawWholeCanvas
      * to clear the view area and redisplay the text.
      *
-     * For increment and decrement, 
+     * For increment and decrement,
      * use XCopyArea to move the visible lines and draw the cleared out line.
      */
     if (!pDAS->maxYpos ||
 		(pDAS->neededFlags & (1 << (VisibilityFullyObscured + 3))))
         return;
-  
+
     dpy = XtDisplay (widget);
     win = XtWindow (pDAS->dispWid);
 
@@ -867,7 +871,7 @@ _DtHelpVertScrollCB(
  * _DtHelpHorzScrollCB is called when the horizontal scroll bar is changed.
  *
  **************************************************************************/
-void 
+void
 _DtHelpHorzScrollCB(
         Widget widget,
         XtPointer clientData,
@@ -933,13 +937,13 @@ _DtHelpHorzScrollCB(
     /* For page increment and decrement, call _DtHelpCleanAndDrawWholeCanvas
      * to clear the view area and redisplay the text.
      *
-     * For increment and decrement, 
+     * For increment and decrement,
      * use XCopyArea to move the visible lines and draw the cleared out line.
      */
     if (!pDAS->maxX || !pDAS->visibleCount ||
 		(pDAS->neededFlags & (1 << (VisibilityFullyObscured + 3))))
         return;
-  
+
     dpy = XtDisplay (widget);
     win = XtWindow (pDAS->dispWid);
 
@@ -1011,7 +1015,7 @@ _DtHelpHorzScrollCB(
  * _DtHelpClickOrSelectCB is called when the vertical scroll bar is changed.
  *
  **************************************************************************/
-void 
+void
 _DtHelpClickOrSelectCB(
         Widget widget,
         XtPointer clientData,
@@ -1123,7 +1127,7 @@ _DtHelpEndSelectionCB (
  * _DtHelpMouseMoveCB tracks the mouse movement for the Selection mechanism
  *
  **************************************************************************/
-void 
+void
 _DtHelpMouseMoveCB(
         Widget	   widget,
         XtPointer  client_data,
@@ -1301,7 +1305,7 @@ _DtHelpClearSelection ( XtPointer client_data)
  * _DtHelpFocusCB tracks the traversal of the hypertext.
  *
  **************************************************************************/
-void 
+void
 _DtHelpFocusCB(
         Widget	   widget,
         XtPointer  client_data,
@@ -1403,7 +1407,7 @@ _DtHelpEnterLeaveCB(
  * _DtHelpVisibilityCB tracks whether the window becomes obscured.
  *
  **************************************************************************/
-void 
+void
 _DtHelpVisibilityCB(
         Widget	   widget,
         XtPointer  client_data,
@@ -1459,7 +1463,7 @@ _DtHelpInitiateClipboard (
         /*
          * get the selected text
          */
-	_DtCanvasGetSelection (pDAS->canvas, 
+	_DtCanvasGetSelection (pDAS->canvas,
 				(_DtCvSELECTED_TEXT | _DtCvSELECTED_REGION),
 						(_DtCvPointer *)(&tmpString));
 
@@ -1488,7 +1492,7 @@ _DtHelpInitiateClipboard (
 	        free(tmpString);
                 return;
               }
-   
+
 	    status = XmbTextListToTextProperty(dpy, &tmpString, 1,
 			                    (XICCEncodingStyle)XStdICCTextStyle,
 					    &tmpProp);
@@ -1536,7 +1540,7 @@ _DtHelpInitiateClipboard (
  * _DtHelpMoveBtnFocusCB tracks the mouse movement for the Selection mechanism
  *
  **************************************************************************/
-void 
+void
 _DtHelpMoveBtnFocusCB(
         Widget	   widget,
         XtPointer  client_data,

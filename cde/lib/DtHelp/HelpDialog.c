@@ -993,10 +993,10 @@ static Boolean SetValues(
 
       str = (char *)_DTGETMESSAGE(2, 70, "Nonexistent Topic Title.");
       len = strlen(str);
-      hw->help_dialog.display.topicTitleStr = XtMalloc(sizeof(char)*(len+10));
+      hw->help_dialog.display.topicTitleStr = XtMalloc(len + 10);
       if (NULL != hw->help_dialog.display.topicTitleStr)
 	{
-          sprintf(hw->help_dialog.display.topicTitleStr, "%s%d", str,
+          snprintf(hw->help_dialog.display.topicTitleStr, len + 10, "%s%d", str,
 		  hw->help_dialog.display.count++);
           newTitle = TRUE;
         }
@@ -1825,19 +1825,21 @@ void _DtHelpSetupDisplayType(
                                         "Location ID:"));
                  volumeTitle = XtNewString((char *)_DTGETMESSAGE(2, 61,
                                         "Help Volume:"));
-                 tmpError = XtMalloc(strlen(tmpMessage) +
-                                     strlen(locTitle) +
-                                     strlen(volumeTitle) +
-                                     strlen(hw->help_dialog.display.locationId) +
-                                     strlen(hw->help_dialog.display.helpVolume) + 4);
-                 (void) strcpy(tmpError, tmpMessage);
-                 (void) strcat(tmpError, volumeTitle);
-                 (void) strcat(tmpError, " ");
-                 (void) strcat(tmpError, hw->help_dialog.display.helpVolume);
-                 (void) strcat(tmpError,"\n");
-                 (void) strcat(tmpError, locTitle);
-                 (void) strcat(tmpError, " ");
-                 (void) strcat(tmpError, hw->help_dialog.display.locationId);
+                 int tmpError_size = strlen(tmpMessage) +
+                   strlen(locTitle) +
+                   strlen(volumeTitle) +
+                   strlen(hw->help_dialog.display.locationId) +
+                   strlen(hw->help_dialog.display.helpVolume) + 4;
+
+                 tmpError = XtMalloc(tmpError_size);
+                 strlcpy(tmpError, tmpMessage, tmpError_size);
+                 strlcat(tmpError, volumeTitle, tmpError_size);
+                 strlcat(tmpError, " ", tmpError_size);
+                 strlcat(tmpError, hw->help_dialog.display.helpVolume, tmpError_size);
+                 strlcat(tmpError,"\n", tmpError_size);
+                 strlcat(tmpError, locTitle, tmpError_size);
+                 strlcat(tmpError, " ", tmpError_size);
+                 strlcat(tmpError, hw->help_dialog.display.locationId, tmpError_size);
 
                  /* Set current path area to null by giving it a null id */
                  _DtHelpUpdatePathArea(NULL, hw);
@@ -2316,11 +2318,11 @@ void _DtHelpUpdateDisplayArea(
             {
                  tmpMsg = (char *)_DTGETMESSAGE(2, 55,
                                  "Nonexistent location ID:");
-                 userErrorStr = XtMalloc(strlen(tmpMsg) +
-                                  strlen(hw->help_dialog.display.locationId)+ 2);
-                 (void) strcpy(userErrorStr, tmpMsg);
-                 (void) strcat(userErrorStr, " ");
-                 (void) strcat(userErrorStr, hw->help_dialog.display.locationId);
+                 int userErrorStr_size = strlen(tmpMsg) + strlen(hw->help_dialog.display.locationId)+ 2;
+                 userErrorStr = XtMalloc(userErrorStr_size);
+                 strlcpy(userErrorStr, tmpMsg, userErrorStr_size);
+                 strlcat(userErrorStr, " ", userErrorStr_size);
+                 strlcat(userErrorStr, hw->help_dialog.display.locationId, userErrorStr_size);
                  sysErrorStr = XtNewString(HDMessage9);
 	    }
         }

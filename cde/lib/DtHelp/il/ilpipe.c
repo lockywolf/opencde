@@ -22,9 +22,9 @@
  */
 /* $XConsortium: ilpipe.c /main/6 1996/06/19 12:21:13 ageorge $ */
 /**---------------------------------------------------------------------
-***	
+***
 ***    (c)Copyright 1991 Hewlett-Packard Co.
-***    
+***
 ***                             RESTRICTED RIGHTS LEGEND
 ***    Use, duplication, or disclosure by the U.S. Government is subject to
 ***    restrictions as set forth in sub-paragraph (c)(1)(ii) of the Rights in
@@ -38,7 +38,7 @@
 ***-------------------------------------------------------------------*/
 
         /*  /ilc/ilpipe.c : General pipe handling code.
-            Also contains ilCrop() as this function is very much tied to the 
+            Also contains ilCrop() as this function is very much tied to the
             implementation of pipes.
         */
 
@@ -54,7 +54,7 @@
     /*  One element in the pipe, added by ilAddElement().  Notes:
 
             pNext, pPrev    forward/back ptrs to next/prev element in list.  First element
-                            in list is *ilPipePtr->elementHead.pNext; last is *pPrev. 
+                            in list is *ilPipePtr->elementHead.pNext; last is *pPrev.
 
             elementType     One of: IL_PRODUCER, IL_FILTER, IL_CONSUMER.  Not needed or
                             used, but very handy for debugging.
@@ -95,11 +95,11 @@ typedef struct _ilElementRec {
             state           current state of the pipe as returned by ilGetPipeInfo(); one
                             of:
 
-                IL_PIPE_INVALID     an error occurred in forming the pipe, and the pipe 
-                                    cannot be used until ilEmptyPipe() is done.  No more 
+                IL_PIPE_INVALID     an error occurred in forming the pipe, and the pipe
+                                    cannot be used until ilEmptyPipe() is done.  No more
                                     elements should be added.  The pipe is in fact empty,
                                     only the state is different, to prevent other elements
-                                    from being added.  This state is set by calling 
+                                    from being added.  This state is set by calling
                                     ilDeclarePipeInvalid().
 
                 IL_PIPE_EMPTY       pipe is empty; ready to add a producer (read)
@@ -108,19 +108,19 @@ typedef struct _ilElementRec {
                                     add filters or a consumer (write)
 
                 IL_PIPE_COMPLETE    pipe has a consumer (write); ilExecutePipe() can now
-                                    be called on it (executable, from caller's view).  
+                                    be called on it (executable, from caller's view).
                                     Error if an attempt to add an element.
 
                 IL_PIPE_EXECUTING   one or more, but not all, strips have been processed.
 
             producerCode    code that defines producer; one of:
-                
+
                 IL_PIPE_NOT_IMAGE   the producer was not an image
                 IL_PIPE_IMAGE       producer was an ilReadImage() call
                 IL_PIPE_FEED_IMAGE  producer was an ilFeedFromImage() call
-            
+
             feedStartLine
-            feedNLines      
+            feedNLines
             feedCompOffset
             feedCompNBytes
             feedDone        used only if producerCode == IL_PIPE_FEED_IMAGE: values
@@ -153,11 +153,11 @@ typedef struct _ilElementRec {
 
             copyToConsumerImage  true iff a copy filter must be inserted if the next
                             element is a consumer, specifying a consumerImage, e.g.
-                            is ilWriteImage().  This would be true right after 
-                            ilAddProducerImage() is called, or right after any 
+                            is ilWriteImage().  This would be true right after
+                            ilAddProducerImage() is called, or right after any
                             IL_ADD_PIPE_NO_DST filter.
 
-            imageHead       head/tail of list of ilImageRec, the temporary images 
+            imageHead       head/tail of list of ilImageRec, the temporary images
                             associated with this pipe.  The images object prev/next ptrs
                             are used to maintain this list.  Note that the images in this
                             list are not official objects; they must be deleted when then
@@ -210,7 +210,7 @@ typedef struct {
 static long ilDefaultStripSize = (16 * 1024);
 
         /*  ------------------------ _ilSetDefaultStripSize  ------------------------ */
-        /*  "Back door" call to set ilDefaultStripSize.  The IL test suite uses this 
+        /*  "Back door" call to set ilDefaultStripSize.  The IL test suite uses this
              call to ensure that small images are stripped, and so that strip
              size is consistent between test baselevels.
         */
@@ -241,7 +241,7 @@ register ilImagePtr     pImage;
 
         /*  -------------------------- ilAllocTempImage ----------------------- */
         /*  Allocates a temporary (buffer) image, inits it and returns a ptr to it or
-            null if failure.  The buffer for the pixels is not allocated.  The 
+            null if failure.  The buffer for the pixels is not allocated.  The
             height of the image is not set; the caller must do that.
         */
 static ilImagePtr ilAllocTempImage (
@@ -360,7 +360,7 @@ ilError                 error;
       case IL_PIPE_COMPLETE:        /* elements but no buffers allocated */
       case IL_PIPE_FORMING:         /* forming is same as complete */
 
-            /*  Run thru list of elements and free them.  Call optional Destroy 
+            /*  Run thru list of elements and free them.  Call optional Destroy
                 function if non-null.  Make list head empty.
             */
         pElementHead = &pPipe->elementHead;
@@ -426,7 +426,7 @@ register ilPipePtr   pPipe;
         return (ilPipe)NULL;
         }
 
-    pPipe = (ilPipePtr)_ilCreateObject (context, IL_PIPE, ((void (*)())ilEmptyPipe), 
+    pPipe = (ilPipePtr)_ilCreateObject (context, IL_PIPE, ((void (*)())ilEmptyPipe),
                                        sizeof (ilPipeRec));
     if (!pPipe)
         return (ilPipe)NULL;
@@ -472,7 +472,7 @@ register ilPipePtr   pPipe;
     return FALSE;
 }
 
-        
+
         /*  ------------------------ ilQueryPipe  ----------------------------- */
         /*  Public function; see spec.
             Return description of current image, from pipe header, if pipe forming.
@@ -508,7 +508,7 @@ register ilPipePtr   pPipe;
 
         /*  ------------------------ ilGetPipeInfo ----------------------------- */
         /*  Public function; see spec.
-            If pipe state is "forming": if "forceDecompress" and image is compressed, make 
+            If pipe state is "forming": if "forceDecompress" and image is compressed, make
             it uncompressed, then return description of current pipe state.
         */
 unsigned int ilGetPipeInfo (
@@ -604,7 +604,7 @@ register long           stripHeight;
 
         /*  Limit stripHeight to pipe height. */
     stripHeight = pPipe->image.info.stripHeight;
-    if (stripHeight > pPipe->image.info.height) 
+    if (stripHeight > pPipe->image.info.height)
         pPipe->image.info.stripHeight = stripHeight = pPipe->image.info.height;
     else if (stripHeight <= 0)
         pPipe->image.info.stripHeight = stripHeight = 1;
@@ -612,7 +612,7 @@ register long           stripHeight;
         /*  If uncompressed image, calc recommendedStripHeight else current stripHeight */
     if (pPipe->image.des.compression == IL_UNCOMPRESSED) {
         register long   i;
-        i = ilRecommendedStripHeight (&pPipe->image.des, &pPipe->image.format, 
+        i = ilRecommendedStripHeight (&pPipe->image.des, &pPipe->image.format,
                                       pPipe->image.info.width, pPipe->image.info.height);
         pPipe->image.info.recommendedStripHeight = (i > stripHeight) ? stripHeight : i;
         }
@@ -651,8 +651,8 @@ register ilPipePtr      pPipe;
 
         /*  ---------------------------- ilAddProducerImage ------------------------ */
         /*  IL internal function, declared in /ilc/ilpipeint.h .
-            Called by ilReadImage() to set *pImage as the producer to this pipe. 
-            The pipe MUST be in the empty state.  "needProducerThrottle" is true iff a 
+            Called by ilReadImage() to set *pImage as the producer to this pipe.
+            The pipe MUST be in the empty state.  "needProducerThrottle" is true iff a
             throttle must be inserted before next element added by ilAddPipeElement().
         */
 IL_PRIVATE ilBool _ilAddProducerImage (
@@ -704,7 +704,7 @@ register ilPipePtr      pPipe;
             which will be ilFeedProducerThrottleExecute().  If feeding compressed data:
             "start" is the byte offset into the compressed data, and "nCompBytes" is
             the number of bytes at that offset.  If uncompressed data: "start" is the
-            starting line, and "nCompBytes" is ignored.  Returns FALSE if the pipe was 
+            starting line, and "nCompBytes" is ignored.  Returns FALSE if the pipe was
             not started with a ilFeedFromImage() producer.
         */
 IL_PRIVATE ilBool _ilSetFeedPipeData (
@@ -928,8 +928,8 @@ ilBool                  constantStrip, haveConsumerImage, insertCopyFilter;
         */
     if ((elementType != IL_PRODUCER) && pPipe->needProducerThrottle) {
         pPipe->needProducerThrottle = FALSE;        /* prevent recursion */
-        if (!_ilAddThrottlePipeElement ((ilPipe)pPipe, stripHeight, 
-                constantStrip, pPipe->producerCode, 
+        if (!_ilAddThrottlePipeElement ((ilPipe)pPipe, stripHeight,
+                constantStrip, pPipe->producerCode,
                 &pPipe->image.info.stripHeight, &pPipe->image.info.constantStrip)) {
             ilDeclarePipeInvalid ((ilPipe)pPipe, pPipe->o.p.context->error);
             return (ilPtr)NULL;
@@ -937,9 +937,9 @@ ilBool                  constantStrip, haveConsumerImage, insertCopyFilter;
         }
 
         /*  If writing consumerImage (e.g. ilWriteImage()) or inserting a throttle
-            requiring minBufferHeight, insert copy filter if flagged: e.g. previous 
+            requiring minBufferHeight, insert copy filter if flagged: e.g. previous
             element was "no dst" filter or ilReadImage(); else possibly add throttle:
-                If not a producer and pipe image is not compressed, check "stripHeight", 
+                If not a producer and pipe image is not compressed, check "stripHeight",
             the desired strip height, set above.
                 If != current strip height, or caller requires a constant strip
             and current is not constant, add a filter which makes it so.
@@ -959,7 +959,7 @@ ilBool                  constantStrip, haveConsumerImage, insertCopyFilter;
      && (pPipe->image.des.compression == IL_UNCOMPRESSED)
      && ((stripHeight != pPipe->image.info.stripHeight)
       || (constantStrip && !pPipe->image.info.constantStrip)) ) {
-            if (!_ilAddThrottlePipeElement ((ilPipe)pPipe, stripHeight, 
+            if (!_ilAddThrottlePipeElement ((ilPipe)pPipe, stripHeight,
                 constantStrip, IL_PIPE_NOT_IMAGE,
                 &pPipe->image.info.stripHeight, &pPipe->image.info.constantStrip)) {
                     ilDeclarePipeInvalid ((ilPipe)pPipe, pPipe->o.p.context->error);
@@ -1032,7 +1032,7 @@ ilBool                  constantStrip, haveConsumerImage, insertCopyFilter;
         pPipe->image.info.stripHeight = pDstData->stripHeight;
         ilChangeStripHeight (pPipe);
 
-        pPipe->image.info.pPalette = (pPipe->image.des.type == IL_PALETTE) ? 
+        pPipe->image.info.pPalette = (pPipe->image.des.type == IL_PALETTE) ?
                                            pDstData->pPalette : (unsigned short *)NULL;
         pPipe->image.info.pCompData = pDstData->pCompData;
         pPipe->needProducerThrottle = FALSE;        /* producer not an image */
@@ -1057,7 +1057,7 @@ ilBool                  constantStrip, haveConsumerImage, insertCopyFilter;
                     Set image height = max (minHeight if present, srcBufferHeight).
                 */
             ilImagePtr      pImage;
-            pImage = ilAllocTempImage (pPipe, &pPipe->image.info, &pPipe->image.des, 
+            pImage = ilAllocTempImage (pPipe, &pPipe->image.info, &pPipe->image.des,
                                        &pPipe->image.format);
             if (!pImage) {
                 ilDeclarePipeInvalid ((ilPipe)pPipe, IL_ERROR_MALLOC);
@@ -1071,7 +1071,7 @@ ilBool                  constantStrip, haveConsumerImage, insertCopyFilter;
 
             /*  Src image to this element is dst image of previous element.
                 If no dst from this element, then src to this element is src to next,
-                and must copy if next element is ilWriteImage(); otherwise, src to next 
+                and must copy if next element is ilWriteImage(); otherwise, src to next
                 is necessarily a temp image, and don't need to copy.
             */
         pElement->pPrev->exec.pDstImage = pElement->exec.pSrcImage;
@@ -1115,7 +1115,7 @@ ilBool                  constantStrip, haveConsumerImage, insertCopyFilter;
             if (pDstData->pFormat)
                 pPipe->image.format = *pDstData->pFormat;
             if (pDes || pDstData->pFormat) {
-                error = _ilValidateDesFormat (TRUE /* allow private types */, 
+                error = _ilValidateDesFormat (TRUE /* allow private types */,
                                              &pPipe->image.des, &pPipe->image.format);
                 if (error) {
                     ilDeclarePipeInvalid ((ilPipe)pPipe, error);
@@ -1224,7 +1224,7 @@ ilError                 error;
                 pElement->exec.srcLine = 0;
                 pElement->exec.compressed.srcOffset = 0;
                 if (pElement->Init) {
-                    ilError error = (*pElement->Init) ((ilPtr)pElement->exec.pPrivate, 
+                    ilError error = (*pElement->Init) ((ilPtr)pElement->exec.pPrivate,
                                      pElement->exec.pSrcImage, pElement->exec.pDstImage);
                     if (error) {
                         while (TRUE) {
@@ -1240,7 +1240,7 @@ ilError                 error;
                             }
                         ilFreeTempImageBuffers (pPipe);
                         pPipe->o.p.context->errorInfo = error;
-                        pPipe->o.p.context->error = (error < 0) ? 
+                        pPipe->o.p.context->error = (error < 0) ?
                                         IL_ERROR_USER_PIPE_ELEMENT : IL_ERROR_PIPE_ELEMENT;
                         return IL_EXECUTE_ERROR;                /* EXIT */
                         }
@@ -1263,7 +1263,7 @@ ilError                 error;
             /*  Pipe being executed, possibly first time. Execute nStrips strips (or all
                 if !nStrips). dstLine for each element is "srcLine" of next element.
                 Start with top element of "execStack".
-                    "nLines" on entry to Execute() = # of src lines to read; 
+                    "nLines" on entry to Execute() = # of src lines to read;
                 on exit = # of dst lines written (== 0, skip rest of pipe).
                 If error: check for pseudo-error, else abort.  Pseudo-errors:
                     IL_ERROR_LAST_STRIP: finish processing this strip, then done
@@ -1302,13 +1302,13 @@ ilError                 error;
 */
 		if(pElement->ExecuteThree)
 		    {
-		    error = (*pElement->ExecuteThree) (&pElement->exec,                                      pElement->pNext->exec.srcLine, 
+		    error = (*pElement->ExecuteThree) (&pElement->exec,                                      pElement->pNext->exec.srcLine,
 				      &nLines);
 		    }
 		else
 		    {
-		    error = (*pElement->ExecuteFour) (&pElement->exec, 
-                                               pElement->pNext->exec.srcLine, 
+		    error = (*pElement->ExecuteFour) (&pElement->exec,
+                                               pElement->pNext->exec.srcLine,
 					       &nLines, ratio);
 		    }
                 if (error) {
@@ -1332,7 +1332,7 @@ ilError                 error;
                     else {
                         ilCleanupRunningPipe (pPipe, TRUE);
                         pPipe->o.p.context->errorInfo = error;
-                        pPipe->o.p.context->error = (error < 0) ? 
+                        pPipe->o.p.context->error = (error < 0) ?
                                     IL_ERROR_USER_PIPE_ELEMENT : IL_ERROR_PIPE_ELEMENT;
                         return IL_EXECUTE_ERROR;                /* EXIT */
                         }
@@ -1349,11 +1349,11 @@ ilError                 error;
             if (pPipe->stackIndex <= 0) {
                 if (pPipe->lastStrip) {
                     ilError error = ilCleanupRunningPipe (pPipe, FALSE);
-                    if (error == IL_OK) 
+                    if (error == IL_OK)
                         return IL_EXECUTE_COMPLETE;
                     else {
                         pPipe->o.p.context->errorInfo = error;
-                        pPipe->o.p.context->error = (error < 0) ? 
+                        pPipe->o.p.context->error = (error < 0) ?
                                     IL_ERROR_USER_PIPE_ELEMENT : IL_ERROR_PIPE_ELEMENT;
                         return IL_EXECUTE_ERROR;
                         }
@@ -1364,6 +1364,7 @@ ilError                 error;
 
             }   /* END while true: execute strips */
         }       /* END switch pipe state */
+    return -1;  // Should never happen
 }
 
 

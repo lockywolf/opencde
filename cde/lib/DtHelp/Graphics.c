@@ -191,7 +191,7 @@ typedef struct {
     _DtGrDestroyContextProc destroy_context_proc;
 } _DtGrRegistryRec;
 
-/* 
+/*
  * This array maps image file name extensions to the corresponding
  * CDE data type.  It is used by the DetermineImageType function.
  * The array must be NULL-terminated.
@@ -210,7 +210,7 @@ static char * img_extensions[] = {
     "cgm",  "CGM",
     NULL
 };
-   
+
 /*****************************************************************************/
 /*		      Private declarations				     */
 /*****************************************************************************/
@@ -404,14 +404,15 @@ static enum _DtGrLoadStatus processJPEG(
 				_DtGrContext          *context);
 static enum _DtGrLoadStatus DetermineImageType(
                                 _DtGrStream *stream,
-				char        *image_type);
+				char        *image_type,
+				int          image_type_size);
 static enum _DtGrLoadStatus GetConverterAndDestructor(
-                                char *image_type, 
+                                char *image_type,
 				_DtGrLoadProc *converter,
 				_DtGrDestroyContextProc *destructor);
 static float ComputeRatio(int media_res, int image_res);
 
-/***************************************************************************** 
+/*****************************************************************************
  *         Image type registry declarations
  *****************************************************************************/
 
@@ -461,10 +462,10 @@ static int registry_count = XtNumber(registry);
 static _DtGrRegistryRec *new_registry = NULL;
 static int new_registry_count = 0;
 
-/***************************************************************************** 
+/*****************************************************************************
  *         Private Routines
  *****************************************************************************/
-/***************************************************************************** 
+/*****************************************************************************
  * taken straight out of xwud and modified.
  *****************************************************************************/
 /* Copyright 1985, 1986, 1988 Massachusetts Institute of Technology */
@@ -995,7 +996,7 @@ Do_Direct(
 		}
 		if (!XAllocColor(dpy, colormap, &color))
 		    color.flags = 0;
-		else 
+		else
 		  {
 		    if (pixI >= pixMax)
 		      {
@@ -1109,7 +1110,7 @@ XwdFileToPixmap (
 
     /* Reset the pointer to the beginning of the stream */
     _DtGrSeek(stream, 0, SEEK_SET);
-    
+
     /*
      * Read in header information.
      */
@@ -1137,7 +1138,7 @@ XwdFileToPixmap (
       */
     if (_DtGrSeek(stream, (header.header_size - sizeof(header)), 1))
       {
-	return GR_FILE_ERR; 
+	return GR_FILE_ERR;
       }
 
     /*
@@ -1322,10 +1323,10 @@ static enum _DtGrLoadStatus processBitmap(
     XImage        ximage;
     float          ratio = 1.0;
 
-    if (media_resolution == 0) 
+    if (media_resolution == 0)
         return(_DtGrCONVERT_FAILURE);
 
-    if (*in_out_width == 0 && *in_out_height == 0) 
+    if (*in_out_width == 0 && *in_out_height == 0)
 	 ratio = ComputeRatio(media_resolution, 100);
 
     if (stream->type == _DtGrNONE)
@@ -1355,7 +1356,7 @@ static enum _DtGrLoadStatus processBitmap(
         *in_out_height = (Dimension) height * ratio + 0.5;
 	if (*in_out_width == 0)
 	   *in_out_width = 1;
-	if (*in_out_height == 0) 
+	if (*in_out_height == 0)
 	   *in_out_height = 1;
 
 	scaled_pixmap = XCreatePixmap (dpy, drawable, (*in_out_width),
@@ -1374,7 +1375,7 @@ static enum _DtGrLoadStatus processBitmap(
         return(_DtGrFILE_INVALID);
     else if (result == BitmapNoMemory)
         return(_DtGrNO_MEMORY);
-    else 
+    else
         return(_DtGrCONVERT_FAILURE);
 }
 
@@ -1416,7 +1417,7 @@ static enum _DtGrLoadStatus processTiff(
     const ilImageDes   *inDes;
     static ilContext	IlContext = NULL;
     Display      *dpy = DisplayOfScreen(screen);
-    Drawable      drawable = RootWindowOfScreen(screen);  
+    Drawable      drawable = RootWindowOfScreen(screen);
     ilXWC	 *tiff_xwc;
     float         ratio = 1.0;
 
@@ -1427,7 +1428,7 @@ static enum _DtGrLoadStatus processTiff(
         return (_DtGrCONVERT_FAILURE);
       }
 
-    if (media_resolution == 0) 
+    if (media_resolution == 0)
       {
 	_DtHelpProcessUnlock();
         return(_DtGrCONVERT_FAILURE);
@@ -1476,7 +1477,7 @@ static enum _DtGrLoadStatus processTiff(
 	    *in_out_height = inImage->height * ratio + 0.5;
 	    if (*in_out_width == 0)
 		*in_out_width = 1;
-	    if (*in_out_height == 0) 
+	    if (*in_out_height == 0)
 		*in_out_height = 1;
 
 	    pixmap = XCreatePixmap (dpy, drawable, (*in_out_width),
@@ -1581,11 +1582,11 @@ static enum _DtGrLoadStatus processXwd(
     int            result;
     unsigned long swaptest = TRUE;
     Display       *dpy = DisplayOfScreen(screen);
-    Drawable       drawable = RootWindowOfScreen(screen);  
+    Drawable       drawable = RootWindowOfScreen(screen);
     int            screen_num = XScreenNumberOfScreen(screen);
     float          ratio = 1.0;
 
-    if (media_resolution == 0) 
+    if (media_resolution == 0)
         return(_DtGrCONVERT_FAILURE);
 
     if (stream->type == _DtGrNONE)
@@ -1600,7 +1601,7 @@ static enum _DtGrLoadStatus processXwd(
     if (result != 1 || header.file_version != XWD_FILE_VERSION)
 	return (_DtGrFILE_INVALID);
 
-    if (*in_out_width == 0 && *in_out_height == 0) 
+    if (*in_out_width == 0 && *in_out_height == 0)
 	 ratio = ComputeRatio(media_resolution, 100);
 
     *in_out_width = header.pixmap_width * ratio + 0.5;
@@ -1608,14 +1609,14 @@ static enum _DtGrLoadStatus processXwd(
 
      if (*in_out_width == 0)
 	*in_out_width = 1;
-     if (*in_out_height == 0) 
+     if (*in_out_height == 0)
 	*in_out_height = 1;
 
-    pixmap = XCreatePixmap (dpy, drawable, (*in_out_width), 
+    pixmap = XCreatePixmap (dpy, drawable, (*in_out_width),
 			     (*in_out_height),depth);
 
     if (pixmap) {
-        if ((result=XwdFileToPixmap (dpy, screen_num, depth, pixmap, colormap, 
+        if ((result=XwdFileToPixmap (dpy, screen_num, depth, pixmap, colormap,
                 visual, gc, color_model, 0, 0, 0, 0,
 		(*in_out_width), (*in_out_height), stream,
 		ret_colors, ret_num_colors))
@@ -1681,18 +1682,18 @@ myXpmReadFileToPixmap(
     if (stream->type == _DtGrFILE)
     {
         if (stream->source.file.uncompressed_filename != NULL)
-            ErrorStatus = _DtXpmReadFileToImage(display, 
-                                    stream->source.file.uncompressed_filename, 
+            ErrorStatus = _DtXpmReadFileToImage(display,
+                                    stream->source.file.uncompressed_filename,
                                     imageptr, shapeimageptr, attributes);
         else
-            ErrorStatus = _DtXpmReadFileToImage(display, 
-                                    stream->source.file.filename, 
+            ErrorStatus = _DtXpmReadFileToImage(display,
+                                    stream->source.file.filename,
                                     imageptr, shapeimageptr, attributes);
     }
     else if (stream->type == _DtGrBUFFER)
     {
-            ErrorStatus = XpmCreateImageFromBuffer(display, 
-                                    (char *) stream->source.buffer.base, 
+            ErrorStatus = XpmCreateImageFromBuffer(display,
+                                    (char *) stream->source.buffer.base,
                                     imageptr, shapeimageptr, attributes);
     }
     else
@@ -1736,7 +1737,7 @@ myXpmReadFileToPixmap(
 	    scaledWidth = 1;
 	if (scaledHeight == 0)
 	    scaledHeight = 1;
-	
+
         *pixmap_return = XCreatePixmap(display, d, scaledWidth,
                                        scaledHeight, depth);
 	if (image->depth == 1)
@@ -1747,7 +1748,7 @@ myXpmReadFileToPixmap(
             XSetBackground (display, gc, fg);
             XSetForeground (display, gc, bg);
 	  }
-        _XmPutScaledImage(display, *pixmap_return, gc, image, 
+        _XmPutScaledImage(display, *pixmap_return, gc, image,
 			  0, 0, 0, 0,
 			  image->width, image->height,
 			  scaledWidth, scaledHeight);
@@ -1807,7 +1808,7 @@ static enum _DtGrLoadStatus processXpm(
 
     enum _DtGrLoadStatus status = _DtGrSUCCESS;
 
-    if (media_resolution == 0) 
+    if (media_resolution == 0)
         return(_DtGrCONVERT_FAILURE);
 
     if (stream->type == _DtGrNONE)
@@ -1841,12 +1842,12 @@ static enum _DtGrLoadStatus processXpm(
             xpmAttr.depth  = 1;
             xpmAttr.visual = &vis2;
           }
-	if (*in_out_width == 0 && *in_out_height == 0) 
+	if (*in_out_width == 0 && *in_out_height == 0)
 	    ratio = ComputeRatio(media_resolution, 100);
 
-        result = myXpmReadFileToPixmap (DisplayOfScreen(screen), 
-					screen, 
-					RootWindowOfScreen(screen), 
+        result = myXpmReadFileToPixmap (DisplayOfScreen(screen),
+					screen,
+					RootWindowOfScreen(screen),
 					stream, ret_pixmap,
 					ret_mask, &xpmAttr, gc,
 					background, foreground, depth,
@@ -1876,7 +1877,7 @@ static enum _DtGrLoadStatus processXpm(
 	*in_out_height  = xpmAttr.height * ratio + 0.5;
 	if (*in_out_width == 0)
 	   *in_out_width = 1;
-	if (*in_out_height == 0) 
+	if (*in_out_height == 0)
 	   *in_out_height = 1;
 	*ret_colors     = xpmAttr.pixels;
 	*ret_num_colors = xpmAttr.npixels;
@@ -1915,7 +1916,7 @@ static enum _DtGrLoadStatus processXpm(
  *
  * Function processGIF
  *
- * Default gif converter, creates a pixmap from a file-associated or 
+ * Default gif converter, creates a pixmap from a file-associated or
  * buffer-associated stream of gif data.
  *
  *****************************************************************************/
@@ -1944,12 +1945,12 @@ static enum _DtGrLoadStatus processGIF(
     char *buffer;
     GifObj g;
     enum _DtGrLoadStatus status;
-    Display *display = DisplayOfScreen(screen);   
+    Display *display = DisplayOfScreen(screen);
     Drawable drawable = RootWindowOfScreen(screen);
     int i, size=0;
     float ratio = 1.0;
 
-    if (media_resolution == 0) 
+    if (media_resolution == 0)
         return(_DtGrCONVERT_FAILURE);
 
     if (stream->type == _DtGrNONE)
@@ -1957,10 +1958,10 @@ static enum _DtGrLoadStatus processGIF(
 
     *ret_pixmap = 0; /* Initialize the return pixmap to zero */
 
-    /* 
+    /*
     ** The gif-to-pixmap utilities operate only on in-memory buffers,
     ** so if this is a buffer-based stream, simply pass the buffer, and
-    ** if this is a file-based stream, read the file contents into a buffer 
+    ** if this is a file-based stream, read the file contents into a buffer
     ** and pass that.
     */
 
@@ -1977,20 +1978,20 @@ static enum _DtGrLoadStatus processGIF(
            stat (stream->source.file.filename, &stbuf);
        size = stbuf.st_size;
        buffer = XtMalloc(size);
-       fread (buffer, 1, size, stream->source.file.fileptr);  
+       fread (buffer, 1, size, stream->source.file.fileptr);
     }
 
     /* Initialize the gif object */
-    status = InitGifObject (&g, display, drawable, screen, depth, colormap, 
+    status = InitGifObject (&g, display, drawable, screen, depth, colormap,
                             visual, gc, color_model, allow_reduced_colors);
 
-    if (*in_out_width == 0 && *in_out_height == 0) 
+    if (*in_out_width == 0 && *in_out_height == 0)
 	 ratio = ComputeRatio(media_resolution, 100);
 
     /* Create an X pixmap from the gif object */
     if ((status == _DtGrSUCCESS) || (status == _DtGrCOLOR_REDUCE))
-        *ret_pixmap = gif_to_pixmap (&g, (unsigned char *) buffer, size, 
-                                     in_out_width, in_out_height, 
+        *ret_pixmap = gif_to_pixmap (&g, (unsigned char *) buffer, size,
+                                     in_out_width, in_out_height,
                                      g.f_black, g.f_white, ratio);
 
     /* Set the returned colors parameters */
@@ -1998,14 +1999,14 @@ static enum _DtGrLoadStatus processGIF(
     {
         if (g.f_do_visual == DO_COLOR)
 	{
-            *ret_num_colors = g.total_colors;       
+            *ret_num_colors = g.total_colors;
             *ret_colors = (Pixel *) malloc(*ret_num_colors * sizeof(Pixel));
             for (i=0; i<*ret_num_colors; i++)
                 (*ret_colors)[i] = g.GifCMap[i].pixel;
         }
         else /* DO_GREY */
 	{
-            *ret_num_colors = g.f_total_greys;       
+            *ret_num_colors = g.f_total_greys;
             *ret_colors = (Pixel *) malloc(*ret_num_colors * sizeof(Pixel));
             for (i=0; i<*ret_num_colors; i++)
                 (*ret_colors)[i] = g.GifGMap[i];
@@ -2027,13 +2028,13 @@ static enum _DtGrLoadStatus processGIF(
  *
  * Function processJPEG
  *
- * Default jpeg converter, creates a pixmap from a file-associated or 
+ * Default jpeg converter, creates a pixmap from a file-associated or
  * buffer-associated stream of jpeg data.
  *
  * The function first converts the jpeg stream to an XImage with a virtual
  * colormap using the jpeg_to_ximage call, then generates a new XImage that
- * uses the X colormap by calling the Do_Pseudo routine.  The Do_Pseudo 
- * routine, which is also used by the XWD converter, automatically handles X 
+ * uses the X colormap by calling the Do_Pseudo routine.  The Do_Pseudo
+ * routine, which is also used by the XWD converter, automatically handles X
  * color allocation and color model degradation where necessary.  Finally,
  * a pixmap is generated from the XImage returned by Do_Pseudo.
  *
@@ -2065,16 +2066,16 @@ static enum _DtGrLoadStatus processJPEG(
     int ncolors;
     int xres;
     int result = GR_SUCCESS;
-    Display *dpy = DisplayOfScreen(screen); 
+    Display *dpy = DisplayOfScreen(screen);
     int screen_num = XScreenNumberOfScreen(screen);
-    Drawable drawable = RootWindowOfScreen(screen); 
+    Drawable drawable = RootWindowOfScreen(screen);
     float ratio = 1.0;
     unsigned int scaledWidth,scaledHeight;
 
-    if (media_resolution == 0) 
+    if (media_resolution == 0)
         return(_DtGrCONVERT_FAILURE);
 
-    if (*in_out_width == 0 && *in_out_height == 0) 
+    if (*in_out_width == 0 && *in_out_height == 0)
 	ratio = 0.0;
 
     if (stream->type == _DtGrNONE)
@@ -2098,9 +2099,9 @@ static enum _DtGrLoadStatus processJPEG(
         if (in_image->depth == 1)
 	{
             /*
-	    ** Bitmap, no further image transformation necessary 
+	    ** Bitmap, no further image transformation necessary
             */
-	    out_image = in_image; 
+	    out_image = in_image;
             result = GR_SUCCESS;
         }
         else
@@ -2118,8 +2119,8 @@ static enum _DtGrLoadStatus processJPEG(
 
 	    out_image->data = (char *) malloc(Image_Size(out_image));
 
-            result = Do_Pseudo(dpy, screen_num, colormap, ncolors, colors, 
-                               color_model, in_image, out_image, 
+            result = Do_Pseudo(dpy, screen_num, colormap, ncolors, colors,
+                               color_model, in_image, out_image,
                                ret_colors, ret_num_colors);
 	}
 
@@ -2129,8 +2130,8 @@ static enum _DtGrLoadStatus processJPEG(
         if (result != GR_ALLOC_ERR)
 	{
             /*
-	    ** Create a pixmap the same size as the XImage 
-            */        
+	    ** Create a pixmap the same size as the XImage
+            */
 
 	    scaledWidth = out_image->width * ratio + 0.5;
 	    scaledHeight = out_image->height * ratio + 0.5;
@@ -2139,8 +2140,8 @@ static enum _DtGrLoadStatus processJPEG(
 		scaledWidth = 1;
 	    if (scaledHeight == 0)
 		scaledHeight = 1;
-	
-            *ret_pixmap = XCreatePixmap (dpy, drawable, scaledWidth, 
+
+            *ret_pixmap = XCreatePixmap (dpy, drawable, scaledWidth,
                                          scaledHeight, depth);
             if (*ret_pixmap)
 	    {
@@ -2148,15 +2149,15 @@ static enum _DtGrLoadStatus processJPEG(
 		** Copy the XImage into the pixmap and set the other
                 ** return parameters.
                 */
-                _XmPutScaledImage(dpy, *ret_pixmap, gc, out_image, 0, 0, 0, 0, 
-				  out_image->width, out_image->height, 
-		                  scaledWidth, scaledHeight); 
+                _XmPutScaledImage(dpy, *ret_pixmap, gc, out_image, 0, 0, 0, 0,
+				  out_image->width, out_image->height,
+		                  scaledWidth, scaledHeight);
 
                 *in_out_width = scaledWidth;
-                *in_out_height = scaledHeight;              
+                *in_out_height = scaledHeight;
                 status = _DtGrSUCCESS;
             }
-            else 
+            else
                 status = _DtGrNO_MEMORY;
 
             if (out_image != in_image)
@@ -2166,7 +2167,7 @@ static enum _DtGrLoadStatus processJPEG(
             status = _DtGrNO_MEMORY;
 
         /*
-	** Free the colors array and the initial XImage 
+	** Free the colors array and the initial XImage
         */
         XFree ((char *) colors);
         XDestroyImage (in_image);
@@ -2208,14 +2209,14 @@ static void destroyTiffContext(
  *
  * If the stream is a buffer, the buffer is passed to DtDtsBufferToData
  * in hopes that the file might be identified through content criteria.
- * 
+ *
  * If the stream is a file, the following checks are made:
  *
- *   1. The file name extension is checked against a list of known image file 
+ *   1. The file name extension is checked against a list of known image file
  *      type extensions.
  *   2. The filename is passed to DtDtsFileToDataType in hopes that the file
- *      type might be identified through filename extension or content 
- *      criteria. 
+ *      type might be identified through filename extension or content
+ *      criteria.
  *   3. If the file was uncompressed into a temporary file, the temporary
  *      filename is passed to DtDtsFileToDataType in hopes that the file
  *      type might be identified through content criteria.
@@ -2226,7 +2227,8 @@ static void destroyTiffContext(
  *****************************************************************************/
 static enum _DtGrLoadStatus DetermineImageType(
     _DtGrStream *stream,
-    char        *image_type)
+    char        *image_type,
+    int          image_type_size)
 {
     int i=0;
     char *ext;
@@ -2237,7 +2239,7 @@ static enum _DtGrLoadStatus DetermineImageType(
         if (stream->source.file.filename != NULL)
 	{
             /* Get the filename extension */
-            if (_DtHelpCeStrrchr(stream->source.file.filename, ".", 
+            if (_DtHelpCeStrrchr(stream->source.file.filename, ".",
                                  MB_CUR_MAX, &ext) == 0)
 	    {
                 ext++; /* Increment past the dot */
@@ -2246,7 +2248,7 @@ static enum _DtGrLoadStatus DetermineImageType(
                     if (strcmp(ext, img_extensions[i]) == 0)
 		    {
                         /* Found a match */
-		        strcpy (image_type,img_extensions[++i]);
+		        strlcpy(image_type, img_extensions[++i], image_type_size);
                         return (_DtGrSUCCESS);
                     }
                     /* Skip two ahead to the next file extension name */
@@ -2255,9 +2257,9 @@ static enum _DtGrLoadStatus DetermineImageType(
             }
 	}
 
-        /* 
-         * Didn't work, see if CDE datatyping can determine the image type.  
-         * First try the filename, then try the uncompressed temporary 
+        /*
+         * Didn't work, see if CDE datatyping can determine the image type.
+         * First try the filename, then try the uncompressed temporary
          * filename, if it exists.
          */
         if ((ext = DtDtsFileToDataType(stream->source.file.filename)) == NULL)
@@ -2268,7 +2270,7 @@ static enum _DtGrLoadStatus DetermineImageType(
         /* If successful, save the image type and return */
         if (ext != NULL)
 	{
-            strcpy (image_type, ext);
+            strlcpy(image_type, ext, image_type_size);
             DtDtsFreeDataType(ext);
             return (_DtGrSUCCESS);
         }
@@ -2283,7 +2285,7 @@ static enum _DtGrLoadStatus DetermineImageType(
         /* If successful, save the image type and return */
         if (ext != NULL)
 	{
-            strcpy (image_type, ext);
+            strlcpy(image_type, ext, image_type_size);
             DtDtsFreeDataType(ext);
             return (_DtGrSUCCESS);
         }
@@ -2300,12 +2302,12 @@ static enum _DtGrLoadStatus DetermineImageType(
  * This function returns the converter and context destructor functions for
  * the specified image type.  The registry of default image types is searched
  * first, followed by the registry of new image types, until a match is made.
- * The function returns _DtGrSUCCESS if the image_type has been registered 
+ * The function returns _DtGrSUCCESS if the image_type has been registered
  * and _DtGrCONVERT_FAILURE if it has not.
  *
  *****************************************************************************/
 static enum _DtGrLoadStatus GetConverterAndDestructor(
-    char *image_type, 
+    char *image_type,
     _DtGrLoadProc *converter,
     _DtGrDestroyContextProc *destructor)
 {
@@ -2327,7 +2329,7 @@ static enum _DtGrLoadStatus GetConverterAndDestructor(
 	    _DtHelpProcessUnlock();
             return (_DtGrSUCCESS);
 	}
-    }    
+    }
 
     /* Search the new image type registry for the specified image type */
     for (i=0; i<new_registry_count; i++)
@@ -2340,7 +2342,7 @@ static enum _DtGrLoadStatus GetConverterAndDestructor(
 	    _DtHelpProcessUnlock();
             return (_DtGrSUCCESS);
 	}
-    }    
+    }
     _DtHelpProcessUnlock();
 
     /* Image type wasn't registered, return failure */
@@ -2360,7 +2362,7 @@ static enum _DtGrLoadStatus GetConverterAndDestructor(
  *	Get the pixmap for the graphic.
  *
  *****************************************************************************/
-Pixmap 
+Pixmap
 _DtHelpProcessGraphic(
 	Display    *dpy,
 	Drawable    drawable,
@@ -2385,7 +2387,7 @@ _DtHelpProcessGraphic(
 {
 
     unsigned int    pixWidth  = 0;
-    unsigned int    pixHeight = 0; 
+    unsigned int    pixHeight = 0;
     Dimension       pWidth, pHeight;
     Pixmap pix = 0, mask = 0;
     _DtGrStream stream;
@@ -2416,15 +2418,17 @@ _DtHelpProcessGraphic(
 	ForceColor = _DtGrCOLOR;
 
 	XtGetApplicationNameAndClass (dpy, &ptr, &ptr2);
-	xrmName  = malloc (strlen (ptr) + 14);
-	xrmClass = malloc (strlen (ptr2) + 14);
+	int xrmName_size = strlen(ptr) + 14;
+	int xrmClass_size = strlen (ptr2) + 14;
+	xrmName  = malloc(xrmName_size);
+	xrmClass = malloc(xrmClass_size);
 	if (xrmName && xrmClass)
 	  {
-	    strcpy (xrmName , ptr);
-	    strcat (xrmName , ".helpColorUse");
+	    strlcpy(xrmName , ptr, xrmName_size);
+	    strlcat(xrmName , ".helpColorUse", xrmName_size);
 
-	    strcpy (xrmClass, ptr2);
-	    strcat (xrmClass, ".HelpColorUse");
+	    strlcpy(xrmClass, ptr2, xrmClass_size);
+	    strlcat(xrmClass, ".HelpColorUse", xrmClass_size);
 
 	    if (XrmGetResource (XtDatabase (dpy), xrmName, xrmClass,
 					&retStrType, &retValue) == True)
@@ -2469,12 +2473,12 @@ _DtHelpProcessGraphic(
 
 	if (result != 0)
 	    pix = 0;
-        else 
+        else
 	{
 	    /* Create a pixmap from the image data stream */
            _DtGrLoad(&stream, NULL, scrptr, depth, colormap, visual,
-                     fore_ground, back_ground, gc, ForceColor, TRUE, &pWidth, 
-                     &pHeight, media_resolution, &pix, &mask, ret_colors, 
+                     fore_ground, back_ground, gc, ForceColor, TRUE, &pWidth,
+                     &pHeight, media_resolution, &pix, &mask, ret_colors,
 		     ret_number, context);
            pixWidth = pWidth;
            pixHeight = pHeight;
@@ -2551,7 +2555,7 @@ _DtHelpProcessGraphic(
  * parameter, a copy of the image type string is allocated and stored at this
  * address.  The caller is responsible for freeing this string.  The caller
  * is also responsible for freeing the values passed back in the ret_pixmap,
- * ret_mask, ret_colors, and context parameters.  The _DtGrLoad function 
+ * ret_mask, ret_colors, and context parameters.  The _DtGrLoad function
  * returns _DtGrCONVERT_FAILURE if the appropriate converter could not be
  * determined, otherwise it returns the value returned by the converter.
  *
@@ -2589,29 +2593,29 @@ enum _DtGrLoadStatus _DtGrLoad(
     else
     {
         /* Image type not specified by caller, try to figure it out */
-        if ((status = DetermineImageType(stream, buf)) != _DtGrSUCCESS)
+        if ((status = DetermineImageType(stream, buf, 20)) != _DtGrSUCCESS)
 	    return (status); /* Return failure if image type is unknown */
-        itype = &buf[0];     
+        itype = &buf[0];
     }
 
     /* Look up the proper converter for this image type */
-    if ((status=GetConverterAndDestructor(itype, &converter, &destructor)) == 
+    if ((status=GetConverterAndDestructor(itype, &converter, &destructor)) ==
 	                                                     _DtGrSUCCESS)
     {
         /* Call the converter */
         if (converter != NULL)
 	{
 	    status = (*converter)(stream, screen, depth, colormap, visual,
-                                  foreground, background, gc, color_model, 
+                                  foreground, background, gc, color_model,
                                   allow_reduced_colors, in_out_width,
-                                  in_out_height, media_resolution, ret_pixmap, 
-	                          ret_mask, ret_colors, ret_num_colors, 
+                                  in_out_height, media_resolution, ret_pixmap,
+	                          ret_mask, ret_colors, ret_num_colors,
 	                          context);
 	}
         else
             status = _DtGrCONVERT_FAILURE;
     }
-    
+
     /* Return a copy of the image type string if successful */
     if (status == _DtGrSUCCESS || status == _DtGrCOLOR_REDUCE)
         if ((image_type != NULL) && (*image_type == NULL) && (itype != NULL))
@@ -2635,7 +2639,7 @@ void _DtGrDestroyContext(
     _DtGrLoadProc converter;
     _DtGrDestroyContextProc destructor;
 
-    if (GetConverterAndDestructor(context->image_type, &converter, 
+    if (GetConverterAndDestructor(context->image_type, &converter,
                                   &destructor) == _DtGrSUCCESS)
     {
         if (destructor != NULL)
@@ -2652,7 +2656,7 @@ void _DtGrDestroyContext(
  * it is created in the new image type registry.  If the image_type has been
  * registered, the current converter and context destructor functions are
  * replaced by those specified by the caller.  If the caller passes valid
- * addresses in the current_convert_proc and current_destroy_proc parameters, 
+ * addresses in the current_convert_proc and current_destroy_proc parameters,
  * the current converter and context destructor functions will be saved there
  * first so that the caller may restore them at a later time.
  *
@@ -2686,7 +2690,7 @@ void _DtGrRegisterConverter(
 	    _DtHelpProcessUnlock();
             return;
 	}
-    }    
+    }
 
     /* Search the new converter registry for the specified image type */
     for (i=0; i<new_registry_count; i++)
@@ -2704,14 +2708,14 @@ void _DtGrRegisterConverter(
 	    _DtHelpProcessUnlock();
             return;
 	}
-    }    
-    
+    }
+
     /* If we make it here, we've got a new image type to register */
-    new_registry = (_DtGrRegistryRec *) XtRealloc ((char *) new_registry, 
+    new_registry = (_DtGrRegistryRec *) XtRealloc ((char *) new_registry,
                     sizeof(_DtGrRegistryRec) * (new_registry_count + 1));
     new_registry[new_registry_count].image_type = XtNewString (image_type);
     new_registry[new_registry_count].convert_proc = convert_proc;
-    new_registry[new_registry_count].destroy_context_proc = 
+    new_registry[new_registry_count].destroy_context_proc =
                                                         destroy_context_proc;
     new_registry_count++;
     _DtHelpProcessUnlock();
@@ -2728,7 +2732,7 @@ void _DtGrRegisterConverter(
 /******************************************************************************
  *
  * Input stream functions
- * 
+ *
  * These functions allow the creation and manipulation of a stream that
  * can be associated with either a file or a buffer.  They are intended to
  * be used by image data to pixmap converter functions that need to handle
@@ -2740,9 +2744,9 @@ void _DtGrRegisterConverter(
  *
  * Function _DtGrOpenFile
  *
- * Opens a file for reading and associates it with the specified stream.  If 
- * the file is compressed, the function uncompresses it prior to opening.  
- * Returns 0 for success, -1 or the value of errno as set by fopen for 
+ * Opens a file for reading and associates it with the specified stream.  If
+ * the file is compressed, the function uncompresses it prior to opening.
+ * Returns 0 for success, -1 or the value of errno as set by fopen for
  * failure.
  *
  *****************************************************************************/
@@ -2752,11 +2756,11 @@ int _DtGrOpenFile(
 {
     char *fname = NULL;
 
-    if (stream == NULL) 
+    if (stream == NULL)
         return (-1);    /* Failure */
 
     /* Uncompress the file if necessary and obtain the new filename */
-    if (_DtHelpCeGetUncompressedFileName(path, &fname) == -1)
+    if (_DtHelpCeGetUncompressedFileName((char *)path, &fname) == -1)
     {
         stream->type = _DtGrNONE;
         return (-1);  /* Failure */
@@ -2771,8 +2775,8 @@ int _DtGrOpenFile(
         if ((fname != path) && (fname != NULL))
 	{
             unlink (fname);
-            free (fname);             
-        }   
+            free (fname);
+        }
         return(errno);
     }
 
@@ -2826,7 +2830,7 @@ int _DtGrOpenBuffer(
  * _DtGrNONE.  If the stream is associated with a file, then the file is
  * closed and the filename in the stream structure is freed.  If the file
  * required decompression, then the uncompressed file is unlinked and the
- * uncompressed filename is freed. 
+ * uncompressed filename is freed.
  *
  *****************************************************************************/
 int _DtGrCloseStream(
@@ -2842,9 +2846,9 @@ int _DtGrCloseStream(
         /* Close the file and free the filename */
         status = fclose(stream->source.file.fileptr);
         if (stream->source.file.filename != NULL)
-            XtFree(stream->source.file.filename);      
+            XtFree(stream->source.file.filename);
         if (stream->source.file.uncompressed_filename != NULL)
-	{ 
+	{
             /* Unlink the uncompressed file and free the filename */
             unlink(stream->source.file.uncompressed_filename);
             free(stream->source.file.uncompressed_filename);
@@ -2854,6 +2858,8 @@ int _DtGrCloseStream(
     {
         status = 0;    /* Success */
     }
+    else
+      return(EOF);     /* Failure */
 
     stream->type = _DtGrNONE;
     return (status);
@@ -2864,9 +2870,9 @@ int _DtGrCloseStream(
  *
  * Function _DtGrRead
  *
- * Stream version of fread, reads data from a stream into a buffer.  If the 
+ * Stream version of fread, reads data from a stream into a buffer.  If the
  * stream is file-associated, a call to fread is made.  If the stream is
- * buffer-associated, an analogous operation is performed on the stream 
+ * buffer-associated, an analogous operation is performed on the stream
  * buffer.  The number of items read from the stream is returned to the caller.
  *
  *****************************************************************************/
@@ -2893,36 +2899,38 @@ size_t _DtGrRead(
         if (size <= 0 || num_items <= 0)
             return (0);
 
-	for (nleft = num_items * size; ; ) 
+	for (nleft = num_items * size; ; )
         {
-            if (stream->source.buffer.current > stream->source.buffer.end) 
-            { 
+            if (stream->source.buffer.current > stream->source.buffer.end)
+            {
                 /* past end of stream */
-                if (stream->source.buffer.current == 
+                if (stream->source.buffer.current ==
                     stream->source.buffer.end + 1)
                     return (num_items - (nleft + size - 1)/size);
                 stream->source.buffer.current--;
             }
-            n = (nleft < stream->source.buffer.end - 
+            n = (nleft < stream->source.buffer.end -
                          stream->source.buffer.current + 1 ? nleft :
-                 stream->source.buffer.end - 
-                 stream->source.buffer.current + 1); 
+                 stream->source.buffer.end -
+                 stream->source.buffer.current + 1);
             /* Copy the items into the caller-supplied buffer */
-            buffer = (char *)memcpy(buffer, 
-                                   (void *) stream->source.buffer.current, 
+            buffer = (char *)memcpy(buffer,
+                                   (void *) stream->source.buffer.current,
                                    (size_t)n) + n;
             stream->source.buffer.current += n;
             if ((nleft -= n) == 0)
                 return (num_items);
         }
     }
+    else
+      return(0);
 }
 
 /******************************************************************************
  *
  * Function _DtGrSeek
  *
- * Stream version of fseek, repositions the file or buffer pointer of a 
+ * Stream version of fseek, repositions the file or buffer pointer of a
  * stream.  If the stream is file-associated, the return value is the value
  * returned by fseek.  If the stream is buffer-associated, 0 is returned if
  * the requested position is inside the buffer, -1 if it is not.
@@ -2932,7 +2940,7 @@ int _DtGrSeek(
     _DtGrStream *stream,
     long        offset,
     int         whence)
-{        
+{
     long newpos;
 
     if ((stream == NULL) || (stream->type == _DtGrNONE))
@@ -2944,7 +2952,7 @@ int _DtGrSeek(
     }
     else if (stream->type == _DtGrBUFFER)
     {
-        switch (whence) 
+        switch (whence)
 	{
 	    case SEEK_SET:
                 newpos = (long)stream->source.buffer.base + offset;
@@ -2969,13 +2977,15 @@ int _DtGrSeek(
         else
             return(-1); /* Failure */
     }
+    else
+      return(-1); /* Failure */
 }
 
 /******************************************************************************
  *
  * Function _DtGrGetChar
  *
- * Stream version of fgetc, reads  a character from a stream and advances the 
+ * Stream version of fgetc, reads  a character from a stream and advances the
  * stream position.  The next byte in the stream is returned, or EOF if an
  * error occurs or the end of the stream is reached.
  *
@@ -2997,14 +3007,16 @@ int _DtGrGetChar(
         else
 	    return ((unsigned char) *(stream->source.buffer.current++));
     }
+    else
+      return(EOF);
 }
 
 /******************************************************************************
  *
  * Function _DtGrGetString
  *
- * Stream version of fgets, reads a string from a stream and advances the 
- * stream position.  If an error occurs or the end of the stream is 
+ * Stream version of fgets, reads a string from a stream and advances the
+ * stream position.  If an error occurs or the end of the stream is
  * encountered and no characters have been read, no characters are transferred
  * to the buffer and a NULL pointer is returned.  Otherwise, the buffer is
  * returned.
@@ -3028,11 +3040,11 @@ char *_DtGrGetString(
     else if (stream->type == _DtGrBUFFER)
     {
         /* This code mirrors that of fgets in libc */
-        for (num_bytes--; num_bytes > 0; num_bytes -= i) 
+        for (num_bytes--; num_bytes > 0; num_bytes -= i)
         {
-            if (stream->source.buffer.current > stream->source.buffer.end) 
+            if (stream->source.buffer.current > stream->source.buffer.end)
             {
-                if (stream->source.buffer.current == 
+                if (stream->source.buffer.current ==
                     stream->source.buffer.end + 1)
                 {
                     if (save == buffer)
@@ -3041,9 +3053,9 @@ char *_DtGrGetString(
                 }
                 stream->source.buffer.current--;
             }
-            i = (num_bytes < stream->source.buffer.end - 
+            i = (num_bytes < stream->source.buffer.end -
 		             stream->source.buffer.current + 1 ? num_bytes :
-                             stream->source.buffer.end - 
+                             stream->source.buffer.end -
                              stream->source.buffer.current + 1);
             /* Copy the data into the buffer */
             if ((p = memccpy((void *)buffer,
@@ -3058,4 +3070,6 @@ char *_DtGrGetString(
         *buffer = '\0';
         return (save);
     }
+    else
+      return(NULL); /* Failure */
 }

@@ -142,281 +142,281 @@ typedef	struct {
 
 
 static	SpecialSymbolTable SpcTable[] =
-{ 
- {"[aacute]", {'\341','\0'}, IsoString   }, /*ISOlat1, small a, acute accent */ 
- {"[acirc ]", {'\342','\0'}, IsoString   }, /*ISOlat1, small a, circumflex   */ 
- {"[aelig ]", {'\346','\0'}, IsoString   }, /*ISOlat1, small ae diphthong    */ 
- {"[agrave]", {'\340','\0'}, IsoString   }, /*ISOlat1, small a, grave accent */ 
- {"[alpha ]", {'\141','\0'}, SymbolString}, /*ISOgrk3, Greek, small alpha    */ 
- {"[aleph ]", {'\300','\0'}, SymbolString}, /*ISOtech, aleph, Hebrews        */ 
- {"[amp   ]", {  '&' ,'\0'}, IsoString   }, /*ISOnum , ampersand             */ 
- {"[and   ]", {'\331','\0'}, SymbolString}, /*ISOtech, wedge, logical and    */ 
- {"[ang   ]", {'\320','\0'}, SymbolString}, /*ISOamso, angle                 */ 
- {"[angst ]", {'\305','\0'}, IsoString   }, /*ISOtech, Angstrom, cap A, ring */ 
- {"[ap    ]", {'\273','\0'}, SymbolString}, /*ISOtech, approximately equal   */ 
- {"[apos  ]", { '\'' ,'\0'}, IsoString   }, /*ISOnum , apostrophe            */ 
- {"[aring ]", {'\345','\0'}, IsoString   }, /*ISOlat1, small a, ring         */ 
- {"[ast   ]", {  '*' ,'\0'}, IsoString   }, /*ISOnum , asterisk              */ 
- {"[atilde]", {'\343','\0'}, IsoString   }, /*ISOlat1, small a, tilde        */ 
- {"[auml  ]", {'\344','\0'}, IsoString   }, /*ISOlat1, small a, umlaut mark  */ 
- {"[beta  ]", {'\142','\0'}, SymbolString}, /*ISOgrk3, Greek, small beta     */ 
- {"[blank ]", {  ' ' ,'\0'}, IsoString   }, /*ISOpub , significant blank     */ 
- {"[bottom]", {'\136','\0'}, SymbolString}, /*ISOtech, bottom symbol         */ 
- {"[brvbar]", {'\246','\0'}, IsoString   }, /*ISOnum , broken vertical bar   */ 
- {"[bsol  ]", { '\\' ,'\0'}, IsoString   }, /*ISOnum , backslash, rev solidus*/ 
- {"[bull  ]", {'\267','\0'}, SymbolString}, /*ISOpub , round bullet,filled   */ 
- {"[cap   ]", {'\307','\0'}, SymbolString}, /*ISOtech, intersection          */ 
- {"[ccedil]", {'\347','\0'}, IsoString   }, /*ISOlat1, small c, cedilla      */ 
- {"[cent  ]", {'\242','\0'}, IsoString   }, /*ISOnum , cent sign             */ 
- {"[chi   ]", {'\143','\0'}, SymbolString}, /*ISOgrk3, Greek, small chi      */ 
- {"[clubs ]", {'\247','\0'}, SymbolString}, /*ISOpub , clubs suit symbol     */ 
- {"[colon ]", {  ':' ,'\0'}, IsoString   }, /*ISOnum , colon                 */ 
- {"[comma ]", {  ',' ,'\0'}, IsoString   }, /*ISOnum , comma                 */ 
- {"[commat]", {  '@' ,'\0'}, IsoString   }, /*ISOnum , commercial at         */ 
- {"[cong  ]", {'\100','\0'}, SymbolString}, /*ISOtech, congruent with        */ 
- {"[copy  ]", {'\323','\0'}, SymbolString}, /*ISOnum , copyright symbol      */ 
- {"[cup   ]", {'\310','\0'}, SymbolString}, /*ISOtech, union or logical sum  */ 
- {"[curren]", {'\244','\0'}, IsoString   }, /*ISOnum , general currency sign */ 
- {"[darr  ]", {'\257','\0'}, SymbolString}, /*ISOnum , downward arrow        */ 
- {"[dArr  ]", {'\337','\0'}, SymbolString}, /*ISOamsa, down double arrow     */ 
- {"[dash  ]", {  '-' ,'\0'}, IsoString   }, /*ISOpub , dash                  */ 
- {"[deg   ]", {'\260','\0'}, SymbolString}, /*ISOnum , degree sign           */ 
- {"[delta ]", {'\144','\0'}, SymbolString}, /*ISOgrk3, Greek, small delta    */ 
- {"[diams ]", {'\250','\0'}, SymbolString}, /*ISOpub , diamond suit symbol   */ 
- {"[divide]", {'\270','\0'}, SymbolString}, /*ISOnum , divide sign           */ 
- {"[dollar]", {  '$' ,'\0'}, IsoString   }, /*ISOnum , dollar sign           */ 
- {"[eacute]", {'\351','\0'}, IsoString   }, /*ISOlat1, small e, acute accent */ 
- {"[ecirc ]", {'\352','\0'}, IsoString   }, /*ISOlat1, small e, circumflex   */ 
- {"[egrave]", {'\350','\0'}, IsoString   }, /*ISOlat1, small e, grave accent */ 
- {"[empty ]", {'\370','\0'}, IsoString   }, /*ISOamso, empty string          */ 
- {"[epsiv ]", {'\145','\0'}, SymbolString}, /*ISOgrk3, Greek,sm epsilon, var */ 
- {"[equals]", {  '=' ,'\0'}, IsoString   }, /*ISOnum , equals sign           */ 
- {"[equiv ]", {'\272','\0'}, SymbolString}, /*ISOtech, identical with        */ 
- {"[eta   ]", {'\150','\0'}, SymbolString}, /*ISOgrk3, Greek, small eta      */ 
- {"[eth   ]", {'\360','\0'}, IsoString   }, /*ISOlat1, small eth, Icelandic  */ 
- {"[euml  ]", {'\353','\0'}, IsoString   }, /*ISOlat1, small e, umlaut mark  */ 
- {"[excl  ]", {  '!' ,'\0'}, IsoString   }, /*ISOnum , exclamation mark      */ 
- {"[exist ]", {'\044','\0'}, SymbolString}, /*ISOtech, at least one exists   */ 
- {"[forall]", {'\042','\0'}, SymbolString}, /*ISOtech, for all               */ 
- {"[frac12]", {'\275','\0'}, IsoString   }, /*ISOnum , fraction one-half     */ 
+{
+ {"[aacute]", {'\341','\0'}, IsoString   }, /*ISOlat1, small a, acute accent */
+ {"[acirc ]", {'\342','\0'}, IsoString   }, /*ISOlat1, small a, circumflex   */
+ {"[aelig ]", {'\346','\0'}, IsoString   }, /*ISOlat1, small ae diphthong    */
+ {"[agrave]", {'\340','\0'}, IsoString   }, /*ISOlat1, small a, grave accent */
+ {"[alpha ]", {'\141','\0'}, SymbolString}, /*ISOgrk3, Greek, small alpha    */
+ {"[aleph ]", {'\300','\0'}, SymbolString}, /*ISOtech, aleph, Hebrews        */
+ {"[amp   ]", {  '&' ,'\0'}, IsoString   }, /*ISOnum , ampersand             */
+ {"[and   ]", {'\331','\0'}, SymbolString}, /*ISOtech, wedge, logical and    */
+ {"[ang   ]", {'\320','\0'}, SymbolString}, /*ISOamso, angle                 */
+ {"[angst ]", {'\305','\0'}, IsoString   }, /*ISOtech, Angstrom, cap A, ring */
+ {"[ap    ]", {'\273','\0'}, SymbolString}, /*ISOtech, approximately equal   */
+ {"[apos  ]", { '\'' ,'\0'}, IsoString   }, /*ISOnum , apostrophe            */
+ {"[aring ]", {'\345','\0'}, IsoString   }, /*ISOlat1, small a, ring         */
+ {"[ast   ]", {  '*' ,'\0'}, IsoString   }, /*ISOnum , asterisk              */
+ {"[atilde]", {'\343','\0'}, IsoString   }, /*ISOlat1, small a, tilde        */
+ {"[auml  ]", {'\344','\0'}, IsoString   }, /*ISOlat1, small a, umlaut mark  */
+ {"[beta  ]", {'\142','\0'}, SymbolString}, /*ISOgrk3, Greek, small beta     */
+ {"[blank ]", {  ' ' ,'\0'}, IsoString   }, /*ISOpub , significant blank     */
+ {"[bottom]", {'\136','\0'}, SymbolString}, /*ISOtech, bottom symbol         */
+ {"[brvbar]", {'\246','\0'}, IsoString   }, /*ISOnum , broken vertical bar   */
+ {"[bsol  ]", { '\\' ,'\0'}, IsoString   }, /*ISOnum , backslash, rev solidus*/
+ {"[bull  ]", {'\267','\0'}, SymbolString}, /*ISOpub , round bullet,filled   */
+ {"[cap   ]", {'\307','\0'}, SymbolString}, /*ISOtech, intersection          */
+ {"[ccedil]", {'\347','\0'}, IsoString   }, /*ISOlat1, small c, cedilla      */
+ {"[cent  ]", {'\242','\0'}, IsoString   }, /*ISOnum , cent sign             */
+ {"[chi   ]", {'\143','\0'}, SymbolString}, /*ISOgrk3, Greek, small chi      */
+ {"[clubs ]", {'\247','\0'}, SymbolString}, /*ISOpub , clubs suit symbol     */
+ {"[colon ]", {  ':' ,'\0'}, IsoString   }, /*ISOnum , colon                 */
+ {"[comma ]", {  ',' ,'\0'}, IsoString   }, /*ISOnum , comma                 */
+ {"[commat]", {  '@' ,'\0'}, IsoString   }, /*ISOnum , commercial at         */
+ {"[cong  ]", {'\100','\0'}, SymbolString}, /*ISOtech, congruent with        */
+ {"[copy  ]", {'\323','\0'}, SymbolString}, /*ISOnum , copyright symbol      */
+ {"[cup   ]", {'\310','\0'}, SymbolString}, /*ISOtech, union or logical sum  */
+ {"[curren]", {'\244','\0'}, IsoString   }, /*ISOnum , general currency sign */
+ {"[darr  ]", {'\257','\0'}, SymbolString}, /*ISOnum , downward arrow        */
+ {"[dArr  ]", {'\337','\0'}, SymbolString}, /*ISOamsa, down double arrow     */
+ {"[dash  ]", {  '-' ,'\0'}, IsoString   }, /*ISOpub , dash                  */
+ {"[deg   ]", {'\260','\0'}, SymbolString}, /*ISOnum , degree sign           */
+ {"[delta ]", {'\144','\0'}, SymbolString}, /*ISOgrk3, Greek, small delta    */
+ {"[diams ]", {'\250','\0'}, SymbolString}, /*ISOpub , diamond suit symbol   */
+ {"[divide]", {'\270','\0'}, SymbolString}, /*ISOnum , divide sign           */
+ {"[dollar]", {  '$' ,'\0'}, IsoString   }, /*ISOnum , dollar sign           */
+ {"[eacute]", {'\351','\0'}, IsoString   }, /*ISOlat1, small e, acute accent */
+ {"[ecirc ]", {'\352','\0'}, IsoString   }, /*ISOlat1, small e, circumflex   */
+ {"[egrave]", {'\350','\0'}, IsoString   }, /*ISOlat1, small e, grave accent */
+ {"[empty ]", {'\370','\0'}, IsoString   }, /*ISOamso, empty string          */
+ {"[epsiv ]", {'\145','\0'}, SymbolString}, /*ISOgrk3, Greek,sm epsilon, var */
+ {"[equals]", {  '=' ,'\0'}, IsoString   }, /*ISOnum , equals sign           */
+ {"[equiv ]", {'\272','\0'}, SymbolString}, /*ISOtech, identical with        */
+ {"[eta   ]", {'\150','\0'}, SymbolString}, /*ISOgrk3, Greek, small eta      */
+ {"[eth   ]", {'\360','\0'}, IsoString   }, /*ISOlat1, small eth, Icelandic  */
+ {"[euml  ]", {'\353','\0'}, IsoString   }, /*ISOlat1, small e, umlaut mark  */
+ {"[excl  ]", {  '!' ,'\0'}, IsoString   }, /*ISOnum , exclamation mark      */
+ {"[exist ]", {'\044','\0'}, SymbolString}, /*ISOtech, at least one exists   */
+ {"[forall]", {'\042','\0'}, SymbolString}, /*ISOtech, for all               */
+ {"[frac12]", {'\275','\0'}, IsoString   }, /*ISOnum , fraction one-half     */
  {"[frac13]", {'1','/','3','\0'},
-			     IsoString   }, /*ISOnum , fraction one-third    */ 
- {"[frac14]", {'\274','\0'}, IsoString   }, /*ISOnum , fraction one-quarter  */ 
+			     IsoString   }, /*ISOnum , fraction one-third    */
+ {"[frac14]", {'\274','\0'}, IsoString   }, /*ISOnum , fraction one-quarter  */
  {"[frac15]", {'1','/','5','\0'},
-			     IsoString   }, /*ISOnum , fraction one-fifth    */ 
+			     IsoString   }, /*ISOnum , fraction one-fifth    */
  {"[frac16]", {'1','/','6','\0'},
-			     IsoString   }, /*ISOnum , fraction one-sixth    */ 
+			     IsoString   }, /*ISOnum , fraction one-sixth    */
  {"[frac18]", {'1','/','8','\0'},
-			     IsoString   }, /*ISOnum , fraction one-eight    */ 
+			     IsoString   }, /*ISOnum , fraction one-eight    */
  {"[frac23]", {'2','/','3','\0'},
-			     IsoString   }, /*ISOnum , fraction two-thirds   */ 
+			     IsoString   }, /*ISOnum , fraction two-thirds   */
  {"[frac25]", {'2','/','5','\0'},
-			     IsoString   }, /*ISOnum , fraction two-fifths   */ 
- {"[frac34]", {'\276','\0'}, IsoString   }, /*ISOnum , fraction three-quarter*/ 
+			     IsoString   }, /*ISOnum , fraction two-fifths   */
+ {"[frac34]", {'\276','\0'}, IsoString   }, /*ISOnum , fraction three-quarter*/
  {"[frac35]", {'3','/','5','\0'},
-			     IsoString   }, /*ISOnum , fraction three-fifths */ 
+			     IsoString   }, /*ISOnum , fraction three-fifths */
  {"[frac38]", {'3','/','8','\0'},
-			     IsoString   }, /*ISOnum , fraction three-eights */ 
+			     IsoString   }, /*ISOnum , fraction three-eights */
  {"[frac45]", {'4','/','5','\0'},
-			     IsoString   }, /*ISOnum , fraction four-fifths  */ 
+			     IsoString   }, /*ISOnum , fraction four-fifths  */
  {"[frac56]", {'5','/','6','\0'},
-			     IsoString   }, /*ISOnum , fraction five-sixths  */ 
+			     IsoString   }, /*ISOnum , fraction five-sixths  */
  {"[frac58]", {'5','/','8','\0'},
-			     IsoString   }, /*ISOnum , fraction five-eights  */ 
+			     IsoString   }, /*ISOnum , fraction five-eights  */
  {"[frac78]", {'7','/','8','\0'},
-			     IsoString   }, /*ISOnum , fraction seven-eights */ 
- {"[gamma ]", {'\147','\0'}, SymbolString}, /*ISOgrk3, Greek, small gamma    */ 
- {"[ge    ]", {'\263','\0'}, SymbolString}, /*ISOtech, greater-than-or-equal */ 
- {"[gt    ]", {  '>' ,'\0'}, IsoString   }, /*ISOnum , greater than sign     */ 
- {"[half  ]", {'\275','\0'}, IsoString   }, /*ISOnum , fraction one-half     */ 
- {"[harr  ]", {'\253','\0'}, SymbolString}, /*ISOamsa, left & right arrow    */ 
- {"[hArr  ]", {'\333','\0'}, SymbolString}, /*ISOamsa, l & r double arrow    */ 
- {"[hearts]", {'\251','\0'}, SymbolString}, /*ISOpub , hearts suit symbol    */ 
- {"[hellip]", {'\274','\0'}, SymbolString}, /*ISOpub , ellipsis(horizontal)  */ 
- {"[horbar]", {'\276','\0'}, SymbolString}, /*ISOnum , horizontal bar        */ 
- {"[hyphen]", {  '-' ,'\0'}, IsoString   }, /*ISOnum , hyphen                */ 
- {"[iacute]", {'\355','\0'}, IsoString   }, /*ISOlat1, small i, acute accent */ 
- {"[icirc ]", {'\356','\0'}, IsoString   }, /*ISOlat1, small i, circumflex   */ 
- {"[iexcl ]", {'\241','\0'}, IsoString   }, /*ISOnum , inverted ! mark       */ 
- {"[igrave]", {'\354','\0'}, IsoString   }, /*ISOlat1, small i, grave accent */ 
- {"[image ]", {'\301','\0'}, SymbolString}, /*ISOamso,imaginary number symbol*/ 
- {"[infin ]", {'\245','\0'}, SymbolString}, /*ISOtech, infinity              */ 
- {"[int   ]", {'\246','\0'}, SymbolString}, /*ISOtech, intergral operator    */ 
- {"[iota  ]", {'\151','\0'}, SymbolString}, /*ISOgrk3, Greek, small iota     */ 
- {"[iquest]", {'\277','\0'}, IsoString   }, /*ISOnum , inverted ? mark       */ 
- {"[isin  ]", {'\316','\0'}, SymbolString}, /*ISOtech, set membership        */ 
- {"[iuml  ]", {'\357','\0'}, IsoString   }, /*ISOlat1, small i, umlaut mark  */ 
- {"[kappa ]", {'\153','\0'}, SymbolString}, /*ISOgrk3, Greek, small kappa    */ 
- {"[lambda]", {'\154','\0'}, SymbolString}, /*ISOgrk3, Greek, small lambda   */ 
- {"[lang  ]", {'\341','\0'}, SymbolString}, /*ISOtech, left angle bracket    */ 
- {"[laquo ]", {'\253','\0'}, IsoString   }, /*ISOnum , left angle quotation  */ 
- {"[larr  ]", {'\254','\0'}, SymbolString}, /*ISOnum , leftward arrow        */ 
- {"[lArr  ]", {'\334','\0'}, SymbolString}, /*ISOtech, is implied by         */ 
- {"[lcub  ]", {  '{' ,'\0'}, IsoString   }, /*ISOnum , left curly brace      */ 
- {"[ldquo ]", {  '"' ,'\0'}, IsoString   }, /*ISOnum , left double quote     */ 
- {"[le    ]", {'\243','\0'}, SymbolString}, /*ISOtech, less-than-or-equal    */ 
- {"[lowbar]", {  '_' ,'\0'}, IsoString   }, /*ISOnum , low line              */ 
- {"[lpar  ]", {  '(' ,'\0'}, IsoString   }, /*ISOnum , left parenthesis      */ 
- {"[lsqb  ]", {  '[' ,'\0'}, IsoString   }, /*ISOnum , left square bracket   */ 
- {"[lsquo ]", {  '`' ,'\0'}, IsoString   }, /*ISOnum , left single quote     */ 
- {"[lsquor]", {  ',' ,'\0'}, IsoString   }, /*ISOnum,rising single quote(low)*/ 
- {"[lt    ]", {  '<' ,'\0'}, IsoString   }, /*ISOnum , less-than sign        */ 
- {"[mdash ]", {'\276','\0'}, SymbolString}, /*ISOpub , em dash(long dash)    */ 
- {"[micro ]", {'\155','\0'}, SymbolString}, /*ISOnum , micro                 */ 
- {"[middot]", {'\267','\0'}, IsoString   }, /*ISOnum , middle dot            */ 
- {"[minus ]", {  '-' ,'\0'}, IsoString   }, /*ISOtech, minus sign            */ 
+			     IsoString   }, /*ISOnum , fraction seven-eights */
+ {"[gamma ]", {'\147','\0'}, SymbolString}, /*ISOgrk3, Greek, small gamma    */
+ {"[ge    ]", {'\263','\0'}, SymbolString}, /*ISOtech, greater-than-or-equal */
+ {"[gt    ]", {  '>' ,'\0'}, IsoString   }, /*ISOnum , greater than sign     */
+ {"[half  ]", {'\275','\0'}, IsoString   }, /*ISOnum , fraction one-half     */
+ {"[harr  ]", {'\253','\0'}, SymbolString}, /*ISOamsa, left & right arrow    */
+ {"[hArr  ]", {'\333','\0'}, SymbolString}, /*ISOamsa, l & r double arrow    */
+ {"[hearts]", {'\251','\0'}, SymbolString}, /*ISOpub , hearts suit symbol    */
+ {"[hellip]", {'\274','\0'}, SymbolString}, /*ISOpub , ellipsis(horizontal)  */
+ {"[horbar]", {'\276','\0'}, SymbolString}, /*ISOnum , horizontal bar        */
+ {"[hyphen]", {  '-' ,'\0'}, IsoString   }, /*ISOnum , hyphen                */
+ {"[iacute]", {'\355','\0'}, IsoString   }, /*ISOlat1, small i, acute accent */
+ {"[icirc ]", {'\356','\0'}, IsoString   }, /*ISOlat1, small i, circumflex   */
+ {"[iexcl ]", {'\241','\0'}, IsoString   }, /*ISOnum , inverted ! mark       */
+ {"[igrave]", {'\354','\0'}, IsoString   }, /*ISOlat1, small i, grave accent */
+ {"[image ]", {'\301','\0'}, SymbolString}, /*ISOamso,imaginary number symbol*/
+ {"[infin ]", {'\245','\0'}, SymbolString}, /*ISOtech, infinity              */
+ {"[int   ]", {'\246','\0'}, SymbolString}, /*ISOtech, intergral operator    */
+ {"[iota  ]", {'\151','\0'}, SymbolString}, /*ISOgrk3, Greek, small iota     */
+ {"[iquest]", {'\277','\0'}, IsoString   }, /*ISOnum , inverted ? mark       */
+ {"[isin  ]", {'\316','\0'}, SymbolString}, /*ISOtech, set membership        */
+ {"[iuml  ]", {'\357','\0'}, IsoString   }, /*ISOlat1, small i, umlaut mark  */
+ {"[kappa ]", {'\153','\0'}, SymbolString}, /*ISOgrk3, Greek, small kappa    */
+ {"[lambda]", {'\154','\0'}, SymbolString}, /*ISOgrk3, Greek, small lambda   */
+ {"[lang  ]", {'\341','\0'}, SymbolString}, /*ISOtech, left angle bracket    */
+ {"[laquo ]", {'\253','\0'}, IsoString   }, /*ISOnum , left angle quotation  */
+ {"[larr  ]", {'\254','\0'}, SymbolString}, /*ISOnum , leftward arrow        */
+ {"[lArr  ]", {'\334','\0'}, SymbolString}, /*ISOtech, is implied by         */
+ {"[lcub  ]", {  '{' ,'\0'}, IsoString   }, /*ISOnum , left curly brace      */
+ {"[ldquo ]", {  '"' ,'\0'}, IsoString   }, /*ISOnum , left double quote     */
+ {"[le    ]", {'\243','\0'}, SymbolString}, /*ISOtech, less-than-or-equal    */
+ {"[lowbar]", {  '_' ,'\0'}, IsoString   }, /*ISOnum , low line              */
+ {"[lpar  ]", {  '(' ,'\0'}, IsoString   }, /*ISOnum , left parenthesis      */
+ {"[lsqb  ]", {  '[' ,'\0'}, IsoString   }, /*ISOnum , left square bracket   */
+ {"[lsquo ]", {  '`' ,'\0'}, IsoString   }, /*ISOnum , left single quote     */
+ {"[lsquor]", {  ',' ,'\0'}, IsoString   }, /*ISOnum,rising single quote(low)*/
+ {"[lt    ]", {  '<' ,'\0'}, IsoString   }, /*ISOnum , less-than sign        */
+ {"[mdash ]", {'\276','\0'}, SymbolString}, /*ISOpub , em dash(long dash)    */
+ {"[micro ]", {'\155','\0'}, SymbolString}, /*ISOnum , micro                 */
+ {"[middot]", {'\267','\0'}, IsoString   }, /*ISOnum , middle dot            */
+ {"[minus ]", {  '-' ,'\0'}, IsoString   }, /*ISOtech, minus sign            */
  {"[mldr  ]", {'.','.','.','.','\0'},
 			     IsoString   }, /*ISOpub , em leader             */
  {"[mnplus]", {'\140','\b','+','\0'},
 			     SymbolString}, /*ISOtech, minus-or-plus sign    */
- {"[mu    ]", {'\155','\0'}, SymbolString}, /*ISOgrk3, Greek, small mu       */ 
- {"[nabla ]", {'\321','\0'}, SymbolString}, /*ISOtech, del, Hamilton operator*/ 
- {"[nbsp  ]", {  ' ' ,'\0'}, IsoString   }, /*ISOnum , no break space        */ 
- {"[ndash ]", {  '-' ,'\0'}, IsoString   }, /*ISOpub , en dash(short dash)   */ 
- {"[ne    ]", {'\271','\0'}, SymbolString}, /*ISOtech, not equal             */ 
- {"[ni    ]", {'\047','\0'}, SymbolString}, /*ISOtech, contains              */ 
+ {"[mu    ]", {'\155','\0'}, SymbolString}, /*ISOgrk3, Greek, small mu       */
+ {"[nabla ]", {'\321','\0'}, SymbolString}, /*ISOtech, del, Hamilton operator*/
+ {"[nbsp  ]", {  ' ' ,'\0'}, IsoString   }, /*ISOnum , no break space        */
+ {"[ndash ]", {  '-' ,'\0'}, IsoString   }, /*ISOpub , en dash(short dash)   */
+ {"[ne    ]", {'\271','\0'}, SymbolString}, /*ISOtech, not equal             */
+ {"[ni    ]", {'\047','\0'}, SymbolString}, /*ISOtech, contains              */
  {"[nldr  ]", {'.','.','\0'},IsoString   }, /*ISOpub , double baseline dot   */
- {"[not   ]", {'\330','\0'}, SymbolString}, /*ISOnum , not                   */ 
- {"[notin ]", {'\317','\0'}, SymbolString}, /*ISOtech, negated set membership*/ 
- {"[ntilde]", {'\361','\0'}, IsoString   }, /*ISOlat1, small N, tilde        */ 
- {"[nu    ]", {'\156','\0'}, SymbolString}, /*ISOgrk3, Greek, small nu       */ 
- {"[num   ]", {  '#' ,'\0'}, IsoString   }, /*ISOnum , number sign           */ 
- {"[oacute]", {'\363','\0'}, IsoString   }, /*ISOlat1, small o, acute accent */ 
- {"[ocirc ]", {'\364','\0'}, IsoString   }, /*ISOlat1, small o, circumflex   */ 
- {"[ograve]", {'\362','\0'}, IsoString   }, /*ISOlat1, small o, grave accent */ 
- {"[ohm   ]", {'\127','\0'}, SymbolString}, /*ISOnum , ohm                   */ 
- {"[omega ]", {'\167','\0'}, SymbolString}, /*ISOgrk3, Greek, small omega    */ 
- {"[oplus ]", {'\305','\0'}, SymbolString}, /*ISOamsb, plus sign in circle   */ 
- {"[or    ]", {'\332','\0'}, SymbolString}, /*ISOtech, vee, logical or       */ 
- {"[ordf  ]", {'\252','\0'}, IsoString   }, /*ISOnum , ordinal indicator, fem*/ 
- {"[ordm  ]", {'\272','\0'}, IsoString   }, /*ISOnum , ordinal indicator,male*/ 
- {"[oslash]", {'\370','\0'}, IsoString   }, /*ISOlat1, small o, slash        */ 
- {"[osol  ]", {'\306','\0'}, SymbolString}, /*ISOamsb, slash in circle       */ 
- {"[otilde]", {'\365','\0'}, IsoString   }, /*ISOlat1, small o, tilde        */ 
- {"[otimes]", {'\304','\0'}, SymbolString}, /*ISOamsb,multiply sign in circle*/ 
- {"[ouml  ]", {'\366','\0'}, IsoString   }, /*ISOlat1, small o, umlaut mark  */ 
- {"[over  ]", {'\140','\0'}, SymbolString}, /*made up, over symbol           */ 
+ {"[not   ]", {'\330','\0'}, SymbolString}, /*ISOnum , not                   */
+ {"[notin ]", {'\317','\0'}, SymbolString}, /*ISOtech, negated set membership*/
+ {"[ntilde]", {'\361','\0'}, IsoString   }, /*ISOlat1, small N, tilde        */
+ {"[nu    ]", {'\156','\0'}, SymbolString}, /*ISOgrk3, Greek, small nu       */
+ {"[num   ]", {  '#' ,'\0'}, IsoString   }, /*ISOnum , number sign           */
+ {"[oacute]", {'\363','\0'}, IsoString   }, /*ISOlat1, small o, acute accent */
+ {"[ocirc ]", {'\364','\0'}, IsoString   }, /*ISOlat1, small o, circumflex   */
+ {"[ograve]", {'\362','\0'}, IsoString   }, /*ISOlat1, small o, grave accent */
+ {"[ohm   ]", {'\127','\0'}, SymbolString}, /*ISOnum , ohm                   */
+ {"[omega ]", {'\167','\0'}, SymbolString}, /*ISOgrk3, Greek, small omega    */
+ {"[oplus ]", {'\305','\0'}, SymbolString}, /*ISOamsb, plus sign in circle   */
+ {"[or    ]", {'\332','\0'}, SymbolString}, /*ISOtech, vee, logical or       */
+ {"[ordf  ]", {'\252','\0'}, IsoString   }, /*ISOnum , ordinal indicator, fem*/
+ {"[ordm  ]", {'\272','\0'}, IsoString   }, /*ISOnum , ordinal indicator,male*/
+ {"[oslash]", {'\370','\0'}, IsoString   }, /*ISOlat1, small o, slash        */
+ {"[osol  ]", {'\306','\0'}, SymbolString}, /*ISOamsb, slash in circle       */
+ {"[otilde]", {'\365','\0'}, IsoString   }, /*ISOlat1, small o, tilde        */
+ {"[otimes]", {'\304','\0'}, SymbolString}, /*ISOamsb,multiply sign in circle*/
+ {"[ouml  ]", {'\366','\0'}, IsoString   }, /*ISOlat1, small o, umlaut mark  */
+ {"[over  ]", {'\140','\0'}, SymbolString}, /*made up, over symbol           */
  {"[par   ]", {'\275', '\275', '\0'},
-			     SymbolString}, /*ISOtech, parallel              */ 
- {"[para  ]", {'\266','\0'}, IsoString   }, /*ISOnum , paragraph sign        */ 
- {"[part  ]", {'\266','\0'}, SymbolString}, /*ISOtech, partial differential  */ 
- {"[percnt]", {  '%' ,'\0'}, IsoString   }, /*ISOnum , percent sign          */ 
- {"[period]", {  '.' ,'\0'}, IsoString   }, /*ISOnum , full stop, period     */ 
- {"[perp  ]", {'\136','\0'}, SymbolString}, /*ISOtech, perpendicular         */ 
- {"[phis  ]", {'\146','\0'}, SymbolString}, /*ISOgrk3, Greek, small phi      */ 
- {"[pi    ]", {'\160','\0'}, SymbolString}, /*ISOgrk3, Greek, small pi       */ 
- {"[piv   ]", {'\166','\0'}, SymbolString}, /*ISOgrk3, Greek, small pi, var  */ 
- {"[plus  ]", {  '+' ,'\0'}, IsoString   }, /*ISOnum , plus sign             */ 
- {"[plusmn]", {'\261','\0'}, SymbolString}, /*ISOnum , plus or minus sign    */ 
- {"[pound ]", {'\243','\0'}, IsoString   }, /*ISOnum , pound sign            */ 
- {"[prime ]", {'\242','\0'}, SymbolString}, /*ISOtech, prime or minute       */ 
- {"[prop  ]", {'\265','\0'}, SymbolString}, /*ISOtech, proportional to       */ 
- {"[psi   ]", {'\171','\0'}, SymbolString}, /*ISOgrk3, Greek, small psi      */ 
- {"[quest ]", {  '?' ,'\0'}, IsoString   }, /*ISOnum , question mark         */ 
- {"[quot  ]", { '\'' ,'\0'}, IsoString   }, /*ISOnum , quote mark            */ 
- {"[radic ]", {'\326','\0'}, SymbolString}, /*ISOtech, radical               */ 
- {"[rang  ]", {'\361','\0'}, SymbolString}, /*ISOtech, right angle bracket   */ 
- {"[raquo ]", {'\273','\0'}, IsoString   }, /*ISOnum , right angle quotation */ 
- {"[rarr  ]", {'\256','\0'}, SymbolString}, /*ISOnum , rightward arrow       */ 
- {"[rArr  ]", {'\336','\0'}, SymbolString}, /*ISOtech, rt dbl arrow,implies  */ 
- {"[rcub  ]", {  '}' ,'\0'}, IsoString   }, /*ISOnum , right curly brace     */ 
- {"[rdquo ]", {  '"' ,'\0'}, IsoString   }, /*ISOnum , right double quote    */ 
- {"[real  ]", {'\302','\0'}, SymbolString}, /*ISOamso, real number symbol    */ 
- {"[reg   ]", {'\322','\0'}, SymbolString}, /*ISOnum,circledR,registered sign*/ 
- {"[rho   ]", {'\162','\0'}, SymbolString}, /*ISOgrk3, Greek, small rho      */ 
- {"[rpar  ]", {  ')' ,'\0'}, IsoString   }, /*ISOnum , right parenthesis     */ 
- {"[rsqb  ]", {  ']' ,'\0'}, IsoString   }, /*ISOnum , right square bracket  */ 
- {"[rsquo ]", { '\'' ,'\0'}, IsoString   }, /*ISOnum , right single quote    */ 
- {"[sect  ]", {'\247','\0'}, IsoString   }, /*ISOnum , section sign          */ 
- {"[semi  ]", {  ';' ,'\0'}, IsoString   }, /*ISOnum , semicolon             */ 
- {"[shy   ]", {'\255','\0'}, IsoString   }, /*ISOnum , soft hypen            */ 
- {"[sigma ]", {'\163','\0'}, SymbolString}, /*ISOgrk3, Greek, small sigma    */ 
- {"[sim   ]", {  '~' ,'\0'}, IsoString   }, /*ISOtech, similar to            */ 
- {"[sime  ]", {'\100','\0'}, SymbolString}, /*ISOtech, similar, equals       */ 
- {"[sol   ]", {  '/' ,'\0'}, IsoString   }, /*ISOnum , solidus               */ 
- {"[spades]", {'\252','\0'}, SymbolString}, /*ISOpub , spades suit symbol    */ 
- {"[sub   ]", {'\314','\0'}, SymbolString}, /*ISOtech, subset/is implied by  */ 
- {"[sube  ]", {'\315','\0'}, SymbolString}, /*ISOtech, subset, equals        */ 
-/*"[sung  ]", { ??   ,'\0'},             }, /*ISOnum , musical note(sung txt)*/ 
- {"[sup   ]", {'\311','\0'}, SymbolString}, /*ISOtech, superset or implies   */ 
- {"[sup1  ]", {'\271','\0'}, IsoString   }, /*ISOnum , superscript one       */ 
- {"[sup2  ]", {'\262','\0'}, IsoString   }, /*ISOnum , superscript two       */ 
- {"[sup3  ]", {'\263','\0'}, IsoString   }, /*ISOnum , superscript three     */ 
- {"[supe  ]", {'\312','\0'}, SymbolString}, /*ISOtech, superset, equals      */ 
- {"[szlig ]", {'\337','\0'}, IsoString   }, /*ISOlat1, small sharp s, German */ 
- {"[tau   ]", {'\164','\0'}, SymbolString}, /*ISOgrk3, Greek, small tau      */ 
- {"[there4]", {'\134','\0'}, SymbolString}, /*ISOtech, therefore             */ 
- {"[thetas]", {'\161','\0'}, SymbolString}, /*ISOgrk3, Greek, small theta    */ 
- {"[thetav]", {'\112','\0'}, SymbolString}, /*ISOgrk3, Greek, small theta,var*/ 
- {"[times ]", {'\264','\0'}, SymbolString}, /*ISOnum , multipy sign          */ 
- {"[thorn ]", {'\376','\0'}, IsoString   }, /*ISOlat1, small thorn, Icelandic*/ 
+			     SymbolString}, /*ISOtech, parallel              */
+ {"[para  ]", {'\266','\0'}, IsoString   }, /*ISOnum , paragraph sign        */
+ {"[part  ]", {'\266','\0'}, SymbolString}, /*ISOtech, partial differential  */
+ {"[percnt]", {  '%' ,'\0'}, IsoString   }, /*ISOnum , percent sign          */
+ {"[period]", {  '.' ,'\0'}, IsoString   }, /*ISOnum , full stop, period     */
+ {"[perp  ]", {'\136','\0'}, SymbolString}, /*ISOtech, perpendicular         */
+ {"[phis  ]", {'\146','\0'}, SymbolString}, /*ISOgrk3, Greek, small phi      */
+ {"[pi    ]", {'\160','\0'}, SymbolString}, /*ISOgrk3, Greek, small pi       */
+ {"[piv   ]", {'\166','\0'}, SymbolString}, /*ISOgrk3, Greek, small pi, var  */
+ {"[plus  ]", {  '+' ,'\0'}, IsoString   }, /*ISOnum , plus sign             */
+ {"[plusmn]", {'\261','\0'}, SymbolString}, /*ISOnum , plus or minus sign    */
+ {"[pound ]", {'\243','\0'}, IsoString   }, /*ISOnum , pound sign            */
+ {"[prime ]", {'\242','\0'}, SymbolString}, /*ISOtech, prime or minute       */
+ {"[prop  ]", {'\265','\0'}, SymbolString}, /*ISOtech, proportional to       */
+ {"[psi   ]", {'\171','\0'}, SymbolString}, /*ISOgrk3, Greek, small psi      */
+ {"[quest ]", {  '?' ,'\0'}, IsoString   }, /*ISOnum , question mark         */
+ {"[quot  ]", { '\'' ,'\0'}, IsoString   }, /*ISOnum , quote mark            */
+ {"[radic ]", {'\326','\0'}, SymbolString}, /*ISOtech, radical               */
+ {"[rang  ]", {'\361','\0'}, SymbolString}, /*ISOtech, right angle bracket   */
+ {"[raquo ]", {'\273','\0'}, IsoString   }, /*ISOnum , right angle quotation */
+ {"[rarr  ]", {'\256','\0'}, SymbolString}, /*ISOnum , rightward arrow       */
+ {"[rArr  ]", {'\336','\0'}, SymbolString}, /*ISOtech, rt dbl arrow,implies  */
+ {"[rcub  ]", {  '}' ,'\0'}, IsoString   }, /*ISOnum , right curly brace     */
+ {"[rdquo ]", {  '"' ,'\0'}, IsoString   }, /*ISOnum , right double quote    */
+ {"[real  ]", {'\302','\0'}, SymbolString}, /*ISOamso, real number symbol    */
+ {"[reg   ]", {'\322','\0'}, SymbolString}, /*ISOnum,circledR,registered sign*/
+ {"[rho   ]", {'\162','\0'}, SymbolString}, /*ISOgrk3, Greek, small rho      */
+ {"[rpar  ]", {  ')' ,'\0'}, IsoString   }, /*ISOnum , right parenthesis     */
+ {"[rsqb  ]", {  ']' ,'\0'}, IsoString   }, /*ISOnum , right square bracket  */
+ {"[rsquo ]", { '\'' ,'\0'}, IsoString   }, /*ISOnum , right single quote    */
+ {"[sect  ]", {'\247','\0'}, IsoString   }, /*ISOnum , section sign          */
+ {"[semi  ]", {  ';' ,'\0'}, IsoString   }, /*ISOnum , semicolon             */
+ {"[shy   ]", {'\255','\0'}, IsoString   }, /*ISOnum , soft hypen            */
+ {"[sigma ]", {'\163','\0'}, SymbolString}, /*ISOgrk3, Greek, small sigma    */
+ {"[sim   ]", {  '~' ,'\0'}, IsoString   }, /*ISOtech, similar to            */
+ {"[sime  ]", {'\100','\0'}, SymbolString}, /*ISOtech, similar, equals       */
+ {"[sol   ]", {  '/' ,'\0'}, IsoString   }, /*ISOnum , solidus               */
+ {"[spades]", {'\252','\0'}, SymbolString}, /*ISOpub , spades suit symbol    */
+ {"[sub   ]", {'\314','\0'}, SymbolString}, /*ISOtech, subset/is implied by  */
+ {"[sube  ]", {'\315','\0'}, SymbolString}, /*ISOtech, subset, equals        */
+// {"[sung  ]", { ??   ,'\0'},             }, /*ISOnum , musical note(sung txt)*/
+ {"[sup   ]", {'\311','\0'}, SymbolString}, /*ISOtech, superset or implies   */
+ {"[sup1  ]", {'\271','\0'}, IsoString   }, /*ISOnum , superscript one       */
+ {"[sup2  ]", {'\262','\0'}, IsoString   }, /*ISOnum , superscript two       */
+ {"[sup3  ]", {'\263','\0'}, IsoString   }, /*ISOnum , superscript three     */
+ {"[supe  ]", {'\312','\0'}, SymbolString}, /*ISOtech, superset, equals      */
+ {"[szlig ]", {'\337','\0'}, IsoString   }, /*ISOlat1, small sharp s, German */
+ {"[tau   ]", {'\164','\0'}, SymbolString}, /*ISOgrk3, Greek, small tau      */
+ {"[there4]", {'\134','\0'}, SymbolString}, /*ISOtech, therefore             */
+ {"[thetas]", {'\161','\0'}, SymbolString}, /*ISOgrk3, Greek, small theta    */
+ {"[thetav]", {'\112','\0'}, SymbolString}, /*ISOgrk3, Greek, small theta,var*/
+ {"[times ]", {'\264','\0'}, SymbolString}, /*ISOnum , multipy sign          */
+ {"[thorn ]", {'\376','\0'}, IsoString   }, /*ISOlat1, small thorn, Icelandic*/
  {"[tprime]", {'\242', '\242', '\242', '\0'},
-			     SymbolString}, /*ISOtech, triple prime          */ 
- {"[trade ]", {'\324','\0'}, SymbolString}, /*ISOnum , trade mark sign       */ 
- {"[uarr  ]", {'\255','\0'}, SymbolString}, /*ISOnum , upward arrow          */ 
- {"[uArr  ]", {'\335','\0'}, SymbolString}, /*ISOamsa, up double arrow       */ 
- {"[uacute]", {'\372','\0'}, IsoString   }, /*ISOlat1, small u, acute accent */ 
- {"[ucirc ]", {'\373','\0'}, IsoString   }, /*ISOlat1, small u, circumflex   */ 
- {"[ugrave]", {'\371','\0'}, IsoString   }, /*ISOlat1, small u, grave accent */ 
- {"[upsi  ]", {'\165','\0'}, SymbolString}, /*ISOgrk3, Greek, small upsilon  */ 
- {"[uuml  ]", {'\374','\0'}, IsoString   }, /*ISOlat1, small u, umlaut mark  */ 
+			     SymbolString}, /*ISOtech, triple prime          */
+ {"[trade ]", {'\324','\0'}, SymbolString}, /*ISOnum , trade mark sign       */
+ {"[uarr  ]", {'\255','\0'}, SymbolString}, /*ISOnum , upward arrow          */
+ {"[uArr  ]", {'\335','\0'}, SymbolString}, /*ISOamsa, up double arrow       */
+ {"[uacute]", {'\372','\0'}, IsoString   }, /*ISOlat1, small u, acute accent */
+ {"[ucirc ]", {'\373','\0'}, IsoString   }, /*ISOlat1, small u, circumflex   */
+ {"[ugrave]", {'\371','\0'}, IsoString   }, /*ISOlat1, small u, grave accent */
+ {"[upsi  ]", {'\165','\0'}, SymbolString}, /*ISOgrk3, Greek, small upsilon  */
+ {"[uuml  ]", {'\374','\0'}, IsoString   }, /*ISOlat1, small u, umlaut mark  */
  {"[vellip]", {':','\n',':','\0'},
-			     SymbolString}, /*ISOpub , vertical ellipsis     */ 
- {"[verbar]", {'\174','\0'}, IsoString   }, /*ISOnum , vertical bar          */ 
- {"[weierp]", {'\303','\0'}, SymbolString}, /*ISOamso, Weierstrass p         */ 
- {"[xi    ]", {'\170','\0'}, SymbolString}, /*ISOgrk3, Greek, small xi       */ 
- {"[yacute]", {'\375','\0'}, IsoString   }, /*ISOlat1, small y, acute accent */ 
- {"[yen   ]", {'\245','\0'}, IsoString   }, /*ISOnum , yen sign              */ 
- {"[yuml  ]", {'\377','\0'}, IsoString   }, /*ISOlat1, small y, umlaut mark  */ 
- {"[zeta  ]", {'\172','\0'}, SymbolString}, /*ISOgrk3, Greek, small zeta     */ 
+			     SymbolString}, /*ISOpub , vertical ellipsis     */
+ {"[verbar]", {'\174','\0'}, IsoString   }, /*ISOnum , vertical bar          */
+ {"[weierp]", {'\303','\0'}, SymbolString}, /*ISOamso, Weierstrass p         */
+ {"[xi    ]", {'\170','\0'}, SymbolString}, /*ISOgrk3, Greek, small xi       */
+ {"[yacute]", {'\375','\0'}, IsoString   }, /*ISOlat1, small y, acute accent */
+ {"[yen   ]", {'\245','\0'}, IsoString   }, /*ISOnum , yen sign              */
+ {"[yuml  ]", {'\377','\0'}, IsoString   }, /*ISOlat1, small y, umlaut mark  */
+ {"[zeta  ]", {'\172','\0'}, SymbolString}, /*ISOgrk3, Greek, small zeta     */
 
- {"[Aacute]", {'\301','\0'}, IsoString   }, /*ISOlat1, capital a,acute accent*/ 
- {"[Acirc ]", {'\302','\0'}, IsoString   }, /*ISOlat1, capital a,circumflex  */ 
- {"[AElig ]", {'\306','\0'}, IsoString   }, /*ISOlat1, capital ae diphthong  */ 
- {"[Agrave]", {'\300','\0'}, IsoString   }, /*ISOlat1, capital a,grave accent*/ 
- {"[Aring ]", {'\305','\0'}, IsoString   }, /*ISOlat1, capital a,ring        */ 
- {"[Atilde]", {'\303','\0'}, IsoString   }, /*ISOlat1, capital a,tilde       */ 
- {"[Auml  ]", {'\304','\0'}, IsoString   }, /*ISOlat1, capital a,umlaut mark */ 
- {"[Ccedil]", {'\307','\0'}, IsoString   }, /*ISOlat1, capital c, cedilla    */ 
- {"[Delta ]", {'\104','\0'}, SymbolString}, /*ISOgrk3, Greek, large delta    */ 
- {"[Dot   ]", {'\250','\0'}, IsoString   }, /*ISOtech, dieresis or umlaut mrk*/ 
+ {"[Aacute]", {'\301','\0'}, IsoString   }, /*ISOlat1, capital a,acute accent*/
+ {"[Acirc ]", {'\302','\0'}, IsoString   }, /*ISOlat1, capital a,circumflex  */
+ {"[AElig ]", {'\306','\0'}, IsoString   }, /*ISOlat1, capital ae diphthong  */
+ {"[Agrave]", {'\300','\0'}, IsoString   }, /*ISOlat1, capital a,grave accent*/
+ {"[Aring ]", {'\305','\0'}, IsoString   }, /*ISOlat1, capital a,ring        */
+ {"[Atilde]", {'\303','\0'}, IsoString   }, /*ISOlat1, capital a,tilde       */
+ {"[Auml  ]", {'\304','\0'}, IsoString   }, /*ISOlat1, capital a,umlaut mark */
+ {"[Ccedil]", {'\307','\0'}, IsoString   }, /*ISOlat1, capital c, cedilla    */
+ {"[Delta ]", {'\104','\0'}, SymbolString}, /*ISOgrk3, Greek, large delta    */
+ {"[Dot   ]", {'\250','\0'}, IsoString   }, /*ISOtech, dieresis or umlaut mrk*/
  {"[DotDot]", {'\250', '\250', '\0'},
-			     IsoString   }, /*ISOtech, four dots above       */ 
- {"[Eacute]", {'\311','\0'}, IsoString   }, /*ISOlat1, capital E,acute accent*/ 
- {"[Ecirc ]", {'\312','\0'}, IsoString   }, /*ISOlat1, capital E,circumflex  */ 
- {"[Egrave]", {'\310','\0'}, IsoString   }, /*ISOlat1, capital E,grave accent*/ 
- {"[ETH   ]", {'\320','\0'}, IsoString   }, /*ISOlat1, capital Eth, Icelandic*/ 
- {"[Euml  ]", {'\313','\0'}, IsoString   }, /*ISOlat1, capital E,umlaut mark */ 
- {"[Gamma ]", {'\107','\0'}, SymbolString}, /*ISOgrk3, Greek, large gamma    */ 
- {"[Iacute]", {'\315','\0'}, IsoString   }, /*ISOlat1, capital I,acute accent*/ 
- {"[Icirc ]", {'\316','\0'}, IsoString   }, /*ISOlat1, capital I,circumflex  */ 
- {"[Igrave]", {'\314','\0'}, IsoString   }, /*ISOlat1, capital I,grave accent*/ 
- {"[Iuml  ]", {'\317','\0'}, IsoString   }, /*ISOlat1, capital I,umlaut mark */ 
- {"[Lambda]", {'\114','\0'}, SymbolString}, /*ISOgrk3, Greek, large lambda   */ 
- {"[Ntilde]", {'\321','\0'}, IsoString   }, /*ISOlat1, capital N, tilde      */ 
- {"[Oacute]", {'\323','\0'}, IsoString   }, /*ISOlat1, capital O,acute accent*/ 
- {"[Ocirc ]", {'\324','\0'}, IsoString   }, /*ISOlat1, capital O,circumflex  */ 
- {"[Ograve]", {'\322','\0'}, IsoString   }, /*ISOlat1, capital O,grave accent*/ 
- {"[Oslash]", {'\330','\0'}, IsoString   }, /*ISOlat1, capital O, slash      */ 
- {"[Otilde]", {'\325','\0'}, IsoString   }, /*ISOlat1, capital O, tilde      */ 
- {"[Omega ]", {'\127','\0'}, SymbolString}, /*ISOgrk3, Greek, large omega    */ 
- {"[Ouml  ]", {'\326','\0'}, IsoString   }, /*ISOlat1, capital O,umlaut mark */ 
- {"[Pi    ]", {'\120','\0'}, SymbolString}, /*ISOgrk3, Greek, large pi       */ 
- {"[Prime ]", {'\262','\0'}, SymbolString}, /*ISOtech, double prime/second   */ 
- {"[Phi   ]", {'\106','\0'}, SymbolString}, /*ISOgrk3, Greek, large phi      */ 
- {"[Psi   ]", {'\131','\0'}, SymbolString}, /*ISOgrk3, Greek, large psi      */ 
- {"[Sigma ]", {'\123','\0'}, SymbolString}, /*ISOgrk3, Greek, large sigma    */ 
- {"[THORN ]", {'\336','\0'}, IsoString   }, /*ISOlat1,capital THORN,Icelandic*/ 
- {"[Theta ]", {'\121','\0'}, SymbolString}, /*ISOgrk3, Greek, large theta    */ 
- {"[Uacute]", {'\332','\0'}, IsoString   }, /*ISOlat1, capital U,acute accent*/ 
- {"[Ucirc ]", {'\333','\0'}, IsoString   }, /*ISOlat1, capital U,circumflex  */ 
- {"[Ugrave]", {'\331','\0'}, IsoString   }, /*ISOlat1, capital U,grave accent*/ 
- {"[Upsi  ]", {'\125','\0'}, SymbolString}, /*ISOgrk3, Greek, large upsilon  */ 
- {"[Uuml  ]", {'\334','\0'}, IsoString   }, /*ISOlat1, capital U,umlaut mark */ 
+			     IsoString   }, /*ISOtech, four dots above       */
+ {"[Eacute]", {'\311','\0'}, IsoString   }, /*ISOlat1, capital E,acute accent*/
+ {"[Ecirc ]", {'\312','\0'}, IsoString   }, /*ISOlat1, capital E,circumflex  */
+ {"[Egrave]", {'\310','\0'}, IsoString   }, /*ISOlat1, capital E,grave accent*/
+ {"[ETH   ]", {'\320','\0'}, IsoString   }, /*ISOlat1, capital Eth, Icelandic*/
+ {"[Euml  ]", {'\313','\0'}, IsoString   }, /*ISOlat1, capital E,umlaut mark */
+ {"[Gamma ]", {'\107','\0'}, SymbolString}, /*ISOgrk3, Greek, large gamma    */
+ {"[Iacute]", {'\315','\0'}, IsoString   }, /*ISOlat1, capital I,acute accent*/
+ {"[Icirc ]", {'\316','\0'}, IsoString   }, /*ISOlat1, capital I,circumflex  */
+ {"[Igrave]", {'\314','\0'}, IsoString   }, /*ISOlat1, capital I,grave accent*/
+ {"[Iuml  ]", {'\317','\0'}, IsoString   }, /*ISOlat1, capital I,umlaut mark */
+ {"[Lambda]", {'\114','\0'}, SymbolString}, /*ISOgrk3, Greek, large lambda   */
+ {"[Ntilde]", {'\321','\0'}, IsoString   }, /*ISOlat1, capital N, tilde      */
+ {"[Oacute]", {'\323','\0'}, IsoString   }, /*ISOlat1, capital O,acute accent*/
+ {"[Ocirc ]", {'\324','\0'}, IsoString   }, /*ISOlat1, capital O,circumflex  */
+ {"[Ograve]", {'\322','\0'}, IsoString   }, /*ISOlat1, capital O,grave accent*/
+ {"[Oslash]", {'\330','\0'}, IsoString   }, /*ISOlat1, capital O, slash      */
+ {"[Otilde]", {'\325','\0'}, IsoString   }, /*ISOlat1, capital O, tilde      */
+ {"[Omega ]", {'\127','\0'}, SymbolString}, /*ISOgrk3, Greek, large omega    */
+ {"[Ouml  ]", {'\326','\0'}, IsoString   }, /*ISOlat1, capital O,umlaut mark */
+ {"[Pi    ]", {'\120','\0'}, SymbolString}, /*ISOgrk3, Greek, large pi       */
+ {"[Prime ]", {'\262','\0'}, SymbolString}, /*ISOtech, double prime/second   */
+ {"[Phi   ]", {'\106','\0'}, SymbolString}, /*ISOgrk3, Greek, large phi      */
+ {"[Psi   ]", {'\131','\0'}, SymbolString}, /*ISOgrk3, Greek, large psi      */
+ {"[Sigma ]", {'\123','\0'}, SymbolString}, /*ISOgrk3, Greek, large sigma    */
+ {"[THORN ]", {'\336','\0'}, IsoString   }, /*ISOlat1,capital THORN,Icelandic*/
+ {"[Theta ]", {'\121','\0'}, SymbolString}, /*ISOgrk3, Greek, large theta    */
+ {"[Uacute]", {'\332','\0'}, IsoString   }, /*ISOlat1, capital U,acute accent*/
+ {"[Ucirc ]", {'\333','\0'}, IsoString   }, /*ISOlat1, capital U,circumflex  */
+ {"[Ugrave]", {'\331','\0'}, IsoString   }, /*ISOlat1, capital U,grave accent*/
+ {"[Upsi  ]", {'\125','\0'}, SymbolString}, /*ISOgrk3, Greek, large upsilon  */
+ {"[Uuml  ]", {'\334','\0'}, IsoString   }, /*ISOlat1, capital U,umlaut mark */
  {"[Verbar]", {'\174', '\174', '\0'},
-			     IsoString   }, /*ISOtech, dbl vertical bar      */ 
- {"[Xi    ]", {'\130','\0'}, SymbolString}, /*ISOgrk3, Greek, large xi       */ 
- {"[Yacute]", {'\335','\0'}, IsoString   }, /*ISOlat1, capital Y,acute accent*/ 
+			     IsoString   }, /*ISOtech, dbl vertical bar      */
+ {"[Xi    ]", {'\130','\0'}, SymbolString}, /*ISOgrk3, Greek, large xi       */
+ {"[Yacute]", {'\335','\0'}, IsoString   }, /*ISOlat1, capital Y,acute accent*/
  { NULL     , {' '   ,'\0'}, IsoString   }, /* default character to use      */
 };
 
@@ -542,7 +542,7 @@ DrawTocIndicator (
  *			This is where the segment starts, so the
  *			traversal box must end at dst_x - 1.
  *		dst_y	Specifies the upper pixel that the traversal
- *			will cover. 
+ *			will cover.
  *		width	Specifies the inner width of the traversal box.
  *		height  Specifies the outer height of the traversal box
  *			including the leading. But since the leading is
@@ -815,7 +815,7 @@ ResolveFont (
     if (font_attr.spacing != _DtHelpFontSpacingProp)
         xrmList[_DT_HELP_FONT_SPACING] = XrmStringToQuark("m");
 
-    sprintf(buffer, "%d", font_attr.pointsz);
+    snprintf(buffer, 10, "%d", font_attr.pointsz);
     xrmList[_DT_HELP_FONT_SIZE]    = XrmStringToQuark(buffer);
 
     if (font_attr.slant != _DtHelpFontSlantRoman)
@@ -1023,7 +1023,7 @@ DADrawString (
      * is this a search hit or does this string have its own color?
      */
     if (strWidth && pDAS->dtinfo &&
-	((new_flags & _DtCvSEARCH_FLAG) || 
+	((new_flags & _DtCvSEARCH_FLAG) ||
 		(NULL != pSCD && (pSCD->fg_color || pSCD->bg_color))))
       {
 	XColor screen, exact;
@@ -1987,7 +1987,7 @@ _DtHelpDALoadGraphic (
     Window		  win;
     char		 *ptr;
     char		 *extptr;
-    char		 *fileName = file_xid;        
+    char		 *fileName = file_xid;
     Screen               *retScr;
     int                  screen;
 
@@ -2007,26 +2007,27 @@ _DtHelpDALoadGraphic (
     screen = XScreenNumberOfScreen(retScr);
 
     while (!XtIsRealized(wid) && XtParent(wid) != NULL)
-	wid = XtParent(wid);
+			wid = XtParent(wid);
 
     win = XtWindow(wid);
     if (!XtIsRealized(wid))
-	win = RootWindow(XtDisplay(pDAS->dispWid), screen);
+			win = RootWindow(XtDisplay(pDAS->dispWid), screen);
 
     if (fileName != NULL && *fileName != '/')
-      {
-	fileName = (char *) malloc (strlen(vol_xid) + strlen (file_xid) + 2);
-	if (fileName == NULL)
-	    return -1;
+    {
+			int filename_size = strlen(vol_xid) + strlen (file_xid) + 2;
+			fileName = (char *) malloc(filename_size);
+			if (fileName == NULL)
+	    	return -1;
 
-	strcpy(fileName, vol_xid);
+			strlcpy(fileName, vol_xid, filename_size);
 
-	if (_DtHelpCeStrrchr(fileName, "/", MB_CUR_MAX, &ptr) != -1)
-	    *ptr = '\0';
+			if (_DtHelpCeStrrchr(fileName, "/", MB_CUR_MAX, &ptr) != -1)
+	    	*ptr = '\0';
 
-	strcat(fileName, "/");
-	strcat(fileName, file_xid);
-      }
+			strlcat(fileName, "/", filename_size);
+			strlcat(fileName, file_xid, filename_size);
+    }
 
     /*
      * Find out if this is a X Pixmap graphic and set flag if it is.
@@ -2034,7 +2035,7 @@ _DtHelpDALoadGraphic (
      */
     if (fileName != NULL && _DtHelpCeStrrchr(fileName, ".", MB_CUR_MAX, &extptr) != -1)
     	if (strcmp (extptr, ".xpm") == 0 || strcmp (extptr, ".pm") == 0)
-		pGS->used = -1;
+				pGS->used = -1;
 
     if (pDAS->context == NULL)
     {
@@ -2066,14 +2067,14 @@ _DtHelpDALoadGraphic (
     }
 
     if (fileName != file_xid)
-	free (fileName);
+			free (fileName);
 
     if (pGS->pix == 0)
-      {
-	free(pReg);
-	free(pGS);
-	return -1;
-      }
+    {
+			free(pReg);
+			free(pGS);
+			return -1;
+    }
 
     /*
      * fill in the region information

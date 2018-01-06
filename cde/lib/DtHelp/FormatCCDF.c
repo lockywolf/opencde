@@ -176,7 +176,7 @@ static	int		 AppendCharToInfo(
 static	int		 AppendOctalToInfo(
 				FormatVariables *cur_vars,
 				char		*src );
-static	int		 AppendSpaceToInfo ( 
+static	int		 AppendSpaceToInfo (
 				FormatVariables  *cur_vars,
 				char		**src,
 				_DtCvFrmtOption	  type );
@@ -597,7 +597,7 @@ ReturnLinkType (
 	case CCDF_LINK_MAN_PAGE:
 		trueType = _DtCvLinkType_ManPage;
 		break;
-	
+
         case CCDF_LINK_APP_DEFINE:
 		trueType = _DtCvLinkType_AppDefine;
 		break;
@@ -790,7 +790,7 @@ CheckList (
 	 */
 	seg_list->max = grow;
       }
-			
+
     return 0;
 }
 
@@ -798,7 +798,7 @@ CheckList (
  * Function: int SegmentSave (int type,
  *			char **font_attr, char *string, int linkspec,
  *			_DtCvSegment *p_seg)
- * 
+ *
  * Parameters:
  *		type		Specifies the segment type.
  *		font_attr	Specifies the resource list of quarks for the
@@ -901,7 +901,7 @@ SegmentSave (
 /******************************************************************************
  * Function: int SaveStringAsSegments (FormatVariables, int type, char **font_attr,
  *				int link_spec)
- * 
+ *
  * Parameters:
  *		type		Specifies the segment type.
  *		font_attr	Specifies the resource list of quarks for the
@@ -1021,7 +1021,7 @@ SaveStringAsSegments (
 /******************************************************************************
  * Function: int CheckSaveSegment (int type, char **font_attr, int link_spec,
  *					FormatVariables cur_vars)
- * 
+ *
  * Parameters:
  *		type		Specifies the segment type.
  *		font_attr	Specifies the resource list of quarks for the
@@ -1054,7 +1054,7 @@ CheckSaveSegment (
 
 /******************************************************************************
  * Function: void TerminateSegList (
- * 
+ *
  * Parameters:
  *
  * Returns:	0 if successful, -1 if errors.
@@ -1121,7 +1121,7 @@ TerminateSegList (
 /******************************************************************************
  * Function:	int InitStructure (FormatVariables *cur_vars,
  *				char *rd_buf, int rd_size,
- * 
+ *
  * Parameters:
  *		rd_buffer	Specifies the buffer all reads use.
  *		id_string	Specifies the location ID to search for.
@@ -1180,7 +1180,7 @@ InitStructure(
  *		-1	if errors.
  *
  * errno Values:
- * 
+ *
  * Purpose:	Appends onto 'cur_vars->fmt_buf' the number of characters
  *		found in 'src' that does not match any character in
  *		'scan_string'.
@@ -1220,7 +1220,7 @@ AppendToInfo (
 
 /******************************************************************************
  * Function:	int AppendOctalToInfo (FormatVariables *cur_vars, char *src)
- * 
+ *
  * Parameters:
  *		src		Specifies the source string to read.
  *
@@ -1229,7 +1229,7 @@ AppendToInfo (
  * errno Values:
  *		CEErrorFormattingValue
  *		CEErrorMalloc
- * 
+ *
  * Purpose:	Convert the octal representation pointed to by 'src' and
  *		change it into a character byte. The routine only allows
  *		a number between the values 1-255.
@@ -1265,7 +1265,7 @@ AppendOctalToInfo(
 
 /******************************************************************************
  * Function:	int AppendCharToInfo (FormatVariables *cur_vars, char **src)
- * 
+ *
  * Parameters:
  *		src		Specifies the source string to read.
  *				Returns pointing at the next character
@@ -1280,7 +1280,7 @@ AppendOctalToInfo(
  *		with 'Info' accordingly.
  *
  *		Sets 'cur_vars->last_was_space' to False;
- * 
+ *
  *****************************************************************************/ static	int
 AppendCharToInfo(
     FormatVariables	*cur_vars,
@@ -1314,7 +1314,7 @@ AppendCharToInfo(
  *
  *****************************************************************************/
 static	int
-AppendSpaceToInfo ( 
+AppendSpaceToInfo (
     FormatVariables	 *cur_vars,
     char		**src,
     _DtCvFrmtOption	  type)
@@ -1337,7 +1337,7 @@ AppendSpaceToInfo (
 
 /******************************************************************************
  * Function:	int FindEndMarker (FormatVariables *cur_vars)
- * 
+ *
  * Returns:	 0 if successful, -1 if errors.
  *
  * errno Values:
@@ -1363,7 +1363,7 @@ FindEndMarker(
  *
  * Purpose:	Wrapper around __DtHelpGetNextBuffer.
  *		Read the next buffer's worth of information.
- * 
+ *
  *****************************************************************************/
 static	int
 GetNextBuffer (
@@ -1403,11 +1403,11 @@ GetNextBuffer (
  *			If it doesn't have the newline set on it,
  *			its newline flag is enabled.
  *		Otherwise the previous segment had the newline set, so
- *			create another segment just like it with a 
+ *			create another segment just like it with a
  *			null length and the newline flag set (if the
  *			previous segment is a graphic, create it
  *			with a type of CE_old_NOOP).
- * 
+ *
  *****************************************************************************/
 static	int
 SaveNewLine(
@@ -1436,7 +1436,7 @@ SaveNewLine(
      * There was not any information in the buffer and we have one or
      * more segments. Try placing the flag on the previous segment.
      */
-    else 
+    else
       {
 	pSeg = NextAvailSeg(cur_vars->my_list);
 	pSeg--;
@@ -1460,7 +1460,7 @@ SaveNewLine(
  * Function:	int CreateSaveGraphic (FormatVariables cur_vars,
  *				int type,
  *					char *file_name, int link_spec )
- * 
+ *
  * Parameters:
  *		type		Specifies the type of graphic segment
  *				being processed.
@@ -1495,14 +1495,14 @@ CreateSaveGraphic (
 	fullName = strdup (file_name);
     else
       {
-	fullName = (char *) malloc (strlen (cur_vars->my_path) +
-						strlen (file_name) + 2);
+	int fullname_size = strlen (cur_vars->my_path) + strlen (file_name) + 2;
+	fullName = (char *) malloc(fullname_size);
 	if (fullName == NULL)
 	    return -1;
 
-	strcpy (fullName, cur_vars->my_path);
-	strcat (fullName, "/");
-	strcat (fullName, file_name);
+	strlcpy(fullName, cur_vars->my_path, fullname_size);
+	strlcat(fullName, "/", fullname_size);
+	strlcat(fullName, file_name, fullname_size);
       }
 
     /*
@@ -1543,7 +1543,7 @@ CreateSaveGraphic (
  * Function:	int ChangeFont (int whichOne, int segType,
  *				char **font_attr, int linkspec,
  *				FormatVariables *cur_vars, int flags)
- * 
+ *
  * Parameters:
  *		whichOne	Specifies the index into 'font_attr' to
  *				change.
@@ -1672,7 +1672,7 @@ ChangeFont(
 
 /******************************************************************************
  * Function:	int SkipToNextToken (FormatVariables *cur_vars, int	 flag)
- * 
+ *
  * Parameters:
  *		flag	Specifies whether the routine returns a -1
  *				if '>' is the next token.
@@ -1703,7 +1703,7 @@ SkipToNextToken (
  *				int	 flag, int	 eat_escape,
  *				int	 ignore_quotes, int	 less_test,
  *				char **ret_string)
- * 
+ *
  * Parameters:
  *		flag            Specifies whether the routine returns
  *                                      a -1 if '>' is the next token.
@@ -1749,7 +1749,7 @@ GetStringParameter(
 /******************************************************************************
  * Function:	int GetValueParameter (FormatVariables *cur_vars,
  *				int	 flag, int *ret_value)
- * 
+ *
  * Parameters:
  *              flag            Specifies whether the routine returns
  *                                      a -2 if '>' is the next token.
@@ -1796,7 +1796,7 @@ GetValueParameter(
  *					if a justified graphic is
  *					encountered in the paragraph options.
  *				Returns the new type for a graphic
- *					if a justified graphic was 
+ *					if a justified graphic was
  *					encountered in the paragraph options.
  *		label		Returns the label if one is specified
  *					in the paragraph options.
@@ -1809,7 +1809,7 @@ GetValueParameter(
  *					specified.
  *		description	Returns the hypertext description if one
  *					is specified.
- * 
+ *
  * Returns:	0 if successfult, -1 if errors.
  *
  * errno Values:
@@ -2444,28 +2444,28 @@ ProcessParagraph(
 		/*
 		 * create an id for this label
 		 */
-		sprintf(numChar, "%d", cur_vars->cell_cnt++);
-		_DtCvContainerIdOfSeg(col1) = (char *) malloc (
-				strlen("&CCDF_RES_") + strlen(numChar) + 1);
+		snprintf(numChar, 16, "%d", cur_vars->cell_cnt++);
+		int col1_size = strlen("&CCDF_RES_") + strlen(numChar) + 1;
+		_DtCvContainerIdOfSeg(col1) = (char *) malloc(col1_size);
 		if (NULL != _DtCvContainerIdOfSeg(col1))
 		  {
 		    /*
 		     * copy over the id and attach the list.
 		     */
-		    strcpy(_DtCvContainerIdOfSeg(col1), "&CCDF_RES_");
-		    strcat(_DtCvContainerIdOfSeg(col1), numChar);
+		    strlcpy(_DtCvContainerIdOfSeg(col1), "&CCDF_RES_", col1_size);
+		    strlcat(_DtCvContainerIdOfSeg(col1), numChar, col1_size);
 		    _DtCvContainerListOfSeg(col1) = labelSeg;
 
 		    /*
 		     * set the id for the second column.
 		     */
-		    sprintf(numChar, "%d", cur_vars->cell_cnt++);
-		    _DtCvContainerIdOfSeg(col2) = (char *) malloc (
-				strlen("&CCDF_RES_") + strlen(numChar) + 1);
+		    snprintf(numChar, 16, "%d", cur_vars->cell_cnt++);
+		    int col2_size = strlen("&CCDF_RES_") + strlen(numChar) + 1;
+		    _DtCvContainerIdOfSeg(col2) = (char *) malloc(col2_size);
 		    if (NULL != _DtCvContainerIdOfSeg(col2))
 		      {
-			strcpy(_DtCvContainerIdOfSeg(col2), "&CCDF_RES_");
-			strcat(_DtCvContainerIdOfSeg(col2), numChar);
+			strlcpy(_DtCvContainerIdOfSeg(col2), "&CCDF_RES_", col2_size);
+			strlcat(_DtCvContainerIdOfSeg(col2), numChar, col2_size);
 		      }
 		    else
 			result = -1;
@@ -2623,14 +2623,14 @@ ProcessParagraph(
 		/*
 		 * now create the list of ids in this table.
 		 */
-		ids = (char *) malloc (
-				strlen(_DtCvContainerIdOfSeg(col1)) +
-				strlen(_DtCvContainerIdOfSeg(col2)) + 2);
+		int ids_size =  strlen(_DtCvContainerIdOfSeg(col1)) +
+		                strlen(_DtCvContainerIdOfSeg(col2)) + 2;
+		ids = (char *) malloc(ids_size);
 		if (NULL != ids)
 		  {
-		    strcpy(ids, _DtCvContainerIdOfSeg(col1));
-		    strcat(ids, " ");
-		    strcat(ids, _DtCvContainerIdOfSeg(col2));
+		    strlcpy(ids, _DtCvContainerIdOfSeg(col1), ids_size);
+		    strlcat(ids, " ", ids_size);
+		    strlcat(ids, _DtCvContainerIdOfSeg(col2), ids_size);
 		  }
 		_DtCvCellIdsOfTableSeg(paraSeg) = NULL;
 		_DtCvCellIdsOfTableSeg(paraSeg) = (char **)
@@ -2781,7 +2781,7 @@ ProcessParagraph(
  *		font_attr		Specifies the list of font quarks to
  *				associate with the string.
  *		flags		Specifies the formatting commands allowed.
- * 
+ *
  * Returns:	0 if successful, -1 if errors.
  *
  * errno Values:
@@ -2899,7 +2899,7 @@ ProcessHypertext(
  *		link_spec	Specifies the hypertext link to associate
  *				with the string.
  *		flags		Specifies the formatting commands allowed.
- * 
+ *
  * Returns:	0 if successful, -1 if errors.
  *
  * errno Values:
@@ -2939,7 +2939,7 @@ ProcessLabelCmd(
 	return -1;
 
     cur_vars->my_list = InitList;
-    if (Parse (CCDF_LABEL_CMD, NormalState, cur_vars, 
+    if (Parse (CCDF_LABEL_CMD, NormalState, cur_vars,
 					seg_flags,
 					frmt_type,
 					font_attr,
@@ -2972,7 +2972,7 @@ ProcessLabelCmd(
  * Parameters:
  *		font_attr		Specifies the list of font quarks to
  *				associate with the string.
- * 
+ *
  * Returns:	0 if successful, -1 if errors.
  *
  * errno Values:
@@ -3357,7 +3357,7 @@ ProcessFigureCmd(
 		_DtCvContainerJustifyOfSeg(figContainer) = justifyGraphic;
 
 		/*
-		 * indicate that this segment has been used 
+		 * indicate that this segment has been used
 		 */
 		oldList.cnt++;
 	      }
@@ -3389,7 +3389,7 @@ ProcessFigureCmd(
  *				being processed.
  *		link_spec	Specifies the hypertext link associated
  *				with this segment.
- * 
+ *
  * Returns:	0 if successful, -1 if errors.
  *
  * errno Values:
@@ -3493,7 +3493,7 @@ ProcessInLine(
  *				FormatVariables *cur_vars, int segType,
  *				char **font_attr, int linkspec,
  *				int flags)
- * 
+ *
  * Parameters:
  *		segType		Specifies the type of segment currently
  *				being processed.
@@ -3502,13 +3502,13 @@ ProcessInLine(
  *		linkspec	Specifies the hypertext link associated
  *				with the segment.
  *		flags		Specifies the formatting commands allowed.
- * 
+ *
  * Returns:	0 if successful, -1 if errors.
  *
  * errno Values:
  *
  * Purpose:	Create a marker at this location.
- * 
+ *
  *****************************************************************************/
 static	int
 CheckIdString(
@@ -3571,11 +3571,11 @@ CheckIdString(
 } /* End CheckIdString */
 
 /******************************************************************************
- * Function:	int	Parse (int cur_cmd, 
+ * Function:	int	Parse (int cur_cmd,
  *				FormatVariables *cur_vars, int segType,
  *				char **font_attr,
  *				int  linkspec, int allowed)
- * 
+ *
  * Parameters:
  *		cur_cmd		Specifies the current formatting command
  *				being processed.
@@ -3587,7 +3587,7 @@ CheckIdString(
  *		linkspec	Specifies the hypertext link associated
  *				with the segment.
  *		allowed		Specifies the formatting commands allowed.
- * 
+ *
  * Returns:
  *		1 if ran into a </> specification.
  *		-1 if errors.
@@ -3885,7 +3885,7 @@ Parse(
 					&& cur_vars->last_was_nl == True))
 	         && AppendSpaceToInfo(cur_vars, NULL, frmt_type) == -1)
 		done = -1;
-		
+
 	    cur_vars->last_was_nl = False;
 	    cur_vars->last_was_mb = True;
 	    if (AppendToInfo (cur_vars, &(cur_vars->rd_ptr), scan_string) == -1)
@@ -4233,7 +4233,7 @@ Format(
      * If we had errors, deallocate the memory.
      */
     if (result == -1)
-	_DtHelpFreeSegments(myList.list, _DtCvFALSE, ui_info->destroy_region, 
+	_DtHelpFreeSegments(myList.list, _DtCvFALSE, ui_info->destroy_region,
 							ui_info->client_data);
     else
       {
@@ -4447,7 +4447,7 @@ FormatCCDFTitle(
 		 */
 		if (NULL != _DtCvContainerListOfSeg(titleSeg))
 		    _DtHelpFreeSegments(_DtCvContainerListOfSeg(titleSeg),
-					_DtCvFALSE, 
+					_DtCvFALSE,
 					cur_vars->ui_info->destroy_region,
 						cur_vars->ui_info->client_data);
 
@@ -4652,7 +4652,7 @@ FormatEntryInToc(
 		     */
 		    if (pSeg->link_idx != -1)
 			_DtLinkDbRemoveLink(cur_vars->my_links, pSeg->link_idx);
-    
+
 		    /*
 		     * change the link index and flag to the ghost link.
 		     */
@@ -4683,12 +4683,12 @@ FormatEntryInToc(
 					    tocLen);
 		    cur_vars->fmt_buf_max = tocLen;
 		  }
-    
+
 		cur_vars->fmt_size = tocLen - 1;
-		strcpy (cur_vars->fmt_buf, "...(");
-		strcat (cur_vars->fmt_buf, loc_id);
-		strcat (cur_vars->fmt_buf, ")...");
-    
+		strlcpy (cur_vars->fmt_buf, "...(", cur_vars->fmt_buf_max);
+		strlcat (cur_vars->fmt_buf, loc_id, cur_vars->fmt_buf_max);
+		strlcat (cur_vars->fmt_buf, ")...", cur_vars->fmt_buf_max);
+
 		/*
 		 * don't overwrite the title's
 		 */
@@ -4798,7 +4798,7 @@ FormatExpandedToc(
  *
  * errno Values:
  *
- * Purpose:	
+ * Purpose:
  *
  ******************************************************************************/
 VarHandle
@@ -4830,7 +4830,7 @@ __DtHelpCeSetUpVars(
  *
  * errno Values:
  *
- * Purpose:	
+ * Purpose:
  *
  ******************************************************************************/
 int
@@ -5346,16 +5346,16 @@ _DtHelpCeGetCcdfTitleChunks(
 	    /*
 	     * format the location id
 	     */
-	    strcpy (idStr, "...(");
-	    strcat (idStr, loc_id);
-	    strcat (idStr, ")...");
-	
+	    strlcpy (idStr, "...(", idLen);
+	    strlcat (idStr, loc_id, idLen);
+	    strlcat (idStr, ")...", idLen);
+
 	    /*
 	     * format the language and codeset
 	     */
-	    strcpy(buf, _DtHelpFontHintsLang(fontAttrs));
-	    strcat(buf, ".");
-	    strcpy(buf, _DtHelpFontHintsCharSet(fontAttrs));
+	    strlcpy(buf, _DtHelpFontHintsLang(fontAttrs), idLen);
+	    strlcat(buf, ".", idLen);
+	    strlcpy(buf, _DtHelpFontHintsCharSet(fontAttrs), idLen);
 
 	    /*
 	     * creat a chunk table
@@ -5380,7 +5380,7 @@ _DtHelpCeGetCcdfTitleChunks(
      */
     if (0 < myVars.my_list.cnt)
 	_DtHelpFreeSegments(myVars.my_list.list, _DtCvFALSE,
-						ui_info->destroy_region, 
+						ui_info->destroy_region,
 						ui_info->client_data);
 
     /*
@@ -5457,7 +5457,7 @@ _DtHelpCeGetCcdfVolTitleChunks(
         (*ret_chunks)[2] = (void *) strdup(titleStr);
         (*ret_chunks)[3] = (void *) DT_HELP_CE_END;
       }
-    else 
+    else
       {
         free(charSet);
         if (_DtHelpCeGetCcdfTitleChunks(volume, "_title",

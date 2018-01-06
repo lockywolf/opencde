@@ -90,20 +90,20 @@ static	char	 *CreateFileName(
 			char	*path,
 			char	*string );
 static	int	  GetResourceInt (
-			XrmDatabase  db, 
-			char	*topic, 
-			char	*resClass, 
+			XrmDatabase  db,
+			char	*topic,
+			char	*resClass,
 			char	*resName,
 			int	*ret_value);
 static	char	 *GetResourceString (
-			XrmDatabase	 db, 
-			char		*topic, 
-			char		*resClass, 
+			XrmDatabase	 db,
+			char		*topic,
+			char		*resClass,
 			char		*resName);
 static	char	**GetResourceStringArray (
-			XrmDatabase	 db, 
-			char		*topic, 
-			char		*resClass, 
+			XrmDatabase	 db,
+			char		*topic,
+			char		*resClass,
 			char		*resName);
 static	int	  GetTopicMap (
 			_DtHelpVolume	 vol,
@@ -180,7 +180,8 @@ CreateFileName (
     /*
      * malloc the room for the path and file name.
      */
-    ptr = (char *) malloc (len + strlen(string) + 1);
+    int ptr_size = len + strlen(string) + 1;
+    ptr = (char *) malloc(ptr_size);
 
     if (ptr)
       {
@@ -190,7 +191,7 @@ CreateFileName (
 	ptr[0] = '\0';
 	if (len && path)
 	    strncat (ptr, path, len);
-	strcat (ptr, string);
+	strlcat(ptr, string, ptr_size);
       }
 
     return ptr;
@@ -287,14 +288,14 @@ GetTopicMap (
  * Purpose:	Get a resource value for a volume or topic.
  *
  ******************************************************************************/
-static char * 
+static char *
 GetResourceString (
-    XrmDatabase  db, 
-    char	*topic, 
-    char	*resClass, 
+    XrmDatabase  db,
+    char	*topic,
+    char	*resClass,
     char	*resName)
 {
-    int		 len;
+    int		 len, fullResName_size, fullResClass_size;
     int		 topicLen = 0;
     char	*retVal   = NULL;
     char	*fullResName;
@@ -307,24 +308,26 @@ GetResourceString (
 	topicLen = strlen(topic) + strlen(Period);
 
     len          = strlen(volumeStr) + topicLen + 1;
-    fullResName  = (char *) malloc (len + strlen (resName));
-    fullResClass = (char *) malloc (len + strlen (resClass));
+    fullResName_size = len + strlen(resName);
+    fullResName  = (char *) malloc(fullResName_size);
+    fullResClass_size = len + strlen(resClass);
+    fullResClass = (char *) malloc(fullResClass_size);
     if (fullResName != NULL && fullResClass != NULL)
       {
-	strcpy (fullResName, volumeStr);
-	strcpy (fullResClass, VolumeStr);
+	strlcpy(fullResName, volumeStr, fullResName_size);
+	strlcpy(fullResClass, VolumeStr, fullResClass_size);
 
 	if (topic != NULL)
 	  {
-	    strcat (fullResName, topic);
-	    strcat (fullResName, Period);
+	    strlcat(fullResName, topic, fullResName_size);
+	    strlcat(fullResName, Period, fullResName_size);
 
-	    strcat (fullResClass, topic);
-	    strcat (fullResClass, Period);
+	    strlcat(fullResClass, topic, fullResName_size);
+	    strlcat(fullResClass, Period, fullResName_size);
 	  }
 
-	strcat (fullResName , resName);
-	strcat (fullResClass, resClass);
+	strlcat(fullResName , resName, fullResName_size);
+	strlcat(fullResClass, resClass, fullResName_size);
       }
     else
 	errno = CEErrorMalloc;
@@ -371,9 +374,9 @@ GetResourceString (
  ******************************************************************************/
 static char **
 GetResourceStringArray (
-    XrmDatabase  db, 
-    char	*topic, 
-    char	*resClass, 
+    XrmDatabase  db,
+    char	*topic,
+    char	*resClass,
     char	*resName)
 {
     char	 *val;
@@ -381,7 +384,7 @@ GetResourceStringArray (
     char	 *token;
     char	 *nextC;
 
-    /* Get the resource value which is a single string where the elements are 
+    /* Get the resource value which is a single string where the elements are
        separated by white space. */
     val = GetResourceString (db, topic, resClass, resName);
     if (val != NULL)
@@ -397,7 +400,7 @@ GetResourceStringArray (
 	        return NULL;
 	      }
 
-	    /* If the token is a '\0' then we are at the end and we can quit. 
+	    /* If the token is a '\0' then we are at the end and we can quit.
 	       If the token is a '\n', then ignore it.  Otherwise the token
 	       is an element of the array we are building. */
 	    if (*token == '\0')
@@ -441,7 +444,7 @@ GetResourceStringArray (
  * Purpose:	Load the keywords associated with a volume.
  *
  ******************************************************************************/
-static char * 
+static char *
 GetNextKeyword (
 	char	 *str,
 	char	 *delimiter,
@@ -522,10 +525,10 @@ GetNextKeyword (
  * Purpose:	Get the name of the file where a topic is stored.
  *
  ******************************************************************************/
-static int 
+static int
 TopicFilename (
-    _DtHelpVolume    vol, 
-    char	 *topic, 
+    _DtHelpVolume    vol,
+    char	 *topic,
     char	**retFname)
 {
     CcdfVolumePtr  ccdfVol = GetCcdfVolumePtr(vol);
@@ -554,10 +557,10 @@ TopicFilename (
  *
  * Purpose:	Determine the position of the topic within the topic file.
  ******************************************************************************/
-static int 
+static int
 TopicFilepos (
-    _DtHelpVolume   vol, 
-    char	*topic, 
+    _DtHelpVolume   vol,
+    char	*topic,
     int		*retFpos)
 {
     CcdfVolumePtr  ccdfVol = GetCcdfVolumePtr(vol);
@@ -585,11 +588,11 @@ TopicFilepos (
  *
  * Purpose:	Get an integer-valued resource for a volume or topic.
  ******************************************************************************/
-static int 
+static int
 GetResourceInt (
-    XrmDatabase  db, 
-    char	*topic, 
-    char	*resClass, 
+    XrmDatabase  db,
+    char	*topic,
+    char	*resClass,
     char	*resName,
     int		*ret_value)
 {
@@ -620,10 +623,10 @@ GetResourceInt (
  *
  * Purpose:		Find which topic contains a specified locationID.
  ******************************************************************************/
-static int 
+static int
 LocationIDTopic (
-     _DtHelpVolume   vol, 
-     char	 *locId, 
+     _DtHelpVolume   vol,
+     char	 *locId,
      char	**retTopic)
 {
     char	**allTopics;
@@ -647,8 +650,8 @@ LocationIDTopic (
       }
 
     /* For each topic in the volume, get its list of locationIDs and
-       check them. NOTE: This code should be separated out into a public 
-       _DtTopicLocationIDs function.  Then we would have a function 
+       check them. NOTE: This code should be separated out into a public
+       _DtTopicLocationIDs function.  Then we would have a function
        that returns all of the locationIDs in a topic, which might
        prove useful someday. */
 
@@ -756,7 +759,7 @@ _DtHelpCeGetCcdfIdPath (
  * Purpose:	Get the list of children for a topic contained in a volume.
  *
  ******************************************************************************/
-int 
+int
 _DtHelpCeGetCcdfTopicChildren (
     _DtHelpVolume   vol,
     char	  *topic_id,
@@ -857,7 +860,7 @@ _DtHelpCeGetCcdfTopicChildren (
  * Purpose:	Get the list of topics contained in a volume.
  *
  ******************************************************************************/
-int 
+int
 _DtHelpCeGetCcdfVolIdList (
     _DtHelpVolume	vol,
      char	***retTopics)
@@ -865,7 +868,7 @@ _DtHelpCeGetCcdfVolIdList (
     CcdfVolumePtr  ccdfVol = GetCcdfVolumePtr(vol);
 
     if (ccdfVol->topicList == NULL)
-	ccdfVol->topicList = GetResourceStringArray (ccdfVol->volDb, NULL, 
+	ccdfVol->topicList = GetResourceStringArray (ccdfVol->volDb, NULL,
 						"TopicList", "topicList");
     *retTopics = ccdfVol->topicList;
     if (*retTopics == NULL)
@@ -908,7 +911,7 @@ _DtHelpCeFindCcdfId (
     char       *topicId = NULL;
     int   found = False;
 
-    strcpy (newTarget, target_id);
+    strlcpy(newTarget, target_id, 65);
     _DtHelpCeUpperCase(newTarget);
 
     /*
@@ -958,15 +961,15 @@ _DtHelpCeFindCcdfId (
  *
  * Purpose:	Find the parent for a topic.
  ******************************************************************************/
-int 
+int
 _DtHelpCeGetCcdfTopicParent (
-     _DtHelpVolume   vol, 
-     char	 *topic, 
+     _DtHelpVolume   vol,
+     char	 *topic,
      char	**retParent)
 {
     CcdfVolumePtr  ccdfVol = GetCcdfVolumePtr(vol);
 
-    /* Don't return an error if we are asked for the parent of NULL, or if 
+    /* Don't return an error if we are asked for the parent of NULL, or if
        the topic has no parent.  Both cases are valid (and used by
        _DtTopicPath). */
 
@@ -987,7 +990,7 @@ _DtHelpCeGetCcdfTopicParent (
  * Function: int _DtHelpCeGetCcdfKeywordList (_DtHelpVolume vol,
  *
  * Parameters:	vol	Specifies the volume whose keywords need to be
- *			loaded from disk.  Once loaded, they can be 
+ *			loaded from disk.  Once loaded, they can be
  *			accessed through the fields of the volume structure.
  *
  * Return Value:	0 if successful, -1 if a failure occurs
@@ -1008,7 +1011,7 @@ _DtHelpCeGetCcdfKeywordList (
     CcdfVolumePtr  ccdfVol = GetCcdfVolumePtr(vol);
 
     /* Generate the name of the keyword file.  Because volume files
-       use the ".hv" suffix and keyword files use ".hvk", all we have 
+       use the ".hv" suffix and keyword files use ".hvk", all we have
        to do is append a "k". */
     /*
      * If the keywordFile is non-null, we've already tried once.
@@ -1020,12 +1023,13 @@ _DtHelpCeGetCcdfKeywordList (
      */
     if (ccdfVol->keywordFile == NULL)
       {
-        ccdfVol->keywordFile = (char *) malloc (strlen (vol->volFile) + 2);
+	int keywordFile_size = strlen (vol->volFile) + 2;
+        ccdfVol->keywordFile = (char *) malloc(keywordFile_size);
         if (ccdfVol->keywordFile == NULL)
 	    return -1;
 
-        strcpy (ccdfVol->keywordFile, vol->volFile);
-        strcat (ccdfVol->keywordFile, "k");
+        strlcpy(ccdfVol->keywordFile, vol->volFile, keywordFile_size);
+        strlcat(ccdfVol->keywordFile, "k", keywordFile_size);
       }
 
     /*
@@ -1048,12 +1052,12 @@ _DtHelpCeGetCcdfKeywordList (
 	return (-1);
       }
 
-    /* Now parse the string into the appropriate arrays.  The string has the 
+    /* Now parse the string into the appropriate arrays.  The string has the
        following syntax:
 
        		keyword1<\>topic topic topic ... \n
 		keyword2<\>topic topic topic ... \n
-       
+
      */
     nextC = (char *) keywordString;
 
@@ -1126,7 +1130,7 @@ _DtHelpCeGetCcdfKeywordList (
 
 	    /* If the next token is end-of-file (\0), then quit.  Otherwise
 	       if the next token is a newline, then we have gotten all of
-	       the topics and we need to add them to the array of topic 
+	       the topics and we need to add them to the array of topic
 	       arrays.  The final choice is that the token is a string so
 	       we add it to the current array of topics. */
 	    if (*token == '\0')
@@ -1174,7 +1178,7 @@ _DtHelpCeGetCcdfKeywordList (
 	      }
 	    else
 	      {
-		topics = (char **) _DtHelpCeAddPtrToArray ((void **) topics, 
+		topics = (char **) _DtHelpCeAddPtrToArray ((void **) topics,
 						(void *) token);
 		/*
 		 * If we just malloc'ed ourselves out of existance
@@ -1226,7 +1230,7 @@ _DtHelpCeGetCcdfKeywordList (
  *
  * Purpose:	Get the abstract of a volume.
  ******************************************************************************/
-int 
+int
 _DtHelpCeGetCcdfVolumeAbstract (
     _DtHelpVolume	  vol,
     char		**retAbs)
@@ -1275,7 +1279,7 @@ _DtHelpCeMapCcdfTargetToId (
     char        newTarget[128];
     CcdfVolumePtr  ccdfVol = GetCcdfVolumePtr(vol);
 
-    strcpy (newTarget, target_id);
+    strlcpy(newTarget, target_id, 128);
     _DtHelpCeUpperCase(newTarget);
 
     /*
@@ -1329,7 +1333,7 @@ _DtHelpCeGetCcdfVolLocale (
     if (_DtHelpCeStrchr(locale, ".", 1, &charSet) != 0)
       {
 	charSet = locale;
-        _DtHelpCeXlateOpToStdLocale(DtLCX_OPER_CCDF,charSet,&locale,NULL,NULL); 
+        _DtHelpCeXlateOpToStdLocale(DtLCX_OPER_CCDF,charSet,&locale,NULL,NULL);
         /* charset is owned by the volume Xrm database; don't free */
       }
     else if (NULL != locale)
@@ -1374,10 +1378,11 @@ _DtHelpCeGetCcdfDocStamp (
 	*ret_time = NULL;
 	if (stat(vol->volFile, &buf) == 0)
 	  {
-	    *ret_time = (char *) malloc (sizeof(time_t) * 3 + 1);
+	    int ret_time_size = sizeof(time_t) * 3 + 1;
+	    *ret_time = (char *) malloc(ret_time_size);
 	    if (*ret_time != NULL)
 	      {
-		sprintf(*ret_time, "%u", (unsigned) buf.st_mtime);
+		snprintf(*ret_time, ret_time_size, "%u", (unsigned) buf.st_mtime);
 		return -2;
 	      }
 	  }
@@ -1400,7 +1405,7 @@ _DtHelpCeGetCcdfDocStamp (
  *
  * Purpose:	Get the top topic of a volume.
  ******************************************************************************/
-int 
+int
 _DtHelpCeGetCcdfTopTopic (
     _DtHelpVolume   vol,
     char	**retTopic)
@@ -1430,7 +1435,7 @@ _DtHelpCeGetCcdfTopTopic (
  * Purpose:	Get the title of a volume.
  *
  ******************************************************************************/
-char * 
+char *
 _DtHelpCeGetCcdfVolTitle (
     _DtHelpVolume	  vol)
 {
@@ -1451,7 +1456,7 @@ _DtHelpCeGetCcdfVolTitle (
  * Purpose:	Get the title of a volume.
  *
  ******************************************************************************/
-int 
+int
 _DtHelpCeGetCcdfVolumeTitle (
     _DtHelpVolume	  vol,
     char		**ret_title)
@@ -1484,7 +1489,7 @@ _DtHelpCeGetCcdfVolumeTitle (
  * Purpose:	Open a CCDF help volume
  *
  ******************************************************************************/
-int 
+int
 _DtHelpCeOpenCcdfVolume (
     _DtHelpVolume	  vol)
 {
@@ -1519,7 +1524,7 @@ _DtHelpCeOpenCcdfVolume (
  * Purpose:	Open a CCDF help volume
  *
  ******************************************************************************/
-void 
+void
 _DtHelpCeCloseCcdfVolume (
     _DtHelpVolume	  vol)
 {
@@ -1547,7 +1552,7 @@ _DtHelpCeCloseCcdfVolume (
  * Purpose:	Reread a CCDF volume.
  *
  ******************************************************************************/
-int 
+int
 _DtHelpCeRereadCcdfVolume (
     _DtHelpVolume	  vol)
 {
@@ -1598,11 +1603,11 @@ _DtHelpCeRereadCcdfVolume (
  * Purpose:	Get a resource value for a volume or topic.
  *
  ******************************************************************************/
-char * 
+char *
 _DtHelpCeGetResourceString (
-    XrmDatabase  db, 
-    char	*topic, 
-    char	*resClass, 
+    XrmDatabase  db,
+    char	*topic,
+    char	*resClass,
     char	*resName)
 {
     return (GetResourceString(db, topic, resClass, resName));
@@ -1633,9 +1638,9 @@ _DtHelpCeGetResourceString (
  ******************************************************************************/
 char **
 _DtHelpCeGetResourceStringArray (
-    XrmDatabase  db, 
-    char	*topic, 
-    char	*resClass, 
+    XrmDatabase  db,
+    char	*topic,
+    char	*resClass,
     char	*resName)
 {
     return (GetResourceStringArray(db, topic, resClass, resName));

@@ -114,7 +114,7 @@ _DtCvRunInterp(
     int          writeBufSize = 0;
     char        *writeBuf     = NULL;
     char        *ptr;
-    char        *fileName;
+    char        fileName[19];
     char        *newData;
     char         readBuf[BUFSIZ];
     BufFilePtr   myBufFile;
@@ -129,23 +129,12 @@ _DtCvRunInterp(
     /*
      * open a temporary file to write the data to.
      */
-    fileName = tempnam(NULL, NULL);
-    if (fileName == NULL)
-      {
-	if (newData != data)
-	    free(newData);
-	return -1;
-      }
-
+    strlcpy(fileName, "/tmp/ed.XXXXXXXXXX", sizeof(fileName));
+    myFd = mkstemp(fileName);
     /*
      * write the data to file.
      */
     result = -1;
-#if defined(linux)
-    myFd   = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRWXU | S_IRWXG | S_IRWXO);
-#else
-    myFd   = open(fileName, O_WRONLY | O_CREAT | O_TRUNC);
-#endif
     if (myFd != -1)
       {
 	/*
@@ -181,7 +170,8 @@ _DtCvRunInterp(
     /*
      * create the system command string with its parameters
      */
-    ptr = (char *) malloc(sizeof(interp) + strlen(fileName) + 1);
+    int ptr_size = sizeof(interp) + strlen(fileName) + 1;
+    ptr = (char *) malloc(ptr_size);
     if (!ptr)
       {
 	unlink(fileName);
@@ -189,9 +179,9 @@ _DtCvRunInterp(
         return -1;
       }
 
-    strcpy (ptr, interp);
-    strcat (ptr, " ");
-    strcat (ptr, fileName);
+    strlcpy(ptr, interp, ptr_size);
+    strlcat(ptr, " ", ptr_size);
+    strlcat(ptr, fileName, ptr_size);
 
     myFile = popen(ptr, "r");
 
@@ -235,15 +225,19 @@ _DtCvRunInterp(
         if (result > 0)
           {
             size = strlen(readBuf);
-            if (writeBuf == NULL)
-                writeBuf = (char *) malloc (size + 1);
-            else
-                writeBuf = (char *) realloc (writeBuf, writeBufSize + size + 1);
+            int writeBuf_size;
+            if (writeBuf == NULL) {
+                writeBuf_size = size + 1;
+                writeBuf = (char *) malloc(writeBuf_size);
+            } else {
+                writeBuf_size = writeBufSize + size + 1;
+                writeBuf = (char *) realloc(writeBuf, writeBuf_size);
+            }
 
             if (writeBuf != NULL)
               {
                 writeBuf[writeBufSize] = '\0';
-                strcat(writeBuf, readBuf);
+                strlcat(writeBuf, readBuf, writeBuf_size);
                 writeBufSize += size;
               }
             else
@@ -260,7 +254,7 @@ _DtCvRunInterp(
       {
 	if (writeBuf != NULL)
 	    free(writeBuf);
-	
+
 	writeBuf = NULL;
       }
     else

@@ -39,7 +39,7 @@
                  1993, 1994, 1996 Hewlett-Packard Company.
  * (c) Copyright 1993, 1994, 1996 International Business Machines Corp.
  * (c) Copyright 1993, 1994, 1996 Sun Microsystems, Inc.
- * (c) Copyright 1993, 1994, 1996 Novell, Inc. 
+ * (c) Copyright 1993, 1994, 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -116,7 +116,7 @@ static	_DtCvVirtualInfo DefVirtFunctions =
  * These are used to parse subresources for the text display areas.
  */
 
-typedef struct 
+typedef struct
   {
     int    marginWidth;
     int    marginHeight;
@@ -135,12 +135,12 @@ static XtResource Resources[] = {
      "leading", "Leading", XmRInt, sizeof(int),
      XtOffset(DAArgsPtr, leading), XmRImmediate, (XtPointer) 1
    },
-    
+
    {
      XmNmarginWidth, XmCMarginWidth, XmRInt, sizeof(int),
      XtOffset(DAArgsPtr, marginWidth), XmRImmediate, (XtPointer) 5
    },
-    
+
    {
      XmNmarginHeight, XmCMarginHeight, XmRInt, sizeof(int),
      XtOffset(DAArgsPtr, marginHeight), XmRImmediate, (XtPointer) 5
@@ -150,17 +150,17 @@ static XtResource Resources[] = {
      "moveThreshold", "MoveThreshold", XmRInt, sizeof(int),
      XtOffset(DAArgsPtr, moveThreshold), XmRImmediate, (XtPointer) 10
    },
-    
+
    {
      XmNinitialDelay, XmCInitialDelay, XmRInt, sizeof(int),
      XtOffset(DAArgsPtr, initialDelay), XmRImmediate, (XtPointer) 250
    },
-    
+
    {
      XmNrepeatDelay, XmCRepeatDelay, XmRInt, sizeof(int),
      XtOffset(DAArgsPtr, repeatDelay), XmRImmediate, (XtPointer) 50
    },
-    
+
    {
      "userFont", XmCFontList, XmRFontList, sizeof (XmFontList),
      XtOffset(DAArgsPtr, userFont), XmRString, "Fixed"
@@ -270,7 +270,7 @@ GetUnderLineInfo (
     else
       {
         myFont = (XtPointer)__DtHelpFontStructGet(pDAS->font_info, idx);
-        if (XGetFontProperty((XFontStruct *)myFont, XA_UNDERLINE_POSITION, 
+        if (XGetFontProperty((XFontStruct *)myFont, XA_UNDERLINE_POSITION,
 			     ((unsigned long *) &(pDAS->underLine))) == FALSE)
             pDAS->underLine = ((XFontStruct *)myFont)->max_bounds.descent / 2;
       }
@@ -290,7 +290,7 @@ GetUnderLineInfo (
       }
     else
       {
-        if (XGetFontProperty((XFontStruct *)myFont, XA_UNDERLINE_THICKNESS, 
+        if (XGetFontProperty((XFontStruct *)myFont, XA_UNDERLINE_THICKNESS,
 			     ((unsigned long *) ret_underThick)) == FALSE)
             *ret_underThick = pDAS->lineHeight * 15 / 100;
       }
@@ -367,7 +367,7 @@ HelpCreateDA(
     int maxFontAscent;
     int maxFontDescent;
     int maxFontCharWidth;
-  
+
     short margin_width;
     short margin_height;
     short shadowThick, highThick;
@@ -397,7 +397,7 @@ HelpCreateDA(
 
     XmFontContext	fontContext;
     XmFontListEntry	fontEntry;
-    XmFontType		fontType;
+    XmFontType		fontType = XmFONT_IS_FONT;
 
     /* Allocate the Display Area. */
     pDAS = (DtHelpDispAreaStruct *) XtMalloc(sizeof(DtHelpDispAreaStruct));
@@ -488,6 +488,7 @@ HelpCreateDA(
     /*
      * Malloc for the default font.
      */
+
     (void) XmeRenderTableGetDefaultFont(DA_args.userFont, &tmpFont);
     if (default_list != NULL &&
 		XmFontListInitFontContext (&fontContext, default_list))
@@ -598,7 +599,7 @@ HelpCreateDA(
 	if (vert_flag != _DtHelpSTATIC)
 	    pDAS->neededFlags = _DtHelpSET_AS_NEEDED (pDAS->neededFlags,
 						_DtHelpVERTICAL_SCROLLBAR);
-  
+
 	XtAddCallback(pDAS->vertScrollWid, XmNdragCallback,
 					_DtHelpVertScrollCB, (XtPointer) pDAS);
 	XtAddCallback(pDAS->vertScrollWid, XmNincrementCallback,
@@ -654,7 +655,7 @@ HelpCreateDA(
 	if (horz_flag != _DtHelpSTATIC)
 	    pDAS->neededFlags = _DtHelpSET_AS_NEEDED (pDAS->neededFlags,
 						_DtHelpHORIZONTAL_SCROLLBAR);
-  
+
 	XtAddCallback(pDAS->horzScrollWid, XmNdragCallback,
 					_DtHelpHorzScrollCB, (XtPointer) pDAS);
 	XtAddCallback(pDAS->horzScrollWid, XmNincrementCallback,
@@ -718,7 +719,7 @@ HelpCreateDA(
     XtSetArg(args[n], XmNuserData  	   , pDAS);			++n;
     pDAS->dispWid = XmCreateDrawnButton(form, name, args, n);
     XtManageChild(pDAS->dispWid);
-  
+
     XtAddCallback(pDAS->dispWid, XmNexposeCallback, _DtHelpExposeCB,
 						(XtPointer) pDAS);
     XtAddCallback(pDAS->dispWid, XmNresizeCallback, _DtHelpResizeCB,
@@ -746,7 +747,7 @@ HelpCreateDA(
     if (DrawnBTrans != NULL)
 	XtOverrideTranslations(pDAS->dispWid, DrawnBTrans);
     _DtHelpProcessUnlock();
-  
+
     if (_XmGetFocusPolicy(parent) == XmPOINTER)
       {
 	XtAddEventHandler (pDAS->dispWid, EnterWindowMask, True,
@@ -760,14 +761,14 @@ HelpCreateDA(
 
     XtAddEventHandler (pDAS->dispWid, VisibilityChangeMask, True,
 			(XtEventHandler)_DtHelpVisibilityCB, (XtPointer) pDAS);
-  
+
 
     /* Add a destroy callback so that the display area can clean up prior to
-     * the help widget getting destroyed (e.g. display area's parent) 
+     * the help widget getting destroyed (e.g. display area's parent)
      */
     XtAddCallback(pDAS->dispWid, XmNdestroyCallback,
 				_DtHelpDisplayAreaDestroyCB, (XtPointer) pDAS);
-  
+
     n = 0;
     XtSetArg(args[n], XmNshadowThickness   , &shadowThick);	++n;
     XtSetArg(args[n], XmNhighlightThickness, &highThick);	++n;
@@ -810,19 +811,19 @@ HelpCreateDA(
 	gcMask |= GCTile;
 	gcValues.tile = tile;
       }
- 
+
     pDAS->normalGC = XCreateGC(dpy,
 		RootWindowOfScreen(XtScreen(pDAS->dispWid)), gcMask, &gcValues);
 
     gcMask &= (~GCTile);
     pDAS->pixmapGC = XCreateGC(dpy,
 		RootWindowOfScreen(XtScreen(pDAS->dispWid)), gcMask, &gcValues);
-  
+
     gcValues.foreground = pDAS->backgroundColor;
     gcValues.background = pDAS->foregroundColor;
     pDAS->invertGC = XCreateGC(dpy,
 		RootWindowOfScreen(XtScreen(pDAS->dispWid)), gcMask, &gcValues);
-  
+
     /*
      * Set the size of the text view area to the requested
      * number of columns and lines.
@@ -908,7 +909,7 @@ HelpCreateDA(
         XtSetArg(args[n], XmNsliderSize        , pDAS->dispUseHeight);	++n;
         XtSetValues(pDAS->vertScrollWid, args, n);
       }
-  
+
     if (pDAS->resizeCall)
 	(*(pDAS->resizeCall)) (pDAS->clientData);
 

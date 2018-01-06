@@ -171,7 +171,7 @@ FormatChunksToXmString(
       {
         if (XmFontListInitFontContext (&fontContext, *ret_list) == False)
             result = -1;
-        else 
+        else
           {
             XFontStruct *myFontStruct;
             /*
@@ -184,12 +184,12 @@ FormatChunksToXmString(
                                                                 &myFontStruct);
                 if (myMore)
                   {
-                    myCharSetQuarks[quarkCount++] = 
+                    myCharSetQuarks[quarkCount++] =
                                                 XrmStringToQuark (charSet);
                     XtFree (charSet);
                   }
               } while (myMore);
-    
+
             XmFontListFreeFontContext (fontContext);
           }
       } /* if NULL != *ret_list */
@@ -302,7 +302,7 @@ FormatChunksToXmString(
 	else /* if (chunkType & _DT_HELP_CE_STRING) */
 	    strChunk = (char *) title_chunks[i];
 
-	sprintf(buffer, "%ld", myIdx);
+	snprintf(buffer, 16, "%ld", myIdx);
 	charSetQuark = XrmStringToQuark(buffer);
 
         j = 0;
@@ -357,7 +357,7 @@ FormatChunksToXmString(
         if (result == 0)
           {
             if (*ret_title == NULL)
-                *ret_title = XmStringGenerate ((char *) strChunk, buffer, 
+                *ret_title = XmStringGenerate ((char *) strChunk, buffer,
 					       XmCHARSET_TEXT, NULL);
             else
               {
@@ -911,7 +911,7 @@ _DtHelpFormatVolumeTitle(
  *		volume		Specifies the Help Volume the information
  *				is associated with.
  *              ret_cnt         number of valid entries in the array
- *		ret_words	Returns NULL-termintaed array of 
+ *		ret_words	Returns NULL-termintaed array of
  *                                XmStrings containing the words.
  *		ret_list	Specifies the current font list being used.
  *				Returns a new font list if new character
@@ -1080,6 +1080,11 @@ _DtHelpFormatTopic(
 						filename, offset,
 						id_string,
 						&myUiInfo, &topic);
+	else {
+	    fprintf(stderr, "DtHelp: Invalid volume flag, aborting");
+	    exit(1);
+	}
+
 	_DtHelpProcessUnlock();
 	*ret_handle = (XtPointer) topic;
 	if (result != 0)
@@ -1115,7 +1120,7 @@ _DtHelpFormatTopic(
  * Purpose:	Get the title of a volume.
  *
  ******************************************************************************/
-int 
+int
 _DtHelpGetAsciiVolumeTitle (
      XtPointer		  client_data,
     _DtHelpVolumeHdl	  volume,
@@ -1167,7 +1172,7 @@ _DtHelpGetAsciiVolumeTitle (
  *		canvas		Specifies the handle for the canvas.
  *
  * Returns:	-1 if errors.
- *		 0 if no errors. 
+ *		 0 if no errors.
  *		 1 if empty path.
  *
  * Purpose:
@@ -1178,9 +1183,10 @@ _DtHelpFormatToc (
     DtHelpDispAreaStruct	*pDAS,
     _DtHelpVolumeHdl		 volume,
     char		         *id,
-    char			**ret_id,
+    char			 **ret_id,
     XtPointer			 *ret_handle)
 {
+
     int             result   = 0;
     _DtCvTopicPtr    topic;
     _DtHelpCeLockInfo lockInfo;
@@ -1196,7 +1202,8 @@ _DtHelpFormatToc (
     if (_DtHelpCeLockVolume(volume, &lockInfo) != 0)
 	return -1;
 
-    result = _DtHelpCeMapTargetToId(volume, id, ret_id);
+
+    result = _DtHelpCeMapTargetToId(volume, id, *ret_id);
 
     if (result == 0)
       {
@@ -1216,6 +1223,7 @@ _DtHelpFormatToc (
 					((pDAS->charWidth % 10) ? 1 : 0));
         myUiInfo.nl_to_space  = pDAS->nl_to_space;
 
+
 	result = _DtHelpCeGetVolumeFlag(volume);
 	_DtHelpProcessLock();
         if (result == 1)
@@ -1227,6 +1235,11 @@ _DtHelpFormatToc (
 	    result = _DtHelpCeFrmtCcdfPathAndChildren(volume,
 							*ret_id,
 							&myUiInfo, &topic);
+	else {
+	    fprintf(stderr, "DtHelp: Invalid volume flag, aborting");
+	    exit(1);
+	}
+
 	_DtHelpProcessUnlock();
 	*ret_handle = (XtPointer) topic;
       }

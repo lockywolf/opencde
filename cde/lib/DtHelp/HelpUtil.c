@@ -28,8 +28,8 @@
  **
  **   Project:     Rivers Project
  **
- **   Description: 
- ** 
+ **   Description:
+ **
  **
  **  (c) Copyright 1987, 1988, 1989, 1990, 1991, 1992 Hewlett-Packard Company
  **
@@ -110,7 +110,7 @@ static void  CloseDefBoxCB(
     XtPointer call_data);
 
 /* Macro for finding a point within a gadget.
- * Its used for item help 
+ * Its used for item help
  */
 #define  PT_IN_CHILD(X, Y, CHILD) \
 	 ((((int)(X)) >= ((int) (CHILD)->core.x)) && \
@@ -129,7 +129,7 @@ static void  CloseDefBoxCB(
 
 
 /******** data structures ********/
-typedef struct ExecContext 
+typedef struct ExecContext
 {
    char * command;
    XtPointer pDisplayArea;
@@ -224,12 +224,12 @@ static char * onitem32_xpm[] = {
 **
 **  Function     trusted
 **
-**  Purpose      Determines if the passed help volume is a 
-**               "trusted"  help volume or not.  We call it 
+**  Purpose      Determines if the passed help volume is a
+**               "trusted"  help volume or not.  We call it
 **               trusted if it meets the following conditions:
-**                  1. File Owner is root, bin, or system. 
+**                  1. File Owner is root, bin, or system.
 **                  2. File is NOT writable by group or others.
-**                     
+**
 **  Returns
 **               True   -  if the help volume IS Trusted
 **              False   -  if the help volume is NOT Trusted
@@ -262,7 +262,7 @@ static Boolean trusted (char *hv_path)  /* Full path to the help volume */
    **  The help volume MUST not be writable by group or others to be trusted.
    ** ----------------------------------------------------------------------- */
 
-   writable = (((buf.st_mode & S_IWGRP) == 0) && (buf.st_mode & S_IWOTH) == 0) ?  
+   writable = (((buf.st_mode & S_IWGRP) == 0) && (buf.st_mode & S_IWOTH) == 0) ?
               True : False;
 
    return writable;
@@ -280,16 +280,16 @@ static Boolean trusted (char *hv_path)  /* Full path to the help volume */
  *
  *	Close the error/info message box.
  *
- ************************************************************************/ 
+ ************************************************************************/
 static void _DtMessageClose(
     Widget w,
     XtPointer client_data,
     XEvent *event )
-{                        
+{
    /* NOTE: ExecuteContextCB() is dependent on this code */
    if (event->type == UnmapNotify)
    {
-      XtRemoveEventHandler (XtParent (client_data), StructureNotifyMask, 
+      XtRemoveEventHandler (XtParent (client_data), StructureNotifyMask,
                             True, (XtEventHandler) _DtMessageClose, client_data);
 
       XtUnmanageChild (client_data);
@@ -302,7 +302,7 @@ static void _DtMessageClose(
  *
  *	Execute an execution context
  *
- ************************************************************************/ 
+ ************************************************************************/
 static void ExecuteContextCB(
     Widget w,
     XtPointer client_data,
@@ -318,7 +318,7 @@ static void ExecuteContextCB(
     XtFree((char *) ec);
 
     /* unmap, rather than unmanage and destroy, because of the code
-       in _DtMessageClose().  _DtMessageClose() is notified when 
+       in _DtMessageClose().  _DtMessageClose() is notified when
        the widget unmaps and it destroys the widget. */
     XtUnmapWidget(w);       /* w is the message dialog */
 }
@@ -329,30 +329,30 @@ static void ExecuteContextCB(
  *  Creates an XmMessageDialog with the message and all buttons
  *  except the 'Close' (OK) button unmanaged.
  *  Also adds a callback that destroys the widget when the dialog is closed.
- * 
+ *
  *****************************************************************************/
-static Widget 
+static Widget
 CreateErrorDialog(
     Widget                   parent,
     char *                   message)
-{     
+{
    Widget	button;
    Widget	messageDialog;
    Arg		args[10];
    int	        n;
- 
+
    XmString	label_string;
    XmString      ok_string;
-   char          *title_string; 
- 
+   char          *title_string;
+
    /* Setup the message string and dialog title */
- 
+
    ok_string = XmStringCreateLocalized(((char *)_DTGETMESSAGE
                                (HUSET, 2,"Close")));
    label_string = XmStringCreateLocalized(message);
    title_string = XtNewString((char *)_DTGETMESSAGE
                               (HUSET, 5,"Help Error"));
- 
+
    n = 0;
    XtSetArg (args[n], XmNmessageString, label_string);  n++;
    XtSetArg (args[n], XmNtitle,title_string); n++;
@@ -364,23 +364,23 @@ CreateErrorDialog(
  		              MWM_DECOR_BORDER | MWM_DECOR_TITLE);
    XtSetArg(args[1], XmNuseAsyncGeometry, True);
    XtSetValues(XtParent(messageDialog), args, 2);
- 
+
    XmStringFree (label_string);
    XmStringFree (ok_string);
    XtFree(title_string);
- 
+
    /* unmanage or define the other buttons */
    button = XmMessageBoxGetChild (messageDialog, XmDIALOG_OK_BUTTON);
    XtUnmanageChild (button);
    button = XmMessageBoxGetChild (messageDialog, XmDIALOG_HELP_BUTTON);
    XtUnmanageChild (button);
- 
-   /* StructureNotifyMask gets Circulate, Configure, Destroy, 
+
+   /* StructureNotifyMask gets Circulate, Configure, Destroy,
       Gravity, Map, Reparent, & Unmap events */
    XtAddEventHandler(XtParent(messageDialog),
  	             StructureNotifyMask,True,
                      (XtEventHandler) _DtMessageClose, (XtPointer) messageDialog);
- 
+
    return messageDialog;           /* RETURN */
 
 }
@@ -388,8 +388,8 @@ CreateErrorDialog(
 /*****************************************************************************
  * Function: CreateExecErrorDlg
  *
- * 
- * 
+ *
+ *
  * Called by:
  *****************************************************************************/
 static Widget
@@ -406,6 +406,7 @@ CreateExecErrorDlg(
    Widget btn;
    char *  msg;
    char *  fullmsg;
+   int fullmsg_size;
 
    /* handle the error case */
    if (invalidAlias)
@@ -436,20 +437,21 @@ CreateExecErrorDlg(
              "For security reasons, automatic command execution is turned off.\n"
              "The command is:  %s");
    }
-   fullmsg = (char *) malloc(strlen(msg)+strlen(cmdStr)+30);
-   if (fullmsg) 
+   fullmsg_size = strlen(msg) + strlen(cmdStr) + 30;
+   fullmsg = (char *) malloc(fullmsg_size);
+   if (fullmsg)
    {
       if (condition == MISMATCHING_HOME_DIRS)
-         sprintf(fullmsg, msg, current_hd, cmdStr);
+         snprintf(fullmsg, fullmsg_size, msg, current_hd, cmdStr);
       else
-         sprintf(fullmsg,msg,cmdStr);
+         snprintf(fullmsg, fullmsg_size, msg, cmdStr);
    }
-   else 
+   else
       fullmsg = msg;
 
    /* create an error dialog, but don't manage it yet */
    msgDlg = CreateErrorDialog(XtParent(helpWidget),fullmsg);
-   
+
    if (msg != fullmsg) free(fullmsg);
 
    btn = XmMessageBoxGetChild (msgDlg, XmDIALOG_HELP_BUTTON);
@@ -462,23 +464,23 @@ CreateExecErrorDlg(
 
    return msgDlg;
 }
- 
+
 /*****************************************************************************
  * Function: _DtHelpErrorDialog
  *
- * 
- * 
+ *
+ *
  * Called by:
  *****************************************************************************/
 void _DtHelpErrorDialog(
     Widget                   parent,
     char *                   message)
-{     
+{
   Widget messageDialog;
 
   messageDialog = CreateErrorDialog(parent,message);
 
-  /* Display help window. This used to be before the call 
+  /* Display help window. This used to be before the call
      to add a StructureNotify event handler */
   XtManageChild (messageDialog);
 }
@@ -503,15 +505,15 @@ void _DtHelpErrorDialog(
  *    is an alias and if the alias is defined, the ret_cmdStr will be the
  *    value of the alias.  If the alias isn't defined, the ret_cmdStr will
  *    be the default command if available, or the alias name otherwise.
- * 
+ *
  *    ret_invalidAlias will be True if the alias was undefined and
  *    no default command was given.
  *
  *    ret_execPermitted will be True if executionPolicy is DtHELP_EXECUTE_ALL
  *    or DtHELP_EXECUTE_QUERY_xxx and ret_cmdStr is valid
  *
- *    ret_queryNeeded will be True if executionPoilcy is 
- *    DtHELP_EXECUTE_QUERY_ALL or if it is DtHELP_EXECUTE_QUERY_UNALIASED 
+ *    ret_queryNeeded will be True if executionPoilcy is
+ *    DtHELP_EXECUTE_QUERY_ALL or if it is DtHELP_EXECUTE_QUERY_UNALIASED
  *    and ret_cmdStr did not derive from an alias (i.e. was hardcoded
  *    in the help volume, not retrieved from a resource).
  *
@@ -522,7 +524,7 @@ void _DtHelpErrorDialog(
  * Comments:
  *    This code is written such that we don't need nor want to know
  *    whether it is a general or quick help widget.
- * 
+ *
  * Warning:
  *    command string must be writable; it is written, but left
  *    unchanged when the function exits.
@@ -537,7 +539,7 @@ Boolean _DtHelpFilterExecCmdStr(
     Boolean *                ret_execPermitted,
     Boolean *                ret_queryNeeded,
     char *		     hv_path)     /* Path to the Help Volume */
-{     
+{
    char * token;
    char * tokenEnd;
    char   tokenEndChar;
@@ -554,13 +556,13 @@ Boolean _DtHelpFilterExecCmdStr(
    *ret_execPermitted = False;
    *ret_queryNeeded = False;
 
-   if (NULL == commandStr) 
+   if (NULL == commandStr)
       return False;
 
   /** ------------------------------------------------------------- *
    **  If the executionPolicy is query all unaliased (query for all
-   **  execution links that have no execution alias defined), we 
-   **  make an exception:  only query the user for help volumes 
+   **  execution links that have no execution alias defined), we
+   **  make an exception:  only query the user for help volumes
    **  deemed NOT "trusted".
    ** ------------------------------------------------------------- */
 
@@ -573,7 +575,7 @@ Boolean _DtHelpFilterExecCmdStr(
       *ret_queryNeeded = (DtHELP_EXECUTE_QUERY_ALL == executionPolicy);
 
    /* get whether exec permitted */
-   if (   DtHELP_EXECUTE_ALL == executionPolicy 
+   if (   DtHELP_EXECUTE_ALL == executionPolicy
        || DtHELP_EXECUTE_QUERY_UNALIASED == executionPolicy
        || DtHELP_EXECUTE_QUERY_ALL == executionPolicy)
       *ret_execPermitted = True;
@@ -590,9 +592,9 @@ Boolean _DtHelpFilterExecCmdStr(
    if ( NULL == token || _DtHelpCeStrCaseCmpLatin1(token, ExecAliasCmd) != 0 )
    {
       /*** the command is not an alias; proceed using execution Policy ***/
-   
+
       *tokenEnd = tokenEndChar;       /* restore the string */
-   
+
       *ret_cmdStr = strdup(commandStr);
       ret = *ret_execPermitted;
 
@@ -627,9 +629,9 @@ Boolean _DtHelpFilterExecCmdStr(
       /* query the application's database for the alias command */
       /* build alias resource class and resource */
       /* e.g. App.executionAlias.<alias> */
-      sprintf(rsrc_name,"%s.%s.%s",appclass, RN_execAlias,token);
+      snprintf(rsrc_name, 200, "%s.%s.%s", appclass, RN_execAlias,token);
       /* e.g. App.ExecutionAlias.<alias> */
-      sprintf(rsrc_class,"%s.%s.%s",appclass, RC_execAlias,token);
+      snprintf(rsrc_class, 200, "%s.%s.%s", appclass, RC_execAlias,token);
 
       /* Get alias command */
       if (XrmGetResource(appDb,rsrc_name,rsrc_class,&reptype,&value) == True)
@@ -637,9 +639,9 @@ Boolean _DtHelpFilterExecCmdStr(
 
       /* build alias resource name and resource */
       /* e.g. app.executionAlias.<alias> */
-      sprintf(rsrc_name,"%s.%s.%s",appname, RN_execAlias,token);
+      snprintf(rsrc_name, 200, "%s.%s.%s", appname, RN_execAlias,token);
       /* e.g. app.ExecutionAlias.<alias> */
-      sprintf(rsrc_class,"%s.%s.%s",appname, RC_execAlias,token);
+      snprintf(rsrc_class, 200, "%s.%s.%s", appname, RC_execAlias,token);
 
       /* Get alias command and override class with instance, if defined */
       if (XrmGetResource(appDb,rsrc_name,rsrc_class,&reptype,&value) == True)
@@ -648,7 +650,7 @@ Boolean _DtHelpFilterExecCmdStr(
       if (rsrc_name) XtFree(rsrc_name);
       if (rsrc_class) XtFree(rsrc_class);
    }  /* if alias token */
-   else 
+   else
    {
       token = "";
    }
@@ -656,7 +658,7 @@ Boolean _DtHelpFilterExecCmdStr(
    if (tokenEnd) *tokenEnd = tokenEndChar; /* restore the string */
 
    /* alias was defined */
-   if (aliasCommand) 
+   if (aliasCommand)
    {
       *ret_cmdStr = strdup(aliasCommand);
       /* see if query needed; is not if policy is query_unaliased or all */
@@ -681,7 +683,7 @@ Boolean _DtHelpFilterExecCmdStr(
          *ret_execPermitted = False; /* can't exec an invalid alias */
          ret = False;
       }
-      else 
+      else
       {  /* alias wasn't defined but a default command */
          /* query is whatever was determined earlier */
          *ret_cmdStr = strdup(token);
@@ -698,7 +700,7 @@ Boolean _DtHelpFilterExecCmdStr(
  *  Purpose:
  *    _DtHelpCeWaitAndProcessEvents will process events and call
  *    the waitProc until waitProc returns False.   This function
- *    is useful to put up modal dialogs that must be reponded to 
+ *    is useful to put up modal dialogs that must be reponded to
  *    in the midst of executing code that must remain on the call stack.
  *
  *  Warning:
@@ -717,7 +719,7 @@ _DtHelpCeWaitAndProcessEvents (
     XtAppContext app;
 
     app = XtWidgetToApplicationContext(w);
-    do 
+    do
     {
 #ifndef XTHREADS
         XtAppNextEvent(app,&event);
@@ -727,7 +729,7 @@ _DtHelpCeWaitAndProcessEvents (
 
 	while (!(mask = XtAppPending(app)))
 	  ;   /* Busy waiting - so we don't lose our Lock! */
-	
+
 	if (mask & XtIMXEvent)         /* We have an XEvent */
 	  {
 	    /* Get the XEvent - we know it's there! Note that XtAppNextEvent
@@ -742,7 +744,7 @@ _DtHelpCeWaitAndProcessEvents (
 	  }
 #endif /* XTHREADS */
         /* check to see if we're done waiting */
-        waitFlag = (*waitProc)(w, clientData); 
+        waitFlag = (*waitProc)(w, clientData);
     } while (waitFlag);
 }
 
@@ -755,7 +757,7 @@ _DtHelpCeWaitAndProcessEvents (
 *
 * Returns:  *(int *)clientData < 0
 *****************************************************************************/
-static Boolean 
+static Boolean
 WaitForBtnActivatedCB(
     Widget w,
     void * clientData)
@@ -782,24 +784,24 @@ typedef struct ModalMsgDlgCBStruct
 *    Waits for the value pointed to by clientData to be >= 0.
 *
 *****************************************************************************/
-static void 
+static void
 IdentifyActivatedBtnCB(
     Widget w,
     XtPointer clientData,
     XtPointer callData)
 {
    ModalMsgDlgCBStruct * pMd = (ModalMsgDlgCBStruct *) clientData;
-    
+
    /* w must be a XmMessageDialog widget */
-   if (pMd->okBtn == w) 
+   if (pMd->okBtn == w)
       { pMd->activatedBtnId = XmDIALOG_OK_BUTTON; return; /* RETURN */ }
-   if (pMd->cancelBtn == w) 
+   if (pMd->cancelBtn == w)
       { pMd->activatedBtnId = XmDIALOG_CANCEL_BUTTON; return; /* RETURN */ }
-   if (pMd->helpBtn == w) 
+   if (pMd->helpBtn == w)
       { pMd->activatedBtnId = XmDIALOG_HELP_BUTTON; return; /* RETURN */ }
    pMd->activatedBtnId = -1;      /* unknown button */
 }
-    
+
 
 /*****************************************************************************
  * Function: _DtHelpFilterExecCmd
@@ -811,10 +813,10 @@ IdentifyActivatedBtnCB(
  *    useQueryDialog:   use a dialog to query user whether to exec, if not allowed
  *    pHelpStuff:       ptr to the HelpStuff structure of the help widget
  *    ret_filteredCmdStr: filtered command string
- * 
+ *
  * Returns:
  *    0: no error; filteredCmdStr can be exec'd
- *   -1: error: either internal or executionPolicy denies exec; 
+ *   -1: error: either internal or executionPolicy denies exec;
  *       filteredCmdStr is NULL
  *
  * Purpose:
@@ -823,7 +825,7 @@ IdentifyActivatedBtnCB(
  *    supports command alias replacement.  If the final outcome
  *    is that execution is permitted, the returned string is
  *    is the command string to execute.  If execution is not
- *    permitted, the return string is a NULL pointer. 
+ *    permitted, the return string is a NULL pointer.
  *
  *    Filtering of the command occurs as follows.
  *    If executionPolicy permits execution, only alias replacement occurs.
@@ -835,13 +837,13 @@ IdentifyActivatedBtnCB(
  * Comments:
  *    This code is written such that we don't need nor want to know
  *    whether it is a general or quick help widget.
- * 
+ *
  * Warning:
  *    command string must be writable; it is written, but left
  *    unchanged whent the function exits.
  *
  *    This operation is synchronous, meaning that, if a dialog is
- *    posted, it is a modal dialog and the function won't return 
+ *    posted, it is a modal dialog and the function won't return
  *    until the user selects a button.
  *
  * Called by:
@@ -854,7 +856,7 @@ int _DtHelpFilterExecCmd(
     _DtHelpCommonHelpStuff * pHelpStuff,
     char * *      ret_filteredCmdStr,
     char *		     hv_path)
-{     
+{
    ModalMsgDlgCBStruct msgDlgCBStruct;
    Boolean goodCmd;
    Boolean invalidAlias;
@@ -869,8 +871,8 @@ int _DtHelpFilterExecCmd(
    Widget  noexecBtn;
    Widget  execBtn;
 
-   goodCmd = _DtHelpFilterExecCmdStr(helpWidget, executionPolicy, 
-                 commandStr, &filteredCmdStr, &invalidAlias, 
+   goodCmd = _DtHelpFilterExecCmdStr(helpWidget, executionPolicy,
+                 commandStr, &filteredCmdStr, &invalidAlias,
                  &execPermitted, &queryNeeded, hv_path);
 
    /* if permissions allow immediate execution, do so */
@@ -890,9 +892,9 @@ int _DtHelpFilterExecCmd(
    msgDlg =  CreateExecErrorDlg(helpWidget,filteredCmdStr,
                         invalidAlias,pHelpStuff, NO_CONDITION, "");
 
-   /* if a bad alias or no exec permitted, 
+   /* if a bad alias or no exec permitted,
       don't need to wait for a response; dlg has close & Help */
-   if (False == execPermitted || False == queryNeeded)  
+   if (False == execPermitted || False == queryNeeded)
    {
       XtManageChild(msgDlg);                 /* manage modeless dialog */
       *ret_filteredCmdStr = NULL;            /* don't execute */
@@ -900,7 +902,7 @@ int _DtHelpFilterExecCmd(
       return -1;                            /* RETURN error */
    }
 
-   /* if got this far, query is needed;make the dialog include 
+   /* if got this far, query is needed;make the dialog include
       Execute Anyway and Don't Execute buttons */
 
    /* give the right title to the buttons */
@@ -917,17 +919,17 @@ int _DtHelpFilterExecCmd(
    XmStringFree(labelString);
    XmStringFree(labelString2);
 
-   /* We put an activate callback on the DontExecute and ExecuteAnyway buttons 
+   /* We put an activate callback on the DontExecute and ExecuteAnyway buttons
       and wait until a button is pressed.  */
    noexecBtn = XmMessageBoxGetChild (msgDlg, XmDIALOG_CANCEL_BUTTON);
-   XtAddCallback(noexecBtn, XmNactivateCallback, 
+   XtAddCallback(noexecBtn, XmNactivateCallback,
                              IdentifyActivatedBtnCB, (XtPointer) &msgDlgCBStruct);
 
    execBtn = XmMessageBoxGetChild (msgDlg, XmDIALOG_OK_BUTTON);
    XtManageChild (execBtn);           /* re-manage the button */
-   XtAddCallback(execBtn, XmNactivateCallback, 
+   XtAddCallback(execBtn, XmNactivateCallback,
                              IdentifyActivatedBtnCB, (XtPointer) &msgDlgCBStruct);
-   
+
    /* fill out the CB information structure used by IdentifyActivatedBtnCB */
    msgDlgCBStruct.msgDlg = msgDlg;
    msgDlgCBStruct.okBtn = execBtn;
@@ -944,7 +946,7 @@ int _DtHelpFilterExecCmd(
 
    /* wait until 'msgDlgCBStruct.activatedBtnId' has a value >= 0 */
    /* this occurs when the user responds to the msg dialog */
-   _DtHelpCeWaitAndProcessEvents(msgDlg, 
+   _DtHelpCeWaitAndProcessEvents(msgDlg,
               WaitForBtnActivatedCB, &msgDlgCBStruct.activatedBtnId);
 
    /*
@@ -978,11 +980,11 @@ int _DtHelpFilterExecCmd(
  *    helpLocationId:	helpOnHelp file location for Help btn in error dialog
  *    pDisplayStuff:    ptr to the DisplayWidget stuff of the help widget
  *    pHelpStuff:	ptr to the CommonHelp stuff of the help widget
- * 
+ *
  * Comments:
  *    This code is written such that we don't need nor want to know
  *    whether it is a general or quick help widget.
- * 
+ *
  * Warning:
  *    command string must be writable; it is written, but left
  *    unchanged whent the function exits.
@@ -998,7 +1000,7 @@ void _DtHelpExecFilteredCmd(
     char *                   helpLocationId,
     _DtHelpDisplayWidgetStuff * pDisplayStuff,
     _DtHelpCommonHelpStuff * pHelpStuff)
-{     
+{
    Boolean goodCmd;
    Boolean invalidAlias;
    Boolean execPermitted;
@@ -1009,7 +1011,7 @@ void _DtHelpExecFilteredCmd(
    XmString labelString2;
    Widget   msgDlg;
    Widget   btn;
-   int     n;	
+   int     n;
    Arg	   args[5];
    char    *hv_path=NULL;
 
@@ -1031,10 +1033,10 @@ void _DtHelpExecFilteredCmd(
 
   /** -------------------------------------------------------------- *
    **  If we're running as the root user
-   **   o check if the value of the HOME env var matches 
+   **   o check if the value of the HOME env var matches
    **     root's home directory (defined by /etc/passwd).
-   **   o If they do not match, then present a dialog 
-   **     alerting the user of this, along with the command to 
+   **   o If they do not match, then present a dialog
+   **     alerting the user of this, along with the command to
    **     invoke.
    ** -------------------------------------------------------------- */
 
@@ -1059,19 +1061,19 @@ void _DtHelpExecFilteredCmd(
       the other code is left here, should a change be wished. */
 #if 1
    /* This function runs a filter for policy and alias but posts no dialog  */
-   goodCmd=_DtHelpFilterExecCmdStr(helpWidget, 
-              pDisplayStuff->executionPolicy, commandStr, 
+   goodCmd=_DtHelpFilterExecCmdStr(helpWidget,
+              pDisplayStuff->executionPolicy, commandStr,
                &filteredCmdStr, &invalidAlias, &execPermitted, &queryNeeded, hv_path);
 #else
     /* This function does an synchronous filter; i.e. the code runs a filter
        for policy and alias, and if policy denies exec and the command is
        valid, then posts a modal dialog and waits for the user to decide
        what to do before returning. */
-   goodCmd = _DtHelpFilterExecCmd(helpWidget, commandStr, 
-                                  pDisplayStuff->executionPolicy, True, 
+   goodCmd = _DtHelpFilterExecCmd(helpWidget, commandStr,
+                                  pDisplayStuff->executionPolicy, True,
                                   pHelpStuff, &filteredCmdStr, hv_path);
    execPermitted = (goodCmd == 0);  /* convert an error int into a Boolean */
-   queryNeeded =    
+   queryNeeded =
           ((   pDisplayStuff->executionPolicy==DtHELP_EXECUTE_QUERY_ALL)
             || (pDisplayStuff->executionPolicy==DtHELP_EXECUTE_QUERY_UNALIASED))
        && goodCmd;
@@ -1093,16 +1095,16 @@ void _DtHelpExecFilteredCmd(
 
    /* create the dialog, but don't yet manage it */
    if ( diff_home_dirs == True)
-     msgDlg =  CreateExecErrorDlg(helpWidget,filteredCmdStr, invalidAlias,pHelpStuff, 
+     msgDlg =  CreateExecErrorDlg(helpWidget,filteredCmdStr, invalidAlias,pHelpStuff,
                                   MISMATCHING_HOME_DIRS, home_dir );
    else
-     msgDlg =  CreateExecErrorDlg(helpWidget,filteredCmdStr, invalidAlias,pHelpStuff, 
+     msgDlg =  CreateExecErrorDlg(helpWidget,filteredCmdStr, invalidAlias,pHelpStuff,
                                   NO_CONDITION, "");
 
 
    /*** setup ExecuteAnyway and Help buttons ***/
 
-   if ( (diff_home_dirs == True)  
+   if ( (diff_home_dirs == True)
                      ||
         (queryNeeded && execPermitted) )
    {
@@ -1118,17 +1120,17 @@ void _DtHelpExecFilteredCmd(
       XtSetValues(msgDlg,args,n);
       XmStringFree(labelString);
       XmStringFree(labelString2);
-   
+
       btn = XmMessageBoxGetChild (msgDlg, XmDIALOG_OK_BUTTON);
       XtManageChild (btn);           /* re-manage the button */
-   
+
       /* add the ExecuteContextCB() client-data and callback */
       execContext = malloc(sizeof(ExecContext));
-      if (execContext) 
-      { 
+      if (execContext)
+      {
          execContext->command = filteredCmdStr;
          execContext->pDisplayArea = pHelpStuff->pDisplayArea;
-         XtAddCallback(btn, XmNactivateCallback, 
+         XtAddCallback(btn, XmNactivateCallback,
                              ExecuteContextCB, (XtPointer) execContext);
       }
       else
@@ -1152,9 +1154,9 @@ void _DtHelpExecFilteredCmd(
 /*****************************************************************************
  * Function: LocateWidgetId()
  *
- *   
  *
- * Called by: 
+ *
+ * Called by:
  *****************************************************************************/
 static Widget  LocateWidgetId(
     Display          *dpy,
@@ -1180,7 +1182,7 @@ static Widget  LocateWidgetId(
     KeySym           keySym;
     Boolean          notDone=TRUE;
 
- 
+
     /* Make the target cursor */
     if (cursorIn != 0)
         cursor = cursorIn;
@@ -1201,31 +1203,31 @@ static Widget  LocateWidgetId(
             Pixmap       pixmap;
             Pixmap       maskPixmap;
             XColor       xcolors[2];
-   
+
             width    = onitem32_width;
             height   = onitem32_height;
             bits     = (char *) onitem32_bits;
             maskBits = (char *) onitem32_m_bits;
             xHotspot = onitem32_x_hot;
             yHotspot = onitem32_y_hot;
-    
+
             pixmap = XCreateBitmapFromData (dpy,
                          RootWindowOfScreen(XtScreen(shellWidget)), bits,
                          width, height);
-    
-    
+
+
             maskPixmap = XCreateBitmapFromData (dpy,
                          RootWindowOfScreen(XtScreen(shellWidget)), maskBits,
                          width, height);
-    
+
             xcolors[0].pixel = BlackPixelOfScreen(ScreenOfDisplay(dpy, screen));
             xcolors[1].pixel = WhitePixelOfScreen(ScreenOfDisplay(dpy, screen));
-    
+
             XQueryColors(dpy,
-			 DefaultColormapOfScreen(ScreenOfDisplay(dpy, screen)), 
-			 xcolors, 
+			 DefaultColormapOfScreen(ScreenOfDisplay(dpy, screen)),
+			 xcolors,
 			 2);
-    
+
             DfltOnItemCursor = XCreatePixmapCursor (dpy, pixmap, maskPixmap,
                                           &(xcolors[0]), &(xcolors[1]),
                                           xHotspot, yHotspot);
@@ -1257,7 +1259,7 @@ static Widget  LocateWidgetId(
                            GrabModeAsync, GrabModeAsync, CurrentTime);
     if (status != GrabSuccess)
       {
-        
+
         XtUngrabPointer (shellWidget, CurrentTime);
         XmeWarning(shellWidget,(char *)_DTGETMESSAGE(HUSET, 4,
         "Internal Error: Could not grab the keyboard\nDtHelpReturnSelectedWidget() aborted.\n"));
@@ -1277,7 +1279,7 @@ static Widget  LocateWidgetId(
 
       while (!(mask = XtAppPending(app)))
 	  ;   /* Busy waiting - so we don't lose our Lock! */
-	
+
       if (!(mask & XtIMXEvent)) /* Not a XEvent, it's an alternate input/timer event */
 	    XtAppProcessEvent(app, mask); /* No blocking, since an event is ready */
       else   /* We have an XEvent */
@@ -1288,7 +1290,7 @@ static Widget  LocateWidgetId(
 	    XtAppNextEvent(app, &event);
 #endif /* XTHREADS */
       widget = XtWindowToWidget(dpy, event.xany.window);
-      
+
       switch (event.type) {
             case ButtonPress:
                 break;
@@ -1301,7 +1303,7 @@ static Widget  LocateWidgetId(
                   offset = 1;
                 else
                   offset = 0;
-                
+
                 keySym = XLookupKeysym((XKeyEvent *)&event, offset);
                 if (keySym == XK_Escape)
 		  {
@@ -1316,7 +1318,7 @@ static Widget  LocateWidgetId(
 #ifdef XTHREADS
 	}    /* if */
 #endif
-    } 
+    }
 
     XtUngrabKeyboard (shellWidget, CurrentTime);      /* Done with keyboard */
     XtUngrabPointer (shellWidget, CurrentTime);      /* Done with pointer */
@@ -1332,7 +1334,7 @@ static Widget  LocateWidgetId(
         *statusRet = DtHELP_SELECT_VALID;
         return (widget);
       }
-    
+
     /* Get the x and y and parent relative to the current window */
     parent = RootWindow(dpy, screen);
     target_win = XtWindow(widget);
@@ -1404,7 +1406,7 @@ RememberDir(String path)
  * Function:	   Boolean _DtHelpResolvePathname(
  *
  *
- * Parameters:     
+ * Parameters:
  *
  * Return Value:    Boolean.
  *
@@ -1451,9 +1453,9 @@ Boolean _DtHelpResolvePathname(
            /* later NOTE: this seems strange, since we have closed the
               old volume, invalidating io_fileName */
            XtFree(newPath);
-           XmeWarning(widget,(char*)UtilMessage2); 
+           XmeWarning(widget,(char*)UtilMessage2);
            return (FALSE);
-       }      
+       }
    }
    else                       /* We have a non-valid path */
    {
@@ -1461,7 +1463,7 @@ Boolean _DtHelpResolvePathname(
         * We used to set it to null here now we just return what came in
         */
 
-       XmeWarning(widget,(char*)UtilMessage0);        
+       XmeWarning(widget,(char*)UtilMessage0);
        return (FALSE);
    }
 
@@ -1480,8 +1482,8 @@ Boolean _DtHelpResolvePathname(
  * Return Value:    Boolean.
  *
 
- * Description: _DtHelpExpandHelpVolume looks for a $LANG variable in the 
- *              helpAccesFile string and if found, replaces it with the 
+ * Description: _DtHelpExpandHelpVolume looks for a $LANG variable in the
+ *              helpAccesFile string and if found, replaces it with the
  *              current lang variable.
  *
  *****************************************************************************/
@@ -1499,7 +1501,7 @@ Boolean _DtHelpExpandHelpVolume(
   if (print->printVolume != NULL)
      XtFree(print->printVolume);
 
-  print->printVolume = XtNewString(display->helpVolume);     
+  print->printVolume = XtNewString(display->helpVolume);
 
   validPath = _DtHelpResolvePathname((Widget)w,
 				&print->printVolume,
@@ -1507,7 +1509,7 @@ Boolean _DtHelpExpandHelpVolume(
                                 help->sysVolumeSearchPath,
                                 help->userVolumeSearchPath);
 
- 
+
   /* Check to see that we resolved our path correctly */
   if (!validPath)
     return (FALSE);			/* RETURN */
@@ -1528,11 +1530,11 @@ Boolean _DtHelpExpandHelpVolume(
            help->topLevelId = NULL;
            return(FALSE);
          }
-       else   
+       else
          {
             /* recall that the topLevelId/File vars are malloc'd */
             help->topLevelId = topLevelId;
-            return(TRUE); 
+            return(TRUE);
 	 }
     }
 }
@@ -1546,7 +1548,7 @@ Boolean _DtHelpExpandHelpVolume(
  *
  * Return Value:    Void.
  *
- * Description:   This function copies the locationId portion of the 
+ * Description:   This function copies the locationId portion of the
  *                specification and returns it to the calling routine.
  *
  *****************************************************************************/
@@ -1561,11 +1563,11 @@ char *_DtHelpParseIdString(
 
   tmpSpec = XtNewString(specification);
 
-  
+
   /* First look for a blank in the specification.  This will signify that
    * we have a HelpAccessFile as part of the specification.
    */
-  
+
   /* The first call will return true, with the first string */
   pAccessFile = DtStrtok_r(tmpSpec, " ", &strtok_ptr);
   returnStr = XtNewString(pAccessFile);
@@ -1576,9 +1578,9 @@ char *_DtHelpParseIdString(
   if (pAccessFile != NULL)
     {
       /* We have a helpAccessFile in our specification */
-           
+
       XtFree(returnStr);
-   
+
       returnStr = XtNewString(pAccessFile);
       XtFree(tmpSpec);
       return(returnStr);
@@ -1605,7 +1607,7 @@ char *_DtHelpParseIdString(
  *
  * Return Value:    Void.
  *
- * Description:   This function copies the helpAccessFile portion of the 
+ * Description:   This function copies the helpAccessFile portion of the
  *                specification and returns it to the calling routine.
  *
  *****************************************************************************/
@@ -1619,11 +1621,11 @@ char *_DtHelpParseAccessFile(
 
   tmpSpec = XtNewString(specification);
 
-  
+
   /* First look for a blank in the specification.  This will signify that
    * we have a HelpAccessFile as part of the specification.
    */
-  
+
   /* The first call will return true, with the first string */
   pAccessFile = DtStrtok_r(tmpSpec, " ", &strtok_ptr);
   returnStr = XtNewString(pAccessFile);
@@ -1634,7 +1636,7 @@ char *_DtHelpParseAccessFile(
   if (pAccessFile != NULL)
     {
       /* We have a helpAccessFile in our specification */
-           
+
 
       /* If we have an accessFile, but it's not a full path, then we
        * must get the full path from the reg file.
@@ -1663,24 +1665,24 @@ char *_DtHelpParseAccessFile(
 
 
 /*****************************************************************************
- * Function:	 DtHelpReturnSelectedWidgetId 
+ * Function:	 DtHelpReturnSelectedWidgetId
  *
- * Parameters:   parent      Specifies the widget ID to use as the bases of 
+ * Parameters:   parent      Specifies the widget ID to use as the bases of
  *                           interaction, usually a top level shell.
  *
  *               cursor      Specifies the cursor to be used for the pointer
- *                           during the interaction.  If a value of NULL is 
+ *                           during the interaction.  If a value of NULL is
  *                           used this function will use a default cursor
  *                           value.
  *
- *               widget      This is the return value (e.g. the selected 
+ *               widget      This is the return value (e.g. the selected
  *                           widget).  A value of NULL is returned on error.
  *
  * Return Value:  Status: (-1,0 or 1).
  *
  * Purpose: Allows developers to get the widget ID for any widget in their UI
  *          that the user has selected via the pointer.  This function will
- *          cause the cursor to change and allow a user to select an item in 
+ *          cause the cursor to change and allow a user to select an item in
  *          the UI.
  *
  *****************************************************************************/
@@ -1692,7 +1694,7 @@ int DtHelpReturnSelectedWidgetId(
 
 
  Display   *dpy;
- int       screen;  
+ int       screen;
  Widget    selectedItem;
  int       status=DtHELP_SELECT_ERROR;
  Screen    *retScr;
@@ -1703,22 +1705,22 @@ int DtHelpReturnSelectedWidgetId(
   /* Setup some needed variables */
   dpy = XtDisplay(parent);
   retScr = XtScreen(parent);
- 
+
   screen = XScreenNumberOfScreen(retScr);
- 
+
   /* refresh the display */
   XmUpdateDisplay(parent);
 
   /* Change the curser to let the user select the desired widget */
   selectedItem = LocateWidgetId(dpy, screen, &status, parent, cursor);
-  
+
   switch (status)
     {
       case DtHELP_SELECT_VALID:
         *widget = selectedItem;
         result = DtHELP_SELECT_VALID;
 	break;
-     
+
       case DtHELP_SELECT_ABORT:
         *widget = NULL;
         result = DtHELP_SELECT_ABORT;
@@ -1728,7 +1730,7 @@ int DtHelpReturnSelectedWidgetId(
         *widget = NULL;
         result = DtHELP_SELECT_ERROR;
 	break;
- 
+
       case DtHELP_SELECT_INVALID:
       default:
         *widget = NULL;
@@ -1754,10 +1756,10 @@ int DtHelpReturnSelectedWidgetId(
  *                                       int maxNodex,
  *                                       DtTopicListStruct *pHead,
  *                                       DtTopicListStruct *pTale,
- *                                       totalNodes) 
- *                            
+ *                                       totalNodes)
  *
- * Parameters:  
+ *
+ * Parameters:
  *
  * Return Value:    Void.
  *
@@ -1790,7 +1792,7 @@ void _DtHelpTopicListAddToHead(
       pTemp->topicTitleLbl= XmStringCopy(topicTitle);
   pTemp->topicType        = topicType;
   pTemp->helpVolume       = XtNewString(accessPath);
-  pTemp->scrollPosition   = scrollPosition; 
+  pTemp->scrollPosition   = scrollPosition;
 
   /* Add locationId as first element if pHead = NULL */
   if (*pHead == NULL)
@@ -1801,9 +1803,9 @@ void _DtHelpTopicListAddToHead(
       /* Make sure or totalNodes counter is correct, e.g. force it to 1 */
       *totalNodes = 1;
     }
-  else 
+  else
     {  /* We have a list so add the new topic to the top */
-    
+
      (*pHead)->pPrevious     = pTemp;
 
      /* Assign our tale pointer only the first time in this block */
@@ -1826,7 +1828,7 @@ void _DtHelpTopicListAddToHead(
        (*pTale)         = (*pTale)->pPrevious;
        (*pTale)->pNext  = NULL;
        pTemp->pPrevious = NULL;
-               
+
        /* Free the id String and AccessPath elements */
        XtFree(pTemp->locationId);
        XtFree(pTemp->helpVolume);
@@ -1849,10 +1851,10 @@ void _DtHelpTopicListAddToHead(
  * Function:	    void _DtHelpTopicListDeleteHead(
  *                                       DtTopicListStruct *pHead,
  *                                       DtTopicListStruct *pTale,
- *                                       totalNodes) 
- *                            
+ *                                       totalNodes)
  *
- * Parameters:  
+ *
+ * Parameters:
  *
  * Return Value:    Void.
  *
@@ -1873,7 +1875,7 @@ void _DtHelpTopicListDeleteHead(
       if(pTemp != (*pTale))        /* (e.g. more than one node in list) */
 	{
            (*pHead)            = pTemp->pNext;
-           pTemp->pNext        = NULL; 
+           pTemp->pNext        = NULL;
            (*pHead)->pPrevious = NULL;
 
            /* Free the id String and accessPath elements */
@@ -1885,7 +1887,7 @@ void _DtHelpTopicListDeleteHead(
 
            /* Bump back our total node counter */
            *totalNodes = *totalNodes -1;
-         } 
+         }
     }
 }
 
@@ -1896,8 +1898,8 @@ void _DtHelpTopicListDeleteHead(
 
 /*****************************************************************************
  * Function:	    void _DtHelpMapCB()
- *                   
- *                            
+ *
+ *
  *
  * Parameters:      client_data is the widget in reference to
  *                  which widget w is placed
@@ -1920,7 +1922,7 @@ XtCallbackProc _DtHelpMapCB(
 {
     Arg         args[2];
     Widget      parent;
-    Position    centeredY, bestX, bestY, pX, pY; 
+    Position    centeredY, bestX, bestY, pX, pY;
     Dimension   pHeight, myHeight, pWidth, myWidth;
     Dimension   maxX, maxY;
     int	        rhsX, lhsX, topY, botY;   /* needs to be int, not Dimension */
@@ -1944,12 +1946,12 @@ XtCallbackProc _DtHelpMapCB(
     maxX = XDisplayWidth(display,screenNumber);
     maxY = XDisplayHeight(display,screenNumber);
 
-    /* algorithm 
+    /* algorithm
      * 1. attempt left or right placement with no overlap
      * 2. if fails, attempt up or down placement with no overlap
      * 3. if fails, places on the right in the middle
      */
-    
+
     /* first try left right placement */
     bestY = pY + pHeight/2 - myHeight/2;
     centeredY = bestY;
@@ -2035,22 +2037,22 @@ XtCallbackProc _DtHelpMapCenteredCB(
 
 /*****************************************************************************
  * Function:	   void _DtHelpDisplayDefinitionBox(
- *                            Widget new,   
+ *                            Widget new,
  *                            Widget definitionBox,
  *                            char * path,
  *                            char * locationId);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
+ *
+ * Return Value:
  *
  * Purpose: 	   This routine will create and post the definition box.
  *                 (e.g. the Quick Help Dialog widget)
  *
  ****************************************************************************/
 void _DtHelpDisplayDefinitionBox(
-    Widget parent,  
-    Widget **definitionBox, 
+    Widget parent,
+    Widget **definitionBox,
     char * path,
     char * locationId)
 {
@@ -2074,13 +2076,13 @@ void _DtHelpDisplayDefinitionBox(
       closeString = XmStringCreateLocalized(((char *)_DTGETMESSAGE
                               (HUSET, 2,"Close")));
       n =0;
-      XtSetArg (args[n], DtNhelpVolume, path);            n++; 
-      XtSetArg (args[n], DtNhelpType, DtHELP_TYPE_TOPIC); n++; 
+      XtSetArg (args[n], DtNhelpVolume, path);            n++;
+      XtSetArg (args[n], DtNhelpType, DtHELP_TYPE_TOPIC); n++;
       XtSetArg (args[n], DtNlocationId, locationId);      n++;
       XtSetArg (args[n], DtNcloseLabelString, closeString);  n++;
       XtSetArg (args[n], XmNtitle, title);                n++;
-      *definitionBox = 
-           (Widget *)DtCreateHelpQuickDialog(parent, "definitionBox", 
+      *definitionBox =
+           (Widget *)DtCreateHelpQuickDialog(parent, "definitionBox",
                                                args, n);
       XmStringFree(closeString);
 
@@ -2089,31 +2091,31 @@ void _DtHelpDisplayDefinitionBox(
                     CloseDefBoxCB, (XtPointer) NULL);
 
 
-      /* We do not want a print button for now so we unmap it */     
-      printWidget = DtHelpQuickDialogGetChild ((Widget)*definitionBox, 
+      /* We do not want a print button for now so we unmap it */
+      printWidget = DtHelpQuickDialogGetChild ((Widget)*definitionBox,
                                         DtHELP_QUICK_PRINT_BUTTON);
       XtUnmanageChild (printWidget);
-  
-      /* We do not want a help button for now so we unmap it */     
-      helpWidget = DtHelpQuickDialogGetChild ((Widget)*definitionBox, 
+
+      /* We do not want a help button for now so we unmap it */
+      helpWidget = DtHelpQuickDialogGetChild ((Widget)*definitionBox,
                                        DtHELP_QUICK_HELP_BUTTON);
       XtUnmanageChild (helpWidget);
 
 
-      /* We do not want a BACK button for now so we unmap it */     
-      backWidget = DtHelpQuickDialogGetChild ((Widget)*definitionBox, 
+      /* We do not want a BACK button for now so we unmap it */
+      backWidget = DtHelpQuickDialogGetChild ((Widget)*definitionBox,
                                            DtHELP_QUICK_BACK_BUTTON);
       XtUnmanageChild (backWidget);
 
 
-  
+
       /*  Adjust the decorations for the dialog shell of the dialog  */
       n = 0;
       XtSetArg(args[n], XmNmwmFunctions, MWM_FUNC_RESIZE | MWM_FUNC_MOVE); n++;
-      XtSetArg (args[n], XmNmwmDecorations, 
+      XtSetArg (args[n], XmNmwmDecorations,
                 MWM_DECOR_BORDER | MWM_DECOR_TITLE | MWM_DECOR_RESIZEH); n++;
       XtSetValues (XtParent(*definitionBox), args, n);
-    
+
       /* Add the popup position callback to our history dialog */
       XtAddCallback (XtParent(*definitionBox), XmNpopupCallback,
                     (XtCallbackProc)_DtHelpMapCenteredCB, (XtPointer)XtParent(parent));
@@ -2129,33 +2131,33 @@ void _DtHelpDisplayDefinitionBox(
        n = 0;
        XtSetArg (args[n], XmNtitle, title);  ++n;
        XtSetValues (XtParent(*definitionBox), args, n);
-   
+
        /* Set the proper contents. */
        n = 0;
-       XtSetArg (args[n], DtNhelpType, DtHELP_TYPE_TOPIC); n++; 
-       XtSetArg (args[n], DtNhelpVolume, path);             n++; 
+       XtSetArg (args[n], DtNhelpType, DtHELP_TYPE_TOPIC); n++;
+       XtSetArg (args[n], DtNhelpVolume, path);             n++;
        XtSetArg (args[n], DtNlocationId, locationId);       n++;
        XtSetValues ((Widget)*definitionBox, args, n);
-  
+
     }
- 
+
 
   /* Display the dialog */
-  XtManageChild((Widget)*definitionBox);     
+  XtManageChild((Widget)*definitionBox);
   XtMapWidget(XtParent((Widget)*definitionBox));
- 
+
 }
 
 
 /*****************************************************************************
  * Function:	   static void CloseDefBoxCB(
- *                            Widget w,   
+ *                            Widget w,
  *                            XtPointer client_data,
  *                            XtPointer call_data);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
+ *
+ * Return Value:
  *
  * Purpose: 	   This routine closes and destroys the Definition Box
  *                 Dialog Widget that we create.
@@ -2178,19 +2180,19 @@ static void  CloseDefBoxCB(
 
 /*****************************************************************************
  * Function:	   void _DtHelpDisplayFormatError()
-  *       
- * Parameters:   
+  *
+ * Parameters:
  *
- * Return Value:    
+ * Return Value:
  *
- * Purpose: 	   This routine generate and display the proper errror 
- *                 message to the display area as well as send the proper 
+ * Purpose: 	   This routine generate and display the proper errror
+ *                 message to the display area as well as send the proper
  *                 error to XmWarning() function.
  *
  ****************************************************************************/
 void _DtHelpDisplayFormatError(
     XtPointer displayArea,
-    Widget widget,   
+    Widget widget,
     char *userError,
     char *systemError)
 {
@@ -2198,26 +2200,26 @@ void _DtHelpDisplayFormatError(
 
    /* Set the string to the current help dialog */
    (void) _DtHelpFormatAsciiStringDynamic(displayArea, userError, &topicHandle);
-         
+
    /* We ignor the status return here, because if we error out here we are
     * in big trouble because this is an error routine
     */
-   
+
    _DtHelpDisplayAreaSetList (displayArea, topicHandle, FALSE, -1);
 
-   if (systemError != NULL)  
+   if (systemError != NULL)
      XmeWarning((Widget)widget, systemError);
-  
+
 }
 
- 
+
 
 /*****************************************************************************
  * Function:	   void _DtHelpCommonHelpInit()
-  *       
- * Parameters:   
+  *
+ * Parameters:
  *
- * Return Value:    
+ * Return Value:
  *
  * Purpose: 	   This routine inits common help stuff
  *
@@ -2231,7 +2233,7 @@ void _DtHelpCommonHelpInit(
    /* for help on help */
    if ( help->helpOnHelpVolume != _DtHelpDefaultHelp4HelpVolume)
        help->helpOnHelpVolume = XtNewString(help->helpOnHelpVolume);
-   if ( NULL == help->helpOnHelpVolume ) 
+   if ( NULL == help->helpOnHelpVolume )
        help->helpOnHelpVolume = (char *)_DtHelpDefaultHelp4HelpVolume;
    help->pHelpListHead = NULL;		/* Help List Pointer */
    help->onHelpDialog = NULL;		/* help on help dialog */
@@ -2242,14 +2244,14 @@ void _DtHelpCommonHelpInit(
    help->sysVolumeSearchPath = _DtHelpGetSystemSearchPath();
 }
 
- 
+
 
 /*****************************************************************************
  * Function:	   void _DtHelpCommonHelpClean()
-  *       
- * Parameters:   
+  *
+ * Parameters:
  *
- * Return Value:    
+ * Return Value:
  *
  * Purpose: 	   This routine cleans up common help stuff
  *
@@ -2284,14 +2286,14 @@ void _DtHelpCommonHelpClean(
    }
 }
 
- 
+
 
 /*****************************************************************************
  * Function:	   void _DtHelpSetDlgButtonsWidth
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
+ *
+ * Return Value:
  *
  * Purpose: 	   This routine cleans up common help stuff
  *
@@ -2352,7 +2354,7 @@ void _DtHelpSetButtonPositions(
    /* calc the space */
    sumWidth = maxBtnWidth * numBtns;
    minWidthWithSpace = sumWidth + minBetweenBtnSpace * (numBtns * 2);
-   if (minWidthWithSpace > minWidthWithSpace) minFormWidth = minWidthWithSpace;
+   if (minFormWidth > minWidthWithSpace) minFormWidth = minWidthWithSpace;
    spaceWidth = ((int)(minFormWidth - sumWidth) / (numBtns * 2));
 
    /* scale pixels to percent */
@@ -2363,14 +2365,14 @@ void _DtHelpSetButtonPositions(
    for ( i=0; i<numBtns; i++ )
    {
       rightPos = leftPos + maxBtnWidth;
-   
+
       n = 0;
       XtSetArg (args[n], XmNleftAttachment, XmATTACH_POSITION);            n++;
       XtSetArg (args[n], XmNleftPosition, (Dimension) (((float) leftPos)*scale)); n++;
       XtSetArg (args[n], XmNrightAttachment, XmATTACH_POSITION);           n++;
       XtSetArg (args[n], XmNrightPosition,(Dimension) (((float) rightPos)*scale)); n++;
       XtSetValues (btnList[i], args, n);
-   
+
       leftPos = rightPos + spaceWidth + spaceWidth;
    }  /* setup the positions for all buttons */
 }  /* _DtHelpSetDlgButtonsWidth */
@@ -2379,18 +2381,18 @@ void _DtHelpSetButtonPositions(
 
 /*****************************************************************************
  * Function:	   _DtHelpXmFontListGetPropertyMax
- *       
- * Parameters:   
+ *
+ * Parameters:
  *     fontList:  an XmFontList
  *     atom:      an XA_xxx value (see Vol 1, chpt 6.2.9)
  *     ret_propertyValue: ptr to long value that will hold the max value
  *
- * Return Value:    
+ * Return Value:
  *     True: got at least one value
  *     False: unable to get any value; ret_propertyValue unchanged
  *
  * Purpose:
- *    This function returns the max value of XGetFontProperty calls 
+ *    This function returns the max value of XGetFontProperty calls
  *    for each font in the XmFontList
  *    If there is an error, ret_propertyValue is left unchanged.
  *
@@ -2425,7 +2427,7 @@ _DtHelpXmFontListGetPropertyMax(
           /* cast according to type */
           fontStruct = (XFontStruct *) fontData;
 
-          if(XGetFontProperty(fontStruct, atom, &value) == TRUE) 
+          if(XGetFontProperty(fontStruct, atom, &value) == TRUE)
           {
              if(gotValue == False) /* haven't gotten any prop value yet */
              {
@@ -2449,11 +2451,11 @@ _DtHelpXmFontListGetPropertyMax(
 
           /* cast according to type */
           fontSet = (XFontSet) fontData;
- 
+
           numfont=XFontsOfFontSet(fontSet,&font_list,&name_list);
-          for(i = 0; i < numfont; i++) 
+          for(i = 0; i < numfont; i++)
           {
-              if(XGetFontProperty(font_list[i], atom, &value) == TRUE) 
+              if(XGetFontProperty(font_list[i], atom, &value) == TRUE)
               {
                   if(gotValue == False) /* haven't gotten any prop value yet */
                   {
