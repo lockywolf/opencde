@@ -1,3 +1,8 @@
+# 0.3 - Jan 6, 2018
+
+* Fixes dtcalc warnings
+* Fixes dthelp warnings
+
 # 0.2 - Jan 1, 2018
 
 * Adds readme + changelog (#9)
