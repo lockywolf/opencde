@@ -5,12 +5,25 @@ Forked from https://sourceforge.net/p/cdesktopenv
 Focused on improving support on OpenBSD, fixing security issues and
 better/easier packaging
 
+# Status
+
+Some crashing prgrams have been fixed, but serious problems remain.
+
+* Security issues are present (though some maybe be fixed, but are untested)
+* Work arounds for some things are not yet documented (ex: font issues)
+* Help menus typically don't work
+
+At this point it's a rusty classic car that is ok to drive around the farm, but
+isn't at all safe to drive on the highway.
+
 # OpenBSD Port
 
 Port is based on earlier work by Pascal Stumpf <Pascal.Stumpf@cubes.de>
 
 It currently installs to /usr/local/dt but needs a symlink at /usr/dt in order
 for programs to function properly.
+
+Note: It will not build when logged in as root (problem in dtksh)
 
 ## Todo
 
