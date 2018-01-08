@@ -299,8 +299,10 @@ FormatChunksToXmString(
 					&xrmName[_DT_HELP_FONT_LANG_TER]);
 	    (void) __DtHelpFontIndexGet(pDAS, xrmName, &myIdx);
 	  }
-	else /* if (chunkType & _DT_HELP_CE_STRING) */
+	else {/* if (chunkType & _DT_HELP_CE_STRING) */
+	    printf("get from title\n");
 	    strChunk = (char *) title_chunks[i];
+	}
 
 	snprintf(buffer, 16, "%ld", myIdx);
 	charSetQuark = XrmStringToQuark(buffer);
@@ -356,10 +358,11 @@ FormatChunksToXmString(
          */
         if (result == 0)
           {
-            if (*ret_title == NULL)
+            if (*ret_title == NULL) {
+		printf("Generate string: '%s'\n", (char *) strChunk);
                 *ret_title = XmStringGenerate ((char *) strChunk, buffer,
 					       XmCHARSET_TEXT, NULL);
-            else
+	    } else
               {
                 partTitle = XmStringGenerate ((char *) strChunk, buffer,
 					      XmCHARSET_TEXT, NULL);
@@ -884,14 +887,17 @@ _DtHelpFormatVolumeTitle(
      */
     result = _DtHelpCeGetVolumeFlag(volume_handle);
     _DtHelpProcessLock();
-    if (result == 1)
+    if (result == 1) {
+	printf("RESULT IS 1\n");
         result = _DtHelpCeGetSdlVolTitleChunks(volume_handle, &myUiInfo,
 				&titleChunks);
-    else if (result == 0)
+    } else if (result == 0) {
+	printf("RESULT IS 0\n");
         result = _DtHelpCeGetCcdfVolTitleChunks(
 				(_DtHelpVolume) volume_handle,
 				&myUiInfo,
 				&titleChunks);
+    }
     _DtHelpProcessUnlock();
     if (result != -1)
         result = FormatChunksToXmString(pDAS, True, titleChunks,

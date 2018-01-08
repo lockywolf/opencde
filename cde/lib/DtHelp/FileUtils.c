@@ -168,7 +168,7 @@ static int SpecialStrcmp(
  ***********************************************************************/
 Boolean
 _DtHelpFileTraceLinks (
-             char * *  pPathName)
+             char **  pPathName)
 {
    int    result = 0;
    char   curBuf;
@@ -209,8 +209,8 @@ _DtHelpFileTraceLinks (
 	    * pPathName had memory allocated before this function was called.
 	    * only increase the memory if needed.
 	    */
-           int pPathName_size = strlen(*pPathName);
-           if ( pPathName_size < strlen(filePath) )
+           int pPathName_size = strlen(*pPathName) + 1;
+           if ( pPathName_size < strlen(filePath) + 1 )
                 pPathName_size = strlen(filePath) + 1;
                 *pPathName = (char *)realloc((void *)*pPathName, pPathName_size);
 
@@ -271,41 +271,39 @@ _DtHelpFileTraceToFile (
    *pFoundPath = NULL;
    if ( pathName == NULL || pathName[0] == EOS )
       return False;
-
+printf("%s\n", pathName);
    /* if it's a file, trace its links */
    if (   access (pathName, accessMode) == 0
        && stat (pathName, &status) == 0
        && S_ISREG(status.st_mode) )    /* a file */
    {
+      printf("It's a file: '%s'\n", pathName);
       /* trace any links */
       if ( _DtHelpFileTraceLinks(pPathName) == False )
       {
           /* don't free pPathName here */
           return False;                           /* RETURN: no file */
       }
+
       pathName = *pPathName;
 
       /* find out if its an accessible file */
-      if (   pathName != NULL
+      if (pathName != NULL
           && pathName[0] != EOS
           && access (pathName, accessMode) == 0
           && stat (pathName, &status) == 0
   	           && S_ISREG(status.st_mode))    /* a file */
       {
+         printf("It's accessible\n");
          /* point foundPath at the path */
          *pFoundPath = pathName;
          return True;               /* RETURN:  its a file */
+      } else {
+         access(pathName, accessMode);
+         int errnum = errno;
+         printf("Not accessible %s - %d - %s\n", pathName, errnum, strerror(errnum));
       }  /* if a valid path */
-   } /* if a path */
-
-#if 0
-   printf("Unknown file: %s\n", pathName);
-   printf("Access: %d, stat: %d, IS_REG: %d, mode: %x\n",
-             access (pathName, accessMode),
-             stat (pathName, &status),
-             S_ISREG(status.st_mode),
-             status.st_mode);
-#endif
+   } else { printf("Not a file\n"); } /* if a path */
 
    /* its not a file */
    *pFoundPath = NULL;

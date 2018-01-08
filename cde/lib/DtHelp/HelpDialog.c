@@ -2176,17 +2176,20 @@ void _DtHelpUpdateDisplayArea(
 					hw->help_dialog.display.volumeHandle,
 					&labelString, &fontList, &mod);
 
-           if(labelString == NULL && NULL != hw->help_dialog.display.helpVolume)
-        	labelString = XmStringCreateLocalized(
+           if(labelString == NULL && NULL != hw->help_dialog.display.helpVolume) {
+                labelString = XmStringCreateLocalized(
 					hw->help_dialog.display.helpVolume);
+           }
 
 	   if (NULL != labelString)
 	     {
 	       n = 0;
                XtSetArg (args[n], XmNlabelString, labelString);	n++;
-	       if (mod == True)
-	         { XtSetArg (args[n], XmNfontList, &fontList);	n++; }
+	       //if (mod == True)
+	       //  { XtSetArg (args[n], XmNfontList, &fontList);	n++; }
+               printf("labelString len: %d\n", XmStringLength(labelString));
                XtSetValues (hw->help_dialog.browser.volumeLabel, args, n);
+               printf("AFTER SET VALUES\n");
                XmStringFree(labelString);
 	     }
 
@@ -2265,6 +2268,7 @@ void _DtHelpUpdateDisplayArea(
         /* ??? Is this the best way to null out a label gadget ??? */
         labelString = XmStringCreateLocalized(" ");
         XtSetArg (args[n], XmNlabelString, labelString);
+        printf("2\n");
         XtSetValues (hw->help_dialog.browser.volumeLabel, args, 1);
         XmStringFree(labelString);
 
@@ -2998,12 +3002,14 @@ static void CleanUpHelpDialog(
         {
           XtSetArg(args[0], XmNitems, NULL);
           XtSetArg(args[1], XmNitemCount, 0);
+          printf("3\n");
           XtSetValues(hw->help_dialog.history.volumeList, args, 2);
         }
       if (hw->help_dialog.history.topicList != NULL)
         {
           XtSetArg(args[0], XmNitems, NULL);
           XtSetArg(args[1], XmNitemCount, 0);
+          printf("4\n");
           XtSetValues(hw->help_dialog.history.topicList, args, 2);
         }
 

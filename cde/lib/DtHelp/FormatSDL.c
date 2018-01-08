@@ -9363,7 +9363,6 @@ CreateTitleChunks(
     void		***ret_chunks)
 {
     long	 type;
-    int		 cnt;
     int		 result = 0;
     const char	*myLang;
     const char	*mySet;
@@ -9374,13 +9373,10 @@ CreateTitleChunks(
       {
 	myLang = lang;
 	mySet  = char_set;
-	cnt = *ret_cnt;
 	if (_DtCvIsSegString(p_seg))
 	  {
 	    if (*ret_cnt == 0)
 		*ret_cnt = 1;
-	    else
-		cnt--;
 
 	    *ret_cnt = *ret_cnt + 3;
 	    if (*ret_chunks == NULL)
@@ -9397,27 +9393,30 @@ CreateTitleChunks(
 	    if (p_seg->next_disp == NULL || _DtCvIsSegNewLine(p_seg))
 		type |= DT_HELP_CE_NEWLINE;
 
-	    (*ret_chunks)[cnt++] = (void *) type;
-	    (*ret_chunks)[cnt++] = (void *) ptr;
+	    (*ret_chunks)[0] = (void *) type;
+	    (*ret_chunks)[1] = (void *) ptr;
 
 	    if (_DtCvIsSegWideChar(p_seg))
 	      {
 		int len = _DtCvStrLen(_DtCvStringOfStringSeg(p_seg), 1)
 							* MB_CUR_MAX + 1;
 
+		printf("segment len: %d\n", len);
 		ptr = malloc (sizeof(char *) * len);
 		if (NULL != ptr)
 		    wcstombs((char *) ptr,
 				(wchar_t *) _DtCvStringOfStringSeg(p_seg), len);
 	      }
-	    else
+	    else {
+		printf("DUP\n");
 	        ptr = strdup(_DtCvStringOfStringSeg(p_seg));
+	    }
 
-	    (*ret_chunks)[cnt++] = (void *) ptr;
-	    if ((*ret_chunks)[cnt-1] == NULL)
+	    (*ret_chunks)[2] = (void *) ptr;
+	    if ((*ret_chunks)[2] == NULL)
 		return -1;
 
-	    (*ret_chunks)[cnt++] = (void *) DT_HELP_CE_END;
+	    (*ret_chunks)[3] = (void *) DT_HELP_CE_END;
 	  }
 	else if (_DtCvIsSegRegion(p_seg))
 	  {
@@ -9456,8 +9455,6 @@ CreateTitleChunks(
 
 	        if (*ret_cnt == 0)
 		    *ret_cnt = 1;
-	        else
-		    cnt--;
 
 	        *ret_cnt = *ret_cnt + 2;
 	        if (*ret_chunks == NULL)
@@ -9472,9 +9469,9 @@ CreateTitleChunks(
 	        if (p_seg->next_disp == NULL || _DtCvIsSegNewLine(p_seg))
 		    type |= DT_HELP_CE_NEWLINE;
 
-	        (*ret_chunks)[cnt++] = (void *) type;
-	        (*ret_chunks)[cnt++] = (void *) daRegion->handle;
-	        (*ret_chunks)[cnt++] = (void *) DT_HELP_CE_END;
+	        (*ret_chunks)[0] = (void *) type;
+	        (*ret_chunks)[1] = (void *) daRegion->handle;
+	        (*ret_chunks)[2] = (void *) DT_HELP_CE_END;
 	      }
 	    result = 0;
 	  }
@@ -9518,10 +9515,12 @@ ProcessSegmentsToChunks(
     int cnt    = 0;
     int result = 0;
 
+
     result = CreateTitleChunks(toss, _DtCvContainerListOfSeg(head_el),
 					snb_el, stop_mask, lang, char_set,
 					resolve_spc, client_data,
 					&cnt, ret_chunks);
+
     if ((result != 0 || cnt == 0) && NULL != AbbrevOfSeg(head_el)
 				&& strlen ((char *) AbbrevOfSeg(head_el)))
       {
@@ -10306,7 +10305,8 @@ _DtHelpCeGetSdlVolTitleChunks(
     /*
      * process it
      */
-    if (pHeadSeg != NULL)
+    if (pHeadSeg != NULL) {
+	printf("ProcessSegmentsToChunks\n");
 	result = ProcessSegmentsToChunks(
 				_DtHelpCeGetSdlVolToss(volume_handle, -1),
 				pHeadSeg,
@@ -10316,13 +10316,17 @@ _DtHelpCeGetSdlVolTitleChunks(
 				ui_info->resolve_spc,
 				ui_info->client_data,
 				ret_chunks);
+    }
     if (result != 0)
       {
+	printf("getting _title\n");
 	result = _DtHelpCeGetSdlTitleChunks(volume_handle, "_title",
 						ui_info, ret_chunks);
-	if (result != 0)
+	if (result != 0) {
+	    printf("getting _hometopic\n");
 	    result = _DtHelpCeGetSdlTitleChunks(volume_handle, "_hometopic",
 						ui_info, ret_chunks);
+	}
       }
 
     return result;

@@ -251,7 +251,7 @@ static void UpdateTopicList(
 
    XtSetArg(args[0], XmNitems,items);
    XtSetArg(args[1], XmNitemCount, pHistoryList->totalNodes);
-   XtSetValues(hw->help_dialog.history.topicList, args, 2);
+   //XtSetValues(hw->help_dialog.history.topicList, args, 2);
 
    XtFree((char *)items);
 
@@ -964,8 +964,10 @@ void _DtHelpUpdateHistoryList(
        /* We can skip this if it already exists in our history list,else
         * we add the new history item  to the top of the scrolled window
         */
-        XmListAddItem(hw->help_dialog.history.volumeList,currentItemTitle, 1);
-        XmListSelectPos(hw->help_dialog.history.volumeList,1, FALSE);
+        printf("XmListAddItem\n");
+        //XmListAddItem(hw->help_dialog.history.volumeList, currentItemTitle, 1);
+        printf("AFTER XmListAddItem\n");
+        //XmListSelectPos(hw->help_dialog.history.volumeList, 1, FALSE);
      }
    else /* dupItem == True */
      {
