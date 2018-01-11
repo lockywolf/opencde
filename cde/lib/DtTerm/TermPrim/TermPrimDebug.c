@@ -61,7 +61,7 @@ int
 isDebugFSet(int c, int f)
 {
     int i;
-    
+
     _DtTermProcessLock();
     i = ((f < _TERM_MAX_DEBUG_FLAG) ?
 	    debugLevel[c % 256] &&
@@ -132,8 +132,9 @@ setDebugFlags(char *c1)
      */
 
     /* don't destroy the original string... */
-    c2 = malloc(strlen(c1) + 1);
-    (void) strcpy(c2, c1);
+    int c2_size = strlen(c1) + 1;
+    c2 = malloc(c2_size);
+    strlcpy(c2, c1, c2_size);
 
 
     argHead.next = (argArray *) 0;
@@ -236,13 +237,13 @@ setDebugFlags(char *c1)
 	/* now run through the the char array and or in these flags... */
 	for (c2 = charArray; *c2; c2++) {
 	    if (isalpha(*c2)) {
-		if (!debugLevel[*c2]) {
-		    debugLevel[*c2] =
+		if (!debugLevel[(int)*c2]) {
+		    debugLevel[(int)*c2] =
 			    (unsigned char *) malloc(_TERM_DEBUG_NUM_BYTES);
-		    (void) memset(debugLevel[*c2], '\0', _TERM_DEBUG_NUM_BYTES);
+		    memset(debugLevel[(int)*c2], '\0', _TERM_DEBUG_NUM_BYTES);
 		}
 		for (i1 = 0; i1 < _TERM_DEBUG_NUM_BYTES; i1++) {
-		    debugLevel[*c2][i1] |= theseFlags[i1];
+		    debugLevel[(int)*c2][i1] |= theseFlags[i1];
 		}
 	    }
 	}
@@ -348,7 +349,7 @@ timeStamp(char *msg)
 	char buffer[BUFSIZ];
 
 	if (!(c = getenv("timeStampFileName"))) {
-	    (void) sprintf(buffer, "timeStamp-%d", getpid());
+	    (void) snprintf(buffer, BUFSIZ, "timeStamp-%d", getpid());
 	    c = buffer;
 	}
 
@@ -361,8 +362,8 @@ timeStamp(char *msg)
     }
     _DtTermProcessUnlock();
 
-    (void) gettimeofday(&tv, &tz);
-    (void) fprintf(timeStampFile, "%lu %ld %s\n", tv.tv_sec, tv.tv_usec,
+    gettimeofday(&tv, &tz);
+    fprintf(timeStampFile, "%llu %ld %s\n", tv.tv_sec, tv.tv_usec,
 	    (msg && *msg) ? msg : "");
 }
 
@@ -452,8 +453,9 @@ enumToName
 	}
     }
     snprintf(buffer, BUFSIZ, "Unknown Value %d", value);
-    retBuffer = realloc(retBuffer, strlen(buffer) + 1);
-    (void) strcpy(retBuffer, buffer);
+    int retBuffer_size = strlen(buffer) + 1;
+    retBuffer = realloc(retBuffer, retBuffer_size);
+    strlcpy(retBuffer, buffer, retBuffer_size);
     return(retBuffer);
 }
 

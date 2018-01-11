@@ -1271,7 +1271,7 @@ Resize(Widget w)
 	    desired.height = preferred.height;
 	    desired.border_width = preferred.border_width;
 	}
-	
+
 	/* change the width of the menubar to the width of the window... */
 	(void) XtResizeWidget(tw->termview.menuBar.widget,
 		desired.width,
@@ -1512,7 +1512,7 @@ Realize(Widget w, XtValueMask *p_valueMask, XSetWindowAttributes *attributes)
      */
     if (!XtWidth(w)) XtWidth(w) = 1 ;
     if (!XtHeight(w)) XtHeight(w) = 1 ;
-    
+
     valueMask |= CWBitGravity | CWDontPropagate;
     attributes->bit_gravity = NorthWestGravity;
     attributes->do_not_propagate_mask =
@@ -1649,7 +1649,7 @@ GeometryManager(Widget child, XtWidgetGeometry *desired,
 		    result = XtGeometryAlmost;
 		}
 		break;
-	    
+
 	    case XtGeometryNo:
 		result = XtGeometryNo;
 		break;
@@ -1662,7 +1662,7 @@ GeometryManager(Widget child, XtWidgetGeometry *desired,
 	    /* if we are still in XtGeometryYes mode, it is safe to make
 	     * the actual changes...
 	     */
-		    
+
 	    if (result == XtGeometryYes) {
 		/* make any requested changes... */
 		if (desired->request_mode & CWWidth) {
@@ -1689,15 +1689,15 @@ GeometryManager(Widget child, XtWidgetGeometry *desired,
 
 	return(result);
     }
-	
+
     if (child == tw->termview.menuBar.widget) {
 	c = "menuBar";
     } else {
 	c = "<unknown>";
     }
 
-    (void) printf("GeometryManager: %s widget (0x%lx) requesting geo change\n",
-	    c, child);
+    printf("GeometryManager: %s widget (0x%lx) requesting geo change\n",
+	    c, (unsigned long) child);
 
     return(XtGeometryNo);
 }
@@ -2007,7 +2007,7 @@ hyperlinkCallback
     Widget		  quickHelpDialog;
     DtHelpDialogCallbackStruct
 			 *hyperData = (DtHelpDialogCallbackStruct *) callData;
-    
+
     switch ((int) hyperData->hyperType) {
     case DtHELP_LINK_TOPIC:
 	break;
@@ -2035,7 +2035,7 @@ hyperlinkCallback
     }
 }
 
-    
+
 
 void
 _DtTermViewMapHelp(Widget w, char *volume, char *id)

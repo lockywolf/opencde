@@ -94,7 +94,7 @@ static char rcs_id[] = "$TOG: TermPrimSetUtmp.c /main/10 1998/04/03 17:11:42 mgr
 /* /etc/utmp include files... */
 #ifdef	UT_UTMPX
 #include <utmpx.h>
-#define	getutent		getutxent	
+#define	getutent		getutxent
 #define	getutid			getutxid
 #define	getutline		getutxline
 #ifdef	NOTDEF
@@ -139,8 +139,9 @@ _DtTermPrimUtmpAddEntry
     (void) memset(utmpInfoTmp, '\0', sizeof(utmpInfo));
 
     /* fill in the structure... */
-    utmpInfoTmp->utmpLine = (char *) XtMalloc(strlen(utmpLine) + 1);
-    (void) strcpy(utmpInfoTmp->utmpLine, utmpLine);
+    int utmpLine_size = strlen(utmpLine) + 1;
+    utmpInfoTmp->utmpLine = (char *) XtMalloc(utmpLine_size);
+    strlcpy(utmpInfoTmp->utmpLine, utmpLine, utmpLine_size);
 
     /* insert it after the head of the list...
      */
@@ -250,6 +251,7 @@ _DtTermPrimUtmpInit(Widget w)
     _DtTermProcessLock();
 
     if (!userName) {
+	int userName_size;
 /* getpw{uid,nam}_r routines fail on IBM when searching passwd info via NIS.
    The AIX specific code could be removed after IBM fixes the problem. Note
    that there could still be a failure on IBM platform if "USER" env variable
@@ -264,19 +266,22 @@ _DtTermPrimUtmpInit(Widget w)
 	 *	-/etc/passwd if not.
 	 */
 	if ((((namebuf = _XGetlogin(login_buf))) != NULL)
-	    && (((pw_ret = _XGetpwnam(namebuf, pw_buf))) != NULL) 
+	    && (((pw_ret = _XGetpwnam(namebuf, pw_buf))) != NULL)
 	    && (pw_ret->pw_uid == getuid())) {
-	    userName = XtMalloc(strlen(namebuf) + 1);
-	    (void) strcpy(userName, namebuf);
+	    userName_size = strlen(namebuf) + 1;
+	    userName = XtMalloc(userName_size);
+	    strlcpy(userName, namebuf, userName_size);
 	} else if (((pw_ret = _XGetpwuid(getuid(), pw_buf))) != NULL) {
-	    userName = XtMalloc(strlen(pw_ret->pw_name) + 1);
-	    (void) strcpy(userName, pw_ret->pw_name);
+	    userName_size = strlen(pw_ret->pw_name) + 1;
+	    userName = XtMalloc(userName_size);
+	    strlcpy(userName, pw_ret->pw_name, userName_size);
 	}
 #if defined(XTHREADS) && defined(XUSE_MTSAFE_API) && defined(AIXV3)
       }
       else {
-	userName = XtMalloc(strlen(c) + 1);
-	(void) strcpy(userName, c);
+	userName_size = strlen(c) + 1;
+	userName = XtMalloc(userName_size);
+	strlcpy(userName, c, userName_size);
       }
 #endif
     }
@@ -284,12 +289,13 @@ _DtTermPrimUtmpInit(Widget w)
     if (!_DtTermPrim_XA_UtmpLine) {
 	_DtTermPrim_XA_UtmpLine = XInternAtom(XtDisplay(w), TermUtmpIdString, False);
     }
-	
+
 #ifdef	UT_ADDR
     if (!localHostname && !gethostname(buffer, sizeof(buffer)) &&
 	(name_ret = _XGethostbyname(buffer, name_buf)) != NULL) {
-	localHostname = XtMalloc(strlen(buffer) + 1);
-	(void) strcpy(localHostname, buffer);
+	int localHostname_size = strlen(buffer) + 1;
+	localHostname = XtMalloc(localHostname_size);
+	strlcpy(localHostname, buffer, localHostname_size);
     }
 #endif	/* UT_ADDR */
     _DtTermProcessUnlock();
@@ -331,8 +337,9 @@ _DtTermPrimUtmpGetUtLine(int pty, char *ptyName)
 	ptyName = ptyName + strlen("/dev/");
     }
 
-    c = XtMalloc(strlen(ptyName) + 1);
-    (void) strcpy(c, ptyName);
+    int c_size = strlen(ptyName) + 1;
+    c = XtMalloc(c_size);
+    strlcpy(c, ptyName, c_size);
 
     return(c);
 }
@@ -410,7 +417,7 @@ UtmpEntryCreate(Widget w, pid_t pid, char *utmpLine)
     utPtr->ut_exit.e_termination = 0;
     utPtr->ut_exit.e_exit = 2;
 #endif
-		
+
     (void) strncpy(utPtr->ut_user, (userName && *userName) ? userName : "????",
 	    sizeof(utPtr->ut_user));
     (void) strncpy(utPtr->ut_line, utmpLine, sizeof(utPtr->ut_line));

@@ -83,8 +83,9 @@ AddPtyInfo
     (void) memset(ptyInfoTmp, '\0', sizeof(ptyInfo));
 
     /* fill in the structure... */
-    ptyInfoTmp->ptyName = (char *) XtMalloc(strlen(ptyName) + 1);
-    (void) strcpy(ptyInfoTmp->ptyName, ptyName);
+    int ptyName_size = strlen(ptyName) + 1;
+    ptyInfoTmp->ptyName = (char *) XtMalloc(ptyName_size);
+    strlcpy(ptyInfoTmp->ptyName, ptyName, ptyName_size);
 
     /* insert it after the head of the list...
      */
@@ -215,16 +216,18 @@ GetPty(char **ptySlave, char **ptyMaster)
     int first;
     int ptyFd;
     int ttyFd;
+    int ttyDev_size, ptyDev_size;
 
     char *ttyDev = (char *) 0;
     char *ptyDev = (char *) 0;
 
     for (pty_dirs_ptr = pty_dirs;
 	    pty_dirs_ptr->pty_dir && pty_dirs_ptr->ptym_dir; pty_dirs_ptr++) {
-	ttyDev = realloc(ttyDev,
-		(unsigned) (strlen(pty_dirs_ptr->pty_dir) + 8));
-	ptyDev = realloc(ptyDev,
-		(unsigned) (strlen(pty_dirs_ptr->ptym_dir) + 8));
+	ttyDev_size = strlen(pty_dirs_ptr->pty_dir) + 8;
+        ttyDev = realloc(ttyDev, ttyDev_size);
+
+	ptyDev_size = strlen(pty_dirs_ptr->ptym_dir) + 8;
+	ptyDev = realloc(ptyDev, ptyDev_size);
 	if (!ttyDev || !ptyDev) {
 	    (void) perror("malloc");
 	    return(-1);
@@ -243,10 +246,10 @@ GetPty(char **ptySlave, char **ptyMaster)
 		    (first || !pty_dirs_ptr->fast) && *char_2; char_2++) {
 		for (char_3 = pty_dirs_ptr->char_3;
 			(first || !pty_dirs_ptr->fast); ) {
-		    (void) sprintf(ttyDev, char_3 ? "%s/tty%c%c%c" :
+		    (void) snprintf(ttyDev, ttyDev_size, char_3 ? "%s/tty%c%c%c" :
 			    "%s/tty%c%c", pty_dirs_ptr->pty_dir,
 			    *char_1, *char_2, char_3 ? *char_3 : 0);
-		    (void) sprintf(ptyDev, char_3 ? "%s/pty%c%c%c" :
+		    (void) snprintf(ptyDev, ptyDev_size, char_3 ? "%s/pty%c%c%c" :
 			    "%s/pty%c%c", pty_dirs_ptr->ptym_dir,
 			    *char_1, *char_2, char_3 ? *char_3 : 0);
 		    ptyFd = -1;
@@ -271,8 +274,9 @@ GetPty(char **ptySlave, char **ptyMaster)
 #else
 			    if (c1 = _XTtyname(ttyFd)) {
 #endif
-				ttyDev = realloc(ttyDev, strlen(c1) + 1);
-				(void) strcpy(ttyDev, c1);
+				int ttyDev_size = strlen(c1) + 1;
+				ttyDev = realloc(ttyDev, ttyDev_size);
+				strlcpy(ttyDev, c1, ttyDev_size);
 			    }
 
 			    /* change the ownership and mode of the pty.
@@ -405,7 +409,7 @@ SetupPty(char *ptySlave, int ptyFd)
 #endif	/* HP_ARCHITECTURE */
     return 0;
 }
-    
+
 int
 _DtTermPrimSetupPty(char *ptySlave, int ptyFd)
 {
@@ -427,7 +431,7 @@ ReleasePty(char *ptySlave)
     (void) chmod(ptySlave, 0666);
     (void) DeletePtyInfo(ptySlave);
 }
-    
+
 void
 _DtTermPrimReleasePty(char *ptySlave)
 {

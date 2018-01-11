@@ -95,14 +95,14 @@ stringToEnum(char *c, EnumType *enumTypes, int numEnumTypes)
 
 
 /*** INSERT CHAR/LINE *********************************************************
- * 
+ *
  *     #    #    #   ####   ######  #####    #####
  *     #    ##   #  #       #       #    #     #
  *     #    # #  #   ####   #####   #    #     #
  *     #    #  # #       #  #       #####      #
  *     #    #   ##  #    #  #       #   #      #
  *     #    #    #   ####   ######  #    #     #
- * 
+ *
  *                                       #
  *   ####   #    #    ##    #####       #   #          #    #    #  ######
  *  #    #  #    #   #  #   #    #     #    #          #    ##   #  #
@@ -123,15 +123,15 @@ _DtTermPrimActionInsert(Widget w, XEvent *event,
 
 
 /*** CURSOR MOTION ************************************************************
- * 
+ *
  *   ####   #    #  #####    ####    ####   #####
  *  #    #  #    #  #    #  #       #    #  #    #
  *  #       #    #  #    #   ####   #    #  #    #
  *  #       #    #  #####        #  #    #  #####
  *  #    #  #    #  #   #   #    #  #    #  #   #
  *   ####    ####   #    #   ####    ####   #    #
- * 
- * 
+ *
+ *
  *  #    #   ####    #####     #     ####   #    #
  *  ##  ##  #    #     #       #    #    #  ##   #
  *  # ## #  #    #     #       #    #    #  # #  #
@@ -174,7 +174,7 @@ _DtTermPrimActionTab(Widget w, XEvent *event,
 
 
 /*** STRING *******************************************************************
- *  
+ *
  *   ####    #####  #####      #    #    #   ####
  *  #          #    #    #     #    ##   #  #    #
  *   ####      #    #    #     #    # #  #  #
@@ -219,10 +219,10 @@ _DtTermPrimActionString(Widget w, XEvent *event, String *params, Cardinal *num_p
     }
     return;
 }
-	    
+
 
 /*** KEYMAP *******************************************************************
- * 
+ *
  *  #    #  ######   #   #  #    #    ##    #####
  *  #   #   #         # #   ##  ##   #  #   #    #
  *  ####    #####      #    # ## #  #    #  #    #
@@ -255,18 +255,18 @@ _DtTermPrimActionKeymap(Widget w, XEvent *event, String *params, Cardinal *num_p
     _DtTermProcessUnlock();
 
     if (!strcmp(params[0], "None")) {
-	(void) XtOverrideTranslations(w, original);
+	XtOverrideTranslations(w, original);
 	return;
     }
 
-    (void) sprintf(mapName, "%sKeymap", params[0]);
-    (void) strcpy(mapClass, mapName);
+    snprintf(mapName, BUFSIZ, "%sKeymap", params[0]);
+    strlcpy(mapClass, mapName, BUFSIZ);
     mapClass[0] = toupper(mapClass[0]);
-    (void) XtGetSubresources(w, (XtPointer) &keymap, mapName, mapClass,
+    XtGetSubresources(w, (XtPointer) &keymap, mapName, mapClass,
 	    key_resources, XtNumber(key_resources), NULL, (Cardinal) 0);
 
     if (keymap != NULL) {
-	(void) XtOverrideTranslations(w, keymap);
+	XtOverrideTranslations(w, keymap);
     }
     return;
 }

@@ -129,8 +129,8 @@ InvokeCallbacks(XtPointer client_data, XtSignalId *id)
 }
 
 _termSubprocId
-_DtTermPrimAddSubproc(Widget		w, 
-		      pid_t		pid, 
+_DtTermPrimAddSubproc(Widget		w,
+		      pid_t		pid,
 		      _termSubprocProc	proc,
 		      XtPointer		client_data)
 {
@@ -144,7 +144,7 @@ _DtTermPrimAddSubproc(Widget		w,
     subprocTmp->w = w;
     subprocTmp->proc = proc;
     subprocTmp->client_data = client_data;
-    subprocTmp->signal_id = XtAppAddSignal(XtWidgetToApplicationContext(w), 
+    subprocTmp->signal_id = XtAppAddSignal(XtWidgetToApplicationContext(w),
 					   InvokeCallbacks, subprocTmp);
 
     /* insert it after the head of the list... */
@@ -200,7 +200,7 @@ ReapChild(int sig)
      * instead of signal() it should remain installed after it is
      * invoked, even on SVR4 machines.  Otherwise we would need to
      * reinstall it each time, creating a race condition in which
-     * signals could be lost. 
+     * signals could be lost.
      */
 
     /* Preserve errno, like all good signal handlers should. */
@@ -215,7 +215,7 @@ _DtTermPrimSetChildSignalHandler(void)
     new_action.sa_handler = ReapChild;
     sigemptyset(&new_action.sa_mask);
     new_action.sa_flags = 0;
-#ifdef SA_RESTART 
+#ifdef SA_RESTART
     new_action.sa_flags |= SA_RESTART;
 #endif
 
@@ -238,7 +238,7 @@ DtTermSubprocReap(pid_t pid, int *stat_loc)
      * safe to invoke callbacks.  Storing them in static globals will not
      * work, because overlapping signals may arrive.  The approach used
      * here is imperfect, but the best I could contrive.  We block signals
-     * and then search the global data structures without using any locks. 
+     * and then search the global data structures without using any locks.
      * The routines that update the subprocHead list try not to leave it
      * in a transient inconsistent state, but that cannot be guaranteed.
      */
@@ -247,7 +247,7 @@ DtTermSubprocReap(pid_t pid, int *stat_loc)
     sigset_t new_sigs;
     sigset_t old_sigs;
 
-    /* 
+    /*
      * Block additional SIGCHLD signals temporarily.  This is not
      * necessary if the handler was installed with sigaction(), but we
      * may be called from an application's signal handler, and it may
@@ -259,7 +259,7 @@ DtTermSubprocReap(pid_t pid, int *stat_loc)
 
     if (pid > 0) {
 	/* find the subprocInfo structure for this subprocess... */
-	for (subprocTmp = subprocHead->next; 
+	for (subprocTmp = subprocHead->next;
 	     subprocTmp;
 	     subprocTmp = subprocTmp->next) {
 	    if (subprocTmp->pid == pid) {
@@ -365,8 +365,9 @@ _DtTermPrimSubprocExec(Widget		  w,
 	    /* malloc space for this string.  It will be free'ed in the
 	     * destroy function...
 	     */
-	    defaultCmd = XtMalloc(strlen(c) + 1);
-	    (void) strcpy(defaultCmd, c);
+	    int defaultCmd_size = strlen(c) + 1;
+	    defaultCmd = XtMalloc(defaultCmd_size);
+	    strlcpy(defaultCmd, c, defaultCmd_size);
 	}
 
 	cmd = defaultCmd;
@@ -378,18 +379,19 @@ _DtTermPrimSubprocExec(Widget		  w,
 	/* if loginShell is set, then pre-pend a '-' to argv[0].  That's
 	 * also why we allocate an extra byte in argv[0]...
 	 */
-	argv[0] = XtMalloc(strlen(cmd) + 2);
+	int size = strlen(cmd) + 2;
+	argv[0] = XtMalloc(size);
 	*argv[0] = '\0';
 	if (loginShell) {
 	    /* pre-pend an '-' for loginShell... */
-	    (void) strcat(argv[0], "-");
+	    (void) strlcat(argv[0], "-", size);
 	    if ((c = strrchr(cmd, '/'))) {
-		strcat(argv[0], ++c);
+		strlcat(argv[0], ++c, size);
 	    } else {
-		strcat(argv[0], cmd);
+		strlcat(argv[0], cmd, size);
 	    }
 	} else {
-	    (void) strcat(argv[0], cmd);
+	    strlcat(argv[0], cmd, size);
 	}
 	/* null term the list... */
 	argv[1] = (char *) 0;
@@ -561,23 +563,23 @@ _DtTermPrimSubprocExec(Widget		  w,
 #if       (OSMINORVERSION > 01)
 	(void) VuEnvControl(VUE_ENV_RESTORE_PRE_VUE);
 #endif /* (OSMINORVERSION > 01) */
-#else   /* (HPVUE) */  
+#else   /* (HPVUE) */
 	(void) _DtEnvControl(DT_ENV_RESTORE_PRE_DT);
-#endif  /* (HPVUE) */  
-            
+#endif  /* (HPVUE) */
+
 	/*
 	** set a few environment variables of our own...
 	*/
 	for (parent = w; !XtIsShell(parent); parent = XtParent(parent))
 	    ;
-	(void) sprintf(buffer, "%ld", XtWindow(parent));
+	(void) snprintf(buffer, BUFSIZ, "%ld", XtWindow(parent));
 	_DtTermPrimPutEnv("WINDOWID=", buffer);
 	_DtTermPrimPutEnv("DISPLAY=", XDisplayString(XtDisplay(w)));
 	if (((DtTermPrimitiveWidget)w)->term.emulationId) {
 	    _DtTermPrimPutEnv("TERMINAL_EMULATOR=",
 			      ((DtTermPrimitiveWidget)w)->term.emulationId);
 	}
-		 
+
 	/* set our utmp entry... */
 	(void) _DtTermPrimUtmpEntryCreate(w, getpid(),
 		((DtTermPrimitiveWidget)w)->term.tpd->utmpId);
@@ -633,7 +635,7 @@ _DtTermPrimSubprocExec(Widget		  w,
     (void) close(2);
     /* move fd[0:2] back in place... */
     for (i = 0; i <= 2; i++) {
-	if (saveFd[i] >= 0) { 
+	if (saveFd[i] >= 0) {
 	    (void) fcntl(saveFd[i], F_DUPFD, i);
 	    (void) close(saveFd[i]);
 	}

@@ -81,13 +81,13 @@ static char rcs_id[] = "$TOG: TermParse.c /main/3 1999/10/15 12:25:13 mgreess $"
 /*********************************************************************
  *  Macros for handling cursor constraints - return values in coordinate
  *  system for Term widget (base 0)  BASE which is 1 reflects the Vt base
- *  
+ *
  *  These defines need to account of for Origin mode eventually  TMH */
 
 #define TOPROW(w)    (1-BASE)
 #define TOPMARGIN(w) ((w)->term.tpd->scrollLockTopRow-(1-BASE))
 #define BOTTOMMARGIN(w) ((w)->term.tpd->scrollLockBottomRow-(1-BASE))
-#define BOTTOMROW(w) ((w)->term.rows-BASE) 
+#define BOTTOMROW(w) ((w)->term.rows-BASE)
 /* FIRSTCOLUMN(w)  ABS(BASE-1) */
 #define FIRSTCOLUMN(w) 0
 #define LASTCOLUMN(w) ((w)->term.columns-BASE)
@@ -100,9 +100,9 @@ static char rcs_id[] = "$TOG: TermParse.c /main/3 1999/10/15 12:25:13 mgreess $"
 #define STORELASTARG(c) (c)->parms[PCOUNT(c)]=(c)->workingNum
 
 /******************************************************************
- *   Upon entering a parse routine the parameter count is contained 
+ *   Upon entering a parse routine the parameter count is contained
  *   in  context->parms[0].
- *                                        
+ *
  *   The last parmameter parsed is in context->workingNum
  *   Next to last parmameter is in {context->parms[0]==1?context->workingNum:
  *                                  context->parms[context->param[0]-1]}
@@ -117,18 +117,18 @@ static char rcs_id[] = "$TOG: TermParse.c /main/3 1999/10/15 12:25:13 mgreess $"
  *   silently.
  *******************************************************************/
 
-void 
+void
 _DtTermClearParam(Widget w)
 {
     ParserContext context ;
     context = GetParserContext(w) ;
-  
+
     PCOUNT(context)=0 ;
     _DtTermPrimParserClearParm(w) ;
     _DtTermPrimParserClrStrParm(w) ;
 }
 
-void 
+void
 _DtTermEnterNum(Widget w)
 {
   ParserContext context ;
@@ -137,7 +137,7 @@ _DtTermEnterNum(Widget w)
   if (!PCOUNT(context)) PCOUNT(context)++ ; /* increment for first number ONLY*/
 }
 
-void 
+void
 _DtTermParsePushNum(Widget w)
 {
   ParserContext context ;
@@ -149,7 +149,7 @@ _DtTermParsePushNum(Widget w)
   else {
    if (!PCOUNT(context)) PCOUNT(context)++ ;/* increment for first number ONLY*/
   }
-    
+
   if ( ++PCOUNT(context)>NPARAM ) {
     Debug('P',fprintf(stderr,">>Too many parameters\n")) ;
     return ;
@@ -165,9 +165,9 @@ _DtTermSaveChar(Widget w)
   context = GetParserContext(w) ;
 
   mbtowc(&c,(char *)context->inputChar,MB_CUR_MAX);
-  if ( context->stringParms[0].length < STR_SIZE && iswprint(c) ) {
+  if ( (int)context->stringParms[0].length < STR_SIZE && iswprint(c) ) {
       strncpy( (
-         (char *)&context->stringParms[0].str[context->stringParms[0].length]), 
+         (char *)&context->stringParms[0].str[context->stringParms[0].length]),
                 (char *)context->inputChar, context->inputCharLen) ;
    context->stringParms[0].length += context->inputCharLen ;
   }
@@ -191,20 +191,21 @@ sendEscSequence(Widget w, char *transmitString)
     DtTermData      td = tw->vt.td;
 
     if ( td->S8C1TMode ) {
-           char *cbuf =malloc(strlen(transmitString)+1);
-           strcpy(cbuf,transmitString) ;
+           int cbuf_size = strlen(transmitString) + 1;
+           char *cbuf = malloc(cbuf_size);
+           strlcpy(cbuf, transmitString, cbuf_size) ;
            cbuf[1] = 0x9B ;
-           (void) _DtTermPrimSendInput(w, (unsigned char *) (cbuf+1),
+           _DtTermPrimSendInput(w, (unsigned char *) (cbuf+1),
                 strlen(cbuf+1));
            free(cbuf) ;
          }
         else {
-           (void) _DtTermPrimSendInput(w, (unsigned char *) transmitString,
+           _DtTermPrimSendInput(w, (unsigned char *) transmitString,
                 strlen(transmitString));
         }
 }
 
-void 
+void
 _DtTermDeviceStatus(Widget w)     /* DSR CSI?pn  */
 {
   DtTermPrimitiveWidget tw = (DtTermPrimitiveWidget) w;
@@ -231,7 +232,7 @@ _DtTermDeviceStatus(Widget w)     /* DSR CSI?pn  */
   }
 }
 
-void 
+void
 _DtTermDeviceStatusAnsi(Widget w)     /* DSR CSIpn  */
 {
   DtTermPrimitiveWidget tw = (DtTermPrimitiveWidget) w;
@@ -248,11 +249,11 @@ _DtTermDeviceStatusAnsi(Widget w)     /* DSR CSIpn  */
              break;
      case 6:
        /* cursor could be past last row (for autowrap) */
-       if ((col=tw->term.tpd->cursorColumn)>LASTCOLUMN(tw)) 
+       if ((col=tw->term.tpd->cursorColumn)>LASTCOLUMN(tw))
                      col=LASTCOLUMN(tw) ;
        row = tw->term.tpd->cursorRow+BASE ;
        if (vtd->originMode==True) row -= TOPMARGIN(tw) ;
-       sprintf(buf,"\033[%d;%dR",row , col+BASE) ;
+       snprintf(buf, 100, "\033[%d;%dR",row , col+BASE) ;
        sendEscSequence(w,buf) ;
        break ;
   }
@@ -305,11 +306,11 @@ _DtTermPModeSet(Widget w)   /*  DECSET CSI?ph */
           case 7: /* Auto wrap (On) */
                   vtw->term.tpd->autoWrapRight=True ;
                   break;
-          /* case 8: ** Auto repeat (On) 
-           *      ** This is handled by the X server 
+          /* case 8: ** Auto repeat (On)
+           *      ** This is handled by the X server
            *      break;
-           * 
-           * case 18: ** Print form feed (On) 
+           *
+           * case 18: ** Print form feed (On)
            *      break;
            * case 19: ** Print extent (full screen)
            *      break;
@@ -334,11 +335,11 @@ _DtTermPModeSet(Widget w)   /*  DECSET CSI?ph */
                   vtw->term.logging = True ;
                   _DtTermPrimStartLog(w);
                   break;
-          /*  case 47: ** screen buffer (alternate)  
+          /*  case 47: ** screen buffer (alternate)
            *      break;
-           *  case 1000: ** Send mouse x and y 
+           *  case 1000: ** Send mouse x and y
            *      break;
-           *  case 1001: ** Use hilite mouse tracking 
+           *  case 1001: ** Use hilite mouse tracking
            *      break;
            */
       }
@@ -393,10 +394,10 @@ _DtTermPModeReset(Widget w)   /* DECRST CSI?pl */
           case 7: /* Auto wrap (Off) */
                   vtw->term.tpd->autoWrapRight=False;
                   break;
-          /* case 8: ** Auto repeat (Off) 
-           *      ** implemented in the server 
+          /* case 8: ** Auto repeat (Off)
+           *      ** implemented in the server
            *      break;
-           * case 18: ** Print form feed (Off) 
+           * case 18: ** Print form feed (Off)
            *      break;
            * case 19: ** Print extent (scrolling region)
            *      break;
@@ -423,9 +424,9 @@ _DtTermPModeReset(Widget w)   /* DECRST CSI?pl */
                   break;
           /* case 47: ** screen buffer  (normal)
            *      break;
-           * case 1000: ** don't send mouse x and y 
+           * case 1000: ** don't send mouse x and y
            *      break;
-           * case 1001: ** don't use hilite mouse tracking 
+           * case 1001: ** don't use hilite mouse tracking
            *      break;
            */
       }
@@ -461,7 +462,7 @@ _DtTermSetMode(Widget w)   /* SM CSIph */
     }
 }
 
-void 
+void
 _DtTermResetMode(Widget w)   /* RM CSIpl  */
 {
   ParserContext context ;
@@ -489,8 +490,8 @@ _DtTermResetMode(Widget w)   /* RM CSIpl  */
            }
     }
 }
- 
-void 
+
+void
 _DtTermCursorPos(Widget w)   /* CUP CSIp;pH */
 {
   ParserContext context ;
@@ -510,7 +511,7 @@ _DtTermCursorPos(Widget w)   /* CUP CSIp;pH */
   vtw->term.tpd->cursorColumn = col ;
 }
 
-void 
+void
 _DtTermEraseDisplay(Widget w)    /* ED CSIpJ */
 {
   int cnt ;
@@ -518,7 +519,7 @@ _DtTermEraseDisplay(Widget w)    /* ED CSIpJ */
   ParserContext context ;
   DtEraseMode   eraseMode;
   int  row, col;
-  
+
   Debug('P', fprintf(stderr,">>In func _DtTermEraseDisplay\n")) ;
   context = GetParserContext(w) ;
   KILLWRAP(vtw) ;
@@ -531,22 +532,22 @@ _DtTermEraseDisplay(Widget w)    /* ED CSIpJ */
   */
   switch (context->parms[1])
   {
-    case 0: 
+    case 0:
       eraseMode = eraseToEOB;
       break;
-    case 1: 
+    case 1:
       eraseMode = eraseFromRow0Col0;
       break;
-    case 2: 
+    case 2:
       eraseMode = eraseBuffer;
-      break ; 
+      break ;
    }
    _DtTermFuncEraseInDisplay(w, (int)eraseMode, fromParser);
   vtw->term.tpd->cursorRow = row;
   vtw->term.tpd->cursorColumn = col;
 }
 
-void 
+void
 _DtTermEraseChars(Widget w)   /* ECH  CSIpX */
 {
   ParserContext context ;
@@ -560,13 +561,13 @@ _DtTermEraseChars(Widget w)   /* ECH  CSIpX */
   STORELASTARG(context) ;
   cnt = context->parms[1] ;
   if (!(cnt))cnt=1;
-  else 
+  else
     if ( cnt > LASTCOLUMN(vtw)-col+1 ) cnt = LASTCOLUMN(vtw)-col+1 ;
 
   _DtTermFuncEraseCharacter(w, cnt, fromParser);
 }
 
-void 
+void
 _DtTermInsertChars(Widget w)    /* ICH  CSIp@ */
 {
     DtTermWidget vtw = (DtTermWidget) w;
@@ -606,7 +607,7 @@ _DtTermInsertChars(Widget w)    /* ICH  CSIp@ */
     _DtTermPrimCursorMove(w,row,col) ;
 }
 
-void 
+void
 _DtTermCursorUp(Widget w)    /* CUU  CISpA */
 {
   ParserContext context ;
@@ -628,7 +629,7 @@ _DtTermCursorUp(Widget w)    /* CUU  CISpA */
   _DtTermPrimCursorMove(w, row, vtw->term.tpd->cursorColumn) ;
 }
 
-void 
+void
 _DtTermCursorDown(Widget w)    /* CUD CISpB */
 {
   ParserContext context ;
@@ -651,7 +652,7 @@ _DtTermCursorDown(Widget w)    /* CUD CISpB */
   _DtTermPrimCursorMove(w, row, vtw->term.tpd->cursorColumn) ;
 }
 
-void 
+void
 _DtTermCursorForward(Widget w)    /* CUF CISpC */
 {
   ParserContext context ;
@@ -669,7 +670,7 @@ _DtTermCursorForward(Widget w)    /* CUF CISpC */
   _DtTermPrimCursorMove(w,vtw->term.tpd->cursorRow,col);
 }
 
-void 
+void
 _DtTermCursorBack(Widget w)    /* CUB CISpD */
 {
   ParserContext context ;
@@ -704,19 +705,19 @@ _DtTermCursorBack(Widget w)    /* CUB CISpD */
   _DtTermPrimCursorMove(w,row,col);
 }
 
-void 
+void
 _DtTermCursorToLineUp(Widget w)   /* CPL  CSIpF */
 {
   DtTermWidget vtw = (DtTermWidget) w;
   ParserContext context ;
   Debug('P', fprintf(stderr,">>In func _DtTermCursorToLineUp\n")) ;
-  KILLWRAP(vtw) ; 
+  KILLWRAP(vtw) ;
   context = GetParserContext(w) ;
   vtw->term.tpd->cursorColumn = FIRSTCOLUMN(vtw) ;
   _DtTermCursorUp(w) ;
 }
 
-void 
+void
 _DtTermCursorToCol(Widget w)    /* CHA CSIpG */
 {
   DtTermPrimitiveWidget tw = (DtTermPrimitiveWidget) w;
@@ -728,16 +729,16 @@ _DtTermCursorToCol(Widget w)    /* CHA CSIpG */
   tw->term.tpd->cursorColumn = context->parms[1] - BASE ;
 }
 
-void 
+void
 _DtTermEraseInLine(Widget w)  /* EL  ESC[pK */
 {
   DtTermWidget vtw = (DtTermWidget) w;
   ParserContext context ;
   DtEraseMode eraseMode;
-  
+
 
   Debug('P', fprintf(stderr,">>In func _DtTermEraseInLine\n")) ;
-  KILLWRAP(vtw) ; 
+  KILLWRAP(vtw) ;
   context = GetParserContext(w) ;
   STORELASTARG(context) ;
   /*
@@ -761,14 +762,14 @@ _DtTermEraseInLine(Widget w)  /* EL  ESC[pK */
   _DtTermFuncEraseInLine(w, (int)eraseMode, fromParser);
 }
 
-void 
+void
 _DtTermInsertLines(Widget w)  /* IL CSIpL */
 {
   DtTermWidget vtw = (DtTermWidget) w;
   ParserContext context ;
   int lines , cnt ;
   Debug('P', fprintf(stderr,">>In func _DtTermInsertLines\n")) ;
-  if ( vtw->term.tpd->cursorRow < TOPMARGIN(vtw) ||   
+  if ( vtw->term.tpd->cursorRow < TOPMARGIN(vtw) ||
       vtw->term.tpd->cursorRow > BOTTOMMARGIN(vtw) )/*outside scrolling region*/
      return ;
   context = GetParserContext(w) ;
@@ -781,7 +782,7 @@ _DtTermInsertLines(Widget w)  /* IL CSIpL */
   _DtTermFuncInsertLine(w,cnt,fromParser) ;
 }
 
-void 
+void
 _DtTermDeleteLines(Widget w)   /* DL CSIpM */
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -789,7 +790,7 @@ _DtTermDeleteLines(Widget w)   /* DL CSIpM */
   int cnt ;
   Debug('P', fprintf(stderr,">>In func _DtTermDeleteLines\n")) ;
 
-  if ( vtw->term.tpd->cursorRow < TOPMARGIN(vtw) ||   
+  if ( vtw->term.tpd->cursorRow < TOPMARGIN(vtw) ||
       vtw->term.tpd->cursorRow > BOTTOMMARGIN(vtw) )  /* outside scrolling region*/
      return ;
   KILLWRAP((DtTermWidget)w) ;
@@ -800,7 +801,7 @@ _DtTermDeleteLines(Widget w)   /* DL CSIpM */
   _DtTermFuncDeleteLine(w,cnt,fromParser) ;
 }
 
-void 
+void
 _DtTermDeleteChars(Widget w)   /* DCH CSIpP */
 {
   ParserContext context ;
@@ -816,7 +817,7 @@ _DtTermDeleteChars(Widget w)   /* DCH CSIpP */
   _DtTermFuncDeleteChar(w,cnt,fromParser) ;
 }
 
-void 
+void
 _DtTermNextLine(Widget w) /* NEL ESCE */
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -826,7 +827,7 @@ _DtTermNextLine(Widget w) /* NEL ESCE */
   _DtTermIndex(w) ;  /* use IND */
 }
 
-void 
+void
 _DtTermReverseIndex(Widget w) /* RI ESCM */
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -841,12 +842,12 @@ _DtTermReverseIndex(Widget w) /* RI ESCM */
        /* _DtTermFuncInsertLine sets column to first column */
        vtw->term.tpd->cursorColumn = col ;
    }
-  else if (vtw->term.tpd->cursorRow > trow){ 
+  else if (vtw->term.tpd->cursorRow > trow){
            vtw->term.tpd->cursorRow-- ;
    }
 }
 
-void 
+void
 _DtTermIndex(Widget w) /* IND  ESCD */
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -864,7 +865,7 @@ _DtTermIndex(Widget w) /* IND  ESCD */
   (void) _DtTermPrimFillScreenGap(w);
 }
 
-void 
+void
 _DtTermScrollingRegion(Widget w)   /* DECSTBM  CSIp;pr */
 {
   DtTermWidget vtw = (DtTermWidget)w ;
@@ -880,9 +881,9 @@ _DtTermScrollingRegion(Widget w)   /* DECSTBM  CSIp;pr */
   row1-=BASE ;
   row2-=BASE ;
   if ( row1 < row2 ) {
-    if ( row1 == TOPROW(vtw) && row2 == BOTTOMROW(vtw)) 
-       vtw->term.tpd->memoryLockMode=SCROLL_LOCKoff ; 
-    else 
+    if ( row1 == TOPROW(vtw) && row2 == BOTTOMROW(vtw))
+       vtw->term.tpd->memoryLockMode=SCROLL_LOCKoff ;
+    else
        vtw->term.tpd->memoryLockMode=SCROLL_LOCKon ;
     vtw->term.tpd->scrollLockTopRow = row1 ;
     vtw->term.tpd->scrollLockBottomRow = row2 ;
@@ -891,7 +892,7 @@ _DtTermScrollingRegion(Widget w)   /* DECSTBM  CSIp;pr */
   }
 }
 
-void 
+void
 _DtTermCharAttributes(Widget w)   /* SGR CSIpm */
 {
   ParserContext context ;
@@ -908,7 +909,7 @@ _DtTermCharAttributes(Widget w)   /* SGR CSIpm */
    _DtTermVideoEnhancement(w,0) ;
 }
 
-void 
+void
 _DtTermDeviceAttributes(Widget w)    /* DA CSIpc */
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -922,20 +923,20 @@ _DtTermDeviceAttributes(Widget w)    /* DA CSIpc */
     case 0:
          switch(vtw->vt.td->terminalId ) {
             case 100:
-                     sprintf(buf,"\033[?%d;%dc",1,2) ;
+                     snprintf(buf, 50, "\033[?%d;%dc", 1, 2);
                      break;
             case 101:
-                     sprintf(buf,"\033[?%d;%dc",1,0) ;
+                     snprintf(buf, 50, "\033[?%d;%dc", 1, 0);
                      break;
             case 102:
-                     sprintf(buf,"\033[?%dc",6) ;
+                     snprintf(buf, 50, "\033[?%dc", 6);
                      break;
             case 220:
                 /*  class 2 terminal (62), 132 columns (1), printer port (2),
-                 *  selective erase (6), DRCS (7), UDK (8), 
+                 *  selective erase (6), DRCS (7), UDK (8),
                  *  national replacement char sets
                  */
-                sprintf(buf,"\033[?%d;%d;%d;%d;%d;%d;%dc",62,1,2,6,7,8,9) ;
+                snprintf(buf, 50, "\033[?%d;%d;%d;%d;%d;%d;%dc", 62, 1, 2, 6, 7, 8, 9);
                 break;
           }
         sendEscSequence(w,buf) ;
@@ -943,14 +944,14 @@ _DtTermDeviceAttributes(Widget w)    /* DA CSIpc */
   }
 }
 
-void 
+void
 _DtTermChangeTextParam(Widget w)  /* xterm  CSIp;pcCtrl-G  */
 {
   ParserContext context ;
   DtTermWidget tw = (DtTermWidget) w;
   DtTermData vtd = tw->vt.td;
   Widget sw;
-  int i ;
+  int i, size;
   Arg arg[5];
   Debug('P', fprintf(stderr,">>In func _DtTermChangeTextParam\n")) ;
   context = GetParserContext(w) ;
@@ -975,21 +976,21 @@ _DtTermChangeTextParam(Widget w)  /* xterm  CSIp;pcCtrl-G  */
             XtSetValues(sw,arg,i) ;
             break;
     case 3: /* change current working directory */
-            tw->term.subprocessCWD = XtRealloc(tw->term.subprocessCWD,
-		    strlen((char *) context->stringParms[0].str) + 1);
-            (void) strcpy(tw->term.subprocessCWD,
-		    (char *) context->stringParms[0].str);
+            size = strlen((char *) context->stringParms[0].str) + 1;
+            tw->term.subprocessCWD = XtRealloc(tw->term.subprocessCWD, size);
+            strlcpy(tw->term.subprocessCWD,
+		    (char *) context->stringParms[0].str, size);
             break;
-   /*  These are handled by xterm but not by us.   
-    case 46:  Change log file to context->stringParms[0] 
+   /*  These are handled by xterm but not by us.
+    case 46:  Change log file to context->stringParms[0]
             break;
-    case 50: ** change font to context->stringParms[0] 
+    case 50: ** change font to context->stringParms[0]
             break;
    */
   }
 }
 
-void 
+void
 _DtTermTabClear(Widget w)    /*  TBC CSIpg */
 {
   DtTermPrimitiveWidget tw = (DtTermPrimitiveWidget) w;
@@ -1008,7 +1009,7 @@ _DtTermTabClear(Widget w)    /*  TBC CSIpg */
    }
 }
 
-void 
+void
 _DtTermRequestParam(Widget w) /* DECREQTPARM CSIpx */
 {
     ParserContext context ;
@@ -1020,18 +1021,18 @@ _DtTermRequestParam(Widget w) /* DECREQTPARM CSIpx */
     row = context->parms[1] ;
     if ( row < 2) {
        row += 2;
-   
+
        /* row (?), 1 no parity, 1 eight bits, 112 xmit 9600 baud,
         * 112, receive 9600 baud, 1 clock multiplier (?),
         * 0 STP flags (?)   These are from xterm file 'charproc.c'.
         */
-       sprintf(buf,"\033[%d;%d;%d;%d;%d;%d;%dx",row,1,1,112,112,1,0) ;
-       sendEscSequence(w,buf) ; 
+       snprintf(buf, 100, "\033[%d;%d;%d;%d;%d;%d;%dx", row, 1, 1, 112, 112, 1, 0);
+       sendEscSequence(w,buf) ;
      }
 }
-   
 
-void 
+
+void
 _DtTermTabSet(Widget w) /* HTS ESCH */
 {
   DtTermPrimitiveWidget tw = (DtTermPrimitiveWidget) w;
@@ -1040,7 +1041,7 @@ _DtTermTabSet(Widget w) /* HTS ESCH */
   (void)_DtTermPrimBufferSetTab(tb,tw->term.tpd->cursorColumn) ;
 }
 
-void 
+void
 _DtTermSaveCursor(Widget w) /* DECSC ESC7 */
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -1054,8 +1055,8 @@ _DtTermSaveCursor(Widget w) /* DECSC ESC7 */
   vtd->saveCursor.originMode    = vtw->vt.td->originMode ;
   /* The following is save at the TermPrim level */
   /* vtw->vt.td->saveCursor.wrapMode    = */
-  vtd->saveCursor.enhVideoState = vtd->enhVideoState ; 
-  vtd->saveCursor.enhFieldState = vtd->enhFieldState  ;  
+  vtd->saveCursor.enhVideoState = vtd->enhVideoState ;
+  vtd->saveCursor.enhFieldState = vtd->enhFieldState  ;
   vtd->saveCursor.enhFgColorState = vtd->enhFgColorState;
   vtd->saveCursor.enhBgColorState = vtd->enhBgColorState;
   vtd->saveCursor.GL = vtd->GL;
@@ -1068,7 +1069,7 @@ _DtTermSaveCursor(Widget w) /* DECSC ESC7 */
   vtd->saveCursor.singleShiftPending = vtd->singleShiftPending;
 }
 
-void 
+void
 _DtTermRestoreCursor(Widget w) /* DECRC ESC8 */
 {
   DtTermPrimitiveWidget      tw        = (DtTermPrimitiveWidget) w;
@@ -1081,8 +1082,8 @@ _DtTermRestoreCursor(Widget w) /* DECRC ESC8 */
   tpd->cursorColumn = vtd->saveCursor.cursorColumn ;
   vtw->vt.td->originMode = vtd->saveCursor.originMode    ;
   tpd->autoWrapRight = vtd->saveCursor.wrapMode ;
-  vtd->enhVideoState  = vtd->saveCursor.enhVideoState ;  
-  vtd->enhFieldState  = vtd->saveCursor.enhFieldState ; 
+  vtd->enhVideoState  = vtd->saveCursor.enhVideoState ;
+  vtd->enhFieldState  = vtd->saveCursor.enhFieldState ;
   vtd->enhFgColorState = vtd->saveCursor.enhFgColorState;
   vtd->enhBgColorState = vtd->saveCursor.enhBgColorState;
   vtd->GR = vtd->saveCursor.GR;
@@ -1109,14 +1110,14 @@ _DtTermRestoreCursor(Widget w) /* DECRC ESC8 */
               tpd->topRow + tpd->cursorRow, tpd->cursorColumn, enhFgColor,
               vtd->saveCursor.enhFgColorState);
   if ( vtd->originMode ) {
-     if (tpd->cursorRow < tpd->scrollLockTopRow ) 
+     if (tpd->cursorRow < tpd->scrollLockTopRow )
         tpd->cursorRow = tpd->scrollLockTopRow ;
-     else if (tpd->cursorRow > tpd->scrollLockBottomRow ) 
+     else if (tpd->cursorRow > tpd->scrollLockBottomRow )
         tpd->cursorRow = tpd->scrollLockBottomRow ;
   }
-}  
+}
 
-void 
+void
 _DtTermAppKeypad(Widget w)  /* DECPAM  ESC= */
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -1124,7 +1125,7 @@ _DtTermAppKeypad(Widget w)  /* DECPAM  ESC= */
   vtw->vt.td->applicationKPMode=True;
 }
 
-void 
+void
 _DtTermNormalKeypad(Widget w) /* DECPNM ESC> */
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -1132,7 +1133,7 @@ _DtTermNormalKeypad(Widget w) /* DECPNM ESC> */
   vtw->vt.td->applicationKPMode=False;
 }
 
-void 
+void
 _DtTermS8C1T(Widget w)   /* S8C1T  ESCG  */
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -1140,7 +1141,7 @@ _DtTermS8C1T(Widget w)   /* S8C1T  ESCG  */
   vtw->vt.td->S8C1TMode=True;
 }
 
-void 
+void
 _DtTermS7C1T(Widget w)   /* S7C1T  ESCF */
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -1148,7 +1149,7 @@ _DtTermS7C1T(Widget w)   /* S7C1T  ESCF */
   vtw->vt.td->S8C1TMode=False;
 }
 
-void 
+void
 _DtTermSetCompatLevel(Widget w)   /* DECSCL CSI p;p"p (last p literal) */
 {
   ParserContext context ;
@@ -1167,7 +1168,7 @@ _DtTermSetCompatLevel(Widget w)   /* DECSCL CSI p;p"p (last p literal) */
                }
               break;
       case 2: switch (context->parms[2]) {
-                 case 0: 
+                 case 0:
                  case 2: vtw->vt.td->S8C1TMode=True;
                          break;
                  case 1:
@@ -1177,7 +1178,7 @@ _DtTermSetCompatLevel(Widget w)   /* DECSCL CSI p;p"p (last p literal) */
     }
 }
 
-void 
+void
 _DtTermInvokeG3(Widget w)  /* LS3R  ESC| */
 {
   ParserContext context ;
@@ -1186,7 +1187,7 @@ _DtTermInvokeG3(Widget w)  /* LS3R  ESC| */
   context = GetParserContext(w) ;
 }
 
-void 
+void
 _DtTermInvokeG2(Widget w)  /* LS3R  ESC} */
 {
   ParserContext context ;
@@ -1195,7 +1196,7 @@ _DtTermInvokeG2(Widget w)  /* LS3R  ESC} */
   context = GetParserContext(w) ;
 }
 
-void 
+void
 _DtTermScrollUp(Widget w)    /* SU CSIpS */
 {
     ParserContext context ;
@@ -1232,7 +1233,7 @@ _DtTermScrollUp(Widget w)    /* SU CSIpS */
     vtw->term.tpd->cursorColumn = col;
 }
 
-void 
+void
 _DtTermScrollDown(Widget w)  /* SD CSIpT */
 {
     ParserContext context ;
@@ -1264,7 +1265,7 @@ _DtTermScrollDown(Widget w)  /* SD CSIpT */
     vtw->term.tpd->cursorColumn = col;
 }
 
-void 
+void
 _DtTermRestoreModeValues(Widget w)  /* xterm - Restore DEC mode values CSI?pr */
 {
   ParserContext context ;
@@ -1287,7 +1288,7 @@ _DtTermRestoreModeValues(Widget w)  /* xterm - Restore DEC mode values CSI?pr */
                   break;
 #endif	/* NOT_SUPPORTED */
           case 3: /* Columns (80/132) */
-                  vtd->col132Mode = vtd->saveDECMode.col132Mode ;       
+                  vtd->col132Mode = vtd->saveDECMode.col132Mode ;
                   break;
           case 4: /* Scroll Mode ( jump/smooth ) */
                   _DtTermPrimScrollComplete(w, True) ;
@@ -1315,7 +1316,7 @@ _DtTermRestoreModeValues(Widget w)  /* xterm - Restore DEC mode values CSI?pr */
 		  _DtTermPrimSetCursorVisible(w,
 			vtd->saveDECMode.cursorVisible);
                   break;
-          
+
            /* from xterm */
           case 40: /*  80/132 mode  (disallow/allow) */
                   vtw->vt.c132 = vtd->saveDECMode.allow80_132ColMode;
@@ -1350,7 +1351,7 @@ _DtTermRestoreModeValues(Widget w)  /* xterm - Restore DEC mode values CSI?pr */
    }
 }
 
-void 
+void
 _DtTermSaveModeValues(Widget w)  /* xterm - Save DEC mode values CSI?ps  */
 {
   ParserContext context ;
@@ -1373,7 +1374,7 @@ _DtTermSaveModeValues(Widget w)  /* xterm - Save DEC mode values CSI?ps  */
                   break;
 #endif	/* NOT_SUPPORTED */
           case 3: /* Columns (80/132) */
-                  vtd->saveDECMode.col132Mode = vtd->col132Mode ;       
+                  vtd->saveDECMode.col132Mode = vtd->col132Mode ;
                   break;
           case 4: /* Scroll Mode ( jump/smooth ) */
                   vtd->saveDECMode.jumpScrollMode = vtw->term.jumpScroll ;
@@ -1405,7 +1406,7 @@ _DtTermSaveModeValues(Widget w)  /* xterm - Save DEC mode values CSI?ps  */
                   vtd->saveDECMode.allow80_132ColMode = vtw->vt.c132;
                   break;
           case 41: /*  curses fix  (off/on) */
-                  vtd->saveDECMode.fixCursesMode = vtd->fixCursesMode ;     
+                  vtd->saveDECMode.fixCursesMode = vtd->fixCursesMode ;
                   break;
           case 44: /* margin bell (off/on) */
                   vtd->saveDECMode.marginBellMode = vtw->term.marginBell ;
@@ -1429,7 +1430,7 @@ _DtTermSaveModeValues(Widget w)  /* xterm - Save DEC mode values CSI?ps  */
 }
 
 
-void 
+void
 _DtTermAlignTest(Widget w)     /* DECALN ESC#8 */
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -1450,7 +1451,7 @@ _DtTermAlignTest(Widget w)     /* DECALN ESC#8 */
   vtw->term.tpd->cursorColumn = FIRSTCOLUMN(w) ;
 }
 
-void 
+void
 _DtTermInvokeG1(Widget w)     /* ESC~ESC */
 {
   ParserContext context ;
@@ -1459,7 +1460,7 @@ _DtTermInvokeG1(Widget w)     /* ESC~ESC */
   context = GetParserContext(w) ;
 }
 
-void 
+void
 _DtTermSelEraseInLine(Widget w) /* DECSEL ESC?pK */
 {
     DtTermWidget vtw = (DtTermWidget) w;
@@ -1492,8 +1493,8 @@ _DtTermSelEraseInLine(Widget w) /* DECSEL ESC?pK */
 	return ;
     }
     /* save away the current cursor position... */
-    col = tpd->cursorColumn ; 
-    row = tpd->cursorRow    ; 
+    col = tpd->cursorColumn ;
+    row = tpd->cursorRow    ;
 
     /* save away the current insert mode... */
     saveInsertCharMode = vtw->term.tpd->insertCharMode;
@@ -1505,7 +1506,7 @@ _DtTermSelEraseInLine(Widget w) /* DECSEL ESC?pK */
     c = col1;
 
     while (c <= col2) {
-	(void)_DtTermPrimBufferGetEnhancement(tb, tpd->cursorRow, 
+	(void)_DtTermPrimBufferGetEnhancement(tb, tpd->cursorRow,
 		    c, &evalues, &cnt, countAll);
 	if (!cnt)
 	    break ;
@@ -1530,8 +1531,8 @@ _DtTermSelEraseInLine(Widget w) /* DECSEL ESC?pK */
     tpd->insertCharMode = saveInsertCharMode;
 
     /* restore the cursor position... */
-    tpd->cursorColumn = col; 
-    tpd->cursorRow = row; 
+    tpd->cursorColumn = col;
+    tpd->cursorRow = row;
 
     /* restore the current enhancement state... */
     (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer,
@@ -1545,7 +1546,7 @@ _DtTermSelEraseInLine(Widget w) /* DECSEL ESC?pK */
 	      td->enhBgColorState);
 }
 
-void 
+void
 _DtTermSelEraseInDisplay(Widget w) /* DECSED ESC?pJ */
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -1593,7 +1594,7 @@ _DtTermSelEraseInDisplay(Widget w) /* DECSED ESC?pJ */
 }
 
 
-void 
+void
 _DtTermSingleShiftG2(Widget w) /* SS2  ESCN */
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -1604,7 +1605,7 @@ _DtTermSingleShiftG2(Widget w) /* SS2  ESCN */
   vtd->singleShiftFont = vtd->G2;
 }
 
-void 
+void
 _DtTermSingleShiftG3(Widget w) /* SS3  ESCO */
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -1615,7 +1616,7 @@ _DtTermSingleShiftG3(Widget w) /* SS3  ESCO */
   vtd->singleShiftFont = vtd->G3;
 }
 
-void 
+void
 _DtTermLoadCharSet(Widget w) /* vt220 DCS - download char set ESCPpST  */
 {
   /* we're not implementing this */
@@ -1625,7 +1626,7 @@ _DtTermLoadCharSet(Widget w) /* vt220 DCS - download char set ESCPpST  */
  *  The next 3 functions handle the user key string loading
  *    DCS Pc;Pl | Ky1/st1;ky2/st2;...kyn/stn ST
  */
-void 
+void
 _DtTermParseUserKeyClear(Widget w) /* vt220 DECUDK clear function keys*/
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -1634,13 +1635,13 @@ _DtTermParseUserKeyClear(Widget w) /* vt220 DECUDK clear function keys*/
   Debug('P', fprintf(stderr,">>In func _DtTermLoadSoftKey\n")) ;
   context = GetParserContext(w) ;
   STORELASTARG(context) ;
-  if ( !vtd->userKeysLocked ) 
+  if ( !vtd->userKeysLocked )
   {
      vtd->needToLockUserKeys = False ;
-     if (context->parms[1] == 0)  
+     if (context->parms[1] == 0)
         _DtTermFunctionKeyClear(w) ;
-     if (context->parms[0] == 2 && context->parms[2] == 0) 
-                                      vtd->needToLockUserKeys = True ; 
+     if (context->parms[0] == 2 && context->parms[2] == 0)
+                                      vtd->needToLockUserKeys = True ;
   }
   _DtTermClearParam(w) ;
 }
@@ -1655,9 +1656,9 @@ _DtTermParseUserKeyLoad(Widget w) /* vt220 DECUDK load function string */
   STORELASTARG(context) ;
   if ( !vtd->userKeysLocked)
   {
-     context->stringParms[0].str[context->stringParms[0].length/2] = 
+     context->stringParms[0].str[context->stringParms[0].length/2] =
                           (unsigned char)0 ;  /* Null terminate */
-     _DtTermFunctionKeyStringStore(w,context->parms[1],     
+     _DtTermFunctionKeyStringStore(w,context->parms[1],
                                            (char *)context->stringParms[0].str);
   }
   _DtTermClearParam(w) ;
@@ -1698,7 +1699,7 @@ _DtTermParseHexDigit(Widget w) /* vt220 DECUDK store hex digit*/
    }
 }
 
-void 
+void
 _DtTermReset(Widget w) /* RIS  ESCc */
 {
   ParserContext context ;
@@ -1708,7 +1709,7 @@ _DtTermReset(Widget w) /* RIS  ESCc */
   _DtTermFuncHardReset(w,0 ,fromParser) ;
 }
 
-void 
+void
 _DtTermSelectG2(Widget w) /* LS2  ESCn */
 {
     DtTermWidget vtw = (DtTermWidget)w ;
@@ -1725,7 +1726,7 @@ _DtTermSelectG2(Widget w) /* LS2  ESCn */
 	    enhFont, vtd->enhFontState);
 }
 
-void 
+void
 _DtTermSelectG3(Widget w) /* LS3 ESCo */
 {
     DtTermWidget vtw = (DtTermWidget)w ;
@@ -1747,7 +1748,7 @@ _DtTermParseStatus(Widget w)  /* DECID (same as DA)  ESCZ */
    _DtTermDeviceAttributes(w) ;
 }
 
-void 
+void
 _DtTermSetCharEraseMode(Widget w) /* DECSCA ESCp"q */
 {
   DtTermWidget vtw = (DtTermWidget) w;
@@ -1763,7 +1764,7 @@ _DtTermSetCharEraseMode(Widget w) /* DECSCA ESCp"q */
      case 2:
              vtw->vt.td->enhFieldState = FIELD_UNPROTECT;
 	     (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer,
-                      tpd->topRow + tpd->cursorRow, tpd->cursorColumn, 
+                      tpd->topRow + tpd->cursorRow, tpd->cursorColumn,
                       enhField, vtw->vt.td->enhFieldState);
              break;
      case 1:
@@ -1775,7 +1776,7 @@ _DtTermSetCharEraseMode(Widget w) /* DECSCA ESCp"q */
    }
 }
 
-void 
+void
 _DtTermSingleWide(Widget w) /* DECSWL ESC#5 */
 {
   ParserContext context ;
@@ -1784,7 +1785,7 @@ _DtTermSingleWide(Widget w) /* DECSWL ESC#5 */
   context = GetParserContext(w) ;
 }
 
-void 
+void
 _DtTermDoubleWide(Widget w) /* DECDWL ESC#6  */
 {
   ParserContext context ;
@@ -1793,7 +1794,7 @@ _DtTermDoubleWide(Widget w) /* DECDWL ESC#6  */
   context = GetParserContext(w) ;
 }
 
-void 
+void
 _DtTermDoubleHigh(Widget w) /* DECWHL ESC#4 */
 {
   ParserContext context ;
@@ -1958,7 +1959,7 @@ _DtTermParseTab(Widget w)    /* Crtl-I */
 }
 
 void
-_DtTermParseLF    /* LineFeed (LF) or newline (NL) Ctrl-J, 
+_DtTermParseLF    /* LineFeed (LF) or newline (NL) Ctrl-J,
                      Vertical Tab Ctrl-K, Form Feed (NP) Ctrl-L */
 (
     Widget w
@@ -2124,6 +2125,7 @@ _DtTermParseSunMisc  /*  Misc sun esc seqs  */
   int yOffset;
   int widthOffset;
   int heightOffset;
+  int s_size;
 
   context = GetParserContext(w) ;
   STORELASTARG(context) ;
@@ -2169,7 +2171,7 @@ _DtTermParseSunMisc  /*  Misc sun esc seqs  */
         (void) XtVaSetValues(w, DtNrows, rows, DtNcolumns, columns, NULL);
         break ;
     case 11:
-      if (vtw->term.tpd->windowMapped)          
+      if (vtw->term.tpd->windowMapped)
          sendEscSequence(w,"\033[1t") ;
       else
          sendEscSequence(w,"\033[2t") ;
@@ -2178,41 +2180,47 @@ _DtTermParseSunMisc  /*  Misc sun esc seqs  */
 	(void) GetWindowOffsets(sw, &xOffset, &yOffset, &widthOffset,
 		&heightOffset);
         (void) XtVaGetValues(sw, XtNx, &x, XtNy, &y, NULL);
-        (void) sprintf(buf, "\033[3;%d;%dt", x - xOffset, y - yOffset);
+        (void) snprintf(buf, BUFSIZ, "\033[3;%d;%dt", x - xOffset, y - yOffset);
         (void) sendEscSequence(w, buf);
         break;
     case 14:
 	(void) GetWindowOffsets(sw, &xOffset, &yOffset, &widthOffset,
 		&heightOffset);
         (void) XtVaGetValues(sw, XtNheight, &height, XtNwidth, &width, NULL);
-        (void) sprintf(buf,"\033[4;%d;%dt", height + heightOffset,
+        (void) snprintf(buf, BUFSIZ, "\033[4;%d;%dt", height + heightOffset,
 		width + widthOffset);
         (void) sendEscSequence(w, buf);
         break;
     case 18:
         (void) XtVaGetValues(w, DtNrows, &rows, DtNcolumns, &columns, NULL);
-        (void) sprintf(buf, "\033[8;%hd;%hdt", rows, columns);
+        (void) snprintf(buf, BUFSIZ, "\033[8;%hd;%hdt", rows, columns);
         (void) sendEscSequence(w, buf);
         break;
     case 20:
       XtVaGetValues(sw,XmNiconName, &icon, NULL);
       fmt = "\033]L%s\033\\";
-      if (strlen(icon) + strlen(fmt) + 1 >= sizeof(buf))
-	s = XtMalloc(strlen(icon) + strlen(fmt) + 1);
-      else 
+      if (strlen(icon) + strlen(fmt) + 1 >= sizeof(buf)) {
+	s_size = strlen(icon) + strlen(fmt) + 1;
+        s = XtMalloc(s_size);
+      } else {
+        s_size = BUFSIZ;
 	s = buf;
-      sprintf(s, "%s", fmt);
+      }
+      snprintf(s, s_size, "%s", fmt);
       sendEscSequence(w,s) ;
       if (s != buf) XtFree(s);
       break ;
     case 21:
       XtVaGetValues(sw,XmNtitle, &title, NULL);
       fmt = "\033]l%s\033\\";
-      if (strlen(icon) + strlen(fmt) + 1 >= sizeof(buf))
-	s = XtMalloc(strlen(icon) + strlen(fmt) + 1);
-      else 
+      if (strlen(icon) + strlen(fmt) + 1 >= sizeof(buf)) {
+	s_size = strlen(icon) + strlen(fmt) + 1;
+        s = XtMalloc(s_size);
+      } else {
+        s_size = BUFSIZ;
 	s = buf;
-      sprintf(s, "%s", fmt);
+      }
+      snprintf(s, s_size, "%s", fmt);
       sendEscSequence(w,s) ;
       if (s != buf) XtFree(s);
       break ;

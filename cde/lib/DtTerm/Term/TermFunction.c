@@ -46,7 +46,7 @@ static char rcs_id[] = "$TOG: TermFunction.c /main/2 1998/03/16 14:41:27 mgreess
 #include "TermFunction.h"
 #include "TermPrimSetPty.h"
 #include "TermPrimMessageCatI.h"
-#include "TermPrimParserP.h" 
+#include "TermPrimParserP.h"
 #include "TermParseTable.h"
 
 static void
@@ -61,7 +61,7 @@ termFuncErase
 
 
 /*** SCROLL *******************************************************************
- * 
+ *
  *   ####    ####   #####    ####   #       #
  *  #       #    #  #    #  #    #  #       #
  *   ####   #       #    #  #    #  #       #
@@ -84,10 +84,10 @@ doScroll(Widget w, short lines)
     EXIT_IF_MARGINS_SET(tw)
     newtop = tpd->topRow + lines;
     /* don't go past top of active buffer or past end of history buffer */
-    if (newtop>0) newtop=0;  
-    if (newtop<-tpd->lastUsedHistoryRow) newtop=-tpd->lastUsedHistoryRow;         
+    if (newtop>0) newtop=0;
+    if (newtop<-tpd->lastUsedHistoryRow) newtop=-tpd->lastUsedHistoryRow;
     /* perform scroll... */
-    (void) _DtTermPrimScrollTextTo(w, newtop);  
+    (void) _DtTermPrimScrollTextTo(w, newtop);
     (void) _DtTermPrimScrollComplete((Widget) tw, True);
 }
 
@@ -137,14 +137,14 @@ _DtTermFuncEndOfBuffer(Widget w, int count, FunctionSource functionSource)
 
 
 /*** CLEAR MEMORY / LINE ******************************************************
- * 
+ *
  *   ####   #       ######    ##    #####
  *  #    #  #       #        #  #   #    #
  *  #       #       #####   #    #  #    #
  *  #       #       #       ######  #####
  *  #    #  #       #       #    #  #   #
  *   ####   ######  ######  #    #  #    #
- * 
+ *
  *                               #
  *  #    #  ######  #    #      #   #          #    #    #  ######
  *  ##  ##  #       ##  ##     #    #          #    ##   #  #
@@ -166,7 +166,7 @@ clearToEndOfMemory(Widget w)
 	/* clear the current line to end of memory... */
 	(void) _DtTermPrimBufferClearLine(tpd->termBuffer,
 		tpd->topRow + tpd->cursorRow, tpd->cursorColumn);
-	
+
 	/* clear the next line to the end of memory... */
 	for (i = tpd->topRow + tpd->cursorRow + 1; i < tpd->lastUsedRow; i++)
 	    (void) _DtTermPrimBufferClearLine(tpd->termBuffer, i, 0);
@@ -197,7 +197,7 @@ clearToEndOfMemory(Widget w)
     }
     return;
 }
-	    
+
 /*
 ** Erase characters on the specified row (and clear the enhancements) with
 ** the appropriate semantics.  For VT class emulators, there are several
@@ -232,7 +232,7 @@ termFuncErase
 
     row = tpd->cursorRow + tpd->topRow;
     col = tpd->cursorColumn;
-    
+
     switch(eraseSwitch)
     {
       case eraseToEOL:
@@ -275,7 +275,7 @@ termFuncErase
 	** now clear all characters from col 0 to the current cursor position
 	** on the current line...
 	*/
-	_DtTermBufferErase(((DtTermPrimitiveWidget)w)->term.tpd->termBuffer, 
+	_DtTermBufferErase(((DtTermPrimitiveWidget)w)->term.tpd->termBuffer,
 			   tpd->cursorRow + tpd->topRow, tpd->cursorColumn,
                            count, eraseFromCol0);
 
@@ -289,17 +289,17 @@ termFuncErase
 	break;
 
       case eraseFromCol0:
-	_DtTermBufferErase(((DtTermPrimitiveWidget)w)->term.tpd->termBuffer, 
+	_DtTermBufferErase(((DtTermPrimitiveWidget)w)->term.tpd->termBuffer,
 			   tpd->cursorRow + tpd->topRow, tpd->cursorColumn,
 			   count, eraseSwitch);
 	(void) _DtTermPrimRefreshText(w, 0, tpd->cursorRow,
 		    tpd->cursorColumn + 1 + (tpd->mbCurMax > 1 ? 1:0),
                     tpd->cursorRow);
       case eraseCharCount:
-	_DtTermBufferErase(((DtTermPrimitiveWidget)w)->term.tpd->termBuffer, 
+	_DtTermBufferErase(((DtTermPrimitiveWidget)w)->term.tpd->termBuffer,
 			   tpd->cursorRow + tpd->topRow, tpd->cursorColumn,
 			   count, eraseSwitch);
-	(void) _DtTermPrimRefreshText(w, 
+	(void) _DtTermPrimRefreshText(w,
 		    tpd->cursorColumn - (tpd->mbCurMax > 1 ? 1:0),
 		    tpd->cursorRow,
 		    tpd->cursorColumn + count + (tpd->mbCurMax > 1 ? 1:0),
@@ -428,7 +428,7 @@ _DtTermFuncClearToEndOfLine(Widget w, int count, FunctionSource functionSource)
 	    /* render the line.  We only need to refresh the old line
 	     * width...
 	     */
-	    (void) _DtTermPrimRefreshText(w, 
+	    (void) _DtTermPrimRefreshText(w,
 		    tpd->cursorColumn - (tpd->mbCurMax > 1 ? 1 : 0),
 		    tpd->cursorRow,
 		    lineWidth, tpd->cursorRow);
@@ -463,7 +463,7 @@ _DtTermFuncDeleteChar
 
     row = tpd->topRow + tpd->cursorRow;
     col = tpd->cursorColumn;
-    
+
     if (row < tpd->lastUsedRow && count > 0)
     {
 	deleteWidth = count;
@@ -558,8 +558,8 @@ _DtTermFuncDeleteLine(Widget w, int count, FunctionSource functionSource)
  *  #    #  ######  #####   #    #   #           #  #    #  #          #
  *  #    #  #    #  #   #   #    #  #       #    #  #    #  #          #
  *  #    #  #    #  #    #  #####  #         ####    ####   #          #
- * 
- * 
+ *
+ *
  *  #####   ######   ####   ######   #####
  *  #    #  #       #       #          #
  *  #    #  #####    ####   #####      #
@@ -578,7 +578,7 @@ _DtTermFuncHardReset(Widget w, int count, FunctionSource functionSource)
     /* ring the bell... */
     (void) _DtTermPrimBell(w);
     (void) _DtTermPrimCursorOn(w);
-     
+
     _DtTermFuncSoftReset(w, count, functionSource) ;
 
     /* Do this after soft reset */
@@ -592,8 +592,8 @@ _DtTermFuncHardReset(Widget w, int count, FunctionSource functionSource)
     _DtTermFunctionKeyClear(w) ;
 
     (void) _DtTermPrimSetCursorVisible(w, True);
-    (void) _DtTermPrimCursorOn(w);  
-    
+    (void) _DtTermPrimCursorOn(w);
+
     return;
 }
 
@@ -609,13 +609,13 @@ _DtTermFuncSoftReset(Widget w, int count, FunctionSource functionSource)
     /* ring the bell... */
     (void) _DtTermPrimBell(w);
     /* the following locks don't make sense in the vt context, but
-       I'll initialize them to make sure they're not corrupted in the 
+       I'll initialize them to make sure they're not corrupted in the
        "prim" layer
     */
     tpd->keyboardLocked.xferPending = False;
     tpd->keyboardLocked.error       = False;
     tpd->keyboardLocked.record      = False;
- 
+
     /* ANSI and vt220 resets  (from  RM) */
     tpd->keyboardLocked.escape  = False;
     _DtTermPrimInsertCharUpdate(w, DtTERM_INSERT_CHAR_OFF);
@@ -625,7 +625,7 @@ _DtTermFuncSoftReset(Widget w, int count, FunctionSource functionSource)
     td->originMode=False;
     td->applicationMode=False;    /* Normal cursor mode */
     td->applicationKPMode=False;  /* Numeric keypad mode */
-    td->originMode=False;         
+    td->originMode=False;
     /* no scroll lock */
     tpd->memoryLockMode=SCROLL_LOCKoff ;
     tpd->scrollLockTopRow = 0;
@@ -638,28 +638,28 @@ _DtTermFuncSoftReset(Widget w, int count, FunctionSource functionSource)
     td->saveCursor.originMode = False;
     td->saveCursor.enhFgColorState = 0;
     td->saveCursor.enhBgColorState = 0;
-    td->saveCursor.GL = &td->G0; 
-    td->saveCursor.GR = &td->G0;    
+    td->saveCursor.GL = &td->G0;
+    td->saveCursor.GR = &td->G0;
     td->saveCursor.G0 = RENDER_FONT_NORMAL;
-    td->saveCursor.G1 = RENDER_FONT_LINEDRAW;   
+    td->saveCursor.G1 = RENDER_FONT_LINEDRAW;
     td->saveCursor.G2 = RENDER_FONT_NORMAL;
     td->saveCursor.G3 = RENDER_FONT_NORMAL;
-    td->saveCursor.singleShiftFont = RENDER_FONT_NORMAL; 
+    td->saveCursor.singleShiftFont = RENDER_FONT_NORMAL;
     td->saveCursor.singleShiftPending = False;
     /* this is saved by termprim td->saveCursor.wrapMode  = False ; */
 
     /*
     ** xterm resets (xterm extensions to DECRST
-    ** xterm does not reset this stuff so I won't either    
+    ** xterm does not reset this stuff so I won't either
     **   td->allow80_132ColMode = False ;
-    **   td->doCursesFixMode = False ; 
-    **   td->marginBellMode  = False ; 
-    **   tpd->logging = False ; 
+    **   td->doCursesFixMode = False ;
+    **   td->marginBellMode  = False ;
+    **   tpd->logging = False ;
     **  when implemented in Term, set "NOT alternate buffer"
     */
     vtw->vt.td->reverseWrapMode = False;  /* this is inconsistant with xterm*/
 
-  
+
     /* Set the "other" state variables?
      */
     /* video... */
@@ -695,7 +695,7 @@ _DtTermFuncSoftReset(Widget w, int count, FunctionSource functionSource)
     td->G3 = FONT_NORMAL;
     td->enhFontState = *td->GL;
     (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer,
-              tpd->topRow + tpd->cursorRow, tpd->cursorColumn, enhFont, 
+              tpd->topRow + tpd->cursorRow, tpd->cursorColumn, enhFont,
 	      td->enhFontState);
 
     /* reset the parser */
@@ -707,7 +707,7 @@ _DtTermFuncSoftReset(Widget w, int count, FunctionSource functionSource)
     }
 
     (void) _DtTermPrimSetCursorVisible(w, True);
-    (void) _DtTermPrimCursorOn(w);  
+    (void) _DtTermPrimCursorOn(w);
 
     /* flush any pending text that we have queued up to send down the
      * pty...
@@ -718,14 +718,14 @@ _DtTermFuncSoftReset(Widget w, int count, FunctionSource functionSource)
 
 
 /*** INSERT CHAR/LINE *********************************************************
- * 
+ *
  *     #    #    #   ####   ######  #####    #####
  *     #    ##   #  #       #       #    #     #
  *     #    # #  #   ####   #####   #    #     #
  *     #    #  # #       #  #       #####      #
  *     #    #   ##  #    #  #       #   #      #
  *     #    #    #   ####   ######  #    #     #
- * 
+ *
  *                                       #
  *   ####   #    #    ##    #####       #   #          #    #    #  ######
  *  #    #  #    #   #  #   #    #     #    #          #    ##   #  #
@@ -882,15 +882,15 @@ _DtTermFuncInsertLine(Widget w, int count, FunctionSource functionSource)
 
 
 /*** CURSOR MOTION ************************************************************
- * 
+ *
  *   ####   #    #  #####    ####    ####   #####
  *  #    #  #    #  #    #  #       #    #  #    #
  *  #       #    #  #    #   ####   #    #  #    #
  *  #       #    #  #####        #  #    #  #####
  *  #    #  #    #  #   #   #    #  #    #  #   #
  *   ####    ####   #    #   ####    ####   #    #
- * 
- * 
+ *
+ *
  *  #    #   ####    #####     #     ####   #    #
  *  ##  ##  #    #     #       #    #    #  ##   #
  *  # ## #  #    #     #       #    #    #  # #  #
@@ -931,7 +931,7 @@ _DtTermFuncTab(Widget w, int count, FunctionSource functionSource)
 
 
 
-/*  The remainder of this file is new for ANSI and should be merged with 
+/*  The remainder of this file is new for ANSI and should be merged with
     the above (some of which may be incorrect for ANSI)
 */
 
@@ -943,8 +943,8 @@ _DtTermFuncTab(Widget w, int count, FunctionSource functionSource)
  *  #    #     #    #    #  #       #    #
  *   #  #      #    #    #  #       #    #
  *    ##       #    #####   ######   ####
- * 
- * 
+ *
+ *
  *  ######  #    #  #    #    ##    #    #   ####   ######
  *  #       ##   #  #    #   #  #   ##   #  #    #  #
  *  #####   # #  #  ######  #    #  # #  #  #       #####
@@ -969,11 +969,11 @@ _DtTermVideoEnhancement(Widget w,int value)
 
               /* reset color */
 	      td->enhFgColorState = 0;
-	      (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer, 
+	      (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer,
 		      tpd->topRow + tpd->cursorRow, tpd->cursorColumn,
 		      enhFgColor, td->enhFgColorState);
 	      td->enhBgColorState = 0;
-	      (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer, 
+	      (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer,
 		      tpd->topRow + tpd->cursorRow, tpd->cursorColumn,
 		      enhBgColor, td->enhBgColorState);
               break;
@@ -982,7 +982,7 @@ _DtTermVideoEnhancement(Widget w,int value)
 		 td->enhVideoState |= BOLD;
                  td->enhVideoState &= ~HALF_BRIGHT ;
                  break;
-         
+
         case 2:  /* Half bright... */
 		 td->enhVideoState |= HALF_BRIGHT ;
                  td->enhVideoState &= ~BOLD ;
@@ -991,7 +991,7 @@ _DtTermVideoEnhancement(Widget w,int value)
         case 4:  /* Underline... */
 		 td->enhVideoState |= UNDERLINE;
                  break;
-                 
+
         case 5:  /* we don't do blink, so use inverse */
         case 7:  /* Inverse Video... */
 		 td->enhVideoState |= INVERSE ;
@@ -1029,14 +1029,14 @@ _DtTermVideoEnhancement(Widget w,int value)
 	case 36:
 	case 37:
 	      td->enhFgColorState = value - 30 + 1;
-	      (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer, 
+	      (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer,
 		      tpd->topRow + tpd->cursorRow, tpd->cursorColumn,
 		      enhFgColor, td->enhFgColorState);
 	      return;
 	      break;
 	case 39:
 	      td->enhFgColorState = 0;
-	      (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer, 
+	      (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer,
 		      tpd->topRow + tpd->cursorRow, tpd->cursorColumn,
 		      enhFgColor, td->enhFgColorState);
 	      return;
@@ -1051,14 +1051,14 @@ _DtTermVideoEnhancement(Widget w,int value)
 	case 46:
 	case 47:
 	      td->enhBgColorState = value - 40 + 1;
-	      (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer, 
+	      (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer,
 		      tpd->topRow + tpd->cursorRow, tpd->cursorColumn,
 		      enhBgColor, td->enhBgColorState);
 	      return;
 	      break;
 	case 49:
 	      td->enhBgColorState = 0;
-	      (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer, 
+	      (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer,
 		      tpd->topRow + tpd->cursorRow, tpd->cursorColumn,
 		      enhBgColor, td->enhBgColorState);
 	      return;
@@ -1069,8 +1069,8 @@ _DtTermVideoEnhancement(Widget w,int value)
       }
 
     /* set the enhancement */
-    (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer, 
-              tpd->topRow + tpd->cursorRow, tpd->cursorColumn, enhVideo, 
+    (void)_DtTermPrimBufferSetEnhancement(tpd->termBuffer,
+              tpd->topRow + tpd->cursorRow, tpd->cursorColumn, enhVideo,
               td->enhVideoState);
     return;
 }
@@ -1141,13 +1141,15 @@ void _DtTermSetCurrentWorkingDirectory(
 	Widget		w,
 	char		*cwd)
 {
-    DtTermWidget      vtw        = (DtTermWidget) w;
+    DtTermWidget      vtw       = (DtTermWidget) w;
+    int subprocessCWD_size = strlen(cwd) + 1;
+
     _DtTermWidgetToAppContext(w);
 
     _DtTermAppLock(app);
     vtw->term.subprocessCWD =
-	    XtRealloc(vtw->term.subprocessCWD, strlen(cwd) + 1);
-    (void) strcpy(vtw->term.subprocessCWD, cwd);
+	    XtRealloc(vtw->term.subprocessCWD, subprocessCWD_size);
+    strlcpy(vtw->term.subprocessCWD, cwd, subprocessCWD_size);
     _DtTermAppUnlock(app);
 }
 

@@ -214,7 +214,7 @@ _DtTermViewCreateOptionMenu
 									ac++;
     }
     (void) XtSetArg(al[ac], XmNsubMenuId, submenu);			ac++;
-    
+
     w = XmCreateOptionMenu(parent, label, al, ac);
     (void) XtManageChild(w);
 
@@ -278,7 +278,7 @@ typedef struct _OptionsDialogType {
 	} bellMarginDistance;
     } bell;
 } OptionsDialogType;
-	
+
 void
 _DtTermViewEqualizeHeights
 (
@@ -333,7 +333,7 @@ CursorBlinkCallback
 	    if (options->cursor.blinkRate.oldBlinkRate <= 0) {
 		options->cursor.blinkRate.oldBlinkRate = 250;
 	    }
-	    (void) sprintf(buffer, "%d",
+	    (void) snprintf(buffer, BUFSIZ, "%d",
 		    options->cursor.blinkRate.oldBlinkRate);
 	    (void) XmTextFieldSetString(options->cursor.blinkRate.text, buffer);
 	}
@@ -396,13 +396,13 @@ UpdateGlobalOptionsDialog
 
     /* set the cursor type... */
     ac = 0;
-    
+
     if (_DtTermPrimGetCursorVisible(options->dtterm))
         (void) XtSetArg(al[ac], XmNmenuHistory,
 	    (charCursorStyle == DtTERM_CHAR_CURSOR_BOX) ?
-	    options->cursor.type.box : options->cursor.type.underline);	
-    else 
-        (void) XtSetArg(al[ac], XmNmenuHistory, options->cursor.type.invisible);	
+	    options->cursor.type.box : options->cursor.type.underline);
+    else
+        (void) XtSetArg(al[ac], XmNmenuHistory, options->cursor.type.invisible);
     ac++;
     (void) XtSetValues(options->cursor.type.option, al, ac);
 
@@ -418,14 +418,14 @@ UpdateGlobalOptionsDialog
 	if (options->cursor.blinkRate.oldBlinkRate <= 0) {
 	    (void) XmTextFieldSetString(options->cursor.blinkRate.text, "");
 	} else {
-	    (void) sprintf(buffer, "%d",
+	    (void) snprintf(buffer, BUFSIZ, "%d",
 		    options->cursor.blinkRate.oldBlinkRate);
 	    (void) XmTextFieldSetString(options->cursor.blinkRate.text, buffer);
 	}
     } else {
 	(void) XtSetSensitive(options->cursor.blinkRate.label, True);
 	(void) XtSetSensitive(options->cursor.blinkRate.text, True);
-	(void) sprintf(buffer, "%d", blinkRate);
+	(void) snprintf(buffer, BUFSIZ, "%d", blinkRate);
 	(void) XmTextFieldSetString(options->cursor.blinkRate.text, buffer);
 	if (blinkRate > 0) {
 	    options->cursor.blinkRate.oldBlinkRate = blinkRate;
@@ -469,7 +469,7 @@ UpdateGlobalOptionsDialog
 	(void) XtSetSensitive(options->bell.bellMarginDistance.label, False);
 	(void) XtSetSensitive(options->bell.bellMarginDistance.text, False);
     }
-    (void) sprintf(buffer, "%d", nMarginBell);
+    (void) snprintf(buffer, BUFSIZ, "%d", nMarginBell);
     (void) XmTextFieldSetString(options->bell.bellMarginDistance.text, buffer);
 }
 
@@ -496,14 +496,14 @@ ApplyGlobalOptionsDialogCallback
     (void) XtGetValues(options->cursor.type.option, &al2, 1);
     if (menuHistory == options->cursor.type.invisible)
              _DtTermPrimSetCursorVisible(options->dtterm, False);
-    else 
+    else
     {
         _DtTermPrimSetCursorVisible(options->dtterm, True);
         _DtTermPrimCursorOn(options->dtterm);
     	if (menuHistory == options->cursor.type.box)
              (void) XtSetArg(al[ac], DtNcharCursorStyle,DtTERM_CHAR_CURSOR_BOX );
-        else 
-	     (void) XtSetArg(al[ac], DtNcharCursorStyle, DtTERM_CHAR_CURSOR_BAR);		
+        else
+	     (void) XtSetArg(al[ac], DtNcharCursorStyle, DtTERM_CHAR_CURSOR_BAR);
         ac++;
     }
 
@@ -644,7 +644,7 @@ _DtTermViewCreateGlobalOptionsDialog
     int			  ac;
     _DtTermViewLineupList *lineupList;
     DtTermViewWidget      tw = (DtTermViewWidget) parent;
-    
+
     options = (OptionsDialogType *) XtMalloc(sizeof(OptionsDialogType));
     (void) memset(options, '\0', sizeof(*options));
 
@@ -862,7 +862,7 @@ _DtTermViewCreateGlobalOptionsDialog
 	    _DtTermViewCreatePushButton(pulldown,
 	    (GETMESSAGE(NL_SETN_ViewGlobalDialog,17, "Inverse")), NoSymbol,
 	    NULL, NULL, NULL, NULL);
-    
+
     ac = 0;
     (void) XtSetArg(al[ac], XmNtopAttachment, XmATTACH_FORM);		ac++;
     (void) XtSetArg(al[ac], XmNleftAttachment, XmATTACH_FORM);		ac++;
@@ -881,7 +881,7 @@ _DtTermViewCreateGlobalOptionsDialog
     /* manage the cursor form... */
     (void) XtManageChild(backgroundForm);
 
-    
+
     /****************************************************************
      ****************************************************************
      **** Scroll parameters...
@@ -920,7 +920,7 @@ _DtTermViewCreateGlobalOptionsDialog
     options->scroll.type.smooth =
 	    _DtTermViewCreatePushButton(pulldown,
 	    (GETMESSAGE(NL_SETN_ViewGlobalDialog,22, "Enabled")), NoSymbol, NULL, NULL, NULL, NULL);
-    
+
     ac = 0;
     (void) XtSetArg(al[ac], XmNtopAttachment, XmATTACH_FORM);		ac++;
     (void) XtSetArg(al[ac], XmNleftAttachment, XmATTACH_FORM);		ac++;
@@ -979,7 +979,7 @@ _DtTermViewCreateGlobalOptionsDialog
     options->bell.type.visual =
 	    _DtTermViewCreatePushButton(pulldown,
 	    (GETMESSAGE(NL_SETN_ViewGlobalDialog,26, "Visible")), NoSymbol, NULL, NULL, NULL, NULL);
-    
+
     ac = 0;
     (void) XtSetArg(al[ac], XmNtopAttachment, XmATTACH_FORM);		ac++;
     (void) XtSetArg(al[ac], XmNleftAttachment, XmATTACH_FORM);		ac++;
@@ -1008,7 +1008,7 @@ _DtTermViewCreateGlobalOptionsDialog
     options->bell.bellMargin.off =
 	    _DtTermViewCreatePushButton(pulldown,
 	    (GETMESSAGE(NL_SETN_ViewGlobalDialog,29, "Disabled")), NoSymbol, NULL, NULL, NULL, NULL);
-    
+
     ac = 0;
     (void) XtSetArg(al[ac], XmNtopAttachment, XmATTACH_WIDGET);		ac++;
     (void) XtSetArg(al[ac], XmNtopWidget, tmp);				ac++;

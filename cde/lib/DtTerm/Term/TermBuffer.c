@@ -68,7 +68,7 @@ insertEnhancements
 static void
 deleteEnhancement
 (
-    TermBuffer tb, 
+    TermBuffer tb,
     short      row,
     short      col
 );
@@ -114,7 +114,7 @@ _DtTermGetCharacterPointer
 static void
 _DtTermInsertEnhancements
 (
-    const TermBuffer  tb, 
+    const TermBuffer  tb,
     const short       row,
     const short       col,
     short             insertCount,
@@ -140,7 +140,7 @@ _DtTermBufferResize
 static void
 _DtTermDeleteEnhancement
 (
-    TermBuffer  tb, 
+    TermBuffer  tb,
     short       row,
     short       col,
     short       width
@@ -188,9 +188,9 @@ validateEnhancements
 (
     TermBuffer  tb,
     short       row
-);    
+);
 #    define VALIDATE_ENHANCEMENTS(tb, row) validateEnhancements((tb), (row))
-#else    
+#else
 #    define VALIDATE_ENHANCEMENTS(tb, row)
 #endif /* TEST || __CODECENTER__ || VALIDATE_ENH */
 
@@ -199,7 +199,7 @@ validateEnhancements
 */
 static DtTermEnhPart blankEnh = {0, 0, 0, 0, 0};
 
-/* 
+/*
 ** Create and initialize the Dt-specific parts of the term buffer.
 */
 TermBuffer
@@ -217,10 +217,10 @@ _DtTermBufferCreateBuffer
     TermBuffer      newTB;
     DtLine    *lines;
 
-    newTB = _DtTermPrimBufferCreateBuffer(w, rows, cols, 
+    newTB = _DtTermPrimBufferCreateBuffer(w, rows, cols,
                                     sizeOfBuffer, sizeOfLine, sizeOfEnh);
-    
-    
+
+
     if (newTB)
     {
         VALUE_LIST(newTB) = (enhValues) malloc(NUM_ENHANCEMENT_FIELDS *
@@ -238,7 +238,7 @@ _DtTermBufferCreateBuffer
 	     lines++)
         {
             DT_ENH(*lines) = (DtEnh) NULL;
-        }        
+        }
         DT_ENH_STATE(newTB)    = blankEnh;
         DT_ENH_DIRTY(newTB)    = 0;
         ENH_PROC(newTB)        = _DtTermEnhProc;
@@ -254,9 +254,9 @@ _DtTermBufferCreateBuffer
         CLEAR_LINE(newTB)      = _DtTermClearLine;
     }
     return(newTB);
-}                    
+}
 
-/* 
+/*
 ** Resize buffer, this is a helper function, if malloc fails, then the
 ** appropriate dimensions are forced to the current maximums
 */
@@ -271,7 +271,7 @@ _DtTermBufferResize
     short   i;
     DtEnh   enh;
     DtLine *lines;
-    
+
     /*
     ** make any necessary width adjustments first...
     **
@@ -282,7 +282,7 @@ _DtTermBufferResize
     **    are handled properly if the second column falls past the last
     **    column in the window.
     */
-    if (*newCols > MAX_COLS(tb)) 
+    if (*newCols > MAX_COLS(tb))
     {
 	termChar *newLineBuffer;
 
@@ -325,9 +325,9 @@ _DtTermBufferResize
 		    break;
 		}
 	    }
-	    newLineBuffer = (termChar *) malloc((unsigned) 
+	    newLineBuffer = (termChar *) malloc((unsigned)
 					*newCols * BYTES_PER_CHAR(tb));
-	    
+
 	    if (newLineBuffer == NULL)
 	    {
 		/*
@@ -351,7 +351,7 @@ _DtTermBufferResize
     /*
     ** now adjust the length of the buffer as necessary...
     */
-    if (*newRows > MAX_ROWS(tb)) 
+    if (*newRows > MAX_ROWS(tb))
     {
 	/*
 	** the number of rows is increasing
@@ -366,7 +366,7 @@ _DtTermBufferResize
 	    memcpy(lines, DT_LINES(tb), sizeof(DtLine) * MAX_ROWS(tb));
 	    free(DT_LINES(tb));
 	    LINES(tb) = (TermLine *)lines;
-	    
+
 	    /*
 	    ** now initialize the new lines...
 	    **
@@ -388,7 +388,7 @@ _DtTermBufferResize
 			WIDTH(lines[i])   = 0;
 			WRAPPED(lines[i]) = False;
 		    }
-		    else 
+		    else
 		    {
 			/*
 			** the line buffer malloc failed...
@@ -417,7 +417,7 @@ _DtTermBufferResize
 	}
     }
     ROWS(tb) = *newRows;
-}    
+}
 
 /*
 ** Free the buffer.
@@ -463,10 +463,10 @@ clearEnhancements
 {
     DtEnh  enh;
     int    i;
-    
+
 
     enh  = DT_ENH(DT_LINE_OF_TBUF(tb, row));
-    
+
     if (enh)
     {
 	enh += col;
@@ -496,7 +496,7 @@ _DtTermClearEnhancements
     clearEnhancements(tb, row, col, count);
 }
 
-/* 
+/*
 ** Insert the desired number of enhancements at the specified
 ** position...
 **
@@ -510,7 +510,7 @@ _DtTermClearEnhancements
 static void
 _DtTermInsertEnhancements
 (
-    const TermBuffer  tb, 
+    const TermBuffer  tb,
     const short       row,
     const short       col,
     short             insertCount,
@@ -521,30 +521,30 @@ _DtTermInsertEnhancements
     DtTermEnhPart   fillEnh;
     DtEnh           enh;
     DtLine          line;
-    int             i;    
+    int             i;
     int             copyCount;
-    
+
     line = DT_LINE_OF_TBUF(tb, row);
     enh  = DT_ENH(line);
 
-    /* 
+    /*
     ** There's nothing to do if we're past the end of the line or
     ** the dirty bit is clear and there are no ehancements on
     ** this line...
     */
     if ((col < WIDTH(line)) && ((DT_ENH_DIRTY(tb)) || (enh != NULL)))
     {
-        if ((enh == NULL))
+        if (enh == NULL)
         {
-            /* 
-            ** there are currently no enhancements on this line, 
+            /*
+            ** there are currently no enhancements on this line,
             ** allocate an enhancement buffer, and reset 'enh'...
             */
             _DtTermBufferCreateEnhancement(tb, row, col);
             enh = DT_ENH(line);
         }
 
-        /* 
+        /*
         ** get a copy of the current enhancement (we'll insert 'copyCount'
         ** copies of it into the enhancement buffer)
         */
@@ -552,18 +552,18 @@ _DtTermInsertEnhancements
 
         if (insertFlag)
         {
-            /* 
+            /*
             ** we're in insert mode, move any existing enhancements...
             */
 	    copyCount = MIN((WIDTH(line) - col),
 		    (COLS(tb) - col - insertCount));
 	    copyCount = MAX(0, copyCount);
-            memmove(enh + col + insertCount, enh + col, 
+            memmove(enh + col + insertCount, enh + col,
                     copyCount * sizeof(DtTermEnhPart));
         }
 
 #ifdef    NOCODE
-        /* 
+        /*
         ** insert insertCount copies of fillEnh into the enhancement buffer
         ** starting at line->enh[col + 1]...
         */
@@ -574,7 +574,7 @@ _DtTermInsertEnhancements
             enh++;
         }
 #else  /* NOCODE */
-        /* 
+        /*
         ** insert insertCount copies of fillEnh into the enhancement buffer
         ** starting at line->enh[col + 1]...
         */
@@ -601,13 +601,13 @@ _DtTermBufferDelete
     _DtTermPrimBufferDelete(tb, row, col, count, NULL, NULL);
 }
 
-/* 
+/*
 ** delete the desired enhancements starting the specified position...
 */
 static void
 _DtTermDeleteEnhancement
 (
-    TermBuffer  tb, 
+    TermBuffer  tb,
     short       row,
     short       col,
     short       width
@@ -617,24 +617,24 @@ _DtTermDeleteEnhancement
     DtTermEnhPart   fillEnh;
     DtLine          line;
     int             copyCount;
-    
+
     line = DT_LINE_OF_TBUF(tb, row);
     enh  = DT_ENH(line);
 
     if ((enh == NULL) || (WIDTH(line) <= col))
     {
-        /* 
+        /*
         ** no enhancements, or at (or past) the end of the line, return
         */
         return;
     }
 
-    /* 
+    /*
     ** get a copy of the current enhancement
     */
     fillEnh = enh[col];
 
-    /* 
+    /*
     ** move all of the enhancement blocks between col + width and and the
     ** end of the line to col
     */
@@ -663,12 +663,12 @@ _DtTermBufferCreateEnhancement
 {
     DtLine  line;
     DtEnh  *enh;
-    
+
     if (!VALID_ROW(tb, row) || !VALID_COL(tb, col))
     {
         return(False);
     }
-                        
+
     line = DT_LINE_OF_TBUF(tb, row);
     enh  = &(DT_ENH(line));
 
@@ -733,9 +733,9 @@ _DtTermSetEnhancement
 {
     int     i;
     DtEnh   enhState;
-    
+
     enhState = (DtEnh) &(DT_ENH_STATE(tb));
-    
+
     /*
     ** Set the value.
     */
@@ -759,8 +759,8 @@ _DtTermSetEnhancement
       default:
         return(-1);
     }
-    
-    /* 
+
+    /*
     ** We've set the value, now decide if this anything but the blank
     ** enhancement.
     */
@@ -769,7 +769,7 @@ _DtTermSetEnhancement
                         (enhState->fgColor != blankEnh.fgColor) ||
                         (enhState->bgColor != blankEnh.bgColor) ||
                         (enhState->font    != blankEnh.font   ));
-    /* 
+    /*
     ** return the correct count (which in this case will always be 0)
     */
     return(0);
@@ -829,7 +829,7 @@ _DtTermGetEnhancement
     if (DT_ENH(line) == NULL || (WIDTH(line) <= col))
     {
         /*
-        ** There are either no enhancements allocated for this line, 
+        ** There are either no enhancements allocated for this line,
         ** or we're past the end of the line, in either case return
         ** a blank enhancement.
         */
@@ -948,17 +948,17 @@ _DtTermClearLine
 {
     DtLine  line;
     DtEnh   enh;
-    
+
     line = DT_LINE_OF_TBUF(tb, row);
     enh  = DT_ENH(line);
-    
+
     if (enh != NULL)
     {
         /*
         ** We have enhancements, clear all those between the current
         ** and the new length...
         */
-	
+
         (void) memset(&enh[newWidth], 0,
                       (WIDTH(line) - newWidth) * sizeof(DtTermEnhPart));
     }
@@ -992,7 +992,7 @@ _DtTermBufferErase
 {
     short  startCol;
     short  lastCol;
-    
+
     switch(eraseSwitch)
     {
       case eraseFromCol0:
@@ -1002,7 +1002,7 @@ _DtTermBufferErase
 	startCol = 0;
 	lastCol  = MIN(col, WIDTH(DT_LINE_OF_TBUF(tb, row)) - 1);
 	break;
-	
+
       case eraseCharCount:
 	/*
 	** erase "count" characters from the current cursor position
@@ -1049,7 +1049,7 @@ _DtTermValidateEnhancements
     thisLine = DT_LINE_OF_TBUF(tb, row);
     if (DT_ENH(thisLine))
     {
-        /* 
+        /*
         ** Initialize the reference enhancement
         */
         refEnh = blankEnh;
@@ -1058,8 +1058,8 @@ _DtTermValidateEnhancements
         refEnh.colorStart = 0;
         refEnh.fontStart  = 0;
 
-        for(col = 0, thisEnh = DT_ENH(thisLine); 
-            col < WIDTH(thisLine) + 
+        for(col = 0, thisEnh = DT_ENH(thisLine);
+            col < WIDTH(thisLine) +
                   (DANGLE(thisLine) >= 0 ? 1 : 0);
             col++, thisEnh++)
         {
@@ -1074,7 +1074,7 @@ _DtTermValidateEnhancements
                 fprintf(stderr, "    refEnh.video : %d\n", (int)(refEnh.video  & VIDEO_MASK));
                 fprintf(stderr, "    thisEnh->video: %d\n", (int)(thisEnh->video & VIDEO_MASK));
                 validatePassed = False;
-            }    
+            }
 
             if (thisEnh->fieldStart)
             {
@@ -1087,7 +1087,7 @@ _DtTermValidateEnhancements
                 fprintf(stderr, "    refEnh.field : %d\n", (int)(refEnh.field  & FIELD_MASK));
                 fprintf(stderr, "    thisEnh->field: %d\n", (int)(thisEnh->field & FIELD_MASK));
                 validatePassed = False;
-            }    
+            }
             if (thisEnh->colorStart)
             {
                 refEnh.color = thisEnh->color;
@@ -1099,7 +1099,7 @@ _DtTermValidateEnhancements
                 fprintf(stderr, "    refEnh.color : %d\n", (int)(refEnh.color  & COLOR_MASK));
                 fprintf(stderr, "    thisEnh->color: %d\n", (int)(thisEnh->color & COLOR_MASK));
                 validatePassed = False;
-            }    
+            }
             if (thisEnh->font <= 2)
             {
                 if (thisEnh->fontStart)
@@ -1113,7 +1113,7 @@ _DtTermValidateEnhancements
                     fprintf(stderr, "    refEnh.font : %d\n", (int)(refEnh.font  & FONT_MASK));
                     fprintf(stderr, "    thisEnh->font: %d\n", (int)(thisEnh->font & FONT_MASK));
                     validatePassed = False;
-                }    
+                }
             }
             else
             {

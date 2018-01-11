@@ -36,7 +36,7 @@ static char rcs_id[] = "$XConsortium: TermPrimRenderMb.c /main/1 1996/04/21 19:1
  * (c) Copyright 1996 Hitachi.						*
  */
 
-/* 
+/*
 ** This file contains the multi-byte character versions of the render routines.
 */
 
@@ -85,7 +85,7 @@ _DtTermPrimRefreshTextWc(Widget w, short startColumn, short startRow,
     Pixel tmpPixel;
     XmTextPosition  begin, end;
     TermCharInfoRec startCharInfo;
-    
+
     DebugF('t', 0, fprintf(stderr, ">>_DtTermPrimRefreshTextWc() starting\n"));
     DebugF('t', 0, fprintf(stderr,
 	    ">>_DtTermPrimRefreshTextWc() startCol=%hd  startRow=%hd  endCol=%hd  endRow=%hd\n",
@@ -111,7 +111,7 @@ _DtTermPrimRefreshTextWc(Widget w, short startColumn, short startRow,
 	    tpd->scrollRefreshRows[startRow] = True;
 	}
 
-	DebugF('t', 0, 
+	DebugF('t', 0,
 		fprintf(stderr,
 		">>_DtTermPrimRefreshTextWc() jump scroll in progress, no render\n"));
         return;
@@ -186,9 +186,9 @@ _DtTermPrimRefreshTextWc(Widget w, short startColumn, short startRow,
         {
             if (_DtTermPrimSelectGetSelection(w, &begin, &end) &&
                 (begin < end) &&
-                (lineNum >= (begin / (tpd->selectInfo->columns + 1)) - 
+                (lineNum >= (begin / (tpd->selectInfo->columns + 1)) -
                             tpd->lastUsedHistoryRow) &&
-                (lineNum <= (end   / (tpd->selectInfo->columns + 1)) - 
+                (lineNum <= (end   / (tpd->selectInfo->columns + 1)) -
                             tpd->lastUsedHistoryRow)) {
                 checkSelection = True;
             } else {
@@ -217,7 +217,7 @@ _DtTermPrimRefreshTextWc(Widget w, short startColumn, short startRow,
 	     * line of the display...
 	     */
 	    lineWidth       = 0;
-	    linePtr         = (wchar_t) 0;
+	    linePtr         = NULL;
 	    thisStartColumn = startColumn;
 	    thisEndColumn   = endColumn;
 	} else if (lineNum < 0) {
@@ -245,13 +245,13 @@ _DtTermPrimRefreshTextWc(Widget w, short startColumn, short startRow,
 		/* we are above the history buffer.  Should not happen, but...
 		 */
 		lineWidth = 0;
-		linePtr = (wchar_t) 0;
+		linePtr = NULL;
 	    }
 	} else {
 	    /* adjust startColumn to point to the first column for the
 	     * first character...
 	     */
-	    lineWidth = _DtTermPrimBufferGetLineWidth(tBuffer, lineNum); 
+	    lineWidth = _DtTermPrimBufferGetLineWidth(tBuffer, lineNum);
 	    if ((startColumn < lineWidth) &&
 		    _DtTermPrimGetCharacterInfo(tBuffer, lineNum, startColumn,
 		    &startCharInfo)) {
@@ -301,7 +301,7 @@ _DtTermPrimRefreshTextWc(Widget w, short startColumn, short startRow,
 	     * _DtTermPrimSelectIsInSelection clips the chunkWidth to
 	     * the end of the selection if we are...
 	     */
-	    if (checkSelection && 
+	    if (checkSelection &&
                 _DtTermPrimSelectIsInSelection(w, lineNum, chunkStartColumn,
 		                         chunkWidth, &chunkWidth)) {
 		inSelection = True;
@@ -346,7 +346,7 @@ _DtTermPrimRefreshTextWc(Widget w, short startColumn, short startRow,
 		enhInfo.fg = enhInfo.bg;
 		enhInfo.bg = tmpPixel;
 	    }
-			
+
 	    /* if secure, we will use a XFillRectangle, and we need
 	     * foreground set to the background...
 	     */
@@ -425,7 +425,7 @@ _DtTermPrimRefreshTextWc(Widget w, short startColumn, short startRow,
 	 */
 	while (thisEndColumn - chunkStartColumn >= 0) {
 	    chunkWidth = thisEndColumn - chunkStartColumn + 1;
-	    if (checkSelection && 
+	    if (checkSelection &&
                 _DtTermPrimSelectIsInSelection(w, lineNum, chunkStartColumn,
 		                         chunkWidth, &chunkWidth)) {
 		/* use the render gc set to the fg color... */
@@ -485,7 +485,7 @@ _DtTermPrimRefreshTextWc(Widget w, short startColumn, short startRow,
 /**************************************************************************
  *  Function:
  *  	_DtTermPrimExposeText(): expose (refresh) the text in rectangular area
- *  
+ *
  *  Parameters:
  *  	Widget w: widget to expose
  *  	int x: starting x pixel in window
@@ -493,10 +493,10 @@ _DtTermPrimRefreshTextWc(Widget w, short startColumn, short startRow,
  *  	int width: width in pixels
  *  	int height: height in pixels
  *	Boolean isExposeEvent: true, deal with copyarea / expose overlap
- *  
+ *
  *  Returns:
  *  	<nothing>
- *  
+ *
  *  Notes:
  *  	This function will redisplay the text in a rectangular exposure
  *  	area.  The x, y, width, and height are in absolute pixels.  The
@@ -527,36 +527,36 @@ _DtTermPrimExposeTextMb(Widget w, int x, int y, int width, int height,
      * combination of these two events can cause a race condition which
      * manifests itself by leaving a hole in the terminal window.  What
      * happens is this:
-     * 
+     *
      * A window is partially obscured.  The terminal emulator does a copy
      * area (scroll) which includes part of obscured area.  Before the
      * server processes the copy area, the window is unobscured, and the
      * server sends an exposure event back to the client.
-     * 
+     *
      * - The window is partially obscured.
-     * 
+     *
      * - The terminal emulator does a copy area (scroll) which includes a
      *   portion of the obscured area.  Normally, the server will generate
      *   a graphics exposure event for the obscured portion that it can't
      *   copy which will allow the terminal emulator to update the area.
-     * 
+     *
      * - Before the server receives the copy area request, the server
      *   unobscures the window and sends an exposure event for the exposed
      *   area.  (This is where the hack comes into play and refreshes the
      *   scrolled portion of this area (and possibly some extra space as
      *   well)).
-     * 
+     *
      * - The server processes the copy area.  Since the area in question is
      *   no longer obscured, the server will copy blank space and not
      *   generate a graphics exposure event.
-     * 
+     *
      * - The terminal emulator processes the exposure event and refreshes
      *   the exposed area.  (This is the hack extends the exposure to cover
      *   the gap).
-     * 
+     *
      * - You now have a blank chunk of the terminal window where the
      *   obscured area was scrolled (without the hack).
-     * 
+     *
      * Our fix is similar to the one used in xterm.  The Motif text widget
      * uses a more brute force method and simply extends the exposure event
      * to the full height (or width) of the screen in the direction of the
@@ -599,13 +599,13 @@ _DtTermPrimExposeTextMb(Widget w, int x, int y, int width, int height,
 static short
 DoInsertWc(Widget w, wchar_t *wcBuffer, int wcBufferLen, Boolean *wrapped)
 {
-    DtTermPrimitiveWidget   tw = (DtTermPrimitiveWidget) w;    
+    DtTermPrimitiveWidget   tw = (DtTermPrimitiveWidget) w;
     struct termData        *tpd = tw->term.tpd;
     TermBuffer              tBuffer = tpd->termBuffer;
     short                   newWidth;
-    wchar_t                *returnChars;
+    unsigned char          *returnChars;
     short                   returnCount;
-    
+
     /*
     ** before we insert any text, we need to insure that the cursor is on
     ** a valid buffer row...
@@ -616,7 +616,7 @@ DoInsertWc(Widget w, wchar_t *wcBuffer, int wcBufferLen, Boolean *wrapped)
     }
 
     /* insert the text... */
-    returnChars = (wchar_t *) XtMalloc(BUFSIZ * sizeof (wchar_t));
+    returnChars = (unsigned char *) XtMalloc(BUFSIZ);
     newWidth = _DtTermPrimBufferInsertWc(tBuffer,       /* TermBuffer	    */
 	    tpd->topRow + tpd->cursorRow,	        /* row		    */
 	    tpd->cursorColumn,			        /* column	    */
@@ -627,7 +627,7 @@ DoInsertWc(Widget w, wchar_t *wcBuffer, int wcBufferLen, Boolean *wrapped)
 	    &returnCount);			        /* return count ptr */
 
     if ((tpd->insertCharMode != DtTERM_INSERT_CHAR_ON_WRAP) || (returnCount <= 0)) {
-        (void) XtFree((char *) returnChars);
+        XtFree((char *) returnChars);
 	return(newWidth);
     }
 
@@ -650,7 +650,7 @@ DoInsertWc(Widget w, wchar_t *wcBuffer, int wcBufferLen, Boolean *wrapped)
     */
     wcBufferLen = returnCount;
     wcBuffer    = (wchar_t *)XtMalloc(wcBufferLen);
-    (void) memcpy(wcBuffer, returnChars, wcBufferLen * sizeof(wchar_t));
+    memcpy(wcBuffer, returnChars, wcBufferLen);
 
     /*
     ** insert the text into the next line...
@@ -663,24 +663,24 @@ DoInsertWc(Widget w, wchar_t *wcBuffer, int wcBufferLen, Boolean *wrapped)
 	    tpd->insertCharMode != DtTERM_INSERT_CHAR_OFF,  /* insert flag	    */
 	    &returnChars,		                /* return char ptr  */
 	    &returnCount);		                /* return count ptr */
-    (void) XtFree((char *) wcBuffer);
-    (void) XtFree((char *) returnChars);
+    XtFree((char *) wcBuffer);
+    XtFree((char *) returnChars);
     return(newWidth);
 }
 
-/* 
+/*
 ** Insert the supplied text into the TermBuffer, and return a count of the
 ** number of characters actually inserted.
 */
 int
 _DtTermPrimInsertTextWc
 (
-    Widget      w, 
+    Widget      w,
     wchar_t    *wcBuffer,   /* buffer of wide chars                    */
     int         wcBufLen    /* # of wide chars in the buffer           */
 )
 {
-    DtTermPrimitiveWidget   tw      = (DtTermPrimitiveWidget) w;    
+    DtTermPrimitiveWidget   tw      = (DtTermPrimitiveWidget) w;
     struct termData        *tpd     = tw->term.tpd;
     TermBuffer              tBuffer = tpd->termBuffer;
 
@@ -802,7 +802,7 @@ _DtTermPrimInsertTextWc
 		     * wrapped down one line...
 		     */
 		}
-		    
+
 		renderStartX = tpd->cursorColumn;
 
 		if (tpd->scroll.nojump.pendingScroll) {
@@ -833,7 +833,7 @@ _DtTermPrimInsertTextWc
 
 		if (tpd->cursorColumn == tpd->rightMargin + 1)
 		    tpd->cursorColumn = tpd->rightMargin;
-		else 
+		else
 		    tpd->cursorColumn = tw->term.columns - 1;
 	    }
 	}
@@ -862,13 +862,13 @@ _DtTermPrimInsertTextWc
 	** inserted after the last position will replace the last
 	** character...
 	**
-	** NOTE: 
+	** NOTE:
 	**    This is only required in the case that we are trying to
         **    overwrite the last character on the line with a two column
         **    character...
 	*/
 	if (insertCharCount == 1 &&
-	    thisCharWidth   == 2 && 
+	    thisCharWidth   == 2 &&
 	    ((tpd->cursorColumn + thisCharWidth) > tw->term.columns) &&
 	    !(tpd->autoWrapRight && !tpd->wrapRightAfterInsert))
 	{

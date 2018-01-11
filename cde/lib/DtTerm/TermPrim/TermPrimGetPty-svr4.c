@@ -215,7 +215,7 @@ ok:
 		if ((slaveFd = open(*ptySlave, O_RDWR, 0)) < 0) {
 		    (void) perror(*ptySlave);
 		    (void) fprintf(stderr, "it failed!\n");
-		    (void) sprintf(buffer, "ls -l %s", *ptySlave);
+		    (void) snprintf(buffer, BUFSIZ, "ls -l %s", *ptySlave);
 		    (void) system(buffer);
 		} else {
 		    (void) close(slaveFd);
@@ -234,8 +234,8 @@ ok:
     return(-1);
 }
 
-/* this is a public wrapper around the previous function that runs the          
- * previous function setuid root...                                             
+/* this is a public wrapper around the previous function that runs the
+ * previous function setuid root...
  */
 int
 _DtTermPrimGetPty(char **ptySlave, char **ptyMaster)

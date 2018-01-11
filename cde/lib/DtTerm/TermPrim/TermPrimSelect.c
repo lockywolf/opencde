@@ -82,7 +82,7 @@ XmTextScanType defaultScanArray[] =
 static void RegisterDropSite( Widget w );
 static void doExtendedSelection (Widget  w,Time  eventTime);
 
-/* 
+/*
 ** Get the current server time (I ripped this off from Xm/TextIn.c).
 */
 static Time
@@ -93,7 +93,7 @@ getServerTime
 {
     XEvent    event;
     EventMask shellMask;
-    
+
     while(!XtIsShell(w))
     {
         w = XtParent(w);
@@ -127,7 +127,7 @@ setScanType
     XEvent *event
 )
 {
-    TermSelectInfo  selectInfo = 
+    TermSelectInfo  selectInfo =
                     ((DtTermPrimitiveWidget)w)->term.tpd->selectInfo;
     int             multiClickTime;
     int             i;
@@ -139,7 +139,7 @@ setScanType
 			 (multiClickTime == 200 ? 500 : multiClickTime))
     {
         i = 0;
-	while (i < selectInfo->scanArraySize && 
+	while (i < selectInfo->scanArraySize &&
                selectInfo->scanArray[i] != selectInfo->scanType)
         {
             i++;
@@ -150,20 +150,20 @@ setScanType
             i = 0;
         }
 	selectInfo->scanType = selectInfo->scanArray[i];
-    } 
+    }
     else
-    {	
+    {
         /* single-click event */
         selectInfo->scanType = selectInfo->scanArray[0];
     }
-    
+
     selectInfo->lastTime = event->xbutton.time;
 }
 
-/* 
+/*
 ** convert a row,col pair into the equivalent XmTextPosition
-** 
-** NOTE: 
+**
+** NOTE:
 **     this routine assumes that the calling routine as already checked
 **     row and col to insure that they are within the bounds of the terminal
 **     buffer (see _DtTermPrimSelectGrabFocus)
@@ -178,11 +178,11 @@ rowColToPos
 {
     DtTermPrimData  tpd = tw->term.tpd;
 
-    return(((tpd->selectInfo->columns + 1) * 
+    return(((tpd->selectInfo->columns + 1) *
             (row + tpd->lastUsedHistoryRow)) + col);
 }
 
-/* 
+/*
 ** getSelection
 */
 Boolean
@@ -193,10 +193,10 @@ _DtTermPrimSelectGetSelection
     XmTextPosition *end
 )
 {
-    TermSelectInfo  selectInfo = 
+    TermSelectInfo  selectInfo =
                     ((DtTermPrimitiveWidget)w)->term.tpd->selectInfo;
 
-    if (selectInfo->ownPrimary && 
+    if (selectInfo->ownPrimary &&
         (selectInfo->begin <= selectInfo->end) &&
         selectInfo->begin >= 0)
     {
@@ -211,12 +211,12 @@ _DtTermPrimSelectGetSelection
         selectInfo->ownPrimary = False;
         return(False);
     }
-}    
+}
 
 
-/* 
+/*
 ** convert an x,y pair into the appropriate text position
-** 
+**
 ** Since positions count the number of inter-character spaces, there is
 ** one more x position on a line than columns on a line; xPos can be in
 ** the range (0, selectInfo->columns + 1).  The same is true for yPos,
@@ -226,15 +226,15 @@ _DtTermPrimSelectGetSelection
 ** in the history buffer are forced to come before positions in the term
 ** buffer.
 **
-** NOTE: 
+** NOTE:
 **     this routine assumes that the calling routine as already checked
 **     x and y to insure that they are within the bounds of the terminal
 **     window (see _DtTermPrimSelectGrabFocus)
-** NOTE: 
+** NOTE:
 **     I believe I'm now doing all checking in this routine for confining
 **     the x,y to the window.  Disregard the previous note. TMH
 */
-static 
+static
 XmTextPosition
 xyToPos
 (
@@ -251,29 +251,29 @@ xyToPos
     short           xPos;
     static short    oldYPos = -1;
     static short    oldXPos = -1;
-    
 
-    if ( x<0) x = 0;  
-    if ( x > (int) tw->core.width) x = tw->core.width;  
-    /* 
+
+    if ( x<0) x = 0;
+    if ( x > (int) tw->core.width) x = tw->core.width;
+    /*
     ** convert pixel units to character positions
     */
     yPos = (MAX(0, y) - tpd->offsetY) / tpd->cellHeight;
-    
-    /* 
+
+    /*
     ** yPos cannot exceed the buffer or screen
     */
     yPos = MIN(yPos, MIN(tw->term.rows, tpd->lastUsedRow - tpd->topRow) - 1) +
            tpd->topRow;
 
-    /* 
+    /*
     ** consider the possibility that we have a history buffer
     */
     if (tpd->useHistoryBuffer)
     {
         if (yPos < 0)
         {
-            /* 
+            /*
             ** yPos is not in the history buffer (order is important,
             ** step 2 must come before step 3):
             **    1) point to history buffer
@@ -287,7 +287,7 @@ xyToPos
         }
         else
         {
-            /* 
+            /*
             ** yPos is not in the history buffer (order is important,
             ** step 2 must come before step 3):
             **    1) point to term buffer
@@ -295,21 +295,21 @@ xyToPos
             **       with
             **    3) adjust yPos
             */
-            tb  = tpd->termBuffer;        
-            row = yPos;    
-            yPos += tpd->lastUsedHistoryRow;            
+            tb  = tpd->termBuffer;
+            row = yPos;
+            yPos += tpd->lastUsedHistoryRow;
         }
     }
     else
     {
-        tb   = tpd->termBuffer;        
-        row  = yPos; 
+        tb   = tpd->termBuffer;
+        row  = yPos;
     }
 
     xPos = (((x - tpd->offsetX) + (tpd->cellWidth / 2)) / tpd->cellWidth) ;
 
     if ( MB_CUR_MAX > 1 )  /* check if xPos splits a 2 col char */
-     {      
+     {
        TermCharInfoRec charInfoRec ;
        if (_DtTermPrimGetCharacterInfo(tb,row,xPos,&charInfoRec) )
          {
@@ -322,8 +322,8 @@ xyToPos
               }
          }
      }
-    
-        
+
+
     if ((yPos != oldYPos) || (xPos != oldXPos))
     {
         oldYPos = yPos;
@@ -354,11 +354,11 @@ posToBufferRowCol
     lrow = pos / (selectInfo->columns + 1);
     lcol = pos - (lrow * (selectInfo->columns + 1));
 
-    if ( tpd->useHistoryBuffer ) lrow -= tpd->lastUsedHistoryRow ;  
+    if ( tpd->useHistoryBuffer ) lrow -= tpd->lastUsedHistoryRow ;
 
     if ( lrow < 0 )  {   /* in history buffer */
        *pb=tw->term.tpd->historyBuffer ;
-       lrow += tpd->lastUsedHistoryRow ; 
+       lrow += tpd->lastUsedHistoryRow ;
      }
     else
      {
@@ -388,17 +388,17 @@ bufferRowColToPos
     /* assume row, col in the history buffer or there is no history */
     pos = (tpd->selectInfo->columns + 1) * row + col;
 
-    if ( tpd->useHistoryBuffer && pb == tpd->termBuffer)   
+    if ( tpd->useHistoryBuffer && pb == tpd->termBuffer)
       pos += (tpd->selectInfo->columns + 1) * (tpd->lastUsedHistoryRow) ;
     return(pos) ;
 }
-   
+
 
 static XmTextPosition
 scan
 (
     DtTermPrimitiveWidget   tw,
-    XmTextPosition          scanStart, 
+    XmTextPosition          scanStart,
     XmTextScanType          scanType,
     TermScanDirection       scanDir,
     int                     count,
@@ -412,7 +412,7 @@ scan
     short            row;
     short            col;
     TermBuffer pb ;
-    
+
 
     switch(scanType)
     {
@@ -431,7 +431,7 @@ scan
         width = _DtTermPrimBufferGetLineWidth(pb,row);
         if ( col > width ) break;
 
-        if (  MB_CUR_MAX > 1 ) 
+        if (  MB_CUR_MAX > 1 )
           {
             TermCharInfoRec charInfoRec ;
 
@@ -481,7 +481,7 @@ scan
         break;
       case XmSELECT_LINE:
        {
-        
+
         posToBufferRowCol(tw, position, &pb, &row, &col) ;
         col = 0;
         switch(scanDir)
@@ -513,10 +513,10 @@ scan
     return(position);
 }
 
-/* 
+/*
 ** refresh all text from start up to stop
-** 
-** NOTE: 
+**
+** NOTE:
 **     We assume that start is always <= than stop
 */
 void
@@ -532,17 +532,17 @@ _DtTermPrimRenderRefreshTextLinear
     TermSelectInfo          selectInfo = tpd->selectInfo;
     short                   startRow, startCol;
     short                   stopRow , stopCol;
-    
 
-    /* 
+
+    /*
     ** Turn XmTextPosition into a row and column
     */
     startRow = start / (selectInfo->columns + 1);
     startCol = start - (startRow * (selectInfo->columns + 1));
     stopRow  = stop / (selectInfo->columns + 1);
     stopCol  = stop - (stopRow * (selectInfo->columns + 1));
-    
-    /* 
+
+    /*
     ** Accomodate the history buffer as necessary
     */
     if (tpd->useHistoryBuffer)
@@ -551,39 +551,39 @@ _DtTermPrimRenderRefreshTextLinear
         stopRow  -= tpd->lastUsedHistoryRow;
     }
 
-    /* 
+    /*
     ** Now adjust for the top of the window
     */
     startRow -= tpd->topRow;
     stopRow  -= tpd->topRow;
-    
+
 
     /*
     ** refresh the first (and possibly only) line
     */
     if (startRow == stopRow)
     {
-        _DtTermPrimRefreshText((Widget)tw, startCol, startRow, 
+        _DtTermPrimRefreshText((Widget)tw, startCol, startRow,
                                stopCol, startRow);
         return;
     }
-    _DtTermPrimRefreshText((Widget)tw, startCol, startRow, 
+    _DtTermPrimRefreshText((Widget)tw, startCol, startRow,
                       selectInfo->columns - 1, startRow);
-    
-    /* 
+
+    /*
     ** refresh the middle block (if there is one)
     */
     if (startRow++ < stopRow)
     {
-        _DtTermPrimRefreshText((Widget)tw, 0, startRow, 
+        _DtTermPrimRefreshText((Widget)tw, 0, startRow,
                          selectInfo->columns - 1, stopRow - 1);
     }
 
-    /* 
-    ** refresh the last line 
+    /*
+    ** refresh the last line
     */
     _DtTermPrimRefreshText((Widget)tw, 0, stopRow, stopCol, stopRow);
-    
+
 }
 
 
@@ -591,7 +591,7 @@ static void
 setSelection
 (
     DtTermPrimitiveWidget   tw,
-    XmTextPosition          begin, 
+    XmTextPosition          begin,
     XmTextPosition          end,
     Time                    selectTime,
     Boolean                 fromLoseSelection
@@ -612,35 +612,35 @@ setSelection
     {
         Debug('c', fprintf(stderr, ">>setSelection() finishing a\n"));
         return;
-    }    
+    }
 
     if (begin < 0)
     {
         begin = 0;
         end   = 0;
     }
-    
+
     if (selectInfo->ownPrimary)
     {
-        /* 
+        /*
         ** we own the selection see how much (if any) of the selected
         ** area needs to be unhighlighted...
         */
         if (selectInfo->begin < selectInfo->end)
         {
-            /* 
+            /*
             ** We own the selection, and its highlighted...
             */
             if ((end <= selectInfo->begin) ||
                 (begin >= selectInfo->end))
             {
-                /* 
+                /*
                 ** The two areas don't intersect, simply clear the old
                 ** area...
                 */
                 Debug('c', fprintf(stderr, "    new & old are disjoint\n"));
                 selectInfo->ownPrimary = False;
-                _DtTermPrimRenderRefreshTextLinear((Widget)tw, 
+                _DtTermPrimRenderRefreshTextLinear((Widget)tw,
                                                    selectInfo->begin,
                                                    selectInfo->end - 1);
                 selectInfo->ownPrimary = True;
@@ -648,7 +648,7 @@ setSelection
             }
             else
             {
-                /* 
+                /*
                 ** There is some intersection, save the current begin
                 ** and end so we can clean things up later.
                 */
@@ -660,7 +660,7 @@ setSelection
         }
         else
         {
-            /* 
+            /*
             ** We own the selection, but nothing is highlighted...
             */
             disJoint = True;
@@ -668,13 +668,13 @@ setSelection
     }
     else
     {
-        /* 
+        /*
         ** we don't own the selection (yet), come up with some reasonable
         ** defaults
         */
-        disJoint = True; 
+        disJoint = True;
         oldBegin = begin;
-        oldEnd   = end;        
+        oldEnd   = end;
     }
 
 
@@ -690,7 +690,7 @@ setSelection
                                 _DtTermPrimSelectLoseSelection,
                                 (XtSelectionDoneProc) NULL))
             {
-                /* 
+                /*
                 ** XtOwnSelection failed, make a dummy call to setSelection
                 ** (with begin > end) to clear things up...
                 */
@@ -703,14 +703,14 @@ setSelection
             }
         }
 
-        /* 
+        /*
         ** now highlight the currently selected text...
         */
         if (selectInfo->ownPrimary)
         {
             if (disJoint == True)
             {
-                /* 
+                /*
                 ** the selections are disjoint, simply draw the new one
                 */
                 _DtTermPrimRenderRefreshTextLinear((Widget)tw, begin, end - 1);
@@ -721,8 +721,8 @@ setSelection
                 {
                     if (begin < oldBegin)
                     {
-                        /* 
-                        ** refresh from the new beginning to the old 
+                        /*
+                        ** refresh from the new beginning to the old
                         ** beginning
                         */
                         _DtTermPrimRenderRefreshTextLinear((Widget)tw, begin,
@@ -730,8 +730,8 @@ setSelection
                     }
                     else if (oldBegin < begin)
                     {
-                        /* 
-                        ** refresh from the old beginning to the new 
+                        /*
+                        ** refresh from the old beginning to the new
                         ** beginning
                         **
                         ** NOTE: in this case we want to unhighlight
@@ -748,7 +748,7 @@ setSelection
                 {
                     if (end < oldEnd)
                     {
-                        /* 
+                        /*
                         ** refresh from the new end to the original end
                         **
                         ** NOTE: in this case we want to unhighlight
@@ -762,7 +762,7 @@ setSelection
                     }
                     else if (oldEnd < end)
                     {
-                        /* 
+                        /*
                         ** refresh from the old end to the new end.
                         */
                         _DtTermPrimRenderRefreshTextLinear((Widget)tw, oldEnd,
@@ -788,7 +788,7 @@ setSelection
 
     DebugF('c', 1,
 	    fprintf(stderr, "set selection units: %d-%d  lines: %d-%d\n",
-	    selectInfo->begin, selectInfo->end,
+	    (int)selectInfo->begin, (int)selectInfo->end,
 	    selectLineBegin,
 	    selectLineEnd));
     if (tw->term.tpd->useHistoryBuffer && tw->term.tpd->lastUsedHistoryRow>0) {
@@ -808,7 +808,7 @@ setSelection
 	}
 	selectLineEnd -= tw->term.tpd->lastUsedHistoryRow;
     }
-    
+
     if (selectLineEnd > tw->term.tpd->lastUsedRow) {
 	(void) _DtTermPrimBufferSetSelectLines(tw->term.tpd->termBuffer,
 		selectLineBegin, selectColBegin,
@@ -845,7 +845,7 @@ handleSelection
                     1,  selectInfo->scanType == XmSELECT_LINE);
 
     setSelection(tw, newBegin, newEnd, selectTime, False);
-    
+
     if ((position - newBegin) <
         (newEnd - position))
     {
@@ -872,7 +872,7 @@ static void
 browseScroll
 (
         XtPointer closure,
-        XtIntervalId *id 
+        XtIntervalId *id
 )
 {
     Widget w = (Widget) closure;
@@ -891,7 +891,7 @@ browseScroll
 
     _DtTermPrimScrollComplete(w, True);
     if ( selectInfo->isScrollUp ) {
-       if ( tpd->lastUsedRow-1 >= tpd->topRow + tw->term.rows) 
+       if ( tpd->lastUsedRow-1 >= tpd->topRow + tw->term.rows)
                  _DtTermPrimScrollText(w, 1);
      }
     else
@@ -916,7 +916,7 @@ static Boolean
 CheckTimerScrolling
 (
     Widget w,
-    XEvent *event 
+    XEvent *event
 )
 {
     DtTermPrimitiveWidget   tw          = (DtTermPrimitiveWidget)w;
@@ -929,7 +929,7 @@ CheckTimerScrolling
     selectInfo->extend.y = event->xmotion.y;
 
     if ( (event->xmotion.y > (int) tpd->offsetY) &&
-        (event->xmotion.y < (int) (tpd->offsetY + tw->term.rows * 
+        (event->xmotion.y < (int) (tpd->offsetY + tw->term.rows *
                                                   tpd->cellHeight))) {
 
        if (selectInfo->selectID) {
@@ -965,7 +965,7 @@ CheckTimerScrolling
     return False;
 }
 
-/* 
+/*
 ** Create and initialize the selection specific information
 */
 TermSelectInfo
@@ -977,10 +977,10 @@ _DtTermPrimSelectCreate
     DtTermPrimitiveWidget   tw  = (DtTermPrimitiveWidget)w;
     DtTermPrimData          tpd = tw->term.tpd;
     TermSelectInfo          selectInfo;
-    int                     i;    
+    int                     i;
 
     selectInfo = (TermSelectInfo)XtMalloc(sizeof(TermSelectInfoRec));
-    
+
     selectInfo->begin         = 0;
     selectInfo->end           = 0;
     selectInfo->columns       = tw->term.columns;
@@ -1001,7 +1001,7 @@ _DtTermPrimSelectCreate
     selectInfo->scanType      = defaultScanArray[0];
     selectInfo->scanArraySize = XtNumber(defaultScanArray);
     selectInfo->scanArray     = (XmTextScanType *)
-                                XtMalloc(selectInfo->scanArraySize * 
+                                XtMalloc(selectInfo->scanArraySize *
                                          sizeof(XmTextScanType));
     selectInfo->cancel        = True;   /* used by scroll selection */
     selectInfo->anchor        = -1;     /* in case extend happens before set*/
@@ -1010,13 +1010,13 @@ _DtTermPrimSelectCreate
     {
         selectInfo->scanArray[i] = defaultScanArray[i];
     }
-    
+
     RegisterDropSite(w);
     return(selectInfo);
 }
 
 void
-_DtTermPrimSelectInitBtnEvents(Widget w) 
+_DtTermPrimSelectInitBtnEvents(Widget w)
 {
     Boolean btn1_transfer = False;
     XtVaGetValues((Widget)XmGetXmDisplay(XtDisplay(w)), "enableBtn1Transfer",
@@ -1030,7 +1030,7 @@ _DtTermPrimSelectInitBtnEvents(Widget w)
 }
 
 void
-_DtTermPrimSelectDisown 
+_DtTermPrimSelectDisown
 (
     Widget          w
 )
@@ -1067,7 +1067,7 @@ _DtTermPrimSelectDestroy
 }
 
 
-/* 
+/*
 ** determine how much (if any) of the text is selected
 **
 ** NOTE:
@@ -1110,7 +1110,7 @@ _DtTermPrimSelectIsInSelection
     }
     else
     {
-        /* 
+        /*
         ** we're in the selection range, clip endPosition as necessary...
         */
         if (position < begin)
@@ -1121,8 +1121,8 @@ _DtTermPrimSelectIsInSelection
             inSelection = False;
             endPosition = MIN(endPosition, begin);
 
-        } 
-        else 
+        }
+        else
         {
             /*
             ** we must be in the selection, clip endPosition as
@@ -1153,7 +1153,7 @@ _DtTermPrimSelectDoSelection
 
     handleSelection(tw, event->xbutton.x,  event->xbutton.y,
                     event->xbutton.time);
-}               
+}
 
 /*ARGSUSED*/
 void
@@ -1165,7 +1165,7 @@ _DtTermPrimSelectSetHint
     Cardinal   *paramCount
 )
 {
-    TermSelectInfo  selectInfo = 
+    TermSelectInfo  selectInfo =
                     ((DtTermPrimitiveWidget)w)->term.tpd->selectInfo;
 
     selectInfo->hint.x = event->xbutton.x;
@@ -1190,17 +1190,17 @@ _DtTermPrimSelectStart
 
     Debug('c', fprintf(stderr, ">>_DtTermPrimSelectStart() starting\n"));
 
-    /* 
+    /*
     ** set the selection hints, and scan type
     */
     _DtTermPrimSelectSetHint(w, event, params, paramCount);
     setScanType(w, event);
 
-    /* 
+    /*
     ** Set the current anchor point
     */
     selectInfo->anchor = xyToPos(tw, btnEvent->x, btnEvent->y);
-    
+
     if (selectInfo->scanType != XmSELECT_POSITION ||
             (_DtTermPrimSelectGetSelection(w, &begin, &end) && begin != end)
          )
@@ -1226,13 +1226,13 @@ _DtTermPrimSelectGrabFocus
 
     /* setDebugFlags("c") ; */
     Debug('c', fprintf(stderr, ">>_DtTermPrimSelectGrabFocus() starting\n"));
-    
+
     /* turn off the cursor */
     _DtTermPrimCursorOff(w);
 
     selectInfo->cancel = False;
     tw->term.allowOsfKeysyms = True;   /* normal dtterm doesn't honor these*/
-    /* 
+    /*
     ** constrain the button event to the terminal's text area
     */
     if (btnEvent->x <= (int) tpd->offsetX)
@@ -1243,14 +1243,14 @@ _DtTermPrimSelectGrabFocus
     {
         /* right */
         btnEvent->x = (int)(tw->core.width - tpd->offsetX - 1);
-    } 
+    }
 
     if (btnEvent->y <= (int)tpd->offsetY)
     {
         /* above */
         btnEvent->y = (int)(tpd->offsetY + 1);
     }
-    else if (btnEvent->y - ((int)(tpd->offsetY + 
+    else if (btnEvent->y - ((int)(tpd->offsetY +
                                   ((tpd->lastUsedRow - tpd->topRow) *
                                    tpd->cellHeight))) >= selectInfo->threshold)
     {
@@ -1258,7 +1258,7 @@ _DtTermPrimSelectGrabFocus
         btnEvent->y = (int)(tpd->offsetY + ((tpd->lastUsedRow - tpd->topRow) *
                                            tpd->cellHeight) - 1);
     }
-    
+
     if (_XmGetFocusPolicy(w) == XmEXPLICIT)
         (void) XmProcessTraversal(w, XmTRAVERSE_CURRENT);
 
@@ -1275,17 +1275,17 @@ dragged
     int                 threshold
 )
 {
-    return ((abs(hint.x - event->xbutton.x) > threshold) || 
+    return ((abs(hint.x - event->xbutton.x) > threshold) ||
             (abs(hint.y - event->xbutton.y) > threshold));
 }
 
 /* ARGSUSED */
-static void 
+static void
 doExtendedSelection
 (
     Widget  w,
     Time    eventTime
-) 
+)
 {
     DtTermPrimitiveWidget   tw         = (DtTermPrimitiveWidget) w;
     TermSelectInfo          selectInfo = tw->term.tpd->selectInfo;
@@ -1303,20 +1303,20 @@ doExtendedSelection
 
     position = xyToPos(tw, selectInfo->extend.x, selectInfo->extend.y);
 
-    if (!(_DtTermPrimSelectGetSelection(w, &begin, &end)) || 
+    if (!(_DtTermPrimSelectGetSelection(w, &begin, &end)) ||
         (begin == end))
     {
         begin                 = position;
         end                   = position;
-        if ( selectInfo->anchor <0) selectInfo->anchor  = position;   
+        if ( selectInfo->anchor <0) selectInfo->anchor  = position;
         selectInfo->origBegin = selectInfo->anchor;
         selectInfo->origEnd   = selectInfo->anchor;
         midPoint              = (float)selectInfo->anchor;
     }
-    else 
+    else
     {
         midPoint = (float)
-                  (((float)(selectInfo->origEnd - 
+                  (((float)(selectInfo->origEnd -
                              selectInfo->origBegin) / 2.0) +
                     (float)selectInfo->origBegin);
     }
@@ -1331,7 +1331,7 @@ doExtendedSelection
         {
              selectInfo->extendDir = scanLeft;
         }
-    } 
+    }
     else if ((float)(position) > midPoint)
     {
           selectInfo->anchor = selectInfo->origBegin;
@@ -1339,40 +1339,40 @@ doExtendedSelection
           {
              selectInfo->extendDir = scanRight;
           }
-    } 
+    }
 
     selectInfo->extending = TRUE;
 
     /*
     ** check for change in extend direction
     */
-    if ((selectInfo->extendDir == scanRight && 
+    if ((selectInfo->extendDir == scanRight &&
          position < selectInfo->anchor) ||
-        (selectInfo->extendDir == scanLeft && 
+        (selectInfo->extendDir == scanLeft &&
          position > selectInfo->anchor))
     {
-        selectInfo->extendDir = (selectInfo->extendDir == scanRight) ? 
+        selectInfo->extendDir = (selectInfo->extendDir == scanRight) ?
                                 scanLeft : scanRight;
 
         begin = selectInfo->begin;
         end   = selectInfo->end;
     }
-    
-    
+
+
     if (selectInfo->extendDir == scanRight)
     {
         cursorPos = scan(tw, position, selectInfo->scanType, scanRight, 1,
                          selectInfo->scanType == XmSELECT_LINE);
         end       = cursorPos;
         begin     = selectInfo->anchor;
-    } 
+    }
     else
     {
         cursorPos = scan(tw, position, selectInfo->scanType, scanLeft, 1,
                          FALSE);
         begin     = cursorPos;
         end       = selectInfo->anchor;
-        if (selectInfo->scanType == XmSELECT_WORD && 
+        if (selectInfo->scanType == XmSELECT_WORD &&
                                              (int)tw->term.tpd->cellWidth > 1)
         {
             if (position == scan (tw, begin, selectInfo->scanType, scanRight, 1,
@@ -1423,7 +1423,7 @@ _DtTermPrimSelectExtend
     if (_XmGetFocusPolicy(w) == XmEXPLICIT)
     (void) XmProcessTraversal(w, XmTRAVERSE_CURRENT);
 
-    if (selectInfo->cancel) return ;  
+    if (selectInfo->cancel) return ;
 
     if ((selectInfo->hint.x > 0) || (selectInfo->hint.y > 0))
     {
@@ -1432,7 +1432,7 @@ _DtTermPrimSelectExtend
             /*
             ** extend the selection
             */
-            handleSelection(tw,selectInfo->hint.x,selectInfo->hint.y, 
+            handleSelection(tw,selectInfo->hint.x,selectInfo->hint.y,
                                      event->xbutton.time);
             selectInfo->hint.x    = 0;
             selectInfo->hint.y    = 0;
@@ -1440,7 +1440,7 @@ _DtTermPrimSelectExtend
         }
         else
         {
-            /* 
+            /*
             ** do nothing
             */
             return;
@@ -1470,25 +1470,25 @@ _DtTermPrimSelectExtendEnd
     TermSelectInfo          selectInfo = tw->term.tpd->selectInfo;
 
     Debug('c', fprintf(stderr, ">>_DtTermPrimSelectExtendEnd() starting\n"));
- 
+
     selectInfo->cancel = True;   /* used by scroll selection */
     tw->term.allowOsfKeysyms = False;
 
     if (selectInfo->extending)
     {
-        _DtTermPrimSelectGetSelection(w, &selectInfo->origBegin, 
+        _DtTermPrimSelectGetSelection(w, &selectInfo->origBegin,
                                          &selectInfo->origEnd);
-        setSelection(tw, selectInfo->origBegin, selectInfo->origEnd, 
+        setSelection(tw, selectInfo->origBegin, selectInfo->origEnd,
                                             event->xbutton.time, False);
         /* _DtTermPrimSelectExtend(w, event, params, paramCount);*/
     }
-    
+
     if (selectInfo->selectID > 0)
     {
         XtRemoveTimeOut(selectInfo->selectID);
         selectInfo->selectID = 0;
     }
-    
+
     selectInfo->extend.x  = 0;
     selectInfo->extend.y  = 0;
     selectInfo->extending = False;
@@ -1532,7 +1532,7 @@ doHandleTargets
     {
         (void) XmProcessTraversal(w, XmTRAVERSE_CURRENT);
     }
-    
+
     if (*type == XmInternAtom(XtDisplay(w), "COMPOUND_TEXT", False) ||
         *type == XA_STRING)
     {
@@ -1549,7 +1549,7 @@ doHandleTargets
         ** if no conversions, numVals  doesn't change
         */
         if (numVals  && (status == Success || status > 0))
-        { 
+        {
             for (i = 0; i < numVals  ; i++)
             {
                  malloc_size += strlen(tmp_value[i]);
@@ -1558,13 +1558,13 @@ doHandleTargets
             total_tmp_value[0] = '\0';
             for (i = 0; i < numVals  ; i++)
             {
-                strcat(total_tmp_value, tmp_value[i]);
+                strlcat(total_tmp_value, tmp_value[i], malloc_size + 1);
             }
             block.ptr    = total_tmp_value;
             block.length = strlen(total_tmp_value);
             block.format = XmFMT_8_BIT;
             XFreeStringList(tmp_value);
-        } 
+        }
         else
         {
             malloc_size      = 1; /* to force space to be freed */
@@ -1575,13 +1575,13 @@ doHandleTargets
             block.format = XmFMT_8_BIT;
         }
      } else {
-    
+
         block.ptr    = (char*)value;
         block.length = (int) *length; /* NOTE: this causes a truncation on
 			   some architectures */
         block.format = XmFMT_8_BIT;
      }
- 
+
      pCharEnd    = block.ptr + block.length;
      pCharFollow = (char *)block.ptr;
 
@@ -1593,7 +1593,7 @@ doHandleTargets
              DtTermSubprocSend(w, (unsigned char *) pCharFollow,
                            pChar - pCharFollow + 1);
              pCharFollow = pChar + 1;
-         }        
+         }
      }
      if (pCharFollow < pCharEnd)
      {
@@ -1606,7 +1606,7 @@ doHandleTargets
     if (primSelect && (--primSelect->ref_count == 0))
     {
        XtFree((char *)primSelect);
-    }    
+    }
     value = NULL ;
 }
 
@@ -1635,7 +1635,7 @@ handleTargets
     Boolean                 supportsCompoundText;
     Atom                   *atomPtr;
     _TermSelectRec         *tmpAction;
-    _TermSelectPrimaryRec  *primSelect; 
+    _TermSelectPrimaryRec  *primSelect;
     char                   *abcString;
     XTextProperty           tmpProp;
     int                     status;
@@ -1643,7 +1643,7 @@ handleTargets
     Atom                    targets[2];
     int                     i;
 
-    /* 
+    /*
     ** make sure we have something to do...
     */
     tmpAction = (_TermSelectRec *) closure;
@@ -1670,15 +1670,15 @@ handleTargets
     }
     else
     {
-        /* 
-        ** Kludge for failure of XmbText... to 
-        ** handle XPCS characters.  Should never 
-        ** happen, but this prevents a core dump 
+        /*
+        ** Kludge for failure of XmbText... to
+        ** handle XPCS characters.  Should never
+        ** happen, but this prevents a core dump
         ** if X11 is broken.
         */
         CS_OF_LOCALE = (Atom)9999;
     }
-    if (tmpProp.value != NULL) 
+    if (tmpProp.value != NULL)
     {
         XFree((char *)tmpProp.value);
     }
@@ -1745,7 +1745,7 @@ getString
     DtTermPrimData          tpd        = tw->term.tpd;
     TermSelectInfo          selectInfo = tpd->selectInfo;
     TermBuffer              tb;
-    short                   beginRow, 
+    short                   beginRow,
                             beginCol;
     short                   endRow,
                             endCol;
@@ -1754,7 +1754,7 @@ getString
     char                   *buffer;
     char                   *pBuf;
     short                   len;
-    
+
     beginRow = begin / (selectInfo->columns + 1);
     beginCol = begin - (beginRow * (selectInfo->columns + 1));
     endRow   = end / (selectInfo->columns + 1);
@@ -1770,7 +1770,7 @@ getString
     buffer = XtMalloc(((int)(end - begin) + 1 + numRows) * sizeof(char)
                                       * BYTES_PER_CHAR(tpd->termBuffer));
 
-    /* 
+    /*
     ** return a null string if there is nothing to do
     */
     if (begin == end)
@@ -1779,7 +1779,7 @@ getString
         return(buffer);
     }
 
-    /* 
+    /*
     ** Accomodate the history buffer as necessary
     */
     if (tpd->useHistoryBuffer)
@@ -1804,7 +1804,7 @@ getString
             tb      = tpd->termBuffer;
             thisRow = beginRow;
         }
-        len = _DtTermPrimBufferGetText(tb, thisRow, beginCol, 
+        len = _DtTermPrimBufferGetText(tb, thisRow, beginCol,
                                        endCol - beginCol, pBuf, needWideChar);
         pBuf += len;
     }
@@ -1820,17 +1820,17 @@ getString
             tb      = tpd->termBuffer;
             thisRow = beginRow;
         }
-        len = _DtTermPrimBufferGetText(tb, thisRow, beginCol, 
+        len = _DtTermPrimBufferGetText(tb, thisRow, beginCol,
                                  selectInfo->columns - beginCol, pBuf,
                                  needWideChar);
         pBuf += len;
-        
-        if ( !_DtTermPrimBufferTestLineWrapFlag(tb,thisRow) ) { 
+
+        if ( !_DtTermPrimBufferTestLineWrapFlag(tb,thisRow) ) {
            *pBuf = '\n'; /* newline */
            pBuf++;
          }
 
-        /* 
+        /*
         ** get the middle block (if there is one)
         */
         beginRow++;
@@ -1852,15 +1852,15 @@ getString
 
             pBuf += len;
             /* if (len != 0 &&  len < selectInfo->columns ) { */
-            if ( !_DtTermPrimBufferTestLineWrapFlag(tb,thisRow) ) { 
+            if ( !_DtTermPrimBufferTestLineWrapFlag(tb,thisRow) ) {
                *pBuf = '\n'; /* newline */
                pBuf++;
              }
             beginRow++;
         }
 
-        /* 
-        ** get the last line 
+        /*
+        ** get the last line
         */
         if (endRow < 0)
         {
@@ -1872,16 +1872,16 @@ getString
             tb      = tpd->termBuffer;
             thisRow = endRow;
         }
-        len = _DtTermPrimBufferGetText(tb, thisRow, 0, endCol, pBuf, 
+        len = _DtTermPrimBufferGetText(tb, thisRow, 0, endCol, pBuf,
                                        needWideChar);
         pBuf += len;
-    }    
+    }
     *pBuf = 0x00;
 
     return(buffer);
 }
 
-/* 
+/*
 ** Request targets from selection owner.
 */
 static void
@@ -1894,7 +1894,7 @@ getTargets
 )
 {
     _TermSelectRec *tmp;
-    
+
     tmp = (_TermSelectRec*)XtMalloc(sizeof(_TermSelectRec));
 
     /*
@@ -1988,10 +1988,10 @@ _DtTermPrimSelectConvert
     {
         Atom *targets = (Atom *)XtMalloc((unsigned)(maxTargets * sizeof(Atom)));
 
-        /* 
+        /*
         ** Xt should take care of TIME_STAMP for us.
         */
-        targetCount = 0;    
+        targetCount = 0;
         *value     = (XtPointer)targets;
         *targets++ = TARGETS;           targetCount++;
 	if (!isDebugFSet('s', 1)) {
@@ -2013,8 +2013,8 @@ _DtTermPrimSelectConvert
     else if (!ownPrimary)
     {
        return(False);
-    }  
-    else if ((*target == XA_STRING && !isDebugFSet('s', 4)) || 
+    }
+    else if ((*target == XA_STRING && !isDebugFSet('s', 4)) ||
              (*target == COMPOUND_TEXT && !isDebugFSet('s', 1)))
     {
       tmpValue  = getString(widget, begin, end, False);
@@ -2023,7 +2023,7 @@ _DtTermPrimSelectConvert
             *type     = (Atom) XA_STRING;
             *format   = 8;
             status  = XmbTextListToTextProperty(XtDisplay(widget), &tmpValue, 1,
-					  (XICCEncodingStyle)XStringStyle, 
+					  (XICCEncodingStyle)XStringStyle,
 					  &tmpProp);
         }
         else if ((*target == COMPOUND_TEXT) && !isDebugFSet('s',1)) {
@@ -2066,7 +2066,7 @@ _DtTermPrimSelectConvert
         *format = 8;
         *value  = (XtPointer)getString(widget, begin, end, False);
         *length = strlen((char*) *value);
-    } 
+    }
    else
    {
       *value  =  NULL;
@@ -2093,8 +2093,8 @@ _DtTermPrimSelectLoseSelection
     if (*selection == XA_PRIMARY && selectInfo->ownPrimary)
     {
 
-        /* 
-        ** We've lost the primary selection, make a  dummy call to 
+        /*
+        ** We've lost the primary selection, make a  dummy call to
         ** setSelection (with begin > end) to clear things up...
         */
 	/* turn off the cursor */
@@ -2122,7 +2122,7 @@ _DtTermPrimSelectBDragRelease
     Cardinal *paramCount
 )
 {
-    TermSelectInfo  selectInfo = 
+    TermSelectInfo  selectInfo =
                     ((DtTermPrimitiveWidget)w)->term.tpd->selectInfo;
     XButtonEvent    *btnEvent = (XButtonEvent *) event;
 
@@ -2170,11 +2170,11 @@ _DtTermPrimSelectIsAboveSelection
     DtTermPrimData          tpd         = tw->term.tpd;
     TermSelectInfo          selectInfo  = tpd->selectInfo;
     XmTextPosition          curPos, endPos;
-   
+
     endPos = selectInfo->end ;
     curPos = rowColToPos(tw,row,col)  ;
 
-    if ( curPos < endPos ) 
+    if ( curPos < endPos )
       return(True) ;
     else
       return(False) ;
@@ -2189,7 +2189,7 @@ _DtTermPrimSelectResize
     DtTermPrimitiveWidget   tw          = (DtTermPrimitiveWidget)w;
     DtTermPrimData          tpd         = tw->term.tpd;
     TermSelectInfo          selectInfo  = tpd->selectInfo;
-    
+
     _DtTermPrimSelectDisown(w) ;
     selectInfo->columns  = tw->term.columns ;
 }
@@ -2220,7 +2220,7 @@ _DtTermPrimSelectMoveLines
     if (row >= src && row < (src + len)) {
 	selectInfo->begin -= (src - dest) * (selectInfo->columns + 1);
         selectInfo->end -= (src - dest) * (selectInfo->columns + 1);
-    } 
+    }
 }
 
 extern void
@@ -2241,11 +2241,11 @@ _DtTermPrimSelectDeleteLines
     posToBufferRowCol (tw, selectInfo->begin, &pb, &row, &col);
 
     /* if there are no lines, etc. return... */
-    if ((len <= 0) || !selectInfo->ownPrimary ||  
+    if ((len <= 0) || !selectInfo->ownPrimary ||
             ((tw->term.tpd->scrollLockTopRow > 0 ||
               (tw->term.tpd->scrollLockBottomRow < tw->term.rows-1)) &&
               row < tw->term.tpd->scrollLockTopRow)) {
-              
+
 	return;
     }
 
@@ -2311,7 +2311,7 @@ _DtTermPrimSelectAll
     XButtonEvent           *btnEvent = (XButtonEvent *) event;
     XmTextPosition	    begin;
     XmTextPosition	    end;
-    
+
     /*  position not used in XmSELECT_ALL case */
     begin = scan(tw, (XmTextPosition) 0, XmSELECT_ALL, scanLeft,
                     1,  False);
@@ -2355,7 +2355,7 @@ _DtTermPrimSelectPage
     /* turn on the cursor */
     _DtTermPrimCursorOn(w);
 }
-  
+
 /*
  * DROP SITE code
  */
@@ -2402,7 +2402,7 @@ static void
 DeleteDropContext(
         Widget w )
 {
-   Display *display = XtDisplay(w); 
+   Display *display = XtDisplay(w);
    Screen  *screen = XtScreen(w);
 
    XDeleteContext(display, (Window)screen, _DtTermDNDContext);
@@ -2424,9 +2424,9 @@ SetDropContext(
                 _DtTermDNDContext, (XPointer)w);
 }
 
-typedef struct _dropDestroyCBClientData { 
-   _DtTermDropTransferRec *transfer_rec; 
-   XtCallbackRec *dropDestroyCB; } 
+typedef struct _dropDestroyCBClientData {
+   _DtTermDropTransferRec *transfer_rec;
+   XtCallbackRec *dropDestroyCB; }
 dropDestroyCBClientData;
 
 /* ARGSUSED */
@@ -2470,7 +2470,7 @@ HandleDrop( Widget w, XmDropProcCallbackStruct *cb )
     dd_cb->closure = NULL;
     dd_cb++;
     dd_cb->callback = (XtCallbackProc) NULL;
-    dd_cb->closure = NULL;    
+    dd_cb->closure = NULL;
 
     drag_cont = cb->dragContext;
 
@@ -2488,7 +2488,7 @@ HandleDrop( Widget w, XmDropProcCallbackStruct *cb )
        Atom CS_OF_LOCALE;
        char * tmp_string = "ABC"; /* these are characters in XPCS, so... safe */
        XTextProperty tmp_prop;
-       _DtTermDropTransferRec *transfer_rec; 
+       _DtTermDropTransferRec *transfer_rec;
        Cardinal numTransfers = 0;
        Boolean locale_found = False;
        Boolean c_text_found = False;
@@ -2528,7 +2528,7 @@ HandleDrop( Widget w, XmDropProcCallbackStruct *cb )
          transfer_rec->move = False;
       }
 
-       transferEntries[0].client_data = (XtPointer) transfer_rec; 
+       transferEntries[0].client_data = (XtPointer) transfer_rec;
        transferList = transferEntries;
        numTransfers = 1;
 
@@ -2565,7 +2565,7 @@ HandleDrop( Widget w, XmDropProcCallbackStruct *cb )
          XtSetArg(args[n], XmNtransferStatus, XmTRANSFER_FAILURE); n++;
          XtSetArg(args[n], XmNnumDropTransfers, 0); n++;
        }
-       dropDestroyCB->closure = (XtPointer) clientData; 
+       dropDestroyCB->closure = (XtPointer) clientData;
        XtSetArg(args[n], XmNdestroyCallback, dropDestroyCB); n++;
        XtSetArg(args[n], XmNtransferProc, DropTransferCallback); n++;
     }
@@ -2675,7 +2675,7 @@ StartDrag(
     n = 0;
     XtSetArg(args[n], XmNcursorBackground, tw->core.background_pixel);  n++;
     XtSetArg(args[n], XmNcursorForeground, tw->primitive.foreground);  n++;
-    XtSetArg(args[n], XmNsourceCursorIcon, drag_icon);  n++; 
+    XtSetArg(args[n], XmNsourceCursorIcon, drag_icon);  n++;
     XtSetArg(args[n], XmNexportTargets, targets);  n++;
     XtSetArg(args[n], XmNnumExportTargets, num_targets);  n++;
     XtSetArg(args[n], XmNconvertProc, _DtTermPrimSelectConvert);  n++;
@@ -2692,7 +2692,7 @@ GetXFromPos(Widget w, XmTextPosition pos)
    TermBuffer pb;
    short row,col;
    TermCharInfoRec charInfoRec ;
-   
+
    posToBufferRowCol(tw,pos,&pb,&row,&col) ;
    return(tpd->offsetX+col*tpd->cellWidth);
 }
@@ -2717,7 +2717,7 @@ _DtTermPrimSelectProcessBDrag(
 
     if (_DtTermPrimSelectGetSelection(w, &left, &right) &&
         (right != left)) {
-       if ((position > left && position < right) 
+       if ((position > left && position < right)
          || (position == left &&
                event->xbutton.x > GetXFromPos(w, left))
          || (position == right &&
@@ -2735,7 +2735,7 @@ _DtTermPrimSelectProcessBDrag(
 
 
 /* This is the menu interface for copy clipboard */
-Boolean 
+Boolean
 _DtTermPrimSelectCopyClipboard
 (
     Widget w,
@@ -2775,7 +2775,7 @@ _DtTermPrimSelectCopyClipboard
          XmStringFree(clip_label);
          return False;
        }
- 
+
        status = XmbTextListToTextProperty(display, &selected_string, 1,
 	                    (XICCEncodingStyle)XStdICCTextStyle,
 			    &tmp_prop);
@@ -2813,7 +2813,7 @@ _DtTermPrimSelectCopyClipboard
      } else
          return False;
 
-   if (selected_string!=NULL) 
+   if (selected_string!=NULL)
 	XtFree(selected_string);
    return True;
 }
@@ -2835,10 +2835,10 @@ _DtTermPrimSelectCopyClipboardEventIF
  * Retrieves the current data from the clipboard
  * and paste it at the current cursor position
  */
-Boolean 
+Boolean
 _DtTermPrimSelectPasteClipboard
 (
-      Widget w 
+      Widget w
 )
 {
       XmTextPosition sel_left = 0;
@@ -2910,7 +2910,7 @@ _DtTermPrimSelectPasteClipboard
 	 total_tmp_value = XtMalloc ((unsigned) malloc_size + 1);
 	 total_tmp_value[0] = '\0';
 	 for (i = 0; i < num_vals ; i++)
-	    strcat(total_tmp_value, tmp_value[i]);
+	    strlcat(total_tmp_value, tmp_value[i], malloc_size + 1);
 	 block.ptr = total_tmp_value;
 	 block.length = strlen(total_tmp_value);
 	 block.format = XmFMT_8_BIT;
@@ -2951,11 +2951,12 @@ _DtTermPrimSelectPasteClipboard
      XtFree(buffer);
      if (malloc_size != 0) XtFree(total_tmp_value);
 
-     (void) _DtTermPrimCursorOn(w);
+     _DtTermPrimCursorOn(w);
+     return True;
 }
 
 /* This is the event interface for paste clipboard */
-void    
+void
 _DtTermPrimSelectPasteClipboardEventIF
 (
     Widget w,
@@ -3010,7 +3011,7 @@ XmTestInSelection(
          || (position == left &&
                event->xbutton.x > GetXFromPos(w, left))
          || (position == right &&
-               event->xbutton.x < GetXFromPos(w, right))) 
+               event->xbutton.x < GetXFromPos(w, right)))
          ||
            /* or if it is part of a multiclick sequence */
            (event->xbutton.time > selectInfo->lastTime &&
@@ -3078,14 +3079,14 @@ _DtTermPrimSelectProcessCancel(
       _DtTermPrimActionKeyInput(w,event,params,num_params);
       return;
     }
-      
+
     selectInfo->cancel = True ;
 
     /* turn off the cursor */
     _DtTermPrimCursorOff(w);
 
     /* reset to origLeft and origRight */
-    setSelection (tw, selectInfo->origBegin, selectInfo->origEnd, 
+    setSelection (tw, selectInfo->origBegin, selectInfo->origEnd,
                               event->xkey.time, False) ;
 
     /* turn on the cursor */

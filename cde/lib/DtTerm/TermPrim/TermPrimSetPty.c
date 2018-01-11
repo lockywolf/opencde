@@ -129,7 +129,7 @@ typedef struct _ttyMode
 }
 ttyMode;
 
-ttyMode _DtTermPrimTtyModeList[] = 
+ttyMode _DtTermPrimTtyModeList[] =
 {
     { "intr" , 4, 0, '\0' }, /* tchars.t_intrc ; VINTR   */
     { "quit" , 4, 0, '\0' }, /* tchars.t_quitc ; VQUIT   */
@@ -175,7 +175,7 @@ parseTtyModes
              modeString++;
         }
 
-        if (!*modeString) 
+        if (!*modeString)
         {
 	    DebugF('p', 2, fprintf(stderr,
 		    ">>parseTtyModes() hit end of mode string, return=%d\n",
@@ -197,7 +197,7 @@ parseTtyModes
                 break;
             }
         }
-        if (!pMode->name) 
+        if (!pMode->name)
         {
 	    DebugF('p', 2, fprintf(stderr, ">>parseTtyModes() no match\n"));
             return(-1);
@@ -228,7 +228,7 @@ parseTtyModes
             ** keep control bits
             */
             c = ((*modeString == '?') ? 0177 : *modeString & 31);
-        } 
+        }
         else
         {
             c = *modeString;
@@ -269,7 +269,7 @@ parseCSWidth
 {
     int x;
     int i;
-    
+
     /*
     ** set all cs widths to 0
     */
@@ -475,7 +475,7 @@ _DtTermPrimPtyInit
 	*/
 	wp  = refWp;
 #endif   /* (USE_CSWIDTH) */
-	
+
 	/* DKS: are there any other terminal states we need to get?... */
     } else {
 	/* let's set a reasonable default... */
@@ -541,7 +541,7 @@ _DtTermPrimPtyInit
     /* reset EOF to the default value (ksh and csh muck with this)... */
     tio.c_cc[VEOF] = 'D' & 0x3f;			/* '^D' */
 
-    /* 
+    /*
     ** Now its time to handle the ttyModes
     ** Decide if the user supplied a ttyModes resource, if so then
     ** parse it and if it was a legal mode string, pass the parse result
@@ -635,7 +635,7 @@ _DtTermPrimPtyInit
 #undef TMODE
     }
     _DtTermProcessUnlock();
-    
+
     (void) tcsetattr(pty, TCSADRAIN, &tio);
 
 #if defined (USE_CSWIDTH)
@@ -658,7 +658,7 @@ _DtTermPrimPtyInit
     ** NOTE:
     **     Setcsmap() only operates on STDIN, so we have to do some
     **     munging around to map the pty to STDIN in order to get
-    **     the desired result.  This may seem wasteful, but it 
+    **     the desired result.  This may seem wasteful, but it
     **     makes it easier to encapsulate the OS dependencies in
     **     this function.
     */
@@ -669,12 +669,12 @@ _DtTermPrimPtyInit
 	(void) dup(pty);
     }
 
-    sprintf(path, "%s%s", CSMAP_DIR, nl_langinfo(CODESET));
+    snprintf(path, MAXPATHLEN, "%s%s", CSMAP_DIR, nl_langinfo(CODESET));
     if(access(path, E_ACC|R_ACC) == 0)
     {
 	setcsmap(path);
     }
-	
+
     if (pty != 0)
     {
 	(void) close(0);

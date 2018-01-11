@@ -47,7 +47,7 @@ static char rcs_id[] = "$XConsortium: TermFunctionKey.c /main/1 1996/04/21 19:15
 
 static char *functionKey[] = { F1_VT,F2_VT,F3_VT,F4_VT,F5_VT,F6_VT,F7_VT,F8_VT,F9_VT,F10_VT,F11_VT,F12_VT,F13_VT,F14_VT,F15_VT,F16_VT,F17_VT,F18_VT,F19_VT,F20_VT};
 static char *sunFunctionKey[] = { F1_VT_SUN,F2_VT_SUN,F3_VT_SUN,F4_VT_SUN,F5_VT_SUN,F6_VT_SUN,F7_VT_SUN,F8_VT_SUN,F9_VT_SUN,F10_VT_SUN,F11_VT_SUN,F12_VT_SUN,F13_VT_SUN,F14_VT_SUN,F15_VT_SUN,F16_VT_SUN,F17_VT_SUN,F18_VT_SUN,F19_VT_SUN,F20_VT_SUN,F21_VT_SUN,F22_VT_SUN,F23_VT_SUN,F24_VT_SUN,F25_VT_SUN,F26_VT_SUN,F27_VT_SUN,F28_VT_SUN,F29_VT_SUN,F30_VT_SUN,F31_VT_SUN,F32_VT_SUN,F33_VT_SUN,F34_VT_SUN,F35_VT_SUN};
-      
+
 
 /* NOTE: the following function assumes that the keys start at 0
  * (i.e., F1 == 0, F2 == 1, etc)...
@@ -63,7 +63,7 @@ _DtTermFunctionKeyExecute(
     DtTermData td = tw->vt.td;
 
     if (!shift || tw->vt.sunFunctionKeys == True ) {
-      if ( tw->vt.sunFunctionKeys == True ) {  
+      if ( tw->vt.sunFunctionKeys == True ) {
         if ( --keyNumber < NO_SUN_FUNC_KEYS )
             (void) _DtTermWriteEscSeq(w, sunFunctionKey[keyNumber]);
        }
@@ -99,9 +99,9 @@ _DtTermFunctionKeyUserKeyExecute(
 void
 _DtTermFunctionKeyStringStore(       /* store the label for the given key number */
      Widget w,
-     int  keyno,  
+     int  keyno,
      char *string
-) 
+)
 {
     DtTermWidget tw = (DtTermWidget) w;
     DtTermData td = tw->vt.td;
@@ -127,14 +127,15 @@ _DtTermFunctionKeyStringStore(       /* store the label for the given key number
      }
     if (ukey == -1) return ;
     if (td->userKeyString[ukey])  free(td->userKeyString[ukey]) ;
-    td->userKeyString[ukey] = malloc(strlen(string)+1) ;
-    strcpy((char *)td->userKeyString[ukey],string) ;
+    int userKeyString_size = strlen(string) + 1;
+    td->userKeyString[ukey] = malloc(userKeyString_size) ;
+    strlcpy((char *)td->userKeyString[ukey],string, userKeyString_size);
 }
 
 void
 _DtTermFunctionKeyClear(
     Widget   w
-) 
+)
 {
     DtTermWidget tw = (DtTermWidget) w;
     DtTermData td = tw->vt.td;

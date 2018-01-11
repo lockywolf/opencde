@@ -88,13 +88,13 @@ InitPointerBlank(Widget w)
 				   0, 0);	     /* hotspot		 */
 
     XFreePixmap(XtDisplay(w), noPointerBitmap);
-    XtAddEventHandler((Widget)tw, PointerMotionMask, FALSE, PointerMoved, 
+    XtAddEventHandler((Widget)tw, PointerMotionMask, FALSE, PointerMoved,
                                        (XtPointer)NULL);
 
     tpd->pointerFirst = False ;
 }
 
-static void 
+static void
 PointerMoved(Widget w, XtPointer closure, XEvent *event, Boolean *cont)
 {
     DtTermPrimitiveWidget tw = (DtTermPrimitiveWidget) w;
@@ -115,7 +115,7 @@ PointerMoved(Widget w, XtPointer closure, XEvent *event, Boolean *cont)
                 /*
                 ** and set a new motion timeout...
                 */
-                tpd->pointerTimeoutID = 
+                tpd->pointerTimeoutID =
                       XtAppAddTimeOut(XtWidgetToApplicationContext((Widget)tw),
                       (unsigned long) 1000 * tw->term.pointerBlankDelay,
                       (XtTimerCallbackProc) _DtTermPrimPointerOff,
@@ -159,7 +159,7 @@ _DtTermPrimPointerOff(Widget w, XtIntervalId *id)
     return;
 }
 
-void 
+void
 _DtTermPrimPointerOn(Widget w)
 {
     DtTermPrimitiveWidget tw = (DtTermPrimitiveWidget) w;
@@ -183,7 +183,7 @@ _DtTermPrimPointerOn(Widget w)
                 */
                 XtRemoveTimeOut(tpd->pointerTimeoutID);
 
-            tpd->pointerTimeoutID = 
+            tpd->pointerTimeoutID =
                     XtAppAddTimeOut(XtWidgetToApplicationContext((Widget)tw),
                     (unsigned long) (1000 * tw->term.pointerBlankDelay),
                     (XtTimerCallbackProc)_DtTermPrimPointerOff, (XtPointer)tw);
@@ -196,7 +196,7 @@ _DtTermPrimPointerOn(Widget w)
     return;
 }
 
-void 
+void
 _DtTermPrimPointerFreeze(Widget w, Boolean freeze)
 {
     DtTermPrimitiveWidget tw = (DtTermPrimitiveWidget) w;
@@ -220,7 +220,7 @@ _DtTermPrimPointerFreeze(Widget w, Boolean freeze)
                     XtRemoveTimeOut(tpd->pointerTimeoutID);
 
                 tpd->pointerTimeoutID = 0;
-            } 
+            }
             else {
                 /*
                 ** un freezing -- turn the timeout on...
@@ -231,14 +231,14 @@ _DtTermPrimPointerFreeze(Widget w, Boolean freeze)
                     */
                     XtRemoveTimeOut(tpd->pointerTimeoutID);
 
-                tpd->pointerTimeoutID = 
+                tpd->pointerTimeoutID =
                        XtAppAddTimeOut(XtWidgetToApplicationContext((Widget)tw),
                        (unsigned long) 1000 * tw->term.pointerBlankDelay,
                        (XtTimerCallbackProc) _DtTermPrimPointerOff,
                        (XtPointer)tw);
             }
         }
-    } 
+    }
     else {
         /*
         ** let's turn on the pointer...
@@ -262,7 +262,7 @@ _DtTermPrimPointerFreeze(Widget w, Boolean freeze)
                     */
                     XtRemoveTimeOut(tpd->pointerTimeoutID);
 
-                tpd->pointerTimeoutID = 
+                tpd->pointerTimeoutID =
                       XtAppAddTimeOut(XtWidgetToApplicationContext((Widget)tw),
                       (unsigned long) (1000 * tw->term.pointerBlankDelay),
                       (XtTimerCallbackProc)_DtTermPrimPointerOff,(XtPointer)tw);
@@ -388,7 +388,7 @@ DeleteLogFileEntry
 }
 
 #ifdef NOTDEF
-void 
+void
 logpipe(Widget w)
 {
     win_data *wp = &term->Wp;
@@ -405,7 +405,7 @@ _DtTermPrimStartLog(Widget w)
     DtTermPrimData tpd = tw->term.tpd;
 
     char            *cp;
-    int              i;
+    int              i, cp_size;
 
     if ( tw->term.log_on || tw->term.logInhibit ) { return; }
 
@@ -415,10 +415,11 @@ _DtTermPrimStartLog(Widget w)
 
     if (!strcmp(tw->term.logFile + strlen(tw->term.logFile) - 5, "XXXXX")) {
 	/* make a local copy in case we are going to change it... */
-	cp = XtMalloc(strlen(tw->term.logFile) + 1);
-	(void) strcpy(cp, tw->term.logFile);
+   	cp_size = strlen(tw->term.logFile) + 1;
+        cp = XtMalloc(cp_size);
+	strlcpy(cp, tw->term.logFile, cp_size);
 
-        (void) mktemp(cp);
+        mkstemp(cp);
 	if (cp && *cp) {
 	    tw->term.logFile = cp;
 	} else {
@@ -466,7 +467,7 @@ _DtTermPrimStartLog(Widget w)
 #ifdef	BBA
 	    _bA_dump();
 #endif	/* BBA */
-            (void) execl(DEFAULT_SHELL, DEFAULT_SHELL_ARGV0, 
+            (void) execl(DEFAULT_SHELL, DEFAULT_SHELL_ARGV0,
                          "-c", &tw->term.logFile[1], NULL);
             (void) fprintf(stderr, " Can't exec \"%s\"\n",
                                        &tw->term.logFile[1]);
@@ -620,7 +621,7 @@ _DtTermPrimLogFileCleanup
     for (logInfoTmp = logInfoHead->next; logInfoTmp;
 	    logInfoTmp = logInfoTmp->next) {
 	DebugF('s', 10, fprintf(stderr,
-		">>flushing logfile 0x%lx\n", logInfoTmp->logFile));
+		">>flushing logfile 0x%lx\n", (unsigned long) logInfoTmp->logFile));
 	(void) fflush(logInfoTmp->logFile);
     }
     _DtTermProcessUnlock();

@@ -51,14 +51,14 @@ static char rcs_id[] = "$XConsortium: TermAction.c /main/1 1996/04/21 19:15:17 d
 #include <X11/keysym.h>
 #endif /* _AIX */
 
-static char  *KeypadKey[] = { DT_KP_Space, DT_KP_Tab, DT_KP_Enter, DT_KP_F1, 
-                              DT_KP_F2, DT_KP_F3, DT_KP_F4, DT_KP_Equal, 
-                              DT_KP_Multiply, DT_KP_Add, DT_KP_Separator, 
-                              DT_KP_Subtract, DT_KP_Decimal, DT_KP_Divide, 
-                              DT_KP_0, DT_KP_1, DT_KP_2, DT_KP_3, DT_KP_4, 
+static char  *KeypadKey[] = { DT_KP_Space, DT_KP_Tab, DT_KP_Enter, DT_KP_F1,
+                              DT_KP_F2, DT_KP_F3, DT_KP_F4, DT_KP_Equal,
+                              DT_KP_Multiply, DT_KP_Add, DT_KP_Separator,
+                              DT_KP_Subtract, DT_KP_Decimal, DT_KP_Divide,
+                              DT_KP_0, DT_KP_1, DT_KP_2, DT_KP_3, DT_KP_4,
                               DT_KP_5, DT_KP_6, DT_KP_7, DT_KP_8, DT_KP_9};
 static char  *AppKeypadKey[] ={KP_APP_Space, KP_APP_Tab, KP_APP_Enter,KP_APP_F1,
-                              KP_APP_F2, KP_APP_F3, KP_APP_F4, KP_APP_Equal, 
+                              KP_APP_F2, KP_APP_F3, KP_APP_F4, KP_APP_Equal,
                               KP_APP_Multiply, KP_APP_Add, KP_APP_Separator,
                               KP_APP_Subtract, KP_APP_Decimal, KP_APP_Divide,
                               KP_APP_0, KP_APP_1, KP_APP_2, KP_APP_3, KP_APP_4,
@@ -66,7 +66,7 @@ static char  *AppKeypadKey[] ={KP_APP_Space, KP_APP_Tab, KP_APP_Enter,KP_APP_F1,
 #ifdef	OBSOLETE
 static char  *EditKey[] = {ESC_FIND, ESC_INSERT_HERE, ESC_DELETE,
                            ESC_SELECT, ESC_PREV_SCREEN, ESC_NEXT_SCREEN};
-static char  *SunEditKey[] = {ESC_FIND_SUN, ESC_INSERT_HERE_SUN, 
+static char  *SunEditKey[] = {ESC_FIND_SUN, ESC_INSERT_HERE_SUN,
                             ESC_DELETE_SUN, ESC_SELECT_SUN, ESC_PREV_SCREEN_SUN,
                             ESC_NEXT_SCREEN_SUN};
 #endif	/* OBSOLETE */
@@ -79,18 +79,19 @@ _DtTermWriteEscSeq(Widget w, char *transmitString)
     if (KEYBOARD_LOCKED(td->tpd->keyboardLocked)) {
 	/* keyboard locked -- ring the bell...
 	 */
-	(void) _DtTermPrimBell(w);
-    } else 
+	_DtTermPrimBell(w);
+    } else
         if ( td->S8C1TMode ) {
-           char *cbuf =malloc(strlen(transmitString)+1);
-           strcpy(cbuf,transmitString) ;
+	   int cbuf_size = strlen(transmitString) + 1;
+           char *cbuf = malloc(cbuf_size);
+           strlcpy(cbuf, transmitString, cbuf_size);
            cbuf[1] = 0x9B ;
-           (void) _DtTermPrimSendInput(w, (unsigned char *) (cbuf+1),
+           _DtTermPrimSendInput(w, (unsigned char *) (cbuf+1),
                 strlen(cbuf+1));
            free(cbuf) ;
          }
         else {
-	   (void) _DtTermPrimSendInput(w, (unsigned char *) transmitString,
+	   _DtTermPrimSendInput(w, (unsigned char *) transmitString,
 		strlen(transmitString));
         }
     return;
@@ -116,7 +117,7 @@ stringToEnum(char *c, EnumType *enumTypes, int numEnumTypes)
 
 
 /*** BREAK ********************************************************************
- * 
+ *
  *  #####   #####   ######    ##    #    #
  *  #    #  #    #  #        #  #   #   #
  *  #####   #    #  #####   #    #  ####
@@ -149,7 +150,7 @@ _DtTermActionBreak(Widget w, XEvent *event, String *params, Cardinal *num_params
 
 
 /*** SCROLL *******************************************************************
- * 
+ *
  *   ####    ####   #####    ####   #       #
  *  #       #    #  #    #  #    #  #       #
  *   ####   #       #    #  #    #  #       #
@@ -207,10 +208,10 @@ _DtTermActionScroll(Widget w, XEvent *event,
 
     case scrollHalfPage:
 	if (count > 0) {
-	    _DtTermFuncScroll(w, count * 
+	    _DtTermFuncScroll(w, count *
                   (tw->term.rows - tpd->memoryLockRow) / 2, fromAction);
 	} else {
-	    _DtTermFuncScroll(w, 
+	    _DtTermFuncScroll(w,
 		    count * (tw->term.rows - tpd->memoryLockRow) / 2,
                     fromAction);
 	}
@@ -251,8 +252,8 @@ _DtTermActionEndOfBuffer(Widget w, XEvent *event,
  *  #    #  ######  #####   #    #   #           #  #    #  #          #
  *  #    #  #    #  #   #   #    #  #       #    #  #    #  #          #
  *  #    #  #    #  #    #  #####  #         ####    ####   #          #
- * 
- * 
+ *
+ *
  *  #####   ######   ####   ######   #####
  *  #    #  #       #       #          #
  *  #    #  #####    ####   #####      #
@@ -276,14 +277,14 @@ _DtTermActionSoftReset(Widget w, XEvent *event,
 
 
 /*** INSERT CHAR/LINE *********************************************************
- * 
+ *
  *     #    #    #   ####   ######  #####    #####
  *     #    ##   #  #       #       #    #     #
  *     #    # #  #   ####   #####   #    #     #
  *     #    #  # #       #  #       #####      #
  *     #    #   ##  #    #  #       #   #      #
  *     #    #    #   ####   ######  #    #     #
- * 
+ *
  *                                       #
  *   ####   #    #    ##    #####       #   #          #    #    #  ######
  *  #    #  #    #   #  #   #    #     #    #          #    ##   #  #
@@ -305,15 +306,15 @@ _DtTermActionInsertLine(Widget w, XEvent *event,
 
 
 /*** CURSOR MOTION ************************************************************
- * 
+ *
  *   ####   #    #  #####    ####    ####   #####
  *  #    #  #    #  #    #  #       #    #  #    #
  *  #       #    #  #    #   ####   #    #  #    #
  *  #       #    #  #####        #  #    #  #####
  *  #    #  #    #  #   #   #    #  #    #  #   #
  *   ####    ####   #    #   ####    ####   #    #
- * 
- * 
+ *
+ *
  *  #    #   ####    #####     #     ####   #    #
  *  ##  ##  #    #     #       #    #    #  ##   #
  *  # ## #  #    #     #       #    #    #  # #  #
@@ -355,7 +356,7 @@ _DtTermActionMoveCursor(Widget w, XEvent *event,
 
     switch((CursorDirection) cursorDirections[i].value) {
     case cursorUp:
-        if (((DtTermWidget)w)->vt.td->applicationMode)  
+        if (((DtTermWidget)w)->vt.td->applicationMode)
 	    (void) _DtTermWriteEscSeq(w, ESC_CURSOR_UP_APP);
         else
 	    (void) _DtTermWriteEscSeq(w, ESC_CURSOR_UP);
@@ -396,15 +397,15 @@ _DtTermActionTab(Widget w, XEvent *event,
 
 
 /*** FUNCTION KEYS ************************************************************
- * 
+ *
  *  ######  #    #  #    #   ####    #####     #     ####   #    #
  *  #       #    #  ##   #  #    #     #       #    #    #  ##   #
  *  #####   #    #  # #  #  #          #       #    #    #  # #  #
  *  #       #    #  #  # #  #          #       #    #    #  #  # #
  *  #       #    #  #   ##  #    #     #       #    #    #  #   ##
  *  #        ####   #    #   ####      #       #     ####   #    #
- * 
- * 
+ *
+ *
  *  #    #  ######   #   #   ####
  *  #   #   #         # #   #
  *  ####    #####      #     ####
@@ -453,13 +454,13 @@ _DtTermActionFunctionKeyExecute(Widget w, XEvent *event, String *params,
 
 /**************************************************************************
  *
- *  KEYPAD 
+ *  KEYPAD
  *
  */
 
 static char *kpTypes[] = { "space", "tab",  "enter", "f1",  "f2", "f3", "f4",
    "equal",   "multiply", "add",  "separator", "subtract", "decimal", "divide",
-   "0",  "1",  "2", "3", "4", "5", "6",  "7", "8", "9"  
+   "0",  "1",  "2", "3", "4", "5", "6",  "7", "8", "9"
 };
 static int no_kptypes=sizeof(kpTypes)/sizeof(char *) ;
 
@@ -538,14 +539,14 @@ _DtTermActionKeypadKeyExecute(Widget w, XEvent *event, String *params,
 }
 
 /***********************************************************************
- * 
+ *
  *  Edit Keys (Find, Insert Here, Remove, Select, Prev Screen, Next Screen)
  *
  */
 
 typedef enum {
-    findType,   
-    insertType,     
+    findType,
+    insertType,
     selectType,
     priorType,
     nextType,
@@ -592,7 +593,7 @@ _DtTermActionEditKeyExecute(Widget w, XEvent *event, String *params,
     }
 
     switch( editTypes[i].value) {
-            case findType:  
+            case findType:
                     if ( tw->vt.sunFunctionKeys == False) {
                       (void) _DtTermWriteEscSeq(w, ESC_FIND) ;
                      }
@@ -665,6 +666,6 @@ _DtTermActionEditKeyExecute(Widget w, XEvent *event, String *params,
 			(void) _DtTermWriteEscSeq(w, ESC_DO_SUN);
 		    }
 		    break;
-       
+
        }
-}   
+}

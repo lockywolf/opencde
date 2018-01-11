@@ -68,7 +68,7 @@ extern char * _DtTermPrimGetMessage( char *filename, int set, int n, char *s );
 #include "TermPrimRenderFontSet.h"
 #include "TermPrimSelectP.h"
 #include "TermPrimSetUtmp.h"
-#include "TermPrimUtil.h"     
+#include "TermPrimUtil.h"
 #include "TermPrimDebug.h"
 #include "TermPrimWMProtocols.h"
 #include "TermPrimSetPty.h"
@@ -436,7 +436,7 @@ static XtResource resources[] =
 	XtRString,  (XtPointer) "xterm"
     },
     {
-	DtNpointerColor, DtCForeground, XtRPixel, sizeof(Pixel), 
+	DtNpointerColor, DtCForeground, XtRPixel, sizeof(Pixel),
 	XtOffsetOf( struct _DtTermPrimitiveRec, term.pointerColor),
 	XtRString,  (XtPointer) "XtDefaultForeground"
     },
@@ -451,7 +451,7 @@ static XtResource resources[] =
 	XtRImmediate, (XtPointer) False
     },
     {
-	DtNmapOnOutputDelay, DtCMapOnOutputDelay, XmRInt, sizeof(int),       
+	DtNmapOnOutputDelay, DtCMapOnOutputDelay, XmRInt, sizeof(int),
 	XtOffsetOf( struct _DtTermPrimitiveRec, term.mapOnOutputDelay ),
 	XtRImmediate, (XtPointer) 0
     },
@@ -461,12 +461,12 @@ static XtResource resources[] =
 	XtRImmediate, (XtPointer) False
     },
     {
-	DtNlogFile, DtCLogFile , XmRString, sizeof(char *),   
+	DtNlogFile, DtCLogFile , XmRString, sizeof(char *),
 	XtOffsetOf( struct _DtTermPrimitiveRec, term.logFile ),
 	XtRImmediate, (XtPointer) NULL
     },
     {
-	DtNlogInhibit, DtCLogInhibit , XmRBoolean, sizeof(Boolean), 
+	DtNlogInhibit, DtCLogInhibit , XmRBoolean, sizeof(Boolean),
 	XtOffsetOf( struct _DtTermPrimitiveRec, term.logInhibit ),
 	XtRImmediate, (XtPointer) False
     },
@@ -601,7 +601,7 @@ initializeKeyboard
     DtTermPrimData tpd
 )
 {
-    /* 
+    /*
     ** Make sure the keyboard is unlocked...
     */
     tpd->keyboardLocked.escape      = False;
@@ -615,7 +615,7 @@ initializeKeyboard
     tpd->halfDuplex                 = False;
 }
 
-/* 
+/*
 ** initialize the term-generic straps...
 */
 static void
@@ -628,7 +628,7 @@ initializeStraps
     tpd->autoWrapRight     = True;
 }
 
-/* 
+/*
 ** initialize the term-generic modes...
 */
 static void
@@ -1049,7 +1049,7 @@ Initialize(Widget ref_w, Widget w, Arg *args, Cardinal *num_args)
     tpd->IMCursorRow = -1;
     tpd->IMCursorColumn = -1;
 
-    /* 
+    /*
     ** Initialize the keyboard, straps, and modes...
     */
     initializeKeyboard(tpd);
@@ -1075,8 +1075,8 @@ Initialize(Widget ref_w, Widget w, Arg *args, Cardinal *num_args)
     ** Initialize the utmp stuff...
     */
     _DtTermPrimUtmpInit(w);
-    
-    /* 
+
+    /*
     ** Initialize the selection inforamtion
     */
     tpd->selectInfo = _DtTermPrimSelectCreate(w);
@@ -1137,7 +1137,7 @@ Initialize(Widget ref_w, Widget w, Arg *args, Cardinal *num_args)
 		/* make boldFont bold by swapping the bold in for the
 		 * weight...
 		 */
-		(void) strcpy(c2, "bold");
+		strlcpy(c2, "bold", BUFSIZ);
 		c2 += strlen("bold");
 
 		/* skip over the weight in the source... */
@@ -1205,7 +1205,7 @@ Initialize(Widget ref_w, Widget w, Arg *args, Cardinal *num_args)
 		/* make boldFont bold by swapping the bold in for the
 		 * weight...
 		 */
-		(void) strcpy(c2, "bold");
+		strlcpy(c2, "bold", BUFSIZ);
 		c2 += strlen("bold");
 
 		/* skip over the weight in the source... */
@@ -1266,7 +1266,7 @@ Initialize(Widget ref_w, Widget w, Arg *args, Cardinal *num_args)
     tpd->cellHeight = tw->term.heightInc;
     tpd->ascent = tw->term.ascent;
     tpd->windowMapped = False ;
-    time( &tpd->creationTime) ;         
+    time( &tpd->creationTime) ;
     if (tw->term.pointerBlank) tpd->pointerFirst = True ;
 
     /* multi-byte specific fields...
@@ -1304,7 +1304,7 @@ Initialize(Widget ref_w, Widget w, Arg *args, Cardinal *num_args)
 	/* default to mod1... */
 	tpd->metaMask = Mod1Mask;
     }
-	    
+
     (void) XFree(keyboardMapping);
     (void) XFreeModifiermap(modifierMapping);
 
@@ -1317,7 +1317,7 @@ Initialize(Widget ref_w, Widget w, Arg *args, Cardinal *num_args)
     (void) XtAddEventHandler(w,
 	    (EventMask) 0,
 	    True, handleNonMaskableEvents, (Opaque) NULL);
-    { 
+    {
         Widget sw ;
 
         for (sw = w; !XtIsShell(sw); sw = XtParent(sw))
@@ -1335,7 +1335,7 @@ Initialize(Widget ref_w, Widget w, Arg *args, Cardinal *num_args)
 
     tw->term.log_on = False ;
     if (tw->term.logging) {
-       _DtTermPrimStartLog(tw) ;
+       _DtTermPrimStartLog((struct _WidgetRec *)tw) ;
      }
 
     Debug('T', timeStamp("TermPrim Initialize() finished"));
@@ -1391,7 +1391,7 @@ InitializeVerticalScrollBar(Widget w, Boolean initCallbacks)
 	 */
 	if (tpd->useHistoryBuffer) {
 #define	NO_SCROLL_REGION_HISTORY_SCROLL
-#ifdef	NO_SCROLL_REGION_HISTORY_SCROLL 
+#ifdef	NO_SCROLL_REGION_HISTORY_SCROLL
 	    tw->term.verticalScrollBarMaximum = tw->term.rows;
 	    if ((tpd->scrollLockTopRow <= 0) &&
 		    (tpd->scrollLockBottomRow >= (tw->term.rows - 1))) {
@@ -1429,7 +1429,7 @@ InitializeVerticalScrollBar(Widget w, Boolean initCallbacks)
 	tw->term.verticalScrollBarPageIncrement =
 		tw->term.verticalScrollBarSliderSize;
 
-#ifdef	NO_SCROLL_REGION_HISTORY_SCROLL 
+#ifdef	NO_SCROLL_REGION_HISTORY_SCROLL
 	tw->term.verticalScrollBarValue = tpd->topRow;
 	if (tpd->useHistoryBuffer && (tpd->scrollLockTopRow <= 0) &&
 		(tpd->scrollLockBottomRow >= (tw->term.rows - 1))) {
@@ -1545,18 +1545,18 @@ InitOrResizeTermBuffer(Widget w)
 	     * data from the active buffer into it (if necessary) without
 	     * loosing any data...
 	     */
-	    
+
 	    if ((newHistoryBufferRows > tpd->historyBufferRows) ||
 		(newColumns != tw->term.columns))
 	    {
 		reqRows    = newHistoryBufferRows;
 		reqColumns = newColumns;
-	    
+
 		_DtTermPrimBufferResizeBuffer(&tpd->historyBuffer, &reqRows,
                                               &reqColumns);
 
-		if ((reqColumns < newColumns) || 
-                    (reqRows < newHistoryBufferRows)) 
+		if ((reqColumns < newColumns) ||
+                    (reqRows < newHistoryBufferRows))
 		{
 		    /*
 		    ** we ran out of memory when we tried to resize the
@@ -1564,7 +1564,7 @@ InitOrResizeTermBuffer(Widget w)
 		    */
 		    newColumns           = reqColumns;
 		    newHistoryBufferRows = reqRows;
-		    
+
 		    /*
 		    ** we ran out of memory, no need try and resize the
 		    ** term buffer
@@ -1590,7 +1590,7 @@ InitOrResizeTermBuffer(Widget w)
 		    {
 			linesNeeded = tpd->cursorRow;
 		    }
-		    
+
 		    historyLinesNeeded = linesNeeded - (newHistoryBufferRows -
 				                       tpd->lastUsedHistoryRow);
 
@@ -1609,13 +1609,13 @@ InitOrResizeTermBuffer(Widget w)
 			short length;
 			termChar *overflowChars;
 			short overflowCount;
-			
+
 			/* get the line from the active buffer... */
 			length = _DtTermPrimBufferGetLineLength(tpd->termBuffer,
 								i1);
 			c1 = _DtTermPrimBufferGetCharacterPointer(tpd->termBuffer,
 								  i1, 0);
-			
+
 			/* stuff it into the history buffer... */
 			(void) _DtTermPrimBufferSetLineWidth(tpd->historyBuffer,
 							     tpd->lastUsedHistoryRow,
@@ -1629,7 +1629,7 @@ InitOrResizeTermBuffer(Widget w)
 			(void) tpd->lastUsedHistoryRow++;
 			(void) XtFree((char *) overflowChars);
 		    }
-		    
+
 		    /* scroll up the active buffer... */
 		    if (linesNeeded > 0) {
 			(void) _DtTermPrimBufferInsertLineFromTB(tpd->termBuffer,
@@ -1646,10 +1646,10 @@ InitOrResizeTermBuffer(Widget w)
 		{
 		    reqRows    = newBufferRows;
 		    reqColumns = newColumns;
-	    
+
 		    _DtTermPrimBufferResizeBuffer(&tpd->termBuffer, &reqRows,
 						  &reqColumns);
-		    if ((reqColumns < newColumns) || (reqRows < newBufferRows)) 
+		    if ((reqColumns < newColumns) || (reqRows < newBufferRows))
 		    {
 			/*
 			** we ran out of memory, resize the history buffer
@@ -1658,7 +1658,7 @@ InitOrResizeTermBuffer(Widget w)
 			*/
 			newColumns = reqColumns;
 			reqRows    = newHistoryBufferRows;
-			
+
 			_DtTermPrimBufferResizeBuffer(&tpd->historyBuffer,
 						      &reqRows, &reqColumns);
 			newBufferRows = reqRows;
@@ -1694,7 +1694,7 @@ InitOrResizeTermBuffer(Widget w)
 	    (void) memset(tpd->scrollRefreshRows, '\0', newBufferRows *
 			  sizeof(Boolean));
 	}
-	
+
 	/* we got this far because we changed the buffer size.  We
 	 * will have to update the winsize structure...
 	 */
@@ -1746,7 +1746,7 @@ InitOrResizeTermBuffer(Widget w)
 
 	/* calculate the buffer ratio from bufferRows and rows... */
 	tpd->bufferRowRatio = (100 * tpd->bufferRows) / tw->term.rows;
-	    
+
 	if (tpd->useHistoryBuffer) {
 	    /* split up the buffer between the active and history buffers...
 	     */
@@ -1807,7 +1807,7 @@ InitOrResizeTermBuffer(Widget w)
     /*
     ** Resize (or creation) is complete, now update the relevant
     ** information.
-    ** 
+    **
     ** reset scroll lock...
     */
     tpd->scrollLockMode = SCROLL_LOCKoff;
@@ -1817,9 +1817,9 @@ InitOrResizeTermBuffer(Widget w)
     /* set the rows and columns for the terminal... */
     if ((tw->term.pty >= 0) && (updateWindowSize)) {
 	(void) _DtTermPrimPtySetWindowSize(tw->term.pty,
-		   newColumns * tw->term.widthInc + 
+		   newColumns * tw->term.widthInc +
 		   (2 * (tw->primitive.shadow_thickness +
-			 tw->primitive.highlight_thickness + 
+			 tw->primitive.highlight_thickness +
 			 tw->term.marginWidth)),
 		   newRows * tw->term.heightInc +
 		   (2 * (tw->primitive.shadow_thickness +
@@ -1836,7 +1836,7 @@ InitOrResizeTermBuffer(Widget w)
 
     _DtTermPrimSelectResize(w) ;
 }
-    
+
 static void
 Resize(Widget w)
 {
@@ -1882,7 +1882,7 @@ Redisplay(Widget w, XEvent *event, Region region)
 	    _DtTermPrimCursorOn(w);
 
 	/* Envelop our superclass expose method */
-	(*(xmPrimitiveClassRec.core_class.expose)) (w, event, region);	
+	(*(xmPrimitiveClassRec.core_class.expose)) (w, event, region);
     }
 }
 
@@ -1925,7 +1925,7 @@ handleNonMaskableEvents(Widget w, XtPointer eventData, XEvent *event,
 
 	/* reinstall the pty input select... */
 	(void) _DtTermPrimStartOrStopPtyInput(w);
-	    
+
 	/* free the old buffer... */
 	if (buffer) {
 	    (void) XtFree((char *) buffer);
@@ -2035,7 +2035,7 @@ InvokeTerminationCallback(Widget w, pid_t pid, int *stat_loc)
     DtTermSubprocessTerminationCallbackStruct cb;
 
     (void) memset(&cb, '\0', sizeof(cb));
-    cb.reason = DtCR_TERM_SUBPROCESS_TERMINATION; 
+    cb.reason = DtCR_TERM_SUBPROCESS_TERMINATION;
     cb.event = (XEvent *) 0;
     cb.pid = pid;
     cb.status = *stat_loc;
@@ -2212,10 +2212,10 @@ SetValues(Widget cur_w, Widget ref_w, Widget w, ArgList args,
 ** Input:
 **    oldEnv   - pointer to a null terminated list of env strings
 **    mergeEnv - pointer to a null terminated list of env strings to merge
-** 
+**
 ** Return:
 **    a pointer to a new list of environment strings
-** 
+**
 **    It is the calling function's responsibility to free the memory
 **    allocated for the new list of strings.
 **
@@ -2239,23 +2239,23 @@ _mergeEnv
     int    numNew;
     int    numReplace;
     int   *mergeIdx;
-    
+
     /*
     ** count the number of new environment strings
     */
     for (numMerge = 0; mergeEnv[numMerge]; numMerge++)
 	;
-    
+
     /*
     ** create and initialize a list of indexs for each of the new strings
     ** (assume they will all be appended (idx == -1) and adjust later)...
     */
     mergeIdx = (int *) XtMalloc(numMerge * sizeof(int));
-    for (i1 = 0; i1 < numMerge; i1++) 
+    for (i1 = 0; i1 < numMerge; i1++)
     {
 	mergeIdx[i1] = -1;
     }
-    
+
     /*
     ** count the number of strings in old environment, and see how many
     ** of the merge strings match old strings
@@ -2266,7 +2266,7 @@ _mergeEnv
 	/*
 	** how many old strings have to be replaced?
 	*/
-	if (numReplace < numMerge) 
+	if (numReplace < numMerge)
 	{
 	    for (i1 = 0; i1 < numMerge; i1++)
 	    {
@@ -2274,7 +2274,7 @@ _mergeEnv
 		{
 		    char *idx;
 		    idx = strchr(mergeEnv[i1], '=');
-		    
+
 		    if (strncmp(mergeEnv[i1], oldEnv[numOld],
 				idx - mergeEnv[i1] + 1) == 0)
 		    {
@@ -2291,7 +2291,7 @@ _mergeEnv
 	}
     }
     numNew = numOld + numMerge - numReplace;
-    
+
     /*
     ** make room for the appended strings...
     **
@@ -2314,7 +2314,7 @@ _mergeEnv
     */
     memcpy(newEnv, oldEnv, numOld * sizeof(char *));
     newEnv[numNew] = (char *) NULL;
-    
+
     /*
     ** now merge in the merge strings, the merge string will either replace
     ** the existing string (mergeIdx >= 0) or be appended to the list
@@ -2339,9 +2339,9 @@ _mergeEnv
 	    newEnv[mergeIdx[i1]] = mergeEnv[i1];
 	}
     }
-    
+
     XtFree((char *)mergeIdx);
-    
+
     return(newEnv);
 }
 
@@ -2452,7 +2452,7 @@ Realize(Widget w, XtValueMask *p_valueMask, XSetWindowAttributes *attributes)
 	    (void) _DtTermPrimWarningDialog(w, "unable to get pty");
 	}
 
-	/* this is the Spec1170 way to do this.  We probably could 
+	/* this is the Spec1170 way to do this.  We probably could
 	   consolidate the various _DtTermPrimGetPtys at this point,
 	   but that's Truth & Beauty. */
 	if (fcntl(tw->term.pty, F_SETFL, O_NONBLOCK |
@@ -2461,7 +2461,7 @@ Realize(Widget w, XtValueMask *p_valueMask, XSetWindowAttributes *attributes)
 	    XmeWarning(w, "unable to set non-blocking on pty");
 
 	    /* popup a warning dialog... */
-	    (void) _DtTermPrimWarningDialog(w, 
+	    (void) _DtTermPrimWarningDialog(w,
 				       "unable to set non-blocking on pty");
 	}
 
@@ -2476,9 +2476,9 @@ Realize(Widget w, XtValueMask *p_valueMask, XSetWindowAttributes *attributes)
      */
     if (tw->term.pty >= 0) {
 	(void) _DtTermPrimPtySetWindowSize(tw->term.pty,
-		   tw->term.columns * tw->term.widthInc + 
+		   tw->term.columns * tw->term.widthInc +
 		   (2 * (tw->primitive.shadow_thickness +
-			 tw->primitive.highlight_thickness + 
+			 tw->primitive.highlight_thickness +
 			 tw->term.marginWidth)),
 		   tw->term.rows * tw->term.heightInc +
 		   (2 * (tw->primitive.shadow_thickness +
@@ -2520,27 +2520,31 @@ Realize(Widget w, XtValueMask *p_valueMask, XSetWindowAttributes *attributes)
 
 	i1 = 0;
 #ifdef	SETENV_LINES_AND_COLS
-	(void) sprintf(buffer, "LINES=%d", tw->term.rows);
-	newEnvStrings[i1] = XtMalloc(strlen(buffer) + 1);
-	(void) strcpy(newEnvStrings[i1++], buffer);
+	int env_size;
+	snprintf(buffer, BUFSIZ, "LINES=%d", tw->term.rows);
+	env_size = strlen(buffer) + 1;
+	newEnvStrings[i1] = XtMalloc(env_size);
+	strlcpy(newEnvStrings[i1++], buffer, env_size);
 
-	(void) sprintf(buffer, "COLUMNS=%d", tw->term.columns);
-	newEnvStrings[i1] = XtMalloc(strlen(buffer) + 1);
-	(void) strcpy(newEnvStrings[i1++], buffer);
+	snprintf(buffer, BUFSIZ, "COLUMNS=%d", tw->term.columns);
+
+	env_size = strlen(buffer) + 1;
+	newEnvStrings[i1] = XtMalloc(env_size);
+	strlcpy(newEnvStrings[i1++], buffer, env_size);
 #endif	/* SETENV_LINES_AND_COLS */
 
 	if (tw->term.termName && *tw->term.termName)
 	{
 	    char *fmt = "TERM=%s";
 
-	    newEnvStrings[i1] =
-	      XtMalloc(strlen(tw->term.termName) + strlen(fmt) + 1);
-	    (void) sprintf(newEnvStrings[i1], fmt, tw->term.termName);
+	    int str_size = strlen(tw->term.termName) + strlen(fmt) + 1;
+	    newEnvStrings[i1] = XtMalloc(str_size);
+	    (void) snprintf(newEnvStrings[i1], str_size, fmt, tw->term.termName);
 	    i1++;
 	}
 	/* null term the list of new env strings... */
 	newEnvStrings[i1] = (char *) 0;
-	
+
 	environ = _mergeEnv(oldEnv, newEnvStrings);
 
 	tw->term.subprocessPid = _DtTermPrimSubprocExec(w,
@@ -2591,7 +2595,7 @@ Destroy(Widget w)
     DtTermPrimitiveWidget tw = (DtTermPrimitiveWidget) w;
 
     /* remove our handlers on our shell widget... */
-    { 
+    {
         Widget sw ;
 
         for (sw = w; !XtIsShell(sw); sw = XtParent(sw))
@@ -2664,7 +2668,7 @@ Destroy(Widget w)
 
     /* flush the log file */
     if (tw->term.logging ) {
-      _DtTermPrimCloseLog(tw) ;
+      _DtTermPrimCloseLog((struct _WidgetRec *)tw) ;
      }
 
     if (tw->term.boldFont) {
@@ -2746,7 +2750,7 @@ Destroy(Widget w)
 
         if (tw->term.ptyAllocate && tw->term.ptySlaveName)
                (void) XtFree((char *)tw->term.ptySlaveName);
-         
+
 
         if (tw->term.tpd->context)
                  (void) XtFree((char *)tw->term.tpd->context);
@@ -2786,7 +2790,7 @@ _DtTermPrimActionEnter(Widget w, XEvent *event,
 	_DtTermPrimCursorChangeFocus(w);
     }
 
-    if ( tw->term.pointerBlank ) 
+    if ( tw->term.pointerBlank )
 	_DtTermPrimPointerFreeze((Widget)tw, False);
 
     /* update the caps lock flag... */
@@ -2825,7 +2829,7 @@ _DtTermPrimActionLeave(Widget w, XEvent *event,
 	_DtTermPrimCursorChangeFocus(w);
     }
 
-    if ( tw->term.pointerBlank ) 
+    if ( tw->term.pointerBlank )
 	_DtTermPrimPointerFreeze((Widget)tw, True);
 
     /* update the caps lock flag... */
@@ -2905,7 +2909,7 @@ readPty(XtPointer client_data, int *source, XtInputId *id)
 	    }
 	}
     }
-	
+
     if (len > 0) {
         if (!tpd->windowMapped && tw->term.mapOnOutput) {
             /*
@@ -2928,7 +2932,7 @@ readPty(XtPointer client_data, int *source, XtInputId *id)
                 XtMapWidget(sw);
             }
         }
- 
+
         if (tw->term.log_on) {
             _DtTermPrimWriteLog(tw, buffer, len) ;
         }
@@ -3036,7 +3040,7 @@ _DtTermPrimLoopBackData(Widget w, char *data, int dataLength)
      * on...
      */
 }
-    
+
 void
 DtTermDisplaySend
 (
@@ -3063,13 +3067,13 @@ writePty(XtPointer client_data, int *source, XtInputId *id)
     DtTermPrimData tpd = tw->term.tpd;
 
     Debug('o', fprintf(stderr, ">>writePty() starting\n"));
-    
-    /* 
+
+    /*
     ** write some text from list of pending text chunks
     */
     _DtTermPrimPendingTextWrite(tpd->pendingWrite, tw->term.pty);
 
-    /* 
+    /*
     ** turn off the write select as appropriate
     */
     _DtTermPrimStartOrStopPtyOutput((Widget)client_data);
@@ -3085,7 +3089,7 @@ _DtTermPrimActionKeyRelease(Widget w, XEvent *event, String *params,
     DtTermPrimData tpd = tw->term.tpd;
     XKeyEvent *keyEvent = (XKeyEvent *) event;
     int i;
-    
+
     Debug('i', fprintf(stderr, ">>_DtTermPrimActionKeyRelease() starting\n"));
     if (keyEvent->type != KeyRelease) {
 	(void) fprintf(stderr,
@@ -3138,7 +3142,7 @@ _DtTermPrimActionKeyInput(Widget w, XEvent *event, String *params,
        keyEvent->state &= ~tpd->metaMask;
        synEscape = True ;
      }
-       
+
     /* check for caps lock... */
     for (i = 0; i < tpd->numCapsLockKeyCodes; i++) {
 	if (tpd->capsLockKeyCodes[i] == keyEvent->keycode) {
@@ -3174,7 +3178,7 @@ _DtTermPrimActionKeyInput(Widget w, XEvent *event, String *params,
     }
 #endif	/* XOR_CAPS_LOCK */
 
-        
+
     if ((nbytes > 0) && (tw->term.inputVerifyCallback)) {
 	DtTermInputVerifyCallbackStruct cb;
 
@@ -3203,13 +3207,13 @@ _DtTermPrimActionKeyInput(Widget w, XEvent *event, String *params,
 		    tpd->cursorColumn)) {
 	    _DtTermPrimBell(w);
 	}
-		
+
         /* synthesize escape unless it was CR or Vertical Tab */
-        if (synEscape && *string != '\r' && *string != 0x0B) 
+        if (synEscape && *string != '\r' && *string != 0x0B)
             (void) _DtTermPrimSendInput(w, (unsigned char *) "\033", 1);
-            
+
         /* for pointer blanking                               */
-        if (tw->term.pointerBlank && *string != '\r' && *string != 0x0B) 
+        if (tw->term.pointerBlank && *string != '\r' && *string != 0x0B)
             _DtTermPrimPointerOff((Widget)tw,(XtIntervalId *)NULL) ;
 
 	for (end = string; nbytes > 0; )  {
@@ -3362,7 +3366,7 @@ KeyTranslator
     /* and reinstall the Motif translator for the next widget/event... */
     (void) XtSetKeyTranslator(display, (XtKeyProc) XmTranslateKey);
 }
-    
+
 /*ARGSUSED*/
 static void
 handleKeyEvents(Widget w, XtPointer closure, XEvent *event, Boolean *cont)
@@ -3545,7 +3549,7 @@ _DtTermPrimStartOrStopPtyInput(Widget w)
 
     if (inputOn && !tpd->ptyInputId && (tw->term.pty >= 0)) {
 	/* turn it on... */
-	tpd->ptyInputId = 
+	tpd->ptyInputId =
 		XtAppAddInput(XtWidgetToApplicationContext((Widget) tw),
 		tw->term.pty, (XtPointer) XtInputReadMask, readPty,
                 (Widget) tw);
@@ -3567,25 +3571,25 @@ _DtTermPrimStartOrStopPtyOutput(Widget w)
 
     Debug('o', fprintf(stderr, ">>_StartOrStopPtyOutput() starting\n"));
     /*
-    ** This function will either turn on or turn off the 
+    ** This function will either turn on or turn off the
     ** pty write selector depending whether any text is waiting
     ** to be written.
     */
     if (TextIsPending(tpd->pendingWrite))
-    {   
+    {
         if (tpd->ptyOutputId == 0)
         {
             /*
             ** turn it on...
             */
             tpd->ptyOutputId = XtAppAddInput(XtWidgetToApplicationContext(w),
-                                            tw->term.pty, 
+                                            tw->term.pty,
                                             (XtPointer) XtInputWriteMask,
                                             writePty, w);
 
             Debug('o', fprintf(stderr, "    adding pty write select\n"));
         }
-    } 
+    }
     else if (tpd->ptyOutputId != 0)
     {
         /*
@@ -3748,12 +3752,14 @@ _DtTermPrimPutEnv(char *c1, char *c2)
 {
     char buffer[BUFSIZ];
     char *c;
+    int c_size;
 
-    (void) strcpy(buffer, c1);
-    (void) strcat(buffer, c2);
-    c = XtMalloc(strlen(buffer) + 1);
-    (void) strcpy(c, buffer);
-    (void) putenv(c);
+    strlcpy(buffer, c1, BUFSIZ);
+    strlcat(buffer, c2, BUFSIZ);
+    c_size = strlen(buffer) + 1;
+    c = XtMalloc(c_size);
+    strlcpy(c, buffer, c_size);
+    putenv(c);
 }
 
 
@@ -3843,10 +3849,10 @@ PreeditDelete(
     termChar *retchar;
 
     /*
-    ** chg_first to chg_length in the preedit call_data 
-    ** structure indicates what should be deleted out of 
-    ** the preedit buffer, but this is terms of characters 
-    ** not bytes. We have stored the byte value in the 
+    ** chg_first to chg_length in the preedit call_data
+    ** structure indicates what should be deleted out of
+    ** the preedit buffer, but this is terms of characters
+    ** not bytes. We have stored the byte value in the
     ** term data structure, so we use that instead.
     */
     if (call_data->chg_length && PreLen(tw)) {
@@ -3859,7 +3865,7 @@ PreeditDelete(
 	/*
 	 ** We may want to consider freeing retcount @ retchar
 	 */
-	
+
 	/*
 	 ** Refresh the text buffer -
 	 ** We must refresh to the rest of the line, because the
@@ -3890,20 +3896,20 @@ PreeditHighlight(
 	  case XIMTertiary:
 	    /* clear any existing highlight first */
 	    selectInfo->ownPrimary = False;
-	    _DtTermPrimRenderRefreshTextLinear((Widget)tw, 
+	    _DtTermPrimRenderRefreshTextLinear((Widget)tw,
 					       selectInfo->begin,
 					       selectInfo->end - 1);
 	    selectInfo->ownPrimary =True;
 	    selectInfo->begin = rowColToPos(tw, PreRow(tw), PreColumn(tw));
 	    selectInfo->end = selectInfo->begin + PreLen(tw);
-	    _DtTermPrimRenderRefreshTextLinear((Widget)tw, 
+	    _DtTermPrimRenderRefreshTextLinear((Widget)tw,
 					       selectInfo->begin,
 					       selectInfo->end - 1);
 	    break;
 	  default:
 	    /* no highlight set, clear */
 	    selectInfo->ownPrimary = False;
-	    _DtTermPrimRenderRefreshTextLinear((Widget)tw, 
+	    _DtTermPrimRenderRefreshTextLinear((Widget)tw,
 					       selectInfo->begin,
 					       selectInfo->end - 1);
 	}
@@ -3954,7 +3960,7 @@ PreeditDraw(
 	wcs = call_data->text->string.wide_char;
 	len = wcslen(wcs) * sizeof(wchar_t);
 	mb = (unsigned char *)XtMalloc(len);
-	
+
 	/* check for invalid string */
 	if (wcstombs((char *)mb, wcs, len) == -1)
 	    return;
@@ -3964,7 +3970,7 @@ PreeditDraw(
 
     /*
     ** First we must destroy the previous contents of
-    ** the preedit buffer, if any, before we redraw 
+    ** the preedit buffer, if any, before we redraw
     ** the new one.
     */
     PreeditDelete(tw, call_data);
@@ -4058,16 +4064,16 @@ PreeditCaret(
 	_DtTermPrimCursorUpdate((Widget)tw);
 	_DtTermPrimCursorOn((Widget)tw);
 	/*
-	** refresh highlight (if any) because cursor 
+	** refresh highlight (if any) because cursor
 	** movement hoses it up
 	*/
-	_DtTermPrimRenderRefreshTextLinear((Widget)tw, 
+	_DtTermPrimRenderRefreshTextLinear((Widget)tw,
 					   selectInfo->begin,
 					   selectInfo->end - 1);
     }
 }
 
-static void 
+static void
 setThickness(
         Widget widget,
         int offset,
