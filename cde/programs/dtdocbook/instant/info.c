@@ -25,19 +25,19 @@
  *  All rights reserved.
  */
 /*
- * Copyright (c) 1994  
- * Open Software Foundation, Inc. 
- *  
- * Permission is hereby granted to use, copy, modify and freely distribute 
- * the software in this file and its documentation for any purpose without 
- * fee, provided that the above copyright notice appears in all copies and 
- * that both the copyright notice and this permission notice appear in 
- * supporting documentation.  Further, provided that the name of Open 
- * Software Foundation, Inc. ("OSF") not be used in advertising or 
- * publicity pertaining to distribution of the software without prior 
- * written permission from OSF.  OSF makes no representations about the 
- * suitability of this software for any purpose.  It is provided "as is" 
- * without express or implied warranty. 
+ * Copyright (c) 1994
+ * Open Software Foundation, Inc.
+ *
+ * Permission is hereby granted to use, copy, modify and freely distribute
+ * the software in this file and its documentation for any purpose without
+ * fee, provided that the above copyright notice appears in all copies and
+ * that both the copyright notice and this permission notice appear in
+ * supporting documentation.  Further, provided that the name of Open
+ * Software Foundation, Inc. ("OSF") not be used in advertising or
+ * publicity pertaining to distribution of the software without prior
+ * written permission from OSF.  OSF makes no representations about the
+ * suitability of this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
  */
 /* ________________________________________________________________________
  *
@@ -55,8 +55,7 @@
  */
 
 #ifndef lint
-static char *RCSid =
-  "$XConsortium: info.c /main/3 1996/06/19 17:13:13 drk $";
+static char *RCSid = "$XConsortium: info.c /main/3 1996/06/19 17:13:13 drk $";
 #endif
 
 #include <stdio.h>
@@ -76,42 +75,38 @@ static char *RCSid =
  *  Arguments:
  *	Pointer to element structure of the node to print.
  */
-static void
-print_summ(
-    Element_t	*e
-)
-{
-    int i, n, dsize;
-    char *hfmt="%-18.18s %4s %5s %4s %4s %s\n";
-    char *fmt ="%-18.18s %4d %5d %4d %4d %s\n";
+static void print_summ(Element_t *e) {
+        int i, n, dsize;
+        char *hfmt = "%-18.18s %4s %5s %4s %4s %s\n";
+        char *fmt = "%-18.18s %4d %5d %4d %4d %s\n";
 
-    if (e == NULL) {
-	fprintf(outfp, hfmt, "Element", "Att", "Data", "Chd", "Dep", "Parent");
-	return;
-    }
-    for (i=0,n=0; i<e->ncont; i++) if (IsContElem(e,i)) n++;
-    for (i=0,dsize=0; i<e->ncont; i++)
-	if (IsContElem(e,i)) dsize += strlen(e->cont[i].ch.data);
-    fprintf(outfp, fmt, e->gi, e->natts, dsize, n, e->depth,
-	e->parent ? e->parent->gi : "-");
+        if (e == NULL) {
+                fprintf(outfp, hfmt, "Element", "Att", "Data", "Chd", "Dep",
+                        "Parent");
+                return;
+        }
+        for (i = 0, n = 0; i < e->ncont; i++)
+                if (IsContElem(e, i))
+                        n++;
+        for (i = 0, dsize = 0; i < e->ncont; i++)
+                if (IsContElem(e, i))
+                        dsize += strlen(e->cont[i].ch.data);
+        fprintf(outfp, fmt, e->gi, e->natts, dsize, n, e->depth,
+                e->parent ? e->parent->gi : "-");
 
-    for (i=0; i<e->natts; i++) {
-	fprintf(outfp, "%45d: %s = %s\n", i, e->atts[i].name,
-	    e->atts[i].sval ? e->atts[i].sval : "empty");
-    }
+        for (i = 0; i < e->natts; i++) {
+                fprintf(outfp, "%45d: %s = %s\n", i, e->atts[i].name,
+                        e->atts[i].sval ? e->atts[i].sval : "empty");
+        }
 }
 
 /*  Descend the tree, calling processing routine.
  *  Arguments:
  *	Pointer to element structure at top of tree to traverse.
  */
-void
-PrintElemSummary(
-    Element_t	*e
-)
-{
-    print_summ(0);
-    DescendTree(e, print_summ, 0, 0, 0);
+void PrintElemSummary(Element_t *e) {
+        print_summ(0);
+        DescendTree(e, print_summ, 0, 0, 0);
 }
 
 /* ______________________________________________________________________ */
@@ -123,30 +118,22 @@ PrintElemSummary(
  *  Arguments:
  *	Pointer to element structure of the node to print.
  */
-static void
-print_context(
-    Element_t	*e
-)
-{
-    char buf[LINESIZE];
+static void print_context(Element_t *e) {
+        char buf[LINESIZE];
 
-    fprintf(outfp, "%-22s %s\n", e->gi, FindContext(e, 10, buf));
+        fprintf(outfp, "%-22s %s\n", e->gi, FindContext(e, 10, buf));
 }
 
 /*  Descend the tree, calling processing routine.
  *  Arguments:
  *	Pointer to element structure at top of tree to traverse.
  */
-void
-PrintContext(
-    Element_t	*e
-)
-{
-    fprintf(outfp, "%-22s %s\n", "Element", "Context");
-    fprintf(outfp, "%-22s %s\n", "---------------", "-----------");
-    DescendTree(e, print_context, 0, 0, 0);
+void PrintContext(Element_t *e) {
+        fprintf(outfp, "%-22s %s\n", "Element", "Context");
+        fprintf(outfp, "%-22s %s\n", "---------------", "-----------");
+        DescendTree(e, print_context, 0, 0, 0);
 
-    putc(NL, outfp);
+        putc(NL, outfp);
 }
 
 /* ______________________________________________________________________ */
@@ -158,29 +145,26 @@ PrintContext(
  *  Arguments:
  *	Pointer to element structure of the node to print.
  */
-static void
-print_indent(
-    Element_t	*e
-)
-{
-    int		i, ne, nd;
-    for(i=0; i<e->depth; i++) fputs(".  ", outfp);
-    for(i=0,ne=0; i<e->ncont; i++) if (IsContElem(e,i)) ne++;
-    for(i=0,nd=0; i<e->ncont; i++) if IsContData(e,i) nd++;
-    fprintf(outfp, "%s  (%d,%d)\n", e->gi, ne, nd);
+static void print_indent(Element_t *e) {
+        int i, ne, nd;
+        for (i = 0; i < e->depth; i++)
+                fputs(".  ", outfp);
+        for (i = 0, ne = 0; i < e->ncont; i++)
+                if (IsContElem(e, i))
+                        ne++;
+        for (i = 0, nd = 0; i < e->ncont; i++)
+                if
+                        IsContData(e, i) nd++;
+        fprintf(outfp, "%s  (%d,%d)\n", e->gi, ne, nd);
 }
 
 /*  Descend the tree, calling processing routine.
  *  Arguments:
  *	Pointer to element structure at top of tree to traverse.
  */
-void
-PrintElemTree(
-    Element_t	*e
-)
-{
-    DescendTree(e, print_indent, 0, 0, 0);
-    putc(NL, outfp);
+void PrintElemTree(Element_t *e) {
+        DescendTree(e, print_indent, 0, 0, 0);
+        putc(NL, outfp);
 }
 
 /* ______________________________________________________________________ */
@@ -194,20 +178,16 @@ PrintElemTree(
  *	Pointer to the total amount of content data.
  *	Pointer to the maximum depth of tree.
  */
-static void
-acc_tots(
-    Element_t	*e,
-    int		*tot_el,
-    int		*tot_data,
-    int		*max_depth
-)
-{
-    int		i;
-    for(i=0; i<e->necont; i++)
-	acc_tots(e->econt[i], tot_el, tot_data, max_depth);
-    for (i=0; i<e->necont; i++) (*tot_el)++;
-    for (i=0; i<e->ndcont; i++) (*tot_data) += strlen(e->dcont[i]);
-    if (e->depth > (*max_depth)) *max_depth = e->depth;
+static void acc_tots(Element_t *e, int *tot_el, int *tot_data, int *max_depth) {
+        int i;
+        for (i = 0; i < e->necont; i++)
+                acc_tots(e->econt[i], tot_el, tot_data, max_depth);
+        for (i = 0; i < e->necont; i++)
+                (*tot_el)++;
+        for (i = 0; i < e->ndcont; i++)
+                (*tot_data) += strlen(e->dcont[i]);
+        if (e->depth > (*max_depth))
+                *max_depth = e->depth;
 }
 
 /*  Descend the tree (recursively), collecting the statistics.
@@ -217,59 +197,51 @@ acc_tots(
  *	Pointer to the total amount of content data.
  *	Pointer to the maximum depth of tree.
  */
-static void
-elem_usage(
-    Element_t	*e,
-    char	*name,
-    int		*n_used,
-    int		*nchars
-)
-{
-    int		i;
-    if (!strcmp(name, e->gi)) {
-	(*n_used)++;
-	for (i=0; i<e->ncont; i++)
-	    if (IsContData(e,i)) (*nchars) += strlen(ContData(e,i));
-    }
-    for(i=0; i<e->necont; i++)
-	elem_usage(e->econt[i], name, n_used, nchars);
+static void elem_usage(Element_t *e, char *name, int *n_used, int *nchars) {
+        int i;
+        if (!strcmp(name, e->gi)) {
+                (*n_used)++;
+                for (i = 0; i < e->ncont; i++)
+                        if (IsContData(e, i))
+                                (*nchars) += strlen(ContData(e, i));
+        }
+        for (i = 0; i < e->necont; i++)
+                elem_usage(e->econt[i], name, n_used, nchars);
 }
 
 /*  Descend the tree, calling processing routine.
  *  Arguments:
  *	Pointer to element structure at top of tree to traverse.
  */
-void
-PrintStats(
-    Element_t	*top
-)
-{
-    int		i, n;
-    int		dif_el=0, tot_el=0, tot_data=0, nchars, max_depth=0;
-    float	pct;
+void PrintStats(Element_t *top) {
+        int i, n;
+        int dif_el = 0, tot_el = 0, tot_data = 0, nchars, max_depth = 0;
+        float pct;
 
-    fprintf(outfp, "%-22s %s   %s\n", "Element name",    "Occurrances", "Character Content");
-    fprintf(outfp, "%-22s %s   %s\n", "---------------", "-----------", "-----------------");
+        fprintf(outfp, "%-22s %s   %s\n", "Element name", "Occurrances",
+                "Character Content");
+        fprintf(outfp, "%-22s %s   %s\n", "---------------", "-----------",
+                "-----------------");
 
-    acc_tots(top, &tot_el, &tot_data, &max_depth);
+        acc_tots(top, &tot_el, &tot_data, &max_depth);
 
-    for (i=0; i<nUsedElem; i++) {
-	n = 0;
-	nchars = 0;
-	elem_usage(top, UsedElem[i], &n, &nchars);
-	if (n > 0) {
-	    pct = 100.0 * (float)n / (float)tot_el;
-	    fprintf(outfp, "%-22s %4d  %4.1f%%   %6d  %4d\n", UsedElem[i],
-		n, pct, nchars, (nchars/n));
-	    dif_el++;
-	}
-    }
+        for (i = 0; i < nUsedElem; i++) {
+                n = 0;
+                nchars = 0;
+                elem_usage(top, UsedElem[i], &n, &nchars);
+                if (n > 0) {
+                        pct = 100.0 * (float)n / (float)tot_el;
+                        fprintf(outfp, "%-22s %4d  %4.1f%%   %6d  %4d\n",
+                                UsedElem[i], n, pct, nchars, (nchars / n));
+                        dif_el++;
+                }
+        }
 
-    fprintf(outfp, "\nTotal of %d elements used, %d different ones.\n",
-	tot_el, dif_el);
-    fprintf(outfp, "Total character data: %d.\n", tot_data);
-    fprintf(outfp, "Maximum element depth: %d.\n", max_depth);
-    putc(NL, outfp);
+        fprintf(outfp, "\nTotal of %d elements used, %d different ones.\n",
+                tot_el, dif_el);
+        fprintf(outfp, "Total character data: %d.\n", tot_data);
+        fprintf(outfp, "Maximum element depth: %d.\n", max_depth);
+        putc(NL, outfp);
 }
 
 /* ______________________________________________________________________ */
@@ -278,18 +250,15 @@ PrintStats(
  * database of IDs in documents) than humans to read.
  */
 
-void
-PrintIDList()
-{
-    ID_t	*id;
-    Element_t	*ep;
+void PrintIDList() {
+        ID_t *id;
+        Element_t *ep;
 
-    for (id=IDList; id; id=id->next) {
-	ep = id->elem;
-	fprintf(outfp, "%s:%s:%s:%d\n", id->id, ep->gi,
-		ep->infile?ep->infile:"-", ep->lineno);
-    }
+        for (id = IDList; id; id = id->next) {
+                ep = id->elem;
+                fprintf(outfp, "%s:%s:%s:%d\n", id->id, ep->gi,
+                        ep->infile ? ep->infile : "-", ep->lineno);
+        }
 }
 
 /* ______________________________________________________________________ */
-

@@ -40,40 +40,27 @@ namespace SP_NAMESPACE {
 #endif
 
 class Id : public Named {
-public:
-  Id(const StringC &);
-  void define(const Location &);
-  void addPendingRef(const Location &);
-  Boolean defined() const;
-  const Location &defLocation() const;
-  const Vector<Location> &pendingRefs() const;
-private:
-  Location defLocation_;
-  Vector<Location> pendingRefs_;
+      public:
+        Id(const StringC &);
+        void define(const Location &);
+        void addPendingRef(const Location &);
+        Boolean defined() const;
+        const Location &defLocation() const;
+        const Vector<Location> &pendingRefs() const;
+
+      private:
+        Location defLocation_;
+        Vector<Location> pendingRefs_;
 };
 
-inline
-Boolean Id::defined() const
-{
-  return !defLocation_.origin().isNull();
-}
+inline Boolean Id::defined() const { return !defLocation_.origin().isNull(); }
 
-inline
-const Location &Id::defLocation() const
-{
-  return defLocation_;
-}
+inline const Location &Id::defLocation() const { return defLocation_; }
 
-inline
-const Vector<Location> &Id::pendingRefs() const
-{
-  return pendingRefs_;
-}
+inline const Vector<Location> &Id::pendingRefs() const { return pendingRefs_; }
 
-inline
-void Id::addPendingRef(const Location &loc)
-{
-  pendingRefs_.push_back(loc);
+inline void Id::addPendingRef(const Location &loc) {
+        pendingRefs_.push_back(loc);
 }
 
 #ifdef SP_NAMESPACE

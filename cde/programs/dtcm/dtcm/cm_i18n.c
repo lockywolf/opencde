@@ -66,13 +66,13 @@ should be fixed in the future.
 #include <floatingpoint.h>
 */
 #include <locale.h>
-#include <sys/param.h>       /* for MAXPATHLEN */
+#include <sys/param.h> /* for MAXPATHLEN */
 #include <Xm/Xm.h>
 
 #include <langinfo.h>
 /* Iconv not defined for linux.  Use the EUSCompat stubs instead. */
 #if !defined(linux)
-#  include <iconv.h>
+#include <iconv.h>
 #endif
 #include <EUSCompat.h>
 
@@ -88,35 +88,29 @@ char *fontset1[2];
 char *fontset2[2];
 int use_octal = FALSE;
 
+int is_comment(char line[MAX_LINE_LEN]) {
+        char ch[2];
 
-int
-is_comment(char line[MAX_LINE_LEN])
-{
-	char ch[2];
-
-	strncpy(ch, line, 1);
-	if ( strcmp((char *)ch, COMMENT_SYMBOL) == 0 ) {
-		return 1;
-	} else {
-		return 0;
-	}
+        strncpy(ch, line, 1);
+        if (strcmp((char *)ch, COMMENT_SYMBOL) == 0) {
+                return 1;
+        } else {
+                return 0;
+        }
 }
 
+int match_locale(char *locale, char line[MAX_LINE_LEN]) {
+        char loc[MAX_LINE_LEN];
 
-int
-match_locale(char *locale, char line[MAX_LINE_LEN])
-{
-	char loc[MAX_LINE_LEN];
-
-	if ( !isalpha(line[0]) ) {
-		return 0;
-	}
-	(void) sscanf(line, "%s", loc);
-	if ( strcmp(loc, locale) == 0 ) {
-		return 1;
-	} else {
-		return 0;
-	}
+        if (!isalpha(line[0])) {
+                return 0;
+        }
+        (void)sscanf(line, "%s", loc);
+        if (strcmp(loc, locale) == 0) {
+                return 1;
+        } else {
+                return 0;
+        }
 }
 
 /*
@@ -124,222 +118,220 @@ match_locale(char *locale, char line[MAX_LINE_LEN])
  * conversion mechanism. See libDtMail/RFC/RFCMIME.C ! Have fun !
  */
 #define WORKSIZE 1024
-static void           *_i18nwork1 = NULL;
-static unsigned long  _i18nsize1 = 0;
-static int            shouldAlloc1 = ~0;
-static int	      isFirstCall = ~0;
-static iconv_t        CD = (iconv_t)-1;
-static int	      amI_932 = ~0;
+static void *_i18nwork1 = NULL;
+static unsigned long _i18nsize1 = 0;
+static int shouldAlloc1 = ~0;
+static int isFirstCall = ~0;
+static iconv_t CD = (iconv_t)-1;
+static int amI_932 = ~0;
 
 #ifdef ICONV_INBUF_CONST
-# define ICONV_INBUF_TYPE	const char **
+#define ICONV_INBUF_TYPE const char **
 #else
-# define ICONV_INBUF_TYPE	char **
+#define ICONV_INBUF_TYPE char **
 #endif
 
-void _converter_( void *from, unsigned long from_len,
-			void **to,  unsigned long *to_len )
-{
-    char          *InBuf;
-    size_t        InBytesLeft;
-    char          *OutBuf = NULL;
-    size_t        OutBytesLeft = 0;
-    size_t        _OutBytesLeft = 0;
-    size_t        iconv_ret;
-    size_t        converted_num = 0;
+void _converter_(void *from, unsigned long from_len, void **to,
+                 unsigned long *to_len) {
+        char *InBuf;
+        size_t InBytesLeft;
+        char *OutBuf = NULL;
+        size_t OutBytesLeft = 0;
+        size_t _OutBytesLeft = 0;
+        size_t iconv_ret;
+        size_t converted_num = 0;
 
-    *to = NULL;
-    *to_len = 0;
+        *to = NULL;
+        *to_len = 0;
 
-    if ( shouldAlloc1 ) {
-        /* Obtain work area */
-        _i18nwork1 = (size_t *)malloc( WORKSIZE );
-        if ( !_i18nwork1 ) {
-            _i18nwork1 = NULL;
-            return;
+        if (shouldAlloc1) {
+                /* Obtain work area */
+                _i18nwork1 = (size_t *)malloc(WORKSIZE);
+                if (!_i18nwork1) {
+                        _i18nwork1 = NULL;
+                        return;
+                }
+                _i18nsize1 = WORKSIZE;
+                shouldAlloc1 = 0;
         }
-        _i18nsize1 = WORKSIZE;
-        shouldAlloc1 = 0;
-    }
 #ifdef _AIX
-    if ( isFirstCall ) {
-	if ( ( CD = iconv_open( "IBM-eucJP", "IBM-932" ) ) == (iconv_t)-1 )
-	    return; /* no converter */
-	amI_932 = !strncasecmp( "IBM-932", nl_langinfo( CODESET ), 7 );
-	isFirstCall = 0;
-    }
+        if (isFirstCall) {
+                if ((CD = iconv_open("IBM-eucJP", "IBM-932")) == (iconv_t)-1)
+                        return; /* no converter */
+                amI_932 = !strncasecmp("IBM-932", nl_langinfo(CODESET), 7);
+                isFirstCall = 0;
+        }
 #endif /* _AIX */
 
-    if ( ( !amI_932 ) || ( CD == (iconv_t)-1 ) )
-	return;
+        if ((!amI_932) || (CD == (iconv_t)-1))
+                return;
 
-    InBuf        = (char *)from;
-    InBytesLeft  = from_len;
-    OutBytesLeft = _i18nsize1;
-    OutBuf = (char *)_i18nwork1;
+        InBuf = (char *)from;
+        InBytesLeft = from_len;
+        OutBytesLeft = _i18nsize1;
+        OutBuf = (char *)_i18nwork1;
 
-    while( 1 ) {
-	/*
-	 * InBuf
-	 *  v
-	 * +----------------------------+
-	 * | |                        | |
-	 * +----------------------------+
-	 *  <-------------------------->
-	 *          InBytesLeft
-	 *
-	 *             |
-	 *             | iconv()
-	 *             V
-	 * (_i18nwork1)
-	 * OutBuf
-	 *  v
-	 * +----------------------------+
-	 * | |                        | |
-	 * +----------------------------+
-	 *  <-------------------------->
-	 *          InBytesLeft
-	 */
+        while (1) {
+                /*
+                 * InBuf
+                 *  v
+                 * +----------------------------+
+                 * | |                        | |
+                 * +----------------------------+
+                 *  <-------------------------->
+                 *          InBytesLeft
+                 *
+                 *             |
+                 *             | iconv()
+                 *             V
+                 * (_i18nwork1)
+                 * OutBuf
+                 *  v
+                 * +----------------------------+
+                 * | |                        | |
+                 * +----------------------------+
+                 *  <-------------------------->
+                 *          InBytesLeft
+                 */
 
-	iconv_ret = iconv( CD, (ICONV_INBUF_TYPE)&InBuf, &InBytesLeft,
-                               &OutBuf, &OutBytesLeft );
-	if ( iconv_ret == 0 ) {
-	    /* iconv done
-	     *                             InBuf
-	     *                               v
-	     * +----------------------------+
-	     * |XXXXXXXXXXXXXXXXXXXXXXXXXXXX|
-	     * +----------------------------+
-	     *
-	     *                               InBytesLeft=0
-	     *
-	     * (_i18nwork1)
-	     *  |               OutBuf
-	     *  V                 v
-	     * +----------------------------+
-	     * |XXXXXXXXXXXXXXXXX| |      | |
-	     * +----------------------------+
-	     *  <---------------> <-------->
-	     *   converted_num    OutBytesLeft
-	     */
-	    converted_num = (unsigned long)((char *)OutBuf-(char *)_i18nwork1);
-	    *to = (void *)_i18nwork1;
-	    *to_len = (unsigned long)converted_num;
-	    break;
-	} else {
-	    if ( errno == E2BIG ) {
-		/* Overflow. still data is left.
-		 *               InBuf
-		 *                 v
-		 * +----------------------------+
-		 * |XXXXXXXXXXXXXX| |         | |
-		 * +----------------------------+
-		 *                 <----------->
-		 *                  InBytesLeft
-		 *
-		 * (_i18nwork1)
-		 *  |                         OutBuf
-		 *  V                          v
-		 * +----------------------------+
-		 * |XXXXXXXXXXXXXXXXXXXXXXXXXXX |
-		 * +----------------------------+
-		 *  <------------------------->
-		 *          converted_num      OutBytesLeft=?
-		 */
-		void *_p;
+                iconv_ret = iconv(CD, (ICONV_INBUF_TYPE)&InBuf, &InBytesLeft,
+                                  &OutBuf, &OutBytesLeft);
+                if (iconv_ret == 0) {
+                        /* iconv done
+                         *                             InBuf
+                         *                               v
+                         * +----------------------------+
+                         * |XXXXXXXXXXXXXXXXXXXXXXXXXXXX|
+                         * +----------------------------+
+                         *
+                         *                               InBytesLeft=0
+                         *
+                         * (_i18nwork1)
+                         *  |               OutBuf
+                         *  V                 v
+                         * +----------------------------+
+                         * |XXXXXXXXXXXXXXXXX| |      | |
+                         * +----------------------------+
+                         *  <---------------> <-------->
+                         *   converted_num    OutBytesLeft
+                         */
+                        converted_num = (unsigned long)((char *)OutBuf -
+                                                        (char *)_i18nwork1);
+                        *to = (void *)_i18nwork1;
+                        *to_len = (unsigned long)converted_num;
+                        break;
+                } else {
+                        if (errno == E2BIG) {
+                                /* Overflow. still data is left.
+                                 *               InBuf
+                                 *                 v
+                                 * +----------------------------+
+                                 * |XXXXXXXXXXXXXX| |         | |
+                                 * +----------------------------+
+                                 *                 <----------->
+                                 *                  InBytesLeft
+                                 *
+                                 * (_i18nwork1)
+                                 *  |                         OutBuf
+                                 *  V                          v
+                                 * +----------------------------+
+                                 * |XXXXXXXXXXXXXXXXXXXXXXXXXXX |
+                                 * +----------------------------+
+                                 *  <------------------------->
+                                 *          converted_num      OutBytesLeft=?
+                                 */
+                                void *_p;
 
-		/* Check how many converted already. */
+                                /* Check how many converted already. */
 
-		converted_num =
-			(unsigned long)((char *)OutBuf - (char *)_i18nwork1);
-		_i18nsize1 += WORKSIZE;
-		_p = realloc( _i18nwork1, _i18nsize1 );
-		if ( !_p ) {
-		    *to = NULL;
-		    *to_len = 0;
-		    free( _i18nwork1 );
-		    _i18nwork1 = NULL;
-		    _i18nsize1 = 0;
-		    shouldAlloc1 = ~0;
-		    break;
-		} else {
-		    _i18nwork1 = _p;
-		    OutBuf = (char *)((char*)_i18nwork1 + converted_num);
-		    OutBytesLeft += WORKSIZE;
-		}
-	    } else {
-		*to = NULL;
-		*to_len = 0;
-		break;
-	    }
-	}
-    }
+                                converted_num =
+                                    (unsigned long)((char *)OutBuf -
+                                                    (char *)_i18nwork1);
+                                _i18nsize1 += WORKSIZE;
+                                _p = realloc(_i18nwork1, _i18nsize1);
+                                if (!_p) {
+                                        *to = NULL;
+                                        *to_len = 0;
+                                        free(_i18nwork1);
+                                        _i18nwork1 = NULL;
+                                        _i18nsize1 = 0;
+                                        shouldAlloc1 = ~0;
+                                        break;
+                                } else {
+                                        _i18nwork1 = _p;
+                                        OutBuf = (char *)((char *)_i18nwork1 +
+                                                          converted_num);
+                                        OutBytesLeft += WORKSIZE;
+                                }
+                        } else {
+                                *to = NULL;
+                                *to_len = 0;
+                                break;
+                        }
+                }
+        }
 
-    /*
-     * NULL terminate
-     */
-    if ( _i18nsize1 > converted_num ) {
-	((char *)_i18nwork1)[converted_num] = '\0';
-    } else { /* _i18nsize1 == converted_num */
-	void *_p;
+        /*
+         * NULL terminate
+         */
+        if (_i18nsize1 > converted_num) {
+                ((char *)_i18nwork1)[converted_num] = '\0';
+        } else { /* _i18nsize1 == converted_num */
+                void *_p;
 
-	_i18nsize1++;
-	_p = realloc( _i18nwork1, _i18nsize1 );
+                _i18nsize1++;
+                _p = realloc(_i18nwork1, _i18nsize1);
 
-	if ( !_p ) {
-	    *to = NULL;
-	    *to_len = 0;
-	    free( _i18nwork1 );
-	    _i18nwork1 = NULL;
-	    _i18nsize1 = 0;
-	    shouldAlloc1 = ~0;
-	} else {
-	    _i18nwork1 = _p;
-	    ((char *)_i18nwork1)[converted_num] = '\0';
-	}
-    }
+                if (!_p) {
+                        *to = NULL;
+                        *to_len = 0;
+                        free(_i18nwork1);
+                        _i18nwork1 = NULL;
+                        _i18nsize1 = 0;
+                        shouldAlloc1 = ~0;
+                } else {
+                        _i18nwork1 = _p;
+                        ((char *)_i18nwork1)[converted_num] = '\0';
+                }
+        }
 }
 
 /* The following routine is specific to using FMapType 3 composite fonts
  * in postscript.  Kanji, Asian specific?
  */
-char *
-euc_to_octal(char *srcStr)
-{
-	int inKanji = FALSE;
-	char buf[64];
-	static char dstStr[512];
-	int i;
-	int len = cm_strlen(srcStr);
+char *euc_to_octal(char *srcStr) {
+        int inKanji = FALSE;
+        char buf[64];
+        static char dstStr[512];
+        int i;
+        int len = cm_strlen(srcStr);
 
 #ifdef SVR4
-	memset(dstStr, 0, sizeof(dstStr));
+        memset(dstStr, 0, sizeof(dstStr));
 #else
-	bzero(dstStr, sizeof(dstStr));
+        bzero(dstStr, sizeof(dstStr));
 #endif /* SVR4 */
-	for (i = 0; i < len; i++) {
-		if (inKanji) {
-			if (!isEUC(srcStr[i])) {
-				inKanji = FALSE;
-			}
-		}
-		else {
-			if (isEUC(srcStr[i])) {
-				inKanji = TRUE;
-			}
-		}
-		if (inKanji) {
-			snprintf(buf, 64, "\\%3.3o\\%3.3o", srcStr[i] & 0xff, srcStr[i+1] & 0xff);
-			i++;
-		}
-		else {
-			snprintf(buf, 64, "%c", srcStr[i]);
-		}
-		cm_strlcat(dstStr, buf, 512);
-	}
-	return dstStr;
+        for (i = 0; i < len; i++) {
+                if (inKanji) {
+                        if (!isEUC(srcStr[i])) {
+                                inKanji = FALSE;
+                        }
+                } else {
+                        if (isEUC(srcStr[i])) {
+                                inKanji = TRUE;
+                        }
+                }
+                if (inKanji) {
+                        snprintf(buf, 64, "\\%3.3o\\%3.3o", srcStr[i] & 0xff,
+                                 srcStr[i + 1] & 0xff);
+                        i++;
+                } else {
+                        snprintf(buf, 64, "%c", srcStr[i]);
+                }
+                cm_strlcat(dstStr, buf, 512);
+        }
+        return dstStr;
 }
-
 
 /* This routine should be in libdeskset.
  * This routine uses fconvert() to avoid locale conversion.
@@ -347,7 +339,7 @@ euc_to_octal(char *srcStr)
 /* 310 characters are the minimum needed to accommodate any double-precision
  * value + 1 null terminator.
  */
-#define DBL_SIZE  311
+#define DBL_SIZE 311
 /*
  *  Returns a null terminated formatted string.
  *  If error is encountered, such as malloc() failed, then return NULL.
@@ -355,61 +347,61 @@ euc_to_octal(char *srcStr)
  *  a static buffer declared within this function and the value of it may
  *  change.
  */
-char *
-cm_printf(double value, int decimal_pt)
-{
-	int sign = 0;
-	int deci_pt = 0;
-	int buf_cnt = 0;
-	int formatted_cnt = 0;
-	int buf_len = 0;
-	char *buf = NULL;
-	static char *formatted = NULL;
+char *cm_printf(double value, int decimal_pt) {
+        int sign = 0;
+        int deci_pt = 0;
+        int buf_cnt = 0;
+        int formatted_cnt = 0;
+        int buf_len = 0;
+        char *buf = NULL;
+        static char *formatted = NULL;
 
-	if ( formatted != NULL ) {
-		free(formatted);
-		formatted = NULL;
-	}
-	if ( (value == (double)0) && (decimal_pt == 0) ) {
-		formatted = (char *)cm_strdup("0");
-		return formatted;
-	}
-	if ( (buf = (char *)malloc(DBL_SIZE + decimal_pt)) == NULL ) {
-		return (char *)NULL;
-	}
-	int formatted_size = DBL_SIZE + decimal_pt;
-	if ( (formatted = (char *)calloc(1, formatted_size)) == NULL ) {
-		free(buf);
-		return (char *)NULL;
-	}
+        if (formatted != NULL) {
+                free(formatted);
+                formatted = NULL;
+        }
+        if ((value == (double)0) && (decimal_pt == 0)) {
+                formatted = (char *)cm_strdup("0");
+                return formatted;
+        }
+        if ((buf = (char *)malloc(DBL_SIZE + decimal_pt)) == NULL) {
+                return (char *)NULL;
+        }
+        int formatted_size = DBL_SIZE + decimal_pt;
+        if ((formatted = (char *)calloc(1, formatted_size)) == NULL) {
+                free(buf);
+                return (char *)NULL;
+        }
 #ifdef SunOS
-	fconvert(value, decimal_pt, &deci_pt, &sign, buf);
+        fconvert(value, decimal_pt, &deci_pt, &sign, buf);
 #elif defined(CSRG_BASED)
-	snprintf(buf, decimal_pt, "%f", value);
+        snprintf(buf, decimal_pt, "%f", value);
 #else
-	/* this version, available on the HP and AIX machine is not reentrant. */
+        /* this version, available on the HP and AIX machine is not reentrant.
+         */
 
-	strcpy(buf, fcvt(value, decimal_pt, &deci_pt, &sign));
+        strcpy(buf, fcvt(value, decimal_pt, &deci_pt, &sign));
 #endif
-	if ( sign ) {
-		strlcpy(formatted, "-", formatted_size);
-	}
-	buf_len = deci_pt + decimal_pt;
-	if ( deci_pt ) {
-		strncat(formatted, buf, deci_pt);
-	} else {    /* zero */
-		strlcat(formatted, "0", formatted_size);
-	}
-	if ( deci_pt == buf_len ) {
-		strlcat(formatted, "\0", formatted_size);
-		free(buf);
-		return formatted;
-	}
-	strlcat(formatted, ".", formatted_size);
-	for ( formatted_cnt = strlen(formatted), buf_cnt = deci_pt;  buf_cnt < buf_len;  buf_cnt++, formatted_cnt++ ) {
-		formatted[formatted_cnt] = buf[buf_cnt];
-	}
-	formatted[formatted_cnt] = '\0';
-	free(buf);
-	return formatted;
+        if (sign) {
+                strlcpy(formatted, "-", formatted_size);
+        }
+        buf_len = deci_pt + decimal_pt;
+        if (deci_pt) {
+                strncat(formatted, buf, deci_pt);
+        } else { /* zero */
+                strlcat(formatted, "0", formatted_size);
+        }
+        if (deci_pt == buf_len) {
+                strlcat(formatted, "\0", formatted_size);
+                free(buf);
+                return formatted;
+        }
+        strlcat(formatted, ".", formatted_size);
+        for (formatted_cnt = strlen(formatted), buf_cnt = deci_pt;
+             buf_cnt < buf_len; buf_cnt++, formatted_cnt++) {
+                formatted[formatted_cnt] = buf[buf_cnt];
+        }
+        formatted[formatted_cnt] = '\0';
+        free(buf);
+        return formatted;
 }

@@ -43,13 +43,6 @@
 #include "dtscreen.h"
 
 /*ARGSUSED*/
-void
-drawblank(perwindow *pwin)
-{
-}
+void drawblank(perwindow *pwin) {}
 
-void
-initblank(perwindow *pwin)
-{
-    XClearWindow(dsp, pwin->w);
-}
+void initblank(perwindow *pwin) { XClearWindow(dsp, pwin->w); }

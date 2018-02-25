@@ -67,10 +67,10 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#define	PROGNAME	"FILEMAN"
-#define	HOLE_SIZE_LIMIT	500
+#define PROGNAME "FILEMAN"
+#define HOLE_SIZE_LIMIT 500
 
-DtSrINT32	batch_size = 0;
+DtSrINT32 batch_size = 0;
 
 /************************/
 /*			*/
@@ -78,14 +78,12 @@ DtSrINT32	batch_size = 0;
 /*			*/
 /************************/
 /* Initialize file_header data, and write it at the beginning of a new file */
-void	init_header (FILE * fp, FILE_HEADER * flh)
-{
-    memset (flh, 0, sizeof(FILE_HEADER));
-    fseek (fp, 0L, SEEK_SET);
-    fwrite (flh, sizeof(FILE_HEADER), (size_t)1, fp);
-    return;
+void init_header(FILE *fp, FILE_HEADER *flh) {
+        memset(flh, 0, sizeof(FILE_HEADER));
+        fseek(fp, 0L, SEEK_SET);
+        fwrite(flh, sizeof(FILE_HEADER), (size_t)1, fp);
+        return;
 } /* init_header() */
-
 
 /********************************/
 /*				*/
@@ -96,25 +94,23 @@ void	init_header (FILE * fp, FILE_HEADER * flh)
  * Performs byte swap as necessary IN PASSED BUFFER.
  * Returns TRUE if successful, else FALSE.
  */
-int	fread_d99_header (FILE_HEADER *flh, FILE *fp)          
-{
-    int		i;
+int fread_d99_header(FILE_HEADER *flh, FILE *fp) {
+        int i;
 
-    errno = 0;
-    fseek (fp, 0L, SEEK_SET);
-    if (fread (flh, sizeof(FILE_HEADER), (size_t)1, fp) != 1L)
-	return FALSE;
-    NTOHL (flh->hole_count[0]);
-    NTOHL (flh->hole_count[1]);
-    for (i = 0; i < NUM_HOLES; i++) {
-	NTOHL (flh->hole_array[0][i].hole_size);
-	NTOHL (flh->hole_array[0][i].offset);
-	NTOHL (flh->hole_array[1][i].hole_size);
-	NTOHL (flh->hole_array[1][i].offset);
-    }
-    return TRUE;
-}  /* fread_d99_header() */
-
+        errno = 0;
+        fseek(fp, 0L, SEEK_SET);
+        if (fread(flh, sizeof(FILE_HEADER), (size_t)1, fp) != 1L)
+                return FALSE;
+        NTOHL(flh->hole_count[0]);
+        NTOHL(flh->hole_count[1]);
+        for (i = 0; i < NUM_HOLES; i++) {
+                NTOHL(flh->hole_array[0][i].hole_size);
+                NTOHL(flh->hole_array[0][i].offset);
+                NTOHL(flh->hole_array[1][i].hole_size);
+                NTOHL(flh->hole_array[1][i].offset);
+        }
+        return TRUE;
+} /* fread_d99_header() */
 
 /********************************/
 /*				*/
@@ -125,26 +121,24 @@ int	fread_d99_header (FILE_HEADER *flh, FILE *fp)
  * Performs byte swap as necessary IN PASSED BUFFER.
  * Returns TRUE if successful, else FALSE.
  */
-int	fwrite_d99_header (FILE_HEADER *flh, FILE *fp)
-{
-    int		i;
+int fwrite_d99_header(FILE_HEADER *flh, FILE *fp) {
+        int i;
 
-    HTONL (flh->hole_count[0]);
-    HTONL (flh->hole_count[1]);
-    for (i = 0; i < NUM_HOLES; i++) {
-	HTONL (flh->hole_array[0][i].hole_size);
-	HTONL (flh->hole_array[0][i].offset);
-	HTONL (flh->hole_array[1][i].hole_size);
-	HTONL (flh->hole_array[1][i].offset);
-    }
-    errno = 0;
-    fseek (fp, 0L, SEEK_SET);
-    if (fwrite (flh, sizeof(FILE_HEADER), (size_t)1, fp) == 1L)
-	return TRUE;
-    else
-	return FALSE;
-}  /* fwrite_d99_header() */
-
+        HTONL(flh->hole_count[0]);
+        HTONL(flh->hole_count[1]);
+        for (i = 0; i < NUM_HOLES; i++) {
+                HTONL(flh->hole_array[0][i].hole_size);
+                HTONL(flh->hole_array[0][i].offset);
+                HTONL(flh->hole_array[1][i].hole_size);
+                HTONL(flh->hole_array[1][i].offset);
+        }
+        errno = 0;
+        fseek(fp, 0L, SEEK_SET);
+        if (fwrite(flh, sizeof(FILE_HEADER), (size_t)1, fp) == 1L)
+                return TRUE;
+        else
+                return FALSE;
+} /* fwrite_d99_header() */
 
 /************************/
 /*			*/
@@ -155,115 +149,109 @@ int	fwrite_d99_header (FILE_HEADER *flh, FILE *fp)
    On success - return pointer to the FREE_SPACE_STR.
    On failure - return NULL.
 */
-FREE_SPACE_STR *find_free_space (DtSrINT32 req_size, FILE_HEADER * flh)
-{
-    static FREE_SPACE_STR space_found;
-    FREE_SPACE_STR  del_rec;
-    int             i, j, k;
-    DtSrINT32	hole_check_size;
-    float           coeff;
+FREE_SPACE_STR *find_free_space(DtSrINT32 req_size, FILE_HEADER *flh) {
+        static FREE_SPACE_STR space_found;
+        FREE_SPACE_STR del_rec;
+        int i, j, k;
+        DtSrINT32 hole_check_size;
+        float coeff;
 
+        j = -1;
+        if (req_size <= HOLE_SIZE_LIMIT) {
+                k = 0;
+                coeff = 1.1;
+        } else {
+                k = 1;
+                coeff = 1.2;
+        }
 
-    j = -1;
-    if (req_size <= HOLE_SIZE_LIMIT) {
-	k = 0;
-	coeff = 1.1;
-    }
-    else {
-	k = 1;
-	coeff = 1.2;
-    }
+        for (i = 0; i < flh->hole_count[k]; i++) {
+                if (flh->hole_array[k][i].hole_size >= req_size) {
+                        if (j < 0) {
+                                j = i;
+                        } else { /**  check if it's the smallest one of the
+                                         free space available ***/
+                                if (flh->hole_array[k][i].hole_size <
+                                    flh->hole_array[k][j].hole_size) {
+                                        j = i;
+                                }
+                        }
+                }
+        }
 
-    for (i = 0; i < flh->hole_count[k]; i++) {
-	if (flh->hole_array[k][i].hole_size >= req_size) {
-	    if (j < 0) {
-		j = i;
-	    }
-	    else {	/**  check if it's the smallest one of the
-				free space available ***/
-		if (flh->hole_array[k][i].hole_size <
-		    flh->hole_array[k][j].hole_size) {
-		    j = i;
-		}
-	    }
-	}
-    }
+        /* if big enough free space not found, return NULL */
+        if (j < 0) {
+                return NULL;
+        }
 
-    /* if big enough free space not found, return NULL */
-    if (j < 0) {
-	return NULL;
-    }
+        if (flh->hole_array[k][j].hole_size == req_size) {
+                space_found.hole_size = flh->hole_array[k][j].hole_size;
+                space_found.offset = flh->hole_array[k][j].offset;
+                /* compact the hole_array */
+                if (j == NUM_HOLES - 1) {
+                        (flh->hole_count[k])--;
+                        flh->hole_array[k][j].hole_size = 0;
+                        return &space_found;
+                }
+                for (i = j; i < (flh->hole_count[k] - 1); i++) {
+                        flh->hole_array[k][i].hole_size =
+                            flh->hole_array[k][i + 1].hole_size;
+                        flh->hole_array[k][i].offset =
+                            flh->hole_array[k][i + 1].offset;
+                }
+                (flh->hole_count[k])--;
+        } else {
+                /* Hole size CAN NOT excede global batch_size in borodin */
+                hole_check_size = (req_size * coeff < batch_size)
+                                      ? req_size * coeff
+                                      : batch_size;
+                if (hole_check_size >= flh->hole_array[k][j].hole_size) {
+                        space_found.hole_size = flh->hole_array[k][j].hole_size;
+                        space_found.offset = flh->hole_array[k][j].offset;
+                        /* compact the hole_array */
+                        if (j == NUM_HOLES - 1) {
+                                flh->hole_array[k][j].hole_size = 0;
+                        } else {
+                                for (i = j; i < (flh->hole_count[k] - 1); i++) {
+                                        flh->hole_array[k][i].hole_size =
+                                            flh->hole_array[k][i + 1].hole_size;
+                                        flh->hole_array[k][i].offset =
+                                            flh->hole_array[k][i + 1].offset;
+                                }
+                        }
+                        (flh->hole_count[k])--;
+                } else {
+                        space_found.hole_size = req_size;
+                        space_found.offset = flh->hole_array[k][j].offset;
+                        flh->hole_array[k][j].hole_size -= req_size;
+                        flh->hole_array[k][j].offset +=
+                            req_size * sizeof(DtSrINT32);
+                        if ((k == 1) && (flh->hole_array[k][j].hole_size <=
+                                         HOLE_SIZE_LIMIT)) {
+                                del_rec.hole_size =
+                                    flh->hole_array[k][j].hole_size;
+                                del_rec.offset = flh->hole_array[k][j].offset;
+                                add_free_space(&del_rec, flh);
+                                if (j == NUM_HOLES - 1) {
+                                        (flh->hole_count[k])--;
+                                        flh->hole_array[k][j].hole_size = 0;
+                                        return &space_found;
+                                }
+                                for (i = j; i < (flh->hole_count[k] - 1); i++) {
+                                        flh->hole_array[k][i].hole_size =
+                                            flh->hole_array[k][i + 1].hole_size;
+                                        flh->hole_array[k][i].offset =
+                                            flh->hole_array[k][i + 1].offset;
+                                }
+                                (flh->hole_count[k])--;
+                        }
+                }
+        }
 
-    if (flh->hole_array[k][j].hole_size == req_size) {
-	space_found.hole_size = flh->hole_array[k][j].hole_size;
-	space_found.offset = flh->hole_array[k][j].offset;
-	/* compact the hole_array */
-	if (j == NUM_HOLES - 1) {
-	    (flh->hole_count[k])--;
-	    flh->hole_array[k][j].hole_size = 0;
-	    return &space_found;
-	}
-	for (i = j; i < (flh->hole_count[k] - 1); i++) {
-	    flh->hole_array[k][i].hole_size =
-		flh->hole_array[k][i + 1].hole_size;
-	    flh->hole_array[k][i].offset =
-		flh->hole_array[k][i + 1].offset;
-	}
-	(flh->hole_count[k])--;
-    }
-    else {
-	/* Hole size CAN NOT excede global batch_size in borodin */
-	hole_check_size = (req_size * coeff < batch_size) ?
-	    req_size * coeff : batch_size;
-	if (hole_check_size >= flh->hole_array[k][j].hole_size) {
-	    space_found.hole_size = flh->hole_array[k][j].hole_size;
-	    space_found.offset = flh->hole_array[k][j].offset;
-	    /* compact the hole_array */
-	    if (j == NUM_HOLES - 1) {
-		flh->hole_array[k][j].hole_size = 0;
-	    }
-	    else {
-		for (i = j; i < (flh->hole_count[k] - 1); i++) {
-		    flh->hole_array[k][i].hole_size =
-			flh->hole_array[k][i + 1].hole_size;
-		    flh->hole_array[k][i].offset =
-			flh->hole_array[k][i + 1].offset;
-		}
-	    }
-	    (flh->hole_count[k])--;
-	}
-	else {
-	    space_found.hole_size = req_size;
-	    space_found.offset = flh->hole_array[k][j].offset;
-	    flh->hole_array[k][j].hole_size -= req_size;
-	    flh->hole_array[k][j].offset += req_size * sizeof(DtSrINT32);
-	    if ((k == 1) &&
-		(flh->hole_array[k][j].hole_size <= HOLE_SIZE_LIMIT)) {
-		del_rec.hole_size = flh->hole_array[k][j].hole_size;
-		del_rec.offset = flh->hole_array[k][j].offset;
-		add_free_space (&del_rec, flh);
-		if (j == NUM_HOLES - 1) {
-		    (flh->hole_count[k])--;
-		    flh->hole_array[k][j].hole_size = 0;
-		    return &space_found;
-		}
-		for (i = j; i < (flh->hole_count[k] - 1); i++) {
-		    flh->hole_array[k][i].hole_size =
-			flh->hole_array[k][i + 1].hole_size;
-		    flh->hole_array[k][i].offset =
-			flh->hole_array[k][i + 1].offset;
-		}
-		(flh->hole_count[k])--;
-	    }
-	}
-    }
-
-    return &space_found;
+        return &space_found;
 }
 
 /************ end of function find_free_space ******************/
-
-
 
 /************************/
 /*			*/
@@ -275,40 +263,37 @@ FREE_SPACE_STR *find_free_space (DtSrINT32 req_size, FILE_HEADER * flh)
    space is greater, than the smallest space in the hole_array.
    If yes - substitute it.
 */
-void            add_free_space (FREE_SPACE_STR * del_rec, FILE_HEADER * flh)
-{
-    int		i, j, k;
-    DtSrINT32	min_size;
+void add_free_space(FREE_SPACE_STR *del_rec, FILE_HEADER *flh) {
+        int i, j, k;
+        DtSrINT32 min_size;
 
-    if (del_rec->hole_size <= HOLE_SIZE_LIMIT) {
-	k = 0;
-    }
-    else {
-	k = 1;
-    }
-    j = flh->hole_count[k];
+        if (del_rec->hole_size <= HOLE_SIZE_LIMIT) {
+                k = 0;
+        } else {
+                k = 1;
+        }
+        j = flh->hole_count[k];
 
-    if (j < NUM_HOLES) {
-	flh->hole_array[k][j].hole_size = del_rec->hole_size;
-	flh->hole_array[k][j].offset = del_rec->offset;
-	(flh->hole_count[k])++;
-    }
-    else {
-	min_size = flh->hole_array[k][0].hole_size;
-	j = 0;
-	for (i = 1; i < NUM_HOLES; i++) {
-	    if (flh->hole_array[k][i].hole_size < min_size) {
-		min_size = flh->hole_array[k][i].hole_size;
-		j = i;
-	    }
-	}
-	if (del_rec->hole_size > flh->hole_array[k][j].hole_size) {
-	    flh->hole_array[k][j].hole_size = del_rec->hole_size;
-	    flh->hole_array[k][j].offset = del_rec->offset;
-	}
-    }
+        if (j < NUM_HOLES) {
+                flh->hole_array[k][j].hole_size = del_rec->hole_size;
+                flh->hole_array[k][j].offset = del_rec->offset;
+                (flh->hole_count[k])++;
+        } else {
+                min_size = flh->hole_array[k][0].hole_size;
+                j = 0;
+                for (i = 1; i < NUM_HOLES; i++) {
+                        if (flh->hole_array[k][i].hole_size < min_size) {
+                                min_size = flh->hole_array[k][i].hole_size;
+                                j = i;
+                        }
+                }
+                if (del_rec->hole_size > flh->hole_array[k][j].hole_size) {
+                        flh->hole_array[k][j].hole_size = del_rec->hole_size;
+                        flh->hole_array[k][j].offset = del_rec->offset;
+                }
+        }
 
-    return;
+        return;
 }
 
 /************ end of function add_free_space ******************/

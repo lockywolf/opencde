@@ -36,9 +36,9 @@
 #define _bms_h
 
 #ifdef SVR4
-#include <netdb.h>		/* MAXHOSTNAMELEN */
+#include <netdb.h> /* MAXHOSTNAMELEN */
 #else
-#include <sys/param.h>		/* MAXHOSTNAMELEN */
+#include <sys/param.h> /* MAXHOSTNAMELEN */
 #endif
 
 /* WARNINGS: 						      */
@@ -47,30 +47,29 @@
 /*   2) Any <X11/...> includes MUST come before this file.    */
 /* ---------------------------------------------------------- */
 
-#ifndef _XtIntrinsic_h		     /* Define "Boolean" if not already */
-   typedef char Boolean;	     /* defined from <X11/Intrinsic.h>  */
+#ifndef _XtIntrinsic_h /* Define "Boolean" if not already */
+typedef char Boolean;  /* defined from <X11/Intrinsic.h>  */
 #endif
 
 #ifndef TRUE
 #define TRUE 1
-#endif 
+#endif
 
 #ifndef FALSE
 #define FALSE 0
-#endif 
+#endif
 
 extern char *XeToolClass;
 
-extern XeString         XeProgName;                  /* From noXinit.c     */
+extern XeString XeProgName; /* From noXinit.c     */
 
-extern XeString				/* Returns Malloc'ed memory */
-XeSBTempPath
+extern XeString /* Returns Malloc'ed memory */
+    XeSBTempPath
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (XeString);
+    (XeString);
 #else
-   ();
+    ();
 #endif
 
 /* DON'T ADD STUFF AFTER THIS #endif */
 #endif /* _bms_h */
-

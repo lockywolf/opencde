@@ -37,99 +37,93 @@ class SearchStorage;
 
 class BookCaseDB;
 
-class BookCaseTask : public ComplexTask{
-public:
-  BookCaseTask(const char* infolib);
-  
-  void markup(const Token&);
+class BookCaseTask : public ComplexTask {
+      public:
+        BookCaseTask(const char *infolib);
 
-  BookCaseDB *database();      /* throw(Unexpected) */
-  DBTable *table(int);         /* throw(Unexpected) */
-  const char *bookcasename();  /* throw(Unexpected) */
-  void write_full_text_record( const char *str,
-			       int sz,
-			       const char *nodelocator,
-			       const char *node_title
-			     );
+        void markup(const Token &);
 
-  const char *styleName();     /* throw(Unexpected) */
+        BookCaseDB *database();     /* throw(Unexpected) */
+        DBTable *table(int);        /* throw(Unexpected) */
+        const char *bookcasename(); /* throw(Unexpected) */
+        void write_full_text_record(const char *str, int sz,
+                                    const char *nodelocator,
+                                    const char *node_title);
 
-  StyleTask *styleTask()  { return style; };
+        const char *styleName(); /* throw(Unexpected) */
 
-private:
-  char *library;
-  int f_base;
+        StyleTask *styleTask() { return style; };
 
-  BookCaseDB *f_db;
-  StyleTask *style;
-  BookTask *book;
-  SearchStorage *f_search_storage;
-  
-  OL_Data *bookCaseName;
-  OL_Data *bookCaseDesc;
+      private:
+        char *library;
+        int f_base;
 
-  OL_Data *f_style;
+        BookCaseDB *f_db;
+        StyleTask *style;
+        BookTask *book;
+        SearchStorage *f_search_storage;
+
+        OL_Data *bookCaseName;
+        OL_Data *bookCaseDesc;
+
+        OL_Data *f_style;
 };
 
+class BookTask : public ComplexTask {
+      public:
+        BookTask(BookCaseTask *);
+        ~BookTask();
 
-class BookTask : public ComplexTask{
-public:
+        void reset(void);
 
-  BookTask(BookCaseTask *);
-  ~BookTask();
+        void markup(const Token &);
 
-  void reset(void);
+        BookCaseTask *bookcase() { return f_bookcase; };
+        int sequencenum() const { return f_seq_no; }
 
-  void markup(const Token&);
+        const char *locator(); /* Locator for this book, i.e.
+                                * for the TOC node for this book
+                                */
 
-  BookCaseTask *bookcase() { return f_bookcase; };
-  int           sequencenum() const {  return f_seq_no; }
+        const char *styleName();        /* throw(Unexpected) */
+        const char *book_short_title(); /* throw(Unexpected) */
+        const char *book_title();       /* throw(Unexpected) */
 
-  const char *locator();          /* Locator for this book, i.e.
-				   * for the TOC node for this book
-				   */
+      protected:
+        void write_record(void);
 
-  const char *styleName();        /* throw(Unexpected) */
-  const char *book_short_title(); /* throw(Unexpected) */
-  const char *book_title();       /* throw(Unexpected) */
+      private:
+        int f_base; /* tag nesting level of <BOOK> elt */
 
-protected:
-  void write_record(void);
+        int f_seq_no; /* fulltext index document sequence number */
 
-private:
-  int f_base;                  /* tag nesting level of <BOOK> elt */
+        BookCaseTask *f_bookcase; /* 'parent' bookcase object */
 
-  int f_seq_no;                /* fulltext index document sequence number */
+        OL_Data *shortTitle; /* short title collection task */
+        OL_Data *title;      /* title collection task */
 
-  BookCaseTask *f_bookcase;    /* 'parent' bookcase object */
+        char *tocLocator; /* locator of TOC node */
 
-  OL_Data *shortTitle;        /* short title collection task */
-  OL_Data *title;             /* title collection task */
+        OL_Data *tabName;
+        OL_Data *tabLocator;
 
-  char *tocLocator;            /* locator of TOC node */
+        class StringList *tabNames;
+        class StringList *tabLocators;
+        class StringList *tabLines;
+        class StringList *tabFiles;
 
-  OL_Data *tabName;
-  OL_Data *tabLocator;
+        NodeTask *f_node;
 
-  class StringList *tabNames;
-  class StringList *tabLocators;
-  class StringList *tabLines;
-  class StringList *tabFiles;
+        Task *f_toc;
 
-  NodeTask *f_node;
+        OL_Data *f_style;
 
-  Task     *f_toc;
-
-  OL_Data *f_style;
-
-  void  encrypt( const Token & );
-  char *e_string;               /*
-				 * The encrypted string that is associated
-				 * with the access permission for this book
-				 */
-  int   e_len;
+        void encrypt(const Token &);
+        char *e_string; /*
+                         * The encrypted string that is associated
+                         * with the access permission for this book
+                         */
+        int e_len;
 };
-
 
 #endif /* __BookTasks_h */
-

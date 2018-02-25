@@ -20,7 +20,7 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* lcCharSet.c 1.1 - Fujitsu source for CDEnext    95/11/06 20:32:33 	*/ 
+/* lcCharSet.c 1.1 - Fujitsu source for CDEnext    95/11/06 20:32:33 	*/
 /* $XConsortium: _fallcCharSet.c /main/1 1996/04/08 15:15:44 cde-fuj $ */
 /*
  * Copyright 1992, 1993 by TOSHIBA Corp.
@@ -52,136 +52,125 @@
 #include "_fallcPublic.h"
 
 #if NeedVarargsPrototypes
-char *
-_fallcGetCSValues(XlcCharSet charset, ...)
+char *_fallcGetCSValues(XlcCharSet charset, ...)
 #else
-char *
-_fallcGetCSValues(charset, va_alist)
-    XlcCharSet charset;
-    va_dcl
+char *_fallcGetCSValues(charset, va_alist) XlcCharSet charset;
+va_dcl
 #endif
 {
-    va_list var;
-    XlcArgList args;
-    char *ret;
-    int num_args;
+        va_list var;
+        XlcArgList args;
+        char *ret;
+        int num_args;
 
-    Va_start(var, charset);
-    _fallcCountVaList(var, &num_args);
-    va_end(var);
+        Va_start(var, charset);
+        _fallcCountVaList(var, &num_args);
+        va_end(var);
 
-    Va_start(var, charset);
-    _fallcVaToArgList(var, num_args, &args);
-    va_end(var);
+        Va_start(var, charset);
+        _fallcVaToArgList(var, num_args, &args);
+        va_end(var);
 
-    if (args == (XlcArgList) NULL)
-	return (char *) NULL;
-    
-    if (charset->get_values)
-	ret = (*charset->get_values)(charset, args, num_args);
-    else
-	ret = args->name;
+        if (args == (XlcArgList)NULL)
+                return (char *)NULL;
 
-    Xfree(args);
+        if (charset->get_values)
+                ret = (*charset->get_values)(charset, args, num_args);
+        else
+                ret = args->name;
 
-    return ret;
+        Xfree(args);
+
+        return ret;
 }
 
 typedef struct _XlcCharSetListRec {
-    XlcCharSet charset;
-    struct _XlcCharSetListRec *next;
+        XlcCharSet charset;
+        struct _XlcCharSetListRec *next;
 } XlcCharSetListRec, *XlcCharSetList;
 
 static XlcCharSetList charset_list = NULL;
 
-XlcCharSet
-_fallcGetCharSet(name)
-    char *name;
+XlcCharSet _fallcGetCharSet(name) char *name;
 {
-    XlcCharSetList list;
-    XrmQuark xrm_name;
-    
-    xrm_name = falrmStringToQuark(name);
+        XlcCharSetList list;
+        XrmQuark xrm_name;
 
-    for (list = charset_list; list; list = list->next) {
-	if (xrm_name == list->charset->xrm_name)
-	    return (XlcCharSet) list->charset;
-    }
+        xrm_name = falrmStringToQuark(name);
 
-    return (XlcCharSet) NULL;
+        for (list = charset_list; list; list = list->next) {
+                if (xrm_name == list->charset->xrm_name)
+                        return (XlcCharSet)list->charset;
+        }
+
+        return (XlcCharSet)NULL;
 }
 
-Bool
-_fallcAddCharSet(charset)
-    XlcCharSet charset;
+Bool _fallcAddCharSet(charset) XlcCharSet charset;
 {
-    XlcCharSetList list;
+        XlcCharSetList list;
 
-    if (_fallcGetCharSet(charset->name))
-	return False;
+        if (_fallcGetCharSet(charset->name))
+                return False;
 
-    list = (XlcCharSetList) Xmalloc(sizeof(XlcCharSetListRec));
-    if (list == NULL)
-	return False;
-    
-    list->charset = charset;
-    list->next = charset_list;
-    charset_list = list;
+        list = (XlcCharSetList)Xmalloc(sizeof(XlcCharSetListRec));
+        if (list == NULL)
+                return False;
 
-    return True;
+        list->charset = charset;
+        list->next = charset_list;
+        charset_list = list;
+
+        return True;
 }
 
 static XlcResource resources[] = {
-    { XlcNName, NULLQUARK, sizeof(char *),
-      XOffsetOf(XlcCharSetRec, name), XlcGetMask },
-    { XlcNEncodingName, NULLQUARK, sizeof(char *),
-      XOffsetOf(XlcCharSetRec, encoding_name), XlcGetMask },
-    { XlcNSide, NULLQUARK, sizeof(XlcSide),
-      XOffsetOf(XlcCharSetRec, side), XlcGetMask },
-    { XlcNCharSize, NULLQUARK, sizeof(int),
-      XOffsetOf(XlcCharSetRec, char_size), XlcGetMask },
-    { XlcNSetSize, NULLQUARK, sizeof(int),
-      XOffsetOf(XlcCharSetRec, set_size), XlcGetMask },
-    { XlcNControlSequence, NULLQUARK, sizeof(char *),
-      XOffsetOf(XlcCharSetRec, ct_sequence), XlcGetMask }
-};
+    {XlcNName, NULLQUARK, sizeof(char *), XOffsetOf(XlcCharSetRec, name),
+     XlcGetMask},
+    {XlcNEncodingName, NULLQUARK, sizeof(char *),
+     XOffsetOf(XlcCharSetRec, encoding_name), XlcGetMask},
+    {XlcNSide, NULLQUARK, sizeof(XlcSide), XOffsetOf(XlcCharSetRec, side),
+     XlcGetMask},
+    {XlcNCharSize, NULLQUARK, sizeof(int), XOffsetOf(XlcCharSetRec, char_size),
+     XlcGetMask},
+    {XlcNSetSize, NULLQUARK, sizeof(int), XOffsetOf(XlcCharSetRec, set_size),
+     XlcGetMask},
+    {XlcNControlSequence, NULLQUARK, sizeof(char *),
+     XOffsetOf(XlcCharSetRec, ct_sequence), XlcGetMask}};
 
-static char *
-get_values(charset, args, num_args)
-    register XlcCharSet charset;
-    register XlcArgList args;
-    register int num_args;
+static char *get_values(charset, args, num_args) register XlcCharSet charset;
+register XlcArgList args;
+register int num_args;
 {
-    if (resources[0].xrm_name == NULLQUARK)
-	_fallcCompileResourceList(resources, XlcNumber(resources));
+        if (resources[0].xrm_name == NULLQUARK)
+                _fallcCompileResourceList(resources, XlcNumber(resources));
 
-    return _fallcGetValues((XPointer) charset, resources, XlcNumber(resources),
-			 args, num_args, XlcGetMask);
+        return _fallcGetValues((XPointer)charset, resources,
+                               XlcNumber(resources), args, num_args,
+                               XlcGetMask);
 }
 
-XlcCharSet
-_fallcCreateDefaultCharSet(name, ct_sequence)
-    char *name;
-    char *ct_sequence;
+XlcCharSet _fallcCreateDefaultCharSet(name, ct_sequence) char *name;
+char *ct_sequence;
 {
-    XlcCharSet charset;
+        XlcCharSet charset;
 
-    charset = (XlcCharSet) Xmalloc(sizeof(XlcCharSetRec));
-    if (charset == NULL)
-	return (XlcCharSet) NULL;
-    bzero((char *) charset, sizeof(XlcCharSetRec));
-    
-    charset->name = (char *) Xmalloc(strlen(name) + strlen(ct_sequence) + 2);
-    if (charset->name == NULL) {
-	Xfree((char *) charset);
-	return (XlcCharSet) NULL;
-    }
-    strcpy(charset->name, name);
-    charset->ct_sequence = charset->name + strlen(name) + 1;
-    strcpy(charset->ct_sequence, ct_sequence);
-    charset->get_values = get_values;
+        charset = (XlcCharSet)Xmalloc(sizeof(XlcCharSetRec));
+        if (charset == NULL)
+                return (XlcCharSet)NULL;
+        bzero((char *)charset, sizeof(XlcCharSetRec));
 
-    _fallcParseCharSet(charset);
+        charset->name = (char *)Xmalloc(strlen(name) + strlen(ct_sequence) + 2);
+        if (charset->name == NULL) {
+                Xfree((char *)charset);
+                return (XlcCharSet)NULL;
+        }
+        strcpy(charset->name, name);
+        charset->ct_sequence = charset->name + strlen(name) + 1;
+        strcpy(charset->ct_sequence, ct_sequence);
+        charset->get_values = get_values;
 
-    return (XlcCharSet) charset;
+        _fallcParseCharSet(charset);
+
+        return (XlcCharSet)charset;
 }

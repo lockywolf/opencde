@@ -20,7 +20,8 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* $XConsortium: RegisteredCodingSystem.h /main/1 1996/07/29 17:02:50 cde-hp $ */
+/* $XConsortium: RegisteredCodingSystem.h /main/1 1996/07/29 17:02:50 cde-hp $
+ */
 // Copyright (c) 1994 James Clark
 // See the file COPYING for copying permission.
 
@@ -34,10 +35,10 @@ namespace SP_NAMESPACE {
 class InputCodingSystem;
 
 struct RegisteredCodingSystem {
-  RegisteredCodingSystem() { }
-  ~RegisteredCodingSystem() { }
-  const char *name;
-  const InputCodingSystem *ics;
+        RegisteredCodingSystem() {}
+        ~RegisteredCodingSystem() {}
+        const char *name;
+        const InputCodingSystem *ics;
 };
 
 #ifdef SP_NAMESPACE

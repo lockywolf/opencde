@@ -47,33 +47,30 @@
 #include "vista.h"
 #include "dbtype.h"
 
-
 /* Check to see if current record is a owner of non-empty SET
-*/
-int
-d_isowner(set TASK_PARM DBN_PARM)
-int set;  /* set table entry */
+ */
+int d_isowner(set TASK_PARM DBN_PARM) int set; /* set table entry */
 TASK_DECL
-DBN_DECL  /* database number */
+DBN_DECL /* database number */
 {
-   char crsp[SETPSIZE];   /* current record's set pointer */
-   SET_ENTRY FAR *set_ptr;
+        char crsp[SETPSIZE]; /* current record's set pointer */
+        SET_ENTRY FAR *set_ptr;
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_IO));
-   
-   if (nset_check(set, &set, (SET_ENTRY FAR * FAR *)&set_ptr) != S_OKAY)
-      RETURN( db_status );
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_IO));
 
-   /* Make sure we have a current record */
-   if ( ! curr_rec )
-      RETURN( dberr(S_NOCR) );
+        if (nset_check(set, &set, (SET_ENTRY FAR * FAR *)&set_ptr) != S_OKAY)
+                RETURN(db_status);
 
-   /* Read current record and check for members */
-   if ((dio_read( curr_rec, (char FAR * FAR *)&crloc, NOPGHOLD) == S_OKAY) &&
-       (r_gset(set, crloc, crsp) == S_OKAY) &&
-       null_dba(crsp + SP_FIRST))
-      db_status = S_EOS; /* end-of-set if curr rec not owner */
+        /* Make sure we have a current record */
+        if (!curr_rec)
+                RETURN(dberr(S_NOCR));
 
-   RETURN( db_status );
+        /* Read current record and check for members */
+        if ((dio_read(curr_rec, (char FAR *FAR *)&crloc, NOPGHOLD) == S_OKAY) &&
+            (r_gset(set, crloc, crsp) == S_OKAY) && null_dba(crsp + SP_FIRST))
+                db_status = S_EOS; /* end-of-set if curr rec not owner */
+
+        RETURN(db_status);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin isowner.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin isowner.c */

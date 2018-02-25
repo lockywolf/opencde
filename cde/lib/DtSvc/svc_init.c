@@ -20,7 +20,7 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/*  $XConsortium: svc_init.c /main/3 1996/07/09 14:47:28 drk $ */ 
+/*  $XConsortium: svc_init.c /main/3 1996/07/09 14:47:28 drk $ */
 
 #include <sys/uswitch.h>
 #include <errno.h>
@@ -33,14 +33,13 @@
  * an error, and such code should be repaired.
  */
 
-svc_init()
-{
-    int usw_val;
+svc_init() {
+        int usw_val;
 
-    usw_val=uswitch(USC_GET,0);
-    if ((uswitch(USC_SET, usw_val | USW_NULLP)) == 01) {
-	perror("svc_init");
-	return(-1);
-    }
-    return(0);
+        usw_val = uswitch(USC_GET, 0);
+        if ((uswitch(USC_SET, usw_val | USW_NULLP)) == 01) {
+                perror("svc_init");
+                return (-1);
+        }
+        return (0);
 }

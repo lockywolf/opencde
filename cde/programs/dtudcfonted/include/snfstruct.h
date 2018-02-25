@@ -27,13 +27,13 @@ and the Massachusetts Institute of Technology, Cambridge, Massachusetts.
 
                         All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the names of Digital or MIT not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -85,38 +85,34 @@ This is unpublished proprietary source code of FUJITSU LIMITED
  *	5)  a sequence of null-terminated strings, for font properties
  */
 
-#define FONT_FILE_VERSION	4
+#define FONT_FILE_VERSION 4
 
-typedef struct _FontProp { 
-	CARD32	name;		/* offset of string */
-	INT32	value;		/* number or offset of string */
-	Bool	indirect;	/* value is a string offset */
+typedef struct _FontProp {
+        CARD32 name;   /* offset of string */
+        INT32 value;   /* number or offset of string */
+        Bool indirect; /* value is a string offset */
 } FontPropRec;
 
 /*
  * the following macro definitions describe a font file image in memory
  */
-#define ADDRCharInfoRec( pfi)	\
-	((CharInfoRec *) &(pfi)[1])
+#define ADDRCharInfoRec(pfi) ((CharInfoRec *)&(pfi)[1])
 
-#define ADDRCHARGLYPHS( pfi)	\
-	(((char *) &(pfi)[1]) + BYTESOFCHARINFO(pfi))
+#define ADDRCHARGLYPHS(pfi) (((char *)&(pfi)[1]) + BYTESOFCHARINFO(pfi))
 
 /*
  * pad out glyphs to a CARD32 boundary
  */
-#define ADDRXFONTPROPS( pfi)  \
-	((DIXFontProp *) ((char *)ADDRCHARGLYPHS( pfi) + BYTESOFGLYPHINFO(pfi)))
+#define ADDRXFONTPROPS(pfi)                                                    \
+        ((DIXFontProp *)((char *)ADDRCHARGLYPHS(pfi) + BYTESOFGLYPHINFO(pfi)))
 
-#define ADDRSTRINGTAB( pfi)  \
-	((char *)ADDRXFONTPROPS( pfi) + BYTESOFPROPINFO(pfi))
+#define ADDRSTRINGTAB(pfi) ((char *)ADDRXFONTPROPS(pfi) + BYTESOFPROPINFO(pfi))
 
-#define	BYTESOFFONTINFO(pfi)	(sizeof(FontInfoRec))
-#define BYTESOFCHARINFO(pfi)	(sizeof(CharInfoRec) * n2dChars(pfi))
-#define	BYTESOFPROPINFO(pfi)	(sizeof(FontPropRec) * (pfi)->nProps)
-#define	BYTESOFSTRINGINFO(pfi)	((pfi)->lenStrings)
-#define	BYTESOFGLYPHINFO(pfi)	(((pfi)->maxbounds.byteOffset+3) & ~0x3)
-#define BYTESOFINKINFO(pfi)	(sizeof(CharInfoRec) * (2 + n2dChars(pfi)))
- 
+#define BYTESOFFONTINFO(pfi) (sizeof(FontInfoRec))
+#define BYTESOFCHARINFO(pfi) (sizeof(CharInfoRec) * n2dChars(pfi))
+#define BYTESOFPROPINFO(pfi) (sizeof(FontPropRec) * (pfi)->nProps)
+#define BYTESOFSTRINGINFO(pfi) ((pfi)->lenStrings)
+#define BYTESOFGLYPHINFO(pfi) (((pfi)->maxbounds.byteOffset + 3) & ~0x3)
+#define BYTESOFINKINFO(pfi) (sizeof(CharInfoRec) * (2 + n2dChars(pfi)))
+
 #endif /* SNFSTRUCT_H */
-

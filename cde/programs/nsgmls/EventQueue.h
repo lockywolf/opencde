@@ -35,43 +35,35 @@ namespace SP_NAMESPACE {
 #endif
 
 class EventQueue : public EventHandler, public IQueue<Event> {
-public:
-  EventQueue();
-private:
+      public:
+        EventQueue();
+
+      private:
 #define EVENT(c, f) void f(c *);
 #include "events.h"
 #undef EVENT
-  void append(Event *);
+        void append(Event *);
 };
 
 class Pass1EventHandler : public EventQueue {
-public:
-  Pass1EventHandler();
-  void init(EventHandler *origHandler);
-  void message(MessageEvent *);
-  Boolean hadError() const;
-  EventHandler *origHandler() const;
-private:
-  Boolean hadError_;
-  EventHandler *origHandler_;
+      public:
+        Pass1EventHandler();
+        void init(EventHandler *origHandler);
+        void message(MessageEvent *);
+        Boolean hadError() const;
+        EventHandler *origHandler() const;
+
+      private:
+        Boolean hadError_;
+        EventHandler *origHandler_;
 };
 
-inline
-void EventQueue::append(Event *event)
-{
-  IQueue<Event>::append(event);
-}
+inline void EventQueue::append(Event *event) { IQueue<Event>::append(event); }
 
-inline
-Boolean Pass1EventHandler::hadError() const
-{
-  return hadError_;
-}
+inline Boolean Pass1EventHandler::hadError() const { return hadError_; }
 
-inline
-EventHandler *Pass1EventHandler::origHandler() const
-{
-  return origHandler_;
+inline EventHandler *Pass1EventHandler::origHandler() const {
+        return origHandler_;
 }
 
 #ifdef SP_NAMESPACE

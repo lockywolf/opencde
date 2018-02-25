@@ -43,116 +43,124 @@
 #include <string.h>
 #include <codelibs/boolean.h>
 
-#define streq(a,b) (strcmp(a,b) == 0)
+#define streq(a, b) (strcmp(a, b) == 0)
 
 /* private buffer variables */
 extern void *_strsep_privbuf;
 extern void *_strcmbn_privbuf;
 
 #if defined(__cplusplus)
-extern "C"
-{
+extern "C" {
 #endif
 #if defined(__cplusplus) || defined(__STDC__)
 #if !defined(__osf__) && !defined(sun)
-    /* The DEC C++ compiler rejects this, claiming it has both */
-    /* internal and external linkage. */
-    char *strnew(size_t len);
-    void strfree(const char *s);
+/* The DEC C++ compiler rejects this, claiming it has both */
+/* internal and external linkage. */
+char *strnew(size_t len);
+void strfree(const char *s);
 #endif
-    char *strstrx(char *s1, const char *s2);
-    char *strrstrx(char *s1, const char *s2);
-    int strwcmp(const char *pattern, const char *str);
-    int strwcmpi(const char *pattern, const char *str);
-    char *strwpat(const char *pattern);
-    char *strend(const char *str);
+char *strstrx(char *s1, const char *s2);
+char *strrstrx(char *s1, const char *s2);
+int strwcmp(const char *pattern, const char *str);
+int strwcmpi(const char *pattern, const char *str);
+char *strwpat(const char *pattern);
+char *strend(const char *str);
 
-    unsigned strhash(const char *key);
-    unsigned strhashi(const char *key);
+unsigned strhash(const char *key);
+unsigned strhashi(const char *key);
 
-    char *strupper(char *str);
-    char *strlower(char *str);
+char *strupper(char *str);
+char *strlower(char *str);
 
 #ifdef __cplusplus
-    char *strtokx(char *&ptr, const char *sep);
-# if !defined(__osf__) && !defined(linux) && !defined(sun) && !defined(CSRG_BASED)
-    char **strsep(const char *str, const char *sep,
-	boolean whsp = TRUE, int *num = NULL);
-#  if !defined(__osf__)
-    const char *strcmbn(const char **vec, const char *sep = " ");
-#  endif
-# endif
+char *strtokx(char *&ptr, const char *sep);
+#if !defined(__osf__) && !defined(linux) && !defined(sun) &&                   \
+    !defined(CSRG_BASED)
+char **strsep(const char *str, const char *sep, boolean whsp = TRUE,
+              int *num = NULL);
+#if !defined(__osf__)
+const char *strcmbn(const char **vec, const char *sep = " ");
+#endif
+#endif
 
 #else /* __STDC__ */
-    char *strtokx(char **ptr, const char *sep);
-# if !defined(linux) && !defined(sun) && !defined(CSRG_BASED)
-    char **strsep(const char *str, const char *sep,
-	boolean whsp, int *num);
+char *strtokx(char **ptr, const char *sep);
+#if !defined(linux) && !defined(sun) && !defined(CSRG_BASED)
+char **strsep(const char *str, const char *sep, boolean whsp, int *num);
 #endif
 #ifndef __osf__
-    const char *strcmbn(const char **vec, const char *sep);
+const char *strcmbn(const char **vec, const char *sep);
 #endif
 
 #endif /* __STDC__ */
 
-
 #ifdef __OBSOLETE
-    size_t nl_strlen(const char *str);	/* __OBSOLETE */
-    int strcharsize(const char *str);	/* __OBSOLETE */
-#endif /* __OBSOLETE */
+size_t nl_strlen(const char *str); /* __OBSOLETE */
+int strcharsize(const char *str);  /* __OBSOLETE */
+#endif                             /* __OBSOLETE */
 
 #else /* C */
 
-extern void   strfree();
-extern char  *strstrx(), strrstrx();
-extern int    strwcmp(), strwcmpi();
-extern char  *strwpat();
-extern char  *strend();
-extern char  *strtokx();
+extern void strfree();
+extern char *strstrx(), strrstrx();
+extern int strwcmp(), strwcmpi();
+extern char *strwpat();
+extern char *strend();
+extern char *strtokx();
 
-extern unsigned   strhash();
-extern unsigned   strhashi();
+extern unsigned strhash();
+extern unsigned strhashi();
 
-extern char      *strupper(), *strlower();
-
+extern char *strupper(), *strlower();
 
 #ifdef __OBSOLETE
-extern int        strcharsize();	/* __OBSOLETE */
-extern size_t     nl_strlen();		/* __OBSOLETE */
+extern int strcharsize();  /* __OBSOLETE */
+extern size_t nl_strlen(); /* __OBSOLETE */
 #endif /* __OBSOLETE */
 
 #endif /* C */
 #if defined(__cplusplus)
 }
 
-#if defined(apollo) || defined(__aix) || defined(USL) || defined(__uxp__) || defined(__osf__) || defined(linux) || defined(CSRG_BASED)
+#if defined(apollo) || defined(__aix) || defined(USL) || defined(__uxp__) ||   \
+    defined(__osf__) || defined(linux) || defined(CSRG_BASED)
 #include <stdlib.h>
 #else
 #include <malloc.h>
 #endif /* apollo */
 
-inline char *strnew(size_t len) { return (char*)malloc(len + 1); }
+inline char *strnew(size_t len) { return (char *)malloc(len + 1); }
 #if defined(sun) || defined(__sun) || defined(USL) || defined(__uxp__)
-inline void  strfree(const char *s)
-	{ if (s != NULL) free((char *)s); }
+inline void strfree(const char *s) {
+        if (s != NULL)
+                free((char *)s);
+}
 #else
-inline void  strfree(const char *s)
+inline void strfree(const char *s)
 #if defined(__hpux) || defined(__osf__) || defined(CSRG_BASED)
-	{ if (s != NULL) free((void *)s); }
+{
+        if (s != NULL)
+                free((void *)s);
+}
 #else
-	{ if (s != NULL) free((void *)s); }
+{
+        if (s != NULL)
+                free((void *)s);
+}
 #endif /* __hpux */
 #endif
 #if defined(bsd)
-inline char *strdup(const char *s)
-	{ return strcpy((char*)malloc(strlen(s) + 1), s); }
+inline char *strdup(const char *s) {
+        return strcpy((char *)malloc(strlen(s) + 1), s);
+}
 #endif
 
-/* private buffer funcs - we use inlines to handle default args properly */
+        /* private buffer funcs - we use inlines to handle default args properly
+         */
 
 #else /* C || __STDC__ */
 
-#define strnew(len) ((char*)malloc((len) + 1))
+#define strnew(len) ((char *)malloc((len) + 1))
 
 #define strbld strblds
 
@@ -160,9 +168,9 @@ inline char *strdup(const char *s)
 
 /* for backward compatibility only - __OBSOLETE */
 #ifdef __OBSOLETE
-#define strpos strstrx /* __OBSOLETE */
+#define strpos strstrx   /* __OBSOLETE */
 #define strrpos strrstrx /* __OBSOLETE */
-#endif /* __OBSOLETE */
+#endif                   /* __OBSOLETE */
 
 #endif /* C || __STDC__ */
 

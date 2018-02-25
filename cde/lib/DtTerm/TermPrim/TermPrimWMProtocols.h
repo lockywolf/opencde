@@ -29,13 +29,15 @@
  * (c) Copyright 1993, 1994 Sun Microsystems, Inc.                      *
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
-#ifndef	_Dt_TermPrimWMProtocols_h
-#define	_Dt_TermPrimWMProtocols_h
+#ifndef _Dt_TermPrimWMProtocols_h
+#define _Dt_TermPrimWMProtocols_h
 
 extern void _DtTermPrimAddDeleteWindowCallback(Widget topLevel,
-	XtCallbackProc callback, XtPointer client_data);
+                                               XtCallbackProc callback,
+                                               XtPointer client_data);
 extern void _DtTermPrimAddSaveYourselfCallback(Widget topLevel,
-	XtCallbackProc callback, XtPointer client_data);
+                                               XtCallbackProc callback,
+                                               XtPointer client_data);
 
-#endif	/* _Dt_TermPrimWMProtocols_h */
+#endif /* _Dt_TermPrimWMProtocols_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif... */

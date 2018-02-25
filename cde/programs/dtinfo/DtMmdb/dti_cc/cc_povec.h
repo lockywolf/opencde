@@ -28,42 +28,40 @@
 #include "dti_cc/CC_Dlist.h"
 #include "dti_cc/cc_exceptions.h"
 
-template <class T> 
-class dlist_array : public CC_TPtrDlist<T>
-{
-protected:
+template <class T> class dlist_array : public CC_TPtrDlist<T> {
+      protected:
+      public:
+        dlist_array(const dlist_array<T> &);
+        dlist_array(size_t);
+        virtual ~dlist_array();
 
-public:
-   dlist_array(const dlist_array<T>&);
-   dlist_array(size_t);
-   virtual ~dlist_array();
+        // Get these members from CC_TPtrDlist
+        /*
+           size_t entries() const ;
+           void clearAndDestroy();
+           void prepend(T*);
+           void append(T*);
+           T* first() ;
+        */
 
-//Get these members from CC_TPtrDlist
-/*
-   size_t entries() const ;
-   void clearAndDestroy();
-   void prepend(T*);
-   void append(T*);
-   T* first() ;
-*/
+        T *at(size_t pos) const /* throw boundaryException
+                                 * if list size is smaller than pos
+                                 */
+        {
+                // Hack to get it passed to iter
+                CC_TPtrSlistIterator<T> iter(*(CC_TPtrSlist<T> *)this);
+                for (size_t i = 0; i <= pos; i++) {
+                        if (!(++iter)) {
+                                throw(
+                                    CASTCCBEXCEPT ccBoundaryException(0, 0, i));
+                        }
+                }
 
-   T*  at(size_t pos) const  /* throw boundaryException
-			      * if list size is smaller than pos
-			      */
-   {
-     // Hack to get it passed to iter
-     CC_TPtrSlistIterator<T> iter( *(CC_TPtrSlist<T> *)this );
-     for ( size_t i = 0; i <=pos; i++ ) {
-       if ( !(++iter) ) {
-         throw(CASTCCBEXCEPT ccBoundaryException(0,0,i));
-       }
-     }
+                return (iter.key());
+        }
 
-     return( iter.key() );
-   }
-
-   T* operator()(size_t i) const { return at(i); };
-   T* operator[](size_t i) const { return at(i); };
+        T *operator()(size_t i) const { return at(i); };
+        T *operator[](size_t i) const { return at(i); };
 };
 
 #ifdef EXPAND_TEMPLATES
@@ -71,5 +69,3 @@ public:
 #endif
 
 #endif
-
-

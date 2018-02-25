@@ -42,31 +42,24 @@ class CharsetInfo;
 class EntityDecl;
 
 class SP_API EntityCatalog : public Resource {
-public:
-  class SP_API Syntax {
-  public:
-    virtual Boolean namecaseGeneral() const = 0;
-    virtual Boolean namecaseEntity() const = 0;
-    virtual const SubstTable<Char> &upperSubstTable() const = 0;
-    virtual const StringC &peroDelim() const = 0;
-  };
-  virtual ~EntityCatalog();
-  virtual Boolean sgmlDecl(const CharsetInfo &,
-			   Messenger &,
-			   StringC &) const;
-  virtual Boolean lookup(const EntityDecl &,
-			 const Syntax &,
-			 const CharsetInfo &,
-			 Messenger &,
-			 StringC &) const;
-  virtual Boolean lookupPublic(const StringC &,
-			       const CharsetInfo &,
-			       Messenger &,
-			       StringC &) const;
-  virtual Boolean defaultDoctype(const CharsetInfo &,
-				 Messenger &,
-				 StringC &,
-				 StringC &) const;
+      public:
+        class SP_API Syntax {
+              public:
+                virtual Boolean namecaseGeneral() const = 0;
+                virtual Boolean namecaseEntity() const = 0;
+                virtual const SubstTable<Char> &upperSubstTable() const = 0;
+                virtual const StringC &peroDelim() const = 0;
+        };
+        virtual ~EntityCatalog();
+        virtual Boolean sgmlDecl(const CharsetInfo &, Messenger &,
+                                 StringC &) const;
+        virtual Boolean lookup(const EntityDecl &, const Syntax &,
+                               const CharsetInfo &, Messenger &,
+                               StringC &) const;
+        virtual Boolean lookupPublic(const StringC &, const CharsetInfo &,
+                                     Messenger &, StringC &) const;
+        virtual Boolean defaultDoctype(const CharsetInfo &, Messenger &,
+                                       StringC &, StringC &) const;
 };
 
 #ifdef SP_NAMESPACE

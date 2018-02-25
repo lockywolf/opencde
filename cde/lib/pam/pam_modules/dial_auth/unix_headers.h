@@ -26,10 +26,10 @@
  * All rights reserved.
  */
 
-#ifndef	_UNIX_HEADERS_H
-#define	_UNIX_HEADERS_H
+#ifndef _UNIX_HEADERS_H
+#define _UNIX_HEADERS_H
 
-#pragma ident	"@(#)unix_headers.h	1.6	96/02/02 SMI"	/* PAM 2.6 */
+#pragma ident "@(#)unix_headers.h	1.6	96/02/02 SMI" /* PAM 2.6 */
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,7 +38,7 @@ extern "C" {
 /*
 ******************************************************************
 
-	PROPRIETARY NOTICE(Combined)
+        PROPRIETARY NOTICE(Combined)
 
 This source code is unpublished proprietary information
 constituting, or derived under license from AT&T's UNIX(r) System V.
@@ -48,17 +48,16 @@ California.
 
 
 
-		Copyright Notice
+                Copyright Notice
 
 Notice of copyright on this source code product does not indicate
 publication.
 
-	(c) 1986, 1987, 1988, 1989, 1990, 1991, 1992 Sun Microsystems, Inc
-	(c) 1983, 1984, 1985, 1986, 1987, 1988, 1989  AT&T.
-		All rights reserved.
+        (c) 1986, 1987, 1988, 1989, 1990, 1991, 1992 Sun Microsystems, Inc
+        (c) 1983, 1984, 1985, 1986, 1987, 1988, 1989  AT&T.
+                All rights reserved.
 *******************************************************************
 */
-
 
 /*
 ******************************************************************** *
@@ -82,33 +81,33 @@ publication.
 /*
  * Various useful files and string constants
  */
-#define	DIAL_FILE	"/etc/dialups"
-#define	DPASS_FILE	"/etc/d_passwd"
-#define	SHELL		"/usr/bin/sh"
+#define DIAL_FILE "/etc/dialups"
+#define DPASS_FILE "/etc/d_passwd"
+#define SHELL "/usr/bin/sh"
 
 /*
  * PAM_MSG macro for return of internationalized text
  */
 
-#define	PAM_MSG(pamh, number, string)\
-	(char *) __pam_get_i18n_msg(pamh, "pam_unix", 2, number, string)
+#define PAM_MSG(pamh, number, string)                                          \
+        (char *)__pam_get_i18n_msg(pamh, "pam_unix", 2, number, string)
 
 /*
  * Miscellaneous constants
  */
-#define	SLEEPTIME	4
-#define	ERROR		1
-#define	OK		0
-#define	MAXTRYS		5
-#define	ROOTUID		0
+#define SLEEPTIME 4
+#define ERROR 1
+#define OK 0
+#define MAXTRYS 5
+#define ROOTUID 0
 
 /*
  * String manipulation macros: SCPYN, EQN and ENVSTRNCAT
  */
-#define	SCPYN(a, b)	(void) strncpy(a, b, sizeof (a))
+#define SCPYN(a, b) (void)strncpy(a, b, sizeof(a))
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif	/* _UNIX_HEADERS_H */
+#endif /* _UNIX_HEADERS_H */

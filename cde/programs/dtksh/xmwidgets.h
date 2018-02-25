@@ -44,11 +44,7 @@
 
 extern classtab_t C[];
 
-
-
-extern void toolkit_init_widgets( void ) ;
-
-
+extern void toolkit_init_widgets(void);
 
 #endif /* _Dtksh_xmwidgets_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

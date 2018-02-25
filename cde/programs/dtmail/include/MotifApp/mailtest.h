@@ -41,13 +41,11 @@
  * Structure to store values for Application Resources
  */
 typedef struct {
-    char	*session_file;
+        char *session_file;
 
-/* vvv Add client code below vvv */
+        /* vvv Add client code below vvv */
 } DtbAppResourceRec;
 
-
-extern DtbAppResourceRec	dtb_app_resource_rec;
+extern DtbAppResourceRec dtb_app_resource_rec;
 
 #endif /* _MAILTEST_H_ */
-

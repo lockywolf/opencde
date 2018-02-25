@@ -20,16 +20,17 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* 
- * (c) Copyright 1989, 1990, 1991, 1992, 1993 OPEN SOFTWARE FOUNDATION, INC. 
- * ALL RIGHTS RESERVED 
-*/ 
-/* 
+/*
+ * (c) Copyright 1989, 1990, 1991, 1992, 1993 OPEN SOFTWARE FOUNDATION, INC.
+ * ALL RIGHTS RESERVED
+ */
+/*
  * Motif Release 1.2.3
-*/ 
+ */
 #ifdef REV_INFO
 #ifndef lint
-static char rcsid[] = "$XConsortium: WmCDInfo.c /main/4 1995/11/01 11:32:15 rswiston $"
+static char rcsid[] =
+    "$XConsortium: WmCDInfo.c /main/4 1995/11/01 11:32:15 rswiston $"
 #endif
 #endif
 /*
@@ -42,74 +43,62 @@ static char rcsid[] = "$XConsortium: WmCDInfo.c /main/4 1995/11/01 11:32:15 rswi
 #include "WmGlobal.h"
 #include "WmCDInfo.h"
 
-
-
-/*************************************<->*************************************
- *
- *  unsigned int TitleTextHeight (pcd)
- *
- *
- *  Description:
- *  -----------
- *  Returns the height of the title text plus padding
- *
- *  Inputs:
- *  ------
- *  pcd			- pointer to client data record
- * 
- *  Outputs:
- *  -------
- *  TitleTextHeight	-  Height of title text plus padding
- *
- *  Comments:
- *  --------
- * 
- *************************************<->***********************************/
-unsigned int TitleTextHeight (ClientData *pcd)
-{
-    unsigned int ttextheight;
+    /*************************************<->*************************************
+     *
+     *  unsigned int TitleTextHeight (pcd)
+     *
+     *
+     *  Description:
+     *  -----------
+     *  Returns the height of the title text plus padding
+     *
+     *  Inputs:
+     *  ------
+     *  pcd			- pointer to client data record
+     *
+     *  Outputs:
+     *  -------
+     *  TitleTextHeight	-  Height of title text plus padding
+     *
+     *  Comments:
+     *  --------
+     *
+     *************************************<->***********************************/
+    unsigned int
+    TitleTextHeight(ClientData * pcd) {
+        unsigned int ttextheight;
 
 #ifndef NO_MULTIBYTE
-    if (DECOUPLE_TITLE_APPEARANCE(pcd))
-    {
-	ttextheight = CLIENT_TITLE_APPEARANCE(pcd).titleHeight;
-    }
-    else
-    {
-	ttextheight = CLIENT_APPEARANCE(pcd).titleHeight;
-    }
+        if (DECOUPLE_TITLE_APPEARANCE(pcd)) {
+                ttextheight = CLIENT_TITLE_APPEARANCE(pcd).titleHeight;
+        } else {
+                ttextheight = CLIENT_APPEARANCE(pcd).titleHeight;
+        }
 #else
 
-    XFontStruct	*font;
+        XFontStruct *font;
 
-    if (DECOUPLE_TITLE_APPEARANCE(pcd))
-    {
-	font = CLIENT_TITLE_APPEARANCE(pcd).font;
-    }
-    else 
-    {
-	font = CLIENT_APPEARANCE(pcd).font;
-    }
+        if (DECOUPLE_TITLE_APPEARANCE(pcd)) {
+                font = CLIENT_TITLE_APPEARANCE(pcd).font;
+        } else {
+                font = CLIENT_APPEARANCE(pcd).font;
+        }
 
-    if (font)
-    {
-	ttextheight = TEXT_HEIGHT(font) + WM_TITLE_BAR_PADDING;
-    }
-    else
-    {
-	/* 
-	 * Failed to load any font! (probably due to error in 
-	 * font path, toolkit, or resource converter. Set to
-	 * arbitrary value for robustness.
-	 *
-	 */
-	ttextheight = 16; 
-    }
+        if (font) {
+                ttextheight = TEXT_HEIGHT(font) + WM_TITLE_BAR_PADDING;
+        } else {
+                /*
+                 * Failed to load any font! (probably due to error in
+                 * font path, toolkit, or resource converter. Set to
+                 * arbitrary value for robustness.
+                 *
+                 */
+                ttextheight = 16;
+        }
 #endif
-    return (ttextheight);
+        return (ttextheight);
 }
 
-
 /*************************************<->*************************************
  *
  *  unsigned int InitTitleBarHeight (pcd)
@@ -123,32 +112,27 @@ unsigned int TitleTextHeight (ClientData *pcd)
  *  Inputs:
  *  ------
  *  pcd			- pointer to client data record
- * 
+ *
  *  Outputs:
  *  -------
  *  InitTitleBarHeight	-  height of title bar, 0 if no title bar.
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-unsigned int InitTitleBarHeight (ClientData *pcd)
-{
-    unsigned int tbarheight;
+unsigned int InitTitleBarHeight(ClientData *pcd) {
+        unsigned int tbarheight;
 
-    if (pcd->decor & MWM_DECOR_TITLE)
-    {
-	tbarheight = TitleTextHeight(pcd);
-    }
-    else
-    {
-	tbarheight = 0;
-    }
+        if (pcd->decor & MWM_DECOR_TITLE) {
+                tbarheight = TitleTextHeight(pcd);
+        } else {
+                tbarheight = 0;
+        }
 
-    return (tbarheight);
+        return (tbarheight);
 }
 
-
 /*************************************<->*************************************
  *
  *  unsigned int UpperBorderWidth (pcd)
@@ -161,7 +145,7 @@ unsigned int InitTitleBarHeight (ClientData *pcd)
  *  Inputs:
  *  ------
  *  pcd			- pointer to client data record
- * 
+ *
  *  Outputs:
  *  -------
  *  UpperBorderWidth	- width of the upper frame border
@@ -171,42 +155,30 @@ unsigned int InitTitleBarHeight (ClientData *pcd)
  *  The upper border width is thinner if there is a title bar. The
  *  title bar appears to sit across some of the inside beveling to
  *  make the frame look more integrated.
- * 
+ *
  *************************************<->***********************************/
-unsigned int UpperBorderWidth (ClientData *pcd)
-{
-    unsigned int uswidth;
-    unsigned int decoration = pcd->decor;
+unsigned int UpperBorderWidth(ClientData *pcd) {
+        unsigned int uswidth;
+        unsigned int decoration = pcd->decor;
 
-    if (decoration & MWM_DECOR_RESIZEH)
-    {
-	uswidth = RESIZE_BORDER_WIDTH(pcd);
-    }
-    else if (decoration & MWM_DECOR_BORDER)
-    {
-	uswidth = FRAME_BORDER_WIDTH(pcd);
+        if (decoration & MWM_DECOR_RESIZEH) {
+                uswidth = RESIZE_BORDER_WIDTH(pcd);
+        } else if (decoration & MWM_DECOR_BORDER) {
+                uswidth = FRAME_BORDER_WIDTH(pcd);
 #ifdef PANELIST
-	if((pcd->clientFlags & FRONT_PANEL_BOX) &&
-	   (uswidth > 0))
-	{
-	    uswidth -= 1;
-	}
+                if ((pcd->clientFlags & FRONT_PANEL_BOX) && (uswidth > 0)) {
+                        uswidth -= 1;
+                }
 #endif /* PANELIST */
-    }
-    else if ((decoration & MWM_DECOR_TITLE) ||
-	     (pcd->matteWidth > 0))
-    {
-	uswidth = 0;
-    }
-    else
-    {
-	uswidth = pcd->xBorderWidth;
-    }
+        } else if ((decoration & MWM_DECOR_TITLE) || (pcd->matteWidth > 0)) {
+                uswidth = 0;
+        } else {
+                uswidth = pcd->xBorderWidth;
+        }
 
-    return (uswidth);
+        return (uswidth);
 }
 
-
 /*************************************<->*************************************
  *
  *  unsigned int LowerBorderWidth (pcd)
@@ -219,45 +191,38 @@ unsigned int UpperBorderWidth (ClientData *pcd)
  *  Inputs:
  *  ------
  *  pcd			- pointer to client data record
- * 
+ *
  *  Outputs:
  *  -------
  *  LowerBorderWidth	- width of the lower frame border
  *
  *  Comments:
  *  --------
- *  The upper border width is thinner than the lower border if there 
- *  is a title bar. The title bar appears to sit across some of the 
+ *  The upper border width is thinner than the lower border if there
+ *  is a title bar. The title bar appears to sit across some of the
  *  inside beveling to make the frame look more integrated.
- * 
+ *
  *************************************<->***********************************/
-unsigned int LowerBorderWidth (ClientData *pcd)
-{
-    unsigned int lswidth;
-    unsigned int decoration = pcd->decor;
+unsigned int LowerBorderWidth(ClientData *pcd) {
+        unsigned int lswidth;
+        unsigned int decoration = pcd->decor;
 
-    if (decoration & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER))
-    {
-	if ((pcd->matteWidth == 0) && (decoration & MWM_DECOR_TITLE) &&
-		(wmGD.frameStyle == WmRECESSED))
-	    lswidth = UpperBorderWidth (pcd) + 
-		      (pcd->internalBevel - JOIN_BEVEL(pcd));
-	else
-	    lswidth = UpperBorderWidth (pcd);
-    }
-    else if (pcd->matteWidth > 0)
-    {
-	lswidth = 0;
-    }
-    else
-    {
-	lswidth = pcd->xBorderWidth;
-    }
+        if (decoration & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER)) {
+                if ((pcd->matteWidth == 0) && (decoration & MWM_DECOR_TITLE) &&
+                    (wmGD.frameStyle == WmRECESSED))
+                        lswidth = UpperBorderWidth(pcd) +
+                                  (pcd->internalBevel - JOIN_BEVEL(pcd));
+                else
+                        lswidth = UpperBorderWidth(pcd);
+        } else if (pcd->matteWidth > 0) {
+                lswidth = 0;
+        } else {
+                lswidth = pcd->xBorderWidth;
+        }
 
-    return (lswidth);
+        return (lswidth);
 }
 
-
 /*************************************<->*************************************
  *
  *  unsigned int FrameWidth (pcd)
@@ -270,26 +235,24 @@ unsigned int LowerBorderWidth (ClientData *pcd)
  *  Inputs:
  *  ------
  *  pcd			- pointer to client data record
- * 
+ *
  *  Outputs:
  *  -------
  *  FrameWidth	- width of frame
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-unsigned int FrameWidth (ClientData *pcd)
-{
-    unsigned int frameWidth;
+unsigned int FrameWidth(ClientData *pcd) {
+        unsigned int frameWidth;
 
-    frameWidth = ((pcd->maxConfig) ? pcd->maxWidth : pcd->clientWidth) +
-		  2*pcd->matteWidth + 2*LowerBorderWidth (pcd);
+        frameWidth = ((pcd->maxConfig) ? pcd->maxWidth : pcd->clientWidth) +
+                     2 * pcd->matteWidth + 2 * LowerBorderWidth(pcd);
 
-    return (frameWidth);
+        return (frameWidth);
 }
 
-
 /*************************************<->*************************************
  *
  *  unsigned int CornerWidth (pcd)
@@ -302,38 +265,35 @@ unsigned int FrameWidth (ClientData *pcd)
  *  Inputs:
  *  ------
  *  pcd			- pointer to client data record
- * 
+ *
  *  Outputs:
  *  -------
  *  CornerWidth	- width of the corner resize handle
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-unsigned int CornerWidth (ClientData *pcd)
-{
-    unsigned int cwidth;
-    unsigned int frameWidth = FrameWidth (pcd);
+unsigned int CornerWidth(ClientData *pcd) {
+        unsigned int cwidth;
+        unsigned int frameWidth = FrameWidth(pcd);
 
-    /* adjust for resize border (default border if no resize wanted) */
-    if (pcd->decor & MWM_DECOR_RESIZEH)
-    {
-	/* corner size is driven by title bar height */
-	cwidth = TitleTextHeight(pcd) + UpperBorderWidth (pcd);
+        /* adjust for resize border (default border if no resize wanted) */
+        if (pcd->decor & MWM_DECOR_RESIZEH) {
+                /* corner size is driven by title bar height */
+                cwidth = TitleTextHeight(pcd) + UpperBorderWidth(pcd);
 
-	/* scale down corners to make resize pieces proportional */
-	if (3*cwidth > frameWidth) cwidth = frameWidth / 3;
-    }
-    else {
-	/* no resizing functions */
-	cwidth = 0;
-    }
+                /* scale down corners to make resize pieces proportional */
+                if (3 * cwidth > frameWidth)
+                        cwidth = frameWidth / 3;
+        } else {
+                /* no resizing functions */
+                cwidth = 0;
+        }
 
-    return (cwidth);
+        return (cwidth);
 }
 
-
 /*************************************<->*************************************
  *
  *  unsigned int FrameHeight (pcd)
@@ -346,38 +306,33 @@ unsigned int CornerWidth (ClientData *pcd)
  *  Inputs:
  *  ------
  *  pcd			- pointer to client data record
- * 
+ *
  *  Outputs:
  *  -------
  *  FrameHeight	-  position of frame
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-unsigned int FrameHeight (ClientData *pcd)
-{
-    unsigned int frameHeight;
+unsigned int FrameHeight(ClientData *pcd) {
+        unsigned int frameHeight;
 
-    if (pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER))
-    {
-	frameHeight = ((pcd->maxConfig) ? 
-			  pcd->maxHeight : pcd->clientHeight) +
-		      2*pcd->matteWidth + LowerBorderWidth (pcd) + 
-		      UpperBorderWidth (pcd) + TitleBarHeight(pcd);
-    }
-    else 
-    {
-	frameHeight = ((pcd->maxConfig) ? 
-			  pcd->maxHeight : pcd->clientHeight) +
-		      2*pcd->matteWidth + 2*LowerBorderWidth (pcd) + 
-		      TitleBarHeight(pcd);
-    }
+        if (pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER)) {
+                frameHeight =
+                    ((pcd->maxConfig) ? pcd->maxHeight : pcd->clientHeight) +
+                    2 * pcd->matteWidth + LowerBorderWidth(pcd) +
+                    UpperBorderWidth(pcd) + TitleBarHeight(pcd);
+        } else {
+                frameHeight =
+                    ((pcd->maxConfig) ? pcd->maxHeight : pcd->clientHeight) +
+                    2 * pcd->matteWidth + 2 * LowerBorderWidth(pcd) +
+                    TitleBarHeight(pcd);
+        }
 
-    return (frameHeight);
+        return (frameHeight);
 }
 
-
 /*************************************<->*************************************
  *
  *  unsigned int CornerHeight (pcd)
@@ -390,38 +345,35 @@ unsigned int FrameHeight (ClientData *pcd)
  *  Inputs:
  *  ------
  *  pcd			- pointer to client data record
- * 
+ *
  *  Outputs:
  *  -------
  *  CornerHeight	- Height of the corner resize handle
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-unsigned int CornerHeight (ClientData *pcd)
-{
-    unsigned int cheight;
-    unsigned int frameHeight = FrameHeight (pcd);
+unsigned int CornerHeight(ClientData *pcd) {
+        unsigned int cheight;
+        unsigned int frameHeight = FrameHeight(pcd);
 
-    /* adjust for resize border (default border if no resize wanted) */
-    if (pcd->decor & MWM_DECOR_RESIZEH)
-    {
-	/* corner size is driven by title bar height */
-	cheight = TitleTextHeight(pcd) + UpperBorderWidth (pcd);
+        /* adjust for resize border (default border if no resize wanted) */
+        if (pcd->decor & MWM_DECOR_RESIZEH) {
+                /* corner size is driven by title bar height */
+                cheight = TitleTextHeight(pcd) + UpperBorderWidth(pcd);
 
-	/* scale down corners to make resize pieces proportional */
-	if (3*cheight > frameHeight) cheight = frameHeight / 3;
-    }
-    else {
-	/* produce default border with no resizing functions */
-	cheight = 0;
-    }
+                /* scale down corners to make resize pieces proportional */
+                if (3 * cheight > frameHeight)
+                        cheight = frameHeight / 3;
+        } else {
+                /* produce default border with no resizing functions */
+                cheight = 0;
+        }
 
-    return (cheight);
+        return (cheight);
 }
 
-
 /*************************************<->*************************************
  *
  *  int BaseWindowX (pcd)
@@ -434,28 +386,26 @@ unsigned int CornerHeight (ClientData *pcd)
  *  Inputs:
  *  ------
  *  pcd			- pointer to client data record
- * 
+ *
  *  Outputs:
  *  -------
  *  BaseWindowX
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-int BaseWindowX (ClientData *pcd)
-{
-    int rval;
+int BaseWindowX(ClientData *pcd) {
+        int rval;
 
-    if (pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER))
-	rval = LowerBorderWidth(pcd);
-    else
-	rval = 0;
-    
-    return (rval);
+        if (pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER))
+                rval = LowerBorderWidth(pcd);
+        else
+                rval = 0;
+
+        return (rval);
 }
 
-
 /*************************************<->*************************************
  *
  *  int BaseWindowY (pcd)
@@ -468,29 +418,26 @@ int BaseWindowX (ClientData *pcd)
  *  Inputs:
  *  ------
  *  pcd			- pointer to client data record
- * 
+ *
  *  Outputs:
  *  -------
  *  BaseWindowY
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-int BaseWindowY (ClientData *pcd)
-{
-    int rval;
+int BaseWindowY(ClientData *pcd) {
+        int rval;
 
-    if (pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER))
-	rval = UpperBorderWidth (pcd) + TitleBarHeight(pcd);
-    else
-	rval = TitleBarHeight(pcd);
-    
-    return (rval);
+        if (pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER))
+                rval = UpperBorderWidth(pcd) + TitleBarHeight(pcd);
+        else
+                rval = TitleBarHeight(pcd);
+
+        return (rval);
 }
 
-
-
 /*************************************<->*************************************
  *
  *  int FrameX (pcd)
@@ -503,26 +450,24 @@ int BaseWindowY (ClientData *pcd)
  *  Inputs:
  *  ------
  *  pcd			- pointer to client data record
- * 
+ *
  *  Outputs:
  *  -------
  *  FrameX		- X position of frame
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-int FrameX (ClientData *pcd)
-{
-    int frameX;
+int FrameX(ClientData *pcd) {
+        int frameX;
 
-    frameX = ((pcd->maxConfig) ? pcd->maxX : pcd->clientX)
-	     - LowerBorderWidth (pcd)  - pcd->matteWidth;
+        frameX = ((pcd->maxConfig) ? pcd->maxX : pcd->clientX) -
+                 LowerBorderWidth(pcd) - pcd->matteWidth;
 
-    return (frameX);
+        return (frameX);
 }
 
-
 /*************************************<->*************************************
  *
  *  int FrameY (pcd)
@@ -535,34 +480,30 @@ int FrameX (ClientData *pcd)
  *  Inputs:
  *  ------
  *  pcd			- pointer to client data record
- * 
+ *
  *  Outputs:
  *  -------
  *  FrameY		- Y position of frame
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-int FrameY (ClientData *pcd)
-{
-    int frameY;
+int FrameY(ClientData *pcd) {
+        int frameY;
 
-    frameY = ((pcd->maxConfig) ? pcd->maxY : pcd->clientY) 
-	 - UpperBorderWidth (pcd) 
-	 - TitleBarHeight (pcd) - pcd->matteWidth;
+        frameY = ((pcd->maxConfig) ? pcd->maxY : pcd->clientY) -
+                 UpperBorderWidth(pcd) - TitleBarHeight(pcd) - pcd->matteWidth;
 
-    if ((pcd->decor & MWM_DECOR_TITLE) && 
-	!(pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER)) &&
-	!(pcd->matteWidth))
-    {
-	frameY -= pcd->xBorderWidth;
-    }
+        if ((pcd->decor & MWM_DECOR_TITLE) &&
+            !(pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER)) &&
+            !(pcd->matteWidth)) {
+                frameY -= pcd->xBorderWidth;
+        }
 
-    return (frameY);
+        return (frameY);
 }
 
-
 /*************************************<->*************************************
  *
  *  unsigned int BaseWindowWidth (pcd)
@@ -570,49 +511,43 @@ int FrameY (ClientData *pcd)
  *
  *  Description:
  *  -----------
- *  Returns the width of the base window 
+ *  Returns the width of the base window
  *
  *  Inputs:
  *  ------
  *  pcd			- pointer to client data record
- * 
+ *
  *  Outputs:
  *  -------
  *  BaseWindowWidth
  *
  *  Comments:
  *  --------
- *  o Based on code taken out of FrameWidth to make it a little 
+ *  o Based on code taken out of FrameWidth to make it a little
  *    more efficient.
- * 
+ *
  *************************************<->***********************************/
-unsigned int BaseWindowWidth (ClientData *pcd)
-{
-    unsigned int rval;
+unsigned int BaseWindowWidth(ClientData *pcd) {
+        unsigned int rval;
 
-    if (pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER))
-    {
-	/*
-	 *  rval = FrameWidth(pcd) - 2*LowerBorderWidth(pcd);
-	 */
+        if (pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER)) {
+                /*
+                 *  rval = FrameWidth(pcd) - 2*LowerBorderWidth(pcd);
+                 */
 
-	rval = ((pcd->maxConfig) ? pcd->maxWidth : pcd->clientWidth) +
-		  2*pcd->matteWidth;
-    }
-    else
-    {
-	/*
-	 *  rval = FrameWidth(pcd);
-	 */
-	rval = ((pcd->maxConfig) ? pcd->maxWidth : pcd->clientWidth) +
-		  2*pcd->matteWidth + 2*LowerBorderWidth (pcd);
-    }
-    
-    return (rval);
+                rval = ((pcd->maxConfig) ? pcd->maxWidth : pcd->clientWidth) +
+                       2 * pcd->matteWidth;
+        } else {
+                /*
+                 *  rval = FrameWidth(pcd);
+                 */
+                rval = ((pcd->maxConfig) ? pcd->maxWidth : pcd->clientWidth) +
+                       2 * pcd->matteWidth + 2 * LowerBorderWidth(pcd);
+        }
+
+        return (rval);
 }
 
-
-
 /*************************************<->*************************************
  *
  *  unsigned int BaseWindowHeight (pcd)
@@ -620,52 +555,46 @@ unsigned int BaseWindowWidth (ClientData *pcd)
  *
  *  Description:
  *  -----------
- *  Returns the height of the base window 
+ *  Returns the height of the base window
  *
  *  Inputs:
  *  ------
  *  pcd			- pointer to client data record
- * 
+ *
  *  Outputs:
  *  -------
  *  BaseWindowHeight
  *
  *  Comments:
  *  --------
- *  o Based on code taken out of FrameHeight to make it a little 
+ *  o Based on code taken out of FrameHeight to make it a little
  *    more efficient.
- * 
+ *
  *************************************<->***********************************/
-unsigned int BaseWindowHeight (ClientData *pcd)
-{
-    unsigned int rval;
+unsigned int BaseWindowHeight(ClientData *pcd) {
+        unsigned int rval;
 
-    if (pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER))
-    {
+        if (pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER)) {
 
-	/* 
-	 *  rval = FrameHeight(pcd) - LowerBorderWidth(pcd) - 
-	 *             UpperBorderWidth(pcd) - TitleBarHeight(pcd);
-	 */
+                /*
+                 *  rval = FrameHeight(pcd) - LowerBorderWidth(pcd) -
+                 *             UpperBorderWidth(pcd) - TitleBarHeight(pcd);
+                 */
 
-	rval = ((pcd->maxConfig) ? pcd->maxHeight : pcd->clientHeight) +
-		      2*pcd->matteWidth;
-    }
-    else
-    {
-	/* 
-	 *  rval = FrameHeight(pcd) - TitleBarHeight(pcd); 
-	 */
+                rval = ((pcd->maxConfig) ? pcd->maxHeight : pcd->clientHeight) +
+                       2 * pcd->matteWidth;
+        } else {
+                /*
+                 *  rval = FrameHeight(pcd) - TitleBarHeight(pcd);
+                 */
 
-	rval = ((pcd->maxConfig) ? pcd->maxHeight : pcd->clientHeight) +
-		      2*pcd->matteWidth + 2*LowerBorderWidth (pcd);
-    }
-    
-    return (rval);
+                rval = ((pcd->maxConfig) ? pcd->maxHeight : pcd->clientHeight) +
+                       2 * pcd->matteWidth + 2 * LowerBorderWidth(pcd);
+        }
+
+        return (rval);
 }
 
-
-
 /*************************************<->*************************************
  *
  *  Boolean GetFramePartInfo (pcd, part, pX, pY, pWidth, pHeight)
@@ -685,7 +614,7 @@ unsigned int BaseWindowHeight (ClientData *pcd)
  *  pWidth	- pointer to width return value
  *  pHeight	- pointer to width return value
  *
- * 
+ *
  *  Outputs:
  *  -------
  *  Return 	- True if values returned, false if no such part for this
@@ -694,276 +623,265 @@ unsigned int BaseWindowHeight (ClientData *pcd)
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-Boolean GetFramePartInfo (ClientData *pcd, int part, int *pX, int *pY, unsigned int *pWidth, unsigned int *pHeight)
-{
-    unsigned int boxdim = TitleBarHeight (pcd);
-    unsigned long decor = pcd->decor;
-    int vert, horiz;
-    Boolean rval = FALSE;
-    
-    switch (part) 
-    {
-	case FRAME_SYSTEM:
-		if (decor & MWM_DECOR_MENU) {
-		    *pX = pcd->frameInfo.upperBorderWidth;
-		    *pY = pcd->frameInfo.upperBorderWidth;
-		    *pWidth = boxdim;
-		    *pHeight = boxdim;
-		    rval = TRUE;
-		}
-		break;
+Boolean GetFramePartInfo(ClientData *pcd, int part, int *pX, int *pY,
+                         unsigned int *pWidth, unsigned int *pHeight) {
+        unsigned int boxdim = TitleBarHeight(pcd);
+        unsigned long decor = pcd->decor;
+        int vert, horiz;
+        Boolean rval = FALSE;
 
-	case FRAME_TITLE:
-		if (decor & MWM_DECOR_TITLE) {
-		    *pX = pcd->frameInfo.upperBorderWidth + 
-			    ((decor & MWM_DECOR_MENU) ? boxdim : 0);
-		    *pY = pcd->frameInfo.upperBorderWidth;
-		    *pWidth = pcd->frameInfo.width - 
-			    2*pcd->frameInfo.upperBorderWidth - 
-			    ((decor & MWM_DECOR_MENU) ? boxdim : 0) -
-			    ((decor & MWM_DECOR_MINIMIZE) ? boxdim : 0) -
-			    ((decor & MWM_DECOR_MAXIMIZE) ? boxdim : 0);
-		    *pHeight = boxdim;
-		    rval = TRUE;
-		}
-		break;
+        switch (part) {
+        case FRAME_SYSTEM:
+                if (decor & MWM_DECOR_MENU) {
+                        *pX = pcd->frameInfo.upperBorderWidth;
+                        *pY = pcd->frameInfo.upperBorderWidth;
+                        *pWidth = boxdim;
+                        *pHeight = boxdim;
+                        rval = TRUE;
+                }
+                break;
+
+        case FRAME_TITLE:
+                if (decor & MWM_DECOR_TITLE) {
+                        *pX = pcd->frameInfo.upperBorderWidth +
+                              ((decor & MWM_DECOR_MENU) ? boxdim : 0);
+                        *pY = pcd->frameInfo.upperBorderWidth;
+                        *pWidth = pcd->frameInfo.width -
+                                  2 * pcd->frameInfo.upperBorderWidth -
+                                  ((decor & MWM_DECOR_MENU) ? boxdim : 0) -
+                                  ((decor & MWM_DECOR_MINIMIZE) ? boxdim : 0) -
+                                  ((decor & MWM_DECOR_MAXIMIZE) ? boxdim : 0);
+                        *pHeight = boxdim;
+                        rval = TRUE;
+                }
+                break;
 #ifdef WSM
 
-	case FRAME_TITLEBAR:
-		if (decor & MWM_DECOR_TITLE) {
-		    *pX = pcd->frameInfo.upperBorderWidth;
-		    *pY = pcd->frameInfo.upperBorderWidth;
-		    *pWidth = pcd->frameInfo.width - 
-			    2*pcd->frameInfo.upperBorderWidth;
-		    *pHeight = boxdim;
-		    rval = TRUE;
-		}
-		break;
+        case FRAME_TITLEBAR:
+                if (decor & MWM_DECOR_TITLE) {
+                        *pX = pcd->frameInfo.upperBorderWidth;
+                        *pY = pcd->frameInfo.upperBorderWidth;
+                        *pWidth = pcd->frameInfo.width -
+                                  2 * pcd->frameInfo.upperBorderWidth;
+                        *pHeight = boxdim;
+                        rval = TRUE;
+                }
+                break;
 #endif /* WSM */
 
-	case FRAME_MINIMIZE:
-		if (decor & MWM_DECOR_MINIMIZE) {
-		    *pX = pcd->frameInfo.width - 
-			    pcd->frameInfo.upperBorderWidth - boxdim -
-			    ((decor & MWM_DECOR_MAXIMIZE) ? boxdim : 0);
-		    *pY = pcd->frameInfo.upperBorderWidth;
-		    *pWidth= boxdim;
-		    *pHeight = boxdim;
-		    rval = TRUE;
-		}
-		break;
+        case FRAME_MINIMIZE:
+                if (decor & MWM_DECOR_MINIMIZE) {
+                        *pX = pcd->frameInfo.width -
+                              pcd->frameInfo.upperBorderWidth - boxdim -
+                              ((decor & MWM_DECOR_MAXIMIZE) ? boxdim : 0);
+                        *pY = pcd->frameInfo.upperBorderWidth;
+                        *pWidth = boxdim;
+                        *pHeight = boxdim;
+                        rval = TRUE;
+                }
+                break;
 
-	case FRAME_MAXIMIZE:
-		if (decor & MWM_DECOR_MAXIMIZE) {
-		    *pX = pcd->frameInfo.width - 
-			    pcd->frameInfo.upperBorderWidth - boxdim;
-		    *pY = pcd->frameInfo.upperBorderWidth;
-		    *pWidth = boxdim;
-		    *pHeight = boxdim;
-		    rval = TRUE;
-		}
-		break;
+        case FRAME_MAXIMIZE:
+                if (decor & MWM_DECOR_MAXIMIZE) {
+                        *pX = pcd->frameInfo.width -
+                              pcd->frameInfo.upperBorderWidth - boxdim;
+                        *pY = pcd->frameInfo.upperBorderWidth;
+                        *pWidth = boxdim;
+                        *pHeight = boxdim;
+                        rval = TRUE;
+                }
+                break;
 
-	/*
-	 * For very small windows, the resize pieces will shrink
-	 * equally until the corner pieces get within two pixels
-	 * of the resize border width. At this point the "side" section
-	 * is killed off (by giving it a zero length) and the corner
-	 * pieces claim the additional space
-	 */
-	case FRAME_RESIZE_NW:
-		if (decor & MWM_DECOR_RESIZEH) {
-		    *pX = 0;
-		    *pY = 0;
+        /*
+         * For very small windows, the resize pieces will shrink
+         * equally until the corner pieces get within two pixels
+         * of the resize border width. At this point the "side" section
+         * is killed off (by giving it a zero length) and the corner
+         * pieces claim the additional space
+         */
+        case FRAME_RESIZE_NW:
+                if (decor & MWM_DECOR_RESIZEH) {
+                        *pX = 0;
+                        *pY = 0;
 
-		    if ((int)pcd->frameInfo.cornerWidth > 
-			    (int)pcd->frameInfo.lowerBorderWidth+2) {
-			*pWidth = pcd->frameInfo.cornerWidth;
-		    }
-		    else {
-			horiz = pcd->frameInfo.width - 
-				2*pcd->frameInfo.cornerWidth;
-			*pWidth = pcd->frameInfo.cornerWidth + 
-				horiz/2 + horiz%2;
-		    }
+                        if ((int)pcd->frameInfo.cornerWidth >
+                            (int)pcd->frameInfo.lowerBorderWidth + 2) {
+                                *pWidth = pcd->frameInfo.cornerWidth;
+                        } else {
+                                horiz = pcd->frameInfo.width -
+                                        2 * pcd->frameInfo.cornerWidth;
+                                *pWidth = pcd->frameInfo.cornerWidth +
+                                          horiz / 2 + horiz % 2;
+                        }
 
-		    if ((int)pcd->frameInfo.cornerHeight > 
-			    (int)pcd->frameInfo.lowerBorderWidth+2) {
-			*pHeight = pcd->frameInfo.cornerHeight;
-		    }
-		    else {
-			vert = pcd->frameInfo.height - 
-				2*pcd->frameInfo.cornerHeight;
-			*pHeight = pcd->frameInfo.cornerHeight + 
-				vert/2 + vert%2;
-		    }
-		    rval = TRUE;
-		}
-		break;
-	    
-	case FRAME_RESIZE_N:
-		if (decor & MWM_DECOR_RESIZEH) {
-		    *pX = pcd->frameInfo.cornerWidth;
-		    *pY = 0;
-		    *pHeight = pcd->frameInfo.upperBorderWidth;
-		    if ((int)pcd->frameInfo.cornerWidth > 
-			    (int)pcd->frameInfo.lowerBorderWidth+2) {
-			*pWidth = pcd->frameInfo.width - 
-				2*pcd->frameInfo.cornerWidth;
-		    }
-		    else {
-			*pWidth = 0;
-		    }
-		    rval = TRUE;
-		}
-		break;
-	    
-	case FRAME_RESIZE_NE:
-		if (decor & MWM_DECOR_RESIZEH) {
-		    if ((int)pcd->frameInfo.cornerWidth > 
-			    (int)pcd->frameInfo.lowerBorderWidth+2) {
-			*pWidth = pcd->frameInfo.cornerWidth;
-		    }
-		    else {
-			horiz = pcd->frameInfo.width - 
-			    2*pcd->frameInfo.cornerWidth;
-			*pWidth = pcd->frameInfo.cornerWidth + horiz/2;
-		    }
-		    *pX = pcd->frameInfo.width - *pWidth;
+                        if ((int)pcd->frameInfo.cornerHeight >
+                            (int)pcd->frameInfo.lowerBorderWidth + 2) {
+                                *pHeight = pcd->frameInfo.cornerHeight;
+                        } else {
+                                vert = pcd->frameInfo.height -
+                                       2 * pcd->frameInfo.cornerHeight;
+                                *pHeight = pcd->frameInfo.cornerHeight +
+                                           vert / 2 + vert % 2;
+                        }
+                        rval = TRUE;
+                }
+                break;
 
-		    if ((int)pcd->frameInfo.cornerHeight > 
-			   (int)pcd->frameInfo.lowerBorderWidth+2) {
-			*pHeight = pcd->frameInfo.cornerHeight;
-		    }
-		    else {
-			vert = pcd->frameInfo.height - 
-				2*pcd->frameInfo.cornerHeight;
-			*pHeight = pcd->frameInfo.cornerHeight + 
-				vert/2 + vert%2;
-		    }
-		    *pY = 0;
-		    rval = TRUE;
-		}
-		break;
-	    
-	case FRAME_RESIZE_E:
-		if (decor & MWM_DECOR_RESIZEH) {
-		    *pX = pcd->frameInfo.width - 
-		            pcd->frameInfo.lowerBorderWidth;
-		    *pY = pcd->frameInfo.cornerHeight;
-		    *pWidth = pcd->frameInfo.lowerBorderWidth;
-		    if ((int)pcd->frameInfo.cornerHeight > 
-			    (int)pcd->frameInfo.lowerBorderWidth+2) {
-			*pHeight = pcd->frameInfo.height - 
-				2*pcd->frameInfo.cornerHeight;
-		    }
-		    else {
-			*pHeight = 0;
-		    }
-		    rval = TRUE;
-		}
-		break;
-	    
-	case FRAME_RESIZE_SE:
-		if (decor & MWM_DECOR_RESIZEH) {
-		    if ((int)pcd->frameInfo.cornerWidth > 
-			    (int)pcd->frameInfo.lowerBorderWidth+2) {
-			*pWidth = pcd->frameInfo.cornerWidth;
-		    }
-		    else {
-			horiz = pcd->frameInfo.width - 
-				2*pcd->frameInfo.cornerWidth;
-			*pWidth = pcd->frameInfo.cornerWidth + horiz/2;
-		    }
-		    *pX = pcd->frameInfo.width - *pWidth;
+        case FRAME_RESIZE_N:
+                if (decor & MWM_DECOR_RESIZEH) {
+                        *pX = pcd->frameInfo.cornerWidth;
+                        *pY = 0;
+                        *pHeight = pcd->frameInfo.upperBorderWidth;
+                        if ((int)pcd->frameInfo.cornerWidth >
+                            (int)pcd->frameInfo.lowerBorderWidth + 2) {
+                                *pWidth = pcd->frameInfo.width -
+                                          2 * pcd->frameInfo.cornerWidth;
+                        } else {
+                                *pWidth = 0;
+                        }
+                        rval = TRUE;
+                }
+                break;
 
-		    if ((int)pcd->frameInfo.cornerHeight > 
-			    (int)pcd->frameInfo.lowerBorderWidth+2) {
-			*pHeight = pcd->frameInfo.cornerHeight;
-		    }
-		    else {
-			vert = pcd->frameInfo.height - 
-				2*pcd->frameInfo.cornerHeight;
-			*pHeight = pcd->frameInfo.cornerHeight + vert/2;
-		    }
-		    *pY = pcd->frameInfo.height - *pHeight;
-		    rval = TRUE;
-		}
-		break;
-	    
-	case FRAME_RESIZE_S:
-		if (decor & MWM_DECOR_RESIZEH) {
-		    *pX = pcd->frameInfo.cornerWidth;
-		    *pY = pcd->frameInfo.height - 
-			    pcd->frameInfo.lowerBorderWidth;
-		    if ((int)pcd->frameInfo.cornerWidth > 
-			    (int)pcd->frameInfo.lowerBorderWidth+2) {
-			*pWidth = pcd->frameInfo.width - 
-				2*pcd->frameInfo.cornerWidth;
-		    }
-		    else {
-			*pWidth = 0;
-		    }
-		    *pHeight = pcd->frameInfo.lowerBorderWidth;
-		    rval = TRUE;
-		}
-		break;
-	    
-	case FRAME_RESIZE_SW:
-		if (decor & MWM_DECOR_RESIZEH) {
-		    if ((int)pcd->frameInfo.cornerWidth > 
-			    (int)pcd->frameInfo.lowerBorderWidth+2) {
-			*pWidth = pcd->frameInfo.cornerWidth;
-		    }
-		    else {
-			horiz = pcd->frameInfo.width - 
-			        2*pcd->frameInfo.cornerWidth;
-			*pWidth = pcd->frameInfo.cornerWidth + 
-				horiz/2 + horiz%2;
-		    }
-		    *pX = 0;
+        case FRAME_RESIZE_NE:
+                if (decor & MWM_DECOR_RESIZEH) {
+                        if ((int)pcd->frameInfo.cornerWidth >
+                            (int)pcd->frameInfo.lowerBorderWidth + 2) {
+                                *pWidth = pcd->frameInfo.cornerWidth;
+                        } else {
+                                horiz = pcd->frameInfo.width -
+                                        2 * pcd->frameInfo.cornerWidth;
+                                *pWidth =
+                                    pcd->frameInfo.cornerWidth + horiz / 2;
+                        }
+                        *pX = pcd->frameInfo.width - *pWidth;
 
-		    if ((int)pcd->frameInfo.cornerHeight > 
-			    (int)pcd->frameInfo.lowerBorderWidth+2) {
-			*pHeight = pcd->frameInfo.cornerHeight;
-		    }
-		    else {
-			vert = pcd->frameInfo.height - 
-				2*pcd->frameInfo.cornerHeight;
-			*pHeight = pcd->frameInfo.cornerHeight + vert/2;
-		    }
-		    *pY = pcd->frameInfo.height - *pHeight;
-		    rval = TRUE;
-		}
-		break;
-	    
-	case FRAME_RESIZE_W:
-		if (decor & MWM_DECOR_RESIZEH) {
-		    *pX = 0;
-		    *pY = pcd->frameInfo.cornerHeight;
-		    *pWidth = pcd->frameInfo.lowerBorderWidth;
-		    if ((int)pcd->frameInfo.cornerHeight > 
-			    (int)pcd->frameInfo.lowerBorderWidth+2) {
-			*pHeight = pcd->frameInfo.height - 
-				2*pcd->frameInfo.cornerHeight;
-		    }
-		    else {
-			*pHeight = 0;
-		    }
-		    rval = TRUE;
-		}
-		break;
-	    
-	default:
-		break;
-    }
-    return(rval);
+                        if ((int)pcd->frameInfo.cornerHeight >
+                            (int)pcd->frameInfo.lowerBorderWidth + 2) {
+                                *pHeight = pcd->frameInfo.cornerHeight;
+                        } else {
+                                vert = pcd->frameInfo.height -
+                                       2 * pcd->frameInfo.cornerHeight;
+                                *pHeight = pcd->frameInfo.cornerHeight +
+                                           vert / 2 + vert % 2;
+                        }
+                        *pY = 0;
+                        rval = TRUE;
+                }
+                break;
+
+        case FRAME_RESIZE_E:
+                if (decor & MWM_DECOR_RESIZEH) {
+                        *pX = pcd->frameInfo.width -
+                              pcd->frameInfo.lowerBorderWidth;
+                        *pY = pcd->frameInfo.cornerHeight;
+                        *pWidth = pcd->frameInfo.lowerBorderWidth;
+                        if ((int)pcd->frameInfo.cornerHeight >
+                            (int)pcd->frameInfo.lowerBorderWidth + 2) {
+                                *pHeight = pcd->frameInfo.height -
+                                           2 * pcd->frameInfo.cornerHeight;
+                        } else {
+                                *pHeight = 0;
+                        }
+                        rval = TRUE;
+                }
+                break;
+
+        case FRAME_RESIZE_SE:
+                if (decor & MWM_DECOR_RESIZEH) {
+                        if ((int)pcd->frameInfo.cornerWidth >
+                            (int)pcd->frameInfo.lowerBorderWidth + 2) {
+                                *pWidth = pcd->frameInfo.cornerWidth;
+                        } else {
+                                horiz = pcd->frameInfo.width -
+                                        2 * pcd->frameInfo.cornerWidth;
+                                *pWidth =
+                                    pcd->frameInfo.cornerWidth + horiz / 2;
+                        }
+                        *pX = pcd->frameInfo.width - *pWidth;
+
+                        if ((int)pcd->frameInfo.cornerHeight >
+                            (int)pcd->frameInfo.lowerBorderWidth + 2) {
+                                *pHeight = pcd->frameInfo.cornerHeight;
+                        } else {
+                                vert = pcd->frameInfo.height -
+                                       2 * pcd->frameInfo.cornerHeight;
+                                *pHeight =
+                                    pcd->frameInfo.cornerHeight + vert / 2;
+                        }
+                        *pY = pcd->frameInfo.height - *pHeight;
+                        rval = TRUE;
+                }
+                break;
+
+        case FRAME_RESIZE_S:
+                if (decor & MWM_DECOR_RESIZEH) {
+                        *pX = pcd->frameInfo.cornerWidth;
+                        *pY = pcd->frameInfo.height -
+                              pcd->frameInfo.lowerBorderWidth;
+                        if ((int)pcd->frameInfo.cornerWidth >
+                            (int)pcd->frameInfo.lowerBorderWidth + 2) {
+                                *pWidth = pcd->frameInfo.width -
+                                          2 * pcd->frameInfo.cornerWidth;
+                        } else {
+                                *pWidth = 0;
+                        }
+                        *pHeight = pcd->frameInfo.lowerBorderWidth;
+                        rval = TRUE;
+                }
+                break;
+
+        case FRAME_RESIZE_SW:
+                if (decor & MWM_DECOR_RESIZEH) {
+                        if ((int)pcd->frameInfo.cornerWidth >
+                            (int)pcd->frameInfo.lowerBorderWidth + 2) {
+                                *pWidth = pcd->frameInfo.cornerWidth;
+                        } else {
+                                horiz = pcd->frameInfo.width -
+                                        2 * pcd->frameInfo.cornerWidth;
+                                *pWidth = pcd->frameInfo.cornerWidth +
+                                          horiz / 2 + horiz % 2;
+                        }
+                        *pX = 0;
+
+                        if ((int)pcd->frameInfo.cornerHeight >
+                            (int)pcd->frameInfo.lowerBorderWidth + 2) {
+                                *pHeight = pcd->frameInfo.cornerHeight;
+                        } else {
+                                vert = pcd->frameInfo.height -
+                                       2 * pcd->frameInfo.cornerHeight;
+                                *pHeight =
+                                    pcd->frameInfo.cornerHeight + vert / 2;
+                        }
+                        *pY = pcd->frameInfo.height - *pHeight;
+                        rval = TRUE;
+                }
+                break;
+
+        case FRAME_RESIZE_W:
+                if (decor & MWM_DECOR_RESIZEH) {
+                        *pX = 0;
+                        *pY = pcd->frameInfo.cornerHeight;
+                        *pWidth = pcd->frameInfo.lowerBorderWidth;
+                        if ((int)pcd->frameInfo.cornerHeight >
+                            (int)pcd->frameInfo.lowerBorderWidth + 2) {
+                                *pHeight = pcd->frameInfo.height -
+                                           2 * pcd->frameInfo.cornerHeight;
+                        } else {
+                                *pHeight = 0;
+                        }
+                        rval = TRUE;
+                }
+                break;
+
+        default:
+                break;
+        }
+        return (rval);
 }
 
-
-
 /*************************************<->*************************************
  *
  *  IdentifyFramePart (pCD, x, y)
@@ -980,7 +898,7 @@ Boolean GetFramePartInfo (ClientData *pcd, int part, int *pX, int *pY, unsigned 
  *
  *  x, y	- client coordinates of event
  *
- * 
+ *
  *  Outputs:
  *  -------
  *  Return 	- ID of frame part where the button event occurred.
@@ -990,84 +908,70 @@ Boolean GetFramePartInfo (ClientData *pcd, int part, int *pX, int *pY, unsigned 
  *  --------
  *************************************<->***********************************/
 
-int IdentifyFramePart (ClientData *pCD, int x, int y)
-{
-    unsigned long decor = pCD->decor;
-    int clientWidth = (pCD->maxConfig) ? pCD->maxWidth : pCD->clientWidth;
-    int clientHeight= (pCD->maxConfig) ? pCD->maxHeight : pCD->clientHeight;
-    int rval;
+int IdentifyFramePart(ClientData *pCD, int x, int y) {
+        unsigned long decor = pCD->decor;
+        int clientWidth = (pCD->maxConfig) ? pCD->maxWidth : pCD->clientWidth;
+        int clientHeight =
+            (pCD->maxConfig) ? pCD->maxHeight : pCD->clientHeight;
+        int rval;
 
+        /* check for client window */
 
-    /* check for client window */
+        if ((x >= pCD->clientOffset.x) &&
+            (x < pCD->clientOffset.x + clientWidth) &&
+            (y >= pCD->clientOffset.y) &&
+            (y < pCD->clientOffset.y + clientHeight)) {
+                return (FRAME_CLIENT);
+        }
 
-    if ( (x >= pCD->clientOffset.x) &&
-	 (x <  pCD->clientOffset.x + clientWidth) &&
-	 (y >= pCD->clientOffset.y) &&
-	 (y <  pCD->clientOffset.y + clientHeight) )
-    {
-	return (FRAME_CLIENT);
-    }
+        /* check for client matte */
 
+        if (pCD->matteWidth) {
+                if ((x >= pCD->matteRectangle.x) &&
+                    (x < (int)pCD->matteRectangle.x +
+                             (int)pCD->matteRectangle.width) &&
+                    (y >= pCD->matteRectangle.y) &&
+                    (y < (int)pCD->matteRectangle.y +
+                             (int)pCD->matteRectangle.height)) {
+                        return (FRAME_MATTE);
+                }
+        }
 
-    /* check for client matte */
+        /* check title bar */
 
-    if (pCD->matteWidth)
-    {
-	if ( (x >= pCD->matteRectangle.x) &&
-	     (x <  (int)pCD->matteRectangle.x + (int)pCD->matteRectangle.width) &&
-	     (y >= pCD->matteRectangle.y) &&
-	     (y <  (int)pCD->matteRectangle.y + (int)pCD->matteRectangle.height) )
-	{
-	    return (FRAME_MATTE);
-	}
-    }
+        if (decor & MWM_DECOR_TITLE) {
+                if ((x >= pCD->titleRectangle.x) &&
+                    (x < (int)pCD->titleRectangle.x +
+                             (int)pCD->titleRectangle.width) &&
+                    (y >= pCD->titleRectangle.y) &&
+                    (y < (int)pCD->titleRectangle.y +
+                             (int)pCD->titleRectangle.height)) {
+                        return (GadgetID(x, y, pCD->pTitleGadgets,
+                                         (unsigned int)pCD->cTitleGadgets));
+                }
+        }
 
+        /* try resize border */
 
-    /* check title bar */
+        if (decor & MWM_DECOR_RESIZEH) {
+                rval = GadgetID(x, y, pCD->pResizeGadgets, STRETCH_COUNT);
+        } else {
+                rval = FRAME_NONE;
+        }
 
-    if (decor & MWM_DECOR_TITLE)
-    {
-	if ( (x >= pCD->titleRectangle.x) &&
-	     (x <  (int)pCD->titleRectangle.x + (int)pCD->titleRectangle.width) &&
-	     (y >= pCD->titleRectangle.y) &&
-	     (y <  (int)pCD->titleRectangle.y + (int)pCD->titleRectangle.height) )
-	{
-	    return(GadgetID(x, y, pCD->pTitleGadgets, 
-			    (unsigned int)pCD->cTitleGadgets));
-	}
-    }
+        /* if not a resize border, but still in bounds return FRAME_NBORDER */
 
+        if (rval == FRAME_NONE) {
+                if ((x >= 0) && (y >= 0) && (x < FrameWidth(pCD)) &&
+                    (y < FrameHeight(pCD))) {
+                        rval = FRAME_NBORDER;
+                }
+        }
 
-    /* try resize border */
-
-    if (decor & MWM_DECOR_RESIZEH)
-    {
-	rval = GadgetID(x, y, pCD->pResizeGadgets, STRETCH_COUNT);
-    }
-    else
-    {
-	rval = FRAME_NONE;
-    }
-
-
-    /* if not a resize border, but still in bounds return FRAME_NBORDER */
-
-    if (rval == FRAME_NONE)
-    {
-	if ((x >= 0) && (y >= 0) &&
-	    (x < FrameWidth (pCD)) && (y < FrameHeight (pCD))) 
-	{
-	    rval = FRAME_NBORDER;
-	}
-    }
-
-    return (rval);
+        return (rval);
 
 } /* END OF FUNCTION IdentifyFramePart */
 
-
-
-
 /*************************************<->*************************************
  *
  *  GadgetID (x, y, pgadget, count)
@@ -1084,7 +988,7 @@ int IdentifyFramePart (ClientData *pCD, int x, int y)
  *  y		- y coordinate of event
  *  pgadget	- pointer to a list of GadgetRectangles
  *  count	- number of elements in the pgadget list
- * 
+ *
  *  Outputs:
  *  -------
  *  Return 	- ID of gadget if found, FRAME_NONE if not found
@@ -1092,27 +996,23 @@ int IdentifyFramePart (ClientData *pCD, int x, int y)
  *
  *  Comments:
  *  --------
- *  
- * 
+ *
+ *
  *************************************<->***********************************/
-int GadgetID (int x, int y, GadgetRectangle *pgadget, unsigned int count)
-{
-    int ix;
+int GadgetID(int x, int y, GadgetRectangle *pgadget, unsigned int count) {
+        int ix;
 
-    for (ix = 0; ix < count; ix++, pgadget++) {
-	if ( (x >= pgadget->rect.x) &&
-	     (x <  (int)pgadget->rect.x + (int)pgadget->rect.width) &&
-	     (y >= pgadget->rect.y) &&
-	     (y <  (int)pgadget->rect.y + (int)pgadget->rect.height) ) {
-	    return ((unsigned long) pgadget->id);
-	}
-    }
-    return(FRAME_NONE);
+        for (ix = 0; ix < count; ix++, pgadget++) {
+                if ((x >= pgadget->rect.x) &&
+                    (x < (int)pgadget->rect.x + (int)pgadget->rect.width) &&
+                    (y >= pgadget->rect.y) &&
+                    (y < (int)pgadget->rect.y + (int)pgadget->rect.height)) {
+                        return ((unsigned long)pgadget->id);
+                }
+        }
+        return (FRAME_NONE);
 }
 
-
-
-
 /*************************************<->*************************************
  *
  *  FrameToClient (pcd, pX, pY, pWidth, pHeight)
@@ -1130,7 +1030,7 @@ int GadgetID (int x, int y, GadgetRectangle *pgadget, unsigned int count)
  *  pY		- pointer to frame y-coord
  *  pWidth	- pointer to frame width in pixels
  *  pHeight	- pointer to frame height in pixels
- * 
+ *
  *  Outputs:
  *  -------
  *  *pX		- client x-coord
@@ -1141,19 +1041,18 @@ int GadgetID (int x, int y, GadgetRectangle *pgadget, unsigned int count)
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-void FrameToClient (ClientData *pcd, int *pX, int *pY, unsigned int *pWidth, unsigned int *pHeight)
-{
-    /* compute client window coordinates from frame coordinates */
+void FrameToClient(ClientData *pcd, int *pX, int *pY, unsigned int *pWidth,
+                   unsigned int *pHeight) {
+        /* compute client window coordinates from frame coordinates */
 
-    *pWidth = *pWidth - 2*pcd->clientOffset.x; 
-    *pHeight = *pHeight - pcd->clientOffset.x - pcd->clientOffset.y; 
-    *pX =  *pX + pcd->clientOffset.x;
-    *pY =  *pY + pcd->clientOffset.y;
+        *pWidth = *pWidth - 2 * pcd->clientOffset.x;
+        *pHeight = *pHeight - pcd->clientOffset.x - pcd->clientOffset.y;
+        *pX = *pX + pcd->clientOffset.x;
+        *pY = *pY + pcd->clientOffset.y;
 }
 
-
 /*************************************<->*************************************
  *
  *  ClientToFrame (pcd, pX, pY, pWidth, pHeight)
@@ -1171,7 +1070,7 @@ void FrameToClient (ClientData *pcd, int *pX, int *pY, unsigned int *pWidth, uns
  *  pY 		- client y-coord
  *  pWidth	- client width in pixels
  *  pHeight	- client height in pixels
- * 
+ *
  *  Outputs:
  *  -------
  *  *pX		- frame x-coord
@@ -1182,19 +1081,17 @@ void FrameToClient (ClientData *pcd, int *pX, int *pY, unsigned int *pWidth, uns
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-void ClientToFrame (ClientData *pcd, int *pX, int *pY, unsigned int *pWidth, unsigned int *pHeight)
-{
-    /* compute client window coordinates from frame coordinates */
-    *pWidth = *pWidth + 2*pcd->clientOffset.x;
-    *pHeight = *pHeight + pcd->clientOffset.x + pcd->clientOffset.y;
-    *pX = *pX - pcd->clientOffset.x;
-    *pY = *pY - pcd->clientOffset.y;
+void ClientToFrame(ClientData *pcd, int *pX, int *pY, unsigned int *pWidth,
+                   unsigned int *pHeight) {
+        /* compute client window coordinates from frame coordinates */
+        *pWidth = *pWidth + 2 * pcd->clientOffset.x;
+        *pHeight = *pHeight + pcd->clientOffset.x + pcd->clientOffset.y;
+        *pX = *pX - pcd->clientOffset.x;
+        *pY = *pY - pcd->clientOffset.y;
 }
 
-
-
 /*************************************<->*************************************
  *
  *  Boolean GetDepressInfo (pcd, part, pX, pY, pWidth, pHeight)
@@ -1202,7 +1099,7 @@ void ClientToFrame (ClientData *pcd, int *pX, int *pY, unsigned int *pWidth, uns
  *
  *  Description:
  *  -----------
- *  Gets frame relative position, size, and width of the beveling 
+ *  Gets frame relative position, size, and width of the beveling
  *  to show the gadget in its depressed state.
  *
  *
@@ -1216,7 +1113,7 @@ void ClientToFrame (ClientData *pcd, int *pX, int *pY, unsigned int *pWidth, uns
  *  pHeight	- pointer to width return value
  *  pInverWidth	- pointer to inversion width return value
  *
- * 
+ *
  *  Outputs:
  *  -------
  *  Return 	- True if values returned, false if no such part for this
@@ -1226,183 +1123,170 @@ void ClientToFrame (ClientData *pcd, int *pX, int *pY, unsigned int *pWidth, uns
  *  Comments:
  *  --------
  *  o The "part" must be a title bar gadget.
- * 
+ *
  *************************************<->***********************************/
-Boolean GetDepressInfo (ClientData *pcd, int part, int *pX, int *pY, unsigned int *pWidth, unsigned int *pHeight, unsigned int *pInvertWidth)
-{
-    Boolean rval;
-    unsigned int exBevel, eBevel;
-    unsigned int wBevel, sBevel;
-    unsigned int insideBevel, meBevel;
-    unsigned int decoration = pcd->decor;
-    unsigned int tmp;
+Boolean GetDepressInfo(ClientData *pcd, int part, int *pX, int *pY,
+                       unsigned int *pWidth, unsigned int *pHeight,
+                       unsigned int *pInvertWidth) {
+        Boolean rval;
+        unsigned int exBevel, eBevel;
+        unsigned int wBevel, sBevel;
+        unsigned int insideBevel, meBevel;
+        unsigned int decoration = pcd->decor;
+        unsigned int tmp;
 
-    switch (part)
-    {
-	case FRAME_SYSTEM:
-	case FRAME_TITLE:
-	case FRAME_MINIMIZE:
-	case FRAME_MAXIMIZE:
-	    if ((rval = GetFramePartInfo (pcd, part, pX, pY, pWidth, pHeight)))
-	    {
-		/*
-		 * set bevel width based on join bevel
-		 */
-		*pInvertWidth = 1 + (JOIN_BEVEL(pcd) / 2);
-		
-		/* bevel between title and client (or matte) */
-		insideBevel = (pcd->matteWidth > 0) ?  JOIN_BEVEL(pcd) : 
-						   pcd->internalBevel;
+        switch (part) {
+        case FRAME_SYSTEM:
+        case FRAME_TITLE:
+        case FRAME_MINIMIZE:
+        case FRAME_MAXIMIZE:
+                if ((rval = GetFramePartInfo(pcd, part, pX, pY, pWidth,
+                                             pHeight))) {
+                        /*
+                         * set bevel width based on join bevel
+                         */
+                        *pInvertWidth = 1 + (JOIN_BEVEL(pcd) / 2);
 
+                        /* bevel between title and client (or matte) */
+                        insideBevel = (pcd->matteWidth > 0)
+                                          ? JOIN_BEVEL(pcd)
+                                          : pcd->internalBevel;
 
-		/*
-		 * Compute beveling around the title area of the
-		 * title bar.
-		 */
-		if (decoration & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER))
-		{
-		    exBevel = JOIN_BEVEL(pcd);	/* north side */
-		    sBevel = insideBevel;		/* south side */
-		    eBevel = JOIN_BEVEL(pcd);	/* east side */
-		    wBevel = JOIN_BEVEL(pcd);	/* west side */
-		    meBevel = JOIN_BEVEL(pcd);	/* east of Min */
-		}
-		else 
-		{
-		    /* borderless window */
+                        /*
+                         * Compute beveling around the title area of the
+                         * title bar.
+                         */
+                        if (decoration &
+                            (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER)) {
+                                exBevel = JOIN_BEVEL(pcd); /* north side */
+                                sBevel = insideBevel;      /* south side */
+                                eBevel = JOIN_BEVEL(pcd);  /* east side */
+                                wBevel = JOIN_BEVEL(pcd);  /* west side */
+                                meBevel = JOIN_BEVEL(pcd); /* east of Min */
+                        } else {
+                                /* borderless window */
 
-		    exBevel = EXTERNAL_BEVEL(pcd);
+                                exBevel = EXTERNAL_BEVEL(pcd);
 
-		    sBevel = (pcd->matteWidth > 0) ? insideBevel : 
-						      EXTERNAL_BEVEL(pcd);
+                                sBevel = (pcd->matteWidth > 0)
+                                             ? insideBevel
+                                             : EXTERNAL_BEVEL(pcd);
 
-		    eBevel = (decoration & (MWM_DECOR_MINIMIZE | 
-						 MWM_DECOR_MAXIMIZE))?
-				      JOIN_BEVEL(pcd) : EXTERNAL_BEVEL(pcd);
+                                eBevel = (decoration & (MWM_DECOR_MINIMIZE |
+                                                        MWM_DECOR_MAXIMIZE))
+                                             ? JOIN_BEVEL(pcd)
+                                             : EXTERNAL_BEVEL(pcd);
 
-		    wBevel = (decoration & MWM_DECOR_MENU) ?
-				      JOIN_BEVEL(pcd) : EXTERNAL_BEVEL(pcd);
+                                wBevel = (decoration & MWM_DECOR_MENU)
+                                             ? JOIN_BEVEL(pcd)
+                                             : EXTERNAL_BEVEL(pcd);
 
-		    meBevel = (decoration & (MWM_DECOR_MAXIMIZE)) ?
-				      JOIN_BEVEL(pcd) : EXTERNAL_BEVEL(pcd);
-		}
+                                meBevel = (decoration & (MWM_DECOR_MAXIMIZE))
+                                              ? JOIN_BEVEL(pcd)
+                                              : EXTERNAL_BEVEL(pcd);
+                        }
 
-		/*
-		 * Adjust height of all title bar gadgets if necessary.
-		 * (The bottom bevel is the same for all the pieces.)
-		 */
+                        /*
+                         * Adjust height of all title bar gadgets if necessary.
+                         * (The bottom bevel is the same for all the pieces.)
+                         */
 
-		if (sBevel > *pInvertWidth)
-		{
-		    *pHeight -= (sBevel - *pInvertWidth);
-		}
+                        if (sBevel > *pInvertWidth) {
+                                *pHeight -= (sBevel - *pInvertWidth);
+                        }
 
-		/*
-		 * Adjust the beveling on the other sides of the 
-		 * gadgets.
-		 */
-		switch (part)
-		{
-		    case FRAME_SYSTEM:
-			/* west and north sides */
-			if (exBevel > *pInvertWidth) 
-			{
-			    tmp = exBevel - *pInvertWidth;
-			    *pX += tmp;
-			    *pWidth -= tmp;
-			    *pY += tmp;
-			    *pHeight -= tmp;
-			}
+                        /*
+                         * Adjust the beveling on the other sides of the
+                         * gadgets.
+                         */
+                        switch (part) {
+                        case FRAME_SYSTEM:
+                                /* west and north sides */
+                                if (exBevel > *pInvertWidth) {
+                                        tmp = exBevel - *pInvertWidth;
+                                        *pX += tmp;
+                                        *pWidth -= tmp;
+                                        *pY += tmp;
+                                        *pHeight -= tmp;
+                                }
 
-			/* east side */
-			if (wBevel > *pInvertWidth) 
-			{
-			    *pWidth -= (wBevel - *pInvertWidth);
-			}
-			break;
+                                /* east side */
+                                if (wBevel > *pInvertWidth) {
+                                        *pWidth -= (wBevel - *pInvertWidth);
+                                }
+                                break;
 
-		    case FRAME_TITLE:
-			/* west side */
-			if (wBevel > *pInvertWidth) 
-			{
-			    tmp = wBevel - *pInvertWidth;
-			    *pX += tmp;
-			    *pWidth -= tmp;
-			}
+                        case FRAME_TITLE:
+                                /* west side */
+                                if (wBevel > *pInvertWidth) {
+                                        tmp = wBevel - *pInvertWidth;
+                                        *pX += tmp;
+                                        *pWidth -= tmp;
+                                }
 
-			/* north side */
-			if (exBevel > *pInvertWidth) 
-			{
-			    tmp = exBevel - *pInvertWidth;
-			    *pY += tmp;
-			    *pHeight -= tmp;
-			}
+                                /* north side */
+                                if (exBevel > *pInvertWidth) {
+                                        tmp = exBevel - *pInvertWidth;
+                                        *pY += tmp;
+                                        *pHeight -= tmp;
+                                }
 
-			/* east side */
-			if (eBevel > *pInvertWidth) 
-			{
-			    *pWidth -= eBevel - *pInvertWidth;
-			}
-			break;
+                                /* east side */
+                                if (eBevel > *pInvertWidth) {
+                                        *pWidth -= eBevel - *pInvertWidth;
+                                }
+                                break;
 
-		    case FRAME_MINIMIZE:
-			/* north side */
-			if (exBevel > *pInvertWidth) 
-			{
-			    tmp = exBevel - *pInvertWidth;
-			    *pY += tmp;
-			    *pHeight -= tmp;
-			}
+                        case FRAME_MINIMIZE:
+                                /* north side */
+                                if (exBevel > *pInvertWidth) {
+                                        tmp = exBevel - *pInvertWidth;
+                                        *pY += tmp;
+                                        *pHeight -= tmp;
+                                }
 
-			/* west side */
-			if (eBevel > *pInvertWidth) 
-			{
-			    tmp = eBevel - *pInvertWidth;
-			    *pX += tmp;
-			    *pWidth -= tmp;
-			}
+                                /* west side */
+                                if (eBevel > *pInvertWidth) {
+                                        tmp = eBevel - *pInvertWidth;
+                                        *pX += tmp;
+                                        *pWidth -= tmp;
+                                }
 
-			/* east side */
-			if (meBevel > *pInvertWidth) 
-			{
-			    *pWidth -= meBevel - *pInvertWidth;
-			}
-			break;
+                                /* east side */
+                                if (meBevel > *pInvertWidth) {
+                                        *pWidth -= meBevel - *pInvertWidth;
+                                }
+                                break;
 
-		    case FRAME_MAXIMIZE:
-			/* north and east sides */
-			if (exBevel > *pInvertWidth) 
-			{
-			    tmp = exBevel - *pInvertWidth;
-			    *pY += tmp;
-			    *pHeight -= tmp;
-			    *pWidth -= tmp;
-			}
+                        case FRAME_MAXIMIZE:
+                                /* north and east sides */
+                                if (exBevel > *pInvertWidth) {
+                                        tmp = exBevel - *pInvertWidth;
+                                        *pY += tmp;
+                                        *pHeight -= tmp;
+                                        *pWidth -= tmp;
+                                }
 
-			/* west side */
-			if (eBevel > *pInvertWidth) 
-			{
-			    tmp = eBevel - *pInvertWidth;
-			    *pX += tmp;
-			    *pWidth -= tmp;
-			}
-			break;
-		} /* end switch */
-	    } /* end case "title bar part" */	
-	    break;
+                                /* west side */
+                                if (eBevel > *pInvertWidth) {
+                                        tmp = eBevel - *pInvertWidth;
+                                        *pX += tmp;
+                                        *pWidth -= tmp;
+                                }
+                                break;
+                        } /* end switch */
+                }         /* end case "title bar part" */
+                break;
 
-	default:
-	    rval = False;
-	    break;
+        default:
+                rval = False;
+                break;
 
-    }	/* end switch */
+        } /* end switch */
 
-    return (rval);
+        return (rval);
 }
 
-
-
-
 /*************************************<->*************************************
  *
  *  SetFrameInfo (pcd)
@@ -1416,64 +1300,57 @@ Boolean GetDepressInfo (ClientData *pcd, int part, int *pX, int *pY, unsigned in
  *  Inputs:
  *  ------
  *  pcd		- pointer to client data
- * 
+ *
  *  Outputs:
  *  -------
  *
  *  Comments:
  *  --------
  *  o Sets values into the FrameInfo component of the client data structure
- * 
+ *
  *************************************<->***********************************/
-void SetFrameInfo (ClientData *pcd)
-{
+void SetFrameInfo(ClientData *pcd) {
 
-    /*
-     * The title bar height value stored in pcd->frameInfo is used by the
-     * macro TitleBarHeight(pcd).
-     */
+        /*
+         * The title bar height value stored in pcd->frameInfo is used by the
+         * macro TitleBarHeight(pcd).
+         */
 
-    pcd->frameInfo.titleBarHeight = InitTitleBarHeight (pcd);
+        pcd->frameInfo.titleBarHeight = InitTitleBarHeight(pcd);
 
-    pcd->frameInfo.x = FrameX (pcd);
-    pcd->frameInfo.y = FrameY (pcd);
-    pcd->frameInfo.width = FrameWidth (pcd);
-    pcd->frameInfo.height = FrameHeight (pcd);
-    pcd->frameInfo.upperBorderWidth = UpperBorderWidth (pcd);
-    pcd->frameInfo.lowerBorderWidth = LowerBorderWidth (pcd);
-    pcd->frameInfo.cornerWidth = CornerWidth (pcd);
-    pcd->frameInfo.cornerHeight = CornerHeight (pcd);
+        pcd->frameInfo.x = FrameX(pcd);
+        pcd->frameInfo.y = FrameY(pcd);
+        pcd->frameInfo.width = FrameWidth(pcd);
+        pcd->frameInfo.height = FrameHeight(pcd);
+        pcd->frameInfo.upperBorderWidth = UpperBorderWidth(pcd);
+        pcd->frameInfo.lowerBorderWidth = LowerBorderWidth(pcd);
+        pcd->frameInfo.cornerWidth = CornerWidth(pcd);
+        pcd->frameInfo.cornerHeight = CornerHeight(pcd);
 
-    /* set client offset */
-     
-    if ( (pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER)) ||
-         (pcd->matteWidth > 0) )
-    {
-	/*
-	 *  The window has a window manager border.
-	 */
-	pcd->clientOffset.x = pcd->frameInfo.lowerBorderWidth + 
-			          pcd->matteWidth;
-	pcd->clientOffset.y = pcd->frameInfo.upperBorderWidth + 
-				  pcd->frameInfo.titleBarHeight + 
-			          pcd->matteWidth;
-    }
-    else 
-    {
-	/*
-	 * No window manager border, the original X border is showing
-	 * through.
-	 */
-	pcd->clientOffset.x =  pcd->xBorderWidth + pcd->matteWidth;
-	pcd->clientOffset.y =  pcd->xBorderWidth + 
-				   pcd->frameInfo.titleBarHeight + 
-				   pcd->matteWidth;
-    }
+        /* set client offset */
 
+        if ((pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER)) ||
+            (pcd->matteWidth > 0)) {
+                /*
+                 *  The window has a window manager border.
+                 */
+                pcd->clientOffset.x =
+                    pcd->frameInfo.lowerBorderWidth + pcd->matteWidth;
+                pcd->clientOffset.y = pcd->frameInfo.upperBorderWidth +
+                                      pcd->frameInfo.titleBarHeight +
+                                      pcd->matteWidth;
+        } else {
+                /*
+                 * No window manager border, the original X border is showing
+                 * through.
+                 */
+                pcd->clientOffset.x = pcd->xBorderWidth + pcd->matteWidth;
+                pcd->clientOffset.y = pcd->xBorderWidth +
+                                      pcd->frameInfo.titleBarHeight +
+                                      pcd->matteWidth;
+        }
 }
 
-
-
 /*************************************<->*************************************
  *
  *  SetClientOffset (pcd)
@@ -1487,58 +1364,52 @@ void SetFrameInfo (ClientData *pcd)
  *  Inputs:
  *  ------
  *  pcd		- pointer to client data
- * 
+ *
  *  Outputs:
  *  -------
  *
  *  Comments:
  *  --------
  *  This can be called before SetFrameInfo to set up the client offset
- *  without the danger of using uninitialized variables during 
+ *  without the danger of using uninitialized variables during
  *  extraneous computation.
  *
  *************************************<->***********************************/
-void SetClientOffset (ClientData *pcd)
-{
-    /*
-     * The title bar height value stored in pcd->frameInfo is used by the
-     * macro TitleBarHeight(pcd).
-     */
+void SetClientOffset(ClientData *pcd) {
+        /*
+         * The title bar height value stored in pcd->frameInfo is used by the
+         * macro TitleBarHeight(pcd).
+         */
 
-    pcd->frameInfo.titleBarHeight = InitTitleBarHeight (pcd);
+        pcd->frameInfo.titleBarHeight = InitTitleBarHeight(pcd);
 
-    pcd->frameInfo.upperBorderWidth = UpperBorderWidth (pcd);
-    pcd->frameInfo.lowerBorderWidth = LowerBorderWidth (pcd);
+        pcd->frameInfo.upperBorderWidth = UpperBorderWidth(pcd);
+        pcd->frameInfo.lowerBorderWidth = LowerBorderWidth(pcd);
 
-    /* set client offset */
-     
-    if ( (pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER)) ||
-         (pcd->matteWidth > 0) )
-    {
-	/*
-	 *  The window has a window manager border.
-	 */
-	pcd->clientOffset.x = pcd->frameInfo.lowerBorderWidth + 
-			          pcd->matteWidth;
-	pcd->clientOffset.y = pcd->frameInfo.upperBorderWidth + 
-				  pcd->frameInfo.titleBarHeight + 
-			          pcd->matteWidth;
-    }
-    else 
-    {
-	/*
-	 * No window manager border, the original X border is showing
-	 * through.
-	 */
-	pcd->clientOffset.x =  pcd->xBorderWidth + pcd->matteWidth;
-	pcd->clientOffset.y =  pcd->xBorderWidth + 
-				   pcd->frameInfo.titleBarHeight + 
-				   pcd->matteWidth;
-    }
+        /* set client offset */
+
+        if ((pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER)) ||
+            (pcd->matteWidth > 0)) {
+                /*
+                 *  The window has a window manager border.
+                 */
+                pcd->clientOffset.x =
+                    pcd->frameInfo.lowerBorderWidth + pcd->matteWidth;
+                pcd->clientOffset.y = pcd->frameInfo.upperBorderWidth +
+                                      pcd->frameInfo.titleBarHeight +
+                                      pcd->matteWidth;
+        } else {
+                /*
+                 * No window manager border, the original X border is showing
+                 * through.
+                 */
+                pcd->clientOffset.x = pcd->xBorderWidth + pcd->matteWidth;
+                pcd->clientOffset.y = pcd->xBorderWidth +
+                                      pcd->frameInfo.titleBarHeight +
+                                      pcd->matteWidth;
+        }
 }
 
-
-
 /*************************************<->*************************************
  *
  *  XBorderIsShowing (pcd)
@@ -1552,28 +1423,24 @@ void SetClientOffset (ClientData *pcd)
  *  Inputs:
  *  ------
  *  pcd		- pointer to client data
- * 
+ *
  *  Outputs:
  *  -------
- *  XBorderIsShowing	- True if no window manager border & x border is 
+ *  XBorderIsShowing	- True if no window manager border & x border is
  *			  visible, False otherwise
  *
  *  Comments:
  *  --------
  *
  *************************************<->***********************************/
-Boolean XBorderIsShowing (ClientData *pcd)
-{
-    Boolean rval;
+Boolean XBorderIsShowing(ClientData *pcd) {
+        Boolean rval;
 
-    if ( (pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER)) ||
-         (pcd->matteWidth > 0) )
-    {
-	rval = False; 	/* hidden by window manager */
-    }
-    else 
-    {
-        rval = True;	/* it's showing */
-    }
-    return(rval);
+        if ((pcd->decor & (MWM_DECOR_RESIZEH | MWM_DECOR_BORDER)) ||
+            (pcd->matteWidth > 0)) {
+                rval = False; /* hidden by window manager */
+        } else {
+                rval = True; /* it's showing */
+        }
+        return (rval);
 }

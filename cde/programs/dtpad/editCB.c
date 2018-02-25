@@ -54,157 +54,102 @@
 #include "dtpad.h"
 #include <Dt/HourGlass.h>
 
-
 /************************************************************************
  * EditUndoCB - [Edit] menu, [Undo] button.
  *	Undoes the last edit.
  ************************************************************************/
 /* ARGSUSED */
-void
-EditUndoCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    Editor *pPad = (Editor *)client_data;
-    DtEditorUndoEdit(pPad->editor);
+void EditUndoCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        DtEditorUndoEdit(pPad->editor);
 }
-
 
 /************************************************************************
  * EditCutCB - [Edit] menu, [Cut] button.
  *	Cuts the current selection to the Motif clipboard.
  ************************************************************************/
 /* ARGSUSED */
-void
-EditCutCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    Editor *pPad = (Editor *)client_data;
-    DtEditorCutToClipboard(pPad->editor);
+void EditCutCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        DtEditorCutToClipboard(pPad->editor);
 }
-
 
 /************************************************************************
  * EditCopyCB - [Edit] menu, [Copy] button.
  *	Copies the current selection to the Motif clipboard.
  ************************************************************************/
 /* ARGSUSED */
-void
-EditCopyCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    Editor *pPad = (Editor *)client_data;
-    DtEditorCopyToClipboard(pPad->editor);
+void EditCopyCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        DtEditorCopyToClipboard(pPad->editor);
 }
-
 
 /************************************************************************
  * EditPasteCB - [Edit] menu, [Paste] button.
  *	Pastes from the Motif clipboard.
  ************************************************************************/
 /* ARGSUSED */
-void
-EditPasteCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    Editor *pPad = (Editor *)client_data;
-    DtEditorPasteFromClipboard(pPad->editor);
+void EditPasteCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        DtEditorPasteFromClipboard(pPad->editor);
 
-    /* XXX - Do DtEditorGetInsertPosition & DtEditorSetInsertionPosition
-     *       need to be executed here??
-     * XmTextPosition cursorPos;
-     * cursorPos = XmTextGetInsertionPosition(pPad->text);
-     * XmTextShowPosition(pPad->text, cursorPos);
-     */
+        /* XXX - Do DtEditorGetInsertPosition & DtEditorSetInsertionPosition
+         *       need to be executed here??
+         * XmTextPosition cursorPos;
+         * cursorPos = XmTextGetInsertionPosition(pPad->text);
+         * XmTextShowPosition(pPad->text, cursorPos);
+         */
 }
-
 
 /************************************************************************
  * EditClearCB - [Edit] menu, [Replace] button
  *	Replaces the current selection with blanks.
  ************************************************************************/
 /* ARGSUSED */
-void
-EditClearCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    Editor *pPad = (Editor *)client_data;
-    DtEditorClearSelection(pPad->editor);
+void EditClearCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        DtEditorClearSelection(pPad->editor);
 }
-
 
 /************************************************************************
  * EditDeleteCB - [Edit] menu, [Delete] button.
  *	Deletes the current selection.
  ************************************************************************/
 /* ARGSUSED */
-void
-EditDeleteCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    Editor *pPad = (Editor *)client_data;
-    DtEditorDeleteSelection(pPad->editor);
+void EditDeleteCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        DtEditorDeleteSelection(pPad->editor);
 }
-
 
 /************************************************************************
  * SelectAllCB - [Edit] menu, [Select All] button.
  *	Selects all text.
  ************************************************************************/
 /* ARGSUSED */
-void
-SelectAllCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    Editor *pPad = (Editor *)client_data;
-    DtEditorSelectAll(pPad->editor);
+void SelectAllCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        DtEditorSelectAll(pPad->editor);
 }
-
 
 /************************************************************************
  * FindChangeCB - [Edit] menu, [Find/Change...] button.
  *	Invokes the Dt Editor widget search dialog.
  ************************************************************************/
 /* ARGSUSED */
-void
-FindChangeCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    Editor *pPad = (Editor *)client_data;
-    DtEditorInvokeFindChangeDialog(pPad->editor);
+void FindChangeCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        DtEditorInvokeFindChangeDialog(pPad->editor);
 }
-
 
 /************************************************************************
  * CheckSpellingCB - [Edit] menu, [Check Spelling...] button.
  *	Invokes the Dt Editor widget spell dialog.
  ************************************************************************/
 /* ARGSUSED */
-void
-CheckSpellingCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    Editor *pPad = (Editor *)client_data;
-    DtEditorInvokeSpellDialog(pPad->editor);
+void CheckSpellingCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        DtEditorInvokeSpellDialog(pPad->editor);
 }
-
 
 /************************************************************************
  * SetSelectionMenuItems - Sets the sensitivity of [Edit] menu items
@@ -212,21 +157,16 @@ CheckSpellingCB(
  *	for viewOnly mode.
  ************************************************************************/
 /* ARGSUSED */
-void
-SetSelectionMenuItems(
-        Editor *pPad,
-	Boolean sensitivity)
-{
-    XtSetSensitive(pPad->editStuff.widgets.cutBtn,
-      sensitivity && ! pPad->xrdb.viewOnly);
-    XtSetSensitive(pPad->editStuff.widgets.copyBtn,
-      sensitivity);			/* Copy can be done in viewOnly mode */
-    XtSetSensitive(pPad->editStuff.widgets.clearBtn,
-      sensitivity && ! pPad->xrdb.viewOnly);
-    XtSetSensitive(pPad->editStuff.widgets.deleteBtn,
-      sensitivity && ! pPad->xrdb.viewOnly);
+void SetSelectionMenuItems(Editor *pPad, Boolean sensitivity) {
+        XtSetSensitive(pPad->editStuff.widgets.cutBtn,
+                       sensitivity && !pPad->xrdb.viewOnly);
+        XtSetSensitive(pPad->editStuff.widgets.copyBtn,
+                       sensitivity); /* Copy can be done in viewOnly mode */
+        XtSetSensitive(pPad->editStuff.widgets.clearBtn,
+                       sensitivity && !pPad->xrdb.viewOnly);
+        XtSetSensitive(pPad->editStuff.widgets.deleteBtn,
+                       sensitivity && !pPad->xrdb.viewOnly);
 }
-
 
 /************************************************************************
  * TextSelectedCB - DtEditor widget DtNtextSelectCallback called when
@@ -234,16 +174,10 @@ SetSelectionMenuItems(
  *	Makes [Edit] menu items related to a selection sensitive.
  ************************************************************************/
 /* ARGSUSED */
-void
-TextSelectedCB(
-	Widget w,
-        caddr_t client_data,
-        caddr_t call_data)
-{
-    Editor *pPad = (Editor *)client_data;
-    SetSelectionMenuItems(pPad, True);
+void TextSelectedCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        SetSelectionMenuItems(pPad, True);
 }
-
 
 /************************************************************************
  * TextDeselectedCB - DtEditor widget DtNtextSelectCallback called when
@@ -251,12 +185,7 @@ TextSelectedCB(
  *	Makes [Edit] menu items related to a selection insensitive.
  ************************************************************************/
 /* ARGSUSED */
-void
-TextDeselectedCB(
-	Widget w,
-        caddr_t client_data,
-        caddr_t call_data)
-{
-    Editor *pPad = (Editor *)client_data;
-    SetSelectionMenuItems(pPad, False);
+void TextDeselectedCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        SetSelectionMenuItems(pPad, False);
 }

@@ -40,14 +40,14 @@
 
 /* For all function declarations, if ANSI then use a prototype. */
 
-#if  defined(__STDC__)
-#define P(args)  args
-#else  /* ! __STDC__ */
-#define P(args)  ()
-#endif  /* STDC */
+#if defined(__STDC__)
+#define P(args) args
+#else /* ! __STDC__ */
+#define P(args) ()
+#endif /* STDC */
 
-char *set_bool          P((int)) ;
+char *set_bool P((int));
 
-void read_str           P((char **, char *)) ;
+void read_str P((char **, char *));
 
 #endif /*_ds_common_h*/

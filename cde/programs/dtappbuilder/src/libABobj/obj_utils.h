@@ -26,7 +26,7 @@
  * %W% %G%	cde_app_builder/src/libABobj
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -48,11 +48,11 @@
 
 #include <ab/util_types.h>
 
-#define str_safe(str)	((str) == NULL? abo_null_string : (str))
+#define str_safe(str) ((str) == NULL ? abo_null_string : (str))
 
 extern char *abo_empty_string;
 extern char *abo_null_string;
 
-#define nullstr(s) ((s) == NULL? "<<NULL>>":(s))
+#define nullstr(s) ((s) == NULL ? "<<NULL>>" : (s))
 
 #endif /* _AB_OBJ_UTILS_ */

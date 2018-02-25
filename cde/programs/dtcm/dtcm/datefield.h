@@ -24,7 +24,8 @@
 **
 **  datefield.h
 **
-**  static char sccsid[] = "@(#)datefield.h 1.5 94/11/07 Copyr 1991 Sun Microsystems, Inc.";
+**  static char sccsid[] = "@(#)datefield.h 1.5 94/11/07 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $XConsortium: datefield.h /main/3 1995/11/03 10:21:26 rswiston $
 **
@@ -60,9 +61,8 @@
 /*
 **  External function declaration
 */
-extern char	*get_date_from_widget	P((Tick, Widget, OrderingType,
-						SeparatorType));
-extern void	set_date_in_widget	P((Tick, Widget, OrderingType,
-						SeparatorType));
+extern char *get_date_from_widget P((Tick, Widget, OrderingType,
+                                     SeparatorType));
+extern void set_date_in_widget P((Tick, Widget, OrderingType, SeparatorType));
 
 #endif

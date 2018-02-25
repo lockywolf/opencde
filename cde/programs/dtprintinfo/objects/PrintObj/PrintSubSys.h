@@ -42,17 +42,14 @@ extern const char *LIST_QUEUES;
 
 class PrintSubSystem : public BaseObj {
 
- protected:
+      protected:
+        void InitChildren();
 
-   void InitChildren();
+      public:
+        PrintSubSystem(BaseObj *parent);
+        virtual ~PrintSubSystem();
 
- public:
-
-   PrintSubSystem(BaseObj *parent);
-   virtual ~PrintSubSystem();
-
-   virtual const char *const ObjectClassName() { return PRINTSUBSYSTEM; }
-
+        virtual const char *const ObjectClassName() { return PRINTSUBSYSTEM; }
 };
 
 #endif // PRINTSUBSYS_H

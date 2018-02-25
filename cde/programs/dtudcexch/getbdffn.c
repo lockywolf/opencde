@@ -38,38 +38,37 @@
  * There is no public header file for this function (only an
  * internal header XmStringI.h).
  */
-extern XtPointer _XmStringUngenerate (XmString string,
-                        XmStringTag tag,
-                        XmTextType tag_type,
-                        XmTextType output_type);
+extern XtPointer _XmStringUngenerate(XmString string, XmStringTag tag,
+                                     XmTextType tag_type,
+                                     XmTextType output_type);
 
 void filesbokCB();
 void filesbcancelCB();
 
 extern char *maintitle;
 
-void getbdffn(Exc_data * ed)
-{
-    Widget	filesb;
-    Arg		args[20];
-    Cardinal	n;
-    char	*selectlabel;
-    XmString	xms;
+void getbdffn(Exc_data *ed) {
+        Widget filesb;
+        Arg args[20];
+        Cardinal n;
+        char *selectlabel;
+        XmString xms;
 
-    selectlabel = GETMESSAGE(2, 2, "BDF file selection");
-    n = 0;
-    XtSetArg(args[n], XmNtitle, maintitle); n++;
-    xms = XmStringCreateLocalized(selectlabel);
-    XtSetArg(args[n], XmNselectionLabelString, xms); n++;
-    filesb = XmCreateFileSelectionDialog(ed->toplevel, "filesb", args, n);
-    XtAddCallback(filesb, XmNokCallback,
-		  (XtCallbackProc) filesbokCB,
-		  (XtPointer) ed);
-    XtAddCallback(filesb, XmNcancelCallback,
-		  (XtCallbackProc) filesbcancelCB,
-		  (XtPointer) ed);
-    XtUnmanageChild(XmFileSelectionBoxGetChild(filesb, XmDIALOG_HELP_BUTTON));
-    XtManageChild(filesb);
+        selectlabel = GETMESSAGE(2, 2, "BDF file selection");
+        n = 0;
+        XtSetArg(args[n], XmNtitle, maintitle);
+        n++;
+        xms = XmStringCreateLocalized(selectlabel);
+        XtSetArg(args[n], XmNselectionLabelString, xms);
+        n++;
+        filesb = XmCreateFileSelectionDialog(ed->toplevel, "filesb", args, n);
+        XtAddCallback(filesb, XmNokCallback, (XtCallbackProc)filesbokCB,
+                      (XtPointer)ed);
+        XtAddCallback(filesb, XmNcancelCallback, (XtCallbackProc)filesbcancelCB,
+                      (XtPointer)ed);
+        XtUnmanageChild(
+            XmFileSelectionBoxGetChild(filesb, XmDIALOG_HELP_BUTTON));
+        XtManageChild(filesb);
 }
 
 int fopencheck(char *file, char *dir, char *mode)
@@ -80,101 +79,98 @@ int fopencheck(char *file, char *dir, char *mode)
  *  otherwise return -1
  */
 {
-    struct stat	buf;
+        struct stat buf;
 
-    if (strcmp(mode, "r") == 0) {
-	if (stat(file, &buf) == 0)
-	    if ((buf.st_mode & S_IFMT) == S_IFREG)
-		return 0; /* readable regular file */
-    } else if (strcmp(mode, "w") == 0) {
-	if (stat(file, &buf) == 0) {
-	    if (((buf.st_mode & S_IFMT) == S_IFREG) &&
-		(access(file, W_OK) == 0))
-		return 1; /* writable existing file */
-	} else {
-	    if (stat(dir, &buf) == 0) {
-		if (((buf.st_mode & S_IFMT) == S_IFDIR) &&
-		    (access(dir, W_OK) == 0)) {
-		    return 0; /* writable new file */
-		}
-	    }
-	}
-    } else
-	fprintf(stderr, "Unanticipatable error occured in fopencheck.\n");
-    return -1;
+        if (strcmp(mode, "r") == 0) {
+                if (stat(file, &buf) == 0)
+                        if ((buf.st_mode & S_IFMT) == S_IFREG)
+                                return 0; /* readable regular file */
+        } else if (strcmp(mode, "w") == 0) {
+                if (stat(file, &buf) == 0) {
+                        if (((buf.st_mode & S_IFMT) == S_IFREG) &&
+                            (access(file, W_OK) == 0))
+                                return 1; /* writable existing file */
+                } else {
+                        if (stat(dir, &buf) == 0) {
+                                if (((buf.st_mode & S_IFMT) == S_IFDIR) &&
+                                    (access(dir, W_OK) == 0)) {
+                                        return 0; /* writable new file */
+                                }
+                        }
+                }
+        } else
+                fprintf(stderr,
+                        "Unanticipatable error occured in fopencheck.\n");
+        return -1;
 }
 
-void filesbcancelCB(Widget widget, Exc_data * ed, XtPointer call_data)
-{
-    excexit(ed);
+void filesbcancelCB(Widget widget, Exc_data *ed, XtPointer call_data) {
+        excexit(ed);
 }
 
-void freeStrings(char * dir, char * file)
-{
-    if (dir != NULL)
-	XtFree(dir);
-    if (file != NULL)
-	XtFree(file);
+void freeStrings(char *dir, char *file) {
+        if (dir != NULL)
+                XtFree(dir);
+        if (file != NULL)
+                XtFree(file);
 }
 
-void filesbokCB(Widget widget, Exc_data * ed, XtPointer call_data)
-{
-    XmFileSelectionBoxCallbackStruct	*ptr;
-    char				*file = NULL, *dir = NULL, *tmpfile;
-    int					r, ans = 0;
-    char				*msg1;
-    char				*msg2;
+void filesbokCB(Widget widget, Exc_data *ed, XtPointer call_data) {
+        XmFileSelectionBoxCallbackStruct *ptr;
+        char *file = NULL, *dir = NULL, *tmpfile;
+        int r, ans = 0;
+        char *msg1;
+        char *msg2;
 
-    msg1 = GETMESSAGE(2, 4, "The selected file exists. Overwrite?");
-    msg2 = GETMESSAGE(2, 6, "Failed to open the selected file.");
+        msg1 = GETMESSAGE(2, 4, "The selected file exists. Overwrite?");
+        msg2 = GETMESSAGE(2, 6, "Failed to open the selected file.");
 
-    ptr = (XmFileSelectionBoxCallbackStruct *) call_data;
+        ptr = (XmFileSelectionBoxCallbackStruct *)call_data;
 
-    file = (char *)  _XmStringUngenerate((XmString) ptr->value, NULL,
-					  XmMULTIBYTE_TEXT, XmMULTIBYTE_TEXT);
-    if (!file) {
-	return;
-    }
+        file = (char *)_XmStringUngenerate((XmString)ptr->value, NULL,
+                                           XmMULTIBYTE_TEXT, XmMULTIBYTE_TEXT);
+        if (!file) {
+                return;
+        }
 
-    dir = (char *)  _XmStringUngenerate((XmString) ptr->dir, NULL,
-					  XmMULTIBYTE_TEXT, XmMULTIBYTE_TEXT);
-    if (!dir) {
-	return;
-    } else {
-	if (*file != '/') {
-	    if ((tmpfile = XtMalloc(strlen(dir) + 1 + strlen(file) + 1))
-		== NULL) {
-		excerror(ed, EXCERRMALLOC, "filesbokCB", "exit");
-	    }
-	    sprintf(tmpfile, "%s/%s", dir, file);
-	    XtFree(file);
-	    file = tmpfile;
-	}
-    }
+        dir = (char *)_XmStringUngenerate((XmString)ptr->dir, NULL,
+                                          XmMULTIBYTE_TEXT, XmMULTIBYTE_TEXT);
+        if (!dir) {
+                return;
+        } else {
+                if (*file != '/') {
+                        if ((tmpfile = XtMalloc(strlen(dir) + 1 + strlen(file) +
+                                                1)) == NULL) {
+                                excerror(ed, EXCERRMALLOC, "filesbokCB",
+                                         "exit");
+                        }
+                        sprintf(tmpfile, "%s/%s", dir, file);
+                        XtFree(file);
+                        file = tmpfile;
+                }
+        }
 
-    r = fopencheck(file, dir, ed->bdfmode);
-    if (r == 0) {/* no problem */
-	/*fprintf(stderr, "%s will be opened\n", file);*/
-    } else if (r == 1) { /* file exist at export function */
-	AskUser(widget, ed, msg1, &ans, "warning");
-	if (ans != 1) { /* overwrite cancel */
-	    freeStrings(dir, file);
-	    return;
-	}
-    } else { /* file will not be opened */
-	AskUser(widget, ed, msg2, &ans, "error");
-	freeStrings(dir, file);
-	return;
-    }
-    ed->bdffile = (char *) malloc(strlen(file) + 1);
-    strcpy(ed->bdffile, file);
-    freeStrings(dir, file);
-    XtUnmanageChild(widget);
-    if (ed->function == EXPORT)
-    {
-	createbdf(ed);
-    } else if (ed->function == IMPORT)
-    {
-	PopupSelectXLFD(ed->toplevel);
-    }
+        r = fopencheck(file, dir, ed->bdfmode);
+        if (r == 0) {        /* no problem */
+                             /*fprintf(stderr, "%s will be opened\n", file);*/
+        } else if (r == 1) { /* file exist at export function */
+                AskUser(widget, ed, msg1, &ans, "warning");
+                if (ans != 1) { /* overwrite cancel */
+                        freeStrings(dir, file);
+                        return;
+                }
+        } else { /* file will not be opened */
+                AskUser(widget, ed, msg2, &ans, "error");
+                freeStrings(dir, file);
+                return;
+        }
+        ed->bdffile = (char *)malloc(strlen(file) + 1);
+        strcpy(ed->bdffile, file);
+        freeStrings(dir, file);
+        XtUnmanageChild(widget);
+        if (ed->function == EXPORT) {
+                createbdf(ed);
+        } else if (ed->function == IMPORT) {
+                PopupSelectXLFD(ed->toplevel);
+        }
 }

@@ -27,7 +27,7 @@
  * All rights reserved.
  */
 
-#ident  "@(#)dce_session.c 1.3     96/01/10 SMI"
+#ident "@(#)dce_session.c 1.3     96/01/10 SMI"
 
 #include <libintl.h>
 #include <security/pam_appl.h>
@@ -47,25 +47,15 @@
 /*
  * pam_sm_open_session
  */
-int
-pam_sm_open_session(
-	pam_handle_t *pamh,
-	int   flags,
-	int	argc,
-	const char **argv)
-{
-	return (PAM_SUCCESS);
+int pam_sm_open_session(pam_handle_t *pamh, int flags, int argc,
+                        const char **argv) {
+        return (PAM_SUCCESS);
 }
 
 /*
  * pam_sm_close_session
  */
-int
-pam_sm_close_session(
-	pam_handle_t *pamh,
-	int   flags,
-	int	argc,
-	const char **argv)
-{
-	return (PAM_SUCCESS);
+int pam_sm_close_session(pam_handle_t *pamh, int flags, int argc,
+                         const char **argv) {
+        return (PAM_SUCCESS);
 }

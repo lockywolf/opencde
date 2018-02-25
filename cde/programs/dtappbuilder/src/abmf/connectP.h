@@ -27,7 +27,7 @@
  * @(#)connectP.h	3.14 07 Mar 1994	cde_app_builder/src/abmf
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -46,11 +46,11 @@
 #ifndef _ABMF_CONNECTION_H_
 #define _ABMF_CONNECTION_H_
 
-#include	<ab_private/obj.h>
-#include	"utilsP.h"
+#include <ab_private/obj.h>
+#include "utilsP.h"
 
-int	abmfP_set_auto_func_names(ABObj root);
-int	abmfP_tree_set_action_names(ABObj tree);
-int	abmfP_get_connect_includes(StringList includeFiles, ABObj projOrModule);
+int abmfP_set_auto_func_names(ABObj root);
+int abmfP_tree_set_action_names(ABObj tree);
+int abmfP_get_connect_includes(StringList includeFiles, ABObj projOrModule);
 
 #endif /* _ABMF_CONNECTION_H_ */

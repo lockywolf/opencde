@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: tt_map_entry_utils.h /main/3 1995/10/23 10:41:44 rswiston $ 			 				 */
+/*%%  $XConsortium: tt_map_entry_utils.h /main/3 1995/10/23 10:41:44 rswiston $
+ */
 /* @(#)tt_map_entry_utils.h	1.3 @(#)
  * Tool Talk Utility - tt_map_entry_utils.h
  *
@@ -42,6 +43,6 @@
 class _Tt_map_entry;
 
 declare_derived_ptr_to(_Tt_map_entry, _Tt_object)
-declare_table_of(_Tt_map_entry)
+    declare_table_of(_Tt_map_entry)
 
 #endif /* _TT_MAP_ENTRY_UTILS_H */

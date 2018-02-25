@@ -58,32 +58,32 @@
  * shot at optimizing the resulting "switch" statement.
  */
 
-#define NETFILE			(char)'?'
+#define NETFILE (char)'?'
 
 /* non Text Editor specific options */
-#define GEOMETRY		(char)'A'
+#define GEOMETRY (char)'A'
 
 /* basic options */
-#define STATUSLINE		(char)'B'
-#define WINDOWWORDWRAP		(char)'C'
-#define OVERSTRIKE		(char)'D'
-#define SAVEONCLOSE		(char)'E'
-#define MISSINGFILEWARNING	(char)'F'
-#define NOREADONLYWARNING	(char)'G'
-#define NONAMECHANGE		(char)'H'
-#define VIEWONLY		(char)'I'
-#define WORKSPACELIST		(char)'J'
-#define SESSION			(char)'K'
+#define STATUSLINE (char)'B'
+#define WINDOWWORDWRAP (char)'C'
+#define OVERSTRIKE (char)'D'
+#define SAVEONCLOSE (char)'E'
+#define MISSINGFILEWARNING (char)'F'
+#define NOREADONLYWARNING (char)'G'
+#define NONAMECHANGE (char)'H'
+#define VIEWONLY (char)'I'
+#define WORKSPACELIST (char)'J'
+#define SESSION (char)'K'
 
 /* client/server control options */
-#define BLOCKING		(char)'L'
+#define BLOCKING (char)'L'
 
 /* field nos. for DTPAD_OPEN_FILE_MSG and DTPAD_RUN_SESSION_MSG fields
  * (DT_MSG_DATA_? are defined in lib1/DtSvc/DtUtil2/Message.h) */
-#define FILENAME_MSG_FIELD	DT_MSG_DATA_1
-#define NETFILE_ID_MSG_FIELD	DT_MSG_DATA_3
-#define PROCESS_ID_MSG_FIELD	DT_MSG_DATA_5
+#define FILENAME_MSG_FIELD DT_MSG_DATA_1
+#define NETFILE_ID_MSG_FIELD DT_MSG_DATA_3
+#define PROCESS_ID_MSG_FIELD DT_MSG_DATA_5
 
 /* field nos. for DTPAD_DONE message fields */
-#define CHANNEL_MSG_FIELD	DT_MSG_DATA_1
-#define RETURN_STATUS_MSG_FIELD	DT_MSG_DATA_2
+#define CHANNEL_MSG_FIELD DT_MSG_DATA_1
+#define RETURN_STATUS_MSG_FIELD DT_MSG_DATA_2

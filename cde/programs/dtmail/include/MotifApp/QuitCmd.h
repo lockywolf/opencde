@@ -26,7 +26,7 @@
  *	$XConsortium: QuitCmd.h /main/3 1995/11/06 16:32:51 rswiston $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -48,17 +48,16 @@
 //         by
 //           Douglas Young
 //           Prentice Hall, 1992
-//           ISBN 0-13-630252-1	
+//           ISBN 0-13-630252-1
 //
 //         Copyright 1991 by Prentice Hall
 //         All Rights Reserved
 //
-//  Permission to use, copy, modify, and distribute this software for 
-//  any purpose except publication and without fee is hereby granted, provided 
+//  Permission to use, copy, modify, and distribute this software for
+//  any purpose except publication and without fee is hereby granted, provided
 //  that the above copyright notice appear in all copies of the software.
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-
 
 ////////////////////////////////////////////////////////////
 // QuitCmd.h: Exit an application after checking with user.
@@ -73,16 +72,14 @@
 #include "MainWindow.h"
 
 class QuitCmd : public WarnNoUndoCmd {
-    
-  protected:
 
-    virtual void doit();      // Call exit
-    MainWindow *_mywindow;
-    
-  public:
-    
-    QuitCmd ( char *, char *, int, MainWindow *);
-    virtual const char *const className () { return "QuitCmd"; }
-    virtual void execute(); // Overrides the AskFirstCmd member function
+      protected:
+        virtual void doit(); // Call exit
+        MainWindow *_mywindow;
+
+      public:
+        QuitCmd(char *, char *, int, MainWindow *);
+        virtual const char *const className() { return "QuitCmd"; }
+        virtual void execute(); // Overrides the AskFirstCmd member function
 };
 #endif

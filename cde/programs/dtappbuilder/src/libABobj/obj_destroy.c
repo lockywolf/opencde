@@ -24,10 +24,10 @@
 /*
  *	$XConsortium: obj_destroy.c /main/3 1995/11/06 18:34:03 rswiston $
  *
- *	%W% %G%	
+ *	%W% %G%
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -40,10 +40,8 @@
  *
  */
 
-
 /*
  *  skeleton.c - skeleton c file.
  */
 
 #include "skeleton.h"
-

@@ -48,22 +48,22 @@
 #include "dbtype.h"
 
 /* Get current record
-*/
-int
-d_crget(dba TASK_PARM DBN_PARM)
-DB_ADDR FAR *dba; /* db address of record to become current */
+ */
+int d_crget(dba TASK_PARM DBN_PARM)
+    DB_ADDR FAR *dba; /* db address of record to become current */
 TASK_DECL
-DBN_DECL
-{
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_NOIO));
+DBN_DECL {
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_NOIO));
 
-   if ( ! dbopen ) RETURN( dberr(S_DBOPEN) );
+        if (!dbopen)
+                RETURN(dberr(S_DBOPEN));
 
-   if (( *dba = curr_rec ))
-      db_status = S_OKAY;
-   else
-      db_status = S_NOCR;
+        if ((*dba = curr_rec))
+                db_status = S_OKAY;
+        else
+                db_status = S_NOCR;
 
-   RETURN( db_status );
+        RETURN(db_status);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin crget.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin crget.c */

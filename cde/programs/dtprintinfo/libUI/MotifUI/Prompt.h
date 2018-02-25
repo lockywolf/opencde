@@ -35,50 +35,41 @@
 
 class Prompt : public MotifUI {
 
- private:
+      private:
+        Widget _caption;
+        Widget _text;
+        PromptType _prompt_type;
+        char *_default_value;
+        char *_value;
+        ValidationCallback CB;
+        void *validation_data;
 
-   Widget _caption;
-   Widget _text;
-   PromptType _prompt_type;
-   char *_default_value;
-   char *_value;
-   ValidationCallback CB;
-   void * validation_data;
+      public:
+        Prompt(MotifUI *parent, char *name = "prompt", boolean editable = true,
+               PromptType prompt_type = STRING_PROMPT,
+               char *default_value = NULL, ValidationCallback CB = NULL,
+               void *validation_data = NULL, boolean echo_input = true,
+               int n_column = 20, int n_rows = 1, int captionWidth = 0);
+        ~Prompt();
 
- public:
+        void SetFocus() { DoSetFocus(_text); }
+        void Reset(); // Reset to default value
 
-   Prompt(MotifUI * parent,
-          char *name = "prompt",
-          boolean editable = true,
-          PromptType prompt_type = STRING_PROMPT, 
-          char *default_value = NULL,
-          ValidationCallback CB = NULL,
-          void * validation_data = NULL,
-          boolean echo_input = true,
-          int n_column = 20,
-          int n_rows = 1,
-          int captionWidth = 0);
-   ~Prompt();
+        char *Value();       // Access value as STRING
+        void Value(int *);   // Access value as INTEGER
+        void Value(float *); // Access value as REAL_NUMBER
 
-   void SetFocus()             { DoSetFocus(_text); }
-   void Reset();               // Reset to default value
+        boolean Value(int);    // Set value
+        boolean Value(float);  // Set value
+        boolean Value(char *); // Set value
 
-   char * Value();             // Access value as STRING
-   void Value(int *);          // Access value as INTEGER
-   void Value(float *);        // Access value as REAL_NUMBER
+        void DefaultValue(char *); // Set value
 
-   boolean Value(int);         // Set value
-   boolean Value(float);       // Set value
-   boolean Value(char *);      // Set value
+        char *DefaultValue() { return _default_value; }
 
-   void DefaultValue(char *);  // Set value
-
-   char * DefaultValue()             { return _default_value; }
-
-   const UI_Class UIClass()          { return PROMPT; }
-   const int UISubClass()            { return _prompt_type; }
-   const char *const UIClassName()   { return "Prompt"; }
-
+        const UI_Class UIClass() { return PROMPT; }
+        const int UISubClass() { return _prompt_type; }
+        const char *const UIClassName() { return "Prompt"; }
 };
 
 #endif /* PROMPT_H */

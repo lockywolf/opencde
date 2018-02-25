@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         spc.h $XConsortium: spc.h /main/3 1995/10/26 15:48:38 rswiston $
- * Language:     C
+ * File:         spc.h $XConsortium: spc.h /main/3 1995/10/26 15:48:38 rswiston
+ * $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -47,10 +47,10 @@
 typedef struct _SPC_Channel *SPC_Channel_Ptr;
 
 typedef struct _XeHostInfo {
-    XeString	os;
-    XeString    os_ver;
-    XeString    hw_arch;
-} *XeHostInfo;
+        XeString os;
+        XeString os_ver;
+        XeString hw_arch;
+} * XeHostInfo;
 
 extern FILE *SPC_Print_Protocol;
 extern FILE *spc_logF;
@@ -58,103 +58,103 @@ extern XeString spc_user_environment_file;
 
 /* Error returns for SPC routines */
 
-#define SPC_ERROR       FALSE  /* Use this value for error checking */
+#define SPC_ERROR FALSE /* Use this value for error checking */
 
 /*
  * These are the channel connector definitions
  */
 
-#define STDIN			0
-#define STDOUT			1
-#define STDERR			2
+#define STDIN 0
+#define STDOUT 1
+#define STDERR 2
 
-#define MASTER_SIDE	0
-#define SLAVE_SIDE	1
+#define MASTER_SIDE 0
+#define SLAVE_SIDE 1
 
 /* These are the sub-process notification identifiers */
 
-#define SPC_PROCESS_STOPPED	1 /* Child process is in background */
-#define SPC_PROCESS_EXITED	2 /* Child process called exit(cause); */
-#define SPC_PROCESS_SIGNALLED	3 /* Child process received signal: cause */
-#define SPC_PROCESS_INTERRUPT	4 /* Child process WAIT was interrupted */
-#define SPC_PROCESS_DUMPED(a)	((a) & 0200) /* True when core dumped */
+#define SPC_PROCESS_STOPPED 1   /* Child process is in background */
+#define SPC_PROCESS_EXITED 2    /* Child process called exit(cause); */
+#define SPC_PROCESS_SIGNALLED 3 /* Child process received signal: cause */
+#define SPC_PROCESS_INTERRUPT 4 /* Child process WAIT was interrupted */
+#define SPC_PROCESS_DUMPED(a) ((a)&0200) /* True when core dumped */
 
 /* This is the maximum size of an SPC I/O Buffer */
-#define SPC_BUFSIZ		4096
+#define SPC_BUFSIZ 4096
 
 /*
  * These macros define the bit field portion of an SPC_IOMode
  */
 
-#define SPCIO_ALL_MASK		0xffffffff
+#define SPCIO_ALL_MASK 0xffffffff
 
 /* The IO Modes that define the input and output sources */
 
-#define SPCIO_SOURCE_MASK	0xf
-#define SPCIO_NOIO		0x0 /* The default - no input/output */
-#define SPCIO_WRITEONLY		0x1 /* Only write app stdin */
-#define SPCIO_READONLY		0x2 /* Only read app stdout */
-#define SPCIO_READWRITE		0x3 /* Read stdout, write stdin */
-#define SPCIO_ERRORONLY		0x4 /* Only read stderr */
-#define SPCIO_WRITEERROR	0x5 /* Write stdin, read stderr */
-#define SPCIO_READERROR		0x6 /* Only read stdout/stderr */
-#define SPCIO_READWRITEERROR	0x7 /* Full std (in, out, err) */
+#define SPCIO_SOURCE_MASK 0xf
+#define SPCIO_NOIO 0x0           /* The default - no input/output */
+#define SPCIO_WRITEONLY 0x1      /* Only write app stdin */
+#define SPCIO_READONLY 0x2       /* Only read app stdout */
+#define SPCIO_READWRITE 0x3      /* Read stdout, write stdin */
+#define SPCIO_ERRORONLY 0x4      /* Only read stderr */
+#define SPCIO_WRITEERROR 0x5     /* Write stdin, read stderr */
+#define SPCIO_READERROR 0x6      /* Only read stdout/stderr */
+#define SPCIO_READWRITEERROR 0x7 /* Full std (in, out, err) */
 
 /* Use this bit with above IO Mode for splitting stdout and stderr data */
 
-#define SPCIO_SEPARATEREADERROR	0x8 /* Separate stdout & stderr */
+#define SPCIO_SEPARATEREADERROR 0x8 /* Separate stdout & stderr */
 
 /* The IO Modes that deal with communication styles (features) */
-#define SPCIO_STYLE_MASK	0x70
-#define SPCIO_PTY               0x10 /* Use a PTY */
-#define SPCIO_PIPE		0x20 /* Use pipe() - no line editing */
-#define SPCIO_NOIOMODE          0x40 /* Use neither */
+#define SPCIO_STYLE_MASK 0x70
+#define SPCIO_PTY 0x10      /* Use a PTY */
+#define SPCIO_PIPE 0x20     /* Use pipe() - no line editing */
+#define SPCIO_NOIOMODE 0x40 /* Use neither */
 
-#define SPCIO_LINEEDIT          0x80 /* Valid only with PTY */
+#define SPCIO_LINEEDIT 0x80 /* Valid only with PTY */
 
 /* Other flags */
 
-#define SPCIO_SYSTEM		0x100 /* Use system() - Spawns a SHELL */
-#define SPCIO_LINEORIENTED	0x200 /* Invoke callback on line bounds */
-                                      /* It is possible to break two byte
-					 characters.  See note on XeSPCRead. */
-#define SPCIO_WAIT		0x400 /* Wait for process to finish */
-#define SPCIO_USE_XTOOLKIT	0x800 /* Use the X toolkit */
-#define SPCIO_SYNC_TERMINATOR  0x1000 /* Handle termination synchronously */
-#define SPCIO_USE_LOGFILE      0x2000 /* Use logfile for stderr -- only
-					 valid with SPCIO_NOIO */
+#define SPCIO_SYSTEM 0x100           /* Use system() - Spawns a SHELL */
+#define SPCIO_LINEORIENTED 0x200     /* Invoke callback on line bounds */
+                                     /* It is possible to break two byte
+                                        characters.  See note on XeSPCRead. */
+#define SPCIO_WAIT 0x400             /* Wait for process to finish */
+#define SPCIO_USE_XTOOLKIT 0x800     /* Use the X toolkit */
+#define SPCIO_SYNC_TERMINATOR 0x1000 /* Handle termination synchronously */
+#define SPCIO_USE_LOGFILE                                                      \
+        0x2000 /* Use logfile for stderr -- only                               \
+                  valid with SPCIO_NOIO */
 
-#define SPCIO_SIGNAL_PGRP     0x20000 /* Propagate signals to entire process
-					 group. */
-#define SPCIO_FORCE_CONTEXT   0x40000 /* Error on SPC Spawn if context dir
-					 is not present */
+#define SPCIO_SIGNAL_PGRP                                                      \
+        0x20000 /* Propagate signals to entire process                         \
+                   group. */
+#define SPCIO_FORCE_CONTEXT                                                    \
+        0x40000 /* Error on SPC Spawn if context dir                           \
+                   is not present */
 
 /*
  * Routines
  */
 
-
 /* spc.c */
 
-
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-# define EXTERN_DECL(type, name, arglist) type name arglist
-# if defined(__cplusplus) && defined(__c_callable)
-#  define EXTERN_C_CALLABLE(type, name, arglist) \
-          extern "C" { type name arglist ; }
-# else
-#  define EXTERN_C_CALLABLE(type, name, arglist) \
-          EXTERN_DECL(type, name, arglist)
-# endif
+#define EXTERN_DECL(type, name, arglist) type name arglist
+#if defined(__cplusplus) && defined(__c_callable)
+#define EXTERN_C_CALLABLE(type, name, arglist)                                 \
+        extern "C" {                                                           \
+        type name arglist;                                                     \
+        }
+#else
+#define EXTERN_C_CALLABLE(type, name, arglist) EXTERN_DECL(type, name, arglist)
+#endif
 #else
 #ifdef _AIX
-# define EXTERN_C_CALLABLE(type, name, arglist) \
-	 extern type name arglist 
-# define EXTERN_DECL(type, name, arglist) \
-	 type name arglist
+#define EXTERN_C_CALLABLE(type, name, arglist) extern type name arglist
+#define EXTERN_DECL(type, name, arglist) type name arglist
 #else /* _AIX */
-# define EXTERN_DECL(type, name, arglist) name arglist
-# define EXTERN_C_DECL(type, name, arglist) EXTERN_DECL(type, name, arglist)
+#define EXTERN_DECL(type, name, arglist) name arglist
+#define EXTERN_C_DECL(type, name, arglist) EXTERN_DECL(type, name, arglist)
 
 #endif /* (_AIX) */
 #endif
@@ -180,10 +180,9 @@ EXTERN_DECL(int, XeSPCReset, (SPC_Channel_Ptr channel));
   spawn or exec call.
 */
 
-
 EXTERN_DECL(int, XeSPCRead,
-	    (SPC_Channel_Ptr channel, int connector,
-	     XeString buffer, int length));
+            (SPC_Channel_Ptr channel, int connector, XeString buffer,
+             int length));
 
 /*
   Read length characters from an SPC channel into some preallocated buffer.
@@ -194,7 +193,7 @@ EXTERN_DECL(int, XeSPCRead,
 */
 
 EXTERN_DECL(int, XeSPCWrite,
-	    (SPC_Channel_Ptr channel, XeString buffer, int length));
+            (SPC_Channel_Ptr channel, XeString buffer, int length));
 
 /*
   Write length characters from buffer to the standard input of a
@@ -205,26 +204,26 @@ EXTERN_C_CALLABLE(int, XeSPCActive, (SPC_Channel_Ptr channel));
 
 /*
   Returns True when channel is active, False otherwise
-*/  
+*/
 
 EXTERN_DECL(int, XeSPCData, (SPC_Channel_Ptr channel));
 
 /*
   Returns True when channel be read from, False otherwise
-*/  
+*/
 
 EXTERN_C_CALLABLE(int, XeSPCSpawn,
-		  (XeString pathname, XeString context_dir, XeString *argv,
-		   XeString *envp, SPC_Channel_Ptr channel));
+                  (XeString pathname, XeString context_dir, XeString *argv,
+                   XeString *envp, SPC_Channel_Ptr channel));
 
 /*
   Spawn an application under SPC
 */
 
 EXTERN_DECL(SPC_Channel_Ptr, XeSPCOpenAndSpawn,
-	    (XeString hostname, int iomode, XeString pathname,
-	     XeString context_dir, XeString *argv, XeString *envp));
-	    
+            (XeString hostname, int iomode, XeString pathname,
+             XeString context_dir, XeString *argv, XeString *envp));
+
 /*
   Combine the Open and Spawn channel operations
 */
@@ -259,16 +258,15 @@ EXTERN_DECL(int, XeSPCSignalProcess, (SPC_Channel_Ptr channel, int sig));
 
 /*
   Send an arbitrary signal to executing process on an SPC channel.
-*/  
+*/
 
-typedef
-  EXTERN_DECL(void, (*SbInputHandlerProc),
-	      (void *client_data, XeString buf, int nchars, int connector));
+typedef EXTERN_DECL(void, (*SbInputHandlerProc),
+                    (void *client_data, XeString buf, int nchars,
+                     int connector));
 
 EXTERN_C_CALLABLE(int, XeSPCAddInput,
-                  (SPC_Channel_Ptr    channel,
-                   SbInputHandlerProc handler,
-                   void               *client_data));
+                  (SPC_Channel_Ptr channel, SbInputHandlerProc handler,
+                   void *client_data));
 
 /*
   Add an input channel handler
@@ -285,18 +283,13 @@ EXTERN_C_CALLABLE(int, XeSPCAddInput,
  *                          ***  (STDOUT or STDERR)                    ***
  */
 
-typedef
-  EXTERN_DECL(void, (*SPC_TerminateHandlerType),
-              (SPC_Channel_Ptr  chan,
-               int  pid,
-               int  type,
-               int  cause,
-               void *Terminate_Data));
+typedef EXTERN_DECL(void, (*SPC_TerminateHandlerType),
+                    (SPC_Channel_Ptr chan, int pid, int type, int cause,
+                     void *Terminate_Data));
 
 EXTERN_C_CALLABLE(int, XeSPCRegisterTerminator,
-                  (SPC_Channel_Ptr          channel,
-                   SPC_TerminateHandlerType teminator,
-                   void *                   client_data));
+                  (SPC_Channel_Ptr channel, SPC_TerminateHandlerType teminator,
+                   void *client_data));
 
 /*
   Add a termination handler to a channel (called when sub-process dies)
@@ -318,17 +311,17 @@ EXTERN_C_CALLABLE(int, XeSPCRegisterTerminator,
  */
 
 EXTERN_DECL(XeString, XeSPCGetDevice,
-	    (SPC_Channel_Ptr channel, int connector, int side));
+            (SPC_Channel_Ptr channel, int connector, int side));
 
 /*
   Return the device name associated with a side of a channel device
   pair.  'connector' is either STDIN, STDOUT, or STDERR, and 'side' is
   either MASTER_SIDE or SLAVE_SIDE.  This call is valid only in PTY
   channels.
-*/  
+*/
 
 EXTERN_DECL(int, XeSPCGetProcessStatus,
-	    (SPC_Channel_Ptr channel, int *type, int *cause));
+            (SPC_Channel_Ptr channel, int *type, int *cause));
 
 /*
   Fill in the type and cause of a process termination.
@@ -346,16 +339,16 @@ EXTERN_DECL(int, XeSPCGetPID, (SPC_Channel_Ptr channel));
 
 /*
   Returns the Process ID of the channel or NULL if none
-*/  
+*/
 
 EXTERN_DECL(int, XeSPCGetLogfile,
-	    (SPC_Channel_Ptr channel, XeString *host, XeString *file));
+            (SPC_Channel_Ptr channel, XeString *host, XeString *file));
 
 /*
   Return the logfile for the channel.  If the channel was not opened
   with SPCIO_USE_LOGFILE specified, it will return NULL.  Also note
   that it returns an XeString *, not an XeString.
-*/  
+*/
 
 EXTERN_DECL(int, XeSPCRemoveLogfile, (SPC_Channel_Ptr channel));
 
@@ -401,14 +394,13 @@ EXTERN_DECL(SPC_Channel_Ptr, XeSPCHandleTerminator, (int fd));
   ITSELF.
 */
 
-
 /* SPC Error handling */
 
-typedef struct _SPCError { /* An SPC Error message */
-  XeString text;     /* The text */
-  XeString format;   /* How to format args */
-  XeSeverity severity;     /* How bad is it, doc? */
-  char use_errno;          /* Whether to use the system errno */
+typedef struct _SPCError {   /* An SPC Error message */
+        XeString text;       /* The text */
+        XeString format;     /* How to format args */
+        XeSeverity severity; /* How bad is it, doc? */
+        char use_errno;      /* Whether to use the system errno */
 } SPCError;
 
 /* Use this to get the current error number */
@@ -442,7 +434,7 @@ EXTERN_DECL(int, XeSetpgrp, (int read_current_termio));
   4. set the termio info of the master side to be the result of step 2
   5. setpgrp
   6. open the slave side.
-  
+
   All of this has the effect of making the process which called this
   routine immune to interrupts, etc., but also passing on the termio
   characteristics of the original tty.
@@ -450,12 +442,12 @@ EXTERN_DECL(int, XeSetpgrp, (int read_current_termio));
   If read_current_termio is non-zero, steps 1-3 will NOT be performed, but
   instead this routine will get the information from the following termio
   struct:
-  
+
 */
 
 EXTERN_DECL(XeHostInfo, SPC_GetHostinfo, (SPC_Channel_Ptr channel));
 
-/* 
+/*
   Return information about the host (os, os-ver, hw) to which "channel"
   is currently connected.  The return is to a static structure of static
   strings.  Do not modify or free and of them!
@@ -465,7 +457,7 @@ EXTERN_DECL(XeHostInfo, SPC_GetHostinfo, (SPC_Channel_Ptr channel));
  **
  ** New B.00 functions
  **
-*/
+ */
 
 EXTERN_C_CALLABLE(int, XeSPCSendEOF, (SPC_Channel_Ptr channel));
 
@@ -474,10 +466,8 @@ EXTERN_C_CALLABLE(int, XeSPCSendEOF, (SPC_Channel_Ptr channel));
 */
 
 EXTERN_C_CALLABLE(int, XeSPCSetTermio,
-		  (SPC_Channel_Ptr channel,
-		   int connection,
-		   int side,
-		   struct termios *termio));
+                  (SPC_Channel_Ptr channel, int connection, int side,
+                   struct termios *termio));
 
 /*
  Set the termio value of the PTY associated with 'connection' (STDIN,

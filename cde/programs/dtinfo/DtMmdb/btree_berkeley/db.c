@@ -65,47 +65,40 @@ static char sccsid[] = "@(#)db.c	8.2 (Berkeley) 9/7/93";
 #include <stddef.h>
 #include <stdio.h>
 
-#define	__DBINTERFACE_PRIVATE
+#define __DBINTERFACE_PRIVATE
 #include <db.h>
 
-DB *
-dbopen(fname, flags, mode, type, openinfo)
-	const char *fname;
-	int flags, mode;
-	DBTYPE type;
-	const void *openinfo;
+DB *dbopen(fname, flags, mode, type, openinfo) const char *fname;
+int flags, mode;
+DBTYPE type;
+const void *openinfo;
 {
 
-#define	DB_FLAGS	(DB_LOCK | DB_SHMEM | DB_TXN)
-#define	USE_OPEN_FLAGS							\
-	(O_CREAT | O_EXCL | O_EXLOCK | O_RDONLY | O_RDWR |		\
-	    O_SHLOCK | O_TRUNC)
+#define DB_FLAGS (DB_LOCK | DB_SHMEM | DB_TXN)
+#define USE_OPEN_FLAGS                                                         \
+        (O_CREAT | O_EXCL | O_EXLOCK | O_RDONLY | O_RDWR | O_SHLOCK | O_TRUNC)
 
-	if ((flags & ~(USE_OPEN_FLAGS | DB_FLAGS)) == 0)
-		switch (type) {
-		case DB_BTREE:
-			return (__bt_open(fname, flags & USE_OPEN_FLAGS,
-			    mode, openinfo, flags & DB_FLAGS));
-/*
-		case DB_HASH:
-			return (__hash_open(fname, flags & USE_OPEN_FLAGS,
-			    mode, openinfo, flags & DB_FLAGS));
-		case DB_RECNO:
-			return (__rec_open(fname, flags & USE_OPEN_FLAGS,
-			    mode, openinfo, flags & DB_FLAGS));
-*/
-		default:
-			break;
-		}
-	errno = EINVAL;
-	return (NULL);
+        if ((flags & ~(USE_OPEN_FLAGS | DB_FLAGS)) == 0)
+                switch (type) {
+                case DB_BTREE:
+                        return (__bt_open(fname, flags & USE_OPEN_FLAGS, mode,
+                                          openinfo, flags & DB_FLAGS));
+                        /*
+                                        case DB_HASH:
+                                                return (__hash_open(fname, flags
+                           & USE_OPEN_FLAGS, mode, openinfo, flags & DB_FLAGS));
+                                        case DB_RECNO:
+                                                return (__rec_open(fname, flags
+                           & USE_OPEN_FLAGS, mode, openinfo, flags & DB_FLAGS));
+                        */
+                default:
+                        break;
+                }
+        errno = EINVAL;
+        return (NULL);
 }
 
-static int
-__dberr()
-{
-	return (RET_ERROR);
-}
+static int __dberr() { return (RET_ERROR); }
 
 /*
  * __DBPANIC -- Stop.
@@ -113,15 +106,13 @@ __dberr()
  * Parameters:
  *	dbp:	pointer to the DB structure.
  */
-void
-__dbpanic(dbp)
-	DB *dbp;
+void __dbpanic(dbp) DB *dbp;
 {
-	/* The only thing that can succeed is a close. */
-	dbp->del = (int (*)())__dberr;
-	dbp->fd = (int (*)())__dberr;
-	dbp->get = (int (*)())__dberr;
-	dbp->put = (int (*)())__dberr;
-	dbp->seq = (int (*)())__dberr;
-	dbp->sync = (int (*)())__dberr;
+        /* The only thing that can succeed is a close. */
+        dbp->del = (int (*)())__dberr;
+        dbp->fd = (int (*)())__dberr;
+        dbp->get = (int (*)())__dberr;
+        dbp->put = (int (*)())__dberr;
+        dbp->seq = (int (*)())__dberr;
+        dbp->sync = (int (*)())__dberr;
 }

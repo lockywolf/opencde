@@ -41,7 +41,7 @@
 **  The garbage collector runs at midnight every.
 */
 
-extern void _DtCmsCollectOne P((_DtCmsCalendar *cal));
+extern void _DtCmsCollectOne P((_DtCmsCalendar * cal));
 extern CSA_return_code _DtCmsDumpDataV1 P((char *file, _DtCmsCalendar *cal));
 extern CSA_return_code _DtCmsDumpDataV2 P((char *file, _DtCmsCalendar *cal));
 

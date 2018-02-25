@@ -42,20 +42,10 @@
 #ifndef _Dtksh_symbolic_h
 #define _Dtksh_symbolic_h
 
-
-
-extern struct symlist * fsymbolic( 
-                        struct memtbl *tbl) ;
-extern int do_symbolic( 
-                        int argc,
-                        char **argv) ;
-extern int add_symbolic( 
-                        int isflag,
-                        struct memtbl *tbl,
-                        struct symarray *syms,
-                        int nsyms) ;
-
-
+extern struct symlist *fsymbolic(struct memtbl *tbl);
+extern int do_symbolic(int argc, char **argv);
+extern int add_symbolic(int isflag, struct memtbl *tbl, struct symarray *syms,
+                        int nsyms);
 
 #endif /* _Dtksh_symbolic_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

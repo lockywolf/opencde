@@ -31,12 +31,10 @@
 
 int m_sprscon(
 #if defined(M_PROTO)
-  int i, int j
+    int i, int j
 #endif
-  ) ;
+);
 
 #else
 #define m_newcon(i, j) m_nextcon[i][j]
 #endif
-
-

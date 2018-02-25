@@ -45,8 +45,10 @@
 #endif /* not LIMITS_H_MISSING */
 
 #ifndef UINT_MAX
-#define UINT_MAX (sizeof(unsigned int) == 2 ? 0x7fff : \
-  (sizeof(unsigned int) == 4 ? 0x7fffffff : cant_guess_UINT_MAX))
+#define UINT_MAX                                                               \
+        (sizeof(unsigned int) == 2                                             \
+             ? 0x7fff                                                          \
+             : (sizeof(unsigned int) == 4 ? 0x7fffffff : cant_guess_UINT_MAX))
 #endif
 
 #ifdef VARARGS
@@ -98,7 +100,7 @@ long atol();
 #endif /* RAISE_MISSING */
 
 #ifndef offsetof
-#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+#define offsetof(TYPE, MEMBER) ((size_t) & ((TYPE *)0)->MEMBER)
 #endif
 
 #ifndef EXIT_FAILURE
@@ -128,8 +130,10 @@ be non-NULL. */
 #define tmpnam_template "/tmp/sgmlsXXXXXX"
 #define L_tmpnam (sizeof(tmpnam_template))
 #undef tmpnam
-#define tmpnam(buf) \
-  (mktemp(strcpy(buf, tmpnam_template)) == 0 || (buf)[0] == '\0' ? 0 : (buf))
+#define tmpnam(buf)                                                            \
+        (mktemp(strcpy(buf, tmpnam_template)) == 0 || (buf)[0] == '\0'         \
+             ? 0                                                               \
+             : (buf))
 #endif /* not L_tmpnam */
 
 #ifndef errno

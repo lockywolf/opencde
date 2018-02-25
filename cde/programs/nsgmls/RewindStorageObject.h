@@ -35,30 +35,30 @@ namespace SP_NAMESPACE {
 class Messenger;
 
 class SP_API RewindStorageObject : public StorageObject {
-public:
-  RewindStorageObject(Boolean mayRewind, Boolean canSeek);
-protected:
-  PackedBoolean mayRewind_;
+      public:
+        RewindStorageObject(Boolean mayRewind, Boolean canSeek);
 
-  void saveBytes(const char *, size_t);
-  Boolean readSaved(char *, size_t, size_t &);
-  Boolean rewind(Messenger &);
-  void willNotRewind();
-  void unread(const char *s, size_t n);
-  virtual Boolean seekToStart(Messenger &) = 0;
-private:
-  PackedBoolean savingBytes_;
-  PackedBoolean readingSaved_;
-  PackedBoolean canSeek_;
-  String<char> savedBytes_;
-  size_t nBytesRead_;
+      protected:
+        PackedBoolean mayRewind_;
+
+        void saveBytes(const char *, size_t);
+        Boolean readSaved(char *, size_t, size_t &);
+        Boolean rewind(Messenger &);
+        void willNotRewind();
+        void unread(const char *s, size_t n);
+        virtual Boolean seekToStart(Messenger &) = 0;
+
+      private:
+        PackedBoolean savingBytes_;
+        PackedBoolean readingSaved_;
+        PackedBoolean canSeek_;
+        String<char> savedBytes_;
+        size_t nBytesRead_;
 };
 
-inline
-void RewindStorageObject::saveBytes(const char *s, size_t n)
-{
-  if (savingBytes_)
-    savedBytes_.append(s, n);
+inline void RewindStorageObject::saveBytes(const char *s, size_t n) {
+        if (savingBytes_)
+                savedBytes_.append(s, n);
 }
 
 #ifdef SP_NAMESPACE

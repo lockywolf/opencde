@@ -31,24 +31,20 @@ class Token;
 
 class Literal : public BaseData {
 
-friend class FirstOf;
-friend class OL_Data;
-friend class Concat;  
-  
-protected:
-  Literal( const Token &t, const char *str, ActionType mode );
+        friend class FirstOf;
+        friend class OL_Data;
+        friend class Concat;
+
+      protected:
+        Literal(const Token &t, const char *str, ActionType mode);
 };
 
-inline
-Literal::Literal( const Token &t, 
-		  const char *str, 
-		  ActionType mode ):BaseData(t, mode)
-{
-  data_complete = 1;
-  if ( str ) {
-    ValueBuffer.writeStr( str );
-  }
-
+inline Literal::Literal(const Token &t, const char *str, ActionType mode)
+    : BaseData(t, mode) {
+        data_complete = 1;
+        if (str) {
+                ValueBuffer.writeStr(str);
+        }
 }
-  
+
 #endif

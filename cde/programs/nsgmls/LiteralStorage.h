@@ -37,23 +37,21 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API LiteralStorageManager : public StorageManager {
-public:
-  LiteralStorageManager(const char *type);
-  StorageObject *makeStorageObject(const StringC &id,
-				   const StringC &,
-				   Boolean,
-				   Boolean mayRewind,
-				   Messenger &,
-				   StringC &found); 
-  const InputCodingSystem *requiredCodingSystem() const;
-  Boolean requiresCr() const;
-  const char *type() const;
-  Boolean inheritable() const;
-private:
-  LiteralStorageManager(const LiteralStorageManager &); // undefined
-  void operator=(const LiteralStorageManager &);	// undefined
+      public:
+        LiteralStorageManager(const char *type);
+        StorageObject *makeStorageObject(const StringC &id, const StringC &,
+                                         Boolean, Boolean mayRewind,
+                                         Messenger &, StringC &found);
+        const InputCodingSystem *requiredCodingSystem() const;
+        Boolean requiresCr() const;
+        const char *type() const;
+        Boolean inheritable() const;
 
-  const char *type_;
+      private:
+        LiteralStorageManager(const LiteralStorageManager &); // undefined
+        void operator=(const LiteralStorageManager &);        // undefined
+
+        const char *type_;
 };
 
 #ifdef SP_NAMESPACE

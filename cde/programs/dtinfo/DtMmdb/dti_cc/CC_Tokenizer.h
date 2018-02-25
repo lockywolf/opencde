@@ -32,30 +32,30 @@
 
 class CC_Tokenizer {
 
-private:
-  char      *current_ptr;
-  char      *str_;
-  CC_Boolean touched;
-  _Xstrtokparams	strtok_buf;
+      private:
+        char *current_ptr;
+        char *str_;
+        CC_Boolean touched;
+        _Xstrtokparams strtok_buf;
 
-public:
-  CC_Tokenizer(const CC_String & );
-  ~CC_Tokenizer() { delete str_; }
+      public:
+        CC_Tokenizer(const CC_String &);
+        ~CC_Tokenizer() { delete str_; }
 
+        /* Here is an example to use the code
+         *     CC_String b("This is a string");
+         *     CC_Tokenizer next( b );
+         *     while ( next() ) {
+         *         cout << next.data() << endl;
+         *     }
+         */
 
-  /* Here is an example to use the code 
-   *     CC_String b("This is a string");
-   *     CC_Tokenizer next( b );
-   *     while ( next() ) {
-   *         cout << next.data() << endl;
-   *     }
-   */
-
-  CC_Boolean operator()();  /* returns TRUE if next token exists, 
-			     * FALSE if otherwise
-			     */
-  const char *data() { return(current_ptr); } /* returns the current token */
+        CC_Boolean operator()(); /* returns TRUE if next token exists,
+                                  * FALSE if otherwise
+                                  */
+        const char *data() {
+                return (current_ptr);
+        } /* returns the current token */
 };
-  
-#endif
 
+#endif

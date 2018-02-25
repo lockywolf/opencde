@@ -27,7 +27,7 @@
  *	$XConsortium: DtMailXtProc.h /main/4 1996/04/21 19:45:02 drk $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement bertween
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -50,9 +50,9 @@
 extern "C" {
 #endif
 
-    void DtMailXtInputProc(XtPointer, int *, XtInputId *);
+void DtMailXtInputProc(XtPointer, int *, XtInputId *);
 
-    extern XtAppContext		DtMailDamageContext;
+extern XtAppContext DtMailDamageContext;
 
 #ifdef __cplusplus
 }

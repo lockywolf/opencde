@@ -50,9 +50,8 @@
  ****************************************************************************
  ************************************<+>*************************************/
 
-
-#include	<stdio.h>		/* placed here so file isn't empty  */
-#include	"vgmsg.h"
+#include <stdio.h> /* placed here so file isn't empty  */
+#include "vgmsg.h"
 
 #ifdef __apollo
 
@@ -62,30 +61,27 @@
  *
  ***************************************************************************/
 
-#include	<pwd.h>
+#include <pwd.h>
 
-#include	<apollo/base.h>
-#include	<apollo/error.h>
+#include <apollo/base.h>
+#include <apollo/error.h>
 
-#include	"apollo/passwd.h"	/* copy of <apollo/sys/passwd.h>   */
-#include	"apollo/login.h"	/* copy of <apollo/sys/login.h>	   */
-#include	"apollo/rgy_base.h"
+#include "apollo/passwd.h" /* copy of <apollo/sys/passwd.h>   */
+#include "apollo/login.h"  /* copy of <apollo/sys/login.h>	   */
+#include "apollo/rgy_base.h"
 
-#include	"vg.h"
+#include "vg.h"
 
-      
-#define	SCMPN(a, b)	strncmp(a, b, sizeof(a))
-#define	SCPYN(a, b)	strncpy(a, b, sizeof(a))
-#define eq(a,b)		!strcmp(a,b)
+#define SCMPN(a, b) strncmp(a, b, sizeof(a))
+#define SCPYN(a, b) strncpy(a, b, sizeof(a))
+#define eq(a, b) !strcmp(a, b)
 
-#define NMAX	strlen(name)
-#define HMAX	strlen(host)
+#define NMAX strlen(name)
+#define HMAX strlen(host)
 
-#define STRING(str)	(str), (short) strlen(str)
-#define STRNULL(s, l)	((s)[(l)] = '\0')
-#define ISTRING(str)	(str), (int) strlen(str)
-
-
+#define STRING(str) (str), (short)strlen(str)
+#define STRNULL(s, l) ((s)[(l)] = '\0')
+#define ISTRING(str) (str), (int)strlen(str)
 
 /***************************************************************************
  *
@@ -93,21 +89,16 @@
  *
  ***************************************************************************/
 
-
 /***************************************************************************
  *
  *  Procedure declarations
  *
  ***************************************************************************/
 
-
-static boolean 	CheckLogin( char *user, char *passwd, char *host, 
-			    status_$t *status)
-static boolean	CheckPassword( char *user, char *passwd) ;
-static int	PasswordAged( register struct passwd *pw) ;
-
-
-
+static boolean CheckLogin(char *user, char *passwd, char *host,
+                          status_$t *status) static boolean
+    CheckPassword(char *user, char *passwd);
+static int PasswordAged(register struct passwd *pw);
 
 /***************************************************************************
  *
@@ -115,21 +106,16 @@ static int	PasswordAged( register struct passwd *pw) ;
  *
  ***************************************************************************/
 
-rgy_$policy_t       policy;
+rgy_$policy_t policy;
 rgy_$acct_user_t user_part;
-rgy_$acct_admin_t admin_part;     
-extern struct passwd * getpwnam_full();
-
-
+rgy_$acct_admin_t admin_part;
+extern struct passwd *getpwnam_full();
 
 /***************************************************************************
  *
  *  Stub routines
  *
  ***************************************************************************/
-
-
-
 
 /***************************************************************************
  *
@@ -139,34 +125,24 @@ extern struct passwd * getpwnam_full();
  *
  ***************************************************************************/
 
-static boolean
-CheckLogin( char *user, char *passwd, char *host, status_$t *status)
-{
-    ios_$id_t		logid;
-    login_$opt_set_t	opts;
-      
-    login_$set_host(host, strlen(host));
+static boolean CheckLogin(char *user, char *passwd, char *host,
+                          status_$t *status) {
+        ios_$id_t logid;
+        login_$opt_set_t opts;
 
-    opts = login_$no_setsid_sm |
-	   login_$no_setwd_sm  |
-	   login_$no_prompt_pass;
+        login_$set_host(host, strlen(host));
 
-    if ( !login_$chk_login(opts,
-			STRING(user),
-    			STRING(passwd), 
-    			(login_$open_log_p) NULL,
-    			STRING(""),
-    			&logid,
-    			status)) {
+        opts = login_$no_setsid_sm | login_$no_setwd_sm | login_$no_prompt_pass;
 
-    	return(false);
+        if (!login_$chk_login(opts, STRING(user), STRING(passwd),
+                              (login_$open_log_p)NULL, STRING(""), &logid,
+                              status)) {
 
-    } else
-    	return(true);
-}     
+                return (false);
 
-
-
+        } else
+                return (true);
+}
 
 /***************************************************************************
  *
@@ -175,23 +151,18 @@ CheckLogin( char *user, char *passwd, char *host, status_$t *status)
  *  check validity of just user name and password
  ***************************************************************************/
 
-static boolean 
-CheckPassword( char *user, char *passwd )
-{
-    login_$ptr	lptr;
-    status_$t	status;
-             
-    login_$open((login_$mode_t) 0, &lptr, &status);
-    if (status.all == status_$ok)
-	login_$set_ppo(lptr, STRING(user), &status);
-    if (status.all == status_$ok)
-	login_$ckpass(lptr, STRING(passwd), &status);
+static boolean CheckPassword(char *user, char *passwd) {
+        login_$ptr lptr;
+        status_$t status;
 
-    return (status.all == status_$ok);
-}     
+        login_$open((login_$mode_t)0, &lptr, &status);
+        if (status.all == status_$ok)
+                login_$set_ppo(lptr, STRING(user), &status);
+        if (status.all == status_$ok)
+                login_$ckpass(lptr, STRING(passwd), &status);
 
-
-
+        return (status.all == status_$ok);
+}
 
 /***************************************************************************
  *
@@ -200,169 +171,151 @@ CheckPassword( char *user, char *passwd )
  *  see if password has aged
  ***************************************************************************/
 
-static int 
-PasswordAged( register struct passwd *pw )
-{
+static int PasswordAged(register struct passwd *pw) {
 
-    boolean lrgy;
+        boolean lrgy;
 
-    /* Account validity checks:  If we were able to connect to the network
-     * registry, then we've acquired account and policy data and can perform
-     * account/password checking
-     */
+        /* Account validity checks:  If we were able to connect to the network
+         * registry, then we've acquired account and policy data and can perform
+         * account/password checking
+         */
 
-    lrgy = rgy_$using_local_registry();
-    if ( !lrgy ) { 
+        lrgy = rgy_$using_local_registry();
+        if (!lrgy) {
 
-	/* Check for password expiration or invalidity */
-	if (rgy_$is_passwd_expired(&user_part, &policy ) == true  ||
-	    rgy_$is_passwd_invalid(&user_part) == true)  {
+                /* Check for password expiration or invalidity */
+                if (rgy_$is_passwd_expired(&user_part, &policy) == true ||
+                    rgy_$is_passwd_invalid(&user_part) == true) {
 
-	    return TRUE;
-	}
-    }
-   return FALSE;
+                        return TRUE;
+                }
+        }
+        return FALSE;
 }
 
+        /***************************************************************************
+         *
+         *  Verify
+         *
+         *  verify the user
+         *
+         *  return codes indicate authentication results.
+         ***************************************************************************/
 
-    
+#define MAXATTEMPTS 5
 
-/***************************************************************************
- *
- *  Verify
- *
- *  verify the user
- *
- *  return codes indicate authentication results.
- ***************************************************************************/
+extern Widget focusWidget;           /* login or password text field	   */
+struct passwd nouser = {"", "nope"}; /* invalid user password struct	   */
 
-#define MAXATTEMPTS	5
+int Verify(char *name, char *passwd) {
 
-extern Widget focusWidget;		/* login or password text field	   */
-struct  passwd nouser = {"", "nope"};	/* invalid user password struct	   */
+        static int login_attempts = 0; /* # failed authentications	   */
 
-int 
-Verify( char *name, char *passwd )
-{
+        struct passwd *p; /* password structure			   */
+        char *host;       /* host that login is coming in from	   */
+        status_$t status; /* status code returned by CheckLogin	   */
 
-    static int		login_attempts = 0; /* # failed authentications	   */
-    
-    struct passwd	*p;	/* password structure			   */
-    char 		*host;	/* host that login is coming in from	   */
-    status_$t		status;	/* status code returned by CheckLogin	   */
+        int n;
 
-    int			n;
+        host = dpyinfo.name;
 
-    host = dpyinfo.name;
-    
+        /*
+         *  look up entry from registry...
+         *
+         *  need getpwnam_full to get policy data for passwd expiration
+         *  or invalidity...
+         */
+        p = getpwnam_full(name, &user_part, &admin_part, &policy);
+        /*    p = getpwnam(name);*/
 
-    /*
-     *  look up entry from registry...
-     *
-     *  need getpwnam_full to get policy data for passwd expiration 
-     *  or invalidity...
-     */
-    p = getpwnam_full(name, &user_part, &admin_part, &policy);
-/*    p = getpwnam(name);*/
-    
-    if (!p || strlen(name) == 0 || p->pw_name == NULL )
-	p = &nouser;
+        if (!p || strlen(name) == 0 || p->pw_name == NULL)
+                p = &nouser;
 
+        /*
+         *  validate user/password...
+         */
 
-    /*
-     *  validate user/password...
-     */
+        if (!CheckLogin(name, passwd, host, &status)) {
 
-    if (!CheckLogin(name, passwd, host, &status)) {
+                /*
+                 *  if verification failed, but was just a name check, prompt
+                 * for password...
+                 */
 
-	/*
-	 *  if verification failed, but was just a name check, prompt for
-	 *  password...
-	 */
+                if (focusWidget != passwd_text)
+                        return (VF_INVALID);
 
-	if ( focusWidget != passwd_text ) 
-	    return (VF_INVALID);
+                /*
+                 *  if maximum number of attempts exceeded, log failure...
+                 */
 
-
-	/*
-	 *  if maximum number of attempts exceeded, log failure...
-	 */
-
-	if ((++login_attempts % MAXATTEMPTS) == 0 ) {
+                if ((++login_attempts % MAXATTEMPTS) == 0) {
 
 #ifdef peter
-		syslog(LOG_CRIT,
-		    "REPEATED LOGIN FAILURES ON %s FROM %.*s, %.*s",
-		    "??", HMAX, host, NMAX, name);
+                        syslog(LOG_CRIT,
+                               "REPEATED LOGIN FAILURES ON %s FROM %.*s, %.*s",
+                               "??", HMAX, host, NMAX, name);
 #endif
-	}
-	
+                }
 
-	/*
-	 *  check status codes from verification...
- 	 */
-     
-	switch (status.all) {
+                /*
+                 *  check status codes from verification...
+                 */
 
-	case login_$logins_disabled:	/* logins are disabled		   */
-	    if (p->pw_uid != 0)
-		return(VF_NO_LOGIN);
-	    else
-		if (!CheckPassword(name,passwd))
-		    return(VF_INVALID);
-		    
-	    break;
+                switch (status.all) {
 
-	case login_$inv_acct:		/* invalid account		   */
-	    if ( PasswordAged(p) ) 
-		return(VF_PASSWD_AGED);
-	    else
-		return(VF_INVALID);
-	    break;
+                case login_$logins_disabled: /* logins are disabled
+                                              */
+                        if (p->pw_uid != 0)
+                                return (VF_NO_LOGIN);
+                        else if (!CheckPassword(name, passwd))
+                                return (VF_INVALID);
 
-	default:			/* other failed verification	   */
-	    return(VF_INVALID);
-	    break;
+                        break;
 
-	}
-    }
+                case login_$inv_acct: /* invalid account		   */
+                        if (PasswordAged(p))
+                                return (VF_PASSWD_AGED);
+                        else
+                                return (VF_INVALID);
+                        break;
 
-         
+                default: /* other failed verification	   */
+                        return (VF_INVALID);
+                        break;
+                }
+        }
 
-    /*
-     *  verify home directory exists...
-     */
+        /*
+         *  verify home directory exists...
+         */
 
-    if (chdir(p->pw_dir) < 0) {
-	if (chdir("/") < 0)
-	    return(VF_HOME);
-	else 
-	    LogError(ReadCatalog(
-		MC_LOG_SET,MC_LOG_NO_HMDIR,MC_DEF_LOG_NO_HMDIR),
-		p->pw_dir, name);
-    }
+        if (chdir(p->pw_dir) < 0) {
+                if (chdir("/") < 0)
+                        return (VF_HOME);
+                else
+                        LogError(ReadCatalog(MC_LOG_SET, MC_LOG_NO_HMDIR,
+                                             MC_DEF_LOG_NO_HMDIR),
+                                 p->pw_dir, name);
+        }
 
+        /*
+         *  validate uid and gid...
+         */
 
-    /*
-     *  validate uid and gid...
-     */
+        if ((p->pw_gid < 0) || (setgid(p->pw_gid) == -1)) {
+                return (VF_BAD_GID);
+        }
 
-    if ((p->pw_gid < 0)      || 
-	(setgid(p->pw_gid) == -1)) {
-	return(VF_BAD_GID);
-    }
+        if ((p->pw_uid < 0) || (seteuid(p->pw_uid) == -1)) {
+                return (VF_BAD_UID);
+        }
 
-    if ((p->pw_uid < 0)      || 
-	(seteuid(p->pw_uid) == -1)) {
-	return(VF_BAD_UID);
-    }
+        /*
+         * verify ok...
+         */
 
-
-    /*
-     * verify ok...
-     */
-
-    return(VF_OK);
+        return (VF_OK);
 }
 
 #endif

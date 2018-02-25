@@ -51,7 +51,7 @@
 #include "demo.h"
 #include "text.h"
 
- /*************************************************************************
+/*************************************************************************
  *
  *       Data Structures & Private Declarations For Text Transfers
  *
@@ -61,23 +61,12 @@
  * Data for text list of fruit
  */
 
-char *todaysFruit[] = {
-        "Oranges",
-        "Peaches",
-        "Lemons",
-        "Watermelons",
-        "Apples",
-        "Bananas",
-        "Plums",
-        "Limes",
-        "Cantaloupes",
-        "Nectarines",
-        "Papayas",
-        "Mangos",
-        NULL
-};
+char *todaysFruit[] = {"Oranges",     "Peaches",    "Lemons",  "Watermelons",
+                       "Apples",      "Bananas",    "Plums",   "Limes",
+                       "Cantaloupes", "Nectarines", "Papayas", "Mangos",
+                       NULL};
 
- /*************************************************************************
+/*************************************************************************
  *
  *      Text Drag & Drop
  *
@@ -89,64 +78,57 @@ char *todaysFruit[] = {
  * Sets the text object's text to the text in the fruit list based on where
  * the pointer was when the drag started.
  */
-void
-textConvertCallback(
-        Widget          dragContext,
-        XtPointer       clientData,
-	XtPointer       callData)
-{
+void textConvertCallback(Widget dragContext, XtPointer clientData,
+                         XtPointer callData) {
         DtDndConvertCallbackStruct *convertInfo =
-                                        (DtDndConvertCallbackStruct *) callData;
-        Widget          fruitList = (Widget) clientData;
-        int             selectedPos;
-        XmString       *items;
-        Cardinal        itemCount;
+            (DtDndConvertCallbackStruct *)callData;
+        Widget fruitList = (Widget)clientData;
+        int selectedPos;
+        XmString *items;
+        Cardinal itemCount;
 
-	if (convertInfo == NULL) {
-		return;
-	}
+        if (convertInfo == NULL) {
+                return;
+        }
 
-	/*
-	 * Verify protocol and callback reason
-	 */
+        /*
+         * Verify protocol and callback reason
+         */
 
         if (convertInfo->dragData->protocol != DtDND_TEXT_TRANSFER ||
-	    (convertInfo->reason != DtCR_DND_CONVERT_DATA &&
-	     convertInfo->reason != DtCR_DND_CONVERT_DELETE) ||
-	    fruitList == NULL) {
+            (convertInfo->reason != DtCR_DND_CONVERT_DATA &&
+             convertInfo->reason != DtCR_DND_CONVERT_DELETE) ||
+            fruitList == NULL) {
                 return;
-	}
+        }
 
         switch (convertInfo->reason) {
         case DtCR_DND_CONVERT_DATA:
 
-		/*
-	 	 * Provide the text from the fruit list
-		 */
+                /*
+                 * Provide the text from the fruit list
+                 */
 
-                XtVaGetValues(fruitList,
-                        XmNuserData,    &selectedPos,
-                        XmNitems,       &items,
-                        XmNitemCount,   &itemCount,
-                        NULL);
+                XtVaGetValues(fruitList, XmNuserData, &selectedPos, XmNitems,
+                              &items, XmNitemCount, &itemCount, NULL);
 
                 if (itemCount > 0 && selectedPos < itemCount) {
                         convertInfo->dragData->data.strings[0] =
-                                        items[selectedPos-1];
+                            items[selectedPos - 1];
                 } else {
                         convertInfo->status = DtDND_FAILURE;
                 }
                 break;
         DtCR_DND_CONVERT_DELETE:
 
-		/*
-		 * Delete the text from the fruit list. If the fruit list
-		 * were set up to be dynamic, deletion from the list would
-		 * occur here.
-		 */
+                /*
+                 * Delete the text from the fruit list. If the fruit list
+                 * were set up to be dynamic, deletion from the list would
+                 * occur here.
+                 */
 
                 printf("Delete fruit item #%d\n",
-                        convertInfo->dragData->data.strings[0]);
+                       convertInfo->dragData->data.strings[0]);
                 break;
         }
 }
@@ -157,13 +139,8 @@ textConvertCallback(
  * Normally would free any memory allocated by textConvertCallback
  * but none was allocated so this is just a placeholder.
  */
-void
-textDragFinishCallback(
-        Widget          widget,
-        XtPointer       clientData,
-        XtPointer       callData)
-{
-}
+void textDragFinishCallback(Widget widget, XtPointer clientData,
+                            XtPointer callData) {}
 
 /*
  * textTransferCallback
@@ -172,50 +149,46 @@ textDragFinishCallback(
  * by placing their name in the field, text by inserting the text into the
  * field.
  */
-void
-textTransferCallback(
-        Widget          widget,
-        XtPointer       clientData,
-        XtPointer       callData)
-{
+void textTransferCallback(Widget widget, XtPointer clientData,
+                          XtPointer callData) {
         DtDndTransferCallbackStruct *transferInfo =
-				(DtDndTransferCallbackStruct *) callData;
-        String  	text;
+            (DtDndTransferCallbackStruct *)callData;
+        String text;
 
-	/*
-	 * Verify callback reason
-	 */
+        /*
+         * Verify callback reason
+         */
 
-	if (transferInfo == NULL || 
-	    transferInfo->reason != DtCR_DND_TRANSFER_DATA) {
-		return;
-	}
+        if (transferInfo == NULL ||
+            transferInfo->reason != DtCR_DND_TRANSFER_DATA) {
+                return;
+        }
 
         switch (transferInfo->dropData->protocol) {
 
         case DtDND_FILENAME_TRANSFER:
 
-		/*
-		 * Copy the file name into the text field
-		 */
+                /*
+                 * Copy the file name into the text field
+                 */
 
-                XtVaSetValues(widget,
-                        XmNvalue, transferInfo->dropData->data.files[0],
-                        NULL);
+                XtVaSetValues(widget, XmNvalue,
+                              transferInfo->dropData->data.files[0], NULL);
 
                 break;
 
         case DtDND_TEXT_TRANSFER:
 
-		/*
-		 * Copy the fruit name into the text field
-		 */
+                /*
+                 * Copy the fruit name into the text field
+                 */
 
                 text = XmStringUnparse(transferInfo->dropData->data.strings[0],
-                        NULL, XmCHARSET_TEXT, XmCHARSET_TEXT, NULL, 0, XmOUTPUT_ALL);
+                                       NULL, XmCHARSET_TEXT, XmCHARSET_TEXT,
+                                       NULL, 0, XmOUTPUT_ALL);
 
                 XtVaSetValues(widget, XmNvalue, text, NULL);
-		XtFree (text);
+                XtFree(text);
 
                 break;
         }
@@ -226,14 +199,13 @@ textTransferCallback(
  *
  * Prepares the fruit list to source drags of text with button 1.
  */
-void textDragSetup(Widget fruitList)
-{
-    static char	translations[] = "\
+void textDragSetup(Widget fruitList) {
+        static char translations[] = "\
 	~c ~s ~m ~a <Btn1Down>:\
 	    demoProcessPress(ListBeginSelect,textDragStart)\n\
 	c ~s ~m ~a <Btn1Down>:\
 	    demoProcessPress(ListBeginToggle,textDragStart)";
-    static char	btn2_translations[] = "\
+        static char btn2_translations[] = "\
 	~c ~s ~m ~a <Btn2Down>:\
 	    demoProcessPress(ListBeginSelect,textDragStart)\n\
 	c ~s ~m ~a <Btn2Down>:\
@@ -241,32 +213,25 @@ void textDragSetup(Widget fruitList)
 	<Btn2Motion>:ListButtonMotion()\n\
 	~c ~s ~m ~a <Btn2Up>:ListEndSelect()\n\
 	c ~s ~m ~a <Btn2Up>:ListEndToggle()";
-    static XtActionsRec	actionTable[] =
-    {
-	{"textDragStart", (XtActionProc) &textDragStart},
-	{"demoProcessPress", (XtActionProc) &demoProcessPress}
-    };
+        static XtActionsRec actionTable[] = {
+            {"textDragStart", (XtActionProc)&textDragStart},
+            {"demoProcessPress", (XtActionProc)&demoProcessPress}};
 
-    int		btn1_transfer = 0;
-    XtTranslations	new_translations;
+        int btn1_transfer = 0;
+        XtTranslations new_translations;
 
-    XtAppAddActions(
-		demoAppContext,
-		actionTable,
-		sizeof(actionTable)/sizeof(actionTable[0]));
-    new_translations = XtParseTranslationTable(translations);
-    XtOverrideTranslations(fruitList, new_translations);
+        XtAppAddActions(demoAppContext, actionTable,
+                        sizeof(actionTable) / sizeof(actionTable[0]));
+        new_translations = XtParseTranslationTable(translations);
+        XtOverrideTranslations(fruitList, new_translations);
 
-    XtVaGetValues(
-	(Widget) XmGetXmDisplay(XtDisplayOfObject(fruitList)),
-	"enableBtn1Transfer", &btn1_transfer,
-	NULL);
-    
-    if (btn1_transfer != True)
-    {
-	new_translations = XtParseTranslationTable(btn2_translations);
-	XtOverrideTranslations(fruitList, new_translations);
-    }
+        XtVaGetValues((Widget)XmGetXmDisplay(XtDisplayOfObject(fruitList)),
+                      "enableBtn1Transfer", &btn1_transfer, NULL);
+
+        if (btn1_transfer != True) {
+                new_translations = XtParseTranslationTable(btn2_translations);
+                XtOverrideTranslations(fruitList, new_translations);
+        }
 
 #if 0
     XtAddEventHandler(fruitList, Button1MotionMask, False,
@@ -280,15 +245,12 @@ void textDragSetup(Widget fruitList)
  *
  * Registers text field to accept drops of files.
  */
-void
-textDropSetup(
-        Widget          textField)
-{
-        static XtCallbackRec transferCBRec[] = { {textTransferCallback, NULL},
-                                                 {NULL, NULL} };
+void textDropSetup(Widget textField) {
+        static XtCallbackRec transferCBRec[] = {{textTransferCallback, NULL},
+                                                {NULL, NULL}};
 
-        DtDndDropRegister(textField, DtDND_FILENAME_TRANSFER,
-                XmDROP_COPY, transferCBRec, NULL, 0);
+        DtDndDropRegister(textField, DtDND_FILENAME_TRANSFER, XmDROP_COPY,
+                          transferCBRec, NULL, 0);
 }
 
 /*
@@ -297,24 +259,19 @@ textDropSetup(
  * Initiates a drag of a text item from the fruit list provided the pointer
  * is over an item in the list.
  */
-void
-textDragStart(
-        Widget          widget,
-        XEvent         *event)
-{
-        int             itemCount,
-			selectedPos;
+void textDragStart(Widget widget, XEvent *event) {
+        int itemCount, selectedPos;
 
-        static XtCallbackRec convertCBRec[] = { {textConvertCallback, NULL},
-                                                {NULL, NULL} };
-        static XtCallbackRec dragFinishCBRec[] =
-					      { {demoDragFinishCallback, NULL},
-					        {textDragFinishCallback, NULL},
-                                                {NULL, NULL} };
+        static XtCallbackRec convertCBRec[] = {{textConvertCallback, NULL},
+                                               {NULL, NULL}};
+        static XtCallbackRec dragFinishCBRec[] = {
+            {demoDragFinishCallback, NULL},
+            {textDragFinishCallback, NULL},
+            {NULL, NULL}};
 
-	/*
-	 * Determine which item to drag from the text list
-	 */
+        /*
+         * Determine which item to drag from the text list
+         */
 
         XtVaGetValues(widget, XmNitemCount, &itemCount, NULL);
 
@@ -328,19 +285,18 @@ textDragStart(
 
         convertCBRec[0].closure = (XtPointer)widget;
 
-	/*
-	 * Start the drag
-	 */
+        /*
+         * Start the drag
+         */
 
-        if (DtDndDragStart(widget, event, DtDND_TEXT_TRANSFER, 1,
-            XmDROP_COPY, convertCBRec, dragFinishCBRec, NULL, 0)
-            == NULL) {
+        if (DtDndDragStart(widget, event, DtDND_TEXT_TRANSFER, 1, XmDROP_COPY,
+                           convertCBRec, dragFinishCBRec, NULL, 0) == NULL) {
 
                 printf("DragStart returned NULL.\n");
         }
 }
 
- /*************************************************************************
+/*************************************************************************
  *
  *      Text Creation & Initialization
  *
@@ -351,29 +307,28 @@ textDragStart(
  *
  * Creates a scrolling list filled with fruit names.
  */
-Widget
-textCreateDragSource(
-        Widget          parent)
-{
-        Widget          fruitList;
-        XmString       *fruits;
-        Arg             args[2];
-        int             ii, fruitCount;
+Widget textCreateDragSource(Widget parent) {
+        Widget fruitList;
+        XmString *fruits;
+        Arg args[2];
+        int ii, fruitCount;
 
         for (ii = 0; todaysFruit[ii] != NULL; ii++)
-		;
+                ;
         fruitCount = ii;
 
-        fruits = (XmString *) XtMalloc(sizeof(XmString) * fruitCount);
+        fruits = (XmString *)XtMalloc(sizeof(XmString) * fruitCount);
 
         for (ii = 0; ii < fruitCount; ii++) {
-                fruits[ii] = XmStringCreate(todaysFruit[ii],
-                                            XmFONTLIST_DEFAULT_TAG);
+                fruits[ii] =
+                    XmStringCreate(todaysFruit[ii], XmFONTLIST_DEFAULT_TAG);
         }
 
         ii = 0;
-        XtSetArg(args[ii], XmNitems,      fruits);     ii++;
-        XtSetArg(args[ii], XmNitemCount,  fruitCount); ii++;
+        XtSetArg(args[ii], XmNitems, fruits);
+        ii++;
+        XtSetArg(args[ii], XmNitemCount, fruitCount);
+        ii++;
 
         fruitList = XmCreateScrolledList(parent, "fruitList", args, ii);
         XtManageChild(fruitList);
@@ -381,7 +336,7 @@ textCreateDragSource(
         for (ii = 0; ii < fruitCount; ii++) {
                 XmStringFree(fruits[ii]);
         }
-	XtFree((char *)fruits);
+        XtFree((char *)fruits);
 
         return fruitList;
 }
@@ -391,26 +346,17 @@ textCreateDragSource(
  *
  * Creates a text field with a label.
  */
-Widget
-textCreateDropSite(
-	Widget		parent)
-{
-	Widget		textRowColumn,
-			textLabel,
-			textField;
+Widget textCreateDropSite(Widget parent) {
+        Widget textRowColumn, textLabel, textField;
 
-        textRowColumn = XtVaCreateManagedWidget("textRowColumn",
-                xmRowColumnWidgetClass, parent,
-                NULL);
+        textRowColumn = XtVaCreateManagedWidget(
+            "textRowColumn", xmRowColumnWidgetClass, parent, NULL);
 
-        textLabel = XtVaCreateManagedWidget("textLabel",
-                xmLabelWidgetClass, textRowColumn,
-                NULL);
+        textLabel = XtVaCreateManagedWidget("textLabel", xmLabelWidgetClass,
+                                            textRowColumn, NULL);
 
-        textField = XtVaCreateManagedWidget("textField",
-                xmTextWidgetClass, textRowColumn,
-                NULL);
+        textField = XtVaCreateManagedWidget("textField", xmTextWidgetClass,
+                                            textRowColumn, NULL);
 
-	return textField;
+        return textField;
 }
-

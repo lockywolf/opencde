@@ -26,7 +26,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -34,7 +34,7 @@
  *+SNOTICE
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -56,17 +56,16 @@
 //         by
 //           Douglas Young
 //           Prentice Hall, 1992
-//           ISBN 0-13-630252-1	
+//           ISBN 0-13-630252-1
 //
 //         Copyright 1991 by Prentice Hall
 //         All Rights Reserved
 //
-//  Permission to use, copy, modify, and distribute this software for 
-//  any purpose except publication and without fee is hereby granted, provided 
+//  Permission to use, copy, modify, and distribute this software for
+//  any purpose except publication and without fee is hereby granted, provided
 //  that the above copyright notice appear in all copies of the software.
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-
 
 //////////////////////////////////////////////////////////
 // MenuBar.h: A menu bar, whose panes support items
@@ -78,7 +77,6 @@
 // MODIFIED TO SUPPORT SUBMENUS - not described in Book
 ///////////////////////////////////////////////////////////
 
-
 #ifndef MENUBAR_H
 #define MENUBAR_H
 
@@ -89,46 +87,45 @@ class Cmd;
 class CmdList;
 
 class MenuBar : public UIComponent {
-  protected:
+      protected:
 #ifdef DEAD_WOOD
-    virtual	Boolean isValidMenuPane(Widget);
+        virtual Boolean isValidMenuPane(Widget);
 #endif /* DEAD_WOOD */
 
-    virtual Widget createPulldown ( Widget, CmdList *, 
-			Boolean, unsigned char);
+        virtual Widget createPulldown(Widget, CmdList *, Boolean,
+                                      unsigned char);
 
-    virtual Widget createPulldown ( Widget, CmdList *, 
-			Widget *, Boolean, unsigned char);
-    
-  public:
-    
-    MenuBar ( Widget, char *, unsigned char = XmMENU_BAR );
-    
-    // Create a named menu pane from a list of Cmd objects
-    
-    virtual Widget addCommands ( Widget *, CmdList *,  Boolean = FALSE, 
-			unsigned char = XmMENU_BAR);
+        virtual Widget createPulldown(Widget, CmdList *, Widget *, Boolean,
+                                      unsigned char);
 
-    virtual Widget addCommands ( CmdList *, Boolean = FALSE, 
-			unsigned char = XmMENU_BAR);
+      public:
+        MenuBar(Widget, char *, unsigned char = XmMENU_BAR);
 
-    virtual Widget addCommands ( Widget, CmdList *);
+        // Create a named menu pane from a list of Cmd objects
 
-    virtual void addCommand ( Widget, Cmd *);
+        virtual Widget addCommands(Widget *, CmdList *, Boolean = FALSE,
+                                   unsigned char = XmMENU_BAR);
 
-    virtual  void   removeCommands( Widget, CmdList *);
+        virtual Widget addCommands(CmdList *, Boolean = FALSE,
+                                   unsigned char = XmMENU_BAR);
 
-    virtual  void   removeCommand( Widget, int at);
+        virtual Widget addCommands(Widget, CmdList *);
 
-    virtual  void   removeOnlyCommands( Widget, CmdList *);
+        virtual void addCommand(Widget, Cmd *);
 
+        virtual void removeCommands(Widget, CmdList *);
 
-    virtual void changeLabel ( Widget, int, char *);
+        virtual void removeCommand(Widget, int at);
 
-    virtual void changeLabel(Widget, const char * wid_name, const char * label);
+        virtual void removeOnlyCommands(Widget, CmdList *);
 
-    virtual void rotateLabels ( Widget, int, int );
-    
-    virtual const char *const className() { return "MenuBar"; }
+        virtual void changeLabel(Widget, int, char *);
+
+        virtual void changeLabel(Widget, const char *wid_name,
+                                 const char *label);
+
+        virtual void rotateLabels(Widget, int, int);
+
+        virtual const char *const className() { return "MenuBar"; }
 };
-#endif   
+#endif

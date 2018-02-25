@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $TOG: mp_rpc.h /main/5 1999/08/30 10:55:41 mgreess $ 			 				 */
+/*%%  $TOG: mp_rpc.h /main/5 1999/08/30 10:55:41 mgreess $
+ */
 /*
  *
  * @(#)mp_rpc.h	1.15 93/09/07
@@ -38,27 +39,27 @@
 #include "tt_options.h"
 
 #if defined(linux)
-# define __SVR4_I386_ABI_L1__
+#define __SVR4_I386_ABI_L1__
 #endif
 #include <rpc/rpc.h>
 #if defined(linux)
-# undef __SVR4_I386_ABI_L1__
+#undef __SVR4_I386_ABI_L1__
 #endif
 
 #if defined(ultrix) || defined(_AIX)
 extern "C" {
-  void svcerr_auth (SVCXPRT *, enum auth_stat);
-  SVCXPRT *svcfd_create(int,int,int);
-  void svc_getreqset(fd_set *);
+void svcerr_auth(SVCXPRT *, enum auth_stat);
+SVCXPRT *svcfd_create(int, int, int);
+void svc_getreqset(fd_set *);
 };
 #endif
 
 #if defined(OPT_TLI)
-#	include <netconfig.h>
-#	include <tiuser.h>
+#include <netconfig.h>
+#include <tiuser.h>
 #else
-#	include <sys/socket.h>
-#	include <netinet/in.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #endif /* OPT_TLI */
 
 #include <sys/types.h>
@@ -69,10 +70,10 @@ extern "C" {
 #include "util/tt_host_utils.h"
 
 enum _Tt_rpcsrv_err {
-	_TT_RPCSRV_OK,
-	_TT_RPCSRV_ERR,
-	_TT_RPCSRV_TMOUT,
-	_TT_RPCSRV_FDERR
+        _TT_RPCSRV_OK,
+        _TT_RPCSRV_ERR,
+        _TT_RPCSRV_TMOUT,
+        _TT_RPCSRV_FDERR
 };
 
-#endif				/* _TT_MP_RPC */
+#endif /* _TT_MP_RPC */

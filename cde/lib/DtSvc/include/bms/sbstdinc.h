@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         sbstdinc.h $TOG: sbstdinc.h /main/7 1998/07/31 17:50:45 mgreess $
- * Language:     C
+ * File:         sbstdinc.h $TOG: sbstdinc.h /main/7 1998/07/31 17:50:45 mgreess
+ * $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -39,11 +39,12 @@
 #include <sys/param.h>
 
 #ifdef SVR4
-#include <netdb.h>		/* MAXHOSTNAMELEN */
-#endif /* SVR4 */
+#include <netdb.h> /* MAXHOSTNAMELEN */
+#endif             /* SVR4 */
 
 #ifndef howmany
-#define howmany(x, y)  (((x)+((y)-1))/(y))   /* From <sys/param.h>, but not an XPG3 file */
+#define howmany(x, y)                                                          \
+        (((x) + ((y)-1)) / (y)) /* From <sys/param.h>, but not an XPG3 file */
 #endif
 
 #include <stdlib.h>
@@ -62,17 +63,18 @@
 #if !(defined(apollo) && defined(__bsd)) && !defined(CSRG_BASED)
 
 #if defined(__STDC__)
-#if !defined(linux) && !defined(__osf__) && !defined(_XFUNCS_H_) && !defined(sun)
+#if !defined(linux) && !defined(__osf__) && !defined(_XFUNCS_H_) &&            \
+    !defined(sun)
 extern void bcopy(char *b1, char *b2, int length);
-extern int  bcmp(char *b1, char *b2, int length);
+extern int bcmp(char *b1, char *b2, int length);
 extern void bzero(char *b, int length);
 #endif
 
 extern char *mktemp(char *tmplate);
-#elif ! defined(__cplusplus)
+#elif !defined(__cplusplus)
 #if !defined(linux) && !defined(__osf__) && !defined(_XFUNCS_H_)
 extern void bcopy();
-extern int  bcmp();
+extern int bcmp();
 extern void bzero();
 #endif
 
@@ -81,8 +83,7 @@ extern char *mktemp();
 
 #endif
 
-
-#ifndef  SBSTDINC_H_NO_REDEFINE   /* sbstdinc.c turns this on */
+#ifndef SBSTDINC_H_NO_REDEFINE /* sbstdinc.c turns this on */
 
 /************************************************************************/
 /* Routines from <string.h> 						*/
@@ -95,7 +96,7 @@ extern XeString Xestrcat(XeString s1, ConstXeString s2);
 extern XeString Xestrcat();
 #endif
 #ifdef strcat
-# undef strcat
+#undef strcat
 #endif
 #define strcat Xestrcat
 
@@ -105,7 +106,7 @@ extern XeString Xestrncat(XeString s1, ConstXeString s2, size_t n);
 extern XeString Xestrncat();
 #endif
 #ifdef strncat
-# undef strncat
+#undef strncat
 #endif
 #define strncat Xestrncat
 
@@ -115,7 +116,7 @@ extern int Xestrcmp(ConstXeString s1, ConstXeString s2);
 extern int Xestrcmp();
 #endif
 #ifdef strcmp
-# undef strcmp
+#undef strcmp
 #endif
 #define strcmp Xestrcmp
 
@@ -125,7 +126,7 @@ extern int Xestrncmp(ConstXeString s1, ConstXeString s2, size_t n);
 extern int Xestrncmp();
 #endif
 #ifdef strncmp
-# undef strncmp
+#undef strncmp
 #endif
 #define strncmp Xestrncmp
 
@@ -135,7 +136,7 @@ extern XeString Xestrcpy(XeString s1, ConstXeString s2);
 extern XeString Xestrcpy();
 #endif
 #ifdef strcpy
-# undef strcpy
+#undef strcpy
 #endif
 #define strcpy Xestrcpy
 
@@ -145,7 +146,7 @@ extern XeString Xestrncpy(XeString s1, ConstXeString s2, size_t n);
 extern XeString Xestrncpy();
 #endif
 #ifdef strncpy
-# undef strncpy
+#undef strncpy
 #endif
 #define strncpy Xestrncpy
 
@@ -155,7 +156,7 @@ extern int Xestrcoll(ConstXeString s1, ConstXeString s2);
 extern int Xestrcoll();
 #endif
 #ifdef strcoll
-# undef strcoll
+#undef strcoll
 #endif
 #define strcoll Xestrcoll
 
@@ -165,7 +166,7 @@ extern size_t Xestrxfrm(XeString s1, ConstXeString s2, size_t n);
 extern size_t Xestrxfrm();
 #endif
 #ifdef strxfrm
-# undef strxfrm
+#undef strxfrm
 #endif
 #define strxfrm Xestrxfrm
 
@@ -175,7 +176,7 @@ extern XeString Xestrchr(ConstXeString s, int c);
 extern XeString Xestrchr();
 #endif
 #ifdef strchr
-# undef strchr
+#undef strchr
 #endif
 #define strchr Xestrchr
 
@@ -185,7 +186,7 @@ extern XeString Xestrpbrk(ConstXeString s1, ConstXeString s2);
 extern XeString Xestrpbrk();
 #endif
 #ifdef strpbrk
-# undef strpbrk
+#undef strpbrk
 #endif
 #define strpbrk Xestrpbrk
 
@@ -195,7 +196,7 @@ extern XeString Xestrrchr(ConstXeString s, int c);
 extern XeString Xestrrchr();
 #endif
 #ifdef strrchr
-# undef strrchr
+#undef strrchr
 #endif
 #define strrchr Xestrrchr
 
@@ -205,7 +206,7 @@ extern XeString Xestrstr(ConstXeString s1, ConstXeString s2);
 extern XeString Xestrstr();
 #endif
 #ifdef strstr
-# undef strstr
+#undef strstr
 #endif
 #define strstr Xestrstr
 
@@ -215,7 +216,7 @@ extern XeString Xestrtok(XeString s1, ConstXeString s2);
 extern XeString Xestrtok();
 #endif
 #ifdef strtok
-# undef strtok
+#undef strtok
 #endif
 #define strtok Xestrtok
 
@@ -225,10 +226,10 @@ extern size_t Xestrlen(ConstXeString s);
 extern size_t Xestrlen();
 #endif
 #ifndef __osf__
-# ifdef strlen
-#  undef strlen
-# endif
-# define strlen Xestrlen
+#ifdef strlen
+#undef strlen
+#endif
+#define strlen Xestrlen
 #endif
 
 #if defined(__STDC__) || defined(__cplusplus)
@@ -237,10 +238,10 @@ extern XeString Xestrdup(ConstXeString s);
 extern XeString Xestrdup();
 #endif
 #ifdef strdup
-# undef strdup
+#undef strdup
 #endif
 #define strdup Xestrdup
 
 #endif /* ifndef  SBSTDINC_H_NO_REDEFINE */
 
-#endif /*  _sbstdinc_h */ 
+#endif /*  _sbstdinc_h */

@@ -52,49 +52,34 @@
 const XrmQuark empty = NULLQUARK;
 
 struct smSubtractState {
-  XrmDatabase source_db;
-  XrmDatabase target_db;
-  XrmDatabase result_db;
-  XrmBindingList target_bindings;
-  XrmQuarkList target_quarks;
+        XrmDatabase source_db;
+        XrmDatabase target_db;
+        XrmDatabase result_db;
+        XrmBindingList target_bindings;
+        XrmQuarkList target_quarks;
 };
 
-
 #ifdef DEBUG
-static void _PrintDbEntry(
-  char *,
-  XrmBindingList,
-  XrmQuarkList,
-  XrmRepresentation *,
-  XrmValue *);
+static void _PrintDbEntry(char *, XrmBindingList, XrmQuarkList,
+                          XrmRepresentation *, XrmValue *);
 #endif
 
-static Bool _CompareBindingQuarkList(
-  XrmBindingList bindings1,
-  XrmQuarkList   quarks1,
-  XrmBindingList bindings2,
-  XrmQuarkList   quarks2);
-static Bool _SmCompareSourceAndTarget(
-  XrmDatabase *db,
-  XrmBindingList bindings,
-  XrmQuarkList quarks,
-  XrmRepresentation *type,
-  XrmValue *value,
-  XPointer closure);
-static Bool _SmEnumerateSource(
-  XrmDatabase *db,
-  XrmBindingList bindings,
-  XrmQuarkList quarks,
-  XrmRepresentation *type,
-  XrmValue *value,
-  XPointer closure);
-
+static Bool _CompareBindingQuarkList(XrmBindingList bindings1,
+                                     XrmQuarkList quarks1,
+                                     XrmBindingList bindings2,
+                                     XrmQuarkList quarks2);
+static Bool _SmCompareSourceAndTarget(XrmDatabase *db, XrmBindingList bindings,
+                                      XrmQuarkList quarks,
+                                      XrmRepresentation *type, XrmValue *value,
+                                      XPointer closure);
+static Bool _SmEnumerateSource(XrmDatabase *db, XrmBindingList bindings,
+                               XrmQuarkList quarks, XrmRepresentation *type,
+                               XrmValue *value, XPointer closure);
 
 #ifndef DEBUG
-#define _PrintDbEntry(a,b,c,d,e)
+#define _PrintDbEntry(a, b, c, d, e)
 #endif /* !DEBUG */
 
-
 /*************************************<->*************************************
  *
  *  _CompareBindingQuarkList()
@@ -122,106 +107,94 @@ static Bool _SmEnumerateSource(
  *
  *************************************<->***********************************/
 
-static
-Bool _CompareBindingQuarkList(
-  XrmBindingList bindings1,
-  XrmQuarkList   quarks1,
-  XrmBindingList bindings2,
-  XrmQuarkList   quarks2)
-{
-  int i = 0;
-  Bool rc = False;
+static Bool _CompareBindingQuarkList(XrmBindingList bindings1,
+                                     XrmQuarkList quarks1,
+                                     XrmBindingList bindings2,
+                                     XrmQuarkList quarks2) {
+        int i = 0;
+        Bool rc = False;
 
- /* 
-  * loop through quarks in list1
-  */
-  while (quarks1[i] != NULLQUARK)
-  {
-   /*
-    * compare quark in list1 to same element in list2 and
-    * break out of loop if they differ.
-    */
-    if (quarks2[i] == NULLQUARK || quarks2[i] != quarks1[i])
-      break;
+        /*
+         * loop through quarks in list1
+         */
+        while (quarks1[i] != NULLQUARK) {
+                /*
+                 * compare quark in list1 to same element in list2 and
+                 * break out of loop if they differ.
+                 */
+                if (quarks2[i] == NULLQUARK || quarks2[i] != quarks1[i])
+                        break;
 
-   /*
-    * quarks for this level compare, now compare bindings
-    */
-    if (bindings1[i] != bindings2[i])
-      break;
+                /*
+                 * quarks for this level compare, now compare bindings
+                 */
+                if (bindings1[i] != bindings2[i])
+                        break;
 
-    i++;
-  }
+                i++;
+        }
 
-  if (quarks1[i] == NULLQUARK && quarks2[i] == NULLQUARK)
-  {
-   /*
-    * all quarks and bindings in list1 and list2 compare
-    */
-    rc = True;
-  }
-  
-  return(rc);
+        if (quarks1[i] == NULLQUARK && quarks2[i] == NULLQUARK) {
+                /*
+                 * all quarks and bindings in list1 and list2 compare
+                 */
+                rc = True;
+        }
+
+        return (rc);
 }
 
-/*************************************<->*************************************
- *
- *  _PrintDbEntry()
- *
- *  Description:
- *  -----------
- *  Print an Xrm database entry (DEBUG only)
- *
- *  Inputs:
- *  ------
- *  leader - leading string
- *  bindings - binding list
- *  quarks - quark list
- *  type - element type
- *  value - element value
- *
- *  Outputs:
- *  -------
- *
- *  Return:
- *  ------
- *
- *  Comments:
- *  --------
- *
- *************************************<->***********************************/
+        /*************************************<->*************************************
+         *
+         *  _PrintDbEntry()
+         *
+         *  Description:
+         *  -----------
+         *  Print an Xrm database entry (DEBUG only)
+         *
+         *  Inputs:
+         *  ------
+         *  leader - leading string
+         *  bindings - binding list
+         *  quarks - quark list
+         *  type - element type
+         *  value - element value
+         *
+         *  Outputs:
+         *  -------
+         *
+         *  Return:
+         *  ------
+         *
+         *  Comments:
+         *  --------
+         *
+         *************************************<->***********************************/
 
 #ifdef DEBUG
-static
-void _PrintDbEntry(
-       char *leader,
-       XrmBindingList bindings,
-       XrmQuarkList quarks,
-       XrmRepresentation *type,
-       XrmValue *   value)
-{
-   char *   str;
-   int i;
+static void _PrintDbEntry(char *leader, XrmBindingList bindings,
+                          XrmQuarkList quarks, XrmRepresentation *type,
+                          XrmValue *value) {
+        char *str;
+        int i;
 
-   FILE *fp = fopen ("/tmp/dtsession.xrm", "a");
+        FILE *fp = fopen("/tmp/dtsession.xrm", "a");
 
-   str = XrmQuarkToString(type);
+        str = XrmQuarkToString(type);
 
-   fprintf(fp, "%8s ", leader);
+        fprintf(fp, "%8s ", leader);
 
-   i = 0;
-   while ( quarks[i] != NULLQUARK )
-   {
-      str = XrmQuarkToString(quarks[i]);
-      fprintf(fp, "%s", str);
-      i++;
-      if (quarks[i] != NULLQUARK)
-      {
-        fprintf(fp, bindings[i] == XrmBindLoosely ? "*" : ".");
-      }
-   }
-   fprintf(fp, ": %s\n",value->addr);
-   fclose(fp);
+        i = 0;
+        while (quarks[i] != NULLQUARK) {
+                str = XrmQuarkToString(quarks[i]);
+                fprintf(fp, "%s", str);
+                i++;
+                if (quarks[i] != NULLQUARK) {
+                        fprintf(fp, bindings[i] == XrmBindLoosely ? "*" : ".");
+                }
+        }
+        fprintf(fp, ": %s\n", value->addr);
+        fclose(fp);
 }
 #endif /* DEBUG */
 
@@ -255,27 +228,21 @@ void _PrintDbEntry(
  *
  *************************************<->***********************************/
 
-static
-Bool _SmCompareSourceAndTarget(
-  XrmDatabase *db,
-  XrmBindingList bindings,
-  XrmQuarkList quarks,
-  XrmRepresentation *type,
-  XrmValue *value,
-  XPointer closure)
-{
-  struct smSubtractState *state = (struct smSubtractState *)closure;
-  Bool rc = False;
+static Bool _SmCompareSourceAndTarget(XrmDatabase *db, XrmBindingList bindings,
+                                      XrmQuarkList quarks,
+                                      XrmRepresentation *type, XrmValue *value,
+                                      XPointer closure) {
+        struct smSubtractState *state = (struct smSubtractState *)closure;
+        Bool rc = False;
 
-  _PrintDbEntry("source", bindings, quarks, type, value);
+        _PrintDbEntry("source", bindings, quarks, type, value);
 
-  if (_CompareBindingQuarkList(bindings, quarks,
-                              state->target_bindings, state->target_quarks))
-  {
-    rc = True;
-  }
+        if (_CompareBindingQuarkList(bindings, quarks, state->target_bindings,
+                                     state->target_quarks)) {
+                rc = True;
+        }
 
-  return rc;
+        return rc;
 }
 
 /*************************************<->*************************************
@@ -308,37 +275,32 @@ Bool _SmCompareSourceAndTarget(
  *
  *************************************<->***********************************/
 
-static
-Bool _SmEnumerateSource(
-  XrmDatabase *db,
-  XrmBindingList bindings,
-  XrmQuarkList quarks,
-  XrmRepresentation *type,
-  XrmValue *value,
-  XPointer closure)
-{
-  struct smSubtractState *state = (struct smSubtractState *)closure;
-  Bool rc;
+static Bool _SmEnumerateSource(XrmDatabase *db, XrmBindingList bindings,
+                               XrmQuarkList quarks, XrmRepresentation *type,
+                               XrmValue *value, XPointer closure) {
+        struct smSubtractState *state = (struct smSubtractState *)closure;
+        Bool rc;
 
-  _PrintDbEntry("target", bindings, quarks, type, value);
+        _PrintDbEntry("target", bindings, quarks, type, value);
 
- /* 
-  * Enumerate source database and compare each element to current
-  * target bindings and quarks. 
-  */ 
-  state->target_bindings = bindings;
-  state->target_quarks = quarks;
-  if (XrmEnumerateDatabase(state->source_db, &empty, &empty, XrmEnumAllLevels,
-                           _SmCompareSourceAndTarget, closure) == False)
-  {
-   /*
-    * Target bindings and quarks don't match any element in source database,
-    * so copy target element to result db.
-    */
-    _PrintDbEntry("nomatch", bindings, quarks, type, value);
-    XrmQPutResource(&state->result_db, bindings, quarks, *type, value); 
-  }
-  return False;
+        /*
+         * Enumerate source database and compare each element to current
+         * target bindings and quarks.
+         */
+        state->target_bindings = bindings;
+        state->target_quarks = quarks;
+        if (XrmEnumerateDatabase(state->source_db, &empty, &empty,
+                                 XrmEnumAllLevels, _SmCompareSourceAndTarget,
+                                 closure) == False) {
+                /*
+                 * Target bindings and quarks don't match any element in source
+                 * database, so copy target element to result db.
+                 */
+                _PrintDbEntry("nomatch", bindings, quarks, type, value);
+                XrmQPutResource(&state->result_db, bindings, quarks, *type,
+                                value);
+        }
+        return False;
 }
 
 /*************************************<->*************************************
@@ -372,32 +334,29 @@ Bool _SmEnumerateSource(
  * the result database.
  */
 
-XrmDatabase
-SmXrmSubtractDatabase(
-  XrmDatabase source_db,
-  XrmDatabase target_db)
-{
-  struct smSubtractState state;
+XrmDatabase SmXrmSubtractDatabase(XrmDatabase source_db,
+                                  XrmDatabase target_db) {
+        struct smSubtractState state;
 
- /*
-  * return if source or target db not specified
-  */
-  if (source_db == NULL || target_db == NULL)
-    return NULL;
+        /*
+         * return if source or target db not specified
+         */
+        if (source_db == NULL || target_db == NULL)
+                return NULL;
 
- /*
-  * set up state
-  */
-  state.source_db = source_db;
-  state.target_db = target_db;
-  state.result_db = NULL;
+        /*
+         * set up state
+         */
+        state.source_db = source_db;
+        state.target_db = target_db;
+        state.result_db = NULL;
 
- /*
-  * populate result db by looping through target and
-  * copying elements that don't also exist in source db
-  */
-  XrmEnumerateDatabase(state.target_db, &empty, &empty, XrmEnumAllLevels,
-                       _SmEnumerateSource, (XPointer)&state);
-  
-  return(state.result_db); 
+        /*
+         * populate result db by looping through target and
+         * copying elements that don't also exist in source db
+         */
+        XrmEnumerateDatabase(state.target_db, &empty, &empty, XrmEnumAllLevels,
+                             _SmEnumerateSource, (XPointer)&state);
+
+        return (state.result_db);
 }

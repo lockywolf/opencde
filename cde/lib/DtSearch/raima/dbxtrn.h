@@ -73,121 +73,121 @@ extern INT old_no_of_dbs;
 #define old_no_of_dbs 0
 #endif
 
-extern char FAR *crloc;          /* location in page buffer of current record */
+extern char FAR *crloc; /* location in page buffer of current record */
 
 typedef struct TASK_S {
-   /* The following global variables came from dblfcns.c */
+/* The following global variables came from dblfcns.c */
 #ifndef SINGLE_USER
-   int Lock_tries;            /* lock_tries = 5 */
-   int Dbwait_time;           /* dbwait_time = 1 */
-   int Db_timeout;            /* db_timeout = TIMEOUT_DEF */
+        int Lock_tries;  /* lock_tries = 5 */
+        int Dbwait_time; /* dbwait_time = 1 */
+        int Db_timeout;  /* db_timeout = TIMEOUT_DEF */
 #endif
-   int Dbopen;                /* dbopen = 0 */
+        int Dbopen; /* dbopen = 0 */
 #ifndef SINGLE_USER
-   int Db_lockmgr;            /* db_lockmgr = 1 */
+        int Db_lockmgr; /* db_lockmgr = 1 */
 #endif
-   char Dbuserid[FILENMLEN];  /* dbuserid = "" */
-   char Dbdpath[FILENMLEN*2]; /* dbdpath = "" */
-   char Dbfpath[FILENMLEN*2]; /* dbdpath = "" */
+        char Dbuserid[FILENMLEN];    /* dbuserid = "" */
+        char Dbdpath[FILENMLEN * 2]; /* dbdpath = "" */
+        char Dbfpath[FILENMLEN * 2]; /* dbdpath = "" */
 #ifndef SINGLE_USER
-   INT_P App_locks;           /* app_locks = NULL */
-   INT_P Excl_locks;          /* excl_locks = NULL */
-   INT_P Kept_locks;          /* kept_locks = NULL */
+        INT_P App_locks;  /* app_locks = NULL */
+        INT_P Excl_locks; /* excl_locks = NULL */
+        INT_P Kept_locks; /* kept_locks = NULL */
 #endif
-   CONST char FAR *Trans_id;  /* trans_id = NULL */
-   char Dblog[FILENMLEN];     /* dblog = "" */
+        CONST char FAR *Trans_id; /* trans_id = NULL */
+        char Dblog[FILENMLEN];    /* dblog = "" */
 #ifndef SINGLE_USER
-   LOCK_DESCR_P Rec_locks;    /* rec_locks = NULL */
-   LOCK_DESCR_P Set_locks;    /* set_locks = NULL */
-   LOCK_DESCR_P Key_locks;    /* key_locks = NULL */
-   int Keyl_cnt;
-   int Lp_size;
-   int Fp_size;
-   LM_LOCK_P Lock_pkt;        /* lock_pkt = NULL */
-   LM_FREE_P Free_pkt;        /* free_pkt = NULL */
-   FILE_NO_P File_refs;
-   int Lsn;
-   BOOLEAN Session_active;    /* session_active = FALSE */
+        LOCK_DESCR_P Rec_locks; /* rec_locks = NULL */
+        LOCK_DESCR_P Set_locks; /* set_locks = NULL */
+        LOCK_DESCR_P Key_locks; /* key_locks = NULL */
+        int Keyl_cnt;
+        int Lp_size;
+        int Fp_size;
+        LM_LOCK_P Lock_pkt; /* lock_pkt = NULL */
+        LM_FREE_P Free_pkt; /* free_pkt = NULL */
+        FILE_NO_P File_refs;
+        int Lsn;
+        BOOLEAN Session_active; /* session_active = FALSE */
 #endif
-   /* The following global variables came from dio.c */
-   BOOLEAN Cache_ovfl;        /* cache_ovfl = FALSE */
-   PGZERO_P Pgzero;	      /* database file page 0 array */
-   /* The following global variables came from keyfcns.c */
-   int No_of_keys;            /* no_of_keys = 0 */
-   KEY_INFO_P Key_info;       /* key_info = NULL */
-   KEY_TYPE Key_type;
-   /* The following global variables came from netwdos.c */
-   int Net_status;
-   LONG Last_mtype;
-   /* The following global variables came from options.c */
-   int Dboptions;             /* ifdef NO_TRANS: dboptions =
-							DCHAINUSE | TRLOGGING
-			         else:           dboptions = DCHAINUSE */
-   /* The following global variables came from ovfcns.c */
-   long Ov_initaddr;          /* ov_initaddr = 0L */
-   long Ov_rootaddr;          /* ov_rootaddr = 0L */
-   long Ov_nextaddr;          /* ov_nextaddr = 0L */
-   RI_ENTRY_P Root_ix;
-   /* The following global variables came from renfiles.c */
-   llist Ren_list;	      /* Ren_list = LLIST_INIT() */
-   /* The following global variables came from inittab.h */
-   INT Page_size;
+        /* The following global variables came from dio.c */
+        BOOLEAN Cache_ovfl; /* cache_ovfl = FALSE */
+        PGZERO_P Pgzero;    /* database file page 0 array */
+        /* The following global variables came from keyfcns.c */
+        int No_of_keys;      /* no_of_keys = 0 */
+        KEY_INFO_P Key_info; /* key_info = NULL */
+        KEY_TYPE Key_type;
+        /* The following global variables came from netwdos.c */
+        int Net_status;
+        LONG Last_mtype;
+        /* The following global variables came from options.c */
+        int Dboptions; /* ifdef NO_TRANS: dboptions =
+                                                 DCHAINUSE | TRLOGGING
+                          else:           dboptions = DCHAINUSE */
+        /* The following global variables came from ovfcns.c */
+        long Ov_initaddr; /* ov_initaddr = 0L */
+        long Ov_rootaddr; /* ov_rootaddr = 0L */
+        long Ov_nextaddr; /* ov_nextaddr = 0L */
+        RI_ENTRY_P Root_ix;
+        /* The following global variables came from renfiles.c */
+        llist Ren_list; /* Ren_list = LLIST_INIT() */
+        /* The following global variables came from inittab.h */
+        INT Page_size;
 #ifndef ONE_DB
-   int     Curr_db;
-   DB_ENTRY FAR *Curr_db_table;
+        int Curr_db;
+        DB_ENTRY FAR *Curr_db_table;
 #endif
-   DB_ADDR Curr_rec;          /* current record address */
-   DB_ADDR_P Curr_own;        /* current set owners array */
-   DB_ADDR_P Curr_mem;        /* current set members array */
-#ifndef	 NO_TIMESTAMP
-   ULONG   Cr_time;
-   ULONG_P Co_time;          /* co_time = NULL */
-   ULONG_P Cm_time;          /* cm_time = NULL */
-   ULONG_P Cs_time;          /* cs_time = NULL */
-   BOOLEAN Db_tsrecs;
-   BOOLEAN Db_tssets;
+        DB_ADDR Curr_rec;   /* current record address */
+        DB_ADDR_P Curr_own; /* current set owners array */
+        DB_ADDR_P Curr_mem; /* current set members array */
+#ifndef NO_TIMESTAMP
+        ULONG Cr_time;
+        ULONG_P Co_time; /* co_time = NULL */
+        ULONG_P Cm_time; /* cm_time = NULL */
+        ULONG_P Cs_time; /* cs_time = NULL */
+        BOOLEAN Db_tsrecs;
+        BOOLEAN Db_tssets;
 #endif
-   FILE_NO Ov_file;
+        FILE_NO Ov_file;
 #ifndef ONE_DB
-   BOOLEAN Setdb_on;
-   INT No_of_dbs;
-   RN_ENTRY_P Rn_table;
-   RN_ENTRY FAR *Curr_rn_table;
+        BOOLEAN Setdb_on;
+        INT No_of_dbs;
+        RN_ENTRY_P Rn_table;
+        RN_ENTRY FAR *Curr_rn_table;
 #else
-   DB_ADDR rn_dba;	 /* last computed dba by recfrst/recset/recnext */
-   INT     rn_type;	 /* last record type supplied to recfrst/recset */
-   INT     Ft_offset;
+        DB_ADDR rn_dba; /* last computed dba by recfrst/recset/recnext */
+        INT rn_type;    /* last record type supplied to recfrst/recset */
+        INT Ft_offset;
 #endif
-#ifndef	 ONE_DB
-   DB_ENTRY_P Db_table;
+#ifndef ONE_DB
+        DB_ENTRY_P Db_table;
 #else
-   char db_name[DBNMLEN];   /* name of this database */
-   char db_path[PATHLEN];   /* name of path to this database */
-   DB_ADDR sysdba;  /* database address of system record */
+        char db_name[DBNMLEN]; /* name of this database */
+        char db_path[PATHLEN]; /* name of path to this database */
+        DB_ADDR sysdba;        /* database address of system record */
 #endif
-   FILE_ENTRY_P File_table;
-   INT Size_ft;
-   RECORD_ENTRY_P Record_table;
-   INT Size_rt;
-   SET_ENTRY_P Set_table;
-   INT Size_st;
-   MEMBER_ENTRY_P Member_table;
-   INT Size_mt;
-   SORT_ENTRY_P Sort_table;
-   INT Size_srt;
-   FIELD_ENTRY_P Field_table;
-   INT Size_fd;
-   KEY_ENTRY_P Key_table;
-   INT Size_kt;
-   int Lock_lvl;
-#define LOCK_STACK_SIZE		10
-   int Lock_stack[LOCK_STACK_SIZE];
+        FILE_ENTRY_P File_table;
+        INT Size_ft;
+        RECORD_ENTRY_P Record_table;
+        INT Size_rt;
+        SET_ENTRY_P Set_table;
+        INT Size_st;
+        MEMBER_ENTRY_P Member_table;
+        INT Size_mt;
+        SORT_ENTRY_P Sort_table;
+        INT Size_srt;
+        FIELD_ENTRY_P Field_table;
+        INT Size_fd;
+        KEY_ENTRY_P Key_table;
+        INT Size_kt;
+        int Lock_lvl;
+#define LOCK_STACK_SIZE 10
+        int Lock_stack[LOCK_STACK_SIZE];
 #ifndef NO_COUNTRY
-   CNTRY_TBL_P country_tbl;
-   int ctbl_activ;
-   char ctbpath[FILENMLEN];
+        CNTRY_TBL_P country_tbl;
+        int ctbl_activ;
+        char ctbpath[FILENMLEN];
 #endif
-   llist Sk_list;
+        llist Sk_list;
 } TASK;
 
 /* Dynamically allocated global variables */
@@ -252,7 +252,7 @@ typedef struct TASK_S {
 #define curr_db db_global.Curr_db
 #define curr_db_table db_global.Curr_db_table
 #define curr_rec db_global.Curr_rec
-#ifndef	NO_TIMESTAMP
+#ifndef NO_TIMESTAMP
 #define cr_time db_global.Cr_time
 #define db_tsrecs db_global.Db_tsrecs
 #define db_tssets db_global.Db_tssets
@@ -281,8 +281,8 @@ extern int db_glob_init;
 extern DB_TASK Currtask;
 #endif
 
-
 #ifdef MULTI_TASK
 extern int task_count;
 #endif
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin dbxtrn.h */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin dbxtrn.h */

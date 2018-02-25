@@ -77,7 +77,7 @@
  *
  *************************************<->***********************************/
 
-extern void * _DtSaverStart(Display *, Widget *, int, char *, Widget);
+extern void *_DtSaverStart(Display *, Widget *, int, char *, Widget);
 
 /*************************************<->*************************************
  *
@@ -106,7 +106,6 @@ extern void * _DtSaverStart(Display *, Widget *, int, char *, Widget);
  *************************************<->***********************************/
 
 extern void _DtSaverStop(Display *, void *);
-
 
 #endif /*_dtsaverp_h*/
 /* DON'T ADD ANYTHING AFTER THIS #endif */

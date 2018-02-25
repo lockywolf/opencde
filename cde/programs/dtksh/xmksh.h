@@ -37,8 +37,8 @@
 #define _Dtksh_xmksh_h
 
 struct named_integer {
-	const char *name;
-	const long value;
+        const char *name;
+        const long value;
 };
 
 #endif /* _Dtksh_xmksh_h */

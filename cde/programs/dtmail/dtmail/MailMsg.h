@@ -51,29 +51,29 @@
  * genmsg will extract comment blocks containing NL_COMMENT.
  */
 
-extern nl_catd DT_catd;   /* Catgets file descriptor */
+extern nl_catd DT_catd; /* Catgets file descriptor */
 
-#define DTMAIL_CAT        "DtMail"
-#define NL_SET            1
-#define BUTTON_SET        1
-#define TITLE_SET         1
-#define LABEL_SET         1
-#define DIALOG_SET        3
-#define MSG_SET           3
-#define ERR_SET           2
+#define DTMAIL_CAT "DtMail"
+#define NL_SET 1
+#define BUTTON_SET 1
+#define TITLE_SET 1
+#define LABEL_SET 1
+#define DIALOG_SET 3
+#define MSG_SET 3
+#define ERR_SET 2
 
 #ifdef XGETTEXT
-#define MAILMSG(msgid, str)   dgettext(NL_SET, msgid, str)
+#define MAILMSG(msgid, str) dgettext(NL_SET, msgid, str)
 #else
-#define MAILMSG(msgid, str)   catgets(DT_catd, NL_SET, msgid, str)
+#define MAILMSG(msgid, str) catgets(DT_catd, NL_SET, msgid, str)
 #endif
 
 #ifdef hpV4
-#define GETMSG(DT_catd, NL_SET, msgid, str) _DtCatgetsCached(DT_catd, NL_SET, msgid, str)
+#define GETMSG(DT_catd, NL_SET, msgid, str)                                    \
+        _DtCatgetsCached(DT_catd, NL_SET, msgid, str)
 #else
 #define GETMSG(DT_catd, NL_SET, msgid, str) catgets(DT_catd, NL_SET, msgid, str)
 #endif
-
 
 /*  MailBox.C             msgid  100 - 199
  *  MBOX_*
@@ -99,4 +99,4 @@ extern nl_catd DT_catd;   /* Catgets file descriptor */
  *  UNDEL_*
  */
 
-#endif  // MAILMSG_H
+#endif // MAILMSG_H

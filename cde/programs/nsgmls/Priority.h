@@ -35,20 +35,16 @@ namespace SP_NAMESPACE {
 #endif
 
 class Priority {
-public:
-  typedef unsigned char Type;
-  enum {
-    data = 0,
-    function = 1,
-    delim = UCHAR_MAX
-    };
-  static inline Type blank(int n) {
-    // `Priority::' works round gcc 2.5.5 bug
-    return Priority::Type(n + 1);
-  }
-  static inline Boolean isBlank(Type t) {
-    return function < t && t < delim;
-  }
+      public:
+        typedef unsigned char Type;
+        enum { data = 0, function = 1, delim = UCHAR_MAX };
+        static inline Type blank(int n) {
+                // `Priority::' works round gcc 2.5.5 bug
+                return Priority::Type(n + 1);
+        }
+        static inline Boolean isBlank(Type t) {
+                return function < t && t < delim;
+        }
 };
 
 #ifdef SP_NAMESPACE

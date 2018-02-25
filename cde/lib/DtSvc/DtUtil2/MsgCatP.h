@@ -20,12 +20,12 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* 
+/*
  * (c) Copyright 1995 Digital Equipment Corporation.
  * (c) Copyright 1995 Hewlett-Packard Company.
  * (c) Copyright 1995 International Business Machines Corp.
  * (c) Copyright 1995 Sun Microsystems, Inc.
- * (c) Copyright 1995 Novell, Inc. 
+ * (c) Copyright 1995 Novell, Inc.
  * (c) Copyright 1995 FUJITSU LIMITED.
  * (c) Copyright 1995 Hitachi.
  *

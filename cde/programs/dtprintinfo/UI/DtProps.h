@@ -41,48 +41,41 @@ class DtMainW;
 
 class DtProps : public Dialog {
 
-   friend void OkCB(void *data);
-   friend void ApplyCB(void *data);
-   friend void CancelCB(void *data);
-   friend void ResetCB(void *data);
-   friend void HelpCB(void *data);
+        friend void OkCB(void *data);
+        friend void ApplyCB(void *data);
+        friend void CancelCB(void *data);
+        friend void ResetCB(void *data);
+        friend void HelpCB(void *data);
 
-   static void OkCB(void *data);
-   static void ApplyCB(void *data);
-   static void CancelCB(void *data);
-   static void ResetCB(void *data);
-   static void HelpCB(void *data);
+        static void OkCB(void *data);
+        static void ApplyCB(void *data);
+        static void CancelCB(void *data);
+        static void ResetCB(void *data);
+        static void HelpCB(void *data);
 
- private:
+      private:
+        DtMainW *mainw;
 
-   DtMainW *mainw;
+        // dialog buttons
+        Button *ok;
+        Button *apply;
+        Button *cancel;
+        Button *reset;
+        Button *help;
+        Container *rc;
+        char *_location_id;
+        boolean _has_been_posted;
 
-   // dialog buttons
-   Button *ok;
-   Button *apply;
-   Button *cancel;
-   Button *reset;
-   Button *help;
-   Container *rc;
-   char *_location_id;
-   boolean _has_been_posted;
+        void CloseCB();
+        boolean SetVisiblity(boolean);
+        boolean HandleHelpRequest();
 
-   void CloseCB();
-   boolean SetVisiblity(boolean);
-   boolean HandleHelpRequest();
-
- public:
-
-   DtProps(AnyUI *parent,
-	   char *name,
-	   char *location_id,
-	   boolean editable,
-	   int n_attrs,
-	   Attribute **attrs);
-   virtual ~DtProps();
-   void Apply();
-   void Reset();
-
+      public:
+        DtProps(AnyUI *parent, char *name, char *location_id, boolean editable,
+                int n_attrs, Attribute **attrs);
+        virtual ~DtProps();
+        void Apply();
+        void Reset();
 };
 
 #endif // DTPROPS_H

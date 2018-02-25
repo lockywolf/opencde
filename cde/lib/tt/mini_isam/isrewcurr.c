@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: isrewcurr.c /main/3 1995/10/23 11:44:15 rswiston $ 			 				 */
+/*%%  $XConsortium: isrewcurr.c /main/3 1995/10/23 11:44:15 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)isrewcurr.c 1.8 89/07/17 Copyr 1988 Sun Micro";
 #endif
@@ -36,9 +37,8 @@ static char sccsid[] = "@(#)isrewcurr.c 1.8 89/07/17 Copyr 1988 Sun Micro";
  * isrewcurr.c
  *
  * Description:
- *	Rewrite current record in ISAM file. 
+ *	Rewrite current record in ISAM file.
  */
-
 
 #include "isam_impl.h"
 #include <sys/time.h>
@@ -48,7 +48,7 @@ static int _amrewcurr(), _changekeys2();
 /*
  * err = isrewcurr(isfd, record)
  *
- * Isrewcurr() modifies the current record in ISAM file. 
+ * Isrewcurr() modifies the current record in ISAM file.
  * All indexes of the ISAM file are updated.
  *
  * Current record position is changed in relation to the new key value.
@@ -70,49 +70,47 @@ static int _amrewcurr(), _changekeys2();
  *		was deleted by another process.
  */
 
-int 
-isrewcurr(isfd, record)
-    int			isfd;
-    char		*record;
+int isrewcurr(isfd, record) int isfd;
+char *record;
 {
-    register Fab	*fab;
-    int			reclen;
-    int			ret;
-    int			recnum;
+        register Fab *fab;
+        int reclen;
+        int ret;
+        int recnum;
 
-    /*
-     * Get File Access Block.
-     */
-    if ((fab = _isfd_find(isfd)) == NULL) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Get File Access Block.
+         */
+        if ((fab = _isfd_find(isfd)) == NULL) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-    /*
-     * Check that the open mode was  ISINOUT.
-     */
-    if (fab->openmode != OM_INOUT) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Check that the open mode was  ISINOUT.
+         */
+        if (fab->openmode != OM_INOUT) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-    /*
-     * Determine record length. Check it against min and max record length.
-     */
-    reclen = (fab->varlength == TRUE) ? isreclen : fab->minreclen;
-    if (reclen < fab->minreclen || reclen > fab->maxreclen) {
-	_setiserrno2(EBADARG, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Determine record length. Check it against min and max record length.
+         */
+        reclen = (fab->varlength == TRUE) ? isreclen : fab->minreclen;
+        if (reclen < fab->minreclen || reclen > fab->maxreclen) {
+                _setiserrno2(EBADARG, '9', '0');
+                return (ISERROR);
+        }
 
-    if ((ret = _amrewcurr(&fab->isfhandle, record, reclen, &fab->curpos,
-			  &recnum, &fab->errcode)) == ISOK) {
-	isrecnum = recnum;		     /* Set isrecnum */
-    }
+        if ((ret = _amrewcurr(&fab->isfhandle, record, reclen, &fab->curpos,
+                              &recnum, &fab->errcode)) == ISOK) {
+                isrecnum = recnum; /* Set isrecnum */
+        }
 
-    _seterr_errcode(&fab->errcode);
+        _seterr_errcode(&fab->errcode);
 
-    return (ret);			     /* Successful write */
+        return (ret); /* Successful write */
 }
 
 /*
@@ -133,139 +131,137 @@ isrewcurr(isfd, record)
  *
  */
 
-static int
-_amrewcurr(isfhandle, record, reclen, curpos, recnum, errcode)
-    Bytearray		*isfhandle;
-    char		*record;
-    int			reclen;
-    Recno		*recnum;
-    Bytearray		*curpos;
-    struct errcode	*errcode;
+static int _amrewcurr(isfhandle, record, reclen, curpos, recnum,
+                      errcode) Bytearray *isfhandle;
+char *record;
+int reclen;
+Recno *recnum;
+Bytearray *curpos;
+struct errcode *errcode;
 {
-    Fcb			*fcb;
-    Crp			*crp;
-    Bytearray		newcurpos;
-    int			err;
-    char		oldrecord[ISMAXRECLEN];
-    int			reclen2;
-    int			(*rec_read)();
-    int			(*rec_rewrite)();
+        Fcb *fcb;
+        Crp *crp;
+        Bytearray newcurpos;
+        int err;
+        char oldrecord[ISMAXRECLEN];
+        int reclen2;
+        int (*rec_read)();
+        int (*rec_rewrite)();
 
-    _isam_entryhook();
+        _isam_entryhook();
 
-    /*
-     * Get FCB corresponding to the isfhandle handle.
-     */
-    if ((fcb = _openfcb(isfhandle, errcode)) == NULL) {
-	_isam_exithook();
-	return (ISERROR);
-    }
+        /*
+         * Get FCB corresponding to the isfhandle handle.
+         */
+        if ((fcb = _openfcb(isfhandle, errcode)) == NULL) {
+                _isam_exithook();
+                return (ISERROR);
+        }
 
-    rec_read = (fcb->varflag?_vlrec_read:_flrec_read);
-    rec_rewrite = (fcb->varflag?_vlrec_rewrite:_flrec_rewrite);
+        rec_read = (fcb->varflag ? _vlrec_read : _flrec_read);
+        rec_rewrite = (fcb->varflag ? _vlrec_rewrite : _flrec_rewrite);
 
-    /*
-     * Get info from current record position structure.
-     */
-    crp = (Crp *) curpos->data;
+        /*
+         * Get info from current record position structure.
+         */
+        crp = (Crp *)curpos->data;
 
+        if (crp->flag != CRP_ON) {
+                _amseterrcode(errcode, ENOCURR);
+                goto ERROR;
+        }
 
-    if (crp->flag != CRP_ON) {
-	_amseterrcode(errcode, ENOCURR);
-	goto ERROR;
-    }
+        /*
+         * Update information in FCB from CNTL page on the disk
+         */
+        (void)_isfcb_cntlpg_r2(fcb);
 
-    /*
-     * Update information in FCB from CNTL page on the disk
-     */
-    (void)_isfcb_cntlpg_r2(fcb);
+        /*
+         * We must read the record first to be able to delete keys.
+         */
+        if (rec_read(fcb, oldrecord, crp->recno, &reclen2) != ISOK) {
+                _amseterrcode(errcode, ENOCURR);
+                goto ERROR;
+        }
 
-    /*
-     * We must read the record first to be able to delete keys.
-     */
-    if (rec_read(fcb, oldrecord, crp->recno, &reclen2) != ISOK) {
-	_amseterrcode(errcode, ENOCURR);
-	goto ERROR;
-    }
+        if (rec_rewrite(fcb, record, crp->recno, reclen) != ISOK) {
+                _amseterrcode(errcode, ENOCURR);
+                goto ERROR;
+        }
 
-    if (rec_rewrite(fcb, record, crp->recno, reclen) != ISOK) {
-	_amseterrcode(errcode, ENOCURR);
-	goto ERROR;
-    }
-	     
-    /*
-     * Update keys, set new key position.
-     */
-    newcurpos = _bytearr_dup(curpos);
-    if ((err = _changekeys2 (fcb, record, oldrecord, crp->recno, &newcurpos)) 
-	!= ISOK) {
-	_bytearr_free(&newcurpos);
-	_amseterrcode(errcode, err);	
-	goto ERROR;
-    }
+        /*
+         * Update keys, set new key position.
+         */
+        newcurpos = _bytearr_dup(curpos);
+        if ((err = _changekeys2(fcb, record, oldrecord, crp->recno,
+                                &newcurpos)) != ISOK) {
+                _bytearr_free(&newcurpos);
+                _amseterrcode(errcode, err);
+                goto ERROR;
+        }
 
-    /* 
-     * This takes care of new record position if the physical order is in use.
-     */
-    *recnum = crp->recno;	
-    
-    _bytearr_free(curpos);
-    crp = NULL;                 /* was aliased to freed curpos->data */
-    *curpos = newcurpos;
+        /*
+         * This takes care of new record position if the physical order is in
+         * use.
+         */
+        *recnum = crp->recno;
 
-    _amseterrcode(errcode, ISOK);
-    _issignals_mask();
-    _isdisk_commit();
-    _isdisk_sync();
-    _isdisk_inval();
+        _bytearr_free(curpos);
+        crp = NULL; /* was aliased to freed curpos->data */
+        *curpos = newcurpos;
 
-    /*
-     * Update control page.
-     */
-    (void)_isfcb_cntlpg_w2(fcb);
-    _issignals_unmask();
+        _amseterrcode(errcode, ISOK);
+        _issignals_mask();
+        _isdisk_commit();
+        _isdisk_sync();
+        _isdisk_inval();
 
-    _isam_exithook();
-    return (ISOK);
+        /*
+         * Update control page.
+         */
+        (void)_isfcb_cntlpg_w2(fcb);
+        _issignals_unmask();
 
- ERROR:
-    _isdisk_rollback();
-    _isdisk_inval();
+        _isam_exithook();
+        return (ISOK);
 
-    /*
-     * Restore FCB from CNTL page.
-     */
-    (void)_isfcb_cntlpg_r2(fcb);
+ERROR:
+        _isdisk_rollback();
+        _isdisk_inval();
 
-    _isam_exithook();
-    return (ISERROR);
+        /*
+         * Restore FCB from CNTL page.
+         */
+        (void)_isfcb_cntlpg_r2(fcb);
+
+        _isam_exithook();
+        return (ISERROR);
 }
 
-Static int
-_changekeys2(fcb, record, oldrecord, recnum, curpos)
-    Fcb			*fcb;
-    char                *record;
-    char                *oldrecord;
-    Recno	        recnum;
-    Bytearray		*curpos;
+Static int _changekeys2(fcb, record, oldrecord, recnum, curpos) Fcb *fcb;
+char *record;
+char *oldrecord;
+Recno recnum;
+Bytearray *curpos;
 {
-    int                	nkeys = fcb->nkeys;
-    register int        i;
-    int			err;
-    Crp			*crp;
-    int			keyid;
-    Keydesc2		*keydesc2;
+        int nkeys = fcb->nkeys;
+        register int i;
+        int err;
+        Crp *crp;
+        int keyid;
+        Keydesc2 *keydesc2;
 
-    crp = (Crp *)curpos->data;
-    keyid = crp->keyid;
+        crp = (Crp *)curpos->data;
+        keyid = crp->keyid;
 
-    for (i = 0; i < nkeys; i++) {
-	keydesc2 = fcb->keys + i;
-        if ((err =_change1key(fcb, keydesc2, record, oldrecord, recnum,
-			      (keydesc2->k2_keyid == keyid) ?
-			      crp->key : (char *) NULL)) != ISOK)
-	    return (err);
-    }
+        for (i = 0; i < nkeys; i++) {
+                keydesc2 = fcb->keys + i;
+                if ((err = _change1key(fcb, keydesc2, record, oldrecord, recnum,
+                                       (keydesc2->k2_keyid == keyid)
+                                           ? crp->key
+                                           : (char *)NULL)) != ISOK)
+                        return (err);
+        }
 
-    return (ISOK);
-}      
+        return (ISOK);
+}

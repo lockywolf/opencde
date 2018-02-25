@@ -21,7 +21,7 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $XConsortium: tclIOSock.c /main/2 1996/08/08 14:44:39 cde-hp $ */
-/* 
+/*
  * tclIOSock.c --
  *
  *	Common routines used by all socket based channel types.
@@ -36,7 +36,7 @@
 
 #include "tclInt.h"
 #include "tclPort.h"
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -57,29 +57,28 @@
  *----------------------------------------------------------------------
  */
 
-int
-TclSockGetPort(interp, string, proto, portPtr)
-    Tcl_Interp *interp;
-    char *string;		/* Integer or service name */
-    char *proto;		/* "tcp" or "udp", typically */
-    int *portPtr;		/* Return port number */
+int TclSockGetPort(interp, string, proto, portPtr) Tcl_Interp *interp;
+char *string; /* Integer or service name */
+char *proto;  /* "tcp" or "udp", typically */
+int *portPtr; /* Return port number */
 {
-    struct servent *sp = getservbyname(string, proto);    
-    if (sp != NULL) {
-	*portPtr = ntohs((unsigned short) sp->s_port);
-	return TCL_OK;
-    }
-    if (Tcl_GetInt(interp, string, portPtr) != TCL_OK) {
-	return TCL_ERROR;
-    }
-    if (*portPtr > 0xFFFF) {
-        Tcl_AppendResult(interp, "couldn't open socket: port number too high",
-                (char *) NULL);
-	return TCL_ERROR;
-    }
-    return TCL_OK;
+        struct servent *sp = getservbyname(string, proto);
+        if (sp != NULL) {
+                *portPtr = ntohs((unsigned short)sp->s_port);
+                return TCL_OK;
+        }
+        if (Tcl_GetInt(interp, string, portPtr) != TCL_OK) {
+                return TCL_ERROR;
+        }
+        if (*portPtr > 0xFFFF) {
+                Tcl_AppendResult(interp,
+                                 "couldn't open socket: port number too high",
+                                 (char *)NULL);
+                return TCL_ERROR;
+        }
+        return TCL_OK;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -96,24 +95,22 @@ TclSockGetPort(interp, string, proto, portPtr)
  *----------------------------------------------------------------------
  */
 
-int
-TclSockMinimumBuffers(sock, size)
-    int sock;			/* Socket file descriptor */
-    int size;			/* Minimum buffer size */
+int TclSockMinimumBuffers(sock, size) int sock; /* Socket file descriptor */
+int size;                                       /* Minimum buffer size */
 {
-    int current;
-    int len = sizeof(int);
+        int current;
+        int len = sizeof(int);
 
-    getsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &current, &len);
-    if (current < size) {
-	len = sizeof(int);
-	setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &size, len);
-    }
-    len = sizeof(int);
-    getsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &current, &len);
-    if (current < size) {
-	len = sizeof(int);
-	setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &size, len);
-    }
-    return TCL_OK;
+        getsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *)&current, &len);
+        if (current < size) {
+                len = sizeof(int);
+                setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *)&size, len);
+        }
+        len = sizeof(int);
+        getsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *)&current, &len);
+        if (current < size) {
+                len = sizeof(int);
+                setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *)&size, len);
+        }
+        return TCL_OK;
 }

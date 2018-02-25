@@ -22,7 +22,6 @@
  */
 /* $TOG: FPExceptions.h /main/4 1998/04/17 11:46:25 mgreess $ */
 
-
 #ifndef _FPExceptions_h
 #define _FPExceptions_h
 
@@ -31,10 +30,9 @@
 /////////////////////////////////////////////////////////
 //
 /////////////////////////////////////////////////////////
-class hardCopyRendererException : public Exception
-{
-public:
-  DECLARE_EXCEPTION(hardCopyRendererException, Exception)
+class hardCopyRendererException : public Exception {
+      public:
+        DECLARE_EXCEPTION(hardCopyRendererException, Exception)
 };
 
 #define CASTHCREXCEPT

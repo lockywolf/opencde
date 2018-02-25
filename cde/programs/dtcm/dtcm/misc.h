@@ -24,7 +24,8 @@
 **
 **  misc.h
 **
-**  static char sccsid[] = "@(#)misc.h 1.27 95/02/09 Copyr 1991 Sun Microsystems, Inc.";
+**  static char sccsid[] = "@(#)misc.h 1.27 95/02/09 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $XConsortium: misc.h /main/4 1995/11/03 10:29:44 rswiston $
 **
@@ -70,42 +71,41 @@
 **  pressed and the char* name value will be the button label.
 */
 typedef enum {
-	DIALOG_TITLE = 1,	/*  Followed by char*  */
-	DIALOG_TEXT,		/*  Followed by char* */
-	BUTTON_IDENT,		/*  Followed by int, char*  */
-	DIALOG_IMAGE,		/*  Followed by pixmap from Props_pu */
-	BUTTON_HELP,		/*  Followed by char*  */
-	BUTTON_INSENSITIVE	/*  Followed by int, char*  */
+        DIALOG_TITLE = 1,  /*  Followed by char*  */
+        DIALOG_TEXT,       /*  Followed by char* */
+        BUTTON_IDENT,      /*  Followed by int, char*  */
+        DIALOG_IMAGE,      /*  Followed by pixmap from Props_pu */
+        BUTTON_HELP,       /*  Followed by char*  */
+        BUTTON_INSENSITIVE /*  Followed by int, char*  */
 } Dialog_create_op;
 
 /*
 **  External function declarations
 */
-extern char	*cm_mbchar		P((char*));
-extern int	cm_mbstrlen		P((char*));
-extern Widget	create_for_menu		P((Widget));
-extern Widget	create_privacy_menu	P((Widget));
-extern Widget	create_repeat_menu	P((Widget, XtCallbackProc, XtPointer));
-extern Widget	create_repeat_scope_menu P((Widget, XmString, XtCallbackProc,
-					    XtPointer));
-extern Widget	create_start_stop_time_menu P((Widget, XmString, XtCallbackProc,
-					       XtPointer, Props*, Boolean, 
-						Boolean, Widget**, int*));
-extern Widget	create_time_scope_menu	P((Widget, XmString, XtCallbackProc,
-					   XtPointer));
+extern char *cm_mbchar P((char *));
+extern int cm_mbstrlen P((char *));
+extern Widget create_for_menu P((Widget));
+extern Widget create_privacy_menu P((Widget));
+extern Widget create_repeat_menu P((Widget, XtCallbackProc, XtPointer));
+extern Widget create_repeat_scope_menu P((Widget, XmString, XtCallbackProc,
+                                          XtPointer));
+extern Widget create_start_stop_time_menu P((Widget, XmString, XtCallbackProc,
+                                             XtPointer, Props *, Boolean,
+                                             Boolean, Widget **, int *));
+extern Widget create_time_scope_menu P((Widget, XmString, XtCallbackProc,
+                                        XtPointer));
 #ifndef _AIX
-extern int	dialog_popup		P((Widget, ...));
+extern int dialog_popup P((Widget, ...));
 #endif /* _AIX */
-extern void	editor_err_msg		P((Widget, char*, Validate_op, Pixmap));
-extern void	backend_err_msg		P((Widget, char*, CSA_return_code, Pixmap));
-extern void	get_range		P((Glance, time_t, time_t*, time_t*));
-extern boolean_t query_user		P((void*));
-extern void	set_message		P((Widget, char*));
-extern void	setup_quit_handler	P((Widget, XtCallbackProc, caddr_t));
-extern int	ds_is_double_click      P((XEvent*, XEvent*));
-extern int	cm_select_text		P((Widget, Time));
-extern void	set_time_submenu	P((Widget, Widget, Props*, 
-					   XtCallbackProc, XtPointer, 
-					   Boolean, Boolean, Widget**, int*));
-extern void 	ManageChildren		P((Widget));
+extern void editor_err_msg P((Widget, char *, Validate_op, Pixmap));
+extern void backend_err_msg P((Widget, char *, CSA_return_code, Pixmap));
+extern void get_range P((Glance, time_t, time_t *, time_t *));
+extern boolean_t query_user P((void *));
+extern void set_message P((Widget, char *));
+extern void setup_quit_handler P((Widget, XtCallbackProc, caddr_t));
+extern int ds_is_double_click P((XEvent *, XEvent *));
+extern int cm_select_text P((Widget, Time));
+extern void set_time_submenu P((Widget, Widget, Props *, XtCallbackProc,
+                                XtPointer, Boolean, Boolean, Widget **, int *));
+extern void ManageChildren P((Widget));
 #endif

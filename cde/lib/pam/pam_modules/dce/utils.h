@@ -28,52 +28,46 @@
  */
 
 #ifndef _UTILS_H
-#define	_UTILS_H
+#define _UTILS_H
 
-#ident  "@(#)utils.h 1.17     96/01/10 SMI"
+#ident "@(#)utils.h 1.17     96/01/10 SMI"
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
 #include <security/pam_appl.h>
 #include <dce/sec_login.h>
 
-#define	DCE_DATA "SUNW-DCE-AUTH-DATA"
+#define DCE_DATA "SUNW-DCE-AUTH-DATA"
 
 /*
  * PAM_MSG macro for return of internationalized text
  */
 
-#define	PAM_MSG(pamh, number, string)\
-	(char *) __pam_get_i18n_msg(pamh, "pam_dce", 1, number, string)
+#define PAM_MSG(pamh, number, string)                                          \
+        (char *)__pam_get_i18n_msg(pamh, "pam_dce", 1, number, string)
 
 typedef struct {
-	sec_login_handle_t	login_context;
-	int			debug;
-	int			warn;
-	int			auth_status;
-	boolean32		reset_passwd;
-	boolean32		passwd_expired;
-	sec_login_auth_src_t	auth_src;
+        sec_login_handle_t login_context;
+        int debug;
+        int warn;
+        int auth_status;
+        boolean32 reset_passwd;
+        boolean32 passwd_expired;
+        sec_login_auth_src_t auth_src;
 } dce_module_data_t;
 
-void
-pam_sec_login_free_context(
-	int			pam_status,
-	sec_login_handle_t	*login_context,
-	error_status_t		*st);
+void pam_sec_login_free_context(int pam_status,
+                                sec_login_handle_t *login_context,
+                                error_status_t *st);
 
-unsigned char *
-get_dce_error_message(
-	error_status_t	status,
-	unsigned char	*buffer
-);
+unsigned char *get_dce_error_message(error_status_t status,
+                                     unsigned char *buffer);
 
-int
-get_pw_uid(char *user, uid_t *uid);
+int get_pw_uid(char *user, uid_t *uid);
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 }
 #endif
 

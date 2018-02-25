@@ -54,14 +54,14 @@
  * error/information messages to the end of a linked list that
  * eventually will be returned to the UI to be displayed
  * in whatever manner is appropriate.  (However a generic stdio
- * print facility for the linked msglists is also provided 
+ * print facility for the linked msglists is also provided
  * for dumping the list before crashing or when stdio is ok).
- * 
+ *
  * With 2 exceptions, all messages should contain only
  * printable ascii characters and the space character.
  * Control characters and extended ascii graphics chars are verboten.
  * The exceptions are \n and \r, which are always permitted.
- * 
+ *
  * The most common fatal error in opera and other text analysis
  * systems occurs when a memory allocation fails.  Therefore
  * this module contains a generic 'safe malloc' function
@@ -94,11 +94,11 @@
 #define X_INCLUDE_TIME_H
 #include <X11/Xos_r.h>
 
-#define PROGNAME	"MSGUTIL"
-#define MAX_LINELEN	77
-#define MS_misc		1
+#define PROGNAME "MSGUTIL"
+#define MAX_LINELEN 77
+#define MS_misc 1
 
-CMPLL compare_llist = NULL;	/* global function pointer */
+CMPLL compare_llist = NULL; /* global function pointer */
 
 /************************************************/
 /*						*/
@@ -109,24 +109,22 @@ CMPLL compare_llist = NULL;	/* global function pointer */
  * is formatted in human readable form.  Used in audit
  * records, debugging logs, and error messages.
  */
-char           *nowstring (time_t * now)
-{
-    static char     buf[128];
-    time_t          mynow;
-    struct tm *	    time_ptr;
-    _Xltimeparams   localtime_buf;
+char *nowstring(time_t *now) {
+        static char buf[128];
+        time_t mynow;
+        struct tm *time_ptr;
+        _Xltimeparams localtime_buf;
 
-    if (now == NULL) {
-	now = &mynow;
-	time (now);
-    }
-    time_ptr = _XLocaltime(now, localtime_buf);
-    strftime (buf, sizeof (buf),
-	catgets (dtsearch_catd, MS_misc, 2, "%Y/%m/%d,%H:%M:%S"),
-	time_ptr);
-    return buf;
-}  /* nowstring() */
-
+        if (now == NULL) {
+                now = &mynow;
+                time(now);
+        }
+        time_ptr = _XLocaltime(now, localtime_buf);
+        strftime(buf, sizeof(buf),
+                 catgets(dtsearch_catd, MS_misc, 2, "%Y/%m/%d,%H:%M:%S"),
+                 time_ptr);
+        return buf;
+} /* nowstring() */
 
 /************************************************/
 /*						*/
@@ -139,18 +137,17 @@ char           *nowstring (time_t * now)
  * structures where the data and the node itself
  * are allocated in one call to malloc().
  */
-void            free_llist (LLIST ** llhead)
-{
-    LLIST          *next;
-    LLIST          *ll = *llhead;
-    while (ll != NULL) {
-	next = ll->link;
-	free (ll);
-	ll = next;
-    }
-    *llhead = NULL;
-    return;
-}  /* free_llist() */
+void free_llist(LLIST **llhead) {
+        LLIST *next;
+        LLIST *ll = *llhead;
+        while (ll != NULL) {
+                next = ll->link;
+                free(ll);
+                ll = next;
+        }
+        *llhead = NULL;
+        return;
+} /* free_llist() */
 
 /************************************************/
 /*						*/
@@ -166,19 +163,18 @@ void            free_llist (LLIST ** llhead)
  * i.e. the ptr to a ptr passed by the caller.
  * Usually this will be the addr of the top of the list pointer.
  * Then advance it to point to the last link in the list.
- * 
+ *
  * Note that this function works for any LLIST including those
  * whose 'data' pointer is not allocated concurrently with the node.
  */
-void            join_llists (LLIST ** mainlist, LLIST ** sublist)
-{
-    LLIST         **pp;
-    for (pp = mainlist; *pp != NULL; pp = &((*pp)->link));
-    *pp = *sublist;
-    *sublist = NULL;
-    return;
-}  /* join_llists() */
-
+void join_llists(LLIST **mainlist, LLIST **sublist) {
+        LLIST **pp;
+        for (pp = mainlist; *pp != NULL; pp = &((*pp)->link))
+                ;
+        *pp = *sublist;
+        *sublist = NULL;
+        return;
+} /* join_llists() */
 
 /************************************************/
 /*						*/
@@ -192,14 +188,12 @@ void            join_llists (LLIST ** mainlist, LLIST ** sublist)
  * which is itself called by sort_llist(), but can be called by
  * anyone needing to remove the first element of an llist.
  */
-LLIST          *pop_llist (LLIST ** llistp)
-{
-    LLIST          *first_node = *llistp;
-    if (first_node != NULL)
-	*llistp = first_node->link;
-    return first_node;
-}  /* pop_llist() */
-
+LLIST *pop_llist(LLIST **llistp) {
+        LLIST *first_node = *llistp;
+        if (first_node != NULL)
+                *llistp = first_node->link;
+        return first_node;
+} /* pop_llist() */
 
 /************************************************/
 /*						*/
@@ -211,19 +205,17 @@ LLIST          *pop_llist (LLIST ** llistp)
  * Returns NULL if *llistp is initially NULL or if node is not on llist,
  * else returns the detached node.
  */
-LLIST          *cutnode_llist (LLIST * node, LLIST ** llistp)
-{
-    LLIST         **pp;	/* link addr pointing to current node */
-    for (pp = llistp; *pp != NULL; pp = &((*pp)->link)) {
-	if (*pp == node)
-	    break;
-    }
-    if (*pp == NULL)
-	return NULL;
-    *pp = node->link;	/* join the loose ends */
-    return node;
-}  /* cutnode_llist() */
-
+LLIST *cutnode_llist(LLIST *node, LLIST **llistp) {
+        LLIST **pp; /* link addr pointing to current node */
+        for (pp = llistp; *pp != NULL; pp = &((*pp)->link)) {
+                if (*pp == node)
+                        break;
+        }
+        if (*pp == NULL)
+                return NULL;
+        *pp = node->link; /* join the loose ends */
+        return node;
+} /* cutnode_llist() */
 
 /************************************************/
 /*						*/
@@ -235,21 +227,20 @@ LLIST          *cutnode_llist (LLIST * node, LLIST ** llistp)
  * Return the remainder of lst, i.e. a pointer to the
  * next node after the middle node.
  */
-static LLIST   *split_llist (LLIST * lst)
-{
-    LLIST          *tail = lst->link;
-    if (lst == NULL || tail == NULL)
-	return lst;
-    /* advance 'tail' to end of list, and advance 'lst' only half as often */
-    while ((tail != NULL) && ((tail = tail->link) != NULL)) {
-	lst = lst->link;
-	tail = tail->link;
-    }
-    tail = lst->link;
-    lst->link = NULL;
-    return tail;
-}  /* split_llist() */
-
+static LLIST *split_llist(LLIST *lst) {
+        LLIST *tail = lst->link;
+        if (lst == NULL || tail == NULL)
+                return lst;
+        /* advance 'tail' to end of list, and advance 'lst' only half as often
+         */
+        while ((tail != NULL) && ((tail = tail->link) != NULL)) {
+                lst = lst->link;
+                tail = tail->link;
+        }
+        tail = lst->link;
+        lst->link = NULL;
+        return tail;
+} /* split_llist() */
 
 /************************************************/
 /*						*/
@@ -257,37 +248,35 @@ static LLIST   *split_llist (LLIST * lst)
 /*						*/
 /************************************************/
 /* Subroutine of sort_llist().  Merges two sorted LLISTs together. */
-static LLIST   *merge_llist (LLIST * l1, LLIST * l2)
-{
-    LLIST          *myqueue = NULL;
-    LLIST          *myend = NULL;
-    LLIST          *mynext;
+static LLIST *merge_llist(LLIST *l1, LLIST *l2) {
+        LLIST *myqueue = NULL;
+        LLIST *myend = NULL;
+        LLIST *mynext;
 
-    while ((l1 != NULL) && (l2 != NULL)) {
-	/*
-	 * Perform ENQUEUE function. Next item popped off a list is
-	 * the next one in sorted order. It is added to END of
-	 * myqueue to maintain order. THIS IS WHERE THE ACTUAL SORT
-	 * COMPARE FUNCTION IS PERFORMED. 
-	 */
-	mynext = (compare_llist (l1, l2) < 0) ?
-	    pop_llist (&l1) : pop_llist (&l2);
-	mynext->link = NULL;
-	if (myqueue == NULL)
-	    myqueue = mynext;
-	else
-	    myend->link = mynext;
-	myend = mynext;
-    }
+        while ((l1 != NULL) && (l2 != NULL)) {
+                /*
+                 * Perform ENQUEUE function. Next item popped off a list is
+                 * the next one in sorted order. It is added to END of
+                 * myqueue to maintain order. THIS IS WHERE THE ACTUAL SORT
+                 * COMPARE FUNCTION IS PERFORMED.
+                 */
+                mynext = (compare_llist(l1, l2) < 0) ? pop_llist(&l1)
+                                                     : pop_llist(&l2);
+                mynext->link = NULL;
+                if (myqueue == NULL)
+                        myqueue = mynext;
+                else
+                        myend->link = mynext;
+                myend = mynext;
+        }
 
-    /* attach the remainder of whichever list is left to the end of queue */
-    if (l1 != NULL)
-	myend->link = l1;
-    if (l2 != NULL)
-	myend->link = l2;
-    return myqueue;
-}  /* merge_llist() */
-
+        /* attach the remainder of whichever list is left to the end of queue */
+        if (l1 != NULL)
+                myend->link = l1;
+        if (l2 != NULL)
+                myend->link = l2;
+        return myqueue;
+} /* merge_llist() */
 
 /************************************************/
 /*						*/
@@ -311,15 +300,13 @@ static LLIST   *merge_llist (LLIST * l1, LLIST * l2)
  * sort_llist the first time, rather than continually
  * passing it to all these nested functions.
  */
-LLIST          *sort_llist (LLIST * lst)
-{
-    LLIST          *lst2;
-    if ((lst == NULL) || (lst->link == NULL))
-	return lst;
-    lst2 = split_llist (lst);
-    return merge_llist (sort_llist (lst), sort_llist (lst2));
-}  /* sort_llist() */
-
+LLIST *sort_llist(LLIST *lst) {
+        LLIST *lst2;
+        if ((lst == NULL) || (lst->link == NULL))
+                return lst;
+        lst2 = split_llist(lst);
+        return merge_llist(sort_llist(lst), sort_llist(lst2));
+} /* sort_llist() */
 
 /************************************************/
 /*						*/
@@ -329,27 +316,27 @@ LLIST          *sort_llist (LLIST * lst)
 /* 'location' may be NULL.  Last arg (formerly msglist) is isgnored.
  * Renamed from safe_malloc() to force compile errors if args not changed.
  */
-void           *austext_malloc (size_t size, char *location, void *ignore)
-{
-    static void    *ptr;
-    char           *outofmem_msg;
+void *austext_malloc(size_t size, char *location, void *ignore) {
+        static void *ptr;
+        char *outofmem_msg;
 
-    if ((ptr = malloc (size)) != NULL)
-	return ptr;
+        if ((ptr = malloc(size)) != NULL)
+                return ptr;
 
-    ptr = ((aa_argv0) ? aa_argv0 : "");
-    if (location == NULL)
-	location = catgets (dtsearch_catd, MS_misc, 1, "<null>");
-    outofmem_msg = catgets (dtsearch_catd, MS_misc, 3,
-	"*** %sOut of Memory at %s asking for %lu bytes! ***\n");
-    fprintf (aa_stderr, outofmem_msg, ptr, location, size);
-    fflush (aa_stderr);
-    if (ausapi_msglist)
-	fprintf (aa_stderr, "%s\n", DtSearchGetMessages ());
-    fflush (aa_stderr);
-    DtSearchExit (43);
-    return NULL;
-}  /* austext_malloc */
+        ptr = ((aa_argv0) ? aa_argv0 : "");
+        if (location == NULL)
+                location = catgets(dtsearch_catd, MS_misc, 1, "<null>");
+        outofmem_msg =
+            catgets(dtsearch_catd, MS_misc, 3,
+                    "*** %sOut of Memory at %s asking for %lu bytes! ***\n");
+        fprintf(aa_stderr, outofmem_msg, ptr, location, size);
+        fflush(aa_stderr);
+        if (ausapi_msglist)
+                fprintf(aa_stderr, "%s\n", DtSearchGetMessages());
+        fflush(aa_stderr);
+        DtSearchExit(43);
+        return NULL;
+} /* austext_malloc */
 
 /************************************************/
 /*						*/
@@ -370,50 +357,49 @@ void           *austext_malloc (size_t size, char *location, void *ignore)
  * Returns total number of lines (\n's + trailing piece of last line),
  * or returns 0 if wraplen == 0.
  */
-int             clean_wrap (char *string, int wraplen)
-{
-    char           *nlptr, *breakptr;
-    int             linecount = 0;
+int clean_wrap(char *string, int wraplen) {
+        char *nlptr, *breakptr;
+        int linecount = 0;
 
-    if (wraplen <= 0)
-	return 0;
-    while (strlen (string) > wraplen) {
-	breakptr = string + wraplen;
+        if (wraplen <= 0)
+                return 0;
+        while (strlen(string) > wraplen) {
+                breakptr = string + wraplen;
 
-	/* Look for \n within the next wraplen */
-	for (nlptr = string; nlptr < breakptr; nlptr++)
-	    if (*nlptr == '\n')
-		break;
-	if (nlptr < breakptr) {
-	    string = ++nlptr;
-	    goto LINE_DONE;
-	}
+                /* Look for \n within the next wraplen */
+                for (nlptr = string; nlptr < breakptr; nlptr++)
+                        if (*nlptr == '\n')
+                                break;
+                if (nlptr < breakptr) {
+                        string = ++nlptr;
+                        goto LINE_DONE;
+                }
 
-	/* Otherwise back up to the first whitespace before last word */
-	for (nlptr = breakptr - 1;  nlptr > string;  nlptr--)
-	    if (ascii_charmap[*nlptr] & WHITESPACE) {
-		*nlptr = '\n';
-		string = ++nlptr;
-		goto LINE_DONE;
-	    }
+                /* Otherwise back up to the first whitespace before last word */
+                for (nlptr = breakptr - 1; nlptr > string; nlptr--)
+                        if (ascii_charmap[*nlptr] & WHITESPACE) {
+                                *nlptr = '\n';
+                                string = ++nlptr;
+                                goto LINE_DONE;
+                        }
 
-	/* No whitespace at all in "text" before wraplen!
-	 * No choice but to overlay the last char.
-	 */
-	*(--breakptr) = '\n';
-	string = ++breakptr;
+                /* No whitespace at all in "text" before wraplen!
+                 * No choice but to overlay the last char.
+                 */
+                *(--breakptr) = '\n';
+                string = ++breakptr;
 
-LINE_DONE:
-	linecount++;
-    }
+        LINE_DONE:
+                linecount++;
+        }
 
-    /* Done wrapping.  now just count remaining lines in string. */
-    while (*string != 0)
-	if (*string++ == '\n')
-	    linecount++;
-    if (*(string - 1) != '\n')
-	linecount++;
-    return linecount;
-}  /* clean_wrap() */
+        /* Done wrapping.  now just count remaining lines in string. */
+        while (*string != 0)
+                if (*string++ == '\n')
+                        linecount++;
+        if (*(string - 1) != '\n')
+                linecount++;
+        return linecount;
+} /* clean_wrap() */
 
 /********************** MSGUTIL.C *************************/

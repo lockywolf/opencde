@@ -50,32 +50,31 @@
 #include "dbtype.h"
 
 /* Set Database User Identifier
-*/
-int
-d_dbuserid(id TASK_PARM)
-CONST char FAR *id;
-TASK_DECL
-{
-   CONST char FAR *chk_id;
+ */
+int d_dbuserid(id TASK_PARM) CONST char FAR *id;
+TASK_DECL {
+        CONST char FAR *chk_id;
 
-   DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(LOCK_NONE));
+        DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(LOCK_NONE));
 
-   for (chk_id = id; *chk_id; chk_id++) {
-      if (isascii(*chk_id)) {
-	 if (!isalnum(*chk_id)) {
-	    if (*chk_id != '_') RETURN ( dberr(S_BADUSERID));
-	 }
-      }
-      else RETURN ( dberr(S_BADUSERID));
-   }
+        for (chk_id = id; *chk_id; chk_id++) {
+                if (isascii(*chk_id)) {
+                        if (!isalnum(*chk_id)) {
+                                if (*chk_id != '_')
+                                        RETURN(dberr(S_BADUSERID));
+                        }
+                } else
+                        RETURN(dberr(S_BADUSERID));
+        }
 
-   if (dbopen)
-      dberr(S_DBOPEN);
-   else {
-      strncpy(dbuserid, id, FILENMLEN - 1);
-      dbuserid[FILENMLEN - 1] = '\0';
-      db_status = S_OKAY;
-   }
-   RETURN( db_status );
+        if (dbopen)
+                dberr(S_DBOPEN);
+        else {
+                strncpy(dbuserid, id, FILENMLEN - 1);
+                dbuserid[FILENMLEN - 1] = '\0';
+                db_status = S_OKAY;
+        }
+        RETURN(db_status);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin dbuserid.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin dbuserid.c */

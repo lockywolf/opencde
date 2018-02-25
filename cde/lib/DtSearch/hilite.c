@@ -37,7 +37,7 @@
 /******************************* HILITE.C ********************************
  * $XConsortium: hilite.c /main/5 1996/05/07 13:36:46 drk $
  * January 1992.
- * Opera Engine (OE) functions that create the usrblk.hitwords 
+ * Opera Engine (OE) functions that create the usrblk.hitwords
  * array in response to several user requests.
  * The hitwords array identifies the offset and
  * length of words or substrings in cleartext to be hilited
@@ -66,9 +66,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define PROGNAME	"HILITE"
-
-
+#define PROGNAME "HILITE"
 
 /****************************************/
 /*					*/
@@ -86,97 +84,98 @@
  * Returns new value of usrblk.hitwords.
  * If zero hitwords, returns NULL in usrblk.hitwords.
  */
-long	hilite_cleartext (int parse_type, char *stems, int stemcount)
-{
-    int			i;
-    char		*textp, *stemp;
-    DBLK		*dblk =		usrblk.dblk;
-    PARG		parg;
-    char *		(*parser)() =	usrblk.dblk->parser;
-    char *		(*stemmer)() =	usrblk.dblk->stemmer;
-    DtSrHitword		*hitwords;
-    size_t		hitwords_size =	0;
-    long		hitwcount =	0;
-    long		offset;
-    int			wordlen;
-    int			debugging_hilite = (usrblk.debug & USRDBG_HILITE);
+long hilite_cleartext(int parse_type, char *stems, int stemcount) {
+        int i;
+        char *textp, *stemp;
+        DBLK *dblk = usrblk.dblk;
+        PARG parg;
+        char *(*parser)() = usrblk.dblk->parser;
+        char *(*stemmer)() = usrblk.dblk->stemmer;
+        DtSrHitword *hitwords;
+        size_t hitwords_size = 0;
+        long hitwcount = 0;
+        long offset;
+        int wordlen;
+        int debugging_hilite = (usrblk.debug & USRDBG_HILITE);
 
-    /* Ensure current usrblk.hitwords values are clear */
-    clear_hitwords ();
+        /* Ensure current usrblk.hitwords values are clear */
+        clear_hitwords();
 
-    memset (&parg, 0, sizeof(PARG));
-    parg.dblk =		dblk;
-    parg.string =	usrblk.cleartext;
-    parg.offsetp =	&offset;
-    parg.flags |=	PA_HILITING;
+        memset(&parg, 0, sizeof(PARG));
+        parg.dblk = dblk;
+        parg.string = usrblk.cleartext;
+        parg.offsetp = &offset;
+        parg.flags |= PA_HILITING;
 
-    /* OUTER LOOP: Parse/stem each word in cleartext */
-    for (	textp = parser (&parg);
-		textp;
-		textp = parser (NULL)) {
-	wordlen = strlen (textp);
-	if (parse_type == 'S')
-	    textp = stemmer (textp, dblk);
-	if (debugging_hilite) {
-	    fprintf (aa_stderr,
-		PROGNAME"127 offs:%5ld '%s' %n",
-		offset, textp, &i);
-	    while (i++ < 35)
-		fputc (' ', aa_stderr);
-	}
+        /* OUTER LOOP: Parse/stem each word in cleartext */
+        for (textp = parser(&parg); textp; textp = parser(NULL)) {
+                wordlen = strlen(textp);
+                if (parse_type == 'S')
+                        textp = stemmer(textp, dblk);
+                if (debugging_hilite) {
+                        fprintf(aa_stderr, PROGNAME "127 offs:%5ld '%s' %n",
+                                offset, textp, &i);
+                        while (i++ < 35)
+                                fputc(' ', aa_stderr);
+                }
 
-	/* INNER LOOP: Search for word in stems array */
-	stemp =	stems;
-	for (i=stemcount; i;  i--) {
-	    if (strcmp (textp, stemp) == 0)
-		break;
-	    stemp += DtSrMAXWIDTH_HWORD;
-	}
+                /* INNER LOOP: Search for word in stems array */
+                stemp = stems;
+                for (i = stemcount; i; i--) {
+                        if (strcmp(textp, stemp) == 0)
+                                break;
+                        stemp += DtSrMAXWIDTH_HWORD;
+                }
 
-	/* Miss.  If text word is not in
-	 * stems array, go parse next word.
-	 */
-	if (i == 0) {
-	    if (debugging_hilite)
-		fprintf (aa_stderr, "miss.\n");
-	    continue;
-	}
+                /* Miss.  If text word is not in
+                 * stems array, go parse next word.
+                 */
+                if (i == 0) {
+                        if (debugging_hilite)
+                                fprintf(aa_stderr, "miss.\n");
+                        continue;
+                }
 
-	/* HIT!  Add to hitwords table. */
-	if (hitwcount >= hitwords_size) {
-	    if (hitwords_size == 0) {
-		hitwords_size = 200;
-		hitwords = malloc (
-		    hitwords_size * sizeof(DtSrHitword) + 16);
-	    }
-	    else {
-		hitwords_size += hitwords_size >> 1;	/* 1.5 times */
-		if (debugging_hilite || (usrblk.debug & USRDBG_RETRVL))
-		    fprintf (aa_stderr,
-			PROGNAME"098 realloc for %d hitwords.\n",
-			hitwords_size);
-		hitwords = realloc (hitwords,
-		    hitwords_size * sizeof(DtSrHitword) + 16);
-	    }
-	    if (!hitwords) {
-		fputs (PROGNAME"091 Out of Memory!\n", aa_stderr);
-		DtSearchExit (91);
-	    }
-	}
-	hitwords[hitwcount].offset =	offset;
-	hitwords[hitwcount].length =	wordlen;
-	hitwcount++;
-	if (debugging_hilite)
-	    fprintf (aa_stderr, "HIT!  hwct=%ld.\n", hitwcount);
-    } /* end OUTER parse loop */
+                /* HIT!  Add to hitwords table. */
+                if (hitwcount >= hitwords_size) {
+                        if (hitwords_size == 0) {
+                                hitwords_size = 200;
+                                hitwords = malloc(
+                                    hitwords_size * sizeof(DtSrHitword) + 16);
+                        } else {
+                                hitwords_size +=
+                                    hitwords_size >> 1; /* 1.5 times */
+                                if (debugging_hilite ||
+                                    (usrblk.debug & USRDBG_RETRVL))
+                                        fprintf(
+                                            aa_stderr,
+                                            PROGNAME
+                                            "098 realloc for %d hitwords.\n",
+                                            hitwords_size);
+                                hitwords = realloc(
+                                    hitwords,
+                                    hitwords_size * sizeof(DtSrHitword) + 16);
+                        }
+                        if (!hitwords) {
+                                fputs(PROGNAME "091 Out of Memory!\n",
+                                      aa_stderr);
+                                DtSearchExit(91);
+                        }
+                }
+                hitwords[hitwcount].offset = offset;
+                hitwords[hitwcount].length = wordlen;
+                hitwcount++;
+                if (debugging_hilite)
+                        fprintf(aa_stderr, "HIT!  hwct=%ld.\n", hitwcount);
+        } /* end OUTER parse loop */
 
-    usrblk.hitwcount = hitwcount;
-    usrblk.hitwords = (hitwcount)? hitwords : NULL;
-    if (debugging_hilite || (usrblk.debug & USRDBG_RETRVL))
-	fprintf (aa_stderr,
-	    PROGNAME"138 parstyp='%c' stemct=%d hitwcount=%ld\n",
-	    parse_type, stemcount, usrblk.hitwcount);
-    return hitwcount;
-}  /* hilite_cleartext() */
+        usrblk.hitwcount = hitwcount;
+        usrblk.hitwords = (hitwcount) ? hitwords : NULL;
+        if (debugging_hilite || (usrblk.debug & USRDBG_RETRVL))
+                fprintf(aa_stderr,
+                        PROGNAME "138 parstyp='%c' stemct=%d hitwcount=%ld\n",
+                        parse_type, stemcount, usrblk.hitwcount);
+        return hitwcount;
+} /* hilite_cleartext() */
 
 /******************************* HILITE.C ********************************/

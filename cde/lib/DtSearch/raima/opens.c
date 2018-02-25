@@ -57,38 +57,37 @@
 #include <string.h>
 #endif
 
-
 /* Open a binary file for shared access
-*/
-int open_b(filenm, flags)
-CONST char FAR *filenm;
-int flags;  
+ */
+int open_b(filenm, flags) CONST char FAR *filenm;
+int flags;
 {
-   int desc;
+        int desc;
 
-   desc = open(filenm, flags, 0666);
-   if ( desc < 0 && (flags & O_CREAT) )
-      desc = creat(filenm, 0666);
-   if ((desc >= 3) && (fcntl(desc, F_SETFD, 1) < 0)) {
-      close(desc);
-      desc = -1;
-   }
+        desc = open(filenm, flags, 0666);
+        if (desc < 0 && (flags & O_CREAT))
+                desc = creat(filenm, 0666);
+        if ((desc >= 3) && (fcntl(desc, F_SETFD, 1) < 0)) {
+                close(desc);
+                desc = -1;
+        }
 #ifdef MSC
-   flags |= O_BINARY;
-   desc = sopen((char *)filenm, flags, SH_DENYNO, 0666);
+        flags |= O_BINARY;
+        desc = sopen((char *)filenm, flags, SH_DENYNO, 0666);
 #endif
 #ifdef TURBO
-   flags |= O_BINARY | O_DENYNONE;
-   desc = open(filenm, flags, 0666);
+        flags |= O_BINARY | O_DENYNONE;
+        desc = open(filenm, flags, 0666);
 #endif
 #ifdef LAT
-   flags |= O_RAW | O_SDN;
-   desc = open(filenm, flags, 0666);
+        flags |= O_RAW | O_SDN;
+        desc = open(filenm, flags, 0666);
 #endif
 #ifdef WIZ
-   flags |= O_BINARY;
-   desc = open(filenm, flags, 0666);
+        flags |= O_BINARY;
+        desc = open(filenm, flags, 0666);
 #endif
-   return( desc );
+        return (desc);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin opens.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin opens.c */

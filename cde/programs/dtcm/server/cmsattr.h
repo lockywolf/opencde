@@ -24,7 +24,8 @@
 **
 **  cmsattr.h
 **
-**  static char sccsid[] = "@(#)cmsattr.h 1.2 94/10/05 Copyr 1991 Sun Microsystems, Inc.";
+**  static char sccsid[] = "@(#)cmsattr.h 1.2 94/10/05 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $XConsortium: cmsattr.h /main/3 1995/11/03 11:09:10 rswiston $
 **
@@ -48,32 +49,25 @@
 #include "cm.h"
 #include "cmscalendar.h"
 
-extern CSA_return_code _DtCmsUpdateSint32AttrVal P((
-				cms_attribute_value *newval,
-				cms_attribute_value **attrval));
+extern CSA_return_code _DtCmsUpdateSint32AttrVal
+    P((cms_attribute_value * newval, cms_attribute_value **attrval));
 
-extern CSA_return_code _DtCmsUpdateUint32AttrVal P((
-				cms_attribute_value *newval,
-				cms_attribute_value **attrval));
+extern CSA_return_code _DtCmsUpdateUint32AttrVal
+    P((cms_attribute_value * newval, cms_attribute_value **attrval));
 
-extern CSA_return_code _DtCmsUpdateStringAttrVal P((
-				cms_attribute_value *newval,
-				cms_attribute_value **attrval));
+extern CSA_return_code _DtCmsUpdateStringAttrVal
+    P((cms_attribute_value * newval, cms_attribute_value **attrval));
 
-extern CSA_return_code _DtCmsUpdateAccessListAttrVal P((
-				cms_attribute_value *newval,
-				cms_attribute_value **attrval));
+extern CSA_return_code _DtCmsUpdateAccessListAttrVal
+    P((cms_attribute_value * newval, cms_attribute_value **attrval));
 
-extern CSA_return_code _DtCmsUpdateReminderAttrVal P((
-				cms_attribute_value *newval,
-				cms_attribute_value **attrval));
+extern CSA_return_code _DtCmsUpdateReminderAttrVal
+    P((cms_attribute_value * newval, cms_attribute_value **attrval));
 
-extern CSA_return_code _DtCmsUpdateDateTimeListAttrVal P((
-				cms_attribute_value *newval,
-				cms_attribute_value **attrval));
+extern CSA_return_code _DtCmsUpdateDateTimeListAttrVal
+    P((cms_attribute_value * newval, cms_attribute_value **attrval));
 
-extern CSA_return_code _DtCmsUpdateOpaqueDataAttrVal P((
-				cms_attribute_value *newval,
-				cms_attribute_value **attrval));
+extern CSA_return_code _DtCmsUpdateOpaqueDataAttrVal
+    P((cms_attribute_value * newval, cms_attribute_value **attrval));
 
 #endif

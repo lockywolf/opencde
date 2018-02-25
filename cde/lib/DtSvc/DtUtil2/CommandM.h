@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         CommandM.h $XConsortium: CommandM.h /main/3 1995/10/26 15:18:58 rswiston $
- * Language:     C
+ * File:         CommandM.h $XConsortium: CommandM.h /main/3 1995/10/26 15:18:58
+ * rswiston $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -40,11 +40,11 @@
  * failure notification will be sent for each request.  For
  * failures, the only data returned is an error message.
  */
-#define DtNO_STDIO			"NO_STDIO"
-#define DtTERMINAL			"TERMINAL"
-#define DtPERM_TERMINAL			"PERM_TERMINAL"
-#define DtOUTPUT_ONLY			"OUTPUT_ONLY"
-#define DtSHARED_OUTPUT			"SHARED_OUTPUT"
+#define DtNO_STDIO "NO_STDIO"
+#define DtTERMINAL "TERMINAL"
+#define DtPERM_TERMINAL "PERM_TERMINAL"
+#define DtOUTPUT_ONLY "OUTPUT_ONLY"
+#define DtSHARED_OUTPUT "SHARED_OUTPUT"
 
 /*
  * When the session manager starts, it needs a window type (NO-STDIO),
@@ -52,7 +52,7 @@
  * instead wants to receive the execution host and the execution
  * string.  The following define is for this type of request.
  */
-#define DtSTART_SESSION			"START-SESSION"
+#define DtSTART_SESSION "START-SESSION"
 
 #endif /* _Dt_CommandM_h */
 /* Do not add anything after this endif. */

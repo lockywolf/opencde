@@ -31,53 +31,51 @@
 
 class FlexBuffer;
 
-class TableTask : public Task{
+class TableTask : public Task {
 
-public:
-  TableTask(const Token& t);
-  ~TableTask();
-  
-  void markup(const Token& t);
-  void data (const char *chars, size_t len);
+      public:
+        TableTask(const Token &t);
+        ~TableTask();
 
-protected:
-  void putC(char c);
+        void markup(const Token &t);
+        void data(const char *chars, size_t len);
 
-  void puts(const char *);
-  void write(const char *, size_t);
+      protected:
+        void putC(char c);
 
-  enum { Start, Fmt_, _Row, _Entry, Object, End } state;
+        void puts(const char *);
+        void write(const char *, size_t);
 
-  static int TGroup, ColSpec, Entry, Row, TBody;
+        enum { Start, Fmt_, _Row, _Entry, Object, End } state;
 
-  void error(const char *fmt, ...);
-  void expected(const char *right, const Token& wrong);
+        static int TGroup, ColSpec, Entry, Row, TBody;
 
-  virtual void write_record() = 0;
+        void error(const char *fmt, ...);
+        void expected(const char *right, const Token &wrong);
 
-  FlexBuffer *f_buf;     /* output buffer */
-  
-private:
-  int f_base;            /* level of <TGROUP> token */
-  int f_entryBase;       /* level of <ENTRY> token */
-  
-  int f_cols;            /* total number of colums in the table */
-  int f_col;             /* current column (in Row_ state) */
+        virtual void write_record() = 0;
+
+        FlexBuffer *f_buf; /* output buffer */
+
+      private:
+        int f_base;      /* level of <TGROUP> token */
+        int f_entryBase; /* level of <ENTRY> token */
+
+        int f_cols; /* total number of colums in the table */
+        int f_col;  /* current column (in Row_ state) */
 };
-
 
 class SearchEngine;
 
-class SearchableTableTask : public TableTask{
-public:
-  SearchableTableTask(SearchEngine *se, const Token& t);
+class SearchableTableTask : public TableTask {
+      public:
+        SearchableTableTask(SearchEngine *se, const Token &t);
 
-protected:
-  void write_record();
-  
-private:
-  SearchEngine *f_search;
+      protected:
+        void write_record();
+
+      private:
+        SearchEngine *f_search;
 };
-
 
 #endif /* __TableTask_h */

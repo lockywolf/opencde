@@ -28,8 +28,9 @@
 #include "utility/funcs.h"
 #include "api/info_lib.h"
 
-char* get_oid(info_lib*, char* base_nm, char* locator_line); // with byte count and \t
-char* get_oid_2(info_lib*, char* base_str, char* locator); // without byte count and \t
-
+char *get_oid(info_lib *, char *base_nm,
+              char *locator_line); // with byte count and \t
+char *get_oid_2(info_lib *, char *base_str,
+                char *locator); // without byte count and \t
 
 #endif

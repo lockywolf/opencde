@@ -44,13 +44,11 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
-#include <Dt/Wsm.h> 
-#include <Dt/WsmP.h> 
+#include <Dt/Wsm.h>
+#include <Dt/WsmP.h>
 #include <Xm/Xm.h>
 #include <Xm/AtomMgr.h>
 
-
-
 /*************************************<->*************************************
  *
  *  _DtWmRequestMultiple (display, root, char *pchRequest, int len)
@@ -63,47 +61,39 @@
  *
  *  Inputs:
  *  ------
- *  display	- display 
- *  root	- root window of screen 
+ *  display	- display
+ *  root	- root window of screen
  *  pchRequest  - string request  (possibly multiple)
  *		  (usu. of form "f.<func> [<arg>]")
  *  len		- length of request, counting terminating NULL
  *
  *  Returns:
  *  --------
- *  Success if request sent 
- * 
+ *  Success if request sent
+ *
  *************************************<->***********************************/
-Status 
-_DtWmRequestMultiple (
-	Display *display, 
-	Window root, 
-	char *pchRequest,
-	int len)
-{
-    Status rval = BadAtom;
-    Window wmWindow;
+Status _DtWmRequestMultiple(Display *display, Window root, char *pchRequest,
+                            int len) {
+        Status rval = BadAtom;
+        Window wmWindow;
 
-    /*
-     * Get the workspace manager window
-     */
-    if ((rval=_DtGetMwmWindow (display, root, &wmWindow)) == Success)
-    {
-      
-	/*
-	 * Make the request by appending the request
-	 * to the _DT_WM_REQUEST property
-	 */
+        /*
+         * Get the workspace manager window
+         */
+        if ((rval = _DtGetMwmWindow(display, root, &wmWindow)) == Success) {
 
-	rval = XChangeProperty (display, wmWindow, 
-	    XmInternAtom(display, _XA_DT_WM_REQUEST, False),
-	    XA_STRING, 8, PropModeAppend, 
-	    (unsigned char *)pchRequest, 
-	    len);
+                /*
+                 * Make the request by appending the request
+                 * to the _DT_WM_REQUEST property
+                 */
 
-    }
+                rval = XChangeProperty(
+                    display, wmWindow,
+                    XmInternAtom(display, _XA_DT_WM_REQUEST, False), XA_STRING,
+                    8, PropModeAppend, (unsigned char *)pchRequest, len);
+        }
 
-    return (rval);
+        return (rval);
 
 } /* END OF FUNCTION _DtWmRequestMultiple */
 

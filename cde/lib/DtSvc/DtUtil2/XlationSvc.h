@@ -33,16 +33,16 @@
  **   (c) Copyright 1993, 1994 Hewlett-Packard Company
  **   (c) Copyright 1993, 1994 International Business Machines Corp.
  **   (c) Copyright 1993, 1994 Sun Microsystems, Inc.
- **   (c) Copyright 1993, 1994 Unix System Labs, Inc., a subsidiary of Novell, Inc.
+ **   (c) Copyright 1993, 1994 Unix System Labs, Inc., a subsidiary of Novell,
+ *Inc.
  **
  ****************************************************************************
  ************************************<+>*************************************/
 
-
 #ifndef _DtXLATE_XLATION_SVC_I
 #define _DtXLATE_XLATION_SVC_I
 
-#include <sys/utsname.h>      /* for UTSLEN, SYS_NMLN */
+#include <sys/utsname.h> /* for UTSLEN, SYS_NMLN */
 
 #ifdef __cplusplus
 extern "C" {
@@ -54,22 +54,18 @@ $INCLUDE$
 #include <XlationSvc.h>
 =$END$==========================================================*/
 
-
 #if DOC
 /*========================================================*/
-$TYPEBEG$: _DtXlateDb
-$1LINER$:  An opaque object used to represent translation dbs
-$SUMMARY$:
-_DtXlateDb is the type of a translation database object.
-The database object must be opened before use and closed
-after use.  The definition of the object is opaque to users.
-$ARGS$:
+$TYPEBEG$ : _DtXlateDb $1LINER$
+    : An opaque object used to represent translation dbs $SUMMARY$
+    : _DtXlateDb is the type of a translation database object
+          .The database object must be opened before use and closed after
+              use.The definition of the object is opaque to users.$ARGS$ :
 /*================================================$SKIP$==*/
 #endif
-/*$DEF$*/
-typedef struct __DtXlateDbRec * _DtXlateDb;
+    /*$DEF$*/
+    typedef struct __DtXlateDbRec *_DtXlateDb;
 /*$END$*/
-
 
 #if DOC
 /*========================================================*/
@@ -87,7 +83,7 @@ operations as part of a translation.
 /*================================================$SKIP$==*/
 #endif
 /* $DEF$, Operation constants */
-#define _DtXLATE_OPER_VERSION  "version"
+#define _DtXLATE_OPER_VERSION "version"
 /*$END$*/
 
 #if DOC
@@ -121,14 +117,14 @@ platforms as part of a translation.
 
 #define _DtPLATFORM_UNKNOWN ((const char *)0)
 #define _DtPLATFORM_CURRENT ((const char *)0)
-#define _DtPLATFORM_CDE     "CDE"
-#define _DtPLATFORM_HPUX    "HP-UX"
-#define _DtPLATFORM_AIX     "AIX"
-#define _DtPLATFORM_SUNOS   "SunOS"
-#define _DtPLATFORM_SOLARIS "Solaris"      /* verify */
-#define _DtPLATFORM_USL     "USL"          /* verify */
-#define _DtPLATFORM_SCO     "SCO"          /* verify */
-#define _DtPLATFORM_XENIX   "Xenix"        /* verify */
+#define _DtPLATFORM_CDE "CDE"
+#define _DtPLATFORM_HPUX "HP-UX"
+#define _DtPLATFORM_AIX "AIX"
+#define _DtPLATFORM_SUNOS "SunOS"
+#define _DtPLATFORM_SOLARIS "Solaris" /* verify */
+#define _DtPLATFORM_USL "USL"         /* verify */
+#define _DtPLATFORM_SCO "SCO"         /* verify */
+#define _DtPLATFORM_XENIX "Xenix"     /* verify */
 /*$END$*/
 
 
@@ -137,58 +133,31 @@ int _DtXlateOpenDb(
        const char *  databaseName,
        _DtXlateDb *  ret_db);
 
-int _DtXlateOpenAndMergeDbs(
-       const char *   databaseName,
-       _DtXlateDb *   io_db);
+int _DtXlateOpenAndMergeDbs(const char *databaseName, _DtXlateDb *io_db);
 
-int  _DtXlateMergeDbs(
-       _DtXlateDb *  io_dbToMerge,
-       _DtXlateDb *  io_mergeIntoDb);
+int _DtXlateMergeDbs(_DtXlateDb *io_dbToMerge, _DtXlateDb *io_mergeIntoDb);
 
-int _DtXlateOpenAllDbs(
-         const char * searchPaths,
-         const char * databaseName,
-         _DtXlateDb * ret_db);
+int _DtXlateOpenAllDbs(const char *searchPaths, const char *databaseName,
+                       _DtXlateDb *ret_db);
 
-int _DtXlateCloseDb(
-       _DtXlateDb * io_db);
+int _DtXlateCloseDb(_DtXlateDb *io_db);
 
-int _DtXlateStdToOpValue(
-       _DtXlateDb        db,
-       const char *      platform,
-       const int         version,
-       const char *      operation,
-       const char *      stdValue,
-       char * *          ret_opValue,
-       void *            ret_reserved);
+int _DtXlateStdToOpValue(_DtXlateDb db, const char *platform, const int version,
+                         const char *operation, const char *stdValue,
+                         char **ret_opValue, void *ret_reserved);
 
-int _DtXlateOpToStdValue(
-       _DtXlateDb        db,
-       const char *      platform,
-       const int         version,
-       const char *      operation,
-       const char *      opValue,
-       char * *          ret_stdValue,
-       void *            ret_reserved);
+int _DtXlateOpToStdValue(_DtXlateDb db, const char *platform, const int version,
+                         const char *operation, const char *opValue,
+                         char **ret_stdValue, void *ret_reserved);
 
-int _DtXlateGetXlateEnv(
-         _DtXlateDb db,
-         char *     ret_AppExecEnvPlatform,
-         int *      ret_AppExecEnvVersion,
-         int *      ret_XlateCompiledForOSVersion);
+int _DtXlateGetXlateEnv(_DtXlateDb db, char *ret_AppExecEnvPlatform,
+                        int *ret_AppExecEnvVersion,
+                        int *ret_XlateCompiledForOSVersion);
 
 /* Non DtXlate functions currently in XlationSvc.c */
-int _DtMBStrrchr (
-    const char *   s1,
-    int            value,
-    int            max_len,
-    const char * * ret_ptr );
+int _DtMBStrrchr(const char *s1, int value, int max_len, const char **ret_ptr);
 
-int _DtMBStrchr (
-    const char * s1,
-    int          value,
-    int          max_len,
-    const char * * ret_ptr );
+int _DtMBStrchr(const char *s1, int value, int max_len, const char **ret_ptr);
 
 #ifdef __cplusplus
 }

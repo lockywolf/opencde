@@ -43,18 +43,19 @@
 namespace SP_NAMESPACE {
 #endif
 extern SP_API void assertionFailed(const char *, const char *, int)
-     __attribute__((noreturn));
+    __attribute__((noreturn));
 #ifdef SP_NAMESPACE
 }
 #endif
 
-#define ASSERT(expr) \
-  ((void)((expr) || \
-  (::SP_NAMESPACE_SCOPE assertionFailed(# expr, __FILE__, __LINE__), 0)))
+#define ASSERT(expr)                                                           \
+        ((void)((expr) || (::SP_NAMESPACE_SCOPE assertionFailed(               \
+                               #expr, __FILE__, __LINE__),                     \
+                           0)))
 #define CANNOT_HAPPEN() ASSERT(0)
 
 #endif /* not NDEBUG */
 
-#define SIZEOF(v) (sizeof(v)/sizeof(v[0]))
+#define SIZEOF(v) (sizeof(v) / sizeof(v[0]))
 
 #endif /* not macros_INCLUDED */

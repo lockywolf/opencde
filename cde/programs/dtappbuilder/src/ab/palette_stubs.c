@@ -94,7 +94,6 @@
 #include <ab_private/attch_ed.h>
 #include <ab_private/tmode.h>
 
-
 /*
  * Declarations of global widgets used by callbacks.
  */
@@ -102,14 +101,14 @@
  * End declarations of global widgets
  */
 
-#define HELP_VOLUME     "AppBuilder"    /* Name of our Help Volume */
+#define HELP_VOLUME "AppBuilder" /* Name of our Help Volume */
 #include "dtb_utils.h"
 #include "palette.h"
 #include "dtbuilder.h"
 #include "palette_ui.h"
 #include "about_box_ui.h"
 
-extern void	dnd_ed_show_dialog(void);
+extern void dnd_ed_show_dialog(void);
 
 /*************************************************************************
 **                                                                      **
@@ -117,22 +116,13 @@ extern void	dnd_ed_show_dialog(void);
 **                                                                      **
 **************************************************************************/
 
-static void 	export_bilCB(
-		    Widget              widget,
-		    XtPointer           client_data,
-		    XtPointer           call_data
-		);
+static void export_bilCB(Widget widget, XtPointer client_data,
+                         XtPointer call_data);
 
-static void 	build_export_menu(
-		    Widget              pulldown,
-		    XtCallbackProc      callback
-		);
+static void build_export_menu(Widget pulldown, XtCallbackProc callback);
 
-static void 	register_palette_info(
-		    Widget      	palitem_w,
-		    AB_OBJECT_TYPE      type,
-		    char                *subtypestr
-		);
+static void register_palette_info(Widget palitem_w, AB_OBJECT_TYPE type,
+                                  char *subtypestr);
 
 /*************************************************************************
 **                                                                      **
@@ -140,255 +130,230 @@ static void 	register_palette_info(
 **                                                                      **
 **************************************************************************/
 
-static Widget 	HelpDialog;
+static Widget HelpDialog;
 
+static void export_bilCB(Widget widget, XtPointer client_data,
+                         XtPointer call_data) {
+        ABObj module;
 
-static void
-export_bilCB(
-    Widget              widget,
-    XtPointer           client_data,
-    XtPointer           call_data
-)
-{
-    ABObj       module;
-
-    module = (ABObj) client_data;
-    proj_show_export_bil_chooser(AB_toplevel, module);
+        module = (ABObj)client_data;
+        proj_show_export_bil_chooser(AB_toplevel, module);
 }
 
+static void build_export_menu(Widget pulldown, XtCallbackProc callback) {
+        ABObj project = proj_get_project();
+        Widget mpb = NULL;
+        WidgetList children = NULL;
+        AB_TRAVERSAL trav;
+        ABObj module = NULL;
+        char name[MAXPATHLEN];
+        XmString label = NULL;
+        Cardinal numChildren = 0;
+        int i = 0;
 
-static void
-build_export_menu(
-    Widget              pulldown,
-    XtCallbackProc      callback
-)
-{
-    ABObj               project = proj_get_project();
-    Widget              mpb = NULL;
-    WidgetList          children = NULL;
-    AB_TRAVERSAL        trav;
-    ABObj               module = NULL;
-    char                name[MAXPATHLEN];
-    XmString            label = NULL;
-    Cardinal            numChildren = 0;
-    int                 i = 0;
+        *name = 0;
+        XtVaGetValues(pulldown, XmNnumChildren, &numChildren, XmNchildren,
+                      &children, NULL);
+        for (i = 0; i < numChildren; i++) {
+                XtDestroyWidget(children[i]);
+        }
 
-    *name = 0;
-    XtVaGetValues(pulldown,
-                        XmNnumChildren, &numChildren,
-                        XmNchildren, &children,
-                        NULL);
-    for (i=0; i < numChildren; i++)
-    {
-        XtDestroyWidget(children[i]);
-    }
-                
-    /* Traverse ABObj tree for module nodes.
-     * Populate the pulldown menu with the names
-     * of the module nodes.
-     */
-    for (trav_open(&trav, project, AB_TRAV_MODULES);
-        (module = trav_next(&trav)) != NULL; )
-    {
-        /* Don't show any undefined modules.
-         * Undefined modules can occur if a module
-         * is imported which references another
-         * module that does not exist in the project
-         * (i.e. :win-children).
+        /* Traverse ABObj tree for module nodes.
+         * Populate the pulldown menu with the names
+         * of the module nodes.
          */
-	if (obj_is_defined(module))
-	{
-            /* Use the name of the module as the string
-             * for the dynamic menu.
-             */
-            strcpy(name, obj_get_name(module));
-            strcat(name, "...");
-            label = XmStringCreateLocalized(name);
-            mpb = XtVaCreateManagedWidget(name,
-                xmPushButtonWidgetClass,
-                pulldown,
-                XmNlabelString, label,
-                NULL);
-            XtAddCallback(mpb, XmNactivateCallback, callback, (XtPointer)module);
-            XmStringFree(label);
-	}
-    }
-    trav_close(&trav);
+        for (trav_open(&trav, project, AB_TRAV_MODULES);
+             (module = trav_next(&trav)) != NULL;) {
+                /* Don't show any undefined modules.
+                 * Undefined modules can occur if a module
+                 * is imported which references another
+                 * module that does not exist in the project
+                 * (i.e. :win-children).
+                 */
+                if (obj_is_defined(module)) {
+                        /* Use the name of the module as the string
+                         * for the dynamic menu.
+                         */
+                        strcpy(name, obj_get_name(module));
+                        strcat(name, "...");
+                        label = XmStringCreateLocalized(name);
+                        mpb = XtVaCreateManagedWidget(
+                            name, xmPushButtonWidgetClass, pulldown,
+                            XmNlabelString, label, NULL);
+                        XtAddCallback(mpb, XmNactivateCallback, callback,
+                                      (XtPointer)module);
+                        XmStringFree(label);
+                }
+        }
+        trav_close(&trav);
 }
 
-static void
-register_palette_info(
-    Widget      	palitem_w,
-    AB_OBJECT_TYPE	type,
-    char		*subtypestr
-)
-{
-    switch(type)
-    {
+static void register_palette_info(Widget palitem_w, AB_OBJECT_TYPE type,
+                                  char *subtypestr) {
+        switch (type) {
         case AB_TYPE_BASE_WINDOW:
-                pal_register_item_info(palitem_w, ab_mainwin_palitem, 
-			(int)AB_NO_SUBTYPE, NULL, NULL);
+                pal_register_item_info(palitem_w, ab_mainwin_palitem,
+                                       (int)AB_NO_SUBTYPE, NULL, NULL);
                 break;
         case AB_TYPE_BUTTON:
                 if (strcmp(subtypestr, "AB_BUT_PUSH") == 0)
-                    pal_register_item_info(palitem_w, ab_button_palitem,
-			(int)AB_BUT_PUSH, ab_button_palitem->name, NULL);
+                        pal_register_item_info(palitem_w, ab_button_palitem,
+                                               (int)AB_BUT_PUSH,
+                                               ab_button_palitem->name, NULL);
                 else if (strcmp(subtypestr, "AB_BUT_MENU") == 0)
-                    pal_register_item_info(palitem_w, ab_button_palitem,
-			(int)AB_BUT_MENU, "Menu Button", NULL);
+                        pal_register_item_info(palitem_w, ab_button_palitem,
+                                               (int)AB_BUT_MENU, "Menu Button",
+                                               NULL);
                 break;
-        case AB_TYPE_COMBO_BOX:
-        {
-                int         i, num_children = 0;
-                WidgetList  children = NULL;
- 
+        case AB_TYPE_COMBO_BOX: {
+                int i, num_children = 0;
+                WidgetList children = NULL;
+
                 pal_register_item_info(palitem_w, ab_combo_box_palitem,
-			(int)AB_NO_SUBTYPE, NULL, NULL);
- 
+                                       (int)AB_NO_SUBTYPE, NULL, NULL);
+
                 num_children = 0;
-                XtVaGetValues(palitem_w,
-                        XtNnumChildren,    &num_children,
-                        XtNchildren,       &children,
-                        NULL);
+                XtVaGetValues(palitem_w, XtNnumChildren, &num_children,
+                              XtNchildren, &children, NULL);
                 /*
                  * Register sub-widgets of ComboBox as well
                  */
-                for (i = 0; i < num_children; i++)
-                {
-		    register_palette_info(children[i], AB_TYPE_COMBO_BOX, NULL);
+                for (i = 0; i < num_children; i++) {
+                        register_palette_info(children[i], AB_TYPE_COMBO_BOX,
+                                              NULL);
                 }
                 break;
         }
-	/* For containter types that are not draggable, e.g. groups
-	 * and paned windows, registration is done in main().
-	 */
+        /* For containter types that are not draggable, e.g. groups
+         * and paned windows, registration is done in main().
+         */
         case AB_TYPE_CONTAINER:
                 if (strcmp(subtypestr, "AB_CONT_RELATIVE") == 0)
-                    pal_register_item_info(palitem_w, ab_cpanel_palitem,
-			(int)AB_CONT_RELATIVE, ab_cpanel_palitem->name, NULL);
+                        pal_register_item_info(palitem_w, ab_cpanel_palitem,
+                                               (int)AB_CONT_RELATIVE,
+                                               ab_cpanel_palitem->name, NULL);
                 else if (strcmp(subtypestr, "AB_CONT_MENU_BAR") == 0)
-                    pal_register_item_info(palitem_w, ab_menubar_palitem,
-			(int)AB_CONT_MENU_BAR, ab_menubar_palitem->name, NULL);
+                        pal_register_item_info(palitem_w, ab_menubar_palitem,
+                                               (int)AB_CONT_MENU_BAR,
+                                               ab_menubar_palitem->name, NULL);
                 break;
         case AB_TYPE_DIALOG:
                 pal_register_item_info(palitem_w, ab_custdlg_palitem,
-			(int)AB_NO_SUBTYPE, ab_custdlg_palitem->name, NULL);
+                                       (int)AB_NO_SUBTYPE,
+                                       ab_custdlg_palitem->name, NULL);
                 break;
         case AB_TYPE_LABEL:
                 pal_register_item_info(palitem_w, ab_label_palitem,
-			(int)AB_NO_SUBTYPE, NULL, NULL);
+                                       (int)AB_NO_SUBTYPE, NULL, NULL);
                 break;
         case AB_TYPE_TERM_PANE:
                 pal_register_item_info(palitem_w, ab_termp_palitem,
-			(int)AB_NO_SUBTYPE, NULL, NULL);
+                                       (int)AB_NO_SUBTYPE, NULL, NULL);
                 break;
         case AB_TYPE_TEXT_FIELD:
                 pal_register_item_info(palitem_w, ab_textf_palitem,
-			(int)AB_NO_SUBTYPE, NULL, NULL);
+                                       (int)AB_NO_SUBTYPE, NULL, NULL);
                 break;
         case AB_TYPE_TEXT_PANE:
                 pal_register_item_info(palitem_w, ab_textp_palitem,
-			(int)AB_NO_SUBTYPE, NULL, NULL);
+                                       (int)AB_NO_SUBTYPE, NULL, NULL);
                 break;
         case AB_TYPE_LIST:
                 pal_register_item_info(palitem_w, ab_list_palitem,
-			(int)AB_NO_SUBTYPE, NULL, NULL);
+                                       (int)AB_NO_SUBTYPE, NULL, NULL);
                 break;
         case AB_TYPE_CHOICE:
                 if (strcmp(subtypestr, "AB_CHOICE_EXCLUSIVE") == 0)
-                    pal_register_item_info(palitem_w, ab_choice_palitem,
-			(int)AB_CHOICE_EXCLUSIVE, "Radio Box", NULL);
+                        pal_register_item_info(palitem_w, ab_choice_palitem,
+                                               (int)AB_CHOICE_EXCLUSIVE,
+                                               "Radio Box", NULL);
                 else if (strcmp(subtypestr, "AB_CHOICE_OPTION_MENU") == 0)
-                    pal_register_item_info(palitem_w, ab_choice_palitem,
-			(int)AB_CHOICE_OPTION_MENU, "Option Menu", NULL);
-                else     
-                    pal_register_item_info(palitem_w, ab_choice_palitem,
-			(int)AB_CHOICE_NONEXCLUSIVE, "Check Box", NULL);
-                break;    
+                        pal_register_item_info(palitem_w, ab_choice_palitem,
+                                               (int)AB_CHOICE_OPTION_MENU,
+                                               "Option Menu", NULL);
+                else
+                        pal_register_item_info(palitem_w, ab_choice_palitem,
+                                               (int)AB_CHOICE_NONEXCLUSIVE,
+                                               "Check Box", NULL);
+                break;
         case AB_TYPE_DRAWING_AREA:
                 pal_register_item_info(palitem_w, ab_drawp_palitem,
-			(int)AB_NO_SUBTYPE, NULL, NULL);
+                                       (int)AB_NO_SUBTYPE, NULL, NULL);
                 break;
         case AB_TYPE_SEPARATOR:
                 pal_register_item_info(palitem_w, ab_separator_palitem,
-			(int)AB_NO_SUBTYPE, NULL, NULL);
+                                       (int)AB_NO_SUBTYPE, NULL, NULL);
                 break;
-        case AB_TYPE_SPIN_BOX:
-        {
-                int         i, num_children = 0;
-                WidgetList  children = NULL;
- 
+        case AB_TYPE_SPIN_BOX: {
+                int i, num_children = 0;
+                WidgetList children = NULL;
+
                 pal_register_item_info(palitem_w, ab_spinbox_palitem,
-                        (int)AB_NO_SUBTYPE, NULL, NULL);
-        
-                XtVaGetValues(palitem_w,
-                        XtNnumChildren,    &num_children,
-                        XtNchildren,       &children,
-                        NULL);
+                                       (int)AB_NO_SUBTYPE, NULL, NULL);
+
+                XtVaGetValues(palitem_w, XtNnumChildren, &num_children,
+                              XtNchildren, &children, NULL);
                 /*
                  * Register sub-widgets of spinbox as well
                  */
-                for (i = 0; i < num_children; i++)
-                {  
-		    register_palette_info(children[i], AB_TYPE_SPIN_BOX, NULL);
-                }
-                break;
-        }        
-        case AB_TYPE_SCALE:
-        /* Need to register the children of the XmScale widget because
-         * if we don't, then the drag operation won't work.  Other
-         * palette items have to do the same thing, such as spinbox.
-         * The spinbox's children are registered in create_dt_widgets(),
-         * because you can't put spinbox in the UIL file. I put the
-         * code here because there doesn't seem to be another place
-         * where this is done for a widget that IS in the UIL file.
-         */
-        {
-                int             i, num_children = 0;
-                WidgetList      children = NULL;
- 
-                num_children = 0;
-                XtVaGetValues(palitem_w,
-                                XtNnumChildren,    &num_children,
-                                XtNchildren,       &children,
-                                NULL);
- 
-                if (strcmp(subtypestr, "AB_SCALE_SLIDER") == 0)
-                {
- 
-                    pal_register_item_info(palitem_w, ab_scale_palitem,
-			(int)False, "Scale", NULL);
-                    /*
-                     * Register sub-widgets of scale as well
-                     */
-                    for (i = 0; i < num_children; i++)
-                    {  
-                        if (XtIsWidget(children[i]))
-                            register_palette_info(children[i], AB_TYPE_SCALE, 
-				"AB_SCALE_SLIDER");
-                    }
-                }
-                else
-                {
-                    pal_register_item_info(palitem_w, ab_scale_palitem,
-			(int)True, "Gauge", NULL);
-                    /*
-                     * Register sub-widgets of gauge as well
-                     */
-                    for (i = 0; i < num_children; i++)
-                    {  
-                        if (XtIsWidget(children[i]))
-                            register_palette_info(children[i], AB_TYPE_SCALE,
-				"AB_SCALE_GAUGE");
-                    }
+                for (i = 0; i < num_children; i++) {
+                        register_palette_info(children[i], AB_TYPE_SPIN_BOX,
+                                              NULL);
                 }
                 break;
         }
-        case AB_TYPE_FILE_CHOOSER: 
+        case AB_TYPE_SCALE:
+                /* Need to register the children of the XmScale widget because
+                 * if we don't, then the drag operation won't work.  Other
+                 * palette items have to do the same thing, such as spinbox.
+                 * The spinbox's children are registered in create_dt_widgets(),
+                 * because you can't put spinbox in the UIL file. I put the
+                 * code here because there doesn't seem to be another place
+                 * where this is done for a widget that IS in the UIL file.
+                 */
+                {
+                        int i, num_children = 0;
+                        WidgetList children = NULL;
+
+                        num_children = 0;
+                        XtVaGetValues(palitem_w, XtNnumChildren, &num_children,
+                                      XtNchildren, &children, NULL);
+
+                        if (strcmp(subtypestr, "AB_SCALE_SLIDER") == 0) {
+
+                                pal_register_item_info(
+                                    palitem_w, ab_scale_palitem, (int)False,
+                                    "Scale", NULL);
+                                /*
+                                 * Register sub-widgets of scale as well
+                                 */
+                                for (i = 0; i < num_children; i++) {
+                                        if (XtIsWidget(children[i]))
+                                                register_palette_info(
+                                                    children[i], AB_TYPE_SCALE,
+                                                    "AB_SCALE_SLIDER");
+                                }
+                        } else {
+                                pal_register_item_info(
+                                    palitem_w, ab_scale_palitem, (int)True,
+                                    "Gauge", NULL);
+                                /*
+                                 * Register sub-widgets of gauge as well
+                                 */
+                                for (i = 0; i < num_children; i++) {
+                                        if (XtIsWidget(children[i]))
+                                                register_palette_info(
+                                                    children[i], AB_TYPE_SCALE,
+                                                    "AB_SCALE_GAUGE");
+                                }
+                        }
+                        break;
+                }
+        case AB_TYPE_FILE_CHOOSER:
                 pal_register_item_info(palitem_w, ab_fchooser_palitem,
-                        (int)AB_NO_SUBTYPE, NULL, NULL);
+                                       (int)AB_NO_SUBTYPE, NULL, NULL);
                 break;
-    }
+        }
 }
 
 /*** DTB_USER_CODE_END
@@ -587,7 +552,7 @@ palP_cgen_show_dlgCB(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    cgen_show_codegen_win();
+        cgen_show_codegen_win();
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -605,10 +570,10 @@ palP_show_proj_orgCB(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    /* This routine pops up the project dialog window by
-     * managing the bulletinBoard child of the dialog shell.
-     */
-    proj_show_dialog();
+        /* This routine pops up the project dialog window by
+         * managing the bulletinBoard child of the dialog shell.
+         */
+        proj_show_dialog();
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -626,7 +591,7 @@ palP_exit_dtbuilderCB(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    ab_exit_dtbuilder();
+        ab_exit_dtbuilder();
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -643,7 +608,7 @@ palP_undoCB(
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
-    (void) abobj_undo();
+        (void)abobj_undo();
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
 
@@ -659,7 +624,7 @@ palP_cutCB(
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
-    (void) abobj_cut();
+        (void)abobj_cut();
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
 
@@ -675,7 +640,7 @@ palP_copyCB(
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
-    (void) abobj_copy();
+        (void)abobj_copy();
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
 
@@ -691,7 +656,7 @@ palP_pasteCB(
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
-    (void) abobj_paste(AB_PASTE_INITIATOR_PAL_EDIT_MENU);
+        (void)abobj_paste(AB_PASTE_INITIATOR_PAL_EDIT_MENU);
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
 
@@ -707,7 +672,7 @@ palP_deleteCB(
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
-    (void) abobj_delete();
+        (void)abobj_delete();
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
 
@@ -724,7 +689,7 @@ palP_show_appfw_edCB(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    appfw_show_dialog(proj_get_project());
+        appfw_show_dialog(proj_get_project());
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -742,19 +707,19 @@ palP_show_help_edCB(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    /*
-    ** This function is used to bring up the Help Editor from the main
-    ** palette's "Editors" pull-down menu.
-    */
-    /*
-     ** For now we don't have a current object, so we make sure we
-     ** don't show one left over from last time.  This'll change when
-     ** we get object selection support added to the Help Editor.
-     */
-     ab_set_help_obj((ABObj)NULL);
+        /*
+        ** This function is used to bring up the Help Editor from the main
+        ** palette's "Editors" pull-down menu.
+        */
+        /*
+         ** For now we don't have a current object, so we make sure we
+         ** don't show one left over from last time.  This'll change when
+         ** we get object selection support added to the Help Editor.
+         */
+        ab_set_help_obj((ABObj)NULL);
 
-     /* This routine is structured as a callback function... */
-     ab_popup_help(widget,(XtPointer)0,NULL);
+        /* This routine is structured as a callback function... */
+        ab_popup_help(widget, (XtPointer)0, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -769,15 +734,15 @@ palP_show_layout_edCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    ABObj               proj = proj_get_project();
-    ABSelectedRec       sel;
+        ABObj proj = proj_get_project();
+        ABSelectedRec sel;
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    abobj_get_selected(proj, False, False, &sel);
-    attch_ed_show_dialog(sel.count ? sel.list[0] : NULL);
+        abobj_get_selected(proj, False, False, &sel);
+        attch_ed_show_dialog(sel.count ? sel.list[0] : NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -795,7 +760,7 @@ palP_show_menu_edCB(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    prop_show_menu_props(widget, clientData, callData);
+        prop_show_menu_props(widget, clientData, callData);
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -813,7 +778,7 @@ palP_show_group_edCB(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    prop_show_group_props(widget, clientData, callData);
+        prop_show_group_props(widget, clientData, callData);
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -833,7 +798,7 @@ palP_set_menubar_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_CONTAINER, "AB_CONT_MENU_BAR");
+        register_palette_info(widget, AB_TYPE_CONTAINER, "AB_CONT_MENU_BAR");
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -853,7 +818,7 @@ palP_set_button_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_BUTTON, "AB_BUT_PUSH");
+        register_palette_info(widget, AB_TYPE_BUTTON, "AB_BUT_PUSH");
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -873,7 +838,7 @@ palP_set_menubutton_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_BUTTON, "AB_BUT_MENU");
+        register_palette_info(widget, AB_TYPE_BUTTON, "AB_BUT_MENU");
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -893,7 +858,7 @@ palP_set_mainwin_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_BASE_WINDOW, NULL);
+        register_palette_info(widget, AB_TYPE_BASE_WINDOW, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -913,7 +878,7 @@ palP_set_dialog_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_DIALOG, NULL);
+        register_palette_info(widget, AB_TYPE_DIALOG, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -933,7 +898,7 @@ palP_set_file_chooser_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_FILE_CHOOSER, NULL);
+        register_palette_info(widget, AB_TYPE_FILE_CHOOSER, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -953,7 +918,7 @@ palP_set_text_pane_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_TEXT_PANE, NULL);
+        register_palette_info(widget, AB_TYPE_TEXT_PANE, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -973,7 +938,7 @@ palP_set_draw_area_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_DRAWING_AREA, NULL);
+        register_palette_info(widget, AB_TYPE_DRAWING_AREA, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -993,7 +958,7 @@ palP_set_term_pane_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_TERM_PANE, NULL);
+        register_palette_info(widget, AB_TYPE_TERM_PANE, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -1013,7 +978,7 @@ palP_set_optionmenu_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_CHOICE, "AB_CHOICE_OPTION_MENU");
+        register_palette_info(widget, AB_TYPE_CHOICE, "AB_CHOICE_OPTION_MENU");
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -1030,21 +995,18 @@ palP_set_radiobox_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    int             i, num_children = 0;
-    WidgetList      children = NULL;
+        int i, num_children = 0;
+        WidgetList children = NULL;
 
-    register_palette_info(widget, AB_TYPE_CHOICE, "AB_CHOICE_EXCLUSIVE");
+        register_palette_info(widget, AB_TYPE_CHOICE, "AB_CHOICE_EXCLUSIVE");
 
-    XtVaGetValues(widget,
-        XtNnumChildren,    &num_children,
-        XtNchildren,       &children,
-        NULL);
+        XtVaGetValues(widget, XtNnumChildren, &num_children, XtNchildren,
+                      &children, NULL);
 
-    for (i=0; i<num_children; i++)
-    {
-        register_palette_info(children[i], AB_TYPE_CHOICE,
-                                "AB_CHOICE_EXCLUSIVE");
-    }
+        for (i = 0; i < num_children; i++) {
+                register_palette_info(children[i], AB_TYPE_CHOICE,
+                                      "AB_CHOICE_EXCLUSIVE");
+        }
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1064,25 +1026,22 @@ palP_set_checkbox_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    int             i, num_children = 0;
-    WidgetList      children = NULL;
+        int i, num_children = 0;
+        WidgetList children = NULL;
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_CHOICE, "AB_CHOICE_NONEXCLUSIVE");
+        register_palette_info(widget, AB_TYPE_CHOICE, "AB_CHOICE_NONEXCLUSIVE");
 
-    XtVaGetValues(widget,
-        XtNnumChildren,    &num_children,
-        XtNchildren,       &children,
-        NULL);
+        XtVaGetValues(widget, XtNnumChildren, &num_children, XtNchildren,
+                      &children, NULL);
 
-    for (i=0; i<num_children; i++)
-    {
-        register_palette_info(children[i], AB_TYPE_CHOICE,
-                                "AB_CHOICE_NONEXCLUSIVE");
-    }
+        for (i = 0; i < num_children; i++) {
+                register_palette_info(children[i], AB_TYPE_CHOICE,
+                                      "AB_CHOICE_NONEXCLUSIVE");
+        }
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -1099,7 +1058,7 @@ palP_set_gauge_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_SCALE, "AB_SCALE_GAUGE");
+        register_palette_info(widget, AB_TYPE_SCALE, "AB_SCALE_GAUGE");
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1119,7 +1078,7 @@ palP_set_slider_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_SCALE, "AB_SCALE_SLIDER");
+        register_palette_info(widget, AB_TYPE_SCALE, "AB_SCALE_SLIDER");
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1139,23 +1098,20 @@ palP_set_list_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    Widget          scrollwin;
-    int             i, num_children = 0;
-    WidgetList      children = NULL;
+        Widget scrollwin;
+        int i, num_children = 0;
+        WidgetList children = NULL;
 
-    scrollwin = XtParent(widget);
+        scrollwin = XtParent(widget);
 
-    register_palette_info(scrollwin, AB_TYPE_LIST, NULL);
+        register_palette_info(scrollwin, AB_TYPE_LIST, NULL);
 
-    XtVaGetValues(scrollwin,
-        XtNnumChildren,    &num_children,
-        XtNchildren,       &children,
-        NULL);
+        XtVaGetValues(scrollwin, XtNnumChildren, &num_children, XtNchildren,
+                      &children, NULL);
 
-    for (i=0; i<num_children; i++)
-    {
-        register_palette_info(children[i], AB_TYPE_LIST, NULL);
-    }
+        for (i = 0; i < num_children; i++) {
+                register_palette_info(children[i], AB_TYPE_LIST, NULL);
+        }
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1175,7 +1131,7 @@ palP_set_label_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_LABEL, NULL);
+        register_palette_info(widget, AB_TYPE_LABEL, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1195,24 +1151,21 @@ palP_set_textfield_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    Widget          rowcol;
-    int             i, num_children = 0;
-    WidgetList      children = NULL;
+        Widget rowcol;
+        int i, num_children = 0;
+        WidgetList children = NULL;
 
-    /* Get the TextField's parent RowColumn */
-    rowcol = XtParent(widget);
+        /* Get the TextField's parent RowColumn */
+        rowcol = XtParent(widget);
 
-    register_palette_info(rowcol, AB_TYPE_TEXT_FIELD, NULL);
+        register_palette_info(rowcol, AB_TYPE_TEXT_FIELD, NULL);
 
-    XtVaGetValues(rowcol,
-        XtNnumChildren,    &num_children,
-        XtNchildren,       &children,
-        NULL);
-         
-    for (i=0; i<num_children; i++)
-    {
-        register_palette_info(children[i], AB_TYPE_TEXT_FIELD, NULL);
-    }    
+        XtVaGetValues(rowcol, XtNnumChildren, &num_children, XtNchildren,
+                      &children, NULL);
+
+        for (i = 0; i < num_children; i++) {
+                register_palette_info(children[i], AB_TYPE_TEXT_FIELD, NULL);
+        }
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1232,7 +1185,7 @@ palP_set_container_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_CONTAINER, "AB_CONT_RELATIVE");
+        register_palette_info(widget, AB_TYPE_CONTAINER, "AB_CONT_RELATIVE");
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1250,59 +1203,58 @@ palP_change_modeCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    XmToggleButtonCallbackStruct *state = 
-		(XmToggleButtonCallbackStruct *)callData;
-    ABObj                       project = proj_get_project();
-    int                          mode;
-    int                          num_cascades;
-    Widget                       *cascades;
-    int                          i;
- 
-    if (state->set)
-    {
-        XtVaGetValues(widget, XmNuserData, &mode, NULL);
+        XmToggleButtonCallbackStruct *state =
+            (XmToggleButtonCallbackStruct *)callData;
+        ABObj project = proj_get_project();
+        int mode;
+        int num_cascades;
+        Widget *cascades;
+        int i;
 
-	/* If the user selects the build mode that is already
-	 * set, then don't do anything.
-	 */
-	if (AB_builder_mode == mode)
-	    return;
+        if (state->set) {
+                XtVaGetValues(widget, XmNuserData, &mode, NULL);
 
-        AB_builder_mode = mode;
- 
- 
-        /* Make all but "help" menubar cascade buttons inactive */
+                /* If the user selects the build mode that is already
+                 * set, then don't do anything.
+                 */
+                if (AB_builder_mode == mode)
+                        return;
 
-	XtVaGetValues(dtb_palette_ab_palette_main.palette_menubar,
-                XmNnumChildren, &num_cascades,
-                XmNchildren,    &cascades,
-                NULL);
- 
-        for (i = 0; i < num_cascades - 1; i++)
-            XtSetSensitive(cascades[i], mode == MODE_BUILD? TRUE : FALSE);
- 
-	/*
-	** Change Modes
-	*/
+                AB_builder_mode = mode;
 
-	if (mode != MODE_BUILD)
-        {
-            ab_takedown_windows();
-            ab_palette_set_active(FALSE);
+                /* Make all but "help" menubar cascade buttons inactive */
+
+                XtVaGetValues(dtb_palette_ab_palette_main.palette_menubar,
+                              XmNnumChildren, &num_cascades, XmNchildren,
+                              &cascades, NULL);
+
+                for (i = 0; i < num_cascades - 1; i++)
+                        XtSetSensitive(cascades[i],
+                                       mode == MODE_BUILD ? TRUE : FALSE);
+
+                /*
+                ** Change Modes
+                */
+
+                if (mode != MODE_BUILD) {
+                        ab_takedown_windows();
+                        ab_palette_set_active(FALSE);
+                } else /* mode == MODE_BUILD */
+                {
+                        ab_palette_set_active(TRUE);
+                        ab_putback_windows();
+                        tmode_disable(
+                            project); /* disable before enabling build actions
+                                       */
+                }
+
+                /* enable/disable build mode actions */
+                abobj_tree_set_build_actions(project);
+
+                if (mode != MODE_BUILD)
+                        tmode_enable(project,
+                                     AB_builder_mode == MODE_TEST_PROJ);
         }
-        else	/* mode == MODE_BUILD */
-        {
-            ab_palette_set_active(TRUE);
-            ab_putback_windows();
-	    tmode_disable(project); /* disable before enabling build actions */
-        }
- 
-	/* enable/disable build mode actions */
-        abobj_tree_set_build_actions(project);
-
-	if (mode != MODE_BUILD)
-	    tmode_enable(project, AB_builder_mode == MODE_TEST_PROJ);
-    }
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1322,7 +1274,7 @@ palP_set_build_udata(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    XtVaSetValues(widget, XmNuserData, MODE_BUILD, NULL);
+        XtVaSetValues(widget, XmNuserData, MODE_BUILD, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1342,7 +1294,7 @@ palP_set_test_udata(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    XtVaSetValues(widget, XmNuserData, MODE_TEST_SHOWN, NULL);
+        XtVaSetValues(widget, XmNuserData, MODE_TEST_SHOWN, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1362,7 +1314,7 @@ palP_set_separator_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_SEPARATOR, NULL);
+        register_palette_info(widget, AB_TYPE_SEPARATOR, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1382,7 +1334,7 @@ palP_set_combobox_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_COMBO_BOX, NULL);
+        register_palette_info(widget, AB_TYPE_COMBO_BOX, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1402,7 +1354,7 @@ palP_set_spinbox_palette_info(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    register_palette_info(widget, AB_TYPE_SPIN_BOX, NULL);
+        register_palette_info(widget, AB_TYPE_SPIN_BOX, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1422,8 +1374,8 @@ palP_set_spinbox_width(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    /* Work-around for spinbox width creation-time bug */
-    XtVaSetValues(widget, XmNwidth, 98, NULL);
+        /* Work-around for spinbox width creation-time bug */
+        XtVaSetValues(widget, XmNwidth, 98, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1444,12 +1396,12 @@ palP_show_props_edCB(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    /*
-     * Popup the Revolving Prop dialog.
-     * If an object is currently selected,  Set the
-     * corresponding revolving prop-type and Load the object
-     */
-    prop_show_dialog(widget, clientData, callData);
+        /*
+         * Popup the Revolving Prop dialog.
+         * If an object is currently selected,  Set the
+         * corresponding revolving prop-type and Load the object
+         */
+        prop_show_dialog(widget, clientData, callData);
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -1463,8 +1415,8 @@ palP_show_msg_edCB(
 )
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
-    
-    msgEd_show_dialog();
+
+        msgEd_show_dialog();
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1485,7 +1437,7 @@ palP_show_conn_edCB(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    conn_popup_dialog(widget, clientData, callData);
+        conn_popup_dialog(widget, clientData, callData);
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -1500,7 +1452,7 @@ palP_show_dnd_edCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    dnd_ed_show_dialog();
+        dnd_ed_show_dialog();
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1520,7 +1472,7 @@ palP_set_test_proj_udata(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    XtVaSetValues(widget, XmNuserData, MODE_TEST_PROJ, NULL);
+        XtVaSetValues(widget, XmNuserData, MODE_TEST_PROJ, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1538,68 +1490,63 @@ palP_post_file_menuCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    DtbPaletteAbPaletteMainInfo		main_pal = NULL;
-    PaletteFilePulldownItems		file_menu_rec = NULL;
-    Widget      			export_pulldown = NULL;
-    ChooserInfo         		info = NULL;
+        DtbPaletteAbPaletteMainInfo main_pal = NULL;
+        PaletteFilePulldownItems file_menu_rec = NULL;
+        Widget export_pulldown = NULL;
+        ChooserInfo info = NULL;
 
-    main_pal = (DtbPaletteAbPaletteMainInfo) clientData;
-    file_menu_rec =
-	&(main_pal->palette_menubar_File_item_file_pulldown_items);
+        main_pal = (DtbPaletteAbPaletteMainInfo)clientData;
+        file_menu_rec =
+            &(main_pal->palette_menubar_File_item_file_pulldown_items);
 
-    /* 
-     * Check if there is anything to save or export.
-     */
-    if (obj_get_num_children(proj_get_project()) > 0)
-    {
-	if (AB_generic_chooser != NULL)
-	    XtVaGetValues(AB_generic_chooser, XmNuserData, &info, NULL);
+        /*
+         * Check if there is anything to save or export.
+         */
+        if (obj_get_num_children(proj_get_project()) > 0) {
+                if (AB_generic_chooser != NULL)
+                        XtVaGetValues(AB_generic_chooser, XmNuserData, &info,
+                                      NULL);
 
-	/* If the FSB has not been created yet or if it has
-	 * been created but it is not displayed, then set
-	 * File->"Save", "Save Project As", and "Export Module" 
-	 * active.  Otherwise if the FSB that is up is for
-	 * another file operation (i.e. "Open Project"),
-	 * then make it inactive. If the FSB that is up is
-	 * for that operation, then make it active.
-	 */
-	if (AB_generic_chooser == NULL)
-	{
-	    XtSetSensitive(file_menu_rec->Export_Module_item, True);
-	    XtSetSensitive(file_menu_rec->Save_Project_item, True);
-	}
-	else if (AB_generic_chooser && !XtIsManaged(AB_generic_chooser))
-	{
-	    XtSetSensitive(file_menu_rec->Export_Module_item, True);
-	    XtSetSensitive(file_menu_rec->Save_Project_item, True);
-	}
-	else if (AB_generic_chooser && XtIsManaged(AB_generic_chooser))
-	{
-	    if (info->chooser_type == AB_EXPORT_CHOOSER)
-	    {
-		XtSetSensitive(file_menu_rec->Export_Module_item, True);
-		XtSetSensitive(file_menu_rec->Save_Project_item, False);
-	    }
-	    else if (info->chooser_type == AB_SAVE_PROJ_AS_CHOOSER)
-	    {
-		XtSetSensitive(file_menu_rec->Export_Module_item,False);
-		XtSetSensitive(file_menu_rec->Save_Project_item, True);
-	    }
-	}
+                /* If the FSB has not been created yet or if it has
+                 * been created but it is not displayed, then set
+                 * File->"Save", "Save Project As", and "Export Module"
+                 * active.  Otherwise if the FSB that is up is for
+                 * another file operation (i.e. "Open Project"),
+                 * then make it inactive. If the FSB that is up is
+                 * for that operation, then make it active.
+                 */
+                if (AB_generic_chooser == NULL) {
+                        XtSetSensitive(file_menu_rec->Export_Module_item, True);
+                        XtSetSensitive(file_menu_rec->Save_Project_item, True);
+                } else if (AB_generic_chooser &&
+                           !XtIsManaged(AB_generic_chooser)) {
+                        XtSetSensitive(file_menu_rec->Export_Module_item, True);
+                        XtSetSensitive(file_menu_rec->Save_Project_item, True);
+                } else if (AB_generic_chooser &&
+                           XtIsManaged(AB_generic_chooser)) {
+                        if (info->chooser_type == AB_EXPORT_CHOOSER) {
+                                XtSetSensitive(
+                                    file_menu_rec->Export_Module_item, True);
+                                XtSetSensitive(file_menu_rec->Save_Project_item,
+                                               False);
+                        } else if (info->chooser_type ==
+                                   AB_SAVE_PROJ_AS_CHOOSER) {
+                                XtSetSensitive(
+                                    file_menu_rec->Export_Module_item, False);
+                                XtSetSensitive(file_menu_rec->Save_Project_item,
+                                               True);
+                        }
+                }
 
-	XtVaGetValues(file_menu_rec->Export_Module_item,
-			XmNsubMenuId, &export_pulldown,
-			NULL);
-	if (export_pulldown != NULL)
-	{
-	    build_export_menu(export_pulldown, export_bilCB);
-	}
-    }
-    else
-    {
-	XtSetSensitive(file_menu_rec->Save_Project_item, False);
-        XtSetSensitive(file_menu_rec->Export_Module_item, False);
-    }
+                XtVaGetValues(file_menu_rec->Export_Module_item, XmNsubMenuId,
+                              &export_pulldown, NULL);
+                if (export_pulldown != NULL) {
+                        build_export_menu(export_pulldown, export_bilCB);
+                }
+        } else {
+                XtSetSensitive(file_menu_rec->Save_Project_item, False);
+                XtSetSensitive(file_menu_rec->Export_Module_item, False);
+        }
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1617,47 +1564,45 @@ palP_post_edit_menuCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    DtbPaletteAbPaletteMainInfo         main_pal = NULL;
-    PaletteEditPulldownItems		edit_menu_rec = NULL;
-    ABObj               		project = proj_get_project();
-    ABSelectedRec       		sel;
-    Widget              		edit;
- 
-    main_pal = (DtbPaletteAbPaletteMainInfo) clientData;
-    edit_menu_rec = &(main_pal->palette_menubar_Edit_item_edit_pulldown_items); 
-    if (!project || !edit_menu_rec)
-        return;
- 
-    edit = main_pal->palette_menubar_items.Edit_item;
-    XtSetSensitive(edit, True);
- 
-    abobj_get_selected(project, FALSE, FALSE, &sel);
- 
-    if (sel.count == 0)
-    {
-        XtSetSensitive(edit_menu_rec->Cut_item, False);
-        XtSetSensitive(edit_menu_rec->Copy_item, False);
-        XtSetSensitive(edit_menu_rec->Paste_item, False);
-        XtSetSensitive(edit_menu_rec->Delete_item, False);
-    }
-    else
-    {
-        XtSetSensitive(edit_menu_rec->Cut_item, True);
-        XtSetSensitive(edit_menu_rec->Copy_item, True);
-        XtSetSensitive(edit_menu_rec->Delete_item, True);
- 
-        if (abobj_clipboard_is_empty())
-            XtSetSensitive(edit_menu_rec->Paste_item, False);
+        DtbPaletteAbPaletteMainInfo main_pal = NULL;
+        PaletteEditPulldownItems edit_menu_rec = NULL;
+        ABObj project = proj_get_project();
+        ABSelectedRec sel;
+        Widget edit;
+
+        main_pal = (DtbPaletteAbPaletteMainInfo)clientData;
+        edit_menu_rec =
+            &(main_pal->palette_menubar_Edit_item_edit_pulldown_items);
+        if (!project || !edit_menu_rec)
+                return;
+
+        edit = main_pal->palette_menubar_items.Edit_item;
+        XtSetSensitive(edit, True);
+
+        abobj_get_selected(project, FALSE, FALSE, &sel);
+
+        if (sel.count == 0) {
+                XtSetSensitive(edit_menu_rec->Cut_item, False);
+                XtSetSensitive(edit_menu_rec->Copy_item, False);
+                XtSetSensitive(edit_menu_rec->Paste_item, False);
+                XtSetSensitive(edit_menu_rec->Delete_item, False);
+        } else {
+                XtSetSensitive(edit_menu_rec->Cut_item, True);
+                XtSetSensitive(edit_menu_rec->Copy_item, True);
+                XtSetSensitive(edit_menu_rec->Delete_item, True);
+
+                if (abobj_clipboard_is_empty())
+                        XtSetSensitive(edit_menu_rec->Paste_item, False);
+                else
+                        XtSetSensitive(edit_menu_rec->Paste_item, True);
+
+                XtFree((char *)sel.list);
+        }
+
+        if (abobj_undo_active())
+                XtSetSensitive(edit_menu_rec->Undo_item, True);
         else
-            XtSetSensitive(edit_menu_rec->Paste_item, True);
- 
-        XtFree((char *)sel.list);
-    }
- 
-    if (abobj_undo_active())
-        XtSetSensitive(edit_menu_rec->Undo_item, True);
-    else
-        XtSetSensitive(edit_menu_rec->Undo_item, False);
+                XtSetSensitive(edit_menu_rec->Undo_item, False);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1675,18 +1620,20 @@ palP_post_view_menuCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    DtbPaletteAbPaletteMainInfo         main_pal;
-    Widget                              browse, browse_pulldown;
- 
-    main_pal = (DtbPaletteAbPaletteMainInfo) clientData;
-    browse = main_pal->palette_menubar_View_item_view_pulldown_items.Module_Browser_item;
+        DtbPaletteAbPaletteMainInfo main_pal;
+        Widget browse, browse_pulldown;
 
-    XtSetSensitive(browse, True);
-    XtVaGetValues(browse, XmNsubMenuId, &browse_pulldown, NULL);
- 
-    brws_build_module_menu(browse_pulldown, brws_show_browser);
+        main_pal = (DtbPaletteAbPaletteMainInfo)clientData;
+        browse = main_pal->palette_menubar_View_item_view_pulldown_items
+                     .Module_Browser_item;
 
-    abobj_set_menu_item_state(main_pal->palette_menubar_View_item_view_pulldown);
+        XtSetSensitive(browse, True);
+        XtVaGetValues(browse, XmNsubMenuId, &browse_pulldown, NULL);
+
+        brws_build_module_menu(browse_pulldown, brws_show_browser);
+
+        abobj_set_menu_item_state(
+            main_pal->palette_menubar_View_item_view_pulldown);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -1703,22 +1650,21 @@ palP_post_layout_menuCB(
 )
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
-    DtbPaletteAbPaletteMainInfo		main_pal;
-    Widget				layout_menu = NULL;
+        DtbPaletteAbPaletteMainInfo main_pal;
+        Widget layout_menu = NULL;
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
-    main_pal = (DtbPaletteAbPaletteMainInfo) clientData;
+        main_pal = (DtbPaletteAbPaletteMainInfo)clientData;
 
-    XtVaGetValues(main_pal->palette_menubar_items.Layout_item,
-            XmNsubMenuId, &layout_menu,
-            NULL);
+        XtVaGetValues(main_pal->palette_menubar_items.Layout_item, XmNsubMenuId,
+                      &layout_menu, NULL);
 
-    if (layout_menu)
-	/*
-	 * (In)Activate layout items
-	 */
-        abobj_set_menu_item_state(layout_menu);
+        if (layout_menu)
+                /*
+                 * (In)Activate layout items
+                 */
+                abobj_set_menu_item_state(layout_menu);
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -1737,7 +1683,7 @@ palP_create_next_layer_itemCB(
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
-    XtVaSetValues(widget, XmNuserData, (XtArgVal)ABMenuNextLayer, NULL);
+        XtVaSetValues(widget, XmNuserData, (XtArgVal)ABMenuNextLayer, NULL);
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
 
@@ -1750,22 +1696,21 @@ palP_next_layerCB(
 )
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
-    ABSelectedRec       sel; 
-    ABObj		pane;
+        ABSelectedRec sel;
+        ABObj pane;
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    /* This should only get called if the right select conditions
-     * exist, but double-check anyways for safety.
-     */
-    abobj_get_selected(proj_get_project(), TRUE, FALSE, &sel);
-    if (sel.count > 0)
-    {
-    	pane = sel.list[0];
-        abobj_layer_show_next(obj_get_parent(pane));
-        util_free(sel.list);
-    }
+        /* This should only get called if the right select conditions
+         * exist, but double-check anyways for safety.
+         */
+        abobj_get_selected(proj_get_project(), TRUE, FALSE, &sel);
+        if (sel.count > 0) {
+                pane = sel.list[0];
+                abobj_layer_show_next(obj_get_parent(pane));
+                util_free(sel.list);
+        }
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -1780,44 +1725,51 @@ palP_next_layerCB(
  *** Add new functions here, or at the top of the file.
  ***/
 
-void
-pal_set_File_menu(
-    AB_CHOOSER_TYPE     chooser_type,
-    BOOL                active
-)
-{
-    Widget       open_proj_item = dtb_palette_ab_palette_main.palette_menubar_File_item_file_pulldown_items.Open_Project_item;
-    Widget       save_proj_as_item = dtb_palette_ab_palette_main.palette_menubar_File_item_file_pulldown_items.Save_Project_As_item;
-    Widget       save_proj_item = dtb_palette_ab_palette_main.palette_menubar_File_item_file_pulldown_items.Save_Project_item;
-    Widget       import_item = dtb_palette_ab_palette_main.palette_menubar_File_item_file_pulldown_items.Import_Module_item;
-    Widget       export_item = dtb_palette_ab_palette_main.palette_menubar_File_item_file_pulldown_items.Export_Module_item;
+void pal_set_File_menu(AB_CHOOSER_TYPE chooser_type, BOOL active) {
+        Widget open_proj_item =
+            dtb_palette_ab_palette_main
+                .palette_menubar_File_item_file_pulldown_items
+                .Open_Project_item;
+        Widget save_proj_as_item =
+            dtb_palette_ab_palette_main
+                .palette_menubar_File_item_file_pulldown_items
+                .Save_Project_As_item;
+        Widget save_proj_item =
+            dtb_palette_ab_palette_main
+                .palette_menubar_File_item_file_pulldown_items
+                .Save_Project_item;
+        Widget import_item = dtb_palette_ab_palette_main
+                                 .palette_menubar_File_item_file_pulldown_items
+                                 .Import_Module_item;
+        Widget export_item = dtb_palette_ab_palette_main
+                                 .palette_menubar_File_item_file_pulldown_items
+                                 .Export_Module_item;
 
-    switch (chooser_type)
-    {
+        switch (chooser_type) {
         case AB_OPEN_PROJ_CHOOSER:
-            XtSetSensitive(save_proj_as_item, active);
-            XtSetSensitive(save_proj_item, active);
-            XtSetSensitive(import_item, active);
-            XtSetSensitive(export_item, active);
-            break;
+                XtSetSensitive(save_proj_as_item, active);
+                XtSetSensitive(save_proj_item, active);
+                XtSetSensitive(import_item, active);
+                XtSetSensitive(export_item, active);
+                break;
         case AB_SAVE_PROJ_AS_CHOOSER:
-            XtSetSensitive(open_proj_item, active);
-            XtSetSensitive(import_item, active);
-            XtSetSensitive(export_item, active);
-            break;
+                XtSetSensitive(open_proj_item, active);
+                XtSetSensitive(import_item, active);
+                XtSetSensitive(export_item, active);
+                break;
         case AB_IMPORT_CHOOSER:
-            XtSetSensitive(open_proj_item, active);
-            XtSetSensitive(save_proj_as_item, active);
-            XtSetSensitive(save_proj_item, active);
-            XtSetSensitive(export_item, active);
-            break;
+                XtSetSensitive(open_proj_item, active);
+                XtSetSensitive(save_proj_as_item, active);
+                XtSetSensitive(save_proj_item, active);
+                XtSetSensitive(export_item, active);
+                break;
         case AB_EXPORT_CHOOSER:
-            XtSetSensitive(open_proj_item, active);
-            XtSetSensitive(save_proj_as_item, active);
-            XtSetSensitive(save_proj_item, active);
-            XtSetSensitive(import_item, active);
-            break;
-    }
+                XtSetSensitive(open_proj_item, active);
+                XtSetSensitive(save_proj_as_item, active);
+                XtSetSensitive(save_proj_item, active);
+                XtSetSensitive(import_item, active);
+                break;
+        }
 }
 
 /*** DTB_USER_CODE_END

@@ -29,7 +29,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -38,20 +38,20 @@
 #include "WmGlobal.h"
 
 /* Atoms used for session management capabilities. */
-#define _XA_DT_SM_CLIENT_ID		"SM_CLIENT_ID"
-#define _XA_DT_WMSAVE_HINT		"_DT_WMSAVE_HINT"
+#define _XA_DT_SM_CLIENT_ID "SM_CLIENT_ID"
+#define _XA_DT_WMSAVE_HINT "_DT_WMSAVE_HINT"
 
 /* _DT_WMSAVE_HINT flag definitions */
-#define WMSAVE_X		(1L << 0)
-#define WMSAVE_Y		(1L << 1)
-#define WMSAVE_WIDTH		(1L << 2)
-#define WMSAVE_HEIGHT		(1L << 3)
-#define WMSAVE_STATE		(1L << 4)
+#define WMSAVE_X (1L << 0)
+#define WMSAVE_Y (1L << 1)
+#define WMSAVE_WIDTH (1L << 2)
+#define WMSAVE_HEIGHT (1L << 3)
+#define WMSAVE_STATE (1L << 4)
 #ifdef WSM
-# define WMSAVE_WORKSPACES	(1L << 5)
+#define WMSAVE_WORKSPACES (1L << 5)
 #endif
-#define WMSAVE_ICON_X		(1L << 6)
-#define WMSAVE_ICON_Y		(1L << 7)
+#define WMSAVE_ICON_X (1L << 6)
+#define WMSAVE_ICON_Y (1L << 7)
 
 extern void AddSMCallbacks(void);
 extern void ResignFromSM(void);

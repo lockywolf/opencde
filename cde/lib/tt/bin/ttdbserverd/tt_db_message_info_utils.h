@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: tt_db_message_info_utils.h /main/3 1995/10/20 16:41:33 rswiston $ 			 				 */
+/*%%  $XConsortium: tt_db_message_info_utils.h /main/3 1995/10/20 16:41:33
+ * rswiston $ 			 				 */
 /*
  * tt_db_message_info_utils.h - Declare the _Tt_db_message_info utilities.
  *

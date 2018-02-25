@@ -29,19 +29,14 @@
  * (c) Copyright 1993, 1994 Sun Microsystems, Inc.                      *
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
-#ifndef	_Dt_TermPrimRenderLineDraw_h
-#define	_Dt_TermPrimRenderLineDraw_h
+#ifndef _Dt_TermPrimRenderLineDraw_h
+#define _Dt_TermPrimRenderLineDraw_h
 
 #include "TermPrimRender.h"
 
-extern TermFont _DtTermPrimRenderLineDrawCreate(
-    Widget		  w,
-    GlyphInfo		  glyphInfo,
-    int			  numGlyphs,
-    int			  width,
-    int			  ascent,
-    int			  descent
-);
+extern TermFont _DtTermPrimRenderLineDrawCreate(Widget w, GlyphInfo glyphInfo,
+                                                int numGlyphs, int width,
+                                                int ascent, int descent);
 
-#endif	/* _Dt_TermPrimRenderLineDraw_h */
+#endif /* _Dt_TermPrimRenderLineDraw_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif... */

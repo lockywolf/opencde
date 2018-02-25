@@ -31,7 +31,7 @@ static char SCCSID[] = "OSF/Motif: %W% %E%";
 *
 *  (c) Copyright 1992 HEWLETT-PACKARD COMPANY
 *  ALL RIGHTS RESERVED
-*  
+*
 *******************************************************************************
 ******************************************************************************/
 #ifndef _DtPanelShell_h
@@ -49,12 +49,11 @@ extern "C" {
 
 externalref WidgetClass dtPanelShellWidgetClass;
 
-typedef struct _DtPanelShellClassRec * DtPanelShellWidgetClass;
-typedef struct _DtPanelShellRec      * DtPanelShellWidget;
-
+typedef struct _DtPanelShellClassRec *DtPanelShellWidgetClass;
+typedef struct _DtPanelShellRec *DtPanelShellWidget;
 
 #if defined(__cplusplus) || defined(c_plusplus)
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
 #endif /* _DtPanelShell_h */

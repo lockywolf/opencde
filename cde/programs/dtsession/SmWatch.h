@@ -25,7 +25,7 @@
  * (c) Copyright 1993, 1994, 1995 Hewlett-Packard Company
  * (c) Copyright 1993, 1994, 1995 International Business Machines Corp.
  * (c) Copyright 1993, 1994, 1995 Sun Microsystems, Inc.
- * (c) Copyright 1993, 1994, 1995 Novell, Inc. 
+ * (c) Copyright 1993, 1994, 1995 Novell, Inc.
  * (c) Copyright 1995 FUJITSU LIMITED.
  * (c) Copyright 1995 Hitachi.
  *
@@ -62,8 +62,6 @@ in this Software without prior written authorization from the X Consortium.
 
 #include <X11/Intrinsic.h>
 
-Status
-InitWatchProcs (
-	XtAppContext 		appContext);
+Status InitWatchProcs(XtAppContext appContext);
 
 #endif /* _smwatch_h */

@@ -20,12 +20,12 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* 
+/*
  * (c) Copyright 1995 Digital Equipment Corporation.
  * (c) Copyright 1995 Hewlett-Packard Company.
  * (c) Copyright 1995 International Business Machines Corp.
  * (c) Copyright 1995 Sun Microsystems, Inc.
- * (c) Copyright 1995 Novell, Inc. 
+ * (c) Copyright 1995 Novell, Inc.
  * (c) Copyright 1995 FUJITSU LIMITED.
  * (c) Copyright 1995 Hitachi.
  *
@@ -38,46 +38,38 @@
 #ifndef _Dt_MsgLog_h
 #define _Dt_MsgLog_h
 
-#include <stdio.h>		/* needed for FILE */
+#include <stdio.h> /* needed for FILE */
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-# include <stdarg.h>
+#include <stdarg.h>
 
 /*
  * Type declarations
  */
 typedef enum {
-	DtMsgLogInformation,
-	DtMsgLogStderr,
-	DtMsgLogDebug,
-	DtMsgLogWarning,
-	DtMsgLogError
+        DtMsgLogInformation,
+        DtMsgLogStderr,
+        DtMsgLogDebug,
+        DtMsgLogWarning,
+        DtMsgLogError
 } DtMsgLogType;
 
-typedef void (*DtMsgLogHandler) (
-	const char 		* program_name,
-	DtMsgLogType		msg_type,
-	const char 		* format,
-	va_list			args );
+typedef void (*DtMsgLogHandler)(const char *program_name, DtMsgLogType msg_type,
+                                const char *format, va_list args);
 
 /*
  * Function declarations
  */
-extern void DtMsgLogMessage (
-	const char 		* program_name,
-	DtMsgLogType		msg_type,
-	const char 		* format,
-	... );
+extern void DtMsgLogMessage(const char *program_name, DtMsgLogType msg_type,
+                            const char *format, ...);
 
-extern DtMsgLogHandler DtMsgLogSetHandler (
-	DtMsgLogHandler 	handler );
+extern DtMsgLogHandler DtMsgLogSetHandler(DtMsgLogHandler handler);
 
-extern FILE * DtMsgLogOpenFile (
-	const char		* type,
-	char			** filename_return);	/* MODIFIED */
+extern FILE *DtMsgLogOpenFile(const char *type,
+                              char **filename_return); /* MODIFIED */
 
 #ifdef __cplusplus
 }

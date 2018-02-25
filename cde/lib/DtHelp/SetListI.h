@@ -49,29 +49,19 @@
 extern "C" {
 #endif
 
-extern  XtPointer	_DtHelpDisplayAreaData(
-				XtPointer       client_data);
-extern	void		_DtHelpDisplayAreaDimensionsReturn (
-				XtPointer	 client_data,
-				short		*ret_rows,
-				short		*ret_columns );
-extern	void		_DtHelpDisplayAreaSetList (
-				XtPointer	client_data,
-				XtPointer	topicHandle,
-				Boolean		append_flag,
-				int		scroll_percent);
-extern  Widget		_DtHelpDisplayAreaWidget(
-				XtPointer       client_data);
-extern	int		_DtHelpGetScrollbarValue (
-				XtPointer       client_data);
-extern	Boolean		_DtHelpSetScrollBars (
-				XtPointer	client_data,
-				Dimension	new_width,
-				Dimension	new_height );
-extern int		_DtHelpUpdatePath (
-				DtHelpDispAreaStruct        *pDAS,
-				_DtHelpVolumeHdl             volume_handle,
-				char                        *loc_id);
+extern XtPointer _DtHelpDisplayAreaData(XtPointer client_data);
+extern void _DtHelpDisplayAreaDimensionsReturn(XtPointer client_data,
+                                               short *ret_rows,
+                                               short *ret_columns);
+extern void _DtHelpDisplayAreaSetList(XtPointer client_data,
+                                      XtPointer topicHandle,
+                                      Boolean append_flag, int scroll_percent);
+extern Widget _DtHelpDisplayAreaWidget(XtPointer client_data);
+extern int _DtHelpGetScrollbarValue(XtPointer client_data);
+extern Boolean _DtHelpSetScrollBars(XtPointer client_data, Dimension new_width,
+                                    Dimension new_height);
+extern int _DtHelpUpdatePath(DtHelpDispAreaStruct *pDAS,
+                             _DtHelpVolumeHdl volume_handle, char *loc_id);
 
 #ifdef __cplusplus
 }

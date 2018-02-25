@@ -26,7 +26,7 @@
  * (c) Copyright 1988, 1993, 1994, 1995 Hewlett-Packard Company
  * (c) Copyright 1993, 1994, 1995 International Business Machines Corp.
  * (c) Copyright 1993, 1994, 1995 Sun Microsystems, Inc.
- * (c) Copyright 1993, 1994, 1995 Novell, Inc. 
+ * (c) Copyright 1993, 1994, 1995 Novell, Inc.
  * (c) Copyright 1995 FUJITSU LIMITED.
  * (c) Copyright 1995 Hitachi.
  */
@@ -47,59 +47,44 @@
 #include <X11/Intrinsic.h>
 
 #ifndef __STDC__
-#  ifndef const
-#    define const
-#  endif
+#ifndef const
+#define const
+#endif
 #endif
 
 #include <bms/XeUserMsg.h>
 
 typedef enum {
-  DtIgnore,
-  DtInformation,
-  DtWarning,
-  DtError,
-  DtFatalError,
-  DtInternalError
+        DtIgnore,
+        DtInformation,
+        DtWarning,
+        DtError,
+        DtFatalError,
+        DtInternalError
 } DtSeverity;
 
+extern void _DtSimpleError(char *progName, DtSeverity severity, char *help,
+                           char *format, ...);
+extern void _DtSimpleErrnoError(char *progName, DtSeverity severity, char *help,
+                                char *format, ...);
 
-extern void _DtSimpleError( 
-                        char *progName,
-                        DtSeverity severity,
-                        char *help,
-                        char *format,
-                        ...) ;
-extern void _DtSimpleErrnoError( 
-                        char *progName,
-                        DtSeverity severity,
-                        char *help,
-                        char *format,
-                        ...) ;
+#define DtProgName XeProgName
 
-#define DtProgName  XeProgName
-
-extern int _DtPrintDefaultError(
-        Display *dpy,
-        XErrorEvent *event,
-        char *msg );
+extern int _DtPrintDefaultError(Display *dpy, XErrorEvent *event, char *msg);
 
 #define _DTPRINTDEFAULTERROR_BUFSIZE 1024
 
-extern int _DtPrintDefaultErrorSafe(
-        Display *dpy,
-        XErrorEvent *event,
-        char *msg,
-	int bytes);
+extern int _DtPrintDefaultErrorSafe(Display *dpy, XErrorEvent *event, char *msg,
+                                    int bytes);
 
 /*
     DESCRIPTION:
 
         Supply the standard Xerror output to a buffer (instead of stederr)
         so client can do what it wants with it.  Also don't exit.  Allow
-client to decide what to do. 
+client to decide what to do.
 
-        An appropriate thing to do would be to pass the buffer to 
+        An appropriate thing to do would be to pass the buffer to
         DtSimpleError() and return. ie. In your error callback:
 
     {
@@ -119,7 +104,7 @@ client to decide what to do.
 
         XErrorEvent *event; Error event returned to error callback.
 
-        char *msg;          Buffer returning the formatted text of 
+        char *msg;          Buffer returning the formatted text of
                             the error message.  It won't be more than
                             1024 bytes.
 

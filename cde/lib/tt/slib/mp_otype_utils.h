@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp_otype_utils.h /main/3 1995/10/23 11:52:03 rswiston $ 			 				 */
+/*%%  $XConsortium: mp_otype_utils.h /main/3 1995/10/23 11:52:03 rswiston $
+ */
 /*
  *
  * mp_otype_utils.h
@@ -38,7 +39,6 @@
 #include <util/tt_table.h>
 
 class _Tt_otype;
-declare_list_of(_Tt_otype)
-declare_table_of(_Tt_otype)
+declare_list_of(_Tt_otype) declare_table_of(_Tt_otype)
 
-#endif				/* MP_OTYPE_UTILS_H */
+#endif /* MP_OTYPE_UTILS_H */

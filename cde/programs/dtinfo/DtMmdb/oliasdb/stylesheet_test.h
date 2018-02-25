@@ -30,12 +30,12 @@
 #include "oliasdb/stylesheet_hd.h"
 #include "object/random_gen.h"
 
-void print_stylesheet(stylesheet_smart_ptr& x, ostream& out);
+void print_stylesheet(stylesheet_smart_ptr &x, ostream &out);
 
-int compare_stylesheet(stylesheet_smart_ptr& pattern, info_base* base_ptr);
+int compare_stylesheet(stylesheet_smart_ptr &pattern, info_base *base_ptr);
 
-void generate_stylesheet_instance(random_gen&, ostream& out, int min_len=500, int max_len=5000);
-
+void generate_stylesheet_instance(random_gen &, ostream &out, int min_len = 500,
+                                  int max_len = 5000);
 
 #endif
 #endif

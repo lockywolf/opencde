@@ -34,15 +34,15 @@
 #include "ansi_c.h"
 #include "rtable4.h"
 
-extern int		yyylineno;
-extern int		externNumberVal;
-extern char		*externQuotedString;
-extern Period_4		externPeriod;
-extern Tag_4		externTag;
-extern Appt_Status_4	externApptStatus;
-extern Privacy_Level_4	externPrivacy;
+extern int yyylineno;
+extern int externNumberVal;
+extern char *externQuotedString;
+extern Period_4 externPeriod;
+extern Tag_4 externTag;
+extern Appt_Status_4 externApptStatus;
+extern Privacy_Level_4 externPrivacy;
 
-extern void		setinput	P((FILE*));
-extern int		yyylex		P(());
+extern void setinput P((FILE *));
+extern int yyylex P(());
 
 #endif

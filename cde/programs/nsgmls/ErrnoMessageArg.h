@@ -35,21 +35,18 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API ErrnoMessageArg : public OtherMessageArg {
-  RTTI_CLASS
-public:
-  ErrnoMessageArg(int errnum) : errno_(errnum) { }
-  MessageArg *copy() const;
-  // errno might be a macro so we must use a different name
-  int errnum() const;
-private:
-  int errno_;
+        RTTI_CLASS
+      public:
+        ErrnoMessageArg(int errnum) : errno_(errnum) {}
+        MessageArg *copy() const;
+        // errno might be a macro so we must use a different name
+        int errnum() const;
+
+      private:
+        int errno_;
 };
 
-inline
-int ErrnoMessageArg::errnum() const
-{
-  return errno_;
-}
+inline int ErrnoMessageArg::errnum() const { return errno_; }
 
 #ifdef SP_NAMESPACE
 }

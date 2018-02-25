@@ -40,9 +40,11 @@
 /******************************************************************************
  * forward declaration of static functions used within the file
  ******************************************************************************/
-static CSA_return_code
-_ExtractEntryAttrsFromEntry(uint srcsize, cms_attribute *srcattrs,
-	uint *dstsize, cms_attribute **dstattrs, boolean_t time_only);
+static CSA_return_code _ExtractEntryAttrsFromEntry(uint srcsize,
+                                                   cms_attribute *srcattrs,
+                                                   uint *dstsize,
+                                                   cms_attribute **dstattrs,
+                                                   boolean_t time_only);
 
 /*****************************************************************************
  * extern functions
@@ -52,152 +54,145 @@ _ExtractEntryAttrsFromEntry(uint srcsize, cms_attribute *srcattrs,
  * Given a hashed name table, initialize a new cms_entry with
  * the given list of attribute values
  */
-extern CSA_return_code
-_DtCmsMakeHashedEntry(
-	_DtCmsCalendar	*cal,
-	uint		num,
-	cms_attribute	*attrs,
-	cms_entry	**entry)
-{
-	int		i, index;
-	cms_entry	*eptr;
-	CSA_return_code	stat = CSA_SUCCESS;
+extern CSA_return_code _DtCmsMakeHashedEntry(_DtCmsCalendar *cal, uint num,
+                                             cms_attribute *attrs,
+                                             cms_entry **entry) {
+        int i, index;
+        cms_entry *eptr;
+        CSA_return_code stat = CSA_SUCCESS;
 
-	if (cal == NULL || entry == NULL)
-		return (CSA_E_INVALID_PARAMETER);
+        if (cal == NULL || entry == NULL)
+                return (CSA_E_INVALID_PARAMETER);
 
-	if ((eptr = _DtCm_make_cms_entry(cal->entry_tbl)) == NULL)
-		return (CSA_E_INSUFFICIENT_MEMORY);
+        if ((eptr = _DtCm_make_cms_entry(cal->entry_tbl)) == NULL)
+                return (CSA_E_INSUFFICIENT_MEMORY);
 
-	for (i = 0; i < num && stat == CSA_SUCCESS; i++) {
-		index = _DtCm_get_index_from_table(cal->entry_tbl,
-			attrs[i].name.name);
+        for (i = 0; i < num && stat == CSA_SUCCESS; i++) {
+                index = _DtCm_get_index_from_table(cal->entry_tbl,
+                                                   attrs[i].name.name);
 
-		if (index > 0) {
-			/* check type */
-			if (index > _DtCM_DEFINED_ENTRY_ATTR_SIZE &&
-			    attrs[i].value &&
-			    attrs[i].value->type != cal->types[index])
-				stat = CSA_E_INVALID_ATTRIBUTE_VALUE;
-			else
-				stat = _DtCm_copy_cms_attr_val(attrs[i].value,
-					&eptr->attrs[index].value);
-		} else if (attrs[i].value) {
-			if ((stat = _DtCmExtendNameTable(attrs[i].name.name, 0,
-			    attrs[i].value->type, _DtCm_entry_name_tbl,
-			    _DtCM_DEFINED_ENTRY_ATTR_SIZE,
-			    _CSA_entry_attribute_names, &cal->entry_tbl,
-			    &cal->types)) == CSA_SUCCESS) {
+                if (index > 0) {
+                        /* check type */
+                        if (index > _DtCM_DEFINED_ENTRY_ATTR_SIZE &&
+                            attrs[i].value &&
+                            attrs[i].value->type != cal->types[index])
+                                stat = CSA_E_INVALID_ATTRIBUTE_VALUE;
+                        else
+                                stat = _DtCm_copy_cms_attr_val(
+                                    attrs[i].value, &eptr->attrs[index].value);
+                } else if (attrs[i].value) {
+                        if ((stat = _DtCmExtendNameTable(
+                                 attrs[i].name.name, 0, attrs[i].value->type,
+                                 _DtCm_entry_name_tbl,
+                                 _DtCM_DEFINED_ENTRY_ATTR_SIZE,
+                                 _CSA_entry_attribute_names, &cal->entry_tbl,
+                                 &cal->types)) == CSA_SUCCESS) {
 
-				attrs[i].name.num = cal->entry_tbl->size;
+                                attrs[i].name.num = cal->entry_tbl->size;
 
-				stat = _DtCmGrowAttrArray(&eptr->num_attrs,
-					&eptr->attrs, &attrs[i]);
-			}
-		}
-	}
+                                stat = _DtCmGrowAttrArray(
+                                    &eptr->num_attrs, &eptr->attrs, &attrs[i]);
+                        }
+                }
+        }
 
-	if (stat != CSA_SUCCESS) {
-		_DtCm_free_cms_entry(eptr);
-		return (stat);
-	}
+        if (stat != CSA_SUCCESS) {
+                _DtCm_free_cms_entry(eptr);
+                return (stat);
+        }
 
-	*entry = eptr;
-	return (CSA_SUCCESS);
+        *entry = eptr;
+        return (CSA_SUCCESS);
 }
 
-extern void
-_DtCmsFreeEntryAttrResItem(cms_get_entry_attr_res_item *elist)
-{
-	cms_get_entry_attr_res_item *ptr;
+extern void _DtCmsFreeEntryAttrResItem(cms_get_entry_attr_res_item *elist) {
+        cms_get_entry_attr_res_item *ptr;
 
-	while (elist) {
-		ptr = elist->next;
+        while (elist) {
+                ptr = elist->next;
 
-		_DtCm_free_cms_attributes(elist->num_attrs, elist->attrs);
-		free(elist);
+                _DtCm_free_cms_attributes(elist->num_attrs, elist->attrs);
+                free(elist);
 
-		elist = ptr;
-	}
+                elist = ptr;
+        }
 }
 
-extern CSA_return_code
-_DtCmsGetCmsEntryForClient(cms_entry *e, cms_entry **e_r, boolean_t time_only)
-{
-	cms_entry *ptr;
-	CSA_return_code stat;
+extern CSA_return_code _DtCmsGetCmsEntryForClient(cms_entry *e, cms_entry **e_r,
+                                                  boolean_t time_only) {
+        cms_entry *ptr;
+        CSA_return_code stat;
 
-	if (e == NULL || e_r == NULL)
-		return (CSA_E_INVALID_PARAMETER);
+        if (e == NULL || e_r == NULL)
+                return (CSA_E_INVALID_PARAMETER);
 
-	if ((ptr = (cms_entry *)calloc(1, sizeof(cms_entry))) == NULL)
-		return (CSA_E_INSUFFICIENT_MEMORY);
+        if ((ptr = (cms_entry *)calloc(1, sizeof(cms_entry))) == NULL)
+                return (CSA_E_INSUFFICIENT_MEMORY);
 
-	if ((stat = _ExtractEntryAttrsFromEntry(e->num_attrs, e->attrs,
-	    &ptr->num_attrs, &ptr->attrs,time_only)) != CSA_SUCCESS) {
-		free(ptr);
-		return (stat);
-	} else {
-		ptr->key = e->key;
-		*e_r = ptr;
-		return (CSA_SUCCESS);
-	}
+        if ((stat = _ExtractEntryAttrsFromEntry(e->num_attrs, e->attrs,
+                                                &ptr->num_attrs, &ptr->attrs,
+                                                time_only)) != CSA_SUCCESS) {
+                free(ptr);
+                return (stat);
+        } else {
+                ptr->key = e->key;
+                *e_r = ptr;
+                return (CSA_SUCCESS);
+        }
 }
 
 /*****************************************************************************
  * static functions used within the file
  *****************************************************************************/
 
-static CSA_return_code
-_ExtractEntryAttrsFromEntry(
-	uint		srcsize,
-	cms_attribute	*srcattrs,
-	uint		*dstsize,
-	cms_attribute	**dstattrs,
-	boolean_t	time_only)
-{
-	CSA_return_code	stat;
-	int		i, j;
-	cms_attribute	*attrs;
+static CSA_return_code _ExtractEntryAttrsFromEntry(uint srcsize,
+                                                   cms_attribute *srcattrs,
+                                                   uint *dstsize,
+                                                   cms_attribute **dstattrs,
+                                                   boolean_t time_only) {
+        CSA_return_code stat;
+        int i, j;
+        cms_attribute *attrs;
 
-	if (dstsize == NULL || dstattrs == NULL)
-		return (CSA_E_INVALID_PARAMETER);
+        if (dstsize == NULL || dstattrs == NULL)
+                return (CSA_E_INVALID_PARAMETER);
 
-	*dstsize = 0;
-	*dstattrs = NULL;
+        *dstsize = 0;
+        *dstattrs = NULL;
 
-	if (srcsize == 0)
-		return (CSA_SUCCESS);
+        if (srcsize == 0)
+                return (CSA_SUCCESS);
 
-	if ((attrs = calloc(1, sizeof(cms_attribute) * srcsize)) == NULL)
-		return (CSA_E_INSUFFICIENT_MEMORY);
+        if ((attrs = calloc(1, sizeof(cms_attribute) * srcsize)) == NULL)
+                return (CSA_E_INSUFFICIENT_MEMORY);
 
-	for (i = 0, j = 0; i <= srcsize; i++) {
-		if (srcattrs[i].value == NULL)
-			continue;
+        for (i = 0, j = 0; i <= srcsize; i++) {
+                if (srcattrs[i].value == NULL)
+                        continue;
 
-		if ((stat = _DtCm_copy_cms_attribute(&attrs[j], &srcattrs[i],
-		    B_TRUE)) != CSA_SUCCESS)
-			break;
-		else {
-			if ( (i == CSA_ENTRY_ATTR_SUMMARY_I) && (time_only == B_TRUE) ) {
-				if (attrs[j].value && attrs[j].value->item.string_value)
-					attrs[j].value->item.string_value[0] = '\0';
-			}
+                if ((stat = _DtCm_copy_cms_attribute(&attrs[j], &srcattrs[i],
+                                                     B_TRUE)) != CSA_SUCCESS)
+                        break;
+                else {
+                        if ((i == CSA_ENTRY_ATTR_SUMMARY_I) &&
+                            (time_only == B_TRUE)) {
+                                if (attrs[j].value &&
+                                    attrs[j].value->item.string_value)
+                                        attrs[j].value->item.string_value[0] =
+                                            '\0';
+                        }
 
-			j++;
-		}
-	}
+                        j++;
+                }
+        }
 
-	if (stat == CSA_SUCCESS && j > 0) {
-		*dstsize = j;
-		*dstattrs = attrs;
-	} else {
-		_DtCm_free_cms_attributes(j, attrs);
-		free(attrs);
-	}
+        if (stat == CSA_SUCCESS && j > 0) {
+                *dstsize = j;
+                *dstattrs = attrs;
+        } else {
+                _DtCm_free_cms_attributes(j, attrs);
+                free(attrs);
+        }
 
-	return (stat);
+        return (stat);
 }
-
-

@@ -24,9 +24,11 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: isfcbwatchfd.c /main/3 1995/10/23 11:38:51 rswiston $ 			 				 */
+/*%%  $XConsortium: isfcbwatchfd.c /main/3 1995/10/23 11:38:51 rswiston $
+ */
 #ifndef lint
-static char sccsid[] = "@(#)isfcbwatchfd.c	1.8 93/09/07 Copyr 1988-1993 Sun Microsystems, Inc";
+static char sccsid[] =
+    "@(#)isfcbwatchfd.c	1.8 93/09/07 Copyr 1988-1993 Sun Microsystems, Inc";
 #endif
 /*
  * Copyright (c) 1988 by Sun Microsystems, Inc.
@@ -41,11 +43,11 @@ static char sccsid[] = "@(#)isfcbwatchfd.c	1.8 93/09/07 Copyr 1988-1993 Sun Micr
 
 #if defined(_AIX)
 #define _POSIX_SYSCONF
-#endif 
+#endif
 
 #if defined(_AIX)
 #define _POSIX_SYSCONF
-#endif 
+#endif
 
 #include "isam_impl.h"
 #include <sys/time.h>
@@ -54,10 +56,10 @@ static char sccsid[] = "@(#)isfcbwatchfd.c	1.8 93/09/07 Copyr 1988-1993 Sun Micr
 #include <unistd.h>
 #endif /* _POSIX_SYSCONF */
 
-static int _limit = MAXFCB_UNIXFD;	     /* Imposed limit */
-static int _in_use = 0;			     /* Current number of 
-					      * open file descriptors
-					      */
+static int _limit = MAXFCB_UNIXFD; /* Imposed limit */
+static int _in_use = 0;            /* Current number of
+                                    * open file descriptors
+                                    */
 
 /*
  * _watchfd_incr(n)
@@ -67,14 +69,11 @@ static int _in_use = 0;			     /* Current number of
  * Return the new number of open file descriptors.
  */
 
-int
-_watchfd_incr(n)
-{
-    _in_use += n;
-    assert(_in_use <= _limit);
-    return (_in_use);
+int _watchfd_incr(n) {
+        _in_use += n;
+        assert(_in_use <= _limit);
+        return (_in_use);
 }
-
 
 /*
  * _watch_decr(n)
@@ -84,14 +83,11 @@ _watchfd_incr(n)
  * Return the new number of open file descriptors.
  */
 
-int
-_watchfd_decr(n)
-{
-    _in_use -= n;
-    assert(_in_use >= 0);
-    return (_in_use);
+int _watchfd_decr(n) {
+        _in_use -= n;
+        assert(_in_use >= 0);
+        return (_in_use);
 }
-
 
 /*
  * _watch_check()
@@ -99,12 +95,7 @@ _watchfd_decr(n)
  * Return number of fd that are still available.
  */
 
-int
-_watchfd_check()
-{
-    return (_limit - _in_use);
-}
-
+int _watchfd_check() { return (_limit - _in_use); }
 
 /*
  * _watchfd_max_set(n)
@@ -112,28 +103,26 @@ _watchfd_check()
  * Set the maximum number of UNIX fds that may be comsumed by ISAM files.
  */
 
-int
-_watchfd_max_set(n)
-    int		n;
+int _watchfd_max_set(n) int n;
 {
-    int		oldlimit = _limit;
+        int oldlimit = _limit;
 
 #ifdef _POSIX_SYSCONF
-    if (n < 3 || n > sysconf(_SC_OPEN_MAX)) {
+        if (n < 3 || n > sysconf(_SC_OPEN_MAX)) {
 #else
-    int dtab_size = 0;
-    struct rlimit rl;
-    if (getrlimit(RLIMIT_NOFILE, &rl) == 0)
-      dtab_size = rl.rlim_cur;
+        int dtab_size = 0;
+        struct rlimit rl;
+        if (getrlimit(RLIMIT_NOFILE, &rl) == 0)
+                dtab_size = rl.rlim_cur;
 
-    if (n < 3 || n > dtab_size) {
+        if (n < 3 || n > dtab_size) {
 #endif
-	_setiserrno2(EBADARG, '9', '0');
-	return (ISERROR);
-    }
+                _setiserrno2(EBADARG, '9', '0');
+                return (ISERROR);
+        }
 
-    _limit = n;
-    return (oldlimit);
+        _limit = n;
+        return (oldlimit);
 }
 
 /*
@@ -142,8 +131,4 @@ _watchfd_max_set(n)
  * Get the maximum number of UNIX fds that may be comsumed by ISAM files.
  */
 
-int
-_watchfd_max_get()
-{
-    return (_limit);
-}
+int _watchfd_max_get() { return (_limit); }

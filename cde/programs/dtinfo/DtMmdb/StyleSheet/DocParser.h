@@ -47,46 +47,51 @@ class AttributeList;
 // Element data here
 // </ELEMENT>
 
-class Element ;
+class Element;
 
-class DocParser : public Destructable
-{
-public:
-  enum TagType { StartTag, EndTag, AttributeSection, OliasAttribute, NoTag };
+class DocParser : public Destructable {
+      public:
+        enum TagType {
+                StartTag,
+                EndTag,
+                AttributeSection,
+                OliasAttribute,
+                NoTag
+        };
 
-  DocParser(Resolver &);
-  virtual ~DocParser();
-  
-  // returns a boolean  
-  unsigned int	parse(istream &);
+        DocParser(Resolver &);
+        virtual ~DocParser();
 
-  // parse without calling Begin() and End() on the renderer.
-  unsigned int	rawParse(istream &);
+        // returns a boolean
+        unsigned int parse(istream &);
 
-protected:
-  virtual void read_data(istream &, ostringstream &);
+        // parse without calling Begin() and End() on the renderer.
+        unsigned int rawParse(istream &);
 
-private:
-  
-  void		process(istream &, ostringstream &, const Symbol &tagname,
-			unsigned int sibling_number,
-			unsigned int relative_sibling_number);
-  TagType	read_tag(istream &, ostringstream &);
-  void		process_entity(istream &, ostringstream &);
+      protected:
+        virtual void read_data(istream &, ostringstream &);
 
-  void		process_attributes(istream &, ostringstream &,
-				   AttributeList *&attrs,
-				   AttributeList *&olias_attrs);
-  Attribute    *process_attribute(istream &, ostringstream &, const Symbol &name, TagType);
-  
-private:
-  unsigned int	f_ignoring_element ;
-  Resolver      &f_resolver;
+      private:
+        void process(istream &, ostringstream &, const Symbol &tagname,
+                     unsigned int sibling_number,
+                     unsigned int relative_sibling_number);
+        TagType read_tag(istream &, ostringstream &);
+        void process_entity(istream &, ostringstream &);
+
+        void process_attributes(istream &, ostringstream &,
+                                AttributeList *&attrs,
+                                AttributeList *&olias_attrs);
+        Attribute *process_attribute(istream &, ostringstream &,
+                                     const Symbol &name, TagType);
+
+      private:
+        unsigned int f_ignoring_element;
+        Resolver &f_resolver;
 #if defined(SC3) || defined(__osf__)
-  char* const	f_buffer;
-  ostrstream	f_output;
+        char *const f_buffer;
+        ostrstream f_output;
 #else
-  stringbuf	*f_streambuf;
-  ostringstream	f_output;
+        stringbuf *f_streambuf;
+        ostringstream f_output;
 #endif
 };

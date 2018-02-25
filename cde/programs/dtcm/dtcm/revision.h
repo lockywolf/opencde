@@ -34,12 +34,11 @@
 /*
  * Increment this value before check-ins!!
  */
-#define DTCM_INTERNAL_REV	0
-#define DTCM_VERSION_MONTH	6    /* 1 = January,  12 = December */
-#define DTCM_VERSION_YEAR	1995		
+#define DTCM_INTERNAL_REV 0
+#define DTCM_VERSION_MONTH 6 /* 1 = January,  12 = December */
+#define DTCM_VERSION_YEAR 1995
 
-
-#define DTCM_DATA_VER		DATAVER3
-#define DTCM_RPC_VER		4
+#define DTCM_DATA_VER DATAVER3
+#define DTCM_RPC_VER 4
 
 #endif

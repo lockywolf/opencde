@@ -39,27 +39,25 @@ namespace SP_NAMESPACE {
 #endif
 
 struct LpdEntityRef {
-  ConstPtr<Entity> entity;
-  PackedBoolean lookedAtDefault;
-  PackedBoolean foundInPass1Dtd;
-  static inline const LpdEntityRef &key(const LpdEntityRef &r) { return r; }
-  static inline unsigned long hash(const LpdEntityRef &r) {
-    return Hash::hash(r.entity->name());
-  }
+        ConstPtr<Entity> entity;
+        PackedBoolean lookedAtDefault;
+        PackedBoolean foundInPass1Dtd;
+        static inline const LpdEntityRef &key(const LpdEntityRef &r) {
+                return r;
+        }
+        static inline unsigned long hash(const LpdEntityRef &r) {
+                return Hash::hash(r.entity->name());
+        }
 };
 
-inline
-Boolean operator==(const LpdEntityRef &r1, const LpdEntityRef &r2)
-{
-  return (r1.entity == r2.entity
-	  && r1.foundInPass1Dtd == r2.foundInPass1Dtd
-	  && r1.lookedAtDefault == r2.lookedAtDefault);
+inline Boolean operator==(const LpdEntityRef &r1, const LpdEntityRef &r2) {
+        return (r1.entity == r2.entity &&
+                r1.foundInPass1Dtd == r2.foundInPass1Dtd &&
+                r1.lookedAtDefault == r2.lookedAtDefault);
 }
 
-inline
-Boolean operator!=(const LpdEntityRef &r1, const LpdEntityRef &r2)
-{
-  return !(r1 == r2);
+inline Boolean operator!=(const LpdEntityRef &r1, const LpdEntityRef &r2) {
+        return !(r1 == r2);
 }
 
 #ifdef SP_NAMESPACE

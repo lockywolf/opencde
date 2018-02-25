@@ -29,7 +29,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -49,26 +49,22 @@ extern "C" {
  *
  */
 extern void _DtPrintDefProcInitialize(Widget w);
-extern void _DtPrintDefProcManageErrorBox(DtPrintDefaultProcData* dpd);
+extern void _DtPrintDefProcManageErrorBox(DtPrintDefaultProcData *dpd);
 
 /*
  * Procedure Resource Defaults
  */
-extern XtEnum _DtPrintSetupBoxXPrinterInfoProc(
-					       Widget w,
-					       DtPrintSetupData* print_data);
-extern XtEnum _DtPrintSetupBoxSelectFileProc(
-					     Widget w,
-					     DtPrintSetupData* print_data);
-extern XtEnum _DtPrintSetupBoxSelectXPrinterProc(
-						 Widget w,
-						 DtPrintSetupData* print_data);
-extern XtEnum _DtPrintSetupBoxVerifyXPrinterProc(
-						 Widget w,
-						 DtPrintSetupData* print_data);
+extern XtEnum _DtPrintSetupBoxXPrinterInfoProc(Widget w,
+                                               DtPrintSetupData *print_data);
+extern XtEnum _DtPrintSetupBoxSelectFileProc(Widget w,
+                                             DtPrintSetupData *print_data);
+extern XtEnum _DtPrintSetupBoxSelectXPrinterProc(Widget w,
+                                                 DtPrintSetupData *print_data);
+extern XtEnum _DtPrintSetupBoxVerifyXPrinterProc(Widget w,
+                                                 DtPrintSetupData *print_data);
 
 #ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
 #endif /* _DtPsubDefProcI_h */

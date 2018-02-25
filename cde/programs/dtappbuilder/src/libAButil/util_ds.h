@@ -47,48 +47,28 @@
  */
 #include <X11/Intrinsic.h>
 
-typedef struct	_LListStruct	*LList;
-typedef void	(*LListIterFn)(void *cl_data);
+typedef struct _LListStruct *LList;
+typedef void (*LListIterFn)(void *cl_data);
 
-#define ASet		LList
-#define ASetIterFn	LListIterFn
+#define ASet LList
+#define ASetIterFn LListIterFn
 
-
 /*******************************
  * LList and ASet ADT operations
  *******************************/
 
-extern LList	util_llist_create(
-		    void
-		);
-extern void	util_llist_destroy(
-		    LList	llist
-		);
-extern void	util_llist_insert_after(
-		    LList	llist,
-		    void	*cl_data
-		);
-extern LList	util_llist_find(
-		    LList	llist,
-		    void	*cl_data
-		);
-extern void	util_llist_delete(
-		    LList	llist,
-		    void	*cl_data
-		);
-extern void	util_llist_iterate(
-		    LList	llist,
-		    LListIterFn	fn
-		);
+extern LList util_llist_create(void);
+extern void util_llist_destroy(LList llist);
+extern void util_llist_insert_after(LList llist, void *cl_data);
+extern LList util_llist_find(LList llist, void *cl_data);
+extern void util_llist_delete(LList llist, void *cl_data);
+extern void util_llist_iterate(LList llist, LListIterFn fn);
 
-#define util_aset_create	util_llist_create
-#define util_aset_destroy	util_llist_destroy
-#define util_aset_iterate	util_llist_iterate
-#define util_aset_remove	util_llist_delete
+#define util_aset_create util_llist_create
+#define util_aset_destroy util_llist_destroy
+#define util_aset_iterate util_llist_iterate
+#define util_aset_remove util_llist_delete
 
-extern void	util_aset_add(
-		    ASet	aset,
-		    void	*cl_data
-		);
+extern void util_aset_add(ASet aset, void *cl_data);
 
 #endif /* _UTIL_DS_H_ */

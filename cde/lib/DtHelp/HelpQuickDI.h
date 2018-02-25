@@ -47,21 +47,17 @@
 
 /* General Define for Quick Help Dialog Widget */
 
-#define DtHELP_TOPIC            1
-#define DtHELP_STRING           2
-#define DtMAN_TOPIC             3
-#define DtFILE_TOPIC            4
-
+#define DtHELP_TOPIC 1
+#define DtHELP_STRING 2
+#define DtMAN_TOPIC 3
+#define DtFILE_TOPIC 4
 
 /* Access File Expantion Definitions */
 
-#define DtACCESS_PATH_TYPE             "help"
-#define DtACCESS_PATH_SUFFIX           ".rp"
+#define DtACCESS_PATH_TYPE "help"
+#define DtACCESS_PATH_SUFFIX ".rp"
 
-
-#define DtNULL_TOPIC_STRING            "Null Topic"
-
-
+#define DtNULL_TOPIC_STRING "Null Topic"
 
 /*****************************************************************************
  * Function:	    void _DtHelpQuickDialogHypertextCB(
@@ -75,7 +71,7 @@
  *                                      structure.
  *
  *                  clientData          Specifies the client data passed into
- *                                      the hypertext callback. 
+ *                                      the hypertext callback.
  *
  * Return Value:    Void.
  *
@@ -83,11 +79,9 @@
  *                  display area.
  *
  *****************************************************************************/
-extern void _DtHelpQuickDialogHypertextCB (
-    XtPointer pDisplayAreaStruct,
-    XtPointer clientData,
-    DtHelpHyperTextStruct *hyperData);
-
+extern void _DtHelpQuickDialogHypertextCB(XtPointer pDisplayAreaStruct,
+                                          XtPointer clientData,
+                                          DtHelpHyperTextStruct *hyperData);
 
 #endif /* _HelpQuickDI_h */
 /* Do not add anything after this endif. */

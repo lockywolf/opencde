@@ -34,31 +34,30 @@
 #ifndef FEFONTSTRUCT_H
 #define FEFONTSTRUCT_H 1
 
-/* 
+/*
  * for use in version
  */
 
-#define FE_PREFIXS	"FEF/"
-#define FE_PREFIXL	4
-
+#define FE_PREFIXS "FEF/"
+#define FE_PREFIXL 4
 
 /*
  * for use in permission.
  */
 
-#define FE_DISPLAY_FONT	0x01
-#define FE_PRINTER_FONT	0x02
+#define FE_DISPLAY_FONT 0x01
+#define FE_PRINTER_FONT 0x02
 
 /*
  * uxp Extended Font Structure
  */
 
 typedef struct _FeFontInfo {
-    char		version[32];	/* version */
-    char		copyright[64];	/* Copyright */
-    unsigned int	permission;	/* purpose for use */ 
-    char		reserve[24];
-    int			privatesize;	/* size of private area */
+        char version[32];        /* version */
+        char copyright[64];      /* Copyright */
+        unsigned int permission; /* purpose for use */
+        char reserve[24];
+        int privatesize; /* size of private area */
 } FeFontInfoRec;
 
 typedef struct _FeFontInfo *FeFontInfoPtr;

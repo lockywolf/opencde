@@ -29,8 +29,6 @@
  *  This is unpublished proprietary source code of FUJITSU LIMITED
  */
 
-
-
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -54,30 +52,27 @@
 /*
  * parameters
  */
-void	xlfdPopupDialog() ;
+void xlfdPopupDialog();
 
-extern	int			getmask ;
+extern int getmask;
 
-extern Widget	toplevel ;
-extern Widget	slctBLabel[BUTTONITEMS],
-		slctBText[BUTTONITEMS],	slctButton[BUTTONITEMS], 
-		listPop[BUTTONITEMS],	listW[BUTTONITEMS], errorMD, msgBox ;
+extern Widget toplevel;
+extern Widget slctBLabel[BUTTONITEMS], slctBText[BUTTONITEMS],
+    slctButton[BUTTONITEMS], listPop[BUTTONITEMS], listW[BUTTONITEMS], errorMD,
+    msgBox;
 
 /****************************************************************
- * common functions 
-****************************************************************/
-
+ * common functions
+ ****************************************************************/
 
 /*
- * pop up and down dialog box 
+ * pop up and down dialog box
  */
 
-void
-xlfdPopupDialog(w)
-Widget w;
+void xlfdPopupDialog(w) Widget w;
 {
-    if (! XtIsManaged(w))
-        XtManageChild(w);
-    else
-        XRaiseWindow(XtDisplayOfObject(w), XtWindow(XtParent(w)));
+        if (!XtIsManaged(w))
+                XtManageChild(w);
+        else
+                XRaiseWindow(XtDisplayOfObject(w), XtWindow(XtParent(w)));
 }

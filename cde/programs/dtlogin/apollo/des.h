@@ -42,22 +42,21 @@
 #ifndef apollo_sys_des_h
 #define apollo_sys_des_h
 
-
 /*  Enable function prototypes for ANSI C and C++  */
 #if defined(__STDC__) || defined(c_plusplus) || defined(__cplusplus)
-#    define _PROTOTYPES
+#define _PROTOTYPES
 #endif
 
 /*  Required for C++ V2.0  */
-#ifdef  __cplusplus
-    extern "C" {
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 #ifdef _PROTOTYPES
-#define std_$call	extern
+#define std_$call extern
 #endif
 
-typedef  char  des_$key[8];
+typedef char des_$key[8];
 
 /*
   packed record                       { NOTE THIS WELL!!! }
@@ -66,35 +65,35 @@ typedef  char  des_$key[8];
         end;
 */
 
-typedef  char  des_$text[8];          /* Actually a 64 bit set */
+typedef char des_$text[8]; /* Actually a 64 bit set */
 
-typedef  char  des_$key_sched[16][8];
+typedef char des_$key_sched[16][8];
 
-std_$call void    des_$encrypt(
+std_$call void des_$encrypt(
 #ifdef _PROTOTYPES
-        des_$text       & plain,          /* input 64 bits to encrypt */
-        des_$text       * cipher,         /* ...get back result */
-        des_$key_sched  & key_sched       /* made with des_$compute_key_sched */
+    des_$text &plain,         /* input 64 bits to encrypt */
+    des_$text *cipher,        /* ...get back result */
+    des_$key_sched &key_sched /* made with des_$compute_key_sched */
 #endif
 );
 
-std_$call void   des_$decrypt(
+std_$call void des_$decrypt(
 #ifdef _PROTOTYPES
-        des_$text       & cipher,         /* input 64 bits to decrypt */
-        des_$text       * plain,          /* ...get back result */
-        des_$key_sched  & key_sched       /* made with des_$compute_key_sched */
+    des_$text &cipher,        /* input 64 bits to decrypt */
+    des_$text *plain,         /* ...get back result */
+    des_$key_sched &key_sched /* made with des_$compute_key_sched */
 #endif
 );
 
-std_$call void   des_$compute_key_sched(
+std_$call void des_$compute_key_sched(
 #ifdef _PROTOTYPES
-        des_$key        & key,            /* eight byte key */
-        des_$key_sched  * key_sched       /* output key schedule */
+    des_$key &key,            /* eight byte key */
+    des_$key_sched *key_sched /* output key schedule */
 #endif
 );
 
-#ifdef  __cplusplus
-    }
+#ifdef __cplusplus
+}
 #endif
 
 #endif

@@ -24,7 +24,8 @@
 **
 **  cm_i18n.h
 **
-**  static char sccsid[] = "@(#)cm_i18n.h 1.7 94/12/22 Copyr 1991 Sun Microsystems, Inc.";
+**  static char sccsid[] = "@(#)cm_i18n.h 1.7 94/12/22 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $XConsortium: cm_i18n.h /main/4 1996/11/07 17:00:36 drk $
 **
@@ -64,19 +65,18 @@
  * Comment lines start with an '%'
  */
 
-
-#define MAX_LINE_LEN    128
-#define MAX_FONT_LEN    40
-#define COMMENT_SYMBOL  "%"
-#define CHAR_SIZE       sizeof(char)
-#define isEUC(c)    ((c) & 0x80 ? TRUE : FALSE)
+#define MAX_LINE_LEN 128
+#define MAX_FONT_LEN 40
+#define COMMENT_SYMBOL "%"
+#define CHAR_SIZE sizeof(char)
+#define isEUC(c) ((c)&0x80 ? TRUE : FALSE)
 
 /* cm_get_fonts()'s return values */
-#define OPEN_FAIL         -1
-#define NO_LOCALE_ENTRY   -2
-#define EXTRACT_FAIL      -3
-#define OKAY               1
-#define NO_I18N_HEADER     2
+#define OPEN_FAIL -1
+#define NO_LOCALE_ENTRY -2
+#define EXTRACT_FAIL -3
+#define OKAY 1
+#define NO_I18N_HEADER 2
 
 extern char *fontset1[];
 extern char *fontset2[];
@@ -92,13 +92,12 @@ extern char *cm_printf();
 int is_comment();
 int match_locale();
 
-extern int	cm_get_fonts		P((char *));
-extern int	is_comment		P((char[MAX_LINE_LEN]));
-extern int	match_locale		P((char *, char[MAX_LINE_LEN]));
-extern void	ps_i18n_header		P((FILE *, Widget));
-extern char*	euc_to_octal		P((char *));
-extern char*	cm_get_i18n_date	P((Widget, char *));
-extern char*	cm_printf		P((double, int));
+extern int cm_get_fonts P((char *));
+extern int is_comment P((char[MAX_LINE_LEN]));
+extern int match_locale P((char *, char[MAX_LINE_LEN]));
+extern void ps_i18n_header P((FILE *, Widget));
+extern char *euc_to_octal P((char *));
+extern char *cm_get_i18n_date P((Widget, char *));
+extern char *cm_printf P((double, int));
 
-void _converter_( void *, unsigned long,
-                  void **,  unsigned long * );
+void _converter_(void *, unsigned long, void **, unsigned long *);

@@ -74,13 +74,13 @@
 #include <errno.h>
 #endif
 
-#define PROGNAME	"ISDUPREC"
-#define HASHSIZE	3000L
-#define NOT_A_DUP	0
-#define IS_A_DUP	1
-#define OUT_OF_MEM	2
+#define PROGNAME "ISDUPREC"
+#define HASHSIZE 3000L
+#define NOT_A_DUP 0
+#define IS_A_DUP 1
+#define OUT_OF_MEM 2
 
-unsigned long   duprec_hashsize = HASHSIZE;
+unsigned long duprec_hashsize = HASHSIZE;
 
 /************************************************/
 /*						*/
@@ -97,10 +97,9 @@ unsigned long   duprec_hashsize = HASHSIZE;
  * additional nodes off of the original one.
  */
 typedef struct hash_tag {
-    struct hash_tag *link;
-    char            recid[2];	/* actual array size varies */
-}               HASHNODE;
-
+        struct hash_tag *link;
+        char recid[2]; /* actual array size varies */
+} HASHNODE;
 
 #ifdef TEST
 /************************************************/
@@ -109,26 +108,24 @@ typedef struct hash_tag {
 /*						*/
 /************************************************/
 /* For debugging, prints out all recids in hashtab, skipping empty bkts */
-static void     dump_hashtab (HASHNODE ** hashtab)
-{
-    HASHNODE       *hp, **hpp;
-    int             i;
-    printf (PROGNAME "67 dump_hashtab(%p):\n", hashtab);
-    for (i = 0, hpp = hashtab; i < duprec_hashsize; i++, hpp++) {
-	if (*hpp) {
-	    printf ("  %4d:", i);
-	    fflush (stdout);
-	    for (hp = *hpp; hp != NULL; hp = hp->link)
-		printf (" '%s'", hp->recid);
-	    putchar ('\n');
-	    fflush (stdout);
-	}
-    }
-    return;
-}  /* dump_hashtab() */
+static void dump_hashtab(HASHNODE **hashtab) {
+        HASHNODE *hp, **hpp;
+        int i;
+        printf(PROGNAME "67 dump_hashtab(%p):\n", hashtab);
+        for (i = 0, hpp = hashtab; i < duprec_hashsize; i++, hpp++) {
+                if (*hpp) {
+                        printf("  %4d:", i);
+                        fflush(stdout);
+                        for (hp = *hpp; hp != NULL; hp = hp->link)
+                                printf(" '%s'", hp->recid);
+                        putchar('\n');
+                        fflush(stdout);
+                }
+        }
+        return;
+} /* dump_hashtab() */
 
-#endif	/* TEST */
-
+#endif /* TEST */
 
 /************************************************/
 /*						*/
@@ -142,97 +139,97 @@ static void     dump_hashtab (HASHNODE ** hashtab)
  * Returns 2 if out of memory.
  * First call uses 'duprec_hashsize' to create hash table.
  */
-int             is_duprec (char *recid)
-{
-    static HASHNODE **hashtab = NULL;
-    static unsigned long primes[10] =
-    {1013, 1511, 2203, 3511, 5003, 10007, 15013, 20011, 25013, 30001};
+int is_duprec(char *recid) {
+        static HASHNODE **hashtab = NULL;
+        static unsigned long primes[10] = {1013,  1511,  2203,  3511,  5003,
+                                           10007, 15013, 20011, 25013, 30001};
 
-    unsigned long   i;
-    char           *cp;
-    unsigned long   sum;
-    HASHNODE       *hp, **hpp;
+        unsigned long i;
+        char *cp;
+        unsigned long sum;
+        HASHNODE *hp, **hpp;
 
-    if (duprec_hashsize == 0UL)
-	return NOT_A_DUP;
+        if (duprec_hashsize == 0UL)
+                return NOT_A_DUP;
 
-/* Generate hash table at first call only */
-    if (hashtab == NULL) {
-	/*
-	 * adjust table size upward to nearest preordained prime
-	 * number 
-	 */
-	for (i = 0; i < 9 && primes[i] < duprec_hashsize; i++);
-	duprec_hashsize = primes[i];
+        /* Generate hash table at first call only */
+        if (hashtab == NULL) {
+                /*
+                 * adjust table size upward to nearest preordained prime
+                 * number
+                 */
+                for (i = 0; i < 9 && primes[i] < duprec_hashsize; i++)
+                        ;
+                duprec_hashsize = primes[i];
 #ifdef TEST
-	printf (PROGNAME "117 Create hash table, duprec_hashsize set = %ld.\n",
-	    duprec_hashsize);
+                printf(PROGNAME
+                       "117 Create hash table, duprec_hashsize set = %ld.\n",
+                       duprec_hashsize);
 #endif
 
-	hashtab = malloc ((duprec_hashsize + 2L) * sizeof (HASHNODE **));
-	if (hashtab == NULL)
-	    return OUT_OF_MEM;
+                hashtab = malloc((duprec_hashsize + 2L) * sizeof(HASHNODE **));
+                if (hashtab == NULL)
+                        return OUT_OF_MEM;
 
-	/* init table to all NULL pointers. */
-	hpp = hashtab;
-	for (i = duprec_hashsize + 2L; i > 0L; i--)
-	    *hpp++ = NULL;
-    }
+                /* init table to all NULL pointers. */
+                hpp = hashtab;
+                for (i = duprec_hashsize + 2L; i > 0L; i--)
+                        *hpp++ = NULL;
+        }
 
-    /*****dump_hashtab(hashtab);******/
+        /*****dump_hashtab(hashtab);******/
 
-    /* HASH FUNCTION:  H(recid) = (SUM(i*recid[i])) mod M,
-     * where M is table size (prime), and SUM is calculated
-     * for i=1 to end of recid.  Multiplying the position by the character
-     * value at that position minimizes the influence of identical
-     * characters at the beginnings and ends of recids,
-     * and also usually yields a number larger than M.
-     * Not skipping over the first position (the keytype char) helps
-     * efficiently catch recids that are blank after the keytype.
-     */
-    sum = 0UL;
-    i = 1;
-    cp = recid;
-    while (*cp != 0)
-	sum += i++ * (*cp++);
-    hpp = &(hashtab[sum % duprec_hashsize]);	/* hpp = head of linked
-						 * list */
+        /* HASH FUNCTION:  H(recid) = (SUM(i*recid[i])) mod M,
+         * where M is table size (prime), and SUM is calculated
+         * for i=1 to end of recid.  Multiplying the position by the character
+         * value at that position minimizes the influence of identical
+         * characters at the beginnings and ends of recids,
+         * and also usually yields a number larger than M.
+         * Not skipping over the first position (the keytype char) helps
+         * efficiently catch recids that are blank after the keytype.
+         */
+        sum = 0UL;
+        i = 1;
+        cp = recid;
+        while (*cp != 0)
+                sum += i++ * (*cp++);
+        hpp = &(hashtab[sum % duprec_hashsize]); /* hpp = head of linked
+                                                  * list */
 
 #ifdef TEST
-    printf (PROGNAME "150 is_duprec('%s')=hashtab[%lu]=%p: ",
-	recid, sum % duprec_hashsize, *hpp);
-    fflush (stdout);
-    i = 0;
+        printf(PROGNAME "150 is_duprec('%s')=hashtab[%lu]=%p: ", recid,
+               sum % duprec_hashsize, *hpp);
+        fflush(stdout);
+        i = 0;
 #endif
 
-    /* Search linked list (if any) for hashnode containing recid */
-    for (hp = *hpp; hp != NULL; hp = hp->link) {
+        /* Search linked list (if any) for hashnode containing recid */
+        for (hp = *hpp; hp != NULL; hp = hp->link) {
 #ifdef TEST
-	i++;
+                i++;
 #endif
 
-	if (strcmp (hp->recid, recid) == 0) {
+                if (strcmp(hp->recid, recid) == 0) {
 #ifdef TEST
-	    printf ("DUP!@listpos=%d\n", i);
+                        printf("DUP!@listpos=%d\n", i);
 #endif
-	    return IS_A_DUP;
-	}
-	hpp = &hp->link;	/* now hpp = tail of linked list */
-    }
+                        return IS_A_DUP;
+                }
+                hpp = &hp->link; /* now hpp = tail of linked list */
+        }
 #ifdef TEST
-    printf ("miss@listlen=%d\n", i);
+        printf("miss@listlen=%d\n", i);
 #endif
 
-    /* Not a duplicate.  Add current recid to hash table. */
-    if ((hp = malloc (sizeof (HASHNODE) + strlen (recid) + 2)) == NULL)
-	return OUT_OF_MEM;
-    strcpy (hp->recid, recid);
-    hp->link = NULL;
-    /*****hp->link = *hpp;******/
-    *hpp = hp;
-    return NOT_A_DUP;
-}  /* is_duprec() */
-
+        /* Not a duplicate.  Add current recid to hash table. */
+        if ((hp = malloc(sizeof(HASHNODE) + strlen(recid) + 2)) == NULL)
+                return OUT_OF_MEM;
+        strcpy(hp->recid, recid);
+        hp->link = NULL;
+        /*****hp->link = *hpp;******/
+        *hpp = hp;
+        return NOT_A_DUP;
+} /* is_duprec() */
 
 #ifdef MAIN
 /************************************************/
@@ -240,34 +237,33 @@ int             is_duprec (char *recid)
 /*		     main()			*/
 /*						*/
 /************************************************/
-main (int argc, char *argv[])
-{
-    int             i;
-    FILE           *f;
-    char            buf[2048];
+main(int argc, char *argv[]) {
+        int i;
+        FILE *f;
+        char buf[2048];
 
-    if (argc < 2) {
-	printf ("USAGE: %s <file> [n]\n"
-	    "where file contains list of char strings\n"
-	    "and optional n changes hash table size.\n",
-	    argv[0]);
-	return;
-    }
-    if ((f = fopen (argv[1], "r")) == NULL) {
-	printf ("Can't open %s: %s\n", argv[1], strerror (errno));
-	return;
-    }
-    if (argc >= 3)
-	duprec_hashsize = atol (argv[2]);
+        if (argc < 2) {
+                printf("USAGE: %s <file> [n]\n"
+                       "where file contains list of char strings\n"
+                       "and optional n changes hash table size.\n",
+                       argv[0]);
+                return;
+        }
+        if ((f = fopen(argv[1], "r")) == NULL) {
+                printf("Can't open %s: %s\n", argv[1], strerror(errno));
+                return;
+        }
+        if (argc >= 3)
+                duprec_hashsize = atol(argv[2]);
 
-    while (fgets (buf, sizeof (buf), f) != NULL) {
-	buf[sizeof (buf) - 1] = 0;
-	i = is_duprec (buf);
-	printf ("%s", buf);	/* each buf should end in \n */
-	if (i > 1)
-	    break;
-    }
-    return;
+        while (fgets(buf, sizeof(buf), f) != NULL) {
+                buf[sizeof(buf) - 1] = 0;
+                i = is_duprec(buf);
+                printf("%s", buf); /* each buf should end in \n */
+                if (i > 1)
+                        break;
+        }
+        return;
 }
 
 #endif

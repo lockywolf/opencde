@@ -41,8 +41,8 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API Hash {
-public:
-  static unsigned long hash(const StringC &);
+      public:
+        static unsigned long hash(const StringC &);
 };
 
 #ifdef SP_NAMESPACE

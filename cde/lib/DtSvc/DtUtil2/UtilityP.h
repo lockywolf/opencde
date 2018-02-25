@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         UtilityP.h $XConsortium: UtilityP.h /main/4 1995/10/26 15:32:08 rswiston $
- * Language:     C
+ * File:         UtilityP.h $XConsortium: UtilityP.h /main/4 1995/10/26 15:32:08
+ * rswiston $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -35,7 +35,7 @@
 #ifndef _Dt_UtilityP_h
 #define _Dt_UtilityP_h
 
-extern char *  _DtGetDisplayName( Display * display );
+extern char *_DtGetDisplayName(Display *display);
 
 #endif /* _Dt_UtilityP_h */
 

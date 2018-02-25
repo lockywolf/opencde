@@ -48,40 +48,40 @@
 #include "dbtype.h"
 
 /* Set current owner to current record
-*/
-int
-d_setor(nset TASK_PARM DBN_PARM)
-int nset;  /* set number */
+ */
+int d_setor(nset TASK_PARM DBN_PARM) int nset; /* set number */
 TASK_DECL
-DBN_DECL   /* database number */
+DBN_DECL /* database number */
 {
-   int set;
-   int crtype; /* current record type */
-   SET_ENTRY FAR *set_ptr;
+        int set;
+        int crtype; /* current record type */
+        SET_ENTRY FAR *set_ptr;
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_IO));
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_IO));
 
-   if ((nset_check(nset, &set, (SET_ENTRY FAR * FAR *)&set_ptr) != S_OKAY) ||
-       (d_crtype(&crtype TASK_PARM DBN_PARM) != S_OKAY))
-      RETURN( db_status );
+        if ((nset_check(nset, &set, (SET_ENTRY FAR * FAR *)&set_ptr) !=
+             S_OKAY) ||
+            (d_crtype(&crtype TASK_PARM DBN_PARM) != S_OKAY))
+                RETURN(db_status);
 
-   crtype += NUM2INT(-RECMARK, rt_offset);
+        crtype += NUM2INT(-RECMARK, rt_offset);
 
-   if ( set_ptr->st_own_rt != crtype )
-      RETURN( dberr( S_INVOWN ) );
-      
-   curr_own[set] = curr_rec;
-   curr_mem[set] = NULL_DBA;
-#ifndef	 NO_TIMESTAMP
-   /* set timestamps */
-   if ( db_tsrecs ) {
-      co_time[set] = cr_time;
-      cm_time[set] = 0L;
-   }
-   if ( db_tssets ) {
-      d_utscs( nset, &cs_time[set] TASK_PARM DBN_PARM );
-   }
+        if (set_ptr->st_own_rt != crtype)
+                RETURN(dberr(S_INVOWN));
+
+        curr_own[set] = curr_rec;
+        curr_mem[set] = NULL_DBA;
+#ifndef NO_TIMESTAMP
+        /* set timestamps */
+        if (db_tsrecs) {
+                co_time[set] = cr_time;
+                cm_time[set] = 0L;
+        }
+        if (db_tssets) {
+                d_utscs(nset, &cs_time[set] TASK_PARM DBN_PARM);
+        }
 #endif
-   RETURN( db_status );
+        RETURN(db_status);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin setor.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin setor.c */

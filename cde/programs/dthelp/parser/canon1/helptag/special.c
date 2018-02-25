@@ -112,12 +112,12 @@
 /*                                                                          */
 /****************************************************************************/
 
-#define NORMAL  1
+#define NORMAL 1
 #define SPECIAL 2
-#define UNSUPP  3
+#define UNSUPP 3
 
-#define TRUE    1
-#define FALSE   0
+#define TRUE 1
+#define FALSE 0
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -125,103 +125,106 @@
 typedef wchar_t M_WCHAR;
 
 struct {
-  int charcode;
-  char *name ;
-  int handling;
-  char *texexpand ;
-  int lower;
-  } specials[] = {
+        int charcode;
+        char *name;
+        int handling;
+        char *texexpand;
+        int lower;
+} specials[] = {
 #include "special.h"
-    } ;
+};
 
-#define NOSPECIALS sizeof(specials)/sizeof(specials[0])
+#define NOSPECIALS sizeof(specials) / sizeof(specials[0])
 #define NO8BITCHARS 256
 int invert[NO8BITCHARS], emptycell;
 
-main(argc, argv)
-int argc;
+main(argc, argv) int argc;
 char *argv[];
 {
-int i, both = FALSE, spec = FALSE, coll = FALSE, error = FALSE ;
+        int i, both = FALSE, spec = FALSE, coll = FALSE, error = FALSE;
 
-if (argc < 3)
-    { /*  Either one argument or none; not more */
-    if (argc == 2)
-	{
-	if (!stricmp(argv[1], "b")) both = TRUE;
-	else if (!stricmp(argv[1], "s")) spec = TRUE;
-	else if (!stricmp(argv[1], "c")) coll = TRUE;
-	else error = TRUE;
-	}
-    else both = TRUE;
-    }
-else error = TRUE;
-if (error)
-    {
-    fprintf(stderr,"Usage: SPECIAL [b | s | c]\n");
-    exit (0);
-    }
-for (i = 0 ; i < NOSPECIALS ; i++)
-invert[specials[i].charcode] = i + 1;
-if (both || spec)
-    {
-    printf("/* Char Name                        TeX Expansion */\n");     
-    printf("/*                                                */\n");     
-    for (i = 0 ; i < NO8BITCHARS ; i++)
-	{
-	if (invert[i])
-	    {
-	    printf("/* %3d: %-31s */ ", i, specials[invert[i] - 1].name) ;
-	    if (specials[invert[i] - 1].texexpand)
-		printf("\"%s\"", specials[invert[i] - 1].texexpand) ;
-	    else putchar('0') ;
-	    }
-	else printf("/* %3d: undefined                       */ 0", i) ;
-	if (i < NO8BITCHARS - 1) putchar(',') ;
-	putchar('\n') ;
-	}
-    }
-if (both || coll)
-    {
-    printf(
-    "/*                                                             */\n");     
-    printf(
-    "/* Char Name                               Coll Status   Lower */\n");     
-    printf(
-    "/*                                                             */\n");     
-    for (i = 0, emptycell = NOSPECIALS + 1; i < NO8BITCHARS ; i++)
-	{
-	if (invert[i])
-	    {
-	    printf("/* %3d: %-31s */ %3d, ",
-	      specials[invert[i] - 1].charcode,
-	      specials[invert[i] - 1].name, invert[i]) ;
-	    switch (specials[invert[i] - 1].handling)
-		{
-		    case NORMAL:   
-			printf("NORMAL,");
-			break;
-		    case SPECIAL:   
-			printf("SPECIAL,");
-			break;
-		    case UNSUPP:   
-			printf("UNSUPP,");
-			break;
-		}
-	    if (specials[invert[i] - 1].lower)
-		printf(" %3d", specials[invert[i] - 1].lower);
-	    else    
-		printf(" %3d", specials[invert[i] - 1].charcode);
-	    }
-	else
-	    printf(
-	      "/* %3d: undefined                       */ %3d, UNSUPP, %3d",
-		   i,
-		   emptycell++,
-		   i) ;
-	if (i < NO8BITCHARS - 1) putchar(',') ;
-	putchar('\n') ;
-	}
-    }
-return 0;
+        if (argc < 3) { /*  Either one argument or none; not more */
+                if (argc == 2) {
+                        if (!stricmp(argv[1], "b"))
+                                both = TRUE;
+                        else if (!stricmp(argv[1], "s"))
+                                spec = TRUE;
+                        else if (!stricmp(argv[1], "c"))
+                                coll = TRUE;
+                        else
+                                error = TRUE;
+                } else
+                        both = TRUE;
+        } else
+                error = TRUE;
+        if (error) {
+                fprintf(stderr, "Usage: SPECIAL [b | s | c]\n");
+                exit(0);
+        }
+        for (i = 0; i < NOSPECIALS; i++)
+                invert[specials[i].charcode] = i + 1;
+        if (both || spec) {
+                printf(
+                    "/* Char Name                        TeX Expansion */\n");
+                printf(
+                    "/*                                                */\n");
+                for (i = 0; i < NO8BITCHARS; i++) {
+                        if (invert[i]) {
+                                printf("/* %3d: %-31s */ ", i,
+                                       specials[invert[i] - 1].name);
+                                if (specials[invert[i] - 1].texexpand)
+                                        printf(
+                                            "\"%s\"",
+                                            specials[invert[i] - 1].texexpand);
+                                else
+                                        putchar('0');
+                        } else
+                                printf("/* %3d: undefined                      "
+                                       " */ 0",
+                                       i);
+                        if (i < NO8BITCHARS - 1)
+                                putchar(',');
+                        putchar('\n');
+                }
+        }
+        if (both || coll) {
+                printf("/*                                                     "
+                       "        */\n");
+                printf("/* Char Name                               Coll Status "
+                       "  Lower */\n");
+                printf("/*                                                     "
+                       "        */\n");
+                for (i = 0, emptycell = NOSPECIALS + 1; i < NO8BITCHARS; i++) {
+                        if (invert[i]) {
+                                printf("/* %3d: %-31s */ %3d, ",
+                                       specials[invert[i] - 1].charcode,
+                                       specials[invert[i] - 1].name, invert[i]);
+                                switch (specials[invert[i] - 1].handling) {
+                                case NORMAL:
+                                        printf("NORMAL,");
+                                        break;
+                                case SPECIAL:
+                                        printf("SPECIAL,");
+                                        break;
+                                case UNSUPP:
+                                        printf("UNSUPP,");
+                                        break;
+                                }
+                                if (specials[invert[i] - 1].lower)
+                                        printf(" %3d",
+                                               specials[invert[i] - 1].lower);
+                                else
+                                        printf(
+                                            " %3d",
+                                            specials[invert[i] - 1].charcode);
+                        } else
+                                printf("/* %3d: undefined                      "
+                                       " */ %3d, UNSUPP, %3d",
+                                       i, emptycell++, i);
+                        if (i < NO8BITCHARS - 1)
+                                putchar(',');
+                        putchar('\n');
+                }
+        }
+        return 0;
 }

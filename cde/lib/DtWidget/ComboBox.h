@@ -58,11 +58,9 @@ express or implied warranty.
 #include <Xm/ComboBox.h>
 #endif
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 /*
  * Constants
@@ -75,11 +73,11 @@ extern "C" {
 /***********************************************************************
  *
  * NOTE:
- *	Because of future development of the ComboBox, not all of the 
+ *	Because of future development of the ComboBox, not all of the
  *	following resources should be used.  The only ones which are
  *	supported are the ones found in the Common Desktop Environment:
  *	Programmer's Guide.  The supported resources include:
- *	DtNmarginHeight, DtNmarginWidth, DtNselectedItem, 
+ *	DtNmarginHeight, DtNmarginWidth, DtNselectedItem,
  *	DtNselectedPosition, DtNselectionCallback, and DtNcomboBoxType.
  *
  *	The use of the unsupported resources found in this header
@@ -89,311 +87,311 @@ extern "C" {
 
 /* WARNING: DtNactivateCallback is an unsupported resource in CDE 1.0 */
 #ifndef DtNactivateCallback
-#define DtNactivateCallback	XmNactivateCallback
+#define DtNactivateCallback XmNactivateCallback
 #endif
 /* WARNING: DtNalignment is an unsupported resource in CDE 1.0 */
 #ifndef DtNalignment
-#define DtNalignment		XmNalignment
+#define DtNalignment XmNalignment
 #endif
 /* WARNING: DtNarrowSize is an unsupported resource in CDE 1.0 */
 #ifndef DtNarrowSize
-#define DtNarrowSize		"arrowSize"
+#define DtNarrowSize "arrowSize"
 #endif
 /* WARNING: DtNarrowSpacing is an unsupported resource in CDE 1.0 */
 #ifndef DtNarrowSpacing
-#define DtNarrowSpacing		"arrowSpacing"
+#define DtNarrowSpacing "arrowSpacing"
 #endif
 /* WARNING: DtNarrowType is an unsupported resource in CDE 1.0 */
 #ifndef DtNarrowType
-#define DtNarrowType		"arrowType"
+#define DtNarrowType "arrowType"
 #endif
 /* WARNING: DtNcolumns is an unsupported resource in CDE 1.0 */
 #ifndef DtNcolumns
-#define DtNcolumns		XmNcolumns
+#define DtNcolumns XmNcolumns
 #endif
 #ifndef DtNcomboBoxType
-#define DtNcomboBoxType		"comboBoxType"
+#define DtNcomboBoxType "comboBoxType"
 #endif
 /* WARNING: DtNfocusCallback is an unsupported resource in CDE 1.0 */
 #ifndef DtNfocusCallback
-#define DtNfocusCallback	XmNfocusCallback
+#define DtNfocusCallback XmNfocusCallback
 #endif
 /* WARNING: DtNhorizontalSpacing is an unsupported resource in CDE 1.0 */
 #ifndef DtNhorizontalSpacing
-#define DtNhorizontalSpacing	XmNhorizontalSpacing
+#define DtNhorizontalSpacing XmNhorizontalSpacing
 #endif
 /* WARNING: DtNitemCount is an unsupported resource in CDE 1.0 */
 #ifndef DtNitemCount
-#define DtNitemCount		XmNitemCount
+#define DtNitemCount XmNitemCount
 #endif
 /* WARNING: DtNitems is an unsupported resource in CDE 1.0 */
 #ifndef DtNitems
-#define DtNitems		XmNitems
+#define DtNitems XmNitems
 #endif
 /* WARNING: DtNlabelString is an unsupported resource in CDE 1.0 */
 #ifndef DtNlabelString
-#define DtNlabelString		XmNlabelString
+#define DtNlabelString XmNlabelString
 #endif
 /* WARNING: DtNlist is an unsupported resource in CDE 1.0 */
 #ifndef DtNlist
-#define DtNlist			"list"
+#define DtNlist "list"
 #endif
 /* WARNING: DtNlistFontList is an unsupported resource in CDE 1.0 */
 #ifndef DtNlistFontList
-#define DtNlistFontList		"listFontList"
+#define DtNlistFontList "listFontList"
 #endif
 /* WARNING: DtNlistMarginHeight is an unsupported resource in CDE 1.0 */
 #ifndef DtNlistMarginHeight
-#define DtNlistMarginHeight	XmNlistMarginHeight
+#define DtNlistMarginHeight XmNlistMarginHeight
 #endif
 /* WARNING: DtNlistMarginWidth is an unsupported resource in CDE 1.0 */
 #ifndef DtNlistMarginWidth
-#define DtNlistMarginWidth	XmNlistMarginWidth
+#define DtNlistMarginWidth XmNlistMarginWidth
 #endif
 /* WARNING: DtNlistSpacing is an unsupported resource in CDE 1.0 */
 #ifndef DtNlistSpacing
-#define DtNlistSpacing		XmNlistSpacing
+#define DtNlistSpacing XmNlistSpacing
 #endif
 /* WARNING: DtNlosingFocusCallback is an unsupported resource in CDE 1.0 */
 #ifndef DtNlosingFocusCallback
-#define DtNlosingFocusCallback	XmNlosingFocusCallback
+#define DtNlosingFocusCallback XmNlosingFocusCallback
 #endif
 #ifndef DtNmarginHeight
-#define DtNmarginHeight		XmNmarginHeight
+#define DtNmarginHeight XmNmarginHeight
 #endif
 #ifndef DtNmarginWidth
-#define DtNmarginWidth		XmNmarginWidth
+#define DtNmarginWidth XmNmarginWidth
 #endif
 /* WARNING: DtNmaxLength is an unsupported resource in CDE 1.0 */
 #ifndef DtNmaxLength
-#define DtNmaxLength		XmNmaxLength
+#define DtNmaxLength XmNmaxLength
 #endif
 /* WARNING: DtNmenuPostCallback is an unsupported resource in CDE 1.0 */
 #ifndef DtNmenuPostCallback
-#define DtNmenuPostCallback	"menuPostCallback"
+#define DtNmenuPostCallback "menuPostCallback"
 #endif
 /* WARNING: DtNorientation is an unsupported resource in CDE 1.0 */
 #ifndef DtNorientation
-#define DtNorientation		XmNorientation
+#define DtNorientation XmNorientation
 #endif
 /* WARNING: DtNpoppedUp is an unsupported resource in CDE 1.0 */
 #ifndef DtNpoppedUp
-#define DtNpoppedUp		"poppedUp"
+#define DtNpoppedUp "poppedUp"
 #endif
 /* WARNING: DtNrecomputeSize is an unsupported resource in CDE 1.0 */
 #ifndef DtNrecomputeSize
-#define DtNrecomputeSize	XmNrecomputeSize
+#define DtNrecomputeSize XmNrecomputeSize
 #endif
 #ifndef DtNselectedItem
-#define DtNselectedItem		"selectedItem"
+#define DtNselectedItem "selectedItem"
 #endif
 #ifndef DtNselectedPosition
-#define DtNselectedPosition	"selectedPosition"
+#define DtNselectedPosition "selectedPosition"
 #endif
 #ifndef DtNselectionCallback
-#define DtNselectionCallback	"selectionCallback"
+#define DtNselectionCallback "selectionCallback"
 #endif
 /* WARNING: DtNtextField is an unsupported resource in CDE 1.0 */
 #ifndef DtNtextField
-#define DtNtextField		"textField"
+#define DtNtextField "textField"
 #endif
 /* WARNING: DtNtopItemPosition is an unsupported resource in CDE 1.0 */
 #ifndef DtNtopItemPosition
-#define DtNtopItemPosition	XmNtopItemPosition
+#define DtNtopItemPosition XmNtopItemPosition
 #endif
 /* WARNING: DtNupdateLabel is an unsupported resource in CDE 1.0 */
 #ifndef DtNupdateLabel
-#define DtNupdateLabel		"updateLabel"
+#define DtNupdateLabel "updateLabel"
 #endif
 /* WARNING: DtNverticalSpacing is an unsupported resource in CDE 1.0 */
 #ifndef DtNverticalSpacing
-#define DtNverticalSpacing	XmNverticalSpacing
+#define DtNverticalSpacing XmNverticalSpacing
 #endif
 /* WARNING: DtNvisibleItemCount is an unsupported resource in CDE 1.0 */
 #ifndef DtNvisibleItemCount
-#define DtNvisibleItemCount	XmNvisibleItemCount
+#define DtNvisibleItemCount XmNvisibleItemCount
 #endif
 
 #ifndef DtCAlignment
-#define DtCAlignment		XmCAlignment
+#define DtCAlignment XmCAlignment
 #endif
 #ifndef DtCArrowSize
-#define DtCArrowSize		"ArrowSize"
+#define DtCArrowSize "ArrowSize"
 #endif
 #ifndef DtCArrowSpacing
-#define DtCArrowSpacing		"ArrowSpacing"
+#define DtCArrowSpacing "ArrowSpacing"
 #endif
 #ifndef DtCArrowType
-#define DtCArrowType		"ArrowType"
+#define DtCArrowType "ArrowType"
 #endif
 #ifndef DtCCallback
-#define DtCCallback		XmCCallback
+#define DtCCallback XmCCallback
 #endif
 #ifndef DtCColumns
-#define DtCColumns		XmCColumns
+#define DtCColumns XmCColumns
 #endif
 #ifndef DtCComboBoxType
-#define DtCComboBoxType		"ComboBoxType"
+#define DtCComboBoxType "ComboBoxType"
 #endif
 #ifndef DtCHorizontalSpacing
-#define DtCHorizontalSpacing	"HorizontalSpacing"
+#define DtCHorizontalSpacing "HorizontalSpacing"
 #endif
 #ifndef DtCItemCount
-#define DtCItemCount		XmCItemCount
+#define DtCItemCount XmCItemCount
 #endif
 #ifndef DtCItems
-#define DtCItems		XmCItems
+#define DtCItems XmCItems
 #endif
 #ifndef DtCList
-#define DtCList			"List"
+#define DtCList "List"
 #endif
 #ifndef DtCListFontList
-#define DtCListFontList		"ListFontList"
+#define DtCListFontList "ListFontList"
 #endif
 #ifndef DtCListMarginHeight
-#define DtCListMarginHeight	XmCListMarginHeight
+#define DtCListMarginHeight XmCListMarginHeight
 #endif
 #ifndef DtCListMarginWidth
-#define DtCListMarginWidth	XmCListMarginWidth
+#define DtCListMarginWidth XmCListMarginWidth
 #endif
 #ifndef DtCListSpacing
-#define DtCListSpacing		XmCListSpacing
+#define DtCListSpacing XmCListSpacing
 #endif
 #ifndef DtCMarginHeight
-#define DtCMarginHeight		XmCMarginHeight
+#define DtCMarginHeight XmCMarginHeight
 #endif
 #ifndef DtCMarginWidth
-#define DtCMarginWidth		XmCMarginWidth
+#define DtCMarginWidth XmCMarginWidth
 #endif
 #ifndef DtCMaxLength
-#define DtCMaxLength		XmCMaxLength
+#define DtCMaxLength XmCMaxLength
 #endif
 #ifndef DtCOrientation
-#define DtCOrientation		XmCOrientation
+#define DtCOrientation XmCOrientation
 #endif
 #ifndef DtCPoppedUp
-#define DtCPoppedUp		"PoppedUp"
+#define DtCPoppedUp "PoppedUp"
 #endif
 #ifndef DtCRecomputeSize
-#define DtCRecomputeSize	XmCRecomputeSize
+#define DtCRecomputeSize XmCRecomputeSize
 #endif
 #ifndef DtCSelectedItem
-#define DtCSelectedItem		"SelectedItem"
+#define DtCSelectedItem "SelectedItem"
 #endif
 #ifndef DtCSelectedPosition
-#define DtCSelectedPosition	"SelectedPosition"
+#define DtCSelectedPosition "SelectedPosition"
 #endif
 #ifndef DtCTextField
-#define DtCTextField		"TextField"
+#define DtCTextField "TextField"
 #endif
 #ifndef DtCTopItemPosition
-#define DtCTopItemPosition	XmCTopItemPosition
+#define DtCTopItemPosition XmCTopItemPosition
 #endif
 #ifndef DtCUpdateLabel
-#define DtCUpdateLabel		"UpdateLabel"
+#define DtCUpdateLabel "UpdateLabel"
 #endif
 #ifndef DtCVerticalSpacing
-#define DtCVerticalSpacing	"VerticalSpacing"
+#define DtCVerticalSpacing "VerticalSpacing"
 #endif
 #ifndef DtCVisibleItemCount
-#define DtCVisibleItemCount	XmCVisibleItemCount
+#define DtCVisibleItemCount XmCVisibleItemCount
 #endif
 #ifndef DtCXmString
-#define DtCXmString		XmCXmString
+#define DtCXmString XmCXmString
 #endif
 
 #else /* DT_USE_XM_COMBOBOX */
 
 #ifndef DtNarrowSize
-#define DtNarrowSize		XmNarrowSize
+#define DtNarrowSize XmNarrowSize
 #endif
 #ifndef DtNarrowSpacing
-#define DtNarrowSpacing		XmNarrowSpacing
+#define DtNarrowSpacing XmNarrowSpacing
 #endif
 #ifndef DtNcolumns
-#define DtNcolumns		XmNcolumns
+#define DtNcolumns XmNcolumns
 #endif
 #ifndef DtNcomboBoxType
-#define DtNcomboBoxType		XmNcomboBoxType
+#define DtNcomboBoxType XmNcomboBoxType
 #endif
 #ifndef DtNitemCount
-#define DtNitemCount		XmNitemCount
+#define DtNitemCount XmNitemCount
 #endif
 #ifndef DtNitems
-#define DtNitems		XmNitems
+#define DtNitems XmNitems
 #endif
 #ifndef DtNlabelString
-#define DtNlabelString		XmNlabelString
+#define DtNlabelString XmNlabelString
 #endif
 #ifndef DtNlist
-#define DtNlist			XmNlist
+#define DtNlist XmNlist
 #endif
 #ifndef DtNmarginHeight
-#define DtNmarginHeight		XmNmarginHeight
+#define DtNmarginHeight XmNmarginHeight
 #endif
 #ifndef DtNmarginWidth
-#define DtNmarginWidth		XmNmarginWidth
+#define DtNmarginWidth XmNmarginWidth
 #endif
 #ifndef DtNselectedItem
-#define DtNselectedItem		XmNselectedItem
+#define DtNselectedItem XmNselectedItem
 #endif
 #ifndef DtNselectedPosition
-#define DtNselectedPosition	XmNselectedPosition
+#define DtNselectedPosition XmNselectedPosition
 #endif
 #ifndef DtNselectionCallback
-#define DtNselectionCallback	XmNselectionCallback
+#define DtNselectionCallback XmNselectionCallback
 #endif
 #ifndef DtNtextField
-#define DtNtextField		XmNtextField
+#define DtNtextField XmNtextField
 #endif
 #ifndef DtNvisibleItemCount
-#define DtNvisibleItemCount	XmNvisibleItemCount
+#define DtNvisibleItemCount XmNvisibleItemCount
 #endif
 
 #ifndef DtCArrowSize
-#define DtCArrowSize		XmCArrowSize
+#define DtCArrowSize XmCArrowSize
 #endif
 #ifndef DtCArrowSpacing
-#define DtCArrowSpacing		XmCArrowSpacing
+#define DtCArrowSpacing XmCArrowSpacing
 #endif
 #ifndef DtCCallback
-#define DtCCallback		XmCCallback
+#define DtCCallback XmCCallback
 #endif
 #ifndef DtCColumns
-#define DtCColumns		XmCColumns
+#define DtCColumns XmCColumns
 #endif
 #ifndef DtCComboBoxType
-#define DtCComboBoxType		XmCComboBoxType
+#define DtCComboBoxType XmCComboBoxType
 #endif
 #ifndef DtCItemCount
-#define DtCItemCount		XmCItemCount
+#define DtCItemCount XmCItemCount
 #endif
 #ifndef DtCItems
-#define DtCItems		XmCItems
+#define DtCItems XmCItems
 #endif
 #ifndef DtCList
-#define DtCList			XmCList
+#define DtCList XmCList
 #endif
 #ifndef DtCMarginHeight
-#define DtCMarginHeight		XmCMarginHeight
+#define DtCMarginHeight XmCMarginHeight
 #endif
 #ifndef DtCMarginWidth
-#define DtCMarginWidth		XmCMarginWidth
+#define DtCMarginWidth XmCMarginWidth
 #endif
 #ifndef DtCSelectedItem
-#define DtCSelectedItem		XmCSelectedItem
+#define DtCSelectedItem XmCSelectedItem
 #endif
 #ifndef DtCSelectedPosition
-#define DtCSelectedPosition	XmCSelectedPosition
+#define DtCSelectedPosition XmCSelectedPosition
 #endif
 #ifndef DtCTextField
-#define DtCTextField		XmCTextField
+#define DtCTextField XmCTextField
 #endif
 #ifndef DtCVisibleItemCount
-#define DtCVisibleItemCount	XmCVisibleItemCount
+#define DtCVisibleItemCount XmCVisibleItemCount
 #endif
 #ifndef DtCXmString
-#define DtCXmString		XmCXmString
+#define DtCXmString XmCXmString
 #endif
 
 #endif /* DT_USE_XM_COMBOBOX */
@@ -403,16 +401,16 @@ extern "C" {
 #ifndef DT_USE_XM_COMBOBOX
 
 #ifndef DtRArrowType
-#define DtRArrowType		"ArrowType"
+#define DtRArrowType "ArrowType"
 #endif
 #ifndef DtRComboBoxType
-#define DtRComboBoxType		"ComboBoxType"
+#define DtRComboBoxType "ComboBoxType"
 #endif
 
 #else /* DT_USE_XM_COMBOBOX */
 
 #ifndef DtRComboBoxType
-#define DtRComboBoxType		XmRComboBoxType
+#define DtRComboBoxType XmRComboBoxType
 #endif
 
 #endif /* DT_USE_XM_COMBOBOX */
@@ -422,10 +420,10 @@ extern "C" {
 #ifndef DT_USE_XM_COMBOBOX
 
 #ifndef DtLEFT
-#define DtLEFT		1
+#define DtLEFT 1
 #endif
 #ifndef DtRIGHT
-#define DtRIGHT		2
+#define DtRIGHT 2
 #endif
 
 #endif /* not DT_USE_XM_COMBOBOX */
@@ -435,10 +433,10 @@ extern "C" {
 #ifndef DT_USE_XM_COMBOBOX
 
 #ifndef DtMOTIF
-#define DtMOTIF		0
+#define DtMOTIF 0
 #endif
 #ifndef DtWINDOWS
-#define DtWINDOWS	1
+#define DtWINDOWS 1
 #endif
 
 #endif /* not DT_USE_XM_COMBOBOX */
@@ -448,19 +446,19 @@ extern "C" {
 #ifndef DT_USE_XM_COMBOBOX
 
 #ifndef DtDROP_DOWN_LIST
-#define DtDROP_DOWN_LIST	2
+#define DtDROP_DOWN_LIST 2
 #endif
 #ifndef DtDROP_DOWN_COMBO_BOX
-#define DtDROP_DOWN_COMBO_BOX	1
+#define DtDROP_DOWN_COMBO_BOX 1
 #endif
 
 #else /* DT_USE_XM_COMBOBOX */
 
 #ifndef DtDROP_DOWN_LIST
-#define DtDROP_DOWN_LIST	XmDROP_DOWN_LIST
+#define DtDROP_DOWN_LIST XmDROP_DOWN_LIST
 #endif
 #ifndef DtDROP_DOWN_COMBO_BOX
-#define DtDROP_DOWN_COMBO_BOX	XmDROP_DOWN_COMBO_BOX
+#define DtDROP_DOWN_COMBO_BOX XmDROP_DOWN_COMBO_BOX
 #endif
 
 #endif /* DT_USE_XM_COMBOBOX */
@@ -470,13 +468,13 @@ extern "C" {
 #ifndef DT_USE_XM_COMBOBOX
 
 #ifndef DtALIGNMENT_BEGINNING
-#define DtALIGNMENT_BEGINNING	XmALIGNMENT_BEGINNING
+#define DtALIGNMENT_BEGINNING XmALIGNMENT_BEGINNING
 #endif
 #ifndef DtALIGNMENT_CENTER
-#define DtALIGNMENT_CENTER	XmALIGNMENT_CENTER
+#define DtALIGNMENT_CENTER XmALIGNMENT_CENTER
 #endif
 #ifndef DtALIGNMENT_END
-#define DtALIGNMENT_END		XmALIGNMENT_END
+#define DtALIGNMENT_END XmALIGNMENT_END
 #endif
 
 #endif /* not DT_USE_XM_COMBOBOX */
@@ -486,14 +484,13 @@ extern "C" {
 #ifndef DT_USE_XM_COMBOBOX
 
 #ifndef DtCR_SELECT
-#define DtCR_SELECT	    57 /* Large #, so no collisions with XM */
+#define DtCR_SELECT 57 /* Large #, so no collisions with XM */
 #endif
 #ifndef DtCR_MENU_POST
-#define DtCR_MENU_POST      129 /* Large #, so no collisions with XM */
+#define DtCR_MENU_POST 129 /* Large #, so no collisions with XM */
 #endif
 
 #endif /* not DT_USE_XM_COMBOBOX */
-
 
 /*
  * Types
@@ -502,26 +499,24 @@ extern "C" {
 #ifndef DT_USE_XM_COMBOBOX
 
 typedef struct {
-	int		reason;
-	XEvent		*event;
-	XmString	item_or_text;
-	int		item_position;
+        int reason;
+        XEvent *event;
+        XmString item_or_text;
+        int item_position;
 } DtComboBoxCallbackStruct;
-
 
 /* Widget class and instance */
 
 typedef struct _DtComboBoxClassRec *DtComboBoxWidgetClass;
-typedef struct _DtComboBoxRec      *DtComboBoxWidget;
+typedef struct _DtComboBoxRec *DtComboBoxWidget;
 
 #else /* DT_USE_XM_COMBOBOX */
 
-#define DtComboBoxCallbackStruct	XmComboBoxCallbackStruct
-#define DtComboBoxWidgetClass		XmComboBoxWidgetClass
-#define DtComboBoxWidget		XmComboBoxWidget
+#define DtComboBoxCallbackStruct XmComboBoxCallbackStruct
+#define DtComboBoxWidgetClass XmComboBoxWidgetClass
+#define DtComboBoxWidget XmComboBoxWidget
 
 #endif /* DT_USE_XM_COMBOBOX */
-
 
 /*
  * Data
@@ -539,44 +534,31 @@ externalref WidgetClass dtComboBoxWidgetClass;
 
 #endif /* DT_USE_XM_COMBOBOX */
 
-
 /*
  * Functions
  */
 
 #ifndef DT_USE_XM_COMBOBOX
 
-extern Widget DtCreateComboBox(
-		Widget		parent,
-		char		*name,
-		ArgList		arglist,
-		Cardinal	argcount);
+extern Widget DtCreateComboBox(Widget parent, char *name, ArgList arglist,
+                               Cardinal argcount);
 
-extern void DtComboBoxAddItem(
-		Widget 		combo,
-		XmString	item,
-		int		pos,
-		Boolean		unique);
+extern void DtComboBoxAddItem(Widget combo, XmString item, int pos,
+                              Boolean unique);
 
-extern void DtComboBoxDeletePos(
-		Widget		combo,
-		int		pos);
+extern void DtComboBoxDeletePos(Widget combo, int pos);
 
-extern void DtComboBoxSetItem(
-		Widget		combo,
-		XmString	item);
+extern void DtComboBoxSetItem(Widget combo, XmString item);
 
-extern void DtComboBoxSelectItem(
-		Widget		combo,
-		XmString	item);
+extern void DtComboBoxSelectItem(Widget combo, XmString item);
 
 #else /* DT_USE_XM_COMBOBOX */
 
-#define DtCreateComboBox	XmCreateComboBox
-#define DtComboBoxAddItem	XmComboBoxAddItem
-#define DtComboBoxDeletePos	XmComboBoxDeletePos
-#define DtComboBoxSetItem	XmComboBoxSetItem
-#define DtComboBoxSelectItem	XmComboBoxSelectItem
+#define DtCreateComboBox XmCreateComboBox
+#define DtComboBoxAddItem XmComboBoxAddItem
+#define DtComboBoxDeletePos XmComboBoxDeletePos
+#define DtComboBoxSetItem XmComboBoxSetItem
+#define DtComboBoxSelectItem XmComboBoxSelectItem
 
 #endif /* DT_USE_XM_COMBOBOX */
 
@@ -584,4 +566,4 @@ extern void DtComboBoxSelectItem(
 }
 #endif
 
-#endif	/* _Dt_ComboBox_h */
+#endif /* _Dt_ComboBox_h */

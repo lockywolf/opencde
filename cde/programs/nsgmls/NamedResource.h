@@ -35,8 +35,8 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API NamedResource : public Named, public Resource {
-public:
-  NamedResource(const StringC &str) : Named(str) { }
+      public:
+        NamedResource(const StringC &str) : Named(str) {}
 };
 
 #ifdef SP_NAMESPACE

@@ -75,10 +75,10 @@
 /********    End Private Macro Declarations    ********/
 
 /******************************************************************************
-*
-* Private variables used within this file.
-*
-*******************************************************************************/
+ *
+ * Private variables used within this file.
+ *
+ *******************************************************************************/
 /******************************************************************************
  *                             Private Functions
  ******************************************************************************/
@@ -99,18 +99,14 @@
  *
  * Purpose:	This function must be called to open a Help Volume file
  *		before any of the information in the volume can be
- *		accessed. 
+ *		accessed.
  *
  * Used by:	dthelpgen 1.0
  *
  ******************************************************************************/
-int 
-_DtHelpCeOpenVolume (
-    CanvasHandle canvas_handle,
-    char	*volFile, 
-    VolumeHandle  *retVol)
-{
-    return (_DtHelpOpenVolume(volFile, retVol));
+int _DtHelpCeOpenVolume(CanvasHandle canvas_handle, char *volFile,
+                        VolumeHandle *retVol) {
+        return (_DtHelpOpenVolume(volFile, retVol));
 }
 
 /******************************************************************************
@@ -130,12 +126,8 @@ _DtHelpCeOpenVolume (
  * Used by:	dthelpgen 1.0
  *
  ******************************************************************************/
-int
-_DtHelpCeCloseVolume (
-     CanvasHandle       canvas,
-     VolumeHandle       volume)
-{
-    return(_DtHelpCloseVolume(volume));
+int _DtHelpCeCloseVolume(CanvasHandle canvas, VolumeHandle volume) {
+        return (_DtHelpCloseVolume(volume));
 }
 
 /*****************************************************************************
@@ -157,14 +149,9 @@ _DtHelpCeCloseVolume (
  * Purpose:     Get the title of a topic.
  *
  *****************************************************************************/
-int
-_DtHelpCeGetTopicTitle (
-    CanvasHandle          canvas,
-    VolumeHandle          volume,
-    char                 *id,
-    char                **ret_title)
-{
-    return(_DtHelpGetTopicTitle(volume, id, ret_title));
+int _DtHelpCeGetTopicTitle(CanvasHandle canvas, VolumeHandle volume, char *id,
+                           char **ret_title) {
+        return (_DtHelpGetTopicTitle(volume, id, ret_title));
 }
 
 /*****************************************************************************
@@ -178,11 +165,7 @@ _DtHelpCeGetTopicTitle (
  * Purpose:     Create a canvas and attach the appropriate virtual functions
  *              to the canvas.
  *****************************************************************************/
-void
-_DtHelpCeDestroyCanvas (CanvasHandle canvas)
-{
-    _DtCanvasDestroy(canvas);
-}
+void _DtHelpCeDestroyCanvas(CanvasHandle canvas) { _DtCanvasDestroy(canvas); }
 
 /*****************************************************************************
  * Function: char * _DtHelpCeGetVolumeLocale (_DtHelpVolume vol)
@@ -198,10 +181,7 @@ _DtHelpCeDestroyCanvas (CanvasHandle canvas)
  *		the caller.
  *
  *****************************************************************************/
-char *
-_DtHelpCeGetVolumeLocale (
-	VolumeHandle	volume)
-{
-    return (_DtHelpGetVolumeLocale(volume));
+char *_DtHelpCeGetVolumeLocale(VolumeHandle volume) {
+        return (_DtHelpGetVolumeLocale(volume));
 
-}  /* End _DtHelpCeGetVolumeLocale */
+} /* End _DtHelpCeGetVolumeLocale */

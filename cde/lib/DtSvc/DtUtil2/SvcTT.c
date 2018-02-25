@@ -40,7 +40,6 @@
 #include <sys/time.h>
 #include <Dt/SvcTT.h>
 
-
 /*
  * Ensure that there is a valid ToolTalk connection open.
  * If none is open, creates one and adds it to the XtAppContext
@@ -49,38 +48,34 @@
  *   TT_ERR_NOMP	ToolTalk could not be initialized.
  *   TT_ERR_POINTER	widget was null.
  */
-Tt_status
-_DtSvcInitToolTalk(
-	Widget widget
-)
-{
-	char	       *procid;
-	Tt_status	status;
-	int		fd;
-	XtAppContext	ctxt;
+Tt_status _DtSvcInitToolTalk(Widget widget) {
+        char *procid;
+        Tt_status status;
+        int fd;
+        XtAppContext ctxt;
 
-	procid = tt_default_procid();
-	status = tt_ptr_error( procid );
-	if (status == TT_OK) {
-		tt_free( procid );
-	}
-	if ((status == TT_ERR_NOMP) || (status == TT_ERR_PROCID)) {
-		if (widget == 0) {
-			return TT_ERR_POINTER;
-		}
-		procid = tt_open(); /* do not tt_free(); Xt will pass it back */
-		status = tt_ptr_error( procid );
-		if (status != TT_OK) {
-			return status;
-		}
-		fd = tt_fd();
-		status = tt_int_error( fd );
-		if (status != TT_OK) {
-			return status;
-		}
-		ctxt = XtWidgetToApplicationContext( widget );
-		XtAppAddInput( ctxt, fd, (XtPointer)XtInputReadMask,
-			       tttk_Xt_input_handler, procid );
-	}
-	return TT_OK;
+        procid = tt_default_procid();
+        status = tt_ptr_error(procid);
+        if (status == TT_OK) {
+                tt_free(procid);
+        }
+        if ((status == TT_ERR_NOMP) || (status == TT_ERR_PROCID)) {
+                if (widget == 0) {
+                        return TT_ERR_POINTER;
+                }
+                procid = tt_open(); /* do not tt_free(); Xt will pass it back */
+                status = tt_ptr_error(procid);
+                if (status != TT_OK) {
+                        return status;
+                }
+                fd = tt_fd();
+                status = tt_int_error(fd);
+                if (status != TT_OK) {
+                        return status;
+                }
+                ctxt = XtWidgetToApplicationContext(widget);
+                XtAppAddInput(ctxt, fd, (XtPointer)XtInputReadMask,
+                              tttk_Xt_input_handler, procid);
+        }
+        return TT_OK;
 }

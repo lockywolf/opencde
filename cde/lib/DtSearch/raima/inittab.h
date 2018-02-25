@@ -35,7 +35,7 @@
 /*----------------------------------------------------------------------------
  $XConsortium: inittab.h /main/5 1996/11/25 18:48:42 drk $
    inittab.h: db_VISTA header file containing:
-   
+
       - Compatible dictionary file versions
 
    This file is intended to be included in inittab.c only.  There are
@@ -61,7 +61,6 @@
  *
 */
 
-
 int db_status = 0;
 
 /* database dictionary tables */
@@ -81,8 +80,7 @@ INT old_no_of_dbs = 0;
 #endif
 
 /* Compatible dictionary versions */
-char *compat_dbd[] = {
-   dbd_VERSION
-};
-int size_compat = sizeof(compat_dbd)/sizeof(*compat_dbd);
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin inittab.h */
+char *compat_dbd[] = {dbd_VERSION};
+int size_compat = sizeof(compat_dbd) / sizeof(*compat_dbd);
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin inittab.h */

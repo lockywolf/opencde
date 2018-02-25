@@ -41,100 +41,84 @@ class OL_Data;
 
 class imp_die;
 
-class StyleTask : public ComplexTask{
+class StyleTask : public ComplexTask {
 
-public:
+      public:
+        StyleTask();
+        ~StyleTask();
 
-  StyleTask();
-  ~StyleTask();
+        /*
+         * USE:
+         *   StyleTask t;
+         *      t.markup(...); ... t.data(...); ...
+         *      const char *l = t.locator();
+         */
+        const char *locator() /* throw(Unexpected) */;
 
-  /*
-   * USE:
-   *   StyleTask t;
-   *      t.markup(...); ... t.data(...); ...
-   *      const char *l = t.locator();
-   */
-  const char * locator() /* throw(Unexpected) */;
+        void reset(void);
 
-  void reset(void);
+        void markup(const Token &);
 
-  void markup(const Token&);
+        void data(const char *, size_t);
 
-  void data(const char *, size_t );
+        int exist(const char *view); /*
+                                      * Given a view determine if it exists?
+                                      */
 
-  int exist( const char * view ); /*
-				   * Given a view determine if it exists? 
-				   */
+        /*
+         * USE:
+         *   StyleTask st(...);
+         *       st.markup(...); st.data(...); ... // feed stylesheet to the
+         * task const char *p = st.print(); const char *o = st.online();
+         */
+        const char *print();
+        int print_data_size();
 
-  /*
-   * USE:
-   *   StyleTask st(...);
-   *       st.markup(...); st.data(...); ... // feed stylesheet to the task
-   *       const char *p = st.print();
-   *       const char *o = st.online();
-   */
-  const char *print();
-  int         print_data_size();
+        const char *online();
+        int online_data_size();
 
-  const char *online();
-  int         online_data_size();
+      protected:
+        void write_record(void);
 
-protected:
-  void write_record( void );
+        /* comments below to avoid compiler warnings... */
+        virtual void done(const char * /*name*/, const char * /*online*/,
+                          int /*online_len*/, const char * /*print*/,
+                          int /*print_len*/){};
 
-      /* comments below to avoid compiler warnings... */
-  virtual void done(const char * /*name*/,
-		    const char * /*online*/, int /*online_len*/,
-		    const char * /*print*/, int /*print_len*/)  {};
+      private:
+        int f_base; /* tag nesting level of <STYLESHEET> elt */
+        int f_select;
 
-private:
-  int
-     f_base;                  /* tag nesting level of <STYLESHEET> elt */
-  int f_select;
+        enum { inPath, startContent, inContent } f_dataMode;
 
-  enum { inPath, startContent, inContent } f_dataMode;
+        FlexBuffer *f_buffer, *f_pathbuf, *onlineSS,
+            *printSS; /*
+                       * The style sheet data proper.
+                       * Need to determine if it gets transformed
+                       * or not.
+                       */
+        OL_Data *f_locator;
 
-  FlexBuffer
-     *f_buffer,
-     *f_pathbuf,
-     *onlineSS,
-     *printSS;		       /*
-				* The style sheet data proper.
-				* Need to determine if it gets transformed
-				* or not.
-			        */
-  OL_Data
-     *f_locator;
-
-  hashTable<CC_String,int>
-     *viewset;          	       /*
-			        * List of views,
-			        * Must be a unique set of names.
-			        */
-  Stack<int> *feature_depth;
-
+        hashTable<CC_String, int> *viewset; /*
+                                             * List of views,
+                                             * Must be a unique set of names.
+                                             */
+        Stack<int> *feature_depth;
 };
 
+class StyleTaskDB : public StyleTask {
 
-class StyleTaskDB : public StyleTask{
+      public:
+        StyleTaskDB(BookCaseTask *);
 
-public:
+        BookCaseTask *bookcase() { return f_bookcase; };
 
-  StyleTaskDB(BookCaseTask *);
+      protected:
+        virtual void done(const char *name, const char *online, int online_len,
+                          const char *print, int print_len);
 
-  BookCaseTask *bookcase() { return f_bookcase; };
-
-protected:
-  virtual void done(const char * name,
-		    const char * online, int online_len,
-		    const char * print, int print_len);
-
-private:
-  BookCaseTask
-     *f_bookcase;    /* 'parent' bookcase object */
-
+      private:
+        BookCaseTask *f_bookcase; /* 'parent' bookcase object */
 };
-
 
 #endif /* __StyleTasks_h */
-

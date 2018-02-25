@@ -38,19 +38,18 @@ This product and information is proprietary of Tandem Computers Incorporated.
 #include "parser.h"
 #include "entext.h"
 
-LOGICAL m_lookent(name, type, content, wheredef)
-  M_WCHAR *name ;
-  unsigned char *type ;
-  M_WCHAR **content ;
-  unsigned char *wheredef ;
-  {
-    M_ENTITY *entity ;
+LOGICAL m_lookent(name, type, content, wheredef) M_WCHAR *name;
+unsigned char *type;
+M_WCHAR **content;
+unsigned char *wheredef;
+{
+        M_ENTITY *entity;
 
-    if (entity = (M_ENTITY *) m_lookfortrie(name, m_enttrie)) {
-      *type = entity->type ;
-      *content = entity->content ;
-      *wheredef = entity->wheredef ; 
-      return(TRUE) ;
-      }
-    else return(FALSE) ;
-    }
+        if (entity = (M_ENTITY *)m_lookfortrie(name, m_enttrie)) {
+                *type = entity->type;
+                *content = entity->content;
+                *wheredef = entity->wheredef;
+                return (TRUE);
+        } else
+                return (FALSE);
+}

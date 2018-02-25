@@ -24,33 +24,31 @@
 //---------------------------------------------------------
 // AttributeSore.h
 
-
 #ifndef ATT_STORE
 #define ATT_STORE
 
 #include "AttributeRec.h"
 
 class AttributeStore {
-private:
-  AttributeRec *head;
-  AttributeRec *current;
+      private:
+        AttributeRec *head;
+        AttributeRec *current;
 
-public:
-  char *lookup ( char * );
-  int  add ( AttributeRec * );
-  AttributeRec *getNext() {
-                             AttributeRec *ptr;
-			     if ( current ) {
-			       ptr = current;
-			       current = current->next;
-			       return (ptr );
-			     }
-                             else {
-			       return ( NULL );
-			     }
-			   }
-  AttributeStore();
-  ~AttributeStore();
+      public:
+        char *lookup(char *);
+        int add(AttributeRec *);
+        AttributeRec *getNext() {
+                AttributeRec *ptr;
+                if (current) {
+                        ptr = current;
+                        current = current->next;
+                        return (ptr);
+                } else {
+                        return (NULL);
+                }
+        }
+        AttributeStore();
+        ~AttributeStore();
 };
-  
+
 #endif

@@ -40,7 +40,7 @@
  **   Getting Top Level Window Info for the session manager
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -48,18 +48,17 @@
  ************************************<+>*************************************/
 #ifndef _smwindow_h
 #define _smwindow_h
- 
-/* 
- *  #include statements 
+
+/*
+ *  #include statements
  */
 
-
-/* 
- *  #define statements 
+/*
+ *  #define statements
  */
 
-/* 
- * typedef statements 
+/*
+ * typedef statements
  */
 
 /*
@@ -67,36 +66,30 @@
  * to the output state file
  */
 
-typedef struct
-{
-    int		termState;
-    Window	wid;
+typedef struct {
+        int termState;
+        Window wid;
 } WindowInfo, *WindowInfoPtr;
 
 /*
  * Information returned by application in response to WM_STATE message
  */
-typedef struct
-{
-  int state;
-  Window icon;
+typedef struct {
+        int state;
+        Window icon;
 } WM_STATE;
 
 /*
- *  External variables  
+ *  External variables
  */
 
-
-/*  
- *  External Interface  
+/*
+ *  External Interface
  */
 
-
-extern int SaveYourself( WindowInfo ) ;
-extern int GetTopLevelWindows( int, WindowInfo **, unsigned int *, 
-			       unsigned int *) ;
-
-
+extern int SaveYourself(WindowInfo);
+extern int GetTopLevelWindows(int, WindowInfo **, unsigned int *,
+                              unsigned int *);
 
 #endif /*_smwindow_h*/
 /* DON'T ADD ANYTHING AFTER THIS #endif */

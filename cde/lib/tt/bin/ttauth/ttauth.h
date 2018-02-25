@@ -23,7 +23,7 @@
 /*
  * $TOG: ttauth.h /main/1 1999/08/30 10:47:04 mgreess $
  *
- * 
+ *
 Copyright 1989, 1998  The Open Group
 
 All Rights Reserved.

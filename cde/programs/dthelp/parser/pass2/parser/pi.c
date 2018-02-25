@@ -35,15 +35,12 @@ This product and information is proprietary of Tandem Computers Incorporated.
 /* Include generated code */
 #include "pfile.c"
 
-
 /* When a processing instruction or SDATA entity other than a CODE entity
    occurs */
-void m_piaction(m_pi, m_entname, m_enttype)
-  M_WCHAR *m_pi ;
-  M_WCHAR *m_entname ;
-  int m_enttype ;
-  {
-    m_stackpar = m_stacktop->piparam ;
-    (*m_ptable[m_stacktop->picase])(m_pi, m_entname, m_enttype) ;
-    }
-
+void m_piaction(m_pi, m_entname, m_enttype) M_WCHAR *m_pi;
+M_WCHAR *m_entname;
+int m_enttype;
+{
+        m_stackpar = m_stacktop->piparam;
+        (*m_ptable[m_stacktop->picase])(m_pi, m_entname, m_enttype);
+}

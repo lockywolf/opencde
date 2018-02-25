@@ -35,11 +35,7 @@
  * External function declarations
  */
 
-extern void	OWsyncColorResources(
-			Display *	display,
-			int 		monitorType, 
-			ColorSet * 	colors);
+extern void OWsyncColorResources(Display *display, int monitorType,
+                                 ColorSet *colors);
 
-extern void	OWsyncLocaleResources(
-			Display *	display);
-
+extern void OWsyncLocaleResources(Display *display);

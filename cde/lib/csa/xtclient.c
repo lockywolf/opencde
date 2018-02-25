@@ -35,8 +35,8 @@
 #include "debug.h"
 
 typedef struct _appctlist {
-	XtAppContext	appct;
-	struct _appctlist *next;
+        XtAppContext appct;
+        struct _appctlist *next;
 } AppCtList;
 
 static AppCtList *registered_appct = NULL;
@@ -55,33 +55,28 @@ static boolean_t new_appct(XtAppContext apptct);
  * register callback for all file descriptors that's set
  * (since we don't know which one is ours).
  */
-extern void
-_DtCm_register_xtcallback(XtAppContext appct)
-{
-	XtInputId	id;
-	int	i;
-	fd_set	fdset = svc_fdset;
+extern void _DtCm_register_xtcallback(XtAppContext appct) {
+        XtInputId id;
+        int i;
+        fd_set fdset = svc_fdset;
 
-	DP(("xtclient.c: _DtCm_register_xtcallback()\n"));
+        DP(("xtclient.c: _DtCm_register_xtcallback()\n"));
 
-	if (new_appct(appct) == B_FALSE)
-		return;
+        if (new_appct(appct) == B_FALSE)
+                return;
 
-	/* assuming only 1 bit is set */
+        /* assuming only 1 bit is set */
 
-	for (i = 0; i < FD_SETSIZE; i++) {
-          if (FD_ISSET(i, &svc_fdset))
-            {
-              /* register callback with XtAppAddInput
-               * for rpc input
-               */
-              id = XtAppAddInput(appct, i,
-                                 (XtPointer)XtInputReadMask,
-                                 xtcallback, NULL);
+        for (i = 0; i < FD_SETSIZE; i++) {
+                if (FD_ISSET(i, &svc_fdset)) {
+                        /* register callback with XtAppAddInput
+                         * for rpc input
+                         */
+                        id = XtAppAddInput(appct, i, (XtPointer)XtInputReadMask,
+                                           xtcallback, NULL);
 
-              DP(("xtclient.c: id %d for input at fd %d\n",
-                  id, i));
-            }
+                        DP(("xtclient.c: id %d for input at fd %d\n", id, i));
+                }
         }
 }
 
@@ -92,41 +87,36 @@ _DtCm_register_xtcallback(XtAppContext appct)
 /*
  * callback for rpc events
  */
-static void
-xtcallback(XtPointer data, int *fid, XtInputId *id)
-{
-	fd_set rpc_bits;
+static void xtcallback(XtPointer data, int *fid, XtInputId *id) {
+        fd_set rpc_bits;
 
-	DP(("xtcallback called\n"));
+        DP(("xtcallback called\n"));
 
-	FD_ZERO(&rpc_bits);
-	FD_SET(*fid, &rpc_bits);
-	svc_getreqset(&rpc_bits);
+        FD_ZERO(&rpc_bits);
+        FD_SET(*fid, &rpc_bits);
+        svc_getreqset(&rpc_bits);
 }
 
 /*
  * need to lock registered_appct
  */
-static boolean_t
-new_appct(XtAppContext appct)
-{
-	AppCtList	*lptr;
-	boolean_t	newappct = B_TRUE;
+static boolean_t new_appct(XtAppContext appct) {
+        AppCtList *lptr;
+        boolean_t newappct = B_TRUE;
 
-	for (lptr = registered_appct; lptr != NULL; lptr = lptr->next) {
-		if (lptr->appct == appct) {
-			newappct = B_FALSE;
-			break;
-		}
-	}
+        for (lptr = registered_appct; lptr != NULL; lptr = lptr->next) {
+                if (lptr->appct == appct) {
+                        newappct = B_FALSE;
+                        break;
+                }
+        }
 
-	if (newappct == B_TRUE) {
-		lptr = (AppCtList *)calloc(1, sizeof(AppCtList));
-		lptr->appct = appct;
-		lptr->next = registered_appct;
-		registered_appct = lptr;
-	}
+        if (newappct == B_TRUE) {
+                lptr = (AppCtList *)calloc(1, sizeof(AppCtList));
+                lptr->appct = appct;
+                lptr->next = registered_appct;
+                registered_appct = lptr;
+        }
 
-	return (newappct);
+        return (newappct);
 }
-

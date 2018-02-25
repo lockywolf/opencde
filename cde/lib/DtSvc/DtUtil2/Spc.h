@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         Spc.h $XConsortium: Spc.h /main/3 1995/10/26 15:28:51 rswiston $
- * Language:     C
+ * File:         Spc.h $XConsortium: Spc.h /main/3 1995/10/26 15:28:51 rswiston
+ * $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -37,15 +37,15 @@
 
 #include <bms/spc.h>
 
-/* 
+/*
  * For definitions of any of the following, look in <bms/spc.h>.
  */
 
-#define DtSPCOpen 		XeSPCOpen
-#define DtSPCClose 		XeSPCClose
-#define DtSPCSpawn		XeSPCSpawn
-#define DtSPCAddInput		XeSPCAddInput
-#define DtSPCRegisterTerminator	XeSPCRegisterTerminator
-#define DtSPCErrorNumber	XeSPCErrorNumber
+#define DtSPCOpen XeSPCOpen
+#define DtSPCClose XeSPCClose
+#define DtSPCSpawn XeSPCSpawn
+#define DtSPCAddInput XeSPCAddInput
+#define DtSPCRegisterTerminator XeSPCRegisterTerminator
+#define DtSPCErrorNumber XeSPCErrorNumber
 
 #endif /* #ifdef _Dt_SPC_h */

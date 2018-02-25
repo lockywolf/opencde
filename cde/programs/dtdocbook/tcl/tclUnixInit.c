@@ -21,7 +21,7 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $XConsortium: tclUnixInit.c /main/2 1996/08/08 14:46:42 cde-hp $ */
-/* 
+/*
  * tclUnixInit.c --
  *
  *	Contains the Unix-specific interpreter initialization functions.
@@ -37,7 +37,7 @@
 #include "tclInt.h"
 #include "tclPort.h"
 #ifndef NO_UNAME
-#   include <sys/utsname.h>
+#include <sys/utsname.h>
 #endif
 #if defined(__FreeBSD__)
 #include <floatingpoint.h>
@@ -57,8 +57,7 @@ static char defaultLibraryDir[200] = TCL_LIBRARY;
  * initialization.
  */
 
-static char *initScript =
-"proc init {} {\n\
+static char *initScript = "proc init {} {\n\
     global tcl_library tcl_version tcl_patchLevel env\n\
     rename init {}\n\
     set dirs {}\n\
@@ -86,7 +85,7 @@ static char *initScript =
     error $msg\n\
 }\n\
 init";
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -105,60 +104,61 @@ init";
  *----------------------------------------------------------------------
  */
 
-void
-TclPlatformInit(interp)
-    Tcl_Interp *interp;
+void TclPlatformInit(interp) Tcl_Interp *interp;
 {
 #ifndef NO_UNAME
-    struct utsname name;
+        struct utsname name;
 #endif
-    int unameOK;
-    static int initialized = 0;
+        int unameOK;
+        static int initialized = 0;
 
-    tclPlatform = TCL_PLATFORM_UNIX;
-    Tcl_SetVar(interp, "tcl_library", defaultLibraryDir, TCL_GLOBAL_ONLY);
-    Tcl_SetVar2(interp, "tcl_platform", "platform", "unix", TCL_GLOBAL_ONLY);
-    unameOK = 0;
+        tclPlatform = TCL_PLATFORM_UNIX;
+        Tcl_SetVar(interp, "tcl_library", defaultLibraryDir, TCL_GLOBAL_ONLY);
+        Tcl_SetVar2(interp, "tcl_platform", "platform", "unix",
+                    TCL_GLOBAL_ONLY);
+        unameOK = 0;
 #ifndef NO_UNAME
-    if (uname(&name) >= 0) {
-	unameOK = 1;
-	Tcl_SetVar2(interp, "tcl_platform", "os", name.sysname,
-		TCL_GLOBAL_ONLY);
-	Tcl_SetVar2(interp, "tcl_platform", "osVersion", name.release,
-		TCL_GLOBAL_ONLY);
-	Tcl_SetVar2(interp, "tcl_platform", "machine", name.machine,
-		TCL_GLOBAL_ONLY);
-    }
+        if (uname(&name) >= 0) {
+                unameOK = 1;
+                Tcl_SetVar2(interp, "tcl_platform", "os", name.sysname,
+                            TCL_GLOBAL_ONLY);
+                Tcl_SetVar2(interp, "tcl_platform", "osVersion", name.release,
+                            TCL_GLOBAL_ONLY);
+                Tcl_SetVar2(interp, "tcl_platform", "machine", name.machine,
+                            TCL_GLOBAL_ONLY);
+        }
 #endif
-    if (!unameOK) {
-	Tcl_SetVar2(interp, "tcl_platform", "os", "", TCL_GLOBAL_ONLY);
-	Tcl_SetVar2(interp, "tcl_platform", "osVersion", "", TCL_GLOBAL_ONLY);
-	Tcl_SetVar2(interp, "tcl_platform", "machine", "", TCL_GLOBAL_ONLY);
-    }
+        if (!unameOK) {
+                Tcl_SetVar2(interp, "tcl_platform", "os", "", TCL_GLOBAL_ONLY);
+                Tcl_SetVar2(interp, "tcl_platform", "osVersion", "",
+                            TCL_GLOBAL_ONLY);
+                Tcl_SetVar2(interp, "tcl_platform", "machine", "",
+                            TCL_GLOBAL_ONLY);
+        }
 
-    if (!initialized) {
-	/*
-	 * The code below causes SIGPIPE (broken pipe) errors to
-	 * be ignored.  This is needed so that Tcl processes don't
-	 * die if they create child processes (e.g. using "exec" or
-	 * "open") that terminate prematurely.  The signal handler
-	 * is only set up when the first interpreter is created;
-	 * after this the application can override the handler with
-	 * a different one of its own, if it wants.
-	 */
-    
+        if (!initialized) {
+        /*
+         * The code below causes SIGPIPE (broken pipe) errors to
+         * be ignored.  This is needed so that Tcl processes don't
+         * die if they create child processes (e.g. using "exec" or
+         * "open") that terminate prematurely.  The signal handler
+         * is only set up when the first interpreter is created;
+         * after this the application can override the handler with
+         * a different one of its own, if it wants.
+         */
+
 #ifdef SIGPIPE
-	(void) signal(SIGPIPE, SIG_IGN);
+                (void)signal(SIGPIPE, SIG_IGN);
 #endif /* SIGPIPE */
 
 #ifdef __FreeBSD__
-	fpsetround(FP_RN);
-	fpsetmask(0L);
+                fpsetround(FP_RN);
+                fpsetmask(0L);
 #endif
-	initialized = 1;
-    }
+                initialized = 1;
+        }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -178,9 +178,5 @@ TclPlatformInit(interp)
  *----------------------------------------------------------------------
  */
 
-int
-Tcl_Init(interp)
-    Tcl_Interp *interp;		/* Interpreter to initialize. */
-{
-    return Tcl_Eval(interp, initScript);
-}
+int Tcl_Init(interp) Tcl_Interp *interp; /* Interpreter to initialize. */
+{ return Tcl_Eval(interp, initScript); }

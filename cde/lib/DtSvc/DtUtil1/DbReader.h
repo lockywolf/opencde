@@ -21,7 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:        DbReader.h $XConsortium: DbReader.h /main/4 1995/10/26 15:03:35 rswiston $
+ * File:        DbReader.h $XConsortium: DbReader.h /main/4 1995/10/26 15:03:35
+ * rswiston $
  *
  * Description: Public include file for the database reader.
  *
@@ -33,7 +34,6 @@
  * (c) Copyright 1993, 1994 Novell, Inc.				*
  */
 
-
 #ifndef _Dt_DbReader_h
 #define _Dt_DbReader_h
 
@@ -42,13 +42,12 @@
 #include <Dt/DbUtil.h>
 
 #define DTRECORDIDENTIFIER NULL
-#define DTUNLIMITEDFIELDS  0
+#define DTUNLIMITEDFIELDS 0
 
 /* one set of attribute/pair */
-typedef struct
-{
-	XrmQuark                fieldName;
-	char                    *fieldValue;
+typedef struct {
+        XrmQuark fieldName;
+        char *fieldValue;
 } DtDtsDbField;
 
 /*
@@ -105,10 +104,8 @@ typedef struct
  * 'True' value.  If the record was acceptable, then 'False' should be
  * returned.
  */
-typedef Boolean (*DtDbConverter) (DtDtsDbField * fields,
-                                  DtDbPathId pathId,
-                                  char * hostPrefix,
-                                  Boolean rejectionStatus);
+typedef Boolean (*DtDbConverter)(DtDtsDbField *fields, DtDbPathId pathId,
+                                 char *hostPrefix, Boolean rejectionStatus);
 
 /*
  * This structure defines each record type which should be loaded by
@@ -133,19 +130,18 @@ typedef Boolean (*DtDbConverter) (DtDtsDbField * fields,
  *                  DTUNLIMITEDFIELDS, then the check for runaway records
  *                  will be disabled for records of this type.
  *
- *  converters:     This is a NULL-terminated array of function pointers, 
- *                  corresponding to the set of record converters which will 
- *                  be called, whenever a record of this type is encountered.  
+ *  converters:     This is a NULL-terminated array of function pointers,
+ *                  corresponding to the set of record converters which will
+ *                  be called, whenever a record of this type is encountered.
  *                  The converters are called in order, and all converters will
  *                  be called, even if an earlier one rejects the record.  The
  *                  last entry in the array must be set to NULL.
  */
 typedef struct {
-   char * recordKeyword;
-   int maxFields;
-   DtDbConverter * converters;
+        char *recordKeyword;
+        int maxFields;
+        DtDbConverter *converters;
 } DtDbRecordDesc;
-
 
 /*
  * _DtDbRead() is the function which causes the specified set of directories to
@@ -170,11 +166,9 @@ typedef struct {
  *
  *  int numRecordDescriptions:  The number of entries in the above array.
  */
-extern void _DtDbRead (DtDirPaths * dirs,
-                       char * suffix,
-                       DtDbRecordDesc * recordDescriptions,
-                       int numRecordDescriptions);
-
+extern void _DtDbRead(DtDirPaths *dirs, char *suffix,
+                      DtDbRecordDesc *recordDescriptions,
+                      int numRecordDescriptions);
 
 /*
  * _DtDbPathIdToString() is used to map a filename identifier, represented
@@ -182,7 +176,7 @@ extern void _DtDbRead (DtDirPaths * dirs,
  * representation.  The returned string is owned by the calling application,
  * which should free it up when no longer needed.
  */
-extern char * _DtDbPathIdToString ( DtDbPathId pathId );
+extern char *_DtDbPathIdToString(DtDbPathId pathId);
 
 #endif /* _Dt_DbReader_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

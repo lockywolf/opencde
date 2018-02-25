@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         usersig.h $XConsortium: usersig.h /main/3 1995/10/26 15:49:19 rswiston $
- * Language:     C
+ * File:         usersig.h $XConsortium: usersig.h /main/3 1995/10/26 15:49:19
+ * rswiston $ Language:     C
  *
  * (c) Copyright 1989, Hewlett-Packard Company, all rights reserved.
  *

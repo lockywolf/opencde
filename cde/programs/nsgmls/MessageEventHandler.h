@@ -38,22 +38,19 @@ class OutputCharStream;
 class SgmlParser;
 
 class SP_API MessageEventHandler : public ErrorCountEventHandler {
-public:
-  // if parser is non-null then subdocs will be parsed automatically
-  MessageEventHandler(Messenger *messenger, const SgmlParser *parser = 0);
-  void message(MessageEvent *);
-  void subdocEntity(SubdocEntityEvent *);
-  Messenger *messenger() const;
-private:
-  Messenger *messenger_;
-  const SgmlParser *parser_;
+      public:
+        // if parser is non-null then subdocs will be parsed automatically
+        MessageEventHandler(Messenger *messenger, const SgmlParser *parser = 0);
+        void message(MessageEvent *);
+        void subdocEntity(SubdocEntityEvent *);
+        Messenger *messenger() const;
+
+      private:
+        Messenger *messenger_;
+        const SgmlParser *parser_;
 };
 
-inline
-Messenger *MessageEventHandler::messenger() const
-{
-  return messenger_;
-}
+inline Messenger *MessageEventHandler::messenger() const { return messenger_; }
 
 #ifdef SP_NAMESPACE
 }

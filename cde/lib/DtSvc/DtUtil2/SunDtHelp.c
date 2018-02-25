@@ -26,7 +26,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -63,108 +63,95 @@ typedef Widget (*SUNWWidgetProc)();
 typedef int (*SUNWIntProc)();
 
 typedef struct _SUNWHelpProcList {
-    SUNWWidgetProc	DtCreateHelpDialogSym;
-    SUNWWidgetProc	DtCreateHelpQuickDialogSym;
-    SUNWWidgetProc	DtHelpQuickDialogGetChildSym;
-    SUNWIntProc		DtHelpReturnSelectedWidgetIdSym;
+        SUNWWidgetProc DtCreateHelpDialogSym;
+        SUNWWidgetProc DtCreateHelpQuickDialogSym;
+        SUNWWidgetProc DtHelpQuickDialogGetChildSym;
+        SUNWIntProc DtHelpReturnSelectedWidgetIdSym;
 } SUNWHelpProcList;
 
-static SUNWHelpProcList		*pmySUNWProcList = NULL;
+static SUNWHelpProcList *pmySUNWProcList = NULL;
 
-int SUNWDtHelpdlopen()
-{
-    void *libDtHelpHandle = NULL;
+int SUNWDtHelpdlopen() {
+        void *libDtHelpHandle = NULL;
 
-    _DtSvcProcessLock();
-    pmySUNWProcList = (SUNWHelpProcList *)malloc(sizeof(SUNWHelpProcList));
-    libDtHelpHandle = dlopen("libDtHelp.so.2.1", RTLD_LAZY | RTLD_GLOBAL);
-    if (libDtHelpHandle == NULL) {
-	char *my_err_msg;
+        _DtSvcProcessLock();
+        pmySUNWProcList = (SUNWHelpProcList *)malloc(sizeof(SUNWHelpProcList));
+        libDtHelpHandle = dlopen("libDtHelp.so.2.1", RTLD_LAZY | RTLD_GLOBAL);
+        if (libDtHelpHandle == NULL) {
+                char *my_err_msg;
 
-	my_err_msg = dlerror();
-	printf("%s\n", my_err_msg);
-	_DtSvcProcessUnlock();
-	return(FALSE);
-    }
-    pmySUNWProcList->DtCreateHelpDialogSym = (SUNWWidgetProc)
-			 dlsym(libDtHelpHandle, "DtCreateHelpDialog");
-    pmySUNWProcList->DtCreateHelpQuickDialogSym = (SUNWWidgetProc)
-			 dlsym(libDtHelpHandle, "DtCreateHelpQuickDialog");
-    pmySUNWProcList->DtHelpQuickDialogGetChildSym = (SUNWWidgetProc)
-			 dlsym(libDtHelpHandle, "DtHelpQuickDialogGetChild");
-    pmySUNWProcList->DtHelpReturnSelectedWidgetIdSym = (SUNWIntProc)
-			 dlsym(libDtHelpHandle, "DtHelpReturnSelectedWidgetId");
+                my_err_msg = dlerror();
+                printf("%s\n", my_err_msg);
+                _DtSvcProcessUnlock();
+                return (FALSE);
+        }
+        pmySUNWProcList->DtCreateHelpDialogSym =
+            (SUNWWidgetProc)dlsym(libDtHelpHandle, "DtCreateHelpDialog");
+        pmySUNWProcList->DtCreateHelpQuickDialogSym =
+            (SUNWWidgetProc)dlsym(libDtHelpHandle, "DtCreateHelpQuickDialog");
+        pmySUNWProcList->DtHelpQuickDialogGetChildSym =
+            (SUNWWidgetProc)dlsym(libDtHelpHandle, "DtHelpQuickDialogGetChild");
+        pmySUNWProcList->DtHelpReturnSelectedWidgetIdSym =
+            (SUNWIntProc)dlsym(libDtHelpHandle, "DtHelpReturnSelectedWidgetId");
 
-    _DtSvcProcessUnlock();
-    return(TRUE);
+        _DtSvcProcessUnlock();
+        return (TRUE);
 }
 
-Widget _DtCreateHelpDialog(
-    Widget parent,
-    char *name,
-    ArgList al,
-    Cardinal ac)
-{
-    int status;
+Widget _DtCreateHelpDialog(Widget parent, char *name, ArgList al, Cardinal ac) {
+        int status;
 
-    _DtSvcProcessLock();
-    status = pmySUNWProcList  || SUNWDtHelpdlopen();
-    _DtSvcProcessUnlock();
+        _DtSvcProcessLock();
+        status = pmySUNWProcList || SUNWDtHelpdlopen();
+        _DtSvcProcessUnlock();
 
-    if (!status)
-        return(NULL);
+        if (!status)
+                return (NULL);
 
-    return ((*pmySUNWProcList->DtCreateHelpDialogSym)(parent, name, al, ac));
+        return (
+            (*pmySUNWProcList->DtCreateHelpDialogSym)(parent, name, al, ac));
 }
 
-Widget _DtCreateHelpQuickDialog(
-    Widget parent,
-    char *name,
-    ArgList al,
-    Cardinal ac)
-{
-    int status;
+Widget _DtCreateHelpQuickDialog(Widget parent, char *name, ArgList al,
+                                Cardinal ac) {
+        int status;
 
-    _DtSvcProcessLock();
-    status = pmySUNWProcList  || SUNWDtHelpdlopen();
-    _DtSvcProcessUnlock();
+        _DtSvcProcessLock();
+        status = pmySUNWProcList || SUNWDtHelpdlopen();
+        _DtSvcProcessUnlock();
 
-    if (!status)
-        return(NULL);
+        if (!status)
+                return (NULL);
 
-    return ((*pmySUNWProcList->DtCreateHelpQuickDialogSym)(parent, name, al, ac));
+        return ((*pmySUNWProcList->DtCreateHelpQuickDialogSym)(parent, name, al,
+                                                               ac));
 }
 
-Widget _DtHelpQuickDialogGetChild(
-        Widget widget,
-        unsigned char child )
-{
-    int status;
+Widget _DtHelpQuickDialogGetChild(Widget widget, unsigned char child) {
+        int status;
 
-    _DtSvcProcessLock();
-    status = pmySUNWProcList  || SUNWDtHelpdlopen();
-    _DtSvcProcessUnlock();
+        _DtSvcProcessLock();
+        status = pmySUNWProcList || SUNWDtHelpdlopen();
+        _DtSvcProcessUnlock();
 
-    if (!status)
-        return(NULL);
+        if (!status)
+                return (NULL);
 
-    return ((*pmySUNWProcList->DtHelpQuickDialogGetChildSym)(widget, child));
+        return (
+            (*pmySUNWProcList->DtHelpQuickDialogGetChildSym)(widget, child));
 }
 
-int _DtHelpReturnSelectedWidgetId(
-    Widget parent,
-    Cursor cursor,
-    Widget  *widget)
-{
-    int status;
+int _DtHelpReturnSelectedWidgetId(Widget parent, Cursor cursor,
+                                  Widget *widget) {
+        int status;
 
-    _DtSvcProcessLock();
-    status = pmySUNWProcList  || SUNWDtHelpdlopen();
-    _DtSvcProcessUnlock();
+        _DtSvcProcessLock();
+        status = pmySUNWProcList || SUNWDtHelpdlopen();
+        _DtSvcProcessUnlock();
 
-    if (!status)
-        return(NULL);
+        if (!status)
+                return (NULL);
 
-    return ((*pmySUNWProcList->DtHelpReturnSelectedWidgetIdSym)(parent, cursor,
-							    widget));
+        return ((*pmySUNWProcList->DtHelpReturnSelectedWidgetIdSym)(
+            parent, cursor, widget));
 }

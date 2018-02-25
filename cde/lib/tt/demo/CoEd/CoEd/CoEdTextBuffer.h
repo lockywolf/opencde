@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: CoEdTextBuffer.h /main/3 1995/10/20 17:04:22 rswiston $ 			 				 */
+/*%%  $XConsortium: CoEdTextBuffer.h /main/3 1995/10/20 17:04:22 rswiston $
+ */
 /* -*-C++-*-
  *
  * CoEd_TextBuffer.h
@@ -63,19 +64,18 @@
 #include <CoEd.h>
 
 class CoEdTextBuffer {
-    public:
-	CoEdTextBuffer( XmTextBlock *textBuffer );
+      public:
+        CoEdTextBuffer(XmTextBlock *textBuffer);
 
-	CoEdStatus	insertText( long start, long end,
-					    const char *text );
-	CoEdStatus	save();
-	CoEdStatus	revert();
-	CoEdStatus	rename( const char *newPath );
-	int		insertingText() const { return _insertingText; }
-	
-    private:
-	XmTextBlock	       *_textBuffer;
-	int			_insertingText;
+        CoEdStatus insertText(long start, long end, const char *text);
+        CoEdStatus save();
+        CoEdStatus revert();
+        CoEdStatus rename(const char *newPath);
+        int insertingText() const { return _insertingText; }
+
+      private:
+        XmTextBlock *_textBuffer;
+        int _insertingText;
 };
 
 #endif CoEd_TextBuffer_h

@@ -22,12 +22,11 @@
  */
 /* $XConsortium: term.c /main/3 1995/10/27 10:40:51 rswiston $ */
 /*
- * (c) Copyright 1993, 1994 Hewlett-Packard Company	
+ * (c) Copyright 1993, 1994 Hewlett-Packard Company
  * (c) Copyright 1993, 1994 International Business Machines Corp.
  * (c) Copyright 1993, 1994 Sun Microsystems, Inc.
  * (c) Copyright 1993, 1994 Novell, Inc.
  */
-
 
 /*
  * term.c
@@ -54,109 +53,113 @@ static void CreateTerm(Widget, char *);
 static void SendCommandCb(Widget, XtPointer, XtPointer);
 static void AddCommandButton(Widget, char *, char *);
 
-main(int argc, char **argv)
-{
-    XtAppContext appContext;
-    Arg args[20];
-    int n;
-    XmString labelString;
+main(int argc, char **argv) {
+        XtAppContext appContext;
+        Arg args[20];
+        int n;
+        XmString labelString;
 
-    Widget mainWindow, termContainer, termTitle;
-    
-    /* Initialize DtTerm widget library */
+        Widget mainWindow, termContainer, termTitle;
 
-    DtTermInitialize();
+        /* Initialize DtTerm widget library */
 
-    toplevel = XtAppInitialize(&appContext, "Term", NULL, 0, &argc, argv,
-				NULL, NULL, 0);
+        DtTermInitialize();
 
-    n = 0;
-    XtSetArg(args[n], XmNdialogType, XmDIALOG_TEMPLATE); n++;
-    mainWindow = XmCreateMessageBox(toplevel, "mainWindow", args, n);
-    XtManageChild(mainWindow);
+        toplevel = XtAppInitialize(&appContext, "Term", NULL, 0, &argc, argv,
+                                   NULL, NULL, 0);
 
-    n = 0;
-    XtSetArg(args[n], XmNmarginWidth, 10); n++;
-    XtSetArg(args[n], XmNmarginHeight, 10); n++;
-    termContainer = XmCreateFrame(mainWindow, "termContainer", args, n);
-    XtManageChild(termContainer);
+        n = 0;
+        XtSetArg(args[n], XmNdialogType, XmDIALOG_TEMPLATE);
+        n++;
+        mainWindow = XmCreateMessageBox(toplevel, "mainWindow", args, n);
+        XtManageChild(mainWindow);
 
-    labelString = XmStringCreateLocalized("DtTerm with date and time shortcuts");
-    n = 0;
-    XtSetArg(args[n], XmNchildType, XmFRAME_TITLE_CHILD); n++;
-    XtSetArg(args[n], XmNlabelString, labelString); n++;
-    termTitle = XmCreateLabel(termContainer, "termTitle", args, n);
-    XtManageChild(termTitle);
-    XmStringFree(labelString);
+        n = 0;
+        XtSetArg(args[n], XmNmarginWidth, 10);
+        n++;
+        XtSetArg(args[n], XmNmarginHeight, 10);
+        n++;
+        termContainer = XmCreateFrame(mainWindow, "termContainer", args, n);
+        XtManageChild(termContainer);
 
-    /* Create the terminal widget */
+        labelString =
+            XmStringCreateLocalized("DtTerm with date and time shortcuts");
+        n = 0;
+        XtSetArg(args[n], XmNchildType, XmFRAME_TITLE_CHILD);
+        n++;
+        XtSetArg(args[n], XmNlabelString, labelString);
+        n++;
+        termTitle = XmCreateLabel(termContainer, "termTitle", args, n);
+        XtManageChild(termTitle);
+        XmStringFree(labelString);
 
-    CreateTerm(termContainer, "/bin/sh");
+        /* Create the terminal widget */
 
-    /* Add shortcut buttons to the message box */
+        CreateTerm(termContainer, "/bin/sh");
 
-    AddCommandButton(mainWindow, "Today", "date\n");
-    AddCommandButton(mainWindow, "Month", "cal\n");
-    AddCommandButton(mainWindow, "1994", "clear;cal 1994\n");
-    AddCommandButton(mainWindow, "1995", "clear;cal 1995\n");
-    AddCommandButton(mainWindow, "1996", "clear;cal 1996\n");
-    AddCommandButton(mainWindow, "1997", "clear;cal 1997\n");
-    AddCommandButton(mainWindow, "1998", "clear;cal 1998\n");
-    AddCommandButton(mainWindow, "1999", "clear;cal 1999\n");
-    AddCommandButton(mainWindow, "2000", "clear;cal 2000\n");
+        /* Add shortcut buttons to the message box */
 
-    XtRealizeWidget(toplevel);
-    XtAppMainLoop(appContext);
+        AddCommandButton(mainWindow, "Today", "date\n");
+        AddCommandButton(mainWindow, "Month", "cal\n");
+        AddCommandButton(mainWindow, "1994", "clear;cal 1994\n");
+        AddCommandButton(mainWindow, "1995", "clear;cal 1995\n");
+        AddCommandButton(mainWindow, "1996", "clear;cal 1996\n");
+        AddCommandButton(mainWindow, "1997", "clear;cal 1997\n");
+        AddCommandButton(mainWindow, "1998", "clear;cal 1998\n");
+        AddCommandButton(mainWindow, "1999", "clear;cal 1999\n");
+        AddCommandButton(mainWindow, "2000", "clear;cal 2000\n");
+
+        XtRealizeWidget(toplevel);
+        XtAppMainLoop(appContext);
 }
-
 
 /*
  * Create a DtTerm
  */
 
-static void CreateTerm(Widget parent, char *cmd)
-{
-    Widget term;
-    Arg args[20];
-    int n;
-    
-    /*
-     * Create a DtTerm widget.
-     * Pass the command to execute.
-     * Configure the window to fit a calendar year.
-     */
+static void CreateTerm(Widget parent, char *cmd) {
+        Widget term;
+        Arg args[20];
+        int n;
 
-    n = 0;
-    XtSetArg(args[n], DtNsubprocessCmd, cmd); n++;
-    XtSetArg(args[n], DtNrows, 46); n++;
-    XtSetArg(args[n], DtNcolumns, 80); n++;
-    term = DtCreateTerm(parent, "term", args, n);
-    XtManageChild(term);
+        /*
+         * Create a DtTerm widget.
+         * Pass the command to execute.
+         * Configure the window to fit a calendar year.
+         */
+
+        n = 0;
+        XtSetArg(args[n], DtNsubprocessCmd, cmd);
+        n++;
+        XtSetArg(args[n], DtNrows, 46);
+        n++;
+        XtSetArg(args[n], DtNcolumns, 80);
+        n++;
+        term = DtCreateTerm(parent, "term", args, n);
+        XtManageChild(term);
 }
 
-static void AddCommandButton(Widget parent, char *label, char *cmd)
-{
-    XmString labelString;
-    Arg args[1];
-    Widget button;
+static void AddCommandButton(Widget parent, char *label, char *cmd) {
+        XmString labelString;
+        Arg args[1];
+        Widget button;
 
-    /* Create a pushbutton which will send a command to the terminal */
+        /* Create a pushbutton which will send a command to the terminal */
 
-    labelString = XmStringCreateLocalized(label);
-    XtSetArg(args[0], XmNlabelString, labelString);
-    button = XmCreatePushButton(parent, label, args, 1);
-    XtManageChild(button);
-    XmStringFree(labelString);
-    XtAddCallback(button, XmNactivateCallback, SendCommandCb, (XtPointer)cmd);
+        labelString = XmStringCreateLocalized(label);
+        XtSetArg(args[0], XmNlabelString, labelString);
+        button = XmCreatePushButton(parent, label, args, 1);
+        XtManageChild(button);
+        XmStringFree(labelString);
+        XtAddCallback(button, XmNactivateCallback, SendCommandCb,
+                      (XtPointer)cmd);
 }
 
-static void SendCommandCb(Widget w, XtPointer cd, XtPointer cb)
-{
-    Widget term = XtNameToWidget(toplevel, "*term");
-    unsigned char *cmd = (unsigned char*)cd;
+static void SendCommandCb(Widget w, XtPointer cd, XtPointer cb) {
+        Widget term = XtNameToWidget(toplevel, "*term");
+        unsigned char *cmd = (unsigned char *)cd;
 
-    /* send the pushbutton command to the terminal widget */
+        /* send the pushbutton command to the terminal widget */
 
-    DtTermSubprocSend(term, cmd, strlen((char*)cmd));
+        DtTermSubprocSend(term, cmd, strlen((char *)cmd));
 }
-

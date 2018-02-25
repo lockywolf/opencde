@@ -32,28 +32,25 @@
    a name/value pairing
    ************************************************************** */
 
-class Attribute
-{
-public:
-  Attribute(const Symbol &name, char *value = 0);
-  ~Attribute();
+class Attribute {
+      public:
+        Attribute(const Symbol &name, char *value = 0);
+        ~Attribute();
 
-  const Symbol &name() const	{ return f_name; }
-  bool operator==(const Attribute &) const ;
+        const Symbol &name() const { return f_name; }
+        bool operator==(const Attribute &) const;
 
-  const char   *value() const	{ return f_value ; } 
+        const char *value() const { return f_value; }
 
-  ostream &print(ostream &) const;
+        ostream &print(ostream &) const;
 
-private:
-  Symbol        f_name;
-  char	       *f_value ;
+      private:
+        Symbol f_name;
+        char *f_value;
 };
 
-inline
-ostream &operator<<(ostream &o, const Attribute &a)
-{
-  return a.print(o);
+inline ostream &operator<<(ostream &o, const Attribute &a) {
+        return a.print(o);
 }
 
 #endif /* _Attribute_h */

@@ -20,7 +20,7 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* lcUtil.c 1.1 - Fujitsu source for CDEnext    95/11/06 20:32:42 	*/ 
+/* lcUtil.c 1.1 - Fujitsu source for CDEnext    95/11/06 20:32:42 	*/
 /* $XConsortium: _fallcUtil.c /main/1 1996/04/08 15:19:43 cde-fuj $ */
 /*
  * Copyright 1992, 1993 by TOSHIBA Corp.
@@ -54,48 +54,44 @@
 
 #ifdef X_NOT_STDC_ENV
 #ifndef toupper
-#define toupper(c)      ((int)(c) - 'a' + 'A')
+#define toupper(c) ((int)(c) - 'a' + 'A')
 #endif
 #endif
 
-int 
-_fallcCompareISOLatin1(str1, str2)
-    char *str1, *str2;
+int _fallcCompareISOLatin1(str1, str2) char *str1, *str2;
 {
-    register char ch1, ch2;
+        register char ch1, ch2;
 
-    for ( ; (ch1 = *str1) && (ch2 = *str2); str1++, str2++) {
-        if (islower(ch1))
-            ch1 = toupper(ch1);
-        if (islower(ch2))
-            ch2 = toupper(ch2);
+        for (; (ch1 = *str1) && (ch2 = *str2); str1++, str2++) {
+                if (islower(ch1))
+                        ch1 = toupper(ch1);
+                if (islower(ch2))
+                        ch2 = toupper(ch2);
 
-        if (ch1 != ch2)
-            break;
-    }
+                if (ch1 != ch2)
+                        break;
+        }
 
-    return *str1 - *str2;
+        return *str1 - *str2;
 }
 
-int 
-_fallcNCompareISOLatin1(str1, str2, len)
-    char *str1, *str2;
-    int len;
+int _fallcNCompareISOLatin1(str1, str2, len) char *str1, *str2;
+int len;
 {
-    register char ch1, ch2;
+        register char ch1, ch2;
 
-    for ( ; (ch1 = *str1) && (ch2 = *str2) && len; str1++, str2++, len--) {
-        if (islower(ch1))
-            ch1 = toupper(ch1);
-        if (islower(ch2))
-            ch2 = toupper(ch2);
+        for (; (ch1 = *str1) && (ch2 = *str2) && len; str1++, str2++, len--) {
+                if (islower(ch1))
+                        ch1 = toupper(ch1);
+                if (islower(ch2))
+                        ch2 = toupper(ch2);
 
-        if (ch1 != ch2)
-            break;
-    }
+                if (ch1 != ch2)
+                        break;
+        }
 
-    if (len == 0)
-        return 0;
+        if (len == 0)
+                return 0;
 
-    return *str1 - *str2;
+        return *str1 - *str2;
 }

@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         pathwexp.c $XConsortium: pathwexp.c /main/3 1995/10/26 15:37:07 rswiston $
- * Language:     C
+ * File:         pathwexp.c $XConsortium: pathwexp.c /main/3 1995/10/26 15:37:07
+ * rswiston $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -41,13 +41,12 @@
 XeString Xe_shellexp(XeString path)
 /*------------------------------------------------------------------------+*/
 {
-   int num;
-   XeString *res = (XeString *) shellscan(path, &num,
-			 SHX_NOGLOB | SHX_NOSPACE | SHX_NOMETA | SHX_NOGRAVE);
-      
-   if (num == 0)
-      return NULL;
-   else
-      return res[0];
-}
+        int num;
+        XeString *res = (XeString *)shellscan(
+            path, &num, SHX_NOGLOB | SHX_NOSPACE | SHX_NOMETA | SHX_NOGRAVE);
 
+        if (num == 0)
+                return NULL;
+        else
+                return res[0];
+}

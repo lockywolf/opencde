@@ -26,7 +26,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -42,16 +42,16 @@ extern "C" {
 /********    Conditionally defined macros for thread safe DtPrint ******/
 #ifdef XTHREADS
 
-#define _DtPrintWidgetToAppContext(w) \
+#define _DtPrintWidgetToAppContext(w)                                          \
         XtAppContext app = XtWidgetToApplicationContext(w)
 
-#define _DtPrintDisplayToAppContext(d) \
+#define _DtPrintDisplayToAppContext(d)                                         \
         XtAppContext app = XtDisplayToApplicationContext(d)
 
-#define _DtPrintAppLock(app)		XtAppLock(app)
-#define _DtPrintAppUnlock(app)		XtAppUnlock(app)
-#define _DtPrintProcessLock()		XtProcessLock()
-#define _DtPrintProcessUnlock()		XtProcessUnlock()
+#define _DtPrintAppLock(app) XtAppLock(app)
+#define _DtPrintAppUnlock(app) XtAppUnlock(app)
+#define _DtPrintProcessLock() XtProcessLock()
+#define _DtPrintProcessUnlock() XtProcessUnlock()
 
 #else /* XTHREADS */
 
@@ -65,7 +65,7 @@ extern "C" {
 #endif /* XTHREADS */
 
 #ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
 #endif /* _DtPrintI_h */

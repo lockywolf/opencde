@@ -59,95 +59,91 @@
 /*	    swab_objrec		*/
 /*				*/
 /********************************/
-void	swab_objrec (struct or_objrec *rec,  SWABDIR direction)
-{
+void swab_objrec(struct or_objrec *rec, SWABDIR direction) {
 #ifndef BYTE_SWAP
-    return;
+        return;
 #else
-    if (direction == NTOH) {
-	NTOHL (rec->or_objflags);
-	NTOHL (rec->or_objuflags);
-	NTOHL (rec->or_objsize);
-	NTOHL (rec->or_objdate);
-	NTOHL (rec->or_objsecmask);
+        if (direction == NTOH) {
+                NTOHL(rec->or_objflags);
+                NTOHL(rec->or_objuflags);
+                NTOHL(rec->or_objsize);
+                NTOHL(rec->or_objdate);
+                NTOHL(rec->or_objsecmask);
 
-	NTOHS (rec->or_objaccess);
-	NTOHS (rec->or_objtype);
-	NTOHS (rec->or_objcost);
-	NTOHS (rec->or_objhdroffset);
-	NTOHS (rec->or_objeureka);
-    }
-    else {	/* going the other direction */
-	HTONL (rec->or_objflags);
-	HTONL (rec->or_objuflags);
-	HTONL (rec->or_objsize);
-	HTONL (rec->or_objdate);
-	HTONL (rec->or_objsecmask);
+                NTOHS(rec->or_objaccess);
+                NTOHS(rec->or_objtype);
+                NTOHS(rec->or_objcost);
+                NTOHS(rec->or_objhdroffset);
+                NTOHS(rec->or_objeureka);
+        } else { /* going the other direction */
+                HTONL(rec->or_objflags);
+                HTONL(rec->or_objuflags);
+                HTONL(rec->or_objsize);
+                HTONL(rec->or_objdate);
+                HTONL(rec->or_objsecmask);
 
-	HTONS (rec->or_objaccess);
-	HTONS (rec->or_objtype);
-	HTONS (rec->or_objcost);
-	HTONS (rec->or_objhdroffset);
-	HTONS (rec->or_objeureka);
-    }
-    return;
+                HTONS(rec->or_objaccess);
+                HTONS(rec->or_objtype);
+                HTONS(rec->or_objcost);
+                HTONS(rec->or_objhdroffset);
+                HTONS(rec->or_objeureka);
+        }
+        return;
 #endif /* BYTE_SWAP */
-}  /* swab_objrec() */
-
+} /* swab_objrec() */
 
 /********************************/
 /*				*/
 /*	    swab_dbrec		*/
 /*				*/
 /********************************/
-void	swab_dbrec (struct or_dbrec *rec,  SWABDIR direction)
-{
+void swab_dbrec(struct or_dbrec *rec, SWABDIR direction) {
 #ifndef BYTE_SWAP
-    return;
+        return;
 #else
-    if (direction == NTOH) {
-	NTOHL (rec->or_dbflags);
-	NTOHL (rec->or_dbuflags);
-	NTOHL (rec->or_reccount);
-	NTOHL (rec->or_maxdba);
-	NTOHL (rec->or_availd99);
-	NTOHL (rec->or_unavaild99);
-	NTOHL (rec->or_hufid);
-	NTOHL (rec->or_dbsecmask);
+        if (direction == NTOH) {
+                NTOHL(rec->or_dbflags);
+                NTOHL(rec->or_dbuflags);
+                NTOHL(rec->or_reccount);
+                NTOHL(rec->or_maxdba);
+                NTOHL(rec->or_availd99);
+                NTOHL(rec->or_unavaild99);
+                NTOHL(rec->or_hufid);
+                NTOHL(rec->or_dbsecmask);
 
-	NTOHS (rec->or_dbotype);
-	NTOHS (rec->or_compflags);
-	NTOHS (rec->or_dbaccess);
-	NTOHS (rec->or_minwordsz);
-	NTOHS (rec->or_maxwordsz);
-	NTOHS (rec->or_recslots);
-	NTOHS (rec->or_fzkeysz);
-	NTOHS (rec->or_abstrsz);
-	NTOHS (rec->or_language);
-    }
+                NTOHS(rec->or_dbotype);
+                NTOHS(rec->or_compflags);
+                NTOHS(rec->or_dbaccess);
+                NTOHS(rec->or_minwordsz);
+                NTOHS(rec->or_maxwordsz);
+                NTOHS(rec->or_recslots);
+                NTOHS(rec->or_fzkeysz);
+                NTOHS(rec->or_abstrsz);
+                NTOHS(rec->or_language);
+        }
 
-    else {	/* going the other direction */
-	HTONL (rec->or_dbflags);
-	HTONL (rec->or_dbuflags);
-	HTONL (rec->or_reccount);
-	HTONL (rec->or_maxdba);
-	HTONL (rec->or_availd99);
-	HTONL (rec->or_unavaild99);
-	HTONL (rec->or_hufid);
-	HTONL (rec->or_dbsecmask);
+        else { /* going the other direction */
+                HTONL(rec->or_dbflags);
+                HTONL(rec->or_dbuflags);
+                HTONL(rec->or_reccount);
+                HTONL(rec->or_maxdba);
+                HTONL(rec->or_availd99);
+                HTONL(rec->or_unavaild99);
+                HTONL(rec->or_hufid);
+                HTONL(rec->or_dbsecmask);
 
-	HTONS (rec->or_dbotype);
-	HTONS (rec->or_compflags);
-	HTONS (rec->or_dbaccess);
-	HTONS (rec->or_minwordsz);
-	HTONS (rec->or_maxwordsz);
-	HTONS (rec->or_recslots);
-	HTONS (rec->or_fzkeysz);
-	HTONS (rec->or_abstrsz);
-	HTONS (rec->or_language);
-    }
-    return;
+                HTONS(rec->or_dbotype);
+                HTONS(rec->or_compflags);
+                HTONS(rec->or_dbaccess);
+                HTONS(rec->or_minwordsz);
+                HTONS(rec->or_maxwordsz);
+                HTONS(rec->or_recslots);
+                HTONS(rec->or_fzkeysz);
+                HTONS(rec->or_abstrsz);
+                HTONS(rec->or_language);
+        }
+        return;
 #endif /* BYTE_SWAP */
-}  /* swab_dbrec() */
+} /* swab_dbrec() */
 
 /********************* DTSRSWAB.C **********************************/

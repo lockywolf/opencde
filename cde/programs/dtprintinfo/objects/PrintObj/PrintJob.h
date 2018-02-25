@@ -53,24 +53,21 @@ extern const char *TIME_SUBMITTED;
 
 class PrintJob : public BaseObj {
 
-   friend int CancelJob(BaseObj *, char **output, BaseObj *requestor);
+        friend int CancelJob(BaseObj *, char **output, BaseObj *requestor);
 
- protected:
+      protected:
+        char *_jobNumber;
+        static int CancelJob(BaseObj *, char **output, BaseObj *requestor);
 
-   char *_jobNumber;
-   static int CancelJob(BaseObj *, char **output, BaseObj *requestor);
+      public:
+        PrintJob(BaseObj *parent, char *JobName, char *JobNumber, char *Owner,
+                 char *Date, char *Time, char *Size);
 
- public:
+        virtual ~PrintJob();
 
-   PrintJob(BaseObj *parent, char *JobName, char *JobNumber, char *Owner,
-	    char *Date, char *Time, char *Size);
+        const char *JobNumber() { return _jobNumber; }
 
-   virtual ~PrintJob();
-
-   const char *JobNumber() { return _jobNumber; }
-
-   virtual const char *const ObjectClassName() { return PRINTJOB; }
-
+        virtual const char *const ObjectClassName() { return PRINTJOB; }
 };
 
-#endif // PRINTJOB_H 
+#endif // PRINTJOB_H

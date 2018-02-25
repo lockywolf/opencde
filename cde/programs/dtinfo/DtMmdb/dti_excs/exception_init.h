@@ -24,4 +24,3 @@
 
 void initialize_exception();
 void quit_exception();
-

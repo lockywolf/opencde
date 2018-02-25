@@ -35,20 +35,19 @@
  * This file contains some miscellaneous defines.
  */
 
-#define	_DtCM_FIRST_EXTENSIBLE_SERVER_VERSION	5
-#define	_DtCM_FIRST_EXTENSIBLE_DATA_VERSION	4
+#define _DtCM_FIRST_EXTENSIBLE_SERVER_VERSION 5
+#define _DtCM_FIRST_EXTENSIBLE_DATA_VERSION 4
 
-#define _DtCM_SPEC_VERSION_SUPPORTED \
-	"-//XAPIA/CSA/VERSION1/NONSGML CSA Version 1//EN"
+#define _DtCM_SPEC_VERSION_SUPPORTED                                           \
+        "-//XAPIA/CSA/VERSION1/NONSGML CSA Version 1//EN"
 
-#define _DtCM_PRODUCT_IDENTIFIER \
-	"-//DT//NONSGML Calendar Product Version 1//EN"
+#define _DtCM_PRODUCT_IDENTIFIER "-//DT//NONSGML Calendar Product Version 1//EN"
 
 /*
  * Time related definitions
  */
 
-#define	_DtCM_BOT	0
-#define	_DtCM_EOT	2147483647	/* 2^31-1 */
+#define _DtCM_BOT 0
+#define _DtCM_EOT 2147483647 /* 2^31-1 */
 
 #endif

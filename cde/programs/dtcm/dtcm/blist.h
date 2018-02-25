@@ -24,7 +24,8 @@
 **
 **  blist.h
 **
-**  static char sccsid[] = "@(#)blist.h 1.19 94/11/07 Copyr 1991 Sun Microsystems, Inc."; 
+**  static char sccsid[] = "@(#)blist.h 1.19 94/11/07 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $XConsortium: blist.h /main/3 1995/11/03 10:18:18 rswiston $
 **
@@ -64,54 +65,52 @@
  * multi browser uses the cal_handle item and therefore, we can't delete the
  * entry from this list until the multi browser is no longer using that pointer.
  */
-typedef enum {
-	BLIST_INSERT, BLIST_DELETE, BLIST_ACTIVE
-} BlistTag;
+typedef enum { BLIST_INSERT, BLIST_DELETE, BLIST_ACTIVE } BlistTag;
 
 typedef struct {
-	char			*name;
-	BlistTag		tag;
-	CSA_session_handle	cal_handle;
-	unsigned int		user_access;
-	int			version;
-	Paint_cache		*cache;
-	int			cache_size;
+        char *name;
+        BlistTag tag;
+        CSA_session_handle cal_handle;
+        unsigned int user_access;
+        int version;
+        Paint_cache *cache;
+        int cache_size;
 } BlistData;
 
 typedef struct {
-	Widget		button_rc_mgr;
-	Widget		edit_rc_mgr;
-	Widget		frame;
-	Widget		form;
-	Widget		username;
-	Widget		username_label;
-	Widget		add_button;
-	Widget		list_label;
-	Widget		browse_list;
-	Widget		browse_list_sw;
-	Widget		remove_button;
-	Widget		ok_button;
-	Widget		apply_button;
-	Widget		reset_button;
-	Widget		cancel_button;
-	Widget		help_button;
-	Widget		message;
-	CmDataList	*blist_data;
-	Boolean		bl_pending_message_up;
-	Boolean		bl_list_changed;
+        Widget button_rc_mgr;
+        Widget edit_rc_mgr;
+        Widget frame;
+        Widget form;
+        Widget username;
+        Widget username_label;
+        Widget add_button;
+        Widget list_label;
+        Widget browse_list;
+        Widget browse_list_sw;
+        Widget remove_button;
+        Widget ok_button;
+        Widget apply_button;
+        Widget reset_button;
+        Widget cancel_button;
+        Widget help_button;
+        Widget message;
+        CmDataList *blist_data;
+        Boolean bl_pending_message_up;
+        Boolean bl_list_changed;
 } Browselist;
 
 typedef struct browser_state {
-	char			*cname;
-	Pixmap			*glyph;
-	struct browser_state	*next;
+        char *cname;
+        Pixmap *glyph;
+        struct browser_state *next;
 } BrowserState;
 
-extern void	blist_clean		P((Browselist*, Boolean));
-extern void	blist_init_names	P((Calendar*));
-extern void	blist_init_ui		P((Calendar*));
-extern void	blist_reset		P((Calendar*));
-extern void	make_browselist		P((Calendar*));
-extern void	show_browselist		P((Calendar*));
+extern void blist_clean P((Browselist *, Boolean));
+extern void blist_init_names P((Calendar *));
+extern void blist_init_ui P((Calendar *));
+extern void blist_reset P((Calendar *));
+extern void make_browselist P((Calendar *));
+extern void show_browselist P((Calendar *));
 
 #endif

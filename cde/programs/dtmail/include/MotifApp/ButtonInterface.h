@@ -26,7 +26,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -34,7 +34,7 @@
  *+SNOTICE
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -56,17 +56,16 @@
 //         by
 //           Douglas Young
 //           Prentice Hall, 1992
-//           ISBN 0-13-630252-1	
+//           ISBN 0-13-630252-1
 //
 //         Copyright 1991 by Prentice Hall
 //         All Rights Reserved
 //
-//  Permission to use, copy, modify, and distribute this software for 
-//  any purpose except publication and without fee is hereby granted, provided 
+//  Permission to use, copy, modify, and distribute this software for
+//  any purpose except publication and without fee is hereby granted, provided
 //  that the above copyright notice appear in all copies of the software.
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-
 
 //////////////////////////////////////////////////////////////
 // ButtonInterface.h: A push button interface to a Cmd object
@@ -77,14 +76,13 @@
 #include "CmdInterface.h"
 
 class ButtonInterface : public CmdInterface {
-    
-  public:
-    
-    ButtonInterface ( Widget, Cmd * );
+
+      public:
+        ButtonInterface(Widget, Cmd *);
 #ifndef CAN_INLINE_VIRTUALS
-    ~ButtonInterface ( void );
+        ~ButtonInterface(void);
 #endif /* CAN_INLINE_VIRTUALS */
 
-    static void mapName(const char * input, char * output);
+        static void mapName(const char *input, char *output);
 };
 #endif

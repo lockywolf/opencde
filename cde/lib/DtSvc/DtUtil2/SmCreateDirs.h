@@ -36,10 +36,10 @@
  **  -----------
  **
  *******************************************************************
- **  (c) Copyright Hewlett-Packard Company, 1990.  All rights are  
- **  reserved.  Copying or other reproduction of this program      
- **  except for archival purposes is prohibited without prior      
- **  written consent of Hewlett-Packard Company.		     
+ **  (c) Copyright Hewlett-Packard Company, 1990.  All rights are
+ **  reserved.  Copying or other reproduction of this program
+ **  except for archival purposes is prohibited without prior
+ **  written consent of Hewlett-Packard Company.
  ********************************************************************
  **
  **
@@ -66,8 +66,7 @@
  * Function definitions
  */
 
-extern char * _DtCreateDtDirs(Display *display) ;
-
+extern char *_DtCreateDtDirs(Display *display);
 
 #endif /* _SmCreateDirs_h */
 /* Do not add anything after this endif. */

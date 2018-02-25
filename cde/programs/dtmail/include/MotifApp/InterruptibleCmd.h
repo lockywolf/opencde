@@ -26,7 +26,7 @@
  *	$XConsortium: InterruptibleCmd.h /main/3 1995/11/06 16:31:32 rswiston $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -48,17 +48,16 @@
 //         by
 //           Douglas Young
 //           Prentice Hall, 1992
-//           ISBN 0-13-630252-1	
+//           ISBN 0-13-630252-1
 //
 //         Copyright 1991 by Prentice Hall
 //         All Rights Reserved
 //
-//  Permission to use, copy, modify, and distribute this software for 
-//  any purpose except publication and without fee is hereby granted, provided 
+//  Permission to use, copy, modify, and distribute this software for
+//  any purpose except publication and without fee is hereby granted, provided
 //  that the above copyright notice appear in all copies of the software.
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-
 
 //////////////////////////////////////////////////////////////
 // InterruptibleCmd.h: Abstract class that supports lengthy,
@@ -77,34 +76,31 @@
 
 class InterruptibleCmd;
 
-typedef void (*TaskDoneCallback) ( InterruptibleCmd *, Boolean, void * );
+typedef void (*TaskDoneCallback)(InterruptibleCmd *, Boolean, void *);
 
 class InterruptibleCmd : public NoUndoCmd {
-    
-  private:
-    
-    XtWorkProcId     _wpId;         // The ID of the workproc
-    TaskDoneCallback _callback;     // Application-defined callback
-    void            *_clientData;
-    Boolean workProc ();
-    static Boolean  workProcCallback ( XtPointer );
-    static void     interruptCallback ( void * );
-    void interrupt(); 
-    
-  protected:
-    
-    Boolean      _done;         // TRUE if the task has been completed
-    virtual void cleanup();     // Called when task ends
-    virtual void updateMessage ( char * );
-    
-    // Derived classes implement doit(), declared by Cmd
-    
-  public:
-    
-    InterruptibleCmd ( char *, char *, int );
-    virtual ~InterruptibleCmd();
-    
-    virtual void execute();  // Overrides base class member function
-    virtual void execute ( TaskDoneCallback, void * );
+
+      private:
+        XtWorkProcId _wpId;         // The ID of the workproc
+        TaskDoneCallback _callback; // Application-defined callback
+        void *_clientData;
+        Boolean workProc();
+        static Boolean workProcCallback(XtPointer);
+        static void interruptCallback(void *);
+        void interrupt();
+
+      protected:
+        Boolean _done;          // TRUE if the task has been completed
+        virtual void cleanup(); // Called when task ends
+        virtual void updateMessage(char *);
+
+        // Derived classes implement doit(), declared by Cmd
+
+      public:
+        InterruptibleCmd(char *, char *, int);
+        virtual ~InterruptibleCmd();
+
+        virtual void execute(); // Overrides base class member function
+        virtual void execute(TaskDoneCallback, void *);
 };
 #endif

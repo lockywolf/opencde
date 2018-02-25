@@ -27,8 +27,6 @@
 
 #ifndef CDE_NEXT
 
-
-
 #else
 //#include "StyleSheet/cde_next.h"
 #include "dti_cc/CC_Slist.h"
@@ -42,174 +40,166 @@
 #include "StyleSheet/Feature.h"
 #include "StyleSheet/StyleSheetExceptions.h"
 
-typedef CC_TPtrSlist<FeatureValue> defv_t; 
-typedef CC_TPtrSlistIterator<FeatureValue> defv_iterator_t; 
+typedef CC_TPtrSlist<FeatureValue> defv_t;
+typedef CC_TPtrSlistIterator<FeatureValue> defv_iterator_t;
 
-class TypeValues : public Destructable
-{
-public:
+class TypeValues : public Destructable {
+      public:
+        enum feature_t { real, integer, string, featureset, unit };
+        enum unit_t {
+                INCH = 0,
+                PICA = 1,
+                POINT = 2,
+                CM = 3,
+                PIXEL = 4,
+                NONE = 5
+        };
 
-   enum feature_t {real, integer, string, featureset, unit} ;
-   enum unit_t { INCH=0, PICA=1, POINT=2, CM=3, PIXEL=4, NONE=5 };
+        TypeValues(char *type, defv_t *);
+        ~TypeValues();
 
-   TypeValues(char* type, defv_t*);
-   ~TypeValues();
+        unsigned int operator==(const TypeValues &);
 
-   unsigned int operator==(const TypeValues&);
+        unsigned check(const FeatureValue *);
 
-   unsigned check(const FeatureValue*);
+        friend ostream &operator<<(ostream &, TypeValues &);
+        ostream &print(ostream &, int tabs) const;
 
-   friend ostream& operator <<(ostream&, TypeValues&);
-   ostream& print(ostream&, int tabs) const;
+      protected:
+        CC_String f_type;
+        defv_t *f_default_values;
 
-protected:
-   CC_String f_type;
-   defv_t* f_default_values;
-
-protected:
+      protected:
 };
 
 class FeatureDef;
 
-typedef CC_TPtrSlist<FeatureDef> def_list_t; 
-typedef CC_TPtrSlistIterator<FeatureDef> def_list_iterator_t; 
+typedef CC_TPtrSlist<FeatureDef> def_list_t;
+typedef CC_TPtrSlistIterator<FeatureDef> def_list_iterator_t;
 
-typedef CC_TPtrSlist<TypeValues> type_values_list_t; 
-typedef CC_TPtrSlistIterator<TypeValues> type_values_list_iterator_t; 
-	
+typedef CC_TPtrSlist<TypeValues> type_values_list_t;
+typedef CC_TPtrSlistIterator<TypeValues> type_values_list_iterator_t;
 
-class FeatureDef  : public Destructable
-{
-public:
+class FeatureDef : public Destructable {
+      public:
+        FeatureDef(const char *name);
+        virtual ~FeatureDef();
 
-   FeatureDef(const char* name);
-   virtual ~FeatureDef();
+        unsigned int operator==(const FeatureDef &);
 
-   unsigned int operator==(const FeatureDef&);
+        friend ostream &operator<<(ostream &, FeatureDef &);
 
-   friend ostream& operator <<(ostream&, FeatureDef&) ;
+        enum def_type_t { PRIMITIVE, COMPOSITE, REFERENCE, WILDCARD };
+        virtual unsigned type() const = 0;
+        virtual const CC_String *name() const { return &f_name; };
 
-   enum def_type_t { PRIMITIVE, COMPOSITE, REFERENCE, WILDCARD };
-   virtual unsigned type() const = 0;
-   virtual const CC_String* name() const { return &f_name; };
+        virtual ostream &print(ostream &, int tabs) const = 0;
+        virtual unsigned checkContent(const Feature *) const = 0;
 
-   virtual ostream& print(ostream&, int tabs)  const= 0;
-   virtual unsigned checkContent(const Feature*) const = 0;
+      protected:
+        CC_String f_name;
 
-protected:
-   CC_String f_name;
-
-protected:
+      protected:
 };
 
-class FeatureDefComposite : public FeatureDef
-{
-public:
-   FeatureDefComposite(const char* name, def_list_t*);
-   ~FeatureDefComposite();
+class FeatureDefComposite : public FeatureDef {
+      public:
+        FeatureDefComposite(const char *name, def_list_t *);
+        ~FeatureDefComposite();
 
-   unsigned checkContent(const Feature*)const ;
+        unsigned checkContent(const Feature *) const;
 
-   const FeatureDef* getComponentDef(const char*) const;
+        const FeatureDef *getComponentDef(const char *) const;
 
-   unsigned type() const { return COMPOSITE; };
+        unsigned type() const { return COMPOSITE; };
 
-protected:
-   def_list_t* f_components;
+      protected:
+        def_list_t *f_components;
 
-protected:
-   virtual ostream& print(ostream&, int tabs) const;
-}
-;
+      protected:
+        virtual ostream &print(ostream &, int tabs) const;
+};
 
-class FeatureDefPrimitive: public FeatureDef
-{
-public:
-   FeatureDefPrimitive(const char* name, type_values_list_t* tvslist);
-   ~FeatureDefPrimitive();
+class FeatureDefPrimitive : public FeatureDef {
+      public:
+        FeatureDefPrimitive(const char *name, type_values_list_t *tvslist);
+        ~FeatureDefPrimitive();
 
-   unsigned type() const { return PRIMITIVE; };
+        unsigned type() const { return PRIMITIVE; };
 
-   unsigned checkContent(const Feature*)const ;
+        unsigned checkContent(const Feature *) const;
 
-protected:
-   type_values_list_t* f_typeValuesList;
+      protected:
+        type_values_list_t *f_typeValuesList;
 
-protected:
-   virtual ostream& print(ostream&, int tabs) const;
-}
-;
+      protected:
+        virtual ostream &print(ostream &, int tabs) const;
+};
 
-class FeatureDefReference : public FeatureDef
-{
-public:
-   FeatureDefReference(const char* name) : FeatureDef(name) {};
-   ~FeatureDefReference() {};
+class FeatureDefReference : public FeatureDef {
+      public:
+        FeatureDefReference(const char *name) : FeatureDef(name){};
+        ~FeatureDefReference(){};
 
-   unsigned type() const { return REFERENCE; };
-   unsigned checkContent(const Feature*)const ;
+        unsigned type() const { return REFERENCE; };
+        unsigned checkContent(const Feature *) const;
 
-protected:
+      protected:
+      protected:
+        virtual ostream &print(ostream &, int tabs) const;
+};
 
-protected:
-   virtual ostream& print(ostream&, int tabs) const;
-}
-;
+class FeatureDefWildCard : public FeatureDef {
+      public:
+        FeatureDefWildCard(const char *name) : FeatureDef(name){};
+        ~FeatureDefWildCard(){};
 
-class FeatureDefWildCard : public FeatureDef
-{
-public:
-   FeatureDefWildCard(const char* name) : FeatureDef(name) {};
-   ~FeatureDefWildCard() {};
+        unsigned type() const { return WILDCARD; };
+        unsigned checkContent(const Feature *) const;
 
-   unsigned type() const { return WILDCARD; };
-   unsigned checkContent(const Feature*)const ;
+      protected:
+      protected:
+        virtual ostream &print(ostream &, int tabs) const;
+};
 
-protected:
+// typedef hashTable<FeatureDef, FeatureDef> featureDefDictionary_t;
+// typedef hashTableIterator<FeatureDef, FeatureDef>
+// featureDefDictionary_iterator_t;
 
-protected:
-   virtual ostream& print(ostream&, int tabs) const;
-}
-;
+class featureDefDictionary : public Destructable {
+      protected:
+        def_list_t *f_def_list;
 
-//typedef hashTable<FeatureDef, FeatureDef> featureDefDictionary_t;
-//typedef hashTableIterator<FeatureDef, FeatureDef> featureDefDictionary_iterator_t;
+      protected:
+        const FeatureDef *getDef(const char *);
+        const FeatureDef *getDef(const Feature *);
+        // const FeatureDef* getDef(const Feature*, const Feature*);
+        unsigned _checkSemantics(const Feature *f, const FeatureDef *);
 
-class featureDefDictionary  : public Destructable
-{
-protected:
-	def_list_t* f_def_list;
+      public:
+        featureDefDictionary();
+        ~featureDefDictionary();
 
-protected:
-	const FeatureDef* getDef(const char*);
-	const FeatureDef* getDef(const Feature*);
-	//const FeatureDef* getDef(const Feature*, const Feature*);
-        unsigned _checkSemantics(const Feature* f, const FeatureDef*);
+        void addFeatureDefs(def_list_t *);
 
-public:
-	featureDefDictionary();
-	~featureDefDictionary();
-	
-	void addFeatureDefs(def_list_t*);
+        unsigned checkSemantics(const FeatureSet *);
 
-	unsigned checkSemantics(const FeatureSet*);
-
-//format:
-//
-//   featureName
-//	ComponentName : Type [: Default Values (',' separated)]
-//	ComponentName : Type [: Default Values (',' separated)]
-//   featureName
-//	ComponentName : Type [: Default Values (',' separated)]
-//	ComponentName : Type [: Default Values (',' separated)]
-//
-//   Example:
-//   font
-//      size : Unit 
-//	weight : String : "medium", "bold"
-//
-	friend istream& operator >>(istream&, featureDefDictionary&);
-	friend ostream& operator <<(ostream&, featureDefDictionary&);
+        // format:
+        //
+        //   featureName
+        //	ComponentName : Type [: Default Values (',' separated)]
+        //	ComponentName : Type [: Default Values (',' separated)]
+        //   featureName
+        //	ComponentName : Type [: Default Values (',' separated)]
+        //	ComponentName : Type [: Default Values (',' separated)]
+        //
+        //   Example:
+        //   font
+        //      size : Unit
+        //	weight : String : "medium", "bold"
+        //
+        friend istream &operator>>(istream &, featureDefDictionary &);
+        friend ostream &operator<<(ostream &, featureDefDictionary &);
 };
 
 #endif

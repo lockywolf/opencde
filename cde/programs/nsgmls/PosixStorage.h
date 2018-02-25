@@ -47,55 +47,52 @@ class Filename;
 class OutputCodingSystem;
 
 class SP_API PosixStorageManager : public IdStorageManager {
-public:
-  PosixStorageManager(const char *type,
-		      const UnivCharsetDesc &filenameCharset,
+      public:
+        PosixStorageManager(const char *type,
+                            const UnivCharsetDesc &filenameCharset,
 #ifndef SP_WIDE_SYSTEM
-		      const OutputCodingSystem *filenameCodingSystem,
+                            const OutputCodingSystem *filenameCodingSystem,
 #endif
-		      int maxFDs);
-  StorageObject *makeStorageObject(const StringC &id,
-				   const StringC &baseId,
-				   Boolean search,
-				   Boolean mayRewind,
-				   Messenger &,
-				   StringC &foundId);
-  Boolean resolveRelative(const StringC &, StringC &, Boolean syntactic = 0)
-    const;
-  const char *type() const;
-  void addSearchDir(const StringC &);
-  Boolean transformNeutral(StringC &, Boolean fold, Messenger &) const;
-private:
-  Boolean isAbsolute(const StringC &) const;
-  StringC extractDir(const StringC &) const;
-  StringC combineDir(const StringC &, const StringC &) const;
-  PosixStorageManager(const PosixStorageManager &); // undefined
-  void operator=(const PosixStorageManager &);	    // undefined
-  DescriptorManager descriptorManager_;
+                            int maxFDs);
+        StorageObject *makeStorageObject(const StringC &id,
+                                         const StringC &baseId, Boolean search,
+                                         Boolean mayRewind, Messenger &,
+                                         StringC &foundId);
+        Boolean resolveRelative(const StringC &, StringC &,
+                                Boolean syntactic = 0) const;
+        const char *type() const;
+        void addSearchDir(const StringC &);
+        Boolean transformNeutral(StringC &, Boolean fold, Messenger &) const;
+
+      private:
+        Boolean isAbsolute(const StringC &) const;
+        StringC extractDir(const StringC &) const;
+        StringC combineDir(const StringC &, const StringC &) const;
+        PosixStorageManager(const PosixStorageManager &); // undefined
+        void operator=(const PosixStorageManager &);      // undefined
+        DescriptorManager descriptorManager_;
 #ifndef SP_WIDE_SYSTEM
-  const OutputCodingSystem *filenameCodingSystem_;
+        const OutputCodingSystem *filenameCodingSystem_;
 #endif
-  const char *type_;
-  Vector<StringC> searchDirs_;
+        const char *type_;
+        Vector<StringC> searchDirs_;
 };
 
 class SP_API PosixFdStorageManager : public IdStorageManager {
-public:
-  PosixFdStorageManager(const char *type,
-			const UnivCharsetDesc &filenameCharset);
-  StorageObject *makeStorageObject(const StringC &id,
-				   const StringC &baseId,
-				   Boolean,
-				   Boolean mayRewind,
-				   Messenger &mgr,
-				   StringC &foundId);
-  const char *type() const;
-  Boolean inheritable() const;
-private:
-  PosixFdStorageManager(const PosixFdStorageManager &); // undefined
-  void operator=(const PosixFdStorageManager &);	    // undefined
-  const char *type_;
+      public:
+        PosixFdStorageManager(const char *type,
+                              const UnivCharsetDesc &filenameCharset);
+        StorageObject *makeStorageObject(const StringC &id,
+                                         const StringC &baseId, Boolean,
+                                         Boolean mayRewind, Messenger &mgr,
+                                         StringC &foundId);
+        const char *type() const;
+        Boolean inheritable() const;
 
+      private:
+        PosixFdStorageManager(const PosixFdStorageManager &); // undefined
+        void operator=(const PosixFdStorageManager &);        // undefined
+        const char *type_;
 };
 
 #ifdef SP_NAMESPACE

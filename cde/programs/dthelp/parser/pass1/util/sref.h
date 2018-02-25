@@ -26,7 +26,6 @@
 /*  Sref.h contains declarations for short references relevant to more than
     one program */
 
-
 #define BLANKSEQ 'B'
 #define RS 'S'
 #define WSSEQ 'W'

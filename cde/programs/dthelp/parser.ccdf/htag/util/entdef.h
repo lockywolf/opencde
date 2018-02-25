@@ -39,5 +39,3 @@
 #define M_DBUILD 1
 #define M_DELTDEF 2
 #define M_DPARSER 3
-
-

@@ -41,17 +41,16 @@
  **
  **
  *******************************************************************
- **  (c) Copyright Hewlett-Packard Company, 1990.  All rights are  
- **  reserved.  Copying or other reproduction of this program      
- **  except for archival purposes is prohibited without prior      
- **  written consent of Hewlett-Packard Company.		     
+ **  (c) Copyright Hewlett-Packard Company, 1990.  All rights are
+ **  reserved.  Copying or other reproduction of this program
+ **  except for archival purposes is prohibited without prior
+ **  written consent of Hewlett-Packard Company.
  ********************************************************************
  **
  **
  **
  *****************************************************************************
  *************************************<+>*************************************/
-
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -77,23 +76,23 @@
 #endif
 
 #ifndef KERNEL_FILE
-# ifdef mips
-#  define KERNEL_FILE "/vmunix"
-# else /* not mips */
-#  define KERNEL_FILE "/hp-ux"
-# endif /* mips */
+#ifdef mips
+#define KERNEL_FILE "/vmunix"
+#else /* not mips */
+#define KERNEL_FILE "/hp-ux"
+#endif /* mips */
 #endif
 
 #ifdef mips
 #define GPGSLIM "gpgslim"
 #define FREEMEM "freemem"
 #else /* not mips */
-# ifdef __hpux
-#  ifdef __hp9000s800
-#   define GPGSLIM "gpgslim"
-#   define FREEMEM "freemem"
-#  endif /* __hp9000s800 */
-# endif /* __hpux */
+#ifdef __hpux
+#ifdef __hp9000s800
+#define GPGSLIM "gpgslim"
+#define FREEMEM "freemem"
+#endif /* __hp9000s800 */
+#endif /* __hpux */
 #endif /* mips */
 
 #ifndef GPGSLIM
@@ -103,7 +102,6 @@
 #ifndef FREEMEM
 #define FREEMEM "_freemem"
 #endif /* not defined FREEMEM */
-
 
 int clientRunning;
 /*
@@ -119,12 +117,10 @@ static int clientTimeout;
  * Functions local to this module
  */
 
-static void HandleClientMessage(Widget smWidget, XtPointer dummy, 
-				XEvent *event);
+static void HandleClientMessage(Widget smWidget, XtPointer dummy,
+                                XEvent *event);
 static void WaitClientTimeout(XtPointer, XtIntervalId *);
 
-
-
 /*************************************<->*************************************
  *
  *  GetMemoryUtilization ()
@@ -140,7 +136,7 @@ static void WaitClientTimeout(XtPointer, XtIntervalId *);
  *  Inputs:
  *  ------
  *
- * 
+ *
  *  Outputs:
  *  -------
  *  An integer value representing the current memory utilization of the
@@ -153,126 +149,115 @@ static void WaitClientTimeout(XtPointer, XtIntervalId *);
  *  on an OS having some kind of access to its memory utilization.
  *
  *  DOUBLE WARNING: The mips architecture code has never been tested.
- *  
- * 
+ *
+ *
  *************************************<->***********************************/
 
-int 
-GetMemoryUtilization(void)
-{
+int GetMemoryUtilization(void) {
 #if !defined(linux)
-    static int init = 0;
-    static int kmem;
-#if !defined(SVR4) && !defined(sco) && !defined(hpV4) && !defined(_POWER) && !defined (__osf__) && !defined(CSRG_BASED)
-    extern void nlist();
+        static int init = 0;
+        static int kmem;
+#if !defined(SVR4) && !defined(sco) && !defined(hpV4) && !defined(_POWER) &&   \
+    !defined(__osf__) && !defined(CSRG_BASED)
+        extern void nlist();
 #endif
-    int i;
-
+        int i;
 
 #ifdef __hpux
-    setresgid(-1, smGD.conMgmtGID, -1);
+        setresgid(-1, smGD.conMgmtGID, -1);
 #else
-#ifndef	SVR4
-    setregid(smGD.runningGID, smGD.conMgmtGID);
+#ifndef SVR4
+        setregid(smGD.runningGID, smGD.conMgmtGID);
 #else
-    setgid(smGD.runningGID);
-    setegid(smGD.conMgmtGID);
+        setgid(smGD.runningGID);
+        setegid(smGD.conMgmtGID);
 #endif
 #endif
 
-    if(!init)
-    {
-	namelist[0].n_name = FREEMEM;
-	namelist[1].n_name = GPGSLIM;
-	namelist[2].n_name = (char *) NULL;
-	nlist( KERNEL_FILE, namelist);
-	for(i = 0; i < 2; i++)
-	{
-	    if (namelist[i].n_type == 0 ||
-		namelist[i].n_value == 0)
-	    {
+        if (!init) {
+                namelist[0].n_name = FREEMEM;
+                namelist[1].n_name = GPGSLIM;
+                namelist[2].n_name = (char *)NULL;
+                nlist(KERNEL_FILE, namelist);
+                for (i = 0; i < 2; i++) {
+                        if (namelist[i].n_type == 0 ||
+                            namelist[i].n_value == 0) {
 #ifdef __hpux
-		setresgid(-1, smGD.runningGID, -1);
+                                setresgid(-1, smGD.runningGID, -1);
 #else
-#ifndef	SVR4
-		setregid(smGD.conMgmtGID, smGD.runningGID);
+#ifndef SVR4
+                                setregid(smGD.conMgmtGID, smGD.runningGID);
 #else
-		setgid(smGD.conMgmtGID);
-		setegid(smGD.runningGID);
+                                setgid(smGD.conMgmtGID);
+                                setegid(smGD.runningGID);
 #endif
 #endif
-		return(MEM_NOT_AVAILABLE);
-	    }
-	}
-	
-	freemem_loc =  namelist[0].n_value;
-	gpgslim_loc =  namelist[1].n_value;
-	
-	kmem = open(KMEM_FILE, O_RDONLY);
-	if (kmem < 0)
-	{
+                                return (MEM_NOT_AVAILABLE);
+                        }
+                }
+
+                freemem_loc = namelist[0].n_value;
+                gpgslim_loc = namelist[1].n_value;
+
+                kmem = open(KMEM_FILE, O_RDONLY);
+                if (kmem < 0) {
 #ifdef __hpux
-	    setresgid(-1, smGD.runningGID, -1);
+                        setresgid(-1, smGD.runningGID, -1);
 #else
-#ifndef	SVR4
-	    setregid(smGD.conMgmtGID, smGD.runningGID);
+#ifndef SVR4
+                        setregid(smGD.conMgmtGID, smGD.runningGID);
 #else
-	    setgid(smGD.conMgmtGID);
-	    setegid(smGD.runningGID);
+                        setgid(smGD.conMgmtGID);
+                        setegid(smGD.runningGID);
 #endif
 #endif
-	    return(MEM_NOT_AVAILABLE);
-	}
-	(void) lseek(kmem, gpgslim_loc, 0);
+                        return (MEM_NOT_AVAILABLE);
+                }
+                (void)lseek(kmem, gpgslim_loc, 0);
+#ifdef mips
+                {
+                        fix temp;
+                        (void)read(kmem, (char *)&temp, sizeof(fix));
+                        gpgslim = FIX_TO_DBL(temp);
+                }
+#else  /* not mips */
+                (void)read(kmem, (char *)&gpgslim, sizeof(int));
+#endif /* mips */
+                init = 1;
+        }
+
+        (void)lseek(kmem, freemem_loc, 0);
 #ifdef mips
         {
-	    fix temp;
-	    (void) read(kmem, (char *)&temp, sizeof(fix));
-	    gpgslim = FIX_TO_DBL(temp);
-	}
-#else /* not mips */
-	(void) read(kmem, (char *)&gpgslim, sizeof(int));
-#endif /* mips */
-	init = 1;
-    }
-    
-    (void) lseek(kmem, freemem_loc, 0);
-#ifdef mips
-    {
-	fix temp;
-	(void) read(kmem, (char *)&temp, sizeof(fix));
-	freemem = FIX_TO_DBL(temp);
-    }
-#else /* not mips */
-    (void) read(kmem, (char *)&freemem, sizeof(int));
+                fix temp;
+                (void)read(kmem, (char *)&temp, sizeof(fix));
+                freemem = FIX_TO_DBL(temp);
+        }
+#else  /* not mips */
+        (void)read(kmem, (char *)&freemem, sizeof(int));
 #endif /* mips */
 
 #ifdef __hpux
-    setresgid(-1, smGD.runningGID, -1);
+        setresgid(-1, smGD.runningGID, -1);
 #else
-#ifndef	SVR4
-    setregid(smGD.conMgmtGID, smGD.runningGID);
+#ifndef SVR4
+        setregid(smGD.conMgmtGID, smGD.runningGID);
 #else
-    setgid(smGD.conMgmtGID);
-    setegid(smGD.runningGID);
+        setgid(smGD.conMgmtGID);
+        setegid(smGD.runningGID);
 #endif
 #endif
 
-    if(freemem >= gpgslim)
-    {
-	return(MEM_NOT_FULL);
-    }
-    else
-    {
-	return(MEM_FULL);
-    }
-#else /* linux */
-    return(MEM_NOT_FULL);
+        if (freemem >= gpgslim) {
+                return (MEM_NOT_FULL);
+        } else {
+                return (MEM_FULL);
+        }
+#else  /* linux */
+        return (MEM_NOT_FULL);
 #endif /* linux */
 }
 
-
-
 /*************************************<->*************************************
  *
  *  WaitForClientMap ()
@@ -287,54 +272,44 @@ GetMemoryUtilization(void)
  *  Inputs:
  *  ------
  *
- * 
+ *
  *  Outputs:
  *  -------
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-void 
-WaitForClientMap( void )
-{
-    XtInputMask 	isThere;
-    XEvent 		event;
-    XClientMessageEvent	*cEvent = (XClientMessageEvent *) &event;
-    XtIntervalId	clientTimerId;
-    
-    XtAddEventHandler(smGD.topLevelWid,
-		      0,
-		      True,
-		      (XtEventHandler)HandleClientMessage,
-		      (XtPointer) NULL);
-    
-    /*
-     * Set a timer which stops the block on waiting for the
-     * client to start.  This value is fetched from the 
-     * waitClientTimeout resource.
-     */
-    clientRunning = False;
-    clientTimeout = False;
-    clientTimerId = XtAppAddTimeOut(smGD.appCon, 
-				    smRes.waitClientTimeout,
-				    WaitClientTimeout, NULL);
-    
-    while((clientRunning == False) && (clientTimeout == False))
-    {
-	XtAppProcessEvent(smGD.appCon, XtIMAll);
-    }
-    
-    XtRemoveTimeOut(clientTimerId);
-    XtRemoveEventHandler(smGD.topLevelWid,
-		      0,
-		      True,
-		      (XtEventHandler)HandleClientMessage,
-		      (XtPointer) NULL);
-    return;
+void WaitForClientMap(void) {
+        XtInputMask isThere;
+        XEvent event;
+        XClientMessageEvent *cEvent = (XClientMessageEvent *)&event;
+        XtIntervalId clientTimerId;
+
+        XtAddEventHandler(smGD.topLevelWid, 0, True,
+                          (XtEventHandler)HandleClientMessage, (XtPointer)NULL);
+
+        /*
+         * Set a timer which stops the block on waiting for the
+         * client to start.  This value is fetched from the
+         * waitClientTimeout resource.
+         */
+        clientRunning = False;
+        clientTimeout = False;
+        clientTimerId = XtAppAddTimeOut(smGD.appCon, smRes.waitClientTimeout,
+                                        WaitClientTimeout, NULL);
+
+        while ((clientRunning == False) && (clientTimeout == False)) {
+                XtAppProcessEvent(smGD.appCon, XtIMAll);
+        }
+
+        XtRemoveTimeOut(clientTimerId);
+        XtRemoveEventHandler(smGD.topLevelWid, 0, True,
+                             (XtEventHandler)HandleClientMessage,
+                             (XtPointer)NULL);
+        return;
 }
 
-
 /*************************************<->*************************************
  *
  *  WaitClientTimeout
@@ -349,25 +324,20 @@ WaitForClientMap( void )
  *  Inputs:
  *  ------
  *
- * 
+ *
  *  Outputs:
  *  -------
  *  clientTimeout = (global) flag that stops the loop
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-static void 
-WaitClientTimeout(
-		  XtPointer client_data,
-		  XtIntervalId *id )
-{
-    clientTimeout = True;
-    return;
+static void WaitClientTimeout(XtPointer client_data, XtIntervalId *id) {
+        clientTimeout = True;
+        return;
 }
 
-
 /*************************************<->*************************************
  *
  *  HandleClientMessage
@@ -378,18 +348,12 @@ WaitClientTimeout(
  *  This is the event handler registered to recieve the client message
  *  from dtwm when a client has beem managed
  *
- * 
+ *
  *************************************<->***********************************/
-static void 
-HandleClientMessage( Widget smWidget,
-		    XtPointer dummy,
-		    XEvent *event)
-{
-    if (event->type == ClientMessage)
-    {
-	ProcessClientMessage(event);
-    }
-    return;
+static void HandleClientMessage(Widget smWidget, XtPointer dummy,
+                                XEvent *event) {
+        if (event->type == ClientMessage) {
+                ProcessClientMessage(event);
+        }
+        return;
 } /* END OF FUNCTION HandleClientMessage */
-
-

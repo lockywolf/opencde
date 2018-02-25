@@ -20,7 +20,7 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* lcDefConv.c 1.1 - Fujitsu source for CDEnext    95/11/06 20:32:35 	*/ 
+/* lcDefConv.c 1.1 - Fujitsu source for CDEnext    95/11/06 20:32:35 	*/
 /* $XConsortium: _fallcDefConv.c /main/1 1996/04/08 15:16:17 cde-fuj $ */
 /*
  * Copyright 1992, 1993 by TOSHIBA Corp.
@@ -51,335 +51,305 @@
 #include "_fallcPubI.h"
 
 typedef struct _StateRec {
-    XlcCharSet charset;
-    XlcCharSet GL_charset;
-    XlcCharSet GR_charset;
-    XlcConv ct_conv;
-    int (*to_converter)();
+        XlcCharSet charset;
+        XlcCharSet GL_charset;
+        XlcCharSet GR_charset;
+        XlcConv ct_conv;
+        int (*to_converter)();
 } StateRec, *State;
 
-static int
-strtostr(conv, from, from_left, to, to_left, args, num_args)
-    XlcConv conv;
-    XPointer *from;
-    int *from_left;
-    XPointer *to;
-    int *to_left;
-    XPointer *args;
-    int num_args;
+static int strtostr(conv, from, from_left, to, to_left, args,
+                    num_args) XlcConv conv;
+XPointer *from;
+int *from_left;
+XPointer *to;
+int *to_left;
+XPointer *args;
+int num_args;
 {
-    register char *src, *dst;
-    unsigned char side;
-    register length;
+        register char *src, *dst;
+        unsigned char side;
+        register length;
 
-    if (from == NULL || *from == NULL)
-	return 0;
+        if (from == NULL || *from == NULL)
+                return 0;
 
-    src = (char *) *from;
-    dst = (char *) *to;
+        src = (char *)*from;
+        dst = (char *)*to;
 
-    length = min(*from_left, *to_left);
+        length = min(*from_left, *to_left);
 
-    if (num_args > 0) {
-	side = *((unsigned char *) src) & 0x80;
-	while (side == (*((unsigned char *) src) & 0x80) && length-- > 0)
-	    *dst++ = *src++;
-    } else {
-	while (length-- > 0)
-	    *dst++ = *src++;
-    }
-    
-    *from_left -= src - (char *) *from;
-    *from = (XPointer) src;
-    *to_left -= dst - (char *) *to;
-    *to = (XPointer) dst;
+        if (num_args > 0) {
+                side = *((unsigned char *)src) & 0x80;
+                while (side == (*((unsigned char *)src) & 0x80) && length-- > 0)
+                        *dst++ = *src++;
+        } else {
+                while (length-- > 0)
+                        *dst++ = *src++;
+        }
 
-    if (num_args > 0) {
-	State state = (State) conv->state;
+        *from_left -= src - (char *)*from;
+        *from = (XPointer)src;
+        *to_left -= dst - (char *)*to;
+        *to = (XPointer)dst;
 
-	*((XlcCharSet *)args[0]) = side ? state->GR_charset : state->GL_charset;
-    }
+        if (num_args > 0) {
+                State state = (State)conv->state;
 
-    return 0;
+                *((XlcCharSet *)args[0]) =
+                    side ? state->GR_charset : state->GL_charset;
+        }
+
+        return 0;
 }
 
-static int
-wcstostr(conv, from, from_left, to, to_left, args, num_args)
-    XlcConv conv;
-    XPointer *from;
-    int *from_left;
-    XPointer *to;
-    int *to_left;
-    XPointer *args;
-    int num_args;
+static int wcstostr(conv, from, from_left, to, to_left, args,
+                    num_args) XlcConv conv;
+XPointer *from;
+int *from_left;
+XPointer *to;
+int *to_left;
+XPointer *args;
+int num_args;
 {
-    register wchar_t *src, side;
-    register char *dst;
-    register length;
+        register wchar_t *src, side;
+        register char *dst;
+        register length;
 
-    if (from == NULL || *from == NULL)
-	return 0;
+        if (from == NULL || *from == NULL)
+                return 0;
 
-    src = (wchar_t *) *from;
-    dst = (char *) *to;
+        src = (wchar_t *)*from;
+        dst = (char *)*to;
 
-    length = min(*from_left, *to_left);
+        length = min(*from_left, *to_left);
 
-    if (num_args > 0) {
-	side = *src & 0x80;
-	while (side == (*src & 0x80) && length-- > 0)
-	    *dst++ = *src++;
-    } else {
-	while (length-- > 0)
-	    *dst++ = *src++;
-    }
-    
-    *from_left -= src - (wchar_t *) *from;
-    *from = (XPointer) src;
-    *to_left -= dst - (char *) *to;
-    *to = (XPointer) dst;
+        if (num_args > 0) {
+                side = *src & 0x80;
+                while (side == (*src & 0x80) && length-- > 0)
+                        *dst++ = *src++;
+        } else {
+                while (length-- > 0)
+                        *dst++ = *src++;
+        }
 
-    if (num_args > 0) {
-	State state = (State) conv->state;
+        *from_left -= src - (wchar_t *)*from;
+        *from = (XPointer)src;
+        *to_left -= dst - (char *)*to;
+        *to = (XPointer)dst;
 
-	*((XlcCharSet *)args[0]) = side ? state->GR_charset : state->GL_charset;
-    }
+        if (num_args > 0) {
+                State state = (State)conv->state;
 
-    return 0;
+                *((XlcCharSet *)args[0]) =
+                    side ? state->GR_charset : state->GL_charset;
+        }
+
+        return 0;
 }
 
-static int
-cstostr(conv, from, from_left, to, to_left, args, num_args)
-    XlcConv conv;
-    XPointer *from;
-    int *from_left;
-    XPointer *to;
-    int *to_left;
-    XPointer *args;
-    int num_args;
+static int cstostr(conv, from, from_left, to, to_left, args,
+                   num_args) XlcConv conv;
+XPointer *from;
+int *from_left;
+XPointer *to;
+int *to_left;
+XPointer *args;
+int num_args;
 {
-    register char *src, *dst;
-    unsigned char side;
-    register length;
+        register char *src, *dst;
+        unsigned char side;
+        register length;
 
-    if (from == NULL || *from == NULL)
-	return 0;
+        if (from == NULL || *from == NULL)
+                return 0;
 
-    if (num_args > 0) {
-	State state = (State) conv->state;
-	XlcCharSet charset = (XlcCharSet) args[0];
+        if (num_args > 0) {
+                State state = (State)conv->state;
+                XlcCharSet charset = (XlcCharSet)args[0];
 
-	if (charset != state->GL_charset && charset != state->GR_charset)
-	    return -1;
-    }
+                if (charset != state->GL_charset &&
+                    charset != state->GR_charset)
+                        return -1;
+        }
 
-    src = (char *) *from;
-    dst = (char *) *to;
+        src = (char *)*from;
+        dst = (char *)*to;
 
-    length = min(*from_left, *to_left);
+        length = min(*from_left, *to_left);
 
-    if (num_args > 0) {
-	side = *((unsigned char *) src) & 0x80;
-	while (side == (*((unsigned char *) src) & 0x80) && length-- > 0)
-	    *dst++ = *src++;
-    } else {
-	while (length-- > 0)
-	    *dst++ = *src++;
-    }
-    
-    *from_left -= src - (char *) *from;
-    *from = (XPointer) src;
-    *to_left -= dst - (char *) *to;
-    *to = (XPointer) dst;
+        if (num_args > 0) {
+                side = *((unsigned char *)src) & 0x80;
+                while (side == (*((unsigned char *)src) & 0x80) && length-- > 0)
+                        *dst++ = *src++;
+        } else {
+                while (length-- > 0)
+                        *dst++ = *src++;
+        }
 
-    if (num_args > 0) {
-	State state = (State) conv->state;
+        *from_left -= src - (char *)*from;
+        *from = (XPointer)src;
+        *to_left -= dst - (char *)*to;
+        *to = (XPointer)dst;
 
-	*((XlcCharSet *)args[0]) = side ? state->GR_charset : state->GL_charset;
-    }
+        if (num_args > 0) {
+                State state = (State)conv->state;
 
-    return 0;
+                *((XlcCharSet *)args[0]) =
+                    side ? state->GR_charset : state->GL_charset;
+        }
+
+        return 0;
 }
 
-static int
-strtowcs(conv, from, from_left, to, to_left, args, num_args)
-    XlcConv conv;
-    XPointer *from;
-    int *from_left;
-    XPointer *to;
-    int *to_left;
-    XPointer *args;
-    int num_args;
+static int strtowcs(conv, from, from_left, to, to_left, args,
+                    num_args) XlcConv conv;
+XPointer *from;
+int *from_left;
+XPointer *to;
+int *to_left;
+XPointer *args;
+int num_args;
 {
-    register char *src;
-    register wchar_t *dst;
-    register length;
+        register char *src;
+        register wchar_t *dst;
+        register length;
 
-    if (from == NULL || *from == NULL)
-	return 0;
+        if (from == NULL || *from == NULL)
+                return 0;
 
-    if (num_args > 0) {
-	State state = (State) conv->state;
-	XlcCharSet charset = (XlcCharSet) args[0];
+        if (num_args > 0) {
+                State state = (State)conv->state;
+                XlcCharSet charset = (XlcCharSet)args[0];
 
-	if (charset != state->GL_charset && charset != state->GR_charset)
-	    return -1;
-    }
+                if (charset != state->GL_charset &&
+                    charset != state->GR_charset)
+                        return -1;
+        }
 
-    src = (char *) *from;
-    dst = (wchar_t *) *to;
+        src = (char *)*from;
+        dst = (wchar_t *)*to;
 
-    length = min(*from_left, *to_left);
+        length = min(*from_left, *to_left);
 
-    while (length-- > 0)
-	*dst++ = (wchar_t) *src++;
-    
-    *from_left -= src - (char *) *from;
-    *from = (XPointer) src;
-    *to_left -= dst - (wchar_t *) *to;
-    *to = (XPointer) dst;
+        while (length-- > 0)
+                *dst++ = (wchar_t)*src++;
 
-    return 0;
+        *from_left -= src - (char *)*from;
+        *from = (XPointer)src;
+        *to_left -= dst - (wchar_t *)*to;
+        *to = (XPointer)dst;
+
+        return 0;
 }
 
-
-static void
-close_converter(conv)
-    XlcConv conv;
+static void close_converter(conv) XlcConv conv;
 {
-    if (conv->state)
-	Xfree((char *) conv->state);
+        if (conv->state)
+                Xfree((char *)conv->state);
 
-    Xfree((char *) conv);
+        Xfree((char *)conv);
 }
 
-static XlcConv
-create_conv(methods)
-    XlcConvMethods methods;
+static XlcConv create_conv(methods) XlcConvMethods methods;
 {
-    register XlcConv conv;
-    State state;
-    static XlcCharSet GL_charset = NULL;
-    static XlcCharSet GR_charset = NULL;
+        register XlcConv conv;
+        State state;
+        static XlcCharSet GL_charset = NULL;
+        static XlcCharSet GR_charset = NULL;
 
-    if (GL_charset == NULL) {
-	GL_charset = _fallcGetCharSet("ISO8859-1:GL");
-	GR_charset = _fallcGetCharSet("ISO8859-1:GR");
-    }
+        if (GL_charset == NULL) {
+                GL_charset = _fallcGetCharSet("ISO8859-1:GL");
+                GR_charset = _fallcGetCharSet("ISO8859-1:GR");
+        }
 
-    conv = (XlcConv) Xmalloc(sizeof(XlcConvRec));
-    if (conv == NULL)
-	return (XlcConv) NULL;
+        conv = (XlcConv)Xmalloc(sizeof(XlcConvRec));
+        if (conv == NULL)
+                return (XlcConv)NULL;
 
-    state = (State) Xmalloc(sizeof(StateRec));
-    if (state == NULL)
-	goto err;
-    
-    state->GL_charset = state->charset = GL_charset;
-    state->GR_charset = GR_charset;
+        state = (State)Xmalloc(sizeof(StateRec));
+        if (state == NULL)
+                goto err;
 
-    conv->methods = methods;
-    conv->state = (XPointer) state;
+        state->GL_charset = state->charset = GL_charset;
+        state->GR_charset = GR_charset;
 
-    return conv;
+        conv->methods = methods;
+        conv->state = (XPointer)state;
+
+        return conv;
 
 err:
-    close_converter(conv);
+        close_converter(conv);
 
-    return (XlcConv) NULL;
+        return (XlcConv)NULL;
 }
 
-static XlcConvMethodsRec strtostr_methods = {
-    close_converter,
-    strtostr,
-    NULL
-} ;
+static XlcConvMethodsRec strtostr_methods = {close_converter, strtostr, NULL};
 
-static XlcConv
-open_strtostr(from_lcd, from_type, to_lcd, to_type)
-    XLCd from_lcd;
-    char *from_type;
-    XLCd to_lcd;
-    char *to_type;
+static XlcConv open_strtostr(from_lcd, from_type, to_lcd,
+                             to_type) XLCd from_lcd;
+char *from_type;
+XLCd to_lcd;
+char *to_type;
+{ return create_conv(&strtostr_methods); }
+
+static XlcConvMethodsRec wcstostr_methods = {close_converter, wcstostr, NULL};
+
+static XlcConv open_wcstostr(from_lcd, from_type, to_lcd,
+                             to_type) XLCd from_lcd;
+char *from_type;
+XLCd to_lcd;
+char *to_type;
+{ return create_conv(&wcstostr_methods); }
+
+static XlcConvMethodsRec cstostr_methods = {close_converter, cstostr, NULL};
+
+static XlcConv open_cstostr(from_lcd, from_type, to_lcd, to_type) XLCd from_lcd;
+char *from_type;
+XLCd to_lcd;
+char *to_type;
+{ return create_conv(&cstostr_methods); }
+
+static XlcConvMethodsRec strtowcs_methods = {close_converter, strtowcs, NULL};
+
+static XlcConv open_strtowcs(from_lcd, from_type, to_lcd,
+                             to_type) XLCd from_lcd;
+char *from_type;
+XLCd to_lcd;
+char *to_type;
+{ return create_conv(&strtowcs_methods); }
+
+XLCd _fallcDefaultLoader(name) char *name;
 {
-    return create_conv(&strtostr_methods);
-}
+        XLCd lcd;
 
-static XlcConvMethodsRec wcstostr_methods = {
-    close_converter,
-    wcstostr,
-    NULL
-} ;
+        if (strcmp(name, "C"))
+                return (XLCd)NULL;
 
-static XlcConv
-open_wcstostr(from_lcd, from_type, to_lcd, to_type)
-    XLCd from_lcd;
-    char *from_type;
-    XLCd to_lcd;
-    char *to_type;
-{
-    return create_conv(&wcstostr_methods);
-}
+        lcd = _fallcCreateLC(name, _fallcPublicMethods);
 
-static XlcConvMethodsRec cstostr_methods = {
-    close_converter,
-    cstostr,
-    NULL
-} ;
+        _fallcSetConverter(lcd, XlcNMultiByte, lcd, XlcNWideChar,
+                           open_strtowcs);
+        _fallcSetConverter(lcd, XlcNMultiByte, lcd, XlcNCompoundText,
+                           open_strtostr);
+        _fallcSetConverter(lcd, XlcNMultiByte, lcd, XlcNString, open_strtostr);
+        _fallcSetConverter(lcd, XlcNMultiByte, lcd, XlcNCharSet, open_strtostr);
+        _fallcSetConverter(lcd, XlcNMultiByte, lcd, XlcNChar,
+                           open_strtostr); /* XXX */
 
-static XlcConv
-open_cstostr(from_lcd, from_type, to_lcd, to_type)
-    XLCd from_lcd;
-    char *from_type;
-    XLCd to_lcd;
-    char *to_type;
-{
-    return create_conv(&cstostr_methods);
-}
+        _fallcSetConverter(lcd, XlcNWideChar, lcd, XlcNMultiByte,
+                           open_wcstostr);
+        _fallcSetConverter(lcd, XlcNWideChar, lcd, XlcNCompoundText,
+                           open_wcstostr);
+        _fallcSetConverter(lcd, XlcNWideChar, lcd, XlcNString, open_wcstostr);
+        _fallcSetConverter(lcd, XlcNWideChar, lcd, XlcNCharSet, open_wcstostr);
 
-static XlcConvMethodsRec strtowcs_methods = {
-    close_converter,
-    strtowcs,
-    NULL
-} ;
+        _fallcSetConverter(lcd, XlcNString, lcd, XlcNMultiByte, open_strtostr);
+        _fallcSetConverter(lcd, XlcNString, lcd, XlcNWideChar, open_strtowcs);
 
-static XlcConv
-open_strtowcs(from_lcd, from_type, to_lcd, to_type)
-    XLCd from_lcd;
-    char *from_type;
-    XLCd to_lcd;
-    char *to_type;
-{
-    return create_conv(&strtowcs_methods);
-}
+        _fallcSetConverter(lcd, XlcNCharSet, lcd, XlcNMultiByte, open_cstostr);
+        _fallcSetConverter(lcd, XlcNCharSet, lcd, XlcNWideChar, open_strtowcs);
 
-XLCd
-_fallcDefaultLoader(name)
-    char *name;
-{
-    XLCd lcd;
-
-    if (strcmp(name, "C"))
-	return (XLCd) NULL;
-
-    lcd = _fallcCreateLC(name, _fallcPublicMethods);
-
-    _fallcSetConverter(lcd, XlcNMultiByte, lcd, XlcNWideChar, open_strtowcs);
-    _fallcSetConverter(lcd, XlcNMultiByte, lcd, XlcNCompoundText, open_strtostr);
-    _fallcSetConverter(lcd, XlcNMultiByte, lcd, XlcNString, open_strtostr);
-    _fallcSetConverter(lcd, XlcNMultiByte, lcd, XlcNCharSet, open_strtostr);
-    _fallcSetConverter(lcd, XlcNMultiByte, lcd, XlcNChar, open_strtostr);/* XXX */
-
-    _fallcSetConverter(lcd, XlcNWideChar, lcd, XlcNMultiByte, open_wcstostr);
-    _fallcSetConverter(lcd, XlcNWideChar, lcd, XlcNCompoundText, open_wcstostr);
-    _fallcSetConverter(lcd, XlcNWideChar, lcd, XlcNString, open_wcstostr);
-    _fallcSetConverter(lcd, XlcNWideChar, lcd, XlcNCharSet, open_wcstostr);
-
-    _fallcSetConverter(lcd, XlcNString, lcd, XlcNMultiByte, open_strtostr);
-    _fallcSetConverter(lcd, XlcNString, lcd, XlcNWideChar, open_strtowcs);
-
-    _fallcSetConverter(lcd, XlcNCharSet, lcd, XlcNMultiByte, open_cstostr);
-    _fallcSetConverter(lcd, XlcNCharSet, lcd, XlcNWideChar, open_strtowcs);
-
-    return lcd;
+        return lcd;
 }

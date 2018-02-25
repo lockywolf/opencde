@@ -29,8 +29,6 @@
  *  This is unpublished proprietary source code of FUJITSU LIMITED
  */
 
-
-
 extern Widget GetMenuWidget();
 extern Widget CreateFrame();
 extern Widget CreateControlArea();
@@ -41,11 +39,11 @@ extern Widget CreateLabel();
 extern Widget CreateDialogAndButtons();
 extern
 #ifdef _HPUX_SOURCE
-String
+    String
 #else
-XtPointer
+    XtPointer
 #endif
-GetTextFieldValue();
+    GetTextFieldValue();
 extern Widget CreateTemplateDialog();
 extern Widget CreateScrollBase();
 extern Widget CreateForm();
@@ -53,47 +51,46 @@ extern Widget CreateForm();
 #include <Xm/Xm.h>
 #include <Xm/XmStrDefs.h>
 
-Widget	CreateCaptionFrame();
+Widget CreateCaptionFrame();
 #ifdef _HPUX_SOURCE
 String
 #else
 XtPointer
 #endif
 GetTextFieldValue();
-void	CreateTextField();
-void	CreateButtons();
-void	CreateMenuButtons();
-void	LayoutButtonsEH();
-Widget	CreateLayoutButtons();
-Widget	CreateDialogAndButtons();
-Widget	GuiInitialize();
-Widget	CreateDrawingArea();
-void	AddTopWidget();
-void	AddLeftAttachWidget();
-void	AddLeftAttachForm();
-void	AddTopAttachWidget();
-void	AddTopAttachForm();
-void	AddRightAttachWidget();
-void	AddRightAttachForm();
-void	AddBottomAttachForm();
-void	PopupDialog();
-void	PopdownDialog();
-void	ForcePopdownDialog();
-void	SetLabelString();
-void	SetFooterString();
-void	PopupNotice();
-void	AddDeleteProc();
-Widget	CreateMenuBarAndFooterMessageForm();
-Widget	GetMenuWidget();
-Widget	CreateForm();
-Widget	CreateLabel();
-Widget	CreateFrame();
-Widget	CreateRowColumn();
-Widget	CreateScrollBar();
-
+void CreateTextField();
+void CreateButtons();
+void CreateMenuButtons();
+void LayoutButtonsEH();
+Widget CreateLayoutButtons();
+Widget CreateDialogAndButtons();
+Widget GuiInitialize();
+Widget CreateDrawingArea();
+void AddTopWidget();
+void AddLeftAttachWidget();
+void AddLeftAttachForm();
+void AddTopAttachWidget();
+void AddTopAttachForm();
+void AddRightAttachWidget();
+void AddRightAttachForm();
+void AddBottomAttachForm();
+void PopupDialog();
+void PopdownDialog();
+void ForcePopdownDialog();
+void SetLabelString();
+void SetFooterString();
+void PopupNotice();
+void AddDeleteProc();
+Widget CreateMenuBarAndFooterMessageForm();
+Widget GetMenuWidget();
+Widget CreateForm();
+Widget CreateLabel();
+Widget CreateFrame();
+Widget CreateRowColumn();
+Widget CreateScrollBar();
 
 #define MarginWidth 4
-#define RowMarginWidth 11 
+#define RowMarginWidth 11
 #define MarginHeight 11
 #define HeightSpace 4
 #define MinimumSpace 4
@@ -101,167 +98,144 @@ Widget	CreateScrollBar();
 /*****  Exclusive Set  *****/
 
 typedef struct _ToggleButt {
-    Widget	w;
-    char *	label;
-    XtPointer	clientdata;
-    String	name;
-    XtArgVal	sensitive;
-    XtCallbackProc	cb;
-    XtArgVal	set;
+        Widget w;
+        char *label;
+        XtPointer clientdata;
+        String name;
+        XtArgVal sensitive;
+        XtCallbackProc cb;
+        XtArgVal set;
 } ToggleButt;
 
-#define EXARGS( clientdata, name, sensitive, cb, set ){ \
-		NULL, \
-    (char *)	"", \
-    (XtPointer)	clientdata, \
-		name, \
-    (XtArgVal)	sensitive, \
-    (XtCallbackProc)	cb, \
-    (XtArgVal)	set \
-}
+#define EXARGS(clientdata, name, sensitive, cb, set)                           \
+        {                                                                      \
+                NULL, (char *)"", (XtPointer)clientdata, name,                 \
+                    (XtArgVal)sensitive, (XtCallbackProc)cb, (XtArgVal)set     \
+        }
 
 typedef struct _RadioButt {
-    String	label;
-    ToggleButt	*items;
-    int		items_cnt;
-    String	name;
-    Widget	w;
-    XtPointer	udata;
+        String label;
+        ToggleButt *items;
+        int items_cnt;
+        String name;
+        Widget w;
+        XtPointer udata;
 } RadioButt;
 
+#define EXCLUSIVE(a)                                                           \
+        { 0, a, XtNumber(a), 0, 0, 0 }
 
-#define EXCLUSIVE(a) { 0, a, XtNumber(a), 0, 0, 0 }
+#define ExclusiveItems ToggleButt
+#define Exclusive RadioButt
 
-#define ExclusiveItems		ToggleButt
-#define Exclusive		RadioButt
-
-#define SetItemLabel(b,n,l) (b)->items[(n)].label = (l)
+#define SetItemLabel(b, n, l) (b)->items[(n)].label = (l)
 
 /*****  PushButton Set  *****/
 
 typedef struct _ButtonItems {
-	char *	label;
-	XtCallbackProc  cb;
-	XtPointer clientdata;
-	XtArgVal  mnemonic;
-	XtArgVal  sensitive;
-	XtArgVal  deflt;
+        char *label;
+        XtCallbackProc cb;
+        XtPointer clientdata;
+        XtArgVal mnemonic;
+        XtArgVal sensitive;
+        XtArgVal deflt;
 } ButtonItems;
 
-#define BTNARGS( cb, clientdata, mnumonic, sensitive, deflt ) { \
-	(char *) "", \
-	(XtCallbackProc) cb, \
-	(XtPointer) clientdata, \
-	(XtArgVal) mnumonic, \
-	(XtArgVal) sensitive, \
-	(XtArgVal) deflt \
-}
+#define BTNARGS(cb, clientdata, mnumonic, sensitive, deflt)                    \
+        {                                                                      \
+                (char *)"", (XtCallbackProc)cb, (XtPointer)clientdata,         \
+                    (XtArgVal)mnumonic, (XtArgVal)sensitive, (XtArgVal)deflt   \
+        }
 
 typedef struct _Button {
-	Widget		*w;
-	ButtonItems	*items;
-	int		itemcnt;
+        Widget *w;
+        ButtonItems *items;
+        int itemcnt;
 } Button;
 
-#define BUTTONS( items ) { 0, items, XtNumber(items) }
+#define BUTTONS(items)                                                         \
+        { 0, items, XtNumber(items) }
 
 /*****  MenuButton Set  *****/
 
 typedef struct _menuButtonItems {
-	char	*label;
-	char	mnemonic;
-	Widget	menu;
+        char *label;
+        char mnemonic;
+        Widget menu;
 } menuButtonItems;
 
-#define MENUBTNARGS( mnumonic ) { \
-	"",    \
-	mnumonic, \
-	NULL, \
-}
+#define MENUBTNARGS(mnumonic)                                                  \
+        { "", mnumonic, NULL, }
 
 typedef struct _MButton {
-	menuButtonItems *items;
-	int		itemcnt;
+        menuButtonItems *items;
+        int itemcnt;
 } MButton;
 
-#define MBUTTONS(items) {items,XtNumber((items))}
-
+#define MBUTTONS(items)                                                        \
+        { items, XtNumber((items)) }
 
 /*****  NoticeButton Set  *****/
 
 typedef struct _NoticeButton {
-	char	*label;
-	void	(*cb)();
+        char *label;
+        void (*cb)();
 } NoticeButton;
 
-#define NBTNARGS( cb, clientdata, mnumonic, sensitive, deflt) { \
-	"",    \
-	cb,    \
-}
+#define NBTNARGS(cb, clientdata, mnumonic, sensitive, deflt)                   \
+        { "", cb, }
 
 typedef struct _NButton {
-	NoticeButton	*items;
-	int		itemcnt;
+        NoticeButton *items;
+        int itemcnt;
 } NButton;
 
-#define NBUTTONS(items) {items,XtNumber((items))}
-
+#define NBUTTONS(items)                                                        \
+        { items, XtNumber((items)) }
 
 /*****  TextField Set  *****/
 
 typedef struct _TextField {
-	Widget	w1;
-	Widget	w2;
-	String	label;
+        Widget w1;
+        Widget w2;
+        String label;
 } TextField;
-
 
 /*****  Function Type  *****/
 
-#define D_WARNING	XmDIALOG_WARNING
-#define D_QUESTION	XmDIALOG_QUESTION
-#define D_ERROR		XmDIALOG_ERROR
-#define D_TEMPLATE	XmDIALOG_TEMPLATE
-#define L_VERTICAL	XmVERTICAL
-#define L_HORIZONTAL	XmHORIZONTAL
+#define D_WARNING XmDIALOG_WARNING
+#define D_QUESTION XmDIALOG_QUESTION
+#define D_ERROR XmDIALOG_ERROR
+#define D_TEMPLATE XmDIALOG_TEMPLATE
+#define L_VERTICAL XmVERTICAL
+#define L_HORIZONTAL XmHORIZONTAL
 
+#ifdef USE_MACRO
+#define AddLeftAttachWidget(w, ref, offset)                                    \
+        XtVaSetValues(w, XmNleftAttachment, XmATTACH_WIDGET, XmNleftWidget,    \
+                      ref, XmNleftOffset, offset, 0)
 
-#ifdef	USE_MACRO
-#define AddLeftAttachWidget( w, ref, offset ) XtVaSetValues( w, \
-	XmNleftAttachment, XmATTACH_WIDGET, \
-	XmNleftWidget, ref, \
-	XmNleftOffset, offset, \
-	0)
+#define AddLeftAttachForm(w, offset)                                           \
+        XtVaSetValues(w, XmNleftAttachment, XmATTACH_FORM, XmNleftOffset,      \
+                      offset, 0)
 
-#define AddLeftAttachForm( w, offset ) XtVaSetValues( w, \
-	XmNleftAttachment, XmATTACH_FORM, \
-	XmNleftOffset, offset, \
-	0)
+#define AddTopAttachWidget(w, ref, offset)                                     \
+        XtVaSetValues(w, XmNtopAttachment, XmATTACH_WIDGET, XmNtopWidget, ref, \
+                      XmNtopOffset, offset, 0)
 
-#define AddTopAttachWidget( w, ref, offset ) XtVaSetValues( w, \
-	XmNtopAttachment, XmATTACH_WIDGET, \
-	XmNtopWidget, ref, \
-	XmNtopOffset, offset, \
-	0)
+#define AddTopAttachForm(w, offset)                                            \
+        XtVaSetValues(w, XmNtopAttachment, XmATTACH_FORM, XmNtopOffset,        \
+                      offset, 0)
 
-#define AddTopAttachForm( w, offset ) XtVaSetValues( w, \
-	XmNtopAttachment, XmATTACH_FORM, \
-	XmNtopOffset, offset, \
-	0)
+#define AddRightAttachWidget(w, ref, offset)                                   \
+        XtVaSetValues(w, XmNrightAttachment, XmATTACH_WIDGET, XmNrightWidget,  \
+                      ref, XmNrightOffset, offset, 0)
 
-#define AddRightAttachWidget( w, ref, offset ) XtVaSetValues( w, \
-	XmNrightAttachment, XmATTACH_WIDGET, \
-	XmNrightWidget, ref, \
-	XmNrightOffset, offset, \
-	0)
+#define AddRightAttachForm(w, offset)                                          \
+        XtVaSetValues(w, XmNrightAttachment, XmATTACH_FORM, XmNrightOffset,    \
+                      offset, 0)
 
-#define AddRightAttachForm( w, offset ) XtVaSetValues( w, \
-	XmNrightAttachment, XmATTACH_FORM, \
-	XmNrightOffset, offset, \
-	0)
-
-#define AddBottomAttachForm( w, offset ) XtVaSetValues( w, \
-	XmNbottomAttachment, XmATTACH_FORM, \
-	XmNbottomOffset, offset, \
-	0)
-#endif	/* USE_MACRO */
+#define AddBottomAttachForm(w, offset)                                         \
+        XtVaSetValues(w, XmNbottomAttachment, XmATTACH_FORM, XmNbottomOffset,  \
+                      offset, 0)
+#endif /* USE_MACRO */

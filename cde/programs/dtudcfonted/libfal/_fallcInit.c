@@ -20,7 +20,7 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* lcInit.c 1.4 - Fujitsu source for CDEnext    96/03/11 17:13:15 	*/ 
+/* lcInit.c 1.4 - Fujitsu source for CDEnext    96/03/11 17:13:15 	*/
 /* $XConsortium: _fallcInit.c /main/1 1996/04/08 15:17:36 cde-fuj $ */
 /*
  * Copyright 1992, 1993 by TOSHIBA Corp.
@@ -52,7 +52,7 @@
  *  Development Agreement for the CDEnext PST.
  *  This is unpublished proprietary source code of FUJITSU LIMITED
  *
- *   Modifier: Masayoshi Shimamura      FUJITSU LIMITED 
+ *   Modifier: Masayoshi Shimamura      FUJITSU LIMITED
  *
  */
 
@@ -68,7 +68,7 @@
 
 extern XLCd _fallcDefaultLoader(
 #if NeedFunctionPrototypes
-    char*
+    char *
 #endif
 );
 
@@ -76,7 +76,7 @@ extern XLCd _fallcDefaultLoader(
 #ifdef sun
 extern XLCd _falsunOsDynamicLoad(
 #if NeedFunctionPrototypes
-    char*
+    char *
 #endif
 );
 #endif /* sun */
@@ -84,7 +84,7 @@ extern XLCd _falsunOsDynamicLoad(
 #ifdef AIXV3
 extern XLCd _falaixOsDynamicLoad(
 #if NeedFunctionPrototypes
-    char*
+    char *
 #endif
 );
 #endif /* AIXV3 */
@@ -93,7 +93,7 @@ extern XLCd _falaixOsDynamicLoad(
 #ifdef USE_GENERIC_LOADER
 extern XLCd _fallcGenericLoader(
 #if NeedFunctionPrototypes
-    char*
+    char *
 #endif
 );
 #endif
@@ -101,7 +101,7 @@ extern XLCd _fallcGenericLoader(
 #ifdef USE_UTF_LOADER
 extern XLCd _fallcUtfLoader(
 #if NeedFunctionPrototypes
-    char*
+    char *
 #endif
 );
 #endif
@@ -109,7 +109,7 @@ extern XLCd _fallcUtfLoader(
 #ifdef USE_EUC_LOADER
 extern XLCd _fallcEucLoader(
 #if NeedFunctionPrototypes
-    char*
+    char *
 #endif
 );
 #endif
@@ -117,7 +117,7 @@ extern XLCd _fallcEucLoader(
 #ifdef USE_SJIS_LOADER
 extern XLCd _fallcSjisLoader(
 #if NeedFunctionPrototypes
-    char*
+    char *
 #endif
 );
 #endif
@@ -125,7 +125,7 @@ extern XLCd _fallcSjisLoader(
 #ifdef USE_JIS_LOADER
 extern XLCd _XlcJisLoader(
 #if NeedFunctionPrototypes
-    char*
+    char *
 #endif
 );
 #endif
@@ -133,7 +133,7 @@ extern XLCd _XlcJisLoader(
 #ifdef USE_DYNAMIC_LOADER
 extern XLCd _fallcDynamicLoader(
 #if NeedFunctionPrototypes
-    char*
+    char *
 #endif
 );
 #endif
@@ -143,44 +143,42 @@ extern XLCd _fallcDynamicLoader(
  * with vendor specific manner.
  */
 
-void
-_fallcInitLoader()
-{
+void _fallcInitLoader() {
 #ifdef USE_GENERIC_LOADER
-    _fallcAddLoader(_fallcGenericLoader, XlcHead);
+        _fallcAddLoader(_fallcGenericLoader, XlcHead);
 #endif
 
 #ifdef USE_DEFAULT_LOADER
-    _fallcAddLoader(_fallcDefaultLoader, XlcHead);
+        _fallcAddLoader(_fallcDefaultLoader, XlcHead);
 #endif
 
 #ifdef USE_EUC_LOADER
-    _fallcAddLoader(_fallcEucLoader, XlcHead);
+        _fallcAddLoader(_fallcEucLoader, XlcHead);
 #endif
 
 #ifdef USE_SJIS_LOADER
-    _fallcAddLoader(_fallcSjisLoader, XlcHead);
+        _fallcAddLoader(_fallcSjisLoader, XlcHead);
 #endif
 
 #ifdef USE_JIS_LOADER
-    _fallcAddLoader(_XlcJisLoader, XlcHead);
+        _fallcAddLoader(_XlcJisLoader, XlcHead);
 #endif
 
 #ifdef USE_UTF_LOADER
-    _fallcAddLoader(_fallcUtfLoader, XlcHead);
+        _fallcAddLoader(_fallcUtfLoader, XlcHead);
 #endif
 
 #ifdef DYNAMIC_LOAD
 #ifdef sun
-    _fallcAddLoader(_falsunOsDynamicLoad, XlcHead);
+        _fallcAddLoader(_falsunOsDynamicLoad, XlcHead);
 #endif /* sun */
 
 #ifdef AIXV3
-    _fallcAddLoader(_falaixOsDynamicLoad, XlcHead);
+        _fallcAddLoader(_falaixOsDynamicLoad, XlcHead);
 #endif /* AIXV3 */
 #endif /* DYNAMIC_LOAD */
 
 #ifdef USE_DYNAMIC_LOADER
-    _fallcAddLoader(_fallcDynamicLoader, XlcHead);
+        _fallcAddLoader(_fallcDynamicLoader, XlcHead);
 #endif
 }

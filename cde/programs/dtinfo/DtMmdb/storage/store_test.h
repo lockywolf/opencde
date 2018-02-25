@@ -25,6 +25,6 @@
 #ifndef _store_test_h
 #define _store_test_h 1
 
-extern int store_test(int argc, char** argv);
+extern int store_test(int argc, char **argv);
 
 #endif

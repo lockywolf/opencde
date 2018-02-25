@@ -38,49 +38,52 @@
 namespace SP_NAMESPACE {
 #endif
 
-template<class T>
-class Vector {
-public:
-  typedef size_t size_type;
-  typedef T *iterator;
-  typedef const T *const_iterator;
-  Vector() : ptr_(0), size_(0), alloc_(0) { }
-  Vector(size_t n) : ptr_(0), size_(0), alloc_(0) { append(n); }
-  ~Vector();
-  void resize(size_t n) {
-    if (n < size_)
-      erase(ptr_ + n, ptr_ + size_);
-    else if (n > size_)
-      append(n - size_);
-  }
-  Vector(size_t, const T &);
-  Vector(const Vector<T> &);
-  Vector<T> &operator=(const Vector<T> &);
-  void assign(size_t, const T &);
-  void push_back(const T &t) {
-    reserve(size_ + 1);
-    (void)new (ptr_ + size_++) T(t);
-  }
-  void insert(const_iterator p, size_t n, const T &t);
-  void insert(const_iterator p, const_iterator q1, const_iterator q2);
-  void swap(Vector<T> &);
-  void clear() { erase(ptr_, ptr_ + size_); }
-  size_t size() const { return size_; }
-  T &operator[](size_t i) { return ptr_[i]; }
-  const T &operator[](size_t i) const { return ptr_[i]; }
-  iterator begin() { return ptr_; }
-  const_iterator begin() const { return ptr_; }
-  T &back() { return ptr_[size_ - 1]; }
-  const T &back() const { return ptr_[size_ - 1]; }
-  void reserve(size_t n) {  if (n > alloc_) reserve1(n); }
-  iterator erase(const_iterator, const_iterator);
-private:
-  void append(size_t);
-  void reserve1(size_t);
-  
-  size_t size_;
-  T *ptr_;
-  size_t alloc_;		// allocated size
+template <class T> class Vector {
+      public:
+        typedef size_t size_type;
+        typedef T *iterator;
+        typedef const T *const_iterator;
+        Vector() : ptr_(0), size_(0), alloc_(0) {}
+        Vector(size_t n) : ptr_(0), size_(0), alloc_(0) { append(n); }
+        ~Vector();
+        void resize(size_t n) {
+                if (n < size_)
+                        erase(ptr_ + n, ptr_ + size_);
+                else if (n > size_)
+                        append(n - size_);
+        }
+        Vector(size_t, const T &);
+        Vector(const Vector<T> &);
+        Vector<T> &operator=(const Vector<T> &);
+        void assign(size_t, const T &);
+        void push_back(const T &t) {
+                reserve(size_ + 1);
+                (void)new (ptr_ + size_++) T(t);
+        }
+        void insert(const_iterator p, size_t n, const T &t);
+        void insert(const_iterator p, const_iterator q1, const_iterator q2);
+        void swap(Vector<T> &);
+        void clear() { erase(ptr_, ptr_ + size_); }
+        size_t size() const { return size_; }
+        T &operator[](size_t i) { return ptr_[i]; }
+        const T &operator[](size_t i) const { return ptr_[i]; }
+        iterator begin() { return ptr_; }
+        const_iterator begin() const { return ptr_; }
+        T &back() { return ptr_[size_ - 1]; }
+        const T &back() const { return ptr_[size_ - 1]; }
+        void reserve(size_t n) {
+                if (n > alloc_)
+                        reserve1(n);
+        }
+        iterator erase(const_iterator, const_iterator);
+
+      private:
+        void append(size_t);
+        void reserve1(size_t);
+
+        size_t size_;
+        T *ptr_;
+        size_t alloc_; // allocated size
 };
 
 #ifdef SP_NAMESPACE

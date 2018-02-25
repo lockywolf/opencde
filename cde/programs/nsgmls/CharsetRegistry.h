@@ -43,9 +43,9 @@ class CharsetInfo;
 class UnivCharsetDesc;
 
 class CharsetRegistry {
-public:
-  static Boolean findCharset(const PublicId &, const CharsetInfo &,
-			     UnivCharsetDesc &);
+      public:
+        static Boolean findCharset(const PublicId &, const CharsetInfo &,
+                                   UnivCharsetDesc &);
 };
 
 #ifdef SP_NAMESPACE

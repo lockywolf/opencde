@@ -36,80 +36,64 @@
 #include "rtable4.h"
 #include "cmscalendar.h"
 
-#define _DTCMS_HAS_VIEW_CALENDAR_ATTR_ACCESS(a) \
-		((a) & (CSA_VIEW_CALENDAR_ATTRIBUTES | CSA_OWNER_RIGHTS))
+#define _DTCMS_HAS_VIEW_CALENDAR_ATTR_ACCESS(a)                                \
+        ((a) & (CSA_VIEW_CALENDAR_ATTRIBUTES | CSA_OWNER_RIGHTS))
 
-#define _DTCMS_HAS_INSERT_CALENDAR_ATTR_ACCESS(a) \
-		((a) & (CSA_INSERT_CALENDAR_ATTRIBUTES | CSA_OWNER_RIGHTS))
+#define _DTCMS_HAS_INSERT_CALENDAR_ATTR_ACCESS(a)                              \
+        ((a) & (CSA_INSERT_CALENDAR_ATTRIBUTES | CSA_OWNER_RIGHTS))
 
-#define _DTCMS_HAS_CHANGE_CALENDAR_ATTR_ACCESS(a) \
-		((a) & (CSA_CHANGE_CALENDAR_ATTRIBUTES | CSA_OWNER_RIGHTS))
+#define _DTCMS_HAS_CHANGE_CALENDAR_ATTR_ACCESS(a)                              \
+        ((a) & (CSA_CHANGE_CALENDAR_ATTRIBUTES | CSA_OWNER_RIGHTS))
 
-#define _DTCMS_HAS_VIEW_ACCESS(a) ((a) & (CSA_VIEW_PUBLIC_ENTRIES | \
-					    CSA_VIEW_CONFIDENTIAL_ENTRIES | \
-					    CSA_VIEW_PRIVATE_ENTRIES | \
-					    CSA_ORGANIZER_RIGHTS | \
-					    CSA_SPONSOR_RIGHTS | \
-					    CSA_OWNER_RIGHTS))
+#define _DTCMS_HAS_VIEW_ACCESS(a)                                              \
+        ((a) & (CSA_VIEW_PUBLIC_ENTRIES | CSA_VIEW_CONFIDENTIAL_ENTRIES |      \
+                CSA_VIEW_PRIVATE_ENTRIES | CSA_ORGANIZER_RIGHTS |              \
+                CSA_SPONSOR_RIGHTS | CSA_OWNER_RIGHTS))
 
-#define _DTCMS_HAS_INSERT_ACCESS(a) ((a) & (CSA_INSERT_PUBLIC_ENTRIES | \
-					    CSA_INSERT_CONFIDENTIAL_ENTRIES | \
-					    CSA_INSERT_PRIVATE_ENTRIES | \
-					    CSA_OWNER_RIGHTS))
+#define _DTCMS_HAS_INSERT_ACCESS(a)                                            \
+        ((a) & (CSA_INSERT_PUBLIC_ENTRIES | CSA_INSERT_CONFIDENTIAL_ENTRIES |  \
+                CSA_INSERT_PRIVATE_ENTRIES | CSA_OWNER_RIGHTS))
 
-#define _DTCMS_HAS_CHANGE_ACCESS(a) ((a) & (CSA_CHANGE_PUBLIC_ENTRIES | \
-					    CSA_CHANGE_CONFIDENTIAL_ENTRIES | \
-					    CSA_CHANGE_PRIVATE_ENTRIES | \
-					    CSA_ORGANIZER_RIGHTS | \
-					    CSA_SPONSOR_RIGHTS | \
-					    CSA_OWNER_RIGHTS))
+#define _DTCMS_HAS_CHANGE_ACCESS(a)                                            \
+        ((a) & (CSA_CHANGE_PUBLIC_ENTRIES | CSA_CHANGE_CONFIDENTIAL_ENTRIES |  \
+                CSA_CHANGE_PRIVATE_ENTRIES | CSA_ORGANIZER_RIGHTS |            \
+                CSA_SPONSOR_RIGHTS | CSA_OWNER_RIGHTS))
 
-#define _DTCMS_HAS_V4_BROWSE_ACCESS(a) \
-		((a) & (access_read_4 | CSA_OWNER_RIGHTS))
+#define _DTCMS_HAS_V4_BROWSE_ACCESS(a)                                         \
+        ((a) & (access_read_4 | CSA_OWNER_RIGHTS))
 
-#define _DTCMS_HAS_V4_WRITE_ACCESS(a) \
-		((a) & (access_write_4 | CSA_OWNER_RIGHTS))
+#define _DTCMS_HAS_V4_WRITE_ACCESS(a)                                          \
+        ((a) & (access_write_4 | CSA_OWNER_RIGHTS))
 
-extern CSA_return_code _DtCmsV4LoadAndCheckAccess P((
-			struct svc_req	*svcrq,
-			char		*target,
-			char		**sender,
-			uint		*access,
-			_DtCmsCalendar	**cal));
+extern CSA_return_code _DtCmsV4LoadAndCheckAccess
+    P((struct svc_req * svcrq, char *target, char **sender, uint *access,
+       _DtCmsCalendar **cal));
 
-extern CSA_return_code _DtCmsV5LoadAndCheckAccess P((
-			struct svc_req	*svcrq,
-			char		*target,
-			char		**sender,
-			uint		*access,
-			_DtCmsCalendar	**cal));
+extern CSA_return_code _DtCmsV5LoadAndCheckAccess
+    P((struct svc_req * svcrq, char *target, char **sender, uint *access,
+       _DtCmsCalendar **cal));
 
-extern CSA_return_code _DtCmsGetClientInfo P((
-			struct svc_req *svcrq,
-			char **source));
+extern CSA_return_code _DtCmsGetClientInfo P((struct svc_req * svcrq,
+                                              char **source));
 
 extern boolean_t _DtCmsIsFileOwner P((char *owner, char *user, char *target));
 
-extern void _DtCmsShowAccessList P((Access_Entry_4 *l));
+extern void _DtCmsShowAccessList P((Access_Entry_4 * l));
 
-extern Access_Entry_4 *_DtCmsCalendarAccessList P((_DtCmsCalendar *cal));
+extern Access_Entry_4 *_DtCmsCalendarAccessList P((_DtCmsCalendar * cal));
 
 extern Privacy_Level_4 _DtCmCheckPrivacyLevel P((char **p_src, Appt_4 *p_appt));
 
-extern CSA_return_code _DtCmsCheckViewAccess P((
-			char *user,
-			uint access,
-			cms_entry *eptr));
+extern CSA_return_code _DtCmsCheckViewAccess P((char *user, uint access,
+                                                cms_entry *eptr));
 
-extern CSA_return_code _DtCmsCheckChangeAccess P((
-			char	*user,
-			uint	access,
-			cms_entry *eptr));
+extern CSA_return_code _DtCmsCheckChangeAccess P((char *user, uint access,
+                                                  cms_entry *eptr));
 
-extern uint _DtCmsClassToInsertAccess P((cms_entry *entry));
+extern uint _DtCmsClassToInsertAccess P((cms_entry * entry));
 
-extern uint _DtCmsClassToViewAccess P((cms_entry *entry));
+extern uint _DtCmsClassToViewAccess P((cms_entry * entry));
 
-extern uint _DtCmsClassToChangeAccess P((cms_entry *entry));
+extern uint _DtCmsClassToChangeAccess P((cms_entry * entry));
 
 #endif

@@ -32,14 +32,14 @@ This product and information is proprietary of Tandem Computers Incorporated.
 #include "build.h"
 
 /* Add an exception (inclusion or exclusion) for the current element */
-void addex(M_NOPAR)
-  {
-    excount++ ;
-    *nextex = (EXCEPTION *) m_malloc(sizeof(EXCEPTION), "exception") ;
-    if (exlist) exlist->next = *nextex ;
-    exlist = *nextex ;
-    (*nextex)->next = NULL ;
-    (*nextex)->nextptr = NULL ;
-    (*nextex)->element = ntrelt(name)->eltno ;
-    nextex = &(*nextex)->nextptr ;
-    }
+void addex(M_NOPAR) {
+        excount++;
+        *nextex = (EXCEPTION *)m_malloc(sizeof(EXCEPTION), "exception");
+        if (exlist)
+                exlist->next = *nextex;
+        exlist = *nextex;
+        (*nextex)->next = NULL;
+        (*nextex)->nextptr = NULL;
+        (*nextex)->element = ntrelt(name)->eltno;
+        nextex = &(*nextex)->nextptr;
+}

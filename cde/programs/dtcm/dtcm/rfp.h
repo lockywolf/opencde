@@ -24,7 +24,8 @@
 **
 **  rfp.h
 **
-**  static char sccsid[] = "@(#)rfp.h 1.20 95/02/10 Copyr 1991 Sun Microsystems, Inc.";
+**  static char sccsid[] = "@(#)rfp.h 1.20 95/02/10 Copyr 1991 Sun Microsystems,
+*Inc.";
 **
 **  $XConsortium: rfp.h /main/4 1996/05/23 11:17:56 rswiston $
 **
@@ -57,7 +58,7 @@
 #include "calendar.h"
 #include "misc.h"
 
-#define FOR_LEN	5
+#define FOR_LEN 5
 
 /*******************************************************************************
 **
@@ -65,53 +66,53 @@
 **
 *******************************************************************************/
 typedef struct {
-	Widget			for_label;
-	Widget			for_menu;
-	Widget			for_scope;
-	int			for_val;
-	Widget			frequency_label;
-	Widget			parent;
-	Widget			privacy_label;
-	Widget			privacy_menu;
-	CSA_sint32		privacy_val;
-	Calendar		*cal;
-	Widget			repeat_form_mgr;
-	Widget			repeat_label;
-	Widget			repeat_menu;
-	Widget			repeat_popup_frame;
-	Widget			repeat_popup_menu;
-	Widget			repeat_popup_text;
-	Widget			repeat_apply_button;
-	Widget			repeat_cancel_button;
-	int			repeat_nth;
-	CSA_sint32		repeat_type;
-	char			*recurrence_rule;
-	Widget			rfp_form_mgr;
+        Widget for_label;
+        Widget for_menu;
+        Widget for_scope;
+        int for_val;
+        Widget frequency_label;
+        Widget parent;
+        Widget privacy_label;
+        Widget privacy_menu;
+        CSA_sint32 privacy_val;
+        Calendar *cal;
+        Widget repeat_form_mgr;
+        Widget repeat_label;
+        Widget repeat_menu;
+        Widget repeat_popup_frame;
+        Widget repeat_popup_menu;
+        Widget repeat_popup_text;
+        Widget repeat_apply_button;
+        Widget repeat_cancel_button;
+        int repeat_nth;
+        CSA_sint32 repeat_type;
+        char *recurrence_rule;
+        Widget rfp_form_mgr;
 } RFP;
 
 /* Monthly-by-weekday flags */
 #define RFP_MBW_LAST 1
-#define RFP_MBW_4TH  2
+#define RFP_MBW_4TH 2
 
 /*******************************************************************************
 **
 **  RFP (repeat, for, privacy) external function declarations
 **
 *******************************************************************************/
-extern void	build_rfp		P((RFP*, Calendar*, Widget));
-extern void	get_rfp_privacy_val	P((RFP*));
-extern void	get_rfp_repeat_val	P((RFP*, time_t));
-extern void	get_rfp_vals		P((RFP*, time_t));
-extern Boolean	rfp_attrs_to_form	P((RFP*, Dtcm_appointment*));
-extern Boolean	rfp_appt_to_form	P((RFP*, CSA_entry_handle));
-extern Boolean	rfp_form_to_appt	P((RFP*, Dtcm_appointment*, char*));
-extern Boolean	rfp_form_flags_to_appt	P((RFP*, Dtcm_appointment*, char*, int *));
-extern void	set_rfp_privacy_val	P((RFP*));
-extern void	set_rfp_repeat_val	P((RFP*));
-extern void	set_rfp_defaults	P((RFP*));
-extern void	set_rfp_vals		P((RFP*));
-extern void	rfp_set_repeat_values	P((RFP*));
-extern void	rfp_init		P((RFP*, Calendar *, Widget));
-
+extern void build_rfp P((RFP *, Calendar *, Widget));
+extern void get_rfp_privacy_val P((RFP *));
+extern void get_rfp_repeat_val P((RFP *, time_t));
+extern void get_rfp_vals P((RFP *, time_t));
+extern Boolean rfp_attrs_to_form P((RFP *, Dtcm_appointment *));
+extern Boolean rfp_appt_to_form P((RFP *, CSA_entry_handle));
+extern Boolean rfp_form_to_appt P((RFP *, Dtcm_appointment *, char *));
+extern Boolean rfp_form_flags_to_appt P((RFP *, Dtcm_appointment *, char *,
+                                         int *));
+extern void set_rfp_privacy_val P((RFP *));
+extern void set_rfp_repeat_val P((RFP *));
+extern void set_rfp_defaults P((RFP *));
+extern void set_rfp_vals P((RFP *));
+extern void rfp_set_repeat_values P((RFP *));
+extern void rfp_init P((RFP *, Calendar *, Widget));
 
 #endif

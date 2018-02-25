@@ -31,7 +31,7 @@
  *	$:$
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -54,9 +54,9 @@
  *   (c) Copyright 1995 Digital Equipment Corp.
  *   (c) Copyright 1995 Fujitsu Limited
  *   (c) Copyright 1995 Hitachi, Ltd.
- *                                                                   
  *
- *                     RESTRICTED RIGHTS LEGEND                              
+ *
+ *                     RESTRICTED RIGHTS LEGEND
  *
  *Use, duplication, or disclosure by the U.S. Government is subject to
  *restrictions as set forth in subparagraph (c)(1)(ii) of the Rights in
@@ -65,14 +65,13 @@
  *FAR 52.227-19(c)(1,2).
 
  *Hewlett-Packard Company, 3000 Hanover Street, Palo Alto, CA 94304 U.S.A.
- *International Business Machines Corp., Route 100, Somers, NY 10589 U.S.A. 
+ *International Business Machines Corp., Route 100, Somers, NY 10589 U.S.A.
  *Sun Microsystems, Inc., 2550 Garcia Avenue, Mountain View, CA 94043 U.S.A.
  *Novell, Inc., 190 River Road, Summit, NJ 07901 U.S.A.
  *Digital Equipment Corp., 111 Powdermill Road, Maynard, MA 01754, U.S.A.
  *Fujitsu Limited, 1015, Kamikodanaka Nakahara-Ku, Kawasaki 211, Japan
  *Hitachi, Ltd., 6, Kanda Surugadai 4-Chome, Chiyoda-ku, Tokyo 101, Japan
  */
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -85,77 +84,60 @@
 #include "DtMailTypes.h"
 #include "UIComponent.h"
 
-class DmxPrintOutput : public UIComponent
-{
-public:
+class DmxPrintOutput : public UIComponent {
+      public:
+        DmxPrintOutput(Widget);
+        ~DmxPrintOutput(void);
 
-    DmxPrintOutput ( Widget );
-    ~DmxPrintOutput (void);
+        void hideFooters(void);
+        void showFooters(void);
+        void hideHeaders(void);
+        void showHeaders(void);
+        void setHdrFtrString(_DtPrintHdrFtrEnum, char *);
+        void setHdrFtrStrings(char *, char *, char *, char *);
 
-    void		hideFooters (void);
-    void		showFooters (void);
-    void		hideHeaders (void);
-    void		showHeaders (void);
-    void		setHdrFtrString (_DtPrintHdrFtrEnum, char*);
-    void		setHdrFtrStrings (char *, char *, char *, char *);
+        void setPageMargin(_DtPrintMarginEnum, const char *, DtMailBoolean *);
+        void setPageMargin(_DtPrintMarginEnum, int);
+        void setPageMargins(int, int, int, int);
+        void setPageMargins(const char *, const char *, const char *,
+                            const char *, DtMailBoolean *);
 
-    void		setPageMargin (
-					_DtPrintMarginEnum,
-					const char*,
-					DtMailBoolean*
-					);
-    void		setPageMargin (_DtPrintMarginEnum, int);
-    void		setPageMargins (int, int, int, int);
-    void		setPageMargins (
-					const char*,
-					const char*,
-					const char*,
-					const char*,
-					DtMailBoolean*
-					 );
+        void setWrapToFit(DtMailBoolean);
 
-    void		setWrapToFit (DtMailBoolean);
+        int getCharactersPerLine(void);
+        inline int getLinesPerPage(void) { return _lines_per_page; }
+        int getNumLines(void);
+        int getLastPosition(void);
+        int getTopPosition(void);
+        DtMailBoolean pageUp(void);
+        DtMailBoolean pageDown(void);
+        void setTopPosition(int);
 
-    int			getCharactersPerLine(void);
-    inline int		getLinesPerPage(void) { return _lines_per_page; }
-    int			getNumLines(void);
-    int			getLastPosition(void);
-    int			getTopPosition(void);
-    DtMailBoolean	pageUp(void);
-    DtMailBoolean	pageDown(void);
-    void		setTopPosition(int);
+        static void appendContents(void *, char *);
+        void appendNewLine();
+        void appendPageBreak();
+        void clearContents(void);
 
-    static void		appendContents(void*, char*);
-    void		appendNewLine();
-    void		appendPageBreak();
-    void		clearContents(void);
+      private:
+        static const char *const _default_margin;
 
-private:
-    static const char* const
-			_default_margin;
+        Widget _pshell;
+        Widget _form;
+        Widget _inner_form;
+        Widget _header_left;
+        Widget _header_right;
+        Widget _editor;
+        Widget _footer_left;
+        Widget _footer_right;
 
-    Widget		_pshell;
-    Widget		_form;
-    Widget		_inner_form;
-    Widget		_header_left;
-    Widget		_header_right;
-    Widget		_editor;
-    Widget		_footer_left;
-    Widget		_footer_right;
+        int _lines_per_page;
+        Dimension _margin_top;
+        Dimension _margin_right;
+        Dimension _margin_bottom;
+        Dimension _margin_left;
 
-    int			_lines_per_page;
-    Dimension		_margin_top;
-    Dimension		_margin_right;
-    Dimension		_margin_bottom;
-    Dimension		_margin_left;
-
-    int			doGetLinesPerPage();
-    void		setInnerPageDimensions(
-						Dimension,
-						Dimension,
-						Dimension,
-						Dimension
-						);
+        int doGetLinesPerPage();
+        void setInnerPageDimensions(Dimension, Dimension, Dimension, Dimension);
 };
 
 #endif // _DMX_PRINT_OUTPUT_H

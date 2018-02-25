@@ -21,7 +21,7 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $XConsortium: tclUnixFile.c /main/3 1996/10/03 17:18:17 drk $ */
-/* 
+/*
  * tclUnixFile.c --
  *
  *      This file contains wrappers around UNIX file handling functions.
@@ -44,7 +44,7 @@
  * NULL means the cache needs to be refreshed.
  */
 
-static char *currentDir =  NULL;
+static char *currentDir = NULL;
 static int currentDirExitHandlerSet = 0;
 
 /*
@@ -60,9 +60,9 @@ extern pid_t waitpid _ANSI_ARGS_((pid_t pid, int *stat_loc, int options));
  * Static routines for this file:
  */
 
-static void	FreeCurrentDir _ANSI_ARGS_((ClientData clientData));
-static void	FreeExecutableName _ANSI_ARGS_((ClientData clientData));
-
+static void FreeCurrentDir _ANSI_ARGS_((ClientData clientData));
+static void FreeExecutableName _ANSI_ARGS_((ClientData clientData));
+
 /*
  *----------------------------------------------------------------------
  *
@@ -79,24 +79,22 @@ static void	FreeExecutableName _ANSI_ARGS_((ClientData clientData));
  *----------------------------------------------------------------------
  */
 
-int
-Tcl_WaitPid(pid, statPtr, options)
-    pid_t pid;
-    int *statPtr;
-    int options;
+int Tcl_WaitPid(pid, statPtr, options) pid_t pid;
+int *statPtr;
+int options;
 {
-    int result;
-    pid_t real_pid;
+        int result;
+        pid_t real_pid;
 
-    real_pid = (pid_t) pid;
-    while (1) {
-	result = (int) waitpid(real_pid, statPtr, options);
-	if ((result != -1) || (errno != EINTR)) {
-	    return result;
-	}
-    }
+        real_pid = (pid_t)pid;
+        while (1) {
+                result = (int)waitpid(real_pid, statPtr, options);
+                if ((result != -1) || (errno != EINTR)) {
+                        return result;
+                }
+        }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -114,17 +112,15 @@ Tcl_WaitPid(pid, statPtr, options)
  *----------------------------------------------------------------------
  */
 
-	/* ARGSUSED */
-static void
-FreeCurrentDir(clientData)
-    ClientData clientData;	/* Not used. */
+/* ARGSUSED */
+static void FreeCurrentDir(clientData) ClientData clientData; /* Not used. */
 {
-    if (currentDir != (char *) NULL) {
-        ckfree(currentDir);
-        currentDir = (char *) NULL;
-    }
+        if (currentDir != (char *)NULL) {
+                ckfree(currentDir);
+                currentDir = (char *)NULL;
+        }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -143,17 +139,16 @@ FreeCurrentDir(clientData)
  *----------------------------------------------------------------------
  */
 
-	/* ARGSUSED */
+/* ARGSUSED */
 static void
-FreeExecutableName(clientData)
-    ClientData clientData;	/* Not used. */
+    FreeExecutableName(clientData) ClientData clientData; /* Not used. */
 {
-    if (tclExecutableName != (char *) NULL) {
-        ckfree(tclExecutableName);
-        tclExecutableName = (char *) NULL;
-    }
+        if (tclExecutableName != (char *)NULL) {
+                ckfree(tclExecutableName);
+                tclExecutableName = (char *)NULL;
+        }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -162,7 +157,7 @@ FreeExecutableName(clientData)
  *	Change the current working directory.
  *
  * Results:
- *	The result is a standard Tcl result.  If an error occurs and 
+ *	The result is a standard Tcl result.  If an error occurs and
  *	interp isn't NULL, an error message is left in interp->result.
  *
  * Side effects:
@@ -173,25 +168,26 @@ FreeExecutableName(clientData)
  *----------------------------------------------------------------------
  */
 
-int
-TclChdir(interp, dirName)
-    Tcl_Interp *interp;		/* If non NULL, used for error reporting. */
-    char *dirName;     		/* Path to new working directory. */
+int TclChdir(interp, dirName)
+    Tcl_Interp *interp; /* If non NULL, used for error reporting. */
+char *dirName;          /* Path to new working directory. */
 {
-    if (currentDir != NULL) {
-	ckfree(currentDir);
-	currentDir = NULL;
-    }
-    if (chdir(dirName) != 0) {
-	if (interp != NULL) {
-	    Tcl_AppendResult(interp, "couldn't change working directory to \"",
-		    dirName, "\": ", Tcl_PosixError(interp), (char *) NULL);
-	}
-	return TCL_ERROR;
-    }
-    return TCL_OK;
+        if (currentDir != NULL) {
+                ckfree(currentDir);
+                currentDir = NULL;
+        }
+        if (chdir(dirName) != 0) {
+                if (interp != NULL) {
+                        Tcl_AppendResult(
+                            interp, "couldn't change working directory to \"",
+                            dirName, "\": ", Tcl_PosixError(interp),
+                            (char *)NULL);
+                }
+                return TCL_ERROR;
+        }
+        return TCL_OK;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -214,35 +210,38 @@ TclChdir(interp, dirName)
  *----------------------------------------------------------------------
  */
 
-char *
-TclGetCwd(interp)
-    Tcl_Interp *interp;		/* If non NULL, used for error reporting. */
+char *TclGetCwd(interp)
+    Tcl_Interp *interp; /* If non NULL, used for error reporting. */
 {
-    char buffer[MAXPATHLEN+1];
+        char buffer[MAXPATHLEN + 1];
 
-    if (currentDir == NULL) {
-        if (!currentDirExitHandlerSet) {
-            currentDirExitHandlerSet = 1;
-            Tcl_CreateExitHandler(FreeCurrentDir, (ClientData) NULL);
+        if (currentDir == NULL) {
+                if (!currentDirExitHandlerSet) {
+                        currentDirExitHandlerSet = 1;
+                        Tcl_CreateExitHandler(FreeCurrentDir, (ClientData)NULL);
+                }
+                if (getcwd(buffer, MAXPATHLEN + 1) == NULL) {
+                        if (interp != NULL) {
+                                if (errno == ERANGE) {
+                                        interp->result = "working directory "
+                                                         "name is too long";
+                                } else {
+                                        Tcl_AppendResult(interp,
+                                                         "error getting "
+                                                         "working directory "
+                                                         "name: ",
+                                                         Tcl_PosixError(interp),
+                                                         (char *)NULL);
+                                }
+                        }
+                        return NULL;
+                }
+                currentDir = (char *)ckalloc((unsigned)(strlen(buffer) + 1));
+                strcpy(currentDir, buffer);
         }
-	if (getcwd(buffer, MAXPATHLEN+1) == NULL) {
-	    if (interp != NULL) {
-		if (errno == ERANGE) {
-		    interp->result = "working directory name is too long";
-		} else {
-		    Tcl_AppendResult(interp,
-			    "error getting working directory name: ",
-			    Tcl_PosixError(interp), (char *) NULL);
-		}
-	    }
-	    return NULL;
-	}
-	currentDir = (char *) ckalloc((unsigned) (strlen(buffer) + 1));
-	strcpy(currentDir, buffer);
-    }
-    return currentDir;
+        return currentDir;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -259,21 +258,20 @@ TclGetCwd(interp)
  *----------------------------------------------------------------------
  */
 
-Tcl_File
-TclOpenFile(fname, mode)
-    char *fname;			/* The name of the file to open. */
-    int mode;				/* In what mode to open the file? */
+Tcl_File TclOpenFile(fname,
+                     mode) char *fname; /* The name of the file to open. */
+int mode;                               /* In what mode to open the file? */
 {
-    int fd;
+        int fd;
 
-    fd = open(fname, mode, 0600);
-    if (fd != -1) {
-        fcntl(fd, F_SETFD, FD_CLOEXEC);
-        return Tcl_GetFile((ClientData) (intptr_t) fd, TCL_UNIX_FD);
-    }
-    return NULL;
+        fd = open(fname, mode, 0600);
+        if (fd != -1) {
+                fcntl(fd, F_SETFD, FD_CLOEXEC);
+                return Tcl_GetFile((ClientData)(intptr_t)fd, TCL_UNIX_FD);
+        }
+        return NULL;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -290,33 +288,31 @@ TclOpenFile(fname, mode)
  *----------------------------------------------------------------------
  */
 
-int
-TclCloseFile(file)
-    Tcl_File file;	/* The file to close. */
+int TclCloseFile(file) Tcl_File file; /* The file to close. */
 {
-    int type;
-    int fd;
-    int result;
+        int type;
+        int fd;
+        int result;
 
-    fd = (int) (intptr_t) Tcl_GetFileInfo(file, &type);
-    if (type != TCL_UNIX_FD) {
-	panic("Tcl_CloseFile: unexpected file type");
-    }
+        fd = (int)(intptr_t)Tcl_GetFileInfo(file, &type);
+        if (type != TCL_UNIX_FD) {
+                panic("Tcl_CloseFile: unexpected file type");
+        }
 
-    /*
-     * Refuse to close the fds for stdin, stdout and stderr.
-     */
-    
-    if ((fd == 0) || (fd == 1) || (fd == 2)) {
-        return 0;
-    }
-    
-    result = close(fd);
-    Tcl_DeleteFileHandler(file);
-    Tcl_FreeFile(file);
-    return result;
+        /*
+         * Refuse to close the fds for stdin, stdout and stderr.
+         */
+
+        if ((fd == 0) || (fd == 1) || (fd == 2)) {
+                return 0;
+        }
+
+        result = close(fd);
+        Tcl_DeleteFileHandler(file);
+        Tcl_FreeFile(file);
+        return result;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -333,24 +329,23 @@ TclCloseFile(file)
  *
  *----------------------------------------------------------------------
  */
-	/* ARGSUSED */
-int
-TclReadFile(file, shouldBlock, buf, toRead)
-    Tcl_File file;	/* The file to read from. */
-    int shouldBlock;		/* Not used. */
-    char *buf;			/* The buffer to store input in. */
-    int toRead;			/* Number of characters to read. */
+/* ARGSUSED */
+int TclReadFile(file, shouldBlock, buf,
+                toRead) Tcl_File file; /* The file to read from. */
+int shouldBlock;                       /* Not used. */
+char *buf;                             /* The buffer to store input in. */
+int toRead;                            /* Number of characters to read. */
 {
-    int type, fd;
+        int type, fd;
 
-    fd = (int) (intptr_t) Tcl_GetFileInfo(file, &type);
-    if (type != TCL_UNIX_FD) {
-	panic("Tcl_ReadFile: unexpected file type");
-    }
+        fd = (int)(intptr_t)Tcl_GetFileInfo(file, &type);
+        if (type != TCL_UNIX_FD) {
+                panic("Tcl_ReadFile: unexpected file type");
+        }
 
-    return read(fd, buf, (size_t) toRead);
+        return read(fd, buf, (size_t)toRead);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -367,23 +362,22 @@ TclReadFile(file, shouldBlock, buf, toRead)
  *----------------------------------------------------------------------
  */
 
-	/* ARGSUSED */
-int
-TclWriteFile(file, shouldBlock, buf, toWrite)
-    Tcl_File file;	/* The file to write to. */
-    int shouldBlock;		/* Not used. */
-    char *buf;			/* Where output is stored. */
-    int toWrite;		/* Number of characters to write. */
+/* ARGSUSED */
+int TclWriteFile(file, shouldBlock, buf,
+                 toWrite) Tcl_File file; /* The file to write to. */
+int shouldBlock;                         /* Not used. */
+char *buf;                               /* Where output is stored. */
+int toWrite;                             /* Number of characters to write. */
 {
-    int type, fd;
+        int type, fd;
 
-    fd = (int) (intptr_t) Tcl_GetFileInfo(file, &type);
-    if (type != TCL_UNIX_FD) {
-	panic("Tcl_WriteFile: unexpected file type");
-    }
-    return write(fd, buf, (size_t) toWrite);
+        fd = (int)(intptr_t)Tcl_GetFileInfo(file, &type);
+        if (type != TCL_UNIX_FD) {
+                panic("Tcl_WriteFile: unexpected file type");
+        }
+        return write(fd, buf, (size_t)toWrite);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -402,22 +396,20 @@ TclWriteFile(file, shouldBlock, buf, toWrite)
  *----------------------------------------------------------------------
  */
 
-int
-TclSeekFile(file, offset, whence)
-    Tcl_File file;	/* The file to seek on. */
-    int offset;			/* How far to seek? */
-    int whence;			/* And from where to seek? */
+int TclSeekFile(file, offset, whence) Tcl_File file; /* The file to seek on. */
+int offset;                                          /* How far to seek? */
+int whence; /* And from where to seek? */
 {
-    int type, fd;
+        int type, fd;
 
-    fd = (int) (intptr_t) Tcl_GetFileInfo(file, &type);
-    if (type != TCL_UNIX_FD) {
-	panic("Tcl_SeekFile: unexpected file type");
-    }
+        fd = (int)(intptr_t)Tcl_GetFileInfo(file, &type);
+        if (type != TCL_UNIX_FD) {
+                panic("Tcl_SeekFile: unexpected file type");
+        }
 
-    return lseek(fd, offset, whence);
+        return lseek(fd, offset, whence);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -436,34 +428,33 @@ TclSeekFile(file, offset, whence)
  *----------------------------------------------------------------------
  */
 
-Tcl_File
-TclCreateTempFile(contents)
-    char *contents;		/* String to write into temp file, or NULL. */
+Tcl_File TclCreateTempFile(
+    contents) char *contents; /* String to write into temp file, or NULL. */
 {
-    char fileName[L_tmpnam];
-    Tcl_File file;
-    size_t length = (contents == NULL) ? 0 : strlen(contents);
+        char fileName[L_tmpnam];
+        Tcl_File file;
+        size_t length = (contents == NULL) ? 0 : strlen(contents);
 
-    tmpnam(fileName);
-    file = TclOpenFile(fileName, O_RDWR|O_CREAT|O_TRUNC);
-    unlink(fileName);
+        tmpnam(fileName);
+        file = TclOpenFile(fileName, O_RDWR | O_CREAT | O_TRUNC);
+        unlink(fileName);
 
-    if ((file != NULL) && (length > 0)) {
-	int fd = (int) (intptr_t) Tcl_GetFileInfo(file, NULL);
-	while (1) {
-	    if (write(fd, contents, length) != -1) {
-		break;
-	    } else if (errno != EINTR) {
-		close(fd);
-		Tcl_FreeFile(file);
-		return NULL;
-	    }
-	}
-	lseek(fd, 0, SEEK_SET);
-    }
-    return file;
+        if ((file != NULL) && (length > 0)) {
+                int fd = (int)(intptr_t)Tcl_GetFileInfo(file, NULL);
+                while (1) {
+                        if (write(fd, contents, length) != -1) {
+                                break;
+                        } else if (errno != EINTR) {
+                                close(fd);
+                                Tcl_FreeFile(file);
+                                return NULL;
+                        }
+                }
+                lseek(fd, 0, SEEK_SET);
+        }
+        return file;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -483,113 +474,113 @@ TclCreateTempFile(contents)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_FindExecutable(argv0)
-    char *argv0;		/* The value of the application's argv[0]. */
+void Tcl_FindExecutable(
+    argv0) char *argv0; /* The value of the application's argv[0]. */
 {
-    char *name, *p, *cwd;
-    Tcl_DString buffer;
-    int length;
+        char *name, *p, *cwd;
+        Tcl_DString buffer;
+        int length;
 
-    Tcl_DStringInit(&buffer);
-    if (tclExecutableName != NULL) {
-	ckfree(tclExecutableName);
-	tclExecutableName = NULL;
-    }
+        Tcl_DStringInit(&buffer);
+        if (tclExecutableName != NULL) {
+                ckfree(tclExecutableName);
+                tclExecutableName = NULL;
+        }
 
-    name = argv0;
-    for (p = name; *p != 0; p++) {
-	if (*p == '/') {
-	    /*
-	     * The name contains a slash, so use the name directly
-	     * without doing a path search.
-	     */
+        name = argv0;
+        for (p = name; *p != 0; p++) {
+                if (*p == '/') {
+                        /*
+                         * The name contains a slash, so use the name directly
+                         * without doing a path search.
+                         */
 
-	    goto gotName;
-	}
-    }
+                        goto gotName;
+                }
+        }
 
-    p = getenv("PATH");
-    if (p == NULL) {
-	/*
-	 * There's no PATH environment variable; use the default that
-	 * is used by sh.
-	 */
+        p = getenv("PATH");
+        if (p == NULL) {
+                /*
+                 * There's no PATH environment variable; use the default that
+                 * is used by sh.
+                 */
 
-	p = ":/bin:/usr/bin";
-    }
+                p = ":/bin:/usr/bin";
+        }
 
-    /*
-     * Search through all the directories named in the PATH variable
-     * to see if argv[0] is in one of them.  If so, use that file
-     * name.
-     */
+        /*
+         * Search through all the directories named in the PATH variable
+         * to see if argv[0] is in one of them.  If so, use that file
+         * name.
+         */
 
-    while (*p != 0) {
-	while (isspace(UCHAR(*p))) {
-	    p++;
-	}
-	name = p;
-	while ((*p != ':') && (*p != 0)) {
-	    p++;
-	}
-	Tcl_DStringSetLength(&buffer, 0);
-	if (p != name) {
-	    Tcl_DStringAppend(&buffer, name, p-name);
-	    if (p[-1] != '/') {
-		Tcl_DStringAppend(&buffer, "/", 1);
-	    }
-	}
-	Tcl_DStringAppend(&buffer, argv0, -1);
-	if (access(Tcl_DStringValue(&buffer), X_OK) == 0) {
-	    name = Tcl_DStringValue(&buffer);
-	    goto gotName;
-	}
-	p++;
-    }
-    goto done;
+        while (*p != 0) {
+                while (isspace(UCHAR(*p))) {
+                        p++;
+                }
+                name = p;
+                while ((*p != ':') && (*p != 0)) {
+                        p++;
+                }
+                Tcl_DStringSetLength(&buffer, 0);
+                if (p != name) {
+                        Tcl_DStringAppend(&buffer, name, p - name);
+                        if (p[-1] != '/') {
+                                Tcl_DStringAppend(&buffer, "/", 1);
+                        }
+                }
+                Tcl_DStringAppend(&buffer, argv0, -1);
+                if (access(Tcl_DStringValue(&buffer), X_OK) == 0) {
+                        name = Tcl_DStringValue(&buffer);
+                        goto gotName;
+                }
+                p++;
+        }
+        goto done;
 
-    /*
-     * If the name starts with "/" then just copy it to tclExecutableName.
-     */
+        /*
+         * If the name starts with "/" then just copy it to tclExecutableName.
+         */
 
-    gotName:
-    if (name[0] == '/')  {
-	tclExecutableName = (char *) ckalloc((unsigned) (strlen(name) + 1));
-	strcpy(tclExecutableName, name);
-	goto done;
-    }
+gotName:
+        if (name[0] == '/') {
+                tclExecutableName =
+                    (char *)ckalloc((unsigned)(strlen(name) + 1));
+                strcpy(tclExecutableName, name);
+                goto done;
+        }
 
-    /*
-     * The name is relative to the current working directory.  First
-     * strip off a leading "./", if any, then add the full path name of
-     * the current working directory.
-     */
+        /*
+         * The name is relative to the current working directory.  First
+         * strip off a leading "./", if any, then add the full path name of
+         * the current working directory.
+         */
 
-    if ((name[0] == '.') && (name[1] == '/')) {
-	name += 2;
-    }
-    cwd = TclGetCwd((Tcl_Interp *) NULL);
-    if (cwd == NULL) {
-	tclExecutableName = NULL;
-	goto done;
-    }
-    length = strlen(cwd);
-    tclExecutableName = (char *) ckalloc((unsigned)
-	    (length + strlen(name) + 2));
-    strcpy(tclExecutableName, cwd);
-    tclExecutableName[length] = '/';
-    strcpy(tclExecutableName + length + 1, name);
+        if ((name[0] == '.') && (name[1] == '/')) {
+                name += 2;
+        }
+        cwd = TclGetCwd((Tcl_Interp *)NULL);
+        if (cwd == NULL) {
+                tclExecutableName = NULL;
+                goto done;
+        }
+        length = strlen(cwd);
+        tclExecutableName =
+            (char *)ckalloc((unsigned)(length + strlen(name) + 2));
+        strcpy(tclExecutableName, cwd);
+        tclExecutableName[length] = '/';
+        strcpy(tclExecutableName + length + 1, name);
 
-    done:
-    Tcl_DStringFree(&buffer);
+done:
+        Tcl_DStringFree(&buffer);
 
-    if (!executableNameExitHandlerSet) {
-        executableNameExitHandlerSet = 1;
-        Tcl_CreateExitHandler(FreeExecutableName, (ClientData) NULL);
-    }
+        if (!executableNameExitHandlerSet) {
+                executableNameExitHandlerSet = 1;
+                Tcl_CreateExitHandler(FreeExecutableName, (ClientData)NULL);
+        }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -611,26 +602,25 @@ Tcl_FindExecutable(argv0)
  *----------------------------------------------------------------------
  */
 
-char *
-TclGetUserHome(name, bufferPtr)
-    char *name;			/* User name to use to find home directory. */
-    Tcl_DString *bufferPtr;	/* May be used to hold result.  Must not hold
-				 * anything at the time of the call, and need
-				 * not even be initialized. */
+char *TclGetUserHome(
+    name, bufferPtr) char *name; /* User name to use to find home directory. */
+Tcl_DString *bufferPtr;          /* May be used to hold result.  Must not hold
+                                  * anything at the time of the call, and need
+                                  * not even be initialized. */
 {
-    struct passwd *pwPtr;
+        struct passwd *pwPtr;
 
-    pwPtr = getpwnam(name);
-    if (pwPtr == NULL) {
-	endpwent();
-	return NULL;
-    }
-    Tcl_DStringInit(bufferPtr);
-    Tcl_DStringAppend(bufferPtr, pwPtr->pw_dir, -1);
-    endpwent();
-    return bufferPtr->string;
+        pwPtr = getpwnam(name);
+        if (pwPtr == NULL) {
+                endpwent();
+                return NULL;
+        }
+        Tcl_DStringInit(bufferPtr);
+        Tcl_DStringAppend(bufferPtr, pwPtr->pw_dir, -1);
+        endpwent();
+        return bufferPtr->string;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -639,7 +629,7 @@ TclGetUserHome(name, bufferPtr)
  *	This routine is used by the globbing code to search a
  *	directory for all files which match a given pattern.
  *
- * Results: 
+ * Results:
  *	If the tail argument is NULL, then the matching files are
  *	added to the interp->result.  Otherwise, TclDoGlob is called
  *	recursively for each matching subdirectory.  The return value
@@ -651,135 +641,137 @@ TclGetUserHome(name, bufferPtr)
  *
  *---------------------------------------------------------------------- */
 
-int
-TclMatchFiles(interp, separators, dirPtr, pattern, tail)
-    Tcl_Interp *interp;		/* Interpreter to receive results. */
-    char *separators;		/* Path separators to pass to TclDoGlob. */
-    Tcl_DString *dirPtr;	/* Contains path to directory to search. */
-    char *pattern;		/* Pattern to match against. */
-    char *tail;			/* Pointer to end of pattern. */
+int TclMatchFiles(interp, separators, dirPtr, pattern, tail)
+    Tcl_Interp *interp; /* Interpreter to receive results. */
+char *separators;       /* Path separators to pass to TclDoGlob. */
+Tcl_DString *dirPtr;    /* Contains path to directory to search. */
+char *pattern;          /* Pattern to match against. */
+char *tail;             /* Pointer to end of pattern. */
 {
-    char *dirName, *patternEnd = tail;
-    char savedChar = 0;		/* Initialization needed only to prevent
-				 * compiler warning from gcc. */
-    DIR *d;
-    struct stat statBuf;
-    struct dirent *entryPtr;
-    int matchHidden;
-    int result = TCL_OK;
-    int baseLength = Tcl_DStringLength(dirPtr);
+        char *dirName, *patternEnd = tail;
+        char savedChar = 0; /* Initialization needed only to prevent
+                             * compiler warning from gcc. */
+        DIR *d;
+        struct stat statBuf;
+        struct dirent *entryPtr;
+        int matchHidden;
+        int result = TCL_OK;
+        int baseLength = Tcl_DStringLength(dirPtr);
 
-    /*
-     * Make sure that the directory part of the name really is a
-     * directory.  If the directory name is "", use the name "."
-     * instead, because some UNIX systems don't treat "" like "."
-     * automatically.  Keep the "" for use in generating file names,
-     * otherwise "glob foo.c" would return "./foo.c".
-     */
+        /*
+         * Make sure that the directory part of the name really is a
+         * directory.  If the directory name is "", use the name "."
+         * instead, because some UNIX systems don't treat "" like "."
+         * automatically.  Keep the "" for use in generating file names,
+         * otherwise "glob foo.c" would return "./foo.c".
+         */
 
-    if (dirPtr->string[0] == '\0') {
-	dirName = ".";
-    } else {
-	dirName = dirPtr->string;
-    }
-    if ((stat(dirName, &statBuf) != 0) || !S_ISDIR(statBuf.st_mode)) {
-	return TCL_OK;
-    }
+        if (dirPtr->string[0] == '\0') {
+                dirName = ".";
+        } else {
+                dirName = dirPtr->string;
+        }
+        if ((stat(dirName, &statBuf) != 0) || !S_ISDIR(statBuf.st_mode)) {
+                return TCL_OK;
+        }
 
-    /*
-     * Check to see if the pattern needs to compare with hidden files.
-     */
+        /*
+         * Check to see if the pattern needs to compare with hidden files.
+         */
 
-    if ((pattern[0] == '.')
-	    || ((pattern[0] == '\\') && (pattern[1] == '.'))) {
-	matchHidden = 1;
-    } else {
-	matchHidden = 0;
-    }
+        if ((pattern[0] == '.') ||
+            ((pattern[0] == '\\') && (pattern[1] == '.'))) {
+                matchHidden = 1;
+        } else {
+                matchHidden = 0;
+        }
 
-    /*
-     * Now open the directory for reading and iterate over the contents.
-     */
+        /*
+         * Now open the directory for reading and iterate over the contents.
+         */
 
-    d = opendir(dirName);
-    if (d == NULL) {
-	Tcl_ResetResult(interp);
+        d = opendir(dirName);
+        if (d == NULL) {
+                Tcl_ResetResult(interp);
 
-	/*
-	 * Strip off a trailing '/' if necessary, before reporting the error.
-	 */
+                /*
+                 * Strip off a trailing '/' if necessary, before reporting the
+                 * error.
+                 */
 
-	if (baseLength > 0) {
-	    savedChar = dirPtr->string[baseLength-1];
-	    if (savedChar == '/') {
-		dirPtr->string[baseLength-1] = '\0';
-	    }
-	}
-	Tcl_AppendResult(interp, "couldn't read directory \"",
-		dirPtr->string, "\": ", Tcl_PosixError(interp), (char *) NULL);
-	if (baseLength > 0) {
-	    dirPtr->string[baseLength-1] = savedChar;
-	}
-	return TCL_ERROR;
-    }
+                if (baseLength > 0) {
+                        savedChar = dirPtr->string[baseLength - 1];
+                        if (savedChar == '/') {
+                                dirPtr->string[baseLength - 1] = '\0';
+                        }
+                }
+                Tcl_AppendResult(interp, "couldn't read directory \"",
+                                 dirPtr->string, "\": ", Tcl_PosixError(interp),
+                                 (char *)NULL);
+                if (baseLength > 0) {
+                        dirPtr->string[baseLength - 1] = savedChar;
+                }
+                return TCL_ERROR;
+        }
 
-    /*
-     * Clean up the end of the pattern and the tail pointer.  Leave
-     * the tail pointing to the first character after the path separator
-     * following the pattern, or NULL.  Also, ensure that the pattern
-     * is null-terminated.
-     */
+        /*
+         * Clean up the end of the pattern and the tail pointer.  Leave
+         * the tail pointing to the first character after the path separator
+         * following the pattern, or NULL.  Also, ensure that the pattern
+         * is null-terminated.
+         */
 
-    if (*tail == '\\') {
-	tail++;
-    }
-    if (*tail == '\0') {
-	tail = NULL;
-    } else {
-	tail++;
-    }
-    savedChar = *patternEnd;
-    *patternEnd = '\0';
+        if (*tail == '\\') {
+                tail++;
+        }
+        if (*tail == '\0') {
+                tail = NULL;
+        } else {
+                tail++;
+        }
+        savedChar = *patternEnd;
+        *patternEnd = '\0';
 
-    while (1) {
-	entryPtr = readdir(d);
-	if (entryPtr == NULL) {
-	    break;
-	}
+        while (1) {
+                entryPtr = readdir(d);
+                if (entryPtr == NULL) {
+                        break;
+                }
 
-	/*
-	 * Don't match names starting with "." unless the "." is
-	 * present in the pattern.
-	 */
+                /*
+                 * Don't match names starting with "." unless the "." is
+                 * present in the pattern.
+                 */
 
-	if (!matchHidden && (*entryPtr->d_name == '.')) {
-	    continue;
-	}
+                if (!matchHidden && (*entryPtr->d_name == '.')) {
+                        continue;
+                }
 
-	/*
-	 * Now check to see if the file matches.  If there are more
-	 * characters to be processed, then ensure matching files are
-	 * directories before calling TclDoGlob. Otherwise, just add
-	 * the file to the result.
-	 */
+                /*
+                 * Now check to see if the file matches.  If there are more
+                 * characters to be processed, then ensure matching files are
+                 * directories before calling TclDoGlob. Otherwise, just add
+                 * the file to the result.
+                 */
 
-	if (Tcl_StringMatch(entryPtr->d_name, pattern)) {
-	    Tcl_DStringSetLength(dirPtr, baseLength);
-	    Tcl_DStringAppend(dirPtr, entryPtr->d_name, -1);
-	    if (tail == NULL) {
-		Tcl_AppendElement(interp, dirPtr->string);
-	    } else if ((stat(dirPtr->string, &statBuf) == 0)
-		    && S_ISDIR(statBuf.st_mode)) {
-		Tcl_DStringAppend(dirPtr, "/", 1);
-		result = TclDoGlob(interp, separators, dirPtr, tail);
-		if (result != TCL_OK) {
-		    break;
-		}
-	    }
-	}
-    }
-    *patternEnd = savedChar;
+                if (Tcl_StringMatch(entryPtr->d_name, pattern)) {
+                        Tcl_DStringSetLength(dirPtr, baseLength);
+                        Tcl_DStringAppend(dirPtr, entryPtr->d_name, -1);
+                        if (tail == NULL) {
+                                Tcl_AppendElement(interp, dirPtr->string);
+                        } else if ((stat(dirPtr->string, &statBuf) == 0) &&
+                                   S_ISDIR(statBuf.st_mode)) {
+                                Tcl_DStringAppend(dirPtr, "/", 1);
+                                result =
+                                    TclDoGlob(interp, separators, dirPtr, tail);
+                                if (result != TCL_OK) {
+                                        break;
+                                }
+                        }
+                }
+        }
+        *patternEnd = savedChar;
 
-    closedir(d);
-    return result;
+        closedir(d);
+        return result;
 }

@@ -26,5 +26,5 @@
    The code functionality of this module was merged with /ilc/ildecompfaxg31d.c
    to form a new module /ilc/ildecompg3.c
 
-   ==================================================================================== */
-
+   ====================================================================================
+ */

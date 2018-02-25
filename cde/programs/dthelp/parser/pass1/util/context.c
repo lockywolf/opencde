@@ -39,7 +39,7 @@ output arrays.
 
 Data lines in "delim.dat" contain the name of the delimiter followed
 by the text of the delimiter (one or more non-white space
-characters).  The delimiter name must begin in the first column.  
+characters).  The delimiter name must begin in the first column.
 Lines with white-space in the first column are considered comments.
 
 Data in "context.dat" consists of free-form multi-line declarations.
@@ -75,7 +75,7 @@ and "context.dat" includes
                       {storemod(nstring) ;}
 
 These declarations specify that the "grpo" delimiter is "(" and is
-recognized in contexts "element", "content", "excon", and "pcon". 
+recognized in contexts "element", "content", "excon", and "pcon".
 Procedure openmod() is called when "grpo" occurs in "content" and,
 beyond the state change, no code is executed in other contexts when
 "grpo" occurs.  The "name" token is valid in contexts "namegroup",
@@ -170,78 +170,76 @@ delim.h.
 #include "cont.h"
 
 /* Main procedure */
-int main(argc, argv)
-  int argc ;
-  char **argv ;
+int main(argc, argv) int argc;
+char **argv;
 {
-int n ;
+        int n;
 
-m_openchk(&delim, "delim.h", "w") ;
-m_openchk(&context, "context.h", "w") ;
-m_openchk(&fcase, "case.c", "w") ;
-m_openchk(&cdat, "context.dat", "r") ;
-m_openchk(&ddat, "delim.dat", "r") ;
-m_openchk(&m_errfile, "error", "w") ;
-fputs("    switch(m_token) {\n", fcase) ; /* keep the "}" balanced */
+        m_openchk(&delim, "delim.h", "w");
+        m_openchk(&context, "context.h", "w");
+        m_openchk(&fcase, "case.c", "w");
+        m_openchk(&cdat, "context.dat", "r");
+        m_openchk(&ddat, "delim.dat", "r");
+        m_openchk(&m_errfile, "error", "w");
+        fputs("    switch(m_token) {\n", fcase); /* keep the "}" balanced */
 
-fputs("#if defined(M_DELIMDEF)\n", delim) ;
-fputs("#define M_DELIMEXTERN\n", delim) ;
-fputs("#define M_DELIMINIT(a) = a\n", delim) ;
-fputs("#else\n", delim) ;
-fputs("#define M_DELIMEXTERN extern\n", delim) ;
-fputs("#define M_DELIMINIT(a)\n", delim) ;
-fputs("#endif\n\n", delim) ;
+        fputs("#if defined(M_DELIMDEF)\n", delim);
+        fputs("#define M_DELIMEXTERN\n", delim);
+        fputs("#define M_DELIMINIT(a) = a\n", delim);
+        fputs("#else\n", delim);
+        fputs("#define M_DELIMEXTERN extern\n", delim);
+        fputs("#define M_DELIMINIT(a)\n", delim);
+        fputs("#endif\n\n", delim);
 
-fputs("#if defined(M_CONDEF)\n", context) ;
-fputs("#define M_CONEXTERN\n", context) ;
-fputs("#else\n", context) ;
-fputs("#define M_CONEXTERN extern\n", context) ;
-fputs("#endif\n\n", context) ;
+        fputs("#if defined(M_CONDEF)\n", context);
+        fputs("#define M_CONEXTERN\n", context);
+        fputs("#else\n", context);
+        fputs("#define M_CONEXTERN extern\n", context);
+        fputs("#endif\n\n", context);
 
-contree = (M_TRIE **) calloc(NUMCON, sizeof(M_TRIE *)) ;
-xtransit = (int *) calloc(NUMCON * NUMDELIM, sizeof(int)) ;
-contexts = (M_WCHAR **) calloc(NUMCON, sizeof(char *)) ;
-dlmptr = (char**) calloc(NUMDELIM, sizeof(char*)) ;
+        contree = (M_TRIE **)calloc(NUMCON, sizeof(M_TRIE *));
+        xtransit = (int *)calloc(NUMCON * NUMDELIM, sizeof(int));
+        contexts = (M_WCHAR **)calloc(NUMCON, sizeof(char *));
+        dlmptr = (char **)calloc(NUMDELIM, sizeof(char *));
 
-loaddelim() ;
-while (getdname())
-    {
-    casestarted = FALSE ;
-    while ((n = getContext()) >= 0)
-	{
-	if (withdelim) enterdelim(n) ;
-	getcolon() ;
-	if (transit(n, curdelim))
-	    {
-	    if (! withdelim) 
-		{
-		char *mb_dname, *mb_contexts;
+        loaddelim();
+        while (getdname()) {
+                casestarted = FALSE;
+                while ((n = getContext()) >= 0) {
+                        if (withdelim)
+                                enterdelim(n);
+                        getcolon();
+                        if (transit(n, curdelim)) {
+                                if (!withdelim) {
+                                        char *mb_dname, *mb_contexts;
 
-		mb_dname = MakeMByteString(dname);
-		mb_contexts = MakeMByteString(contexts[n]);
-		warning2(
-		    "Duplicate assignment to token \"%s\" in context \"%s\"",
-			 mb_dname,
-			 mb_contexts) ;
-		m_free(mb_dname,"multi-byte string");
-		m_free(mb_contexts,"multi-byte string");
-		}
-	    }
-	transit(n, curdelim) = getContext() + 1 ;
-	getcode(n) ;
-	}
-    if (casestarted)
-	{
-	fprintf(fcase, "          default:\n            break ;\n") ;
-	/* keep the "{" balanced */
-	fprintf(fcase, "          }\n        break ;\n") ;
-	}
-    }
-/* keep the "{" balanced */
-fprintf(fcase, "      default:\n        break ;\n      }\n") ;
-fprintf(context, "#define MAXD %d\n", maxd) ;
-dumptree((LOGICAL) (argc > 1)) ;
-fprintf(stderr, "NUMCON set to %d\n", NUMCON) ;
-fprintf(stderr, "NUMDELIM set to %d\n", NUMDELIM) ;
-exit(errexit) ;
+                                        mb_dname = MakeMByteString(dname);
+                                        mb_contexts =
+                                            MakeMByteString(contexts[n]);
+                                        warning2("Duplicate assignment to "
+                                                 "token \"%s\" in context "
+                                                 "\"%s\"",
+                                                 mb_dname, mb_contexts);
+                                        m_free(mb_dname, "multi-byte string");
+                                        m_free(mb_contexts,
+                                               "multi-byte string");
+                                }
+                        }
+                        transit(n, curdelim) = getContext() + 1;
+                        getcode(n);
+                }
+                if (casestarted) {
+                        fprintf(fcase,
+                                "          default:\n            break ;\n");
+                        /* keep the "{" balanced */
+                        fprintf(fcase, "          }\n        break ;\n");
+                }
+        }
+        /* keep the "{" balanced */
+        fprintf(fcase, "      default:\n        break ;\n      }\n");
+        fprintf(context, "#define MAXD %d\n", maxd);
+        dumptree((LOGICAL)(argc > 1));
+        fprintf(stderr, "NUMCON set to %d\n", NUMCON);
+        fprintf(stderr, "NUMDELIM set to %d\n", NUMDELIM);
+        exit(errexit);
 }

@@ -35,68 +35,60 @@
 #include "utility/buffer.h"
 #include "FPExceptions.h"
 
+class autoNumber : public Destructable {
+      public:
+        enum autoNumberType { NUMERIC, ALPHABETIC, ROMAN };
 
-class autoNumber : public Destructable
-{
-public:
-   enum autoNumberType { NUMERIC, ALPHABETIC, ROMAN };
+        autoNumber(const char *nm, enum autoNumberType, int delta,
+                   const char *prefix, const char *postfix);
+        virtual ~autoNumber();
 
-   autoNumber(const char* nm, enum autoNumberType, int delta, const char* prefix, const char* postfix);
-   virtual ~autoNumber();
+        void setNumTagsSeen();
 
-   void setNumTagsSeen();
+        virtual const char *getValue() = 0;
+        virtual void setNextValue() = 0;
+        virtual void reset();
 
-   virtual const char* getValue() = 0;
-   virtual void  setNextValue() = 0;
-   virtual void reset();
+        void push();
+        void pop();
 
-   void push();
-   void pop();
+        unsigned int operator==(const autoNumber &);
 
-   unsigned int operator==(const autoNumber&);
+        friend ostream &operator<<(ostream &, const autoNumber &);
 
-   friend ostream& operator<<(ostream&, const autoNumber&) ;
+      protected:
+        static buffer f_buf;
+        char *f_name;
+        enum autoNumberType f_type;
+        int f_delta;
+        char *f_prefix;
+        char *f_postfix;
 
-protected:
-   static buffer f_buf;
-   char* f_name;
-   enum autoNumberType f_type;
-   int f_delta;
-   char* f_prefix;
-   char* f_postfix;
-
-   int f_initialValue;
-   Stack<int> f_values;
-   Stack<int> f_serial_nums;
+        int f_initialValue;
+        Stack<int> f_values;
+        Stack<int> f_serial_nums;
 };
 
-class autoNumberNumeric : public autoNumber
-{
-public:
-   autoNumberNumeric (const char* name, int delta, int initialValue, const char* prefix, const char* postfix);
-   ~autoNumberNumeric();
+class autoNumberNumeric : public autoNumber {
+      public:
+        autoNumberNumeric(const char *name, int delta, int initialValue,
+                          const char *prefix, const char *postfix);
+        ~autoNumberNumeric();
 
-   void setNextValue() ;
-   const char* getValue() ;
+        void setNextValue();
+        const char *getValue();
 };
 
-class autoNumberCased : public autoNumber
-{
-public:
-   enum CaseType { UPPER, LOWER}; 
+class autoNumberCased : public autoNumber {
+      public:
+        enum CaseType { UPPER, LOWER };
 
-   autoNumberCased(const char* name, 
-		   enum autoNumberType, 
-		   int delta, 
-		   CaseType,
-		   const char* prefix,
-		   const char* postfix
-		  );
-   ~autoNumberCased();
+        autoNumberCased(const char *name, enum autoNumberType, int delta,
+                        CaseType, const char *prefix, const char *postfix);
+        ~autoNumberCased();
 
-protected:
-   CaseType f_case;
-
+      protected:
+        CaseType f_case;
 };
 
 //////////////////////////////////////////////////////
@@ -106,69 +98,55 @@ protected:
 //   ba, bb,    bz,
 //   ...       ...
 //////////////////////////////////////////////////////
-class autoNumberAlphabetic : public autoNumberCased
-{
-private:
-   static const int f_base;
+class autoNumberAlphabetic : public autoNumberCased {
+      private:
+        static const int f_base;
 
-   static char f_lowerCaseLetters[26];
-   static char f_upperCaseLetters[26];
+        static char f_lowerCaseLetters[26];
+        static char f_upperCaseLetters[26];
 
-public:
-   autoNumberAlphabetic
-		  (const char* name, 
-		   int delta, 
-		   CaseType,
-		   const char* initialValue,
-		   const char* prefix,
-		   const char* postfix
-		  );
-   ~autoNumberAlphabetic();
+      public:
+        autoNumberAlphabetic(const char *name, int delta, CaseType,
+                             const char *initialValue, const char *prefix,
+                             const char *postfix);
+        ~autoNumberAlphabetic();
 
-   void setNextValue() ;
-   const char* getValue() ;
+        void setNextValue();
+        const char *getValue();
 
-// convert an integer to an alphabetic autonumber
-// Example
-// a <- 0, b <- 1, ..., z <- 25
-// aa <- 26, ab <- 27, ..., az <- 51
-   static const char* intToAlpha(int, enum CaseType);
+        // convert an integer to an alphabetic autonumber
+        // Example
+        // a <- 0, b <- 1, ..., z <- 25
+        // aa <- 26, ab <- 27, ..., az <- 51
+        static const char *intToAlpha(int, enum CaseType);
 
-// convert an alphabetic autonumber to an integer
-// Example
-// a -> 0, b -> 1, ..., z -> 25
-// aa -> 26, ab -> 27, ..., az -> 51
-   static int alphaToInt(const char*, enum CaseType);
-
+        // convert an alphabetic autonumber to an integer
+        // Example
+        // a -> 0, b -> 1, ..., z -> 25
+        // aa -> 26, ab -> 27, ..., az -> 51
+        static int alphaToInt(const char *, enum CaseType);
 };
 
-class autoNumberRoman : public autoNumberCased
-{
-private:
-   static char RomanNumberBuf[256];
+class autoNumberRoman : public autoNumberCased {
+      private:
+        static char RomanNumberBuf[256];
 
-private:
-   static int getDigit(const char*&);
+      private:
+        static int getDigit(const char *&);
 
-public:
-   autoNumberRoman
-		  (const char* name, 
-		   int delta, 
-		   CaseType,
-		   const char* initialValue,
-		   const char* prefix,
-		   const char* postfix
-	          );
-   ~autoNumberRoman();
+      public:
+        autoNumberRoman(const char *name, int delta, CaseType,
+                        const char *initialValue, const char *prefix,
+                        const char *postfix);
+        ~autoNumberRoman();
 
-   void setNextValue() ;
-   const char* getValue() ;
+        void setNextValue();
+        const char *getValue();
 
-   static int RomanToArabic(const char*);
-   // ArabicToRoman needs to be non-static because of the requirement of
-   // case sensitiveness
-   const char* ArabicToRoman(int);
-   
+        static int RomanToArabic(const char *);
+        // ArabicToRoman needs to be non-static because of the requirement of
+        // case sensitiveness
+        const char *ArabicToRoman(int);
 };
 
 #ifndef CDE_NEXT
@@ -177,10 +155,10 @@ class autoNumberListT : public CC_TPtrSlist<autoNumber>
 class autoNumberListT : public CC_TPtrSlist<autoNumber>
 #endif
 {
-public:
-   autoNumberListT() {};
-   virtual ~autoNumberListT() {};
-   unsigned int operator==(const autoNumberListT&);
-} ;
+      public:
+        autoNumberListT(){};
+        virtual ~autoNumberListT(){};
+        unsigned int operator==(const autoNumberListT &);
+};
 
 #endif

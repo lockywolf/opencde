@@ -20,7 +20,8 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* $XConsortium: TranslateInputCodingSystem.h /main/1 1996/07/29 17:06:33 cde-hp $ */
+/* $XConsortium: TranslateInputCodingSystem.h /main/1 1996/07/29 17:06:33 cde-hp
+ * $ */
 // Copyright (c) 1995 James Clark
 // See the file COPYING for copying permission.
 
@@ -34,11 +35,12 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API TranslateInputCodingSystem : public InputCodingSystem {
-public:
-  TranslateInputCodingSystem(const Char *table);
-  Decoder *makeDecoder() const;
-private:
-  const Char *table_;
+      public:
+        TranslateInputCodingSystem(const Char *table);
+        Decoder *makeDecoder() const;
+
+      private:
+        const Char *table_;
 };
 
 #ifdef SP_NAMESPACE

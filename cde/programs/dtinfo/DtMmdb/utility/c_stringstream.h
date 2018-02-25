@@ -31,31 +31,27 @@
 
 #define BUF_INITSZ 4096
 
-class istringstream : public istream
-{
-public:
-   istringstream();
-   istringstream(char* str);
-   ~istringstream() ;
+class istringstream : public istream {
+      public:
+        istringstream();
+        istringstream(char *str);
+        ~istringstream();
 };
 
-class ostringstream : public ostream
-{
-public:
-   ostringstream();
-   ostringstream(char* str, int=ios::out);
-   ~ostringstream() ;
+class ostringstream : public ostream {
+      public:
+        ostringstream();
+        ostringstream(char *str, int = ios::out);
+        ~ostringstream();
 
-   string str();
+        string str();
 };
 
-class stringstream : public istringstream, public ostringstream
-{
-public:
-   stringstream();
-   stringstream(char* str);
-   virtual ~stringstream() {};
+class stringstream : public istringstream, public ostringstream {
+      public:
+        stringstream();
+        stringstream(char *str);
+        virtual ~stringstream(){};
 };
-
 
 #endif

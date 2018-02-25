@@ -30,16 +30,16 @@ _XFUNCPROTOBEGIN
 
 externalref WidgetClass pixmapWidgetClass;
 
-typedef struct _PixmapClassRec * PixmapWidgetClass;
-typedef struct _PixmapRec      * PixmapWidget;
+typedef struct _PixmapClassRec *PixmapWidgetClass;
+typedef struct _PixmapRec *PixmapWidget;
 
 #define IsPixmapWidget(w) XtIsSubclass(w, pixmapWidgetClass)
 
 /* access to pixmap width/height */
-extern void PixmapWidgetDimensions(Widget w, Dimension *width, Dimension *height);
-
+extern void PixmapWidgetDimensions(Widget w, Dimension *width,
+                                   Dimension *height);
 
 _XFUNCPROTOEND
 
-#endif 
+#endif
 /* DON'T ADD STUFF AFTER THIS #endif */

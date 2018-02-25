@@ -38,7 +38,7 @@ $END$
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/param.h>        /* MAXPATHLEN */
+#include <sys/param.h> /* MAXPATHLEN */
 #include <time.h>
 
 /* for Xrm */
@@ -52,10 +52,10 @@ $SHAREDBEG$:  This header appears in all appropriate DtXlate topics
 #include "Lock.h"
 /*$END$*/
 
-static char       MyPlatform[_DtPLATFORM_MAX_LEN+1];
+static char MyPlatform[_DtPLATFORM_MAX_LEN + 1];
 static _DtXlateDb MyDb = NULL;
-static int        ExecVer;
-static int        CompVer;
+static int ExecVer;
+static int CompVer;
 
 static const char *DfltStdCharset = "ISO-8859-1";
 static const char *DfltStdLang = "C";
@@ -76,45 +76,42 @@ static const char *DfltStdLang = "C";
  * Purpose: Opens the Ce-private Lcx database
  *
  *****************************************************************************/
-static int
-OpenLcxDb (void)
-{
-    time_t      time1  = 0;
-    time_t      time2  = 0;
-    static short	  MyProcess = False;
-    static short	  MyFirst   = True;
+static int OpenLcxDb(void) {
+        time_t time1 = 0;
+        time_t time2 = 0;
+        static short MyProcess = False;
+        static short MyFirst = True;
 
-    /*
-     * wait 30 sec. until another thread or enter is done modifying the table
-     */
-    while (MyProcess == True)
-      {
-        /* if time out, return */
-        if (time(&time2) == (time_t)-1)
-            return -1;
+        /*
+         * wait 30 sec. until another thread or enter is done modifying the
+         * table
+         */
+        while (MyProcess == True) {
+                /* if time out, return */
+                if (time(&time2) == (time_t)-1)
+                        return -1;
 
-        if (time1 == 0)
-            time1 = time2;
-        else if (time2 - time1 >= (time_t)30)
-            return -1;
-      }
+                if (time1 == 0)
+                        time1 = time2;
+                else if (time2 - time1 >= (time_t)30)
+                        return -1;
+        }
 
-    _DtHelpProcessLock();
-    if (MyFirst == True)
-      {
-        MyProcess = True;
-        if (_DtLcxOpenAllDbs(&MyDb) == 0 &&
-		_DtXlateGetXlateEnv(MyDb,MyPlatform,&ExecVer,&CompVer) != 0)
-          {
-            _DtLcxCloseDb(&MyDb);
-            MyDb = NULL;
-          }
-        MyFirst = False;
-        MyProcess = False;
-      }
-    _DtHelpProcessUnlock();
+        _DtHelpProcessLock();
+        if (MyFirst == True) {
+                MyProcess = True;
+                if (_DtLcxOpenAllDbs(&MyDb) == 0 &&
+                    _DtXlateGetXlateEnv(MyDb, MyPlatform, &ExecVer, &CompVer) !=
+                        0) {
+                        _DtLcxCloseDb(&MyDb);
+                        MyDb = NULL;
+                }
+                MyFirst = False;
+                MyProcess = False;
+        }
+        _DtHelpProcessUnlock();
 
-    return (MyDb == NULL ? -1 : 0 );
+        return (MyDb == NULL ? -1 : 0);
 }
 
 /******************************************************************************
@@ -136,31 +133,26 @@ ale,
  * Purpose: Gets an operation-specific locale string given the standard string
  *
  *****************************************************************************/
-void
-_DtHelpCeXlateStdToOpLocale (
-     char       *operation,
-     char       *stdLocale,
-     char       *dflt_opLocale,
-     char       **ret_opLocale)
-{
-    int result = OpenLcxDb();
+void _DtHelpCeXlateStdToOpLocale(char *operation, char *stdLocale,
+                                 char *dflt_opLocale, char **ret_opLocale) {
+        int result = OpenLcxDb();
 
-    _DtHelpProcessLock();
-    if (result == 0)
-      {
-        (void) _DtLcxXlateStdToOp(MyDb, MyPlatform, CompVer,
-                        operation, stdLocale, NULL, NULL, NULL, ret_opLocale);
-      }
-    _DtHelpProcessUnlock();
+        _DtHelpProcessLock();
+        if (result == 0) {
+                (void)_DtLcxXlateStdToOp(MyDb, MyPlatform, CompVer, operation,
+                                         stdLocale, NULL, NULL, NULL,
+                                         ret_opLocale);
+        }
+        _DtHelpProcessUnlock();
 
-    /* if translation fails, use a default value */
-    if (ret_opLocale && (result != 0 || *ret_opLocale == NULL))
-      {
-        if (dflt_opLocale) *ret_opLocale = strdup(dflt_opLocale);
-        else if (stdLocale) *ret_opLocale = strdup(stdLocale);
-      }
+        /* if translation fails, use a default value */
+        if (ret_opLocale && (result != 0 || *ret_opLocale == NULL)) {
+                if (dflt_opLocale)
+                        *ret_opLocale = strdup(dflt_opLocale);
+                else if (stdLocale)
+                        *ret_opLocale = strdup(stdLocale);
+        }
 }
-
 
 /******************************************************************************
  * Function:    int _DtHelpCeXlateOpToStdLocale (char *operation, char *opLocale
@@ -183,36 +175,30 @@ stdSet)
  * Purpose:  Gets the standard locale given an operation and its locale
  *
  *****************************************************************************/
-void
-_DtHelpCeXlateOpToStdLocale (
-     char       *operation,
-     char       *opLocale,
-     char       **ret_stdLocale,
-     char       **ret_stdLang,
-     char       **ret_stdSet)
-{
-    int result = OpenLcxDb();
+void _DtHelpCeXlateOpToStdLocale(char *operation, char *opLocale,
+                                 char **ret_stdLocale, char **ret_stdLang,
+                                 char **ret_stdSet) {
+        int result = OpenLcxDb();
 
-    _DtHelpProcessLock();
-    if (result == 0)
-      {
-        (void) _DtLcxXlateOpToStd(MyDb, MyPlatform, CompVer,
-                                operation,opLocale,
-                                ret_stdLocale, ret_stdLang, ret_stdSet, NULL);
-      }
-    _DtHelpProcessUnlock();
+        _DtHelpProcessLock();
+        if (result == 0) {
+                (void)_DtLcxXlateOpToStd(MyDb, MyPlatform, CompVer, operation,
+                                         opLocale, ret_stdLocale, ret_stdLang,
+                                         ret_stdSet, NULL);
+        }
+        _DtHelpProcessUnlock();
 
-    /* if failed, give default values */
-    if (ret_stdLocale != NULL && (result != 0 || *ret_stdLocale == NULL))
-      {
-        int size = strlen(DfltStdLang)+strlen(DfltStdCharset)+3;
-        *ret_stdLocale = malloc(size);
-        snprintf(*ret_stdLocale, size, "%s.%s", DfltStdLang, DfltStdCharset);
-      }
-    if (ret_stdLang != NULL && (result != 0 || *ret_stdLang == NULL))
-        *ret_stdLang = strdup(DfltStdLang);
-    if (ret_stdSet != NULL && (result != 0 || *ret_stdSet == NULL))
-        *ret_stdSet = strdup(DfltStdCharset);
+        /* if failed, give default values */
+        if (ret_stdLocale != NULL && (result != 0 || *ret_stdLocale == NULL)) {
+                int size = strlen(DfltStdLang) + strlen(DfltStdCharset) + 3;
+                *ret_stdLocale = malloc(size);
+                snprintf(*ret_stdLocale, size, "%s.%s", DfltStdLang,
+                         DfltStdCharset);
+        }
+        if (ret_stdLang != NULL && (result != 0 || *ret_stdLang == NULL))
+                *ret_stdLang = strdup(DfltStdLang);
+        if (ret_stdSet != NULL && (result != 0 || *ret_stdSet == NULL))
+                *ret_stdSet = strdup(DfltStdCharset);
 }
 
 /******************************************************************************
@@ -233,29 +219,25 @@ _DtHelpCeXlateOpToStdLocale (
  *          a character if/when the environment is set to 'lang.charset'
  *
  *****************************************************************************/
-int
-_DtHelpCeGetMbLen (
-     char       *lang,
-     char       *char_set)
-{
-    int           retLen = 1;
+int _DtHelpCeGetMbLen(char *lang, char *char_set) {
+        int retLen = 1;
 
-    if (lang == NULL)
-        lang = (char *)DfltStdLang;
+        if (lang == NULL)
+                lang = (char *)DfltStdLang;
 
-    if (char_set == NULL)
-        char_set = (char *)DfltStdCharset;
+        if (char_set == NULL)
+                char_set = (char *)DfltStdCharset;
 
-    _DtHelpProcessLock();
-    if (OpenLcxDb() == 0)
-      {
-        /* if translation is present, lang.charset are a multibyte locale */
-        if (_DtLcxXlateStdToOp(MyDb, MyPlatform, CompVer, DtLCX_OPER_MULTIBYTE,
-                                NULL, lang, char_set, NULL, NULL) == 0)
-            retLen = MB_CUR_MAX;
-      }
-    _DtHelpProcessUnlock();
+        _DtHelpProcessLock();
+        if (OpenLcxDb() == 0) {
+                /* if translation is present, lang.charset are a multibyte
+                 * locale */
+                if (_DtLcxXlateStdToOp(MyDb, MyPlatform, CompVer,
+                                       DtLCX_OPER_MULTIBYTE, NULL, lang,
+                                       char_set, NULL, NULL) == 0)
+                        retLen = MB_CUR_MAX;
+        }
+        _DtHelpProcessUnlock();
 
-    return retLen;
+        return retLen;
 }
-

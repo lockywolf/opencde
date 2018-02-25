@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp_s_global.h /main/3 1995/10/23 11:55:30 rswiston $ 			 				 */
+/*%%  $XConsortium: mp_s_global.h /main/3 1995/10/23 11:55:30 rswiston $
+ */
 /*
  *
  * mp_s_global.h
@@ -39,7 +40,7 @@
 #define _MP_S_GLOBAL_H
 
 class _Tt_s_mp;
-extern	_Tt_s_mp			*_tt_s_mp;
+extern _Tt_s_mp *_tt_s_mp;
 
 #include "mp/mp_global.h"
 

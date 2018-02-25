@@ -40,7 +40,7 @@
  **   Contention Management for the session manager
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -48,38 +48,32 @@
  ************************************<+>*************************************/
 #ifndef _smconmgmt_h
 #define _smconmgmt_h
- 
-/* 
- *  #include statements 
- */
 
-
-/* 
- *  #define statements 
- */
-#define		MEM_NOT_AVAILABLE	-1
-#define		MEM_NOT_FULL		0
-#define		MEM_FULL		1
-
-
-/* 
- * typedef statements 
+/*
+ *  #include statements
  */
 
 /*
- *  External variables  
+ *  #define statements
+ */
+#define MEM_NOT_AVAILABLE -1
+#define MEM_NOT_FULL 0
+#define MEM_FULL 1
+
+/*
+ * typedef statements
  */
 
-
-
-/*  
- *  External Interface  
+/*
+ *  External variables
  */
 
+/*
+ *  External Interface
+ */
 
 extern int GetMemoryUtilization(void);
 extern void WaitForClientMap(void);
-
 
 #endif /*_smprotocols_h*/
 /* DON'T ADD ANYTHING AFTER THIS #endif */

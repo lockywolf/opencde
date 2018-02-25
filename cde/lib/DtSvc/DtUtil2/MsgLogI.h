@@ -20,12 +20,12 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* 
+/*
  * (c) Copyright 1995 Digital Equipment Corporation.
  * (c) Copyright 1995 Hewlett-Packard Company.
  * (c) Copyright 1995 International Business Machines Corp.
  * (c) Copyright 1995 Sun Microsystems, Inc.
- * (c) Copyright 1995 Novell, Inc. 
+ * (c) Copyright 1995 Novell, Inc.
  * (c) Copyright 1995 FUJITSU LIMITED.
  * (c) Copyright 1995 Hitachi.
  *
@@ -38,12 +38,12 @@
 #ifndef _Dt_MsgLogI_h
 #define _Dt_MsgLogI_h
 
-# include <stdarg.h>
-# define Va_start(a,b) va_start(a,b)
+#include <stdarg.h>
+#define Va_start(a, b) va_start(a, b)
 
 /*
  * Account for the various macros on different systems which indicate that
- * stdarg.h has been included.	Code in this file only checks for 
+ * stdarg.h has been included.	Code in this file only checks for
  * _STDARG_INCLUDED.  If a given system defines another macro that means the
  * same thing -- then define _STDARG_INCLUDED here.
  *
@@ -55,11 +55,11 @@
  */
 
 #ifdef _H_STDARG
-#define	_STDARG_INCLUDED
+#define _STDARG_INCLUDED
 #endif
 
-#ifdef  _STDARG_H
-#define	_STDARG_INCLUDED
+#ifdef _STDARG_H
+#define _STDARG_INCLUDED
 #endif
 
 #endif /* _Dt_MsgLogI_h */

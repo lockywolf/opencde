@@ -28,8 +28,5 @@
 #include "userinc.h"
 #include "globdec.h"
 
-int m_getc(m_ptr)
-  void *m_ptr ;
-  {
-    return(getc((FILE*) m_ptr)) ;
-    }
+int m_getc(m_ptr) void *m_ptr;
+{ return (getc((FILE *)m_ptr)); }

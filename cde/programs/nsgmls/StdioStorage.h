@@ -45,22 +45,21 @@ class UnivCharsetDesc;
 class OutputCodingSystem;
 
 class SP_API StdioStorageManager : public IdStorageManager {
-public:
-  StdioStorageManager(const char *type,
-		      const UnivCharsetDesc &filenameCharset,
-		      const OutputCodingSystem *filenameCodingSystem);
-  StorageObject *makeStorageObject(const StringC &id,
-				   const StringC &baseId,
-				   Boolean,
-				   Boolean mayRewind,
-				   Messenger &,
-				   StringC &foundId);
-  const char *type() const;
-private:
-  StdioStorageManager(const StdioStorageManager &); // undefined
-  void operator=(const StdioStorageManager &);	    // undefined
-  const OutputCodingSystem *filenameCodingSystem_;
-  const char *type_;
+      public:
+        StdioStorageManager(const char *type,
+                            const UnivCharsetDesc &filenameCharset,
+                            const OutputCodingSystem *filenameCodingSystem);
+        StorageObject *makeStorageObject(const StringC &id,
+                                         const StringC &baseId, Boolean,
+                                         Boolean mayRewind, Messenger &,
+                                         StringC &foundId);
+        const char *type() const;
+
+      private:
+        StdioStorageManager(const StdioStorageManager &); // undefined
+        void operator=(const StdioStorageManager &);      // undefined
+        const OutputCodingSystem *filenameCodingSystem_;
+        const char *type_;
 };
 
 #ifdef SP_NAMESPACE

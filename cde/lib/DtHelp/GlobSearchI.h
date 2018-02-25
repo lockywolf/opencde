@@ -30,7 +30,7 @@
  **
  **   Description: Builds and displays an instance of a DtHelp GlobSearch
  **                Dialog.
- ** 
+ **
  **
  **  (c) Copyright 1993, 1994 Hewlett-Packard Company
  **  (c) Copyright 1993, 1994 International Business Machines Corp.
@@ -47,17 +47,12 @@
 /* global var */
 extern char _DtHelpDefaultSrchHitPrefixFont[];
 
-void _DtHelpGlobSrchDisplayDialog(
-    Widget owner,
-    char * searchWord,
-    char * curVolume);
-void _DtHelpGlobSrchUpdateCurVol(
-    Widget widget);
-void  _DtHelpGlobSrchCleanAndClose(
-       _DtHelpGlobSearchStuff * srch,
-       Boolean               destroy);
-void  _DtHelpGlobSrchInitVars(
-       _DtHelpGlobSearchStuff * srch);
+void _DtHelpGlobSrchDisplayDialog(Widget owner, char *searchWord,
+                                  char *curVolume);
+void _DtHelpGlobSrchUpdateCurVol(Widget widget);
+void _DtHelpGlobSrchCleanAndClose(_DtHelpGlobSearchStuff *srch,
+                                  Boolean destroy);
+void _DtHelpGlobSrchInitVars(_DtHelpGlobSearchStuff *srch);
 
 #endif /* _GlobSearchI_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

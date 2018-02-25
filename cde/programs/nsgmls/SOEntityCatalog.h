@@ -38,12 +38,11 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API SOCatalogManager : public ExtendEntityManager::CatalogManager {
-public:
-  static ExtendEntityManager::CatalogManager *
-    make(const Vector<StringC> &sysids,
-	 size_t nSysidsMustExist,
-	 const CharsetInfo &sysidCharset,
-	 const CharsetInfo &catalogCharset);
+      public:
+        static ExtendEntityManager::CatalogManager *
+        make(const Vector<StringC> &sysids, size_t nSysidsMustExist,
+             const CharsetInfo &sysidCharset,
+             const CharsetInfo &catalogCharset);
 };
 
 #ifdef SP_NAMESPACE

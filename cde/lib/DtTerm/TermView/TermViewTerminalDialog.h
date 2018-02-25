@@ -31,10 +31,10 @@
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
 
-#ifndef	_Dt_TermViewTerminalDialog_h
-#define	_Dt_TermViewTerminalDialog_h
+#ifndef _Dt_TermViewTerminalDialog_h
+#define _Dt_TermViewTerminalDialog_h
 
 extern Widget _DtTermViewCreateTerminalOptionsDialog(Widget parent);
 
-#endif	/* _Dt_TermViewTerminalDialog_h */
+#endif /* _Dt_TermViewTerminalDialog_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif... */

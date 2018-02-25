@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: SiteChange.h /main/3 1995/10/23 09:44:55 rswiston $ 			 				 */
+/*%%  $XConsortium: SiteChange.h /main/3 1995/10/23 09:44:55 rswiston $
+ */
 /* -*-C++-*-
  *
  * SiteChange.h - A SiteChange is a record that associates a SiteID
@@ -67,56 +68,54 @@
 #include "CoEdSiteID.h"
 
 class SiteChange : public CoEdSiteID {
-	friend class SiteChangeList;
-	friend class CoEdTextVersion;
+        friend class SiteChangeList;
+        friend class CoEdTextVersion;
 
-    public:
-	SiteChange();
-	SiteChange( const char *procID );
-	SiteChange( const CoEdSiteID &id, int numChanges );
+      public:
+        SiteChange();
+        SiteChange(const char *procID);
+        SiteChange(const CoEdSiteID &id, int numChanges);
 
-	bool_t		xdr( XDR *xdrStream );
-	SiteChange     *copy()						const;
-	int		cmp( const SiteChange &change )			const;
-	int		operator==( const SiteChange &change )		const
-				{ return (cmp( change ) == 0); }
-	int		operator<( const SiteChange &change ) 		const
-				{ return (cmp( change ) < 0); }
-	void		print( FILE *f )				const;
+        bool_t xdr(XDR *xdrStream);
+        SiteChange *copy() const;
+        int cmp(const SiteChange &change) const;
+        int operator==(const SiteChange &change) const {
+                return (cmp(change) == 0);
+        }
+        int operator<(const SiteChange &change) const {
+                return (cmp(change) < 0);
+        }
+        void print(FILE *f) const;
 
-    private:
-	int		_changeNum;
+      private:
+        int _changeNum;
 };
 
 class SiteChangeList {
-	friend class CoEdTextVersion;
+        friend class CoEdTextVersion;
 
-    public:
-	SiteChangeList();
-	SiteChangeList( unsigned char *data, int len, CoEdStatus &status );
-	~SiteChangeList();
+      public:
+        SiteChangeList();
+        SiteChangeList(unsigned char *data, int len, CoEdStatus &status);
+        ~SiteChangeList();
 
-	void		push( SiteChange *change );
-	void		append( SiteChange *change );
-	void		insertBefore( SiteChange *change1,
-				      SiteChange *change2 );
-	void		insertAfter( SiteChange *change2,
-				     SiteChange *change1 );
-	CoEdStatus	serialize( unsigned char **pData,
-				   unsigned long *pLen )	const;
-	CoEdStatus	deSerialize( unsigned char *data,
-				     unsigned long len );
-	bool_t		xdr( XDR *xdrStream );
-	SiteChangeList *copy()					const;
-	SiteChangeList &copy( const SiteChangeList *list );
-	void		print( FILE *f )			const;
+        void push(SiteChange *change);
+        void append(SiteChange *change);
+        void insertBefore(SiteChange *change1, SiteChange *change2);
+        void insertAfter(SiteChange *change2, SiteChange *change1);
+        CoEdStatus serialize(unsigned char **pData, unsigned long *pLen) const;
+        CoEdStatus deSerialize(unsigned char *data, unsigned long len);
+        bool_t xdr(XDR *xdrStream);
+        SiteChangeList *copy() const;
+        SiteChangeList &copy(const SiteChangeList *list);
+        void print(FILE *f) const;
 
-    private:
-	SiteChange     *_head;
-	SiteChange     *_tail;
-	int		_count;
+      private:
+        SiteChange *_head;
+        SiteChange *_tail;
+        int _count;
 
-	void		_flush();
+        void _flush();
 };
 
 #endif SiteChange_h

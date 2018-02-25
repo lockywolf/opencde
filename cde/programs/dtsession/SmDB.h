@@ -29,7 +29,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -47,16 +47,13 @@ extern char *dtsessionIDStr;
 /*
  * Open client database for reading.
  */
-extern ClientDB OpenInputClientDB(char *fileName,
-				  char **version,
-				  char **dtsessionID);
+extern ClientDB OpenInputClientDB(char *fileName, char **version,
+                                  char **dtsessionID);
 /*
  * Open client database for writing.
  */
-extern ClientDB OpenOutputClientDB(char *fileName,
-				   char *version,
-				   char *dtsessionID);
-
+extern ClientDB OpenOutputClientDB(char *fileName, char *version,
+                                   char *dtsessionID);
 
 /********* Retrieve client record from database *********/
 /*
@@ -68,23 +65,20 @@ extern XSMPClientDBRecPtr GetXSMPClientDBRec(ClientDB inputDB);
  */
 extern ProxyClientDBRecPtr GetProxyClientDBRec(ClientDB inputDB);
 
-
 /********* Save client record to database *********/
 /*
  * Save XSMP client record to database.
  */
 extern Boolean PutXSMPClientDBRec(ClientDB outputDB,
-				  XSMPClientDBRecPtr clientPtr);
+                                  XSMPClientDBRecPtr clientPtr);
 /*
  * Save Proxy client record to database.
  */
 extern Boolean PutProxyClientDBRec(ClientDB outputDB,
-				   ProxyClientDBRecPtr clientPtr);
-
+                                   ProxyClientDBRecPtr clientPtr);
 
 /********* Close client database *********/
 extern Boolean CloseClientDB(ClientDB clientDB, Boolean writeDB);
-
 
 /********* Free memory allocated for client records. *********/
 extern void FreeXSMPClientDBRec(XSMPClientDBRecPtr);

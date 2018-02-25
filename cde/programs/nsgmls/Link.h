@@ -36,27 +36,22 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API Link {
-public:
-  Link();
-  Link(Link *);
-  virtual ~Link();
-private:
-  Link *next_;
+      public:
+        Link();
+        Link(Link *);
+        virtual ~Link();
 
-friend class IListBase;
-friend class IListIterBase;
-friend class IQueueBase;
+      private:
+        Link *next_;
+
+        friend class IListBase;
+        friend class IListIterBase;
+        friend class IQueueBase;
 };
 
-inline
-Link::Link() : next_(0)
-{
-}
+inline Link::Link() : next_(0) {}
 
-inline
-Link::Link(Link *next) : next_(next)
-{
-}
+inline Link::Link(Link *next) : next_(next) {}
 
 #ifdef SP_NAMESPACE
 }

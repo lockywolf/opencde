@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,10 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
-
 
 #ifndef _slist_void_ptr_cell_h
 #define _slist_void_ptr_cell_h 1
@@ -59,15 +57,15 @@
 
 class slist_void_ptr_cell : public slist_cell {
 
-public:
-   slist_void_ptr_cell(voidPtr vp) : data(vp) {};
-   virtual ~slist_void_ptr_cell() {};
+      public:
+        slist_void_ptr_cell(voidPtr vp) : data(vp){};
+        virtual ~slist_void_ptr_cell(){};
 
-   voidPtr void_ptr() { return data; };
-   void set_vptr(voidPtr x) { data = x; };
+        voidPtr void_ptr() { return data; };
+        void set_vptr(voidPtr x) { data = x; };
 
-protected:
-   voidPtr data;
+      protected:
+        voidPtr data;
 };
 
 typedef slist_void_ptr_cell *slist_void_ptr_cellPtr;

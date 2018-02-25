@@ -44,67 +44,63 @@ class HelpSystem;
 
 typedef void (*CallerCallback)(BaseUI *caller, char *iconFile);
 
-typedef struct
-{
-   boolean read_it;
-   FindSetIcon **icons;
-   int n_icons;
+typedef struct {
+        boolean read_it;
+        FindSetIcon **icons;
+        int n_icons;
 } FileNamesStruct, *FileNames, **FileNamesList;
 
 class DtFindSet : public Dialog {
 
-   friend void OkCB(void *data);
-   friend void ApplyCB(void *data);
-   friend void CancelCB(void *data);
-   friend void ResetCB(void *data);
-   friend void HelpCB(void *data);
-   friend void ComboBoxCB(ComboBoxObj *, char *, int);
-   friend void InitComboBox(BaseUI *, void *data);
+        friend void OkCB(void *data);
+        friend void ApplyCB(void *data);
+        friend void CancelCB(void *data);
+        friend void ResetCB(void *data);
+        friend void HelpCB(void *data);
+        friend void ComboBoxCB(ComboBoxObj *, char *, int);
+        friend void InitComboBox(BaseUI *, void *data);
 
-   static void OkCB(void *data);
-   static void ApplyCB(void *data);
-   static void CancelCB(void *data);
-   static void ResetCB(void *data);
-   static void HelpCB(void *data);
-   static void ComboBoxCB(ComboBoxObj *, char *, int);
-   static void InitComboBox(BaseUI *, void *data);
+        static void OkCB(void *data);
+        static void ApplyCB(void *data);
+        static void CancelCB(void *data);
+        static void ResetCB(void *data);
+        static void HelpCB(void *data);
+        static void ComboBoxCB(ComboBoxObj *, char *, int);
+        static void InitComboBox(BaseUI *, void *data);
 
- private:
+      private:
+        DtMainW *mainw;
+        HelpSystem *helpSystem;
 
-   DtMainW *mainw;
-   HelpSystem *helpSystem;
+        // dialog buttons
+        Button *ok;
+        Button *apply;
+        Button *cancel;
+        Button *reset;
+        Button *help;
 
-   // dialog buttons
-   Button *ok;
-   Button *apply;
-   Button *cancel;
-   Button *reset;
-   Button *help;
+        char **dirs;
+        int n_dirs;
+        int last_position;
+        BaseUI *caller;
+        CallerCallback callback;
+        FileNamesList filenames;
+        ComboBoxObj *comboBox;
+        Container *icons;
+        LabelObj *empty;
+        LabelObj *icon_label;
+        boolean _has_been_posted;
 
-   char **dirs;
-   int n_dirs;
-   int last_position;
-   BaseUI *caller;
-   CallerCallback callback;
-   FileNamesList filenames;
-   ComboBoxObj *comboBox;
-   Container *icons;
-   LabelObj *empty;
-   LabelObj *icon_label;
-   boolean _has_been_posted;
+        void CloseCB();
+        boolean SetVisiblity(boolean);
+        boolean HandleHelpRequest();
 
-   void CloseCB();
-   boolean SetVisiblity(boolean);
-   boolean HandleHelpRequest();
-
- public:
-
-   DtFindSet(DtMainW *, char *name, CallerCallback callback);
-   ~DtFindSet();
-   void Caller(BaseUI *obj) { caller = obj; }
-   void Apply();
-   void Reset();
-
+      public:
+        DtFindSet(DtMainW *, char *name, CallerCallback callback);
+        ~DtFindSet();
+        void Caller(BaseUI *obj) { caller = obj; }
+        void Apply();
+        void Reset();
 };
 
 #endif // DTFINDSET_H

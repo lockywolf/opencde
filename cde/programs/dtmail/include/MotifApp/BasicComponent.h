@@ -26,7 +26,7 @@
  *	$XConsortium: BasicComponent.h /main/4 1996/04/05 16:52:18 mgreess $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -48,20 +48,19 @@
 //         by
 //           Douglas Young
 //           Prentice Hall, 1992
-//           ISBN 0-13-630252-1	
+//           ISBN 0-13-630252-1
 //
 //         Copyright 1991 by Prentice Hall
 //         All Rights Reserved
 //
-//  Permission to use, copy, modify, and distribute this software for 
-//  any purpose except publication and without fee is hereby granted, provided 
+//  Permission to use, copy, modify, and distribute this software for
+//  any purpose except publication and without fee is hereby granted, provided
 //  that the above copyright notice appear in all copies of the software.
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-
 ///////////////////////////////////////////////////////////////
-// BasicComponent.h: First version of a class to define 
+// BasicComponent.h: First version of a class to define
 //                    a protocol for all components
 ///////////////////////////////////////////////////////////////
 #ifndef BASICCOMPONENT_H
@@ -73,22 +72,19 @@
 #include <Xm/Xm.h>
 
 class BasicComponent {
-    
-  protected:
-    
-    char    *_name;
-    Widget   _w;    
-    
-    // Protected constructor to prevent instantiation
-    
-    BasicComponent ( const char * );   
-    
-  public:
-    
-    virtual ~BasicComponent();
-    virtual void manage();   // Manage and unmanage widget tree
-    virtual void unmanage();
-    const Widget baseWidget() { return _w; }
+
+      protected:
+        char *_name;
+        Widget _w;
+
+        // Protected constructor to prevent instantiation
+
+        BasicComponent(const char *);
+
+      public:
+        virtual ~BasicComponent();
+        virtual void manage(); // Manage and unmanage widget tree
+        virtual void unmanage();
+        const Widget baseWidget() { return _w; }
 };
 #endif
-

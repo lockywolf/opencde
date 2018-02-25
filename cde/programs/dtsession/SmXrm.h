@@ -49,7 +49,6 @@
  *  #include statements
  */
 
-
 /*
  *  #define statements
  */
@@ -66,10 +65,7 @@
  *  External Interface
  */
 
-XrmDatabase SmXrmSubtractDatabase(
-  XrmDatabase source_db,
-  XrmDatabase target_db);
-
+XrmDatabase SmXrmSubtractDatabase(XrmDatabase source_db, XrmDatabase target_db);
 
 #endif /*_smxrm_h*/
 /* DON'T ADD ANYTHING AFTER THIS #endif */

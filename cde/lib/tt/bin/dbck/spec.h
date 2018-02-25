@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: spec.h /main/3 1995/10/20 16:26:43 rswiston $ 			 				 */
+/*%%  $XConsortium: spec.h /main/3 1995/10/20 16:26:43 rswiston $
+ */
 /*
  *
  * spec.h
@@ -51,25 +52,25 @@
 
 declare_list_of(Spec)
 
-class Spec : public _Tt_object {
+    class Spec : public _Tt_object {
       public:
-	Spec();
-	~Spec() {};
-	Binkey_ptr	key;
-	_Tt_string	type;
-	_Tt_string	filename;
-	int		is_filespec;
-	virtual void print(FILE * f) const;
-	void		process_spec();
-	void		print_key(FILE * f) const;
-	void		print_mand(FILE * f) const;
-	void		print_props(FILE * f) const;
-	void		add_prop_and_value(_Tt_string propname,
-					   _Tt_string value);
-	void		repair_spec();
+        Spec();
+        ~Spec(){};
+        Binkey_ptr key;
+        _Tt_string type;
+        _Tt_string filename;
+        int is_filespec;
+        virtual void print(FILE *f) const;
+        void process_spec();
+        void print_key(FILE *f) const;
+        void print_mand(FILE *f) const;
+        void print_props(FILE *f) const;
+        void add_prop_and_value(_Tt_string propname, _Tt_string value);
+        void repair_spec();
+
       private:
-	Prop_table_ptr		props;
-	_Tt_string_list_ptr	propnames;
+        Prop_table_ptr props;
+        _Tt_string_list_ptr propnames;
 };
 
 #endif /* _SPEC_H */

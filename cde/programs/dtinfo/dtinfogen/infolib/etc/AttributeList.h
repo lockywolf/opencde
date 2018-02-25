@@ -30,25 +30,21 @@
 #include <stdio.h>
 #include "AttributeRec.h"
 
-
 class OL_AttributeList {
 
-friend class Token;
-  
-protected:
-  AttributeRec *head;
-  AttributeRec *tail;
+        friend class Token;
 
-  AttributeRec *lookup ( int ) const;
-  void  insert(AttributeRec * );
+      protected:
+        AttributeRec *head;
+        AttributeRec *tail;
 
-  const AttributeRec *GetFirstAttr() const;
-  const AttributeRec *GetNextAttr( const AttributeRec *) const;
-  OL_AttributeList();
-  ~OL_AttributeList();
+        AttributeRec *lookup(int) const;
+        void insert(AttributeRec *);
+
+        const AttributeRec *GetFirstAttr() const;
+        const AttributeRec *GetNextAttr(const AttributeRec *) const;
+        OL_AttributeList();
+        ~OL_AttributeList();
 };
 
 #endif
-
-
-  

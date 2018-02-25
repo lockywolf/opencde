@@ -36,45 +36,26 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API Resource {
-public:
-  Resource();
-  Resource(const Resource &);
-  int unref();			// return 1 if it should be deleted
-  void ref();
-  int count() const;
-private:
-  int count_;
+      public:
+        Resource();
+        Resource(const Resource &);
+        int unref(); // return 1 if it should be deleted
+        void ref();
+        int count() const;
+
+      private:
+        int count_;
 };
 
-inline
-Resource::Resource()
-: count_(0)
-{
-}
+inline Resource::Resource() : count_(0) {}
 
-inline
-Resource::Resource(const Resource &)
-: count_(0)
-{
-}
+inline Resource::Resource(const Resource &) : count_(0) {}
 
-inline
-int Resource::count() const
-{
-  return count_;
-}
+inline int Resource::count() const { return count_; }
 
-inline
-int Resource::unref()
-{
-  return --count_ <= 0;
-}
+inline int Resource::unref() { return --count_ <= 0; }
 
-inline
-void Resource::ref()
-{
-  ++count_;
-}
+inline void Resource::ref() { ++count_; }
 
 #ifdef SP_NAMESPACE
 }

@@ -24,11 +24,12 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: binkey.h /main/3 1995/10/20 16:25:01 rswiston $ 			 				 */
+/*%%  $XConsortium: binkey.h /main/3 1995/10/20 16:25:01 rswiston $
+ */
 /*
  *
  * binkey.h
- * 
+ *
  * Simple class for manipulating 16-byte keys.
  * This class simply encapsulates the storage and (lexical) comparison
  * of 16-byte binary keys.  Generally, _Tt_db_key is the class to
@@ -52,28 +53,31 @@
 
 class Binkey : public _Tt_object {
       private:
-	unsigned char	_binkey[OID_KEY_LENGTH];
-	_Tt_db_key_ptr	_key;
+        unsigned char _binkey[OID_KEY_LENGTH];
+        _Tt_db_key_ptr _key;
+
       public:
-	static Binkey smallest;
-	static Binkey largest;
-	Binkey();
-	Binkey(const unsigned char *);
-	~Binkey() {};
-	operator _Tt_string() const {return _key->string();};
-	operator char*() const {return (char *)_binkey;};
-	_Tt_db_key_ptr key() const {return _key;};
-	friend int operator==(const Binkey &a, const Binkey &b);
-	friend int operator!=(const Binkey &a, const Binkey &b) {
-		return !(a==b);};
-	friend int operator==(const Binkey &a, const _Tt_db_key &b);
-	friend int operator!=(const Binkey &a, const _Tt_db_key &b) {
-		return !(a==b);};
-	friend int operator<(const Binkey &a, const Binkey &b);
-	friend int operator>(const Binkey &a, const Binkey &b);
-	Binkey &operator=(const Binkey &k);
-	Binkey &operator=(const unsigned char *);
-	virtual void print(FILE *f = stdout) const;
+        static Binkey smallest;
+        static Binkey largest;
+        Binkey();
+        Binkey(const unsigned char *);
+        ~Binkey(){};
+        operator _Tt_string() const { return _key->string(); };
+        operator char *() const { return (char *)_binkey; };
+        _Tt_db_key_ptr key() const { return _key; };
+        friend int operator==(const Binkey &a, const Binkey &b);
+        friend int operator!=(const Binkey &a, const Binkey &b) {
+                return !(a == b);
+        };
+        friend int operator==(const Binkey &a, const _Tt_db_key &b);
+        friend int operator!=(const Binkey &a, const _Tt_db_key &b) {
+                return !(a == b);
+        };
+        friend int operator<(const Binkey &a, const Binkey &b);
+        friend int operator>(const Binkey &a, const Binkey &b);
+        Binkey &operator=(const Binkey &k);
+        Binkey &operator=(const unsigned char *);
+        virtual void print(FILE *f = stdout) const;
 };
 
 declare_list_of(Binkey)

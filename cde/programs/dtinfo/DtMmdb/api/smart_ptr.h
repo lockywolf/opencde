@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,10 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
-
 
 #ifndef _smart_ptr_h
 #define _smart_ptr_h 1
@@ -58,47 +56,43 @@
 #include "api/info_lib.h"
 #include "mgrs/query_mgr.h"
 
-class smart_ptr : public composite_handler 
-{
+class smart_ptr : public composite_handler {
 
-public:
+      public:
+        enum composite_tag { SET, LIST };
 
-   enum composite_tag { SET, LIST };
+        smart_ptr(info_lib *lib_ptr, const char *infobase_name,
+                  int composite_position, const handler &query_hd,
+                  int index_selector, composite_tag);
 
-   smart_ptr(info_lib* lib_ptr,
-             const char* infobase_name, int composite_position,
-             const handler& query_hd, int index_selector, composite_tag);
+        smart_ptr(info_base *base_ptr, int composite_position,
+                  const handler &query_hd, int index_selector, composite_tag);
 
-   smart_ptr(info_base* base_ptr, int composite_position,
-             const handler& query_hd, int index_selector, composite_tag);
+        smart_ptr(abs_storage *st, const oid_t &x)
+        /*: composite_handler(c)*/
+        {
+                _init(*(oid_t *)&x, st);
+        };
 
-   smart_ptr(abs_storage* st, const oid_t& x) 
-     /*: composite_handler(c)*/
-   {
-      _init(*(oid_t*)&x, st);
-   };
+        smart_ptr(){};
+        virtual ~smart_ptr(){};
 
-   smart_ptr() {};
-   virtual ~smart_ptr() {};
+        int get_int(int component_index);
+        const char *get_string(int component_index);
+        const char *get_string(int component_index, buffer &);
+        int get_string_size(int component_index);
+        oid_t get_oid(int component_index);
 
-   int get_int(int component_index);
-   const char* get_string(int component_index);
-   const char* get_string(int component_index, buffer&);
-   int get_string_size(int component_index);
-   oid_t get_oid(int component_index);
+        void update_oid(int component_index, const oid_t &x);
+        void update_string(int component_index, istream &in);
+        void update_string(int component_index, const char *buf, int size);
 
-   void update_oid(int component_index, const oid_t& x);
-   void update_string(int component_index, istream& in);
-   void update_string(int component_index, const char* buf, int size);
+      protected:
+        void _init(const oid_t &id, const abs_storage *);
 
-
-protected:
-   void _init(const oid_t& id, const abs_storage*);
-
-   handler* get_handler(int component_index, c_code_t code);
-
+        handler *get_handler(int component_index, c_code_t code);
 };
 
-typedef smart_ptr* smart_ptrPtr;
+typedef smart_ptr *smart_ptrPtr;
 
 #endif

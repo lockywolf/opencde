@@ -39,13 +39,14 @@ namespace SP_NAMESPACE {
 class ParserState;
 
 class SdFormalError : public Link {
-public:
-  SdFormalError(const Location &, const MessageType1 &, const StringC &);
-  void send(ParserState &);
-private:
-  const MessageType1 *message_;
-  Location location_;
-  StringC id_;
+      public:
+        SdFormalError(const Location &, const MessageType1 &, const StringC &);
+        void send(ParserState &);
+
+      private:
+        const MessageType1 *message_;
+        Location location_;
+        StringC id_;
 };
 
 #ifdef SP_NAMESPACE

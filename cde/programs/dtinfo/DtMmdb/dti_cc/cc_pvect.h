@@ -28,35 +28,29 @@
 #include <stddef.h>
 #include "dti_cc/types.h"
 
-template <class T> 
-class pointer_vector
-{
-protected:
-   
-    typedef T *Tptr;
-    
-    Tptr *f_array;
-    size_t f_size;
-    size_t f_items;
-    
-protected:
+template <class T> class pointer_vector {
+      protected:
+        typedef T *Tptr;
 
-public:
-   pointer_vector(const pointer_vector<T> &);
-   pointer_vector(size_t, T* = 0);
-   ~pointer_vector();
+        Tptr *f_array;
+        size_t f_size;
+        size_t f_items;
 
-   T* operator[](ptrdiff_t) const;
-   T*& operator[](ptrdiff_t);
+      protected:
+      public:
+        pointer_vector(const pointer_vector<T> &);
+        pointer_vector(size_t, T * = 0);
+        ~pointer_vector();
 
-//   size_t entries() const { return f_items; };
-   size_t length() const { return f_size; };
+        T *operator[](ptrdiff_t) const;
+        T *&operator[](ptrdiff_t);
+
+        //   size_t entries() const { return f_items; };
+        size_t length() const { return f_size; };
 };
 
 #ifdef EXPAND_TEMPLATES
 #include "cc_pvect.C"
 #endif
 
-
 #endif
-

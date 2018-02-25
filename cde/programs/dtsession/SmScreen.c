@@ -52,7 +52,7 @@
 #include <Dt/SaverP.h>
 #include "Sm.h"
 #include "SmCommun.h"
-#include "SmUI.h"                  /* smDD.* */
+#include "SmUI.h" /* smDD.* */
 #include "SmError.h"
 #include "SmWindow.h"
 #include "SmProtocol.h"
@@ -63,26 +63,24 @@
  * Structures visible to this module only.
  */
 typedef struct {
-  int count;
-  char *saver[1];   
-  /* variable length saver[] array */
-  /* saver command strings */
+        int count;
+        char *saver[1];
+        /* variable length saver[] array */
+        /* saver command strings */
 } SmSaverParseStruct;
 
 /*
  * Variables global to this module only
  */
-static int savernum;             /* current screen saver number */
-static void *saverstate = NULL;  /* current running screen saver state */
-static int firsttime = 1;        /* first call to StartScreenSaver */
+static int savernum;            /* current screen saver number */
+static void *saverstate = NULL; /* current running screen saver state */
+static int firsttime = 1;       /* first call to StartScreenSaver */
 
 /*
  * Local Function declarations
  */
 static void ParseSaverList(char *, int *, int *, SmSaverParseStruct *);
 
-
-
 /*************************************<->*************************************
  *
  *  StartScreenSaver ()
@@ -95,67 +93,59 @@ static void ParseSaverList(char *, int *, int *, SmSaverParseStruct *);
  *  Inputs:
  *  ------
  *
- * 
+ *
  *  Outputs:
  *  -------
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
 
-void
-StartScreenSaver( void )
-{
-  int i;
-  SmSaverParseStruct *parse;
+void StartScreenSaver(void) {
+        int i;
+        SmSaverParseStruct *parse;
 
-  if (!smGD.saverListParse)
-  {
-   /*
-    * Parse the screen saver list.
-    */
-    smGD.saverListParse = SmSaverParseSaverList(smGD.saverList);
+        if (!smGD.saverListParse) {
+                /*
+                 * Parse the screen saver list.
+                 */
+                smGD.saverListParse = SmSaverParseSaverList(smGD.saverList);
 
-    if (!smGD.saverListParse)
-    {
-      return;
-    }
-    savernum = -1;
-  }
+                if (!smGD.saverListParse) {
+                        return;
+                }
+                savernum = -1;
+        }
 
-  parse = (SmSaverParseStruct *)smGD.saverListParse;
+        parse = (SmSaverParseStruct *)smGD.saverListParse;
 
-  if (parse->count == 0)
-  {
-    return;
-  }
+        if (parse->count == 0) {
+                return;
+        }
 
- /*
-  * Decide which saver number to use.
-  */
-  savernum = (savernum + 1) % parse->count;
+        /*
+         * Decide which saver number to use.
+         */
+        savernum = (savernum + 1) % parse->count;
 
-  if (firsttime)
-  {
-   /*
-    * Load actions database.
-    */
-    ProcessReloadActionsDatabase();
-    firsttime = 0;
-  }
+        if (firsttime) {
+                /*
+                 * Load actions database.
+                 */
+                ProcessReloadActionsDatabase();
+                firsttime = 0;
+        }
 
- /*
-  * Start screen saver. _DtSaverStop() must be called to terminate the
-  * screen saver.
-  */
-  saverstate = _DtSaverStart(smGD.display, smDD.coverDrawing,
-                  smGD.numSavedScreens, parse->saver[savernum],
-                  smGD.topLevelWid);
-
+        /*
+         * Start screen saver. _DtSaverStop() must be called to terminate the
+         * screen saver.
+         */
+        saverstate =
+            _DtSaverStart(smGD.display, smDD.coverDrawing, smGD.numSavedScreens,
+                          parse->saver[savernum], smGD.topLevelWid);
 }
 
-
 /*************************************<->*************************************
  *
  *  StopScreenSaver ()
@@ -168,25 +158,22 @@ StartScreenSaver( void )
  *  Inputs:
  *  ------
  *
- * 
+ *
  *  Outputs:
  *  -------
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-void
-StopScreenSaver( void )
-{
-  if (saverstate)
-  {
-   /*
-    * Terminate screen saver.
-    */
-    _DtSaverStop(smGD.display, saverstate);
-    saverstate = NULL;
-  }
+void StopScreenSaver(void) {
+        if (saverstate) {
+                /*
+                 * Terminate screen saver.
+                 */
+                _DtSaverStop(smGD.display, saverstate);
+                saverstate = NULL;
+        }
 }
 
 /*************************************<->*************************************
@@ -230,47 +217,41 @@ StopScreenSaver( void )
  *
  *************************************<->***********************************/
 
-void *
-SmSaverParseSaverList(
-  char *saverList)
-{
-   char tokenSep[] = " \n\t";
-   char * token;
-   int i = 0;
-   char * tmpStr;
-   int len = strlen(saverList);
-   int bytes = sizeof(long);
-   char *p;
-   SmSaverParseStruct *pstruct;
+void *SmSaverParseSaverList(char *saverList) {
+        char tokenSep[] = " \n\t";
+        char *token;
+        int i = 0;
+        char *tmpStr;
+        int len = strlen(saverList);
+        int bytes = sizeof(long);
+        char *p;
+        SmSaverParseStruct *pstruct;
 
-   tmpStr = (char *)XtMalloc(len + 1);
-   memcpy(tmpStr, saverList, len+1);
-   token = strtok(tmpStr, tokenSep);
-   while(token != NULL)
-   {
-     i++;
-     bytes += sizeof(char *) + strlen(token) + 1;
-     token = strtok(NULL, tokenSep);
-   }
+        tmpStr = (char *)XtMalloc(len + 1);
+        memcpy(tmpStr, saverList, len + 1);
+        token = strtok(tmpStr, tokenSep);
+        while (token != NULL) {
+                i++;
+                bytes += sizeof(char *) + strlen(token) + 1;
+                token = strtok(NULL, tokenSep);
+        }
 
-   pstruct = (SmSaverParseStruct *)XtMalloc(bytes);
+        pstruct = (SmSaverParseStruct *)XtMalloc(bytes);
 
-   if (pstruct)
-   {
-     memcpy(tmpStr, saverList, len+1);
-     token = strtok(tmpStr, tokenSep);
-     pstruct->count = 0;
-     p = (char *)(pstruct->saver + i);
+        if (pstruct) {
+                memcpy(tmpStr, saverList, len + 1);
+                token = strtok(tmpStr, tokenSep);
+                pstruct->count = 0;
+                p = (char *)(pstruct->saver + i);
 
-     while(token != NULL)
-     {
-       pstruct->saver[pstruct->count] = p;
-       strcpy(pstruct->saver[pstruct->count], token);
-       p += strlen(token) + 1;
-       token = strtok(NULL, tokenSep);
-       pstruct->count++;
-     }
-   }
-   XtFree ((char *) tmpStr);
-   return((void *)pstruct);
+                while (token != NULL) {
+                        pstruct->saver[pstruct->count] = p;
+                        strcpy(pstruct->saver[pstruct->count], token);
+                        p += strlen(token) + 1;
+                        token = strtok(NULL, tokenSep);
+                        pstruct->count++;
+                }
+        }
+        XtFree((char *)tmpStr);
+        return ((void *)pstruct);
 }

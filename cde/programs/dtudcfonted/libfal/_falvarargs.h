@@ -20,7 +20,7 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* Xvarargs.h 1.1 - Fujitsu source for CDEnext    95/11/06 20:32:13 	*/ 
+/* Xvarargs.h 1.1 - Fujitsu source for CDEnext    95/11/06 20:32:13 	*/
 /* $XConsortium: _falvarargs.h /main/1 1996/04/08 15:22:42 cde-fuj $ */
 /*
 
@@ -64,30 +64,30 @@ typedef char *va_list;
 /* Amount of space required in an argument list for an arg of type TYPE.
    TYPE may alternatively be an expression whose type is used.  */
 
-#define __va_rounded_size(TYPE)  \
-  (((sizeof (TYPE) + sizeof (int) - 1) / sizeof (int)) * sizeof (int))
+#define __va_rounded_size(TYPE)                                                \
+        (((sizeof(TYPE) + sizeof(int) - 1) / sizeof(int)) * sizeof(int))
 
-#define va_start(AP, LASTARG)                                           \
- (AP = ((char *) &(LASTARG) + __va_rounded_size (LASTARG)))
+#define va_start(AP, LASTARG)                                                  \
+        (AP = ((char *)&(LASTARG) + __va_rounded_size(LASTARG)))
 
 #define va_end(AP)
 
-#define va_arg(AP, TYPE)                                                \
- (AP += __va_rounded_size (TYPE),                                       \
-  *((TYPE *) (AP - __va_rounded_size (TYPE))))
+#define va_arg(AP, TYPE)                                                       \
+        (AP += __va_rounded_size(TYPE),                                        \
+         *((TYPE *)(AP - __va_rounded_size(TYPE))))
 
 #endif /* _STDARG_H */
 
-#define Va_start(a,b) va_start(a,b)
+#define Va_start(a, b) va_start(a, b)
 
 #else /* !__HIGHC__ */
 
 #if NeedVarargsPrototypes
-# include <stdarg.h>
-# define Va_start(a,b) va_start(a,b)
+#include <stdarg.h>
+#define Va_start(a, b) va_start(a, b)
 #else
-# include <varargs.h>
-# define Va_start(a,b) va_start(a)
+#include <varargs.h>
+#define Va_start(a, b) va_start(a)
 #endif
 
 #endif /* __HIGHC__ */

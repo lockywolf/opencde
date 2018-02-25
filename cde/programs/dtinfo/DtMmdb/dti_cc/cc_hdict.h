@@ -32,101 +32,93 @@
 #include <iostream>
 using namespace std;
 
-template <class K, class V> 
-class kv_pair {
-public:
+template <class K, class V> class kv_pair {
+      public:
+        static CC_Boolean f_needRemove;
 
-   static CC_Boolean f_needRemove;
+        kv_pair(K *k, V *v = 0) : f_key(k), f_value(v){};
+        ~kv_pair();
 
-   kv_pair(K* k, V* v = 0): f_key(k), f_value(v) {};
-   ~kv_pair();
-
-   unsigned int operator==(const kv_pair<K, V>&);
+        unsigned int operator==(const kv_pair<K, V> &);
 
 #ifdef DEBUG
-   ostream& print(ostream&);
-   friend ostream& operator<<(ostream& out, kv_pair<K, V>& kv) {
-     return kv.print(out);
-   }
+        ostream &print(ostream &);
+        friend ostream &operator<<(ostream &out, kv_pair<K, V> &kv) {
+                return kv.print(out);
+        }
 #endif
 
-   K* f_key;
-   V* f_value;
+        K *f_key;
+        V *f_value;
 };
 
 #define DEFAULT_BUCKET_NUM 30
-   
+
 template <class K, class V> class hashTableIterator;
 
-template <class K, class V> class hashTable
-{
-   //template <class K, class V> 
-   //friend class hashTableIterator;
+template <class K, class V> class hashTable {
+        // template <class K, class V>
+        // friend class hashTableIterator;
 
-   friend class hashTableIterator<K, V>;
+        friend class hashTableIterator<K, V>;
 
-protected:
-   unsigned (*f_hash_func_ptr)(const K&);
-   pointer_vector<CC_TPtrSlist<kv_pair<K, V> > > f_buckets;
-   size_t f_items;
+      protected:
+        unsigned (*f_hash_func_ptr)(const K &);
+        pointer_vector<CC_TPtrSlist<kv_pair<K, V> > > f_buckets;
+        size_t f_items;
 
-protected:
-   kv_pair<K, V>* _find(const K* k) const;
+      protected:
+        kv_pair<K, V> *_find(const K *k) const;
 
-public:
-   hashTable(const hashTable <K,V> &);
-   hashTable(unsigned (*)(const K&), 
-             size_t init_bucket_num = DEFAULT_BUCKET_NUM
-            );
-   ~hashTable();
+      public:
+        hashTable(const hashTable<K, V> &);
+        hashTable(unsigned (*)(const K &),
+                  size_t init_bucket_num = DEFAULT_BUCKET_NUM);
+        ~hashTable();
 
-   void clearAndDestroy();
+        void clearAndDestroy();
 
-   size_t entries() { return f_items; };
+        size_t entries() { return f_items; };
 
-   CC_Boolean contains(const K*) const;
+        CC_Boolean contains(const K *) const;
 
-   V* findValue(const K*) const;
-   K* findKeyAndValue(const K*, V*&) const;
+        V *findValue(const K *) const;
+        K *findKeyAndValue(const K *, V *&) const;
 
-   void insertKeyAndValue(K*, V*);
+        void insertKeyAndValue(K *, V *);
 
-   K* remove(const K*);
+        K *remove(const K *);
 
 #ifdef DEBUG
-   ostream& print(ostream& out);
+        ostream &print(ostream &out);
 
-   friend ostream& operator<<(ostream& out, hashTable<K, V>& ht) {
-    return ht.print(out);
-   };
+        friend ostream &operator<<(ostream &out, hashTable<K, V> &ht) {
+                return ht.print(out);
+        };
 #endif
-
 };
 
-template <class K, class V> 
-class hashTableIterator
-{
-protected:
-   size_t f_bucket_num;
-   size_t f_pos;
-   kv_pair<K, V>* f_rec;
-   hashTable<K, V>& f_hashTable;
+template <class K, class V> class hashTableIterator {
+      protected:
+        size_t f_bucket_num;
+        size_t f_pos;
+        kv_pair<K, V> *f_rec;
+        hashTable<K, V> &f_hashTable;
 
-   CC_Boolean _findNonEmptyBucket();
-   CC_Boolean _findNextRecord();
+        CC_Boolean _findNonEmptyBucket();
+        CC_Boolean _findNextRecord();
 
-public:
-   hashTableIterator(hashTable<K, V>&);
-   ~hashTableIterator();
+      public:
+        hashTableIterator(hashTable<K, V> &);
+        ~hashTableIterator();
 
-   CC_Boolean operator++();
-   K* key();
-   V* value() const;
+        CC_Boolean operator++();
+        K *key();
+        V *value() const;
 };
 
 #ifdef EXPAND_TEMPLATES
 #include "cc_hdict.C"
 #endif
-
 
 #endif

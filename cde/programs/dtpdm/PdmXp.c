@@ -29,7 +29,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -40,20 +40,21 @@
 #include <X11/Intrinsic.h>
 
 typedef enum {
-    PDMXP_JOB, PDMXP_DOC, PDMXP_PRINTER, PDMXP_SERVER,
-    PDMXP_BAD_POOL /* should always be last in list */
+        PDMXP_JOB,
+        PDMXP_DOC,
+        PDMXP_PRINTER,
+        PDMXP_SERVER,
+        PDMXP_BAD_POOL /* should always be last in list */
 } PdmXpPoolIndex;
-
 
 /*
  * static function declarations
  */
-static const char* PdmXpGetQualifier(PdmXp* me);
-static char* PdmXpBuildResourceName(PdmXp* me, PdmOid id_att);
+static const char *PdmXpGetQualifier(PdmXp *me);
+static char *PdmXpBuildResourceName(PdmXp *me, PdmOid id_att);
 #if 0 && defined(PRINTING_SUPPORTED)
 static XrmDatabase PdmXpLoadPool(PdmXp* me, XPAttributes type);
 #endif /* PRINTING_SUPPORTED */
-
 
 /*
  * ------------------------------------------------------------------------
@@ -68,11 +69,7 @@ static XrmDatabase PdmXpLoadPool(PdmXp* me, XPAttributes type);
  *     The new PdmXp instance structure.
  *
  */
-PdmXp*
-PdmXpNew()
-{
-    return (PdmXp*)XtCalloc(1, sizeof(PdmXp));
-}
+PdmXp *PdmXpNew() { return (PdmXp *)XtCalloc(1, sizeof(PdmXp)); }
 
 /*
  * ------------------------------------------------------------------------
@@ -88,11 +85,9 @@ PdmXpNew()
  *     None.
  *
  */
-void
-PdmXpDelete(PdmXp* me)
-{
-    PdmXpClose(me);
-    XtFree((char*)me);
+void PdmXpDelete(PdmXp *me) {
+        PdmXpClose(me);
+        XtFree((char *)me);
 }
 
 /*
@@ -111,26 +106,21 @@ PdmXpDelete(PdmXp* me)
  *     extension, NULL is returned.
  *
  */
-Display*
-PdmXpOpen(PdmXp* me,
-	  char* display_spec,
-	  char* context_str)
-{
-    /*
-     * only maintain one connection
-     */
-    PdmXpClose(me);
-    /*
-     * open the passed display spec
-     */
-    me->display = XOpenDisplay(display_spec);
-    if(me->display)
-    {
-	int error_base;
-	int event_base;
-	/*
-	 * check to see if the display is a print server
-	 */
+Display *PdmXpOpen(PdmXp *me, char *display_spec, char *context_str) {
+        /*
+         * only maintain one connection
+         */
+        PdmXpClose(me);
+        /*
+         * open the passed display spec
+         */
+        me->display = XOpenDisplay(display_spec);
+        if (me->display) {
+                int error_base;
+                int event_base;
+                /*
+                 * check to see if the display is a print server
+                 */
 #if 0 && defined(PRINTING_SUPPORTED)
 	if(XpQueryExtension(me->display, &event_base, &error_base))
 	{
@@ -146,14 +136,14 @@ PdmXpOpen(PdmXp* me,
 	else
 	{
 #endif /* PRINTING_SUPPORTED */
-	    XCloseDisplay(me->display);
-	    me->display = (Display*)NULL;
+                XCloseDisplay(me->display);
+                me->display = (Display *)NULL;
 #if 0 && defined(PRINTING_SUPPORTED)
 	}
 #endif /* PRINTING_SUPPORTED */
-    }
+        }
 
-    return me->display;
+        return me->display;
 }
 
 /*
@@ -169,27 +159,22 @@ PdmXpOpen(PdmXp* me,
  *     None.
  *
  */
-void
-PdmXpClose(PdmXp* me)
-{
-    if(me->display)
-    {
-	int i;
-	
-	for(i = 0; i < PDMXP_POOL_COUNT; i++)
-	{
-	    if(me->pool[i] != (XrmDatabase)NULL)
-	    {
-		XrmDestroyDatabase(me->pool[i]);
-		me->pool[i] == (XrmDatabase)NULL;
-	    }
-	}
-	XCloseDisplay(me->display);
-	me->display = NULL;
+void PdmXpClose(PdmXp *me) {
+        if (me->display) {
+                int i;
+
+                for (i = 0; i < PDMXP_POOL_COUNT; i++) {
+                        if (me->pool[i] != (XrmDatabase)NULL) {
+                                XrmDestroyDatabase(me->pool[i]);
+                                me->pool[i] == (XrmDatabase)NULL;
+                        }
+                }
+                XCloseDisplay(me->display);
+                me->display = NULL;
 #if 0 && defined(PRINTING_SUPPORTED)
 	me->context = (XPContext)NULL;
 #endif /* PRINTING_SUPPORTED */
-    }
+        }
 }
 
 /*
@@ -198,11 +183,11 @@ PdmXpClose(PdmXp* me)
  *
  * Description:
  *
- *     
+ *
  *
  * Return value:
  *
- *     
+ *
  *
  */
 #if 0 && defined(PRINTING_SUPPORTED)
@@ -265,17 +250,14 @@ PdmXpLoadPool(PdmXp* me, XPAttributes type)
  *
  * Description:
  *
- *     
+ *
  *
  * Return value:
  *
  *
  */
-static const char*
-PdmXpGetQualifier(PdmXp* me)
-{
-    if(me->qualifier == (char*)NULL)
-    {
+static const char *PdmXpGetQualifier(PdmXp *me) {
+        if (me->qualifier == (char *)NULL) {
 #if 0 && defined(PRINTING_SUPPORTED)
 	if(PdmXpLoadPool(me, XPPrinterAttr) != (XrmDatabase)NULL)
 	{
@@ -290,11 +272,9 @@ PdmXpGetQualifier(PdmXp* me)
 	    }
 	}
 #endif /* PRINTING_SUPPORTED */
-    }
-    return me->qualifier;
+        }
+        return me->qualifier;
 }
-
-
 
 /*
  * ------------------------------------------------------------------------
@@ -302,7 +282,7 @@ PdmXpGetQualifier(PdmXp* me)
  *
  * Description:
  *
- *     
+ *
  *
  * Return value:
  *
@@ -310,35 +290,31 @@ PdmXpGetQualifier(PdmXp* me)
  *     responsibility to free the returned string by calling XtFree.
  *
  */
-static char*
-PdmXpBuildResourceName(PdmXp* me, PdmOid id_att)
-{
-    char* ptr;
-    char* res_name;
-    int oid_str_len;
-    /*
-     * allocate memory for the resource name
-     */
-    oid_str_len = PdmOidStringLength(id_att);
-    ptr = res_name =
-	XtMalloc(me->qualifier_len + 1 + oid_str_len + 1);
-    /*
-     * build the resource name from the printer name and the string value
-     * for the passed attribute id
-     */
-    strncpy(ptr, me->qualifier, me->qualifier_len);
-    ptr += me->qualifier_len;
-    *ptr = '.';
-    ptr += 1;
-    strncpy(ptr, PdmOidString(id_att), oid_str_len);
-    ptr += oid_str_len;
-    *ptr = '\0';
-    /*
-     * return
-     */
-    return res_name;
+static char *PdmXpBuildResourceName(PdmXp *me, PdmOid id_att) {
+        char *ptr;
+        char *res_name;
+        int oid_str_len;
+        /*
+         * allocate memory for the resource name
+         */
+        oid_str_len = PdmOidStringLength(id_att);
+        ptr = res_name = XtMalloc(me->qualifier_len + 1 + oid_str_len + 1);
+        /*
+         * build the resource name from the printer name and the string value
+         * for the passed attribute id
+         */
+        strncpy(ptr, me->qualifier, me->qualifier_len);
+        ptr += me->qualifier_len;
+        *ptr = '.';
+        ptr += 1;
+        strncpy(ptr, PdmOidString(id_att), oid_str_len);
+        ptr += oid_str_len;
+        *ptr = '\0';
+        /*
+         * return
+         */
+        return res_name;
 }
-
 
 /*
  * ------------------------------------------------------------------------
@@ -346,7 +322,7 @@ PdmXpBuildResourceName(PdmXp* me, PdmOid id_att)
  *
  * Description:
  *
- *     
+ *
  *
  * Return value:
  *
@@ -373,7 +349,7 @@ PdmXpGetValue(PdmXp* me,
  *
  * Description:
  *
- *     
+ *
  *
  * Return value:
  *
@@ -418,11 +394,11 @@ PdmXpGetStringValue(PdmXp* me,
  *
  * Description:
  *
- *     
+ *
  *
  * Return value:
  *
- *     
+ *
  *
  */
 #if 0 && defined(PRINTING_SUPPORTED)
@@ -442,11 +418,11 @@ PdmXpSetValue(PdmXp* me,
  *
  * Description:
  *
- *     
+ *
  *
  * Return value:
  *
- *     
+ *
  *
  */
 #if 0 && defined(PRINTING_SUPPORTED)
@@ -470,23 +446,20 @@ PdmXpSetStringValue(PdmXp* me,
 }
 #endif /* PRINTING_SUPPORTED */
 
-
 /*
  * ------------------------------------------------------------------------
  * Name: PdmXpUpdateAttributes
  *
  * Description:
  *
- *     
+ *
  *
  * Return value:
  *
- *     
+ *
  *
  */
-void
-PdmXpUpdateAttributes(PdmXp* me)
-{
+void PdmXpUpdateAttributes(PdmXp *me) {
 #if 0 && defined(PRINTING_SUPPORTED)
     char fname[L_tmpnam];
     

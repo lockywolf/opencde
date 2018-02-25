@@ -26,7 +26,7 @@
 #define _dstr_test_h
 
 #ifdef REGRESSION_TEST
-int dstr_test(int argc, char** argv);
+int dstr_test(int argc, char **argv);
 #endif
 
 #endif

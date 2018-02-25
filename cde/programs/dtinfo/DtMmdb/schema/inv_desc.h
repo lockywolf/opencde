@@ -30,14 +30,13 @@
 
 class inv_desc : public stored_object_desc {
 
-public:
-   inv_desc();
-   virtual ~inv_desc() {};
+      public:
+        inv_desc();
+        virtual ~inv_desc(){};
 
-   handler* init_handler(object_dict&) ;
- 
-protected:
+        handler *init_handler(object_dict &);
+
+      protected:
 };
-
 
 #endif

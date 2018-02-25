@@ -43,29 +43,28 @@
  **
  ****************************************************************************
  ************************************<+>*************************************/
-#ifndef	_DtHelpP_h
-#define	_DtHelpP_h
+#ifndef _DtHelpP_h
+#define _DtHelpP_h
 
 /* Privite Argument Resource Definitions for Help Widget */
 
-#define DtNshowTopLevelButton   "showTopLevelButton"
+#define DtNshowTopLevelButton "showTopLevelButton"
 #ifndef XmNshowTopLevelButton
-#define XmNshowTopLevelButton	DtNshowTopLevelButton
+#define XmNshowTopLevelButton DtNshowTopLevelButton
 #endif
-#define DtCShowTopLevelButton   "ShowTopLevelButton"
+#define DtCShowTopLevelButton "ShowTopLevelButton"
 #ifndef XmCShowTopLevelButton
-#define XmCShowTopLevelButton	DtCShowTopLevelButton
+#define XmCShowTopLevelButton DtCShowTopLevelButton
 #endif
 
-#define DtNsrchHitPrefixFont    "srchHitPrefixFont"
+#define DtNsrchHitPrefixFont "srchHitPrefixFont"
 #ifndef XmNsrchHitPrefixFont
-#define XmNsrchHitPrefixFont	DtNsrchHitPrefixFont
+#define XmNsrchHitPrefixFont DtNsrchHitPrefixFont
 #endif
-#define DtCSrchHitPrefixFont   "SrchHitPrefixFont"
+#define DtCSrchHitPrefixFont "SrchHitPrefixFont"
 #ifndef XmCSrchHitPrefixFont
-#define XmCSrchHitPrefixFont  	DtCSrchHitPrefixFont
+#define XmCSrchHitPrefixFont DtCSrchHitPrefixFont
 #endif
-
 
 #ifndef CDE_CONFIGURATION_TOP
 #define CDE_CONFIGURATION_TOP "/etc/dt"
@@ -75,44 +74,38 @@
 #define CDE_INSTALLATION_TOP "/usr/dt"
 #endif
 
+#define DtDEFAULT_SYSTEM_PATH                                                  \
+        CDE_CONFIGURATION_TOP                                                  \
+            "/appconfig/help/%L/%H:" CDE_CONFIGURATION_TOP                     \
+            "/appconfig/help/%L/%H.sdl:" CDE_CONFIGURATION_TOP                 \
+            "/appconfig/help/%L/%H.hv:" CDE_CONFIGURATION_TOP                  \
+            "/appconfig/help/C/%H:" CDE_CONFIGURATION_TOP                      \
+            "/appconfig/help/C/%H.sdl:" CDE_CONFIGURATION_TOP                  \
+            "/appconfig/help/C/%H.hv:" CDE_INSTALLATION_TOP                    \
+            "/appconfig/help/%L/%H:" CDE_INSTALLATION_TOP                      \
+            "/appconfig/help/%L/%H.sdl:" CDE_INSTALLATION_TOP                  \
+            "/appconfig/help/%L/%H.hv" CDE_INSTALLATION_TOP                    \
+            "/appconfig/help/C/%H:" CDE_INSTALLATION_TOP                       \
+            "/appconfig/help/C/%H.sdl:" CDE_INSTALLATION_TOP                   \
+            "/appconfig/help/C/%H.hv:"
 
-#define DtDEFAULT_SYSTEM_PATH \
-                 CDE_CONFIGURATION_TOP "/appconfig/help/%L/%H:" \
-                 CDE_CONFIGURATION_TOP "/appconfig/help/%L/%H.sdl:" \
-                 CDE_CONFIGURATION_TOP "/appconfig/help/%L/%H.hv:" \
-                 CDE_CONFIGURATION_TOP "/appconfig/help/C/%H:" \
-                 CDE_CONFIGURATION_TOP "/appconfig/help/C/%H.sdl:" \
-                 CDE_CONFIGURATION_TOP "/appconfig/help/C/%H.hv:" \
-                 CDE_INSTALLATION_TOP "/appconfig/help/%L/%H:" \
-                 CDE_INSTALLATION_TOP "/appconfig/help/%L/%H.sdl:" \
-                 CDE_INSTALLATION_TOP "/appconfig/help/%L/%H.hv" \
-                 CDE_INSTALLATION_TOP "/appconfig/help/C/%H:" \
-                 CDE_INSTALLATION_TOP "/appconfig/help/C/%H.sdl:" \
-                 CDE_INSTALLATION_TOP "/appconfig/help/C/%H.hv:"
-
-
-#define DtDEFAULT_USER_PATH_FORMAT \
-		"%s/.dt/help/%s/%%H:" \
-		"%s/.dt/help/%s/%%H.sdl:" \
-		"%s/.dt/help/%s/%%H.hv:" \
-		"%s/.dt/help/%%H:" \
-		"%s/.dt/help/%%H.sdl:" \
-		"%s/.dt/help/%%H.hv"
+#define DtDEFAULT_USER_PATH_FORMAT                                             \
+        "%s/.dt/help/%s/%%H:"                                                  \
+        "%s/.dt/help/%s/%%H.sdl:"                                              \
+        "%s/.dt/help/%s/%%H.hv:"                                               \
+        "%s/.dt/help/%%H:"                                                     \
+        "%s/.dt/help/%%H.sdl:"                                                 \
+        "%s/.dt/help/%%H.hv"
 
 /* this path expects a snprintf usage as follows:
     snprintf(buf, buf_size, DtDEFAULT_USER_PATH_FORMAT,
-   			homedir, dtusersessionname,
-			homedir, dtusersessionname,
-			homedir, dtusersessionname,
-			homedir, homedir, homedir);
+                        homedir, dtusersessionname,
+                        homedir, dtusersessionname,
+                        homedir, dtusersessionname,
+                        homedir, homedir, homedir);
 */
 
 /* #define DtVOLUMES_TYPE "volumes" */
 
 #endif /* _DtHelpP_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */
-
-
-
-
-

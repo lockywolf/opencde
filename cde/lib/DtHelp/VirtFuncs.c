@@ -90,29 +90,24 @@
  * Returns:
  *
  *****************************************************************************/
-_DtCvUnit
-_DtCvGetStringWidth (
-    _DtCanvasStruct      *canvas,
-    _DtCvSegment           *segment,
-    void                *string,
-    int                  len)
-{
-    _DtCvUnit	result = -1;
-    _DtCvStringInfo strInfo;
+_DtCvUnit _DtCvGetStringWidth(_DtCanvasStruct *canvas, _DtCvSegment *segment,
+                              void *string, int len) {
+        _DtCvUnit result = -1;
+        _DtCvStringInfo strInfo;
 
-    strInfo.string   = string;
-    strInfo.byte_len = len;
-    strInfo.wc       = _DtCvIsSegWideChar(segment);
-    strInfo.font_ptr = _DtCvFontOfStringSeg(segment);
+        strInfo.string = string;
+        strInfo.byte_len = len;
+        strInfo.wc = _DtCvIsSegWideChar(segment);
+        strInfo.font_ptr = _DtCvFontOfStringSeg(segment);
 
-    if (canvas->virt_functions.get_width != NULL)
-	result = (*(canvas->virt_functions.get_width)) (
-			canvas->client_data, _DtCvSTRING_TYPE,
-			(_DtCvPointer) &strInfo);
-    if (result < 0)
-	result = 0;
+        if (canvas->virt_functions.get_width != NULL)
+                result = (*(canvas->virt_functions.get_width))(
+                    canvas->client_data, _DtCvSTRING_TYPE,
+                    (_DtCvPointer)&strInfo);
+        if (result < 0)
+                result = 0;
 
-    return result;
+        return result;
 
 } /* End _DtCvGetStringWidth */
 
@@ -126,30 +121,24 @@ _DtCvGetStringWidth (
  * Purpose:
  *
  ******************************************************************************/
-void
-_DtCvFontMetrics(
-    _DtCanvasStruct	*canvas,
-    _DtCvPointer	 font_handle,
-    _DtCvUnit		*ret_ascent,
-    _DtCvUnit		*ret_descent,
-    _DtCvUnit		*ret_ave,
-    _DtCvUnit		*ret_super_y,
-    _DtCvUnit		*ret_sub_y)
-{
-    if (ret_ascent != NULL)
-	*ret_ascent = 0;
-    if (ret_descent != NULL)
-	*ret_descent = 0;
-    if (ret_ave != NULL)
-	*ret_ave = 0;
-    if (ret_super_y != NULL)
-	*ret_super_y = 0;
-    if (ret_sub_y != NULL)
-	*ret_sub_y = 0;
+void _DtCvFontMetrics(_DtCanvasStruct *canvas, _DtCvPointer font_handle,
+                      _DtCvUnit *ret_ascent, _DtCvUnit *ret_descent,
+                      _DtCvUnit *ret_ave, _DtCvUnit *ret_super_y,
+                      _DtCvUnit *ret_sub_y) {
+        if (ret_ascent != NULL)
+                *ret_ascent = 0;
+        if (ret_descent != NULL)
+                *ret_descent = 0;
+        if (ret_ave != NULL)
+                *ret_ave = 0;
+        if (ret_super_y != NULL)
+                *ret_super_y = 0;
+        if (ret_sub_y != NULL)
+                *ret_sub_y = 0;
 
-    if (canvas->virt_functions.get_font_metrics != NULL)
-        (*(canvas->virt_functions.get_font_metrics))(
-		canvas->client_data, font_handle,
-		ret_ascent, ret_descent, ret_ave, ret_super_y, ret_sub_y);
+        if (canvas->virt_functions.get_font_metrics != NULL)
+                (*(canvas->virt_functions.get_font_metrics))(
+                    canvas->client_data, font_handle, ret_ascent, ret_descent,
+                    ret_ave, ret_super_y, ret_sub_y);
 
 } /* End _DtCvFontMetrics */

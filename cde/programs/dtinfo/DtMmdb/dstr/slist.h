@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,10 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
-
 
 #ifndef _slist_h
 #define _slist_h 1
@@ -60,43 +58,44 @@
 
 class slist {
 
-public:
-   slist(slist_cell* x = 0);
-   virtual ~slist();
+      public:
+        slist(slist_cell *x = 0);
+        virtual ~slist();
 
-// append a slist. tail_list becomes part of this list. no copy
-// is performed. tail_list -> head and tail_list -> tail 
-// are set to NULL.  Also, tail_list -> ct = 0.
-   void append(slist* tail_list);
+        // append a slist. tail_list becomes part of this list. no copy
+        // is performed. tail_list -> head and tail_list -> tail
+        // are set to NULL.  Also, tail_list -> ct = 0.
+        void append(slist *tail_list);
 
-// generalization of append(). arguments should be of type slist*. 
-// this is returned
-   slist* concate_with(slist* ...);
+        // generalization of append(). arguments should be of type slist*.
+        // this is returned
+        slist *concate_with(slist *...);
 
+        // update functions
+        void insert_as_tail(slist_cell *x);
 
-// update functions
-   void insert_as_tail(slist_cell* x) ;
+        void delete_head();
+        void delete_tail();
 
-   void delete_head() ;
-   void delete_tail() ;
+        // empty the list without free cells
+        void empty_list() {
+                v_head = v_tail = 0;
+                v_ct = 0;
+        };
 
-// empty the list without free cells
-   void empty_list() { v_head = v_tail = 0; v_ct = 0;} ;
+        // status function
+        int count() { return v_ct; }; // number of cells in the list
+        slist_cell *get_head() { return v_head; };
+        slist_cell *get_tail() { return v_tail; };
 
-// status function
-   int count() { return v_ct; }; // number of cells in the list
-   slist_cell* get_head() { return v_head; };
-   slist_cell* get_tail() { return v_tail; };
+        long first(); // 0 if the list is empty
+        void next(long &index);
+        long last(); // 0 if the list is empty
 
-   long first();   // 0 if the list is empty
-   void next(long & index);
-   long last();    // 0 if the list is empty
-
-protected:
-   int v_ct;            // cell in the list
-   slist_cell *v_head;  // head pointer
-   slist_cell *v_tail;  // tail pointer
-
+      protected:
+        int v_ct;           // cell in the list
+        slist_cell *v_head; // head pointer
+        slist_cell *v_tail; // tail pointer
 };
 
 typedef slist *slistPtr;

@@ -25,7 +25,7 @@
  * (c) Copyright 1993, 1994, 1995 Hewlett-Packard Company
  * (c) Copyright 1993, 1994, 1995 International Business Machines Corp.
  * (c) Copyright 1993, 1994, 1995 Sun Microsystems, Inc.
- * (c) Copyright 1993, 1994, 1995 Novell, Inc. 
+ * (c) Copyright 1993, 1994, 1995 Novell, Inc.
  * (c) Copyright 1995 FUJITSU LIMITED.
  * (c) Copyright 1995 Hitachi.
  *
@@ -64,89 +64,66 @@ in this Software without prior written authorization from the X Consortium.
 /*
  * Forward declarations
  */
-void _XtIceWatchProc ();
-void _XtProcessIceMsgProc ();
+void _XtIceWatchProc();
+void _XtProcessIceMsgProc();
 
-Status
-InitWatchProcs (
-	XtAppContext 		appContext)
-{
+Status InitWatchProcs(XtAppContext appContext) {
 #ifdef DEBUG
-    printf ("InitWatchProcs\n");
+        printf("InitWatchProcs\n");
 #endif /* DEBUG */
 
-    return (IceAddConnectionWatch (_XtIceWatchProc, (IcePointer) appContext));
+        return (IceAddConnectionWatch(_XtIceWatchProc, (IcePointer)appContext));
 }
 
-
-void
-_XtIceWatchProc (
-	IceConn			ice_conn,
-	IcePointer		client_data,
-	Bool			opening,
-	IcePointer		*watch_data)
-{
+void _XtIceWatchProc(IceConn ice_conn, IcePointer client_data, Bool opening,
+                     IcePointer *watch_data) {
 #ifdef DEBUG
-    printf ("_XtIceWatchProc\n");
+        printf("_XtIceWatchProc\n");
 #endif /* DEBUG */
 
-    if (opening)
-    {
-	XtAppContext appContext = (XtAppContext) client_data;
+        if (opening) {
+                XtAppContext appContext = (XtAppContext)client_data;
 
-	*watch_data = (IcePointer) XtAppAddInput (
-	    appContext,
-	    IceConnectionNumber (ice_conn),
-            (XtPointer) XtInputReadMask,
-	    _XtProcessIceMsgProc,
-	    (XtPointer) ice_conn);
-    }
-    else
-    {
-	XtRemoveInput ((XtInputId) *watch_data);
-    }
+                *watch_data = (IcePointer)XtAppAddInput(
+                    appContext, IceConnectionNumber(ice_conn),
+                    (XtPointer)XtInputReadMask, _XtProcessIceMsgProc,
+                    (XtPointer)ice_conn);
+        } else {
+                XtRemoveInput((XtInputId)*watch_data);
+        }
 }
 
-
-void
-_XtProcessIceMsgProc (
-	XtPointer		client_data,
-	int			*source,
-	XtInputId		*id)
-{
-    IceConn			ice_conn = (IceConn) client_data;
-    IceProcessMessagesStatus	status;
+void _XtProcessIceMsgProc(XtPointer client_data, int *source, XtInputId *id) {
+        IceConn ice_conn = (IceConn)client_data;
+        IceProcessMessagesStatus status;
 
 #ifdef DEBUG
-    printf ("_XtProcessIceMsgProc\n");
+        printf("_XtProcessIceMsgProc\n");
 #endif /* DEBUG */
 
-    status = IceProcessMessages (ice_conn, NULL, NULL);
+        status = IceProcessMessages(ice_conn, NULL, NULL);
 
-    if (status == IceProcessMessagesIOError)
-    {
-	ClientRecPtr		pClientRec;
-	int			found = 0;
+        if (status == IceProcessMessagesIOError) {
+                ClientRecPtr pClientRec;
+                int found = 0;
 
 #ifdef DEBUG
-	printf ("IO error on connection (fd = %d)\n", 
-		IceConnectionNumber (ice_conn));
+                printf("IO error on connection (fd = %d)\n",
+                       IceConnectionNumber(ice_conn));
 #endif /* DEBUG */
 
-	for (pClientRec = connectedList; pClientRec != NULL; 
-	  	pClientRec = pClientRec->next) 
-	{
-	    if (pClientRec->iceConn == ice_conn) 
-	    {
-	        CloseDownClient (pClientRec);
-		found = 1;
-	        break;
-	    }
-	}
+                for (pClientRec = connectedList; pClientRec != NULL;
+                     pClientRec = pClientRec->next) {
+                        if (pClientRec->iceConn == ice_conn) {
+                                CloseDownClient(pClientRec);
+                                found = 1;
+                                break;
+                        }
+                }
 
-	if (!found) {
-            IceSetShutdownNegotiation (ice_conn, False);
-            IceCloseConnection (ice_conn);
-	}
-    }
+                if (!found) {
+                        IceSetShutdownNegotiation(ice_conn, False);
+                        IceCloseConnection(ice_conn);
+                }
+        }
 }

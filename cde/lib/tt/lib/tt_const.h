@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: tt_const.h /main/3 1995/10/23 09:50:21 rswiston $ 			 				 */
+/*%%  $XConsortium: tt_const.h /main/3 1995/10/23 09:50:21 rswiston $
+ */
 /*
  *
  * tt_const.h
@@ -37,13 +38,13 @@
  * HACK: many of these are only used in the DM...
  */
 
-#ifndef  _TT_CONST_H
-#define  _TT_CONST_H
+#ifndef _TT_CONST_H
+#define _TT_CONST_H
 
 /* Compilation options */
 
 /*
- * To *not* use the dbserver (i.e. to link NetISAM into every TT client) 
+ * To *not* use the dbserver (i.e. to link NetISAM into every TT client)
  * use:  "make DEFINES=-DTT_NO_DBSERVER"
  */
 

@@ -26,7 +26,7 @@
  *	$XConsortium: XtArgCollector.h /main/3 1996/04/21 19:53:12 drk $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -45,25 +45,24 @@
 
 #include <X11/Intrinsic.h>
 
-class XtArgCollector
-{
+class XtArgCollector {
 
-    public:
-	XtArgCollector();
-	~XtArgCollector();
+      public:
+        XtArgCollector();
+        ~XtArgCollector();
 
-	void AddItemToList (String name, XtArgVal value);
-	void SetValues(Widget w);
-	Arg  *GetItems();
-	int  GetNumItems();
+        void AddItemToList(String name, XtArgVal value);
+        void SetValues(Widget w);
+        Arg *GetItems();
+        int GetNumItems();
 
-    private:
-	int		num_items;	// number of items in the list
-	int		max_num_items;	// number of items for which we've
-                                        //      allocated space.
-	Arg		*list;		// the list of XmStrings
-	int		increment; 	// number of additional items
-                                        //      to allocate space for.
+      private:
+        int num_items;     // number of items in the list
+        int max_num_items; // number of items for which we've
+                           //      allocated space.
+        Arg *list;         // the list of XmStrings
+        int increment;     // number of additional items
+                           //      to allocate space for.
 };
 
 #endif // XTARG_COLLECTOR_H

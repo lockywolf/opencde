@@ -22,7 +22,6 @@
  */
 /* $XConsortium: dlist_void_ptr_cell.h /main/3 1996/06/11 17:17:00 cde-hal $ */
 
-
 #ifndef _dlist_void_ptr_cell_h
 #define _dlist_void_ptr_cell_h 1
 
@@ -33,14 +32,14 @@
 
 class dlist_void_ptr_cell : public dlist_cell {
 
-public:
-   dlist_void_ptr_cell(voidPtr vp) : data(vp) {};
-   virtual ~dlist_void_ptr_cell() {};
+      public:
+        dlist_void_ptr_cell(voidPtr vp) : data(vp){};
+        virtual ~dlist_void_ptr_cell(){};
 
-   voidPtr void_ptr() { return data; };
+        voidPtr void_ptr() { return data; };
 
-protected:
-   voidPtr data;
+      protected:
+        voidPtr data;
 };
 
 typedef dlist_void_ptr_cell *dlist_void_ptr_cellPtr;

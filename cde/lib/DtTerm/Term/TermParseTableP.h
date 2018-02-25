@@ -31,8 +31,8 @@
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
 
-#ifndef   _Dt_TermParseTableP_h
-#define   _Dt_TermParseTableP_h
+#ifndef _Dt_TermParseTableP_h
+#define _Dt_TermParseTableP_h
 
 #include "TermParseTable.h"
 

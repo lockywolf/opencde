@@ -22,9 +22,9 @@
  */
 /* $XConsortium: ildecomp.h /main/3 1995/10/23 15:44:41 rswiston $ */
 /**---------------------------------------------------------------------
-***	
+***
 ***    (c)Copyright 1991 Hewlett-Packard Co.
-***    
+***
 ***                             RESTRICTED RIGHTS LEGEND
 ***    Use, duplication, or disclosure by the U.S. Government is subject to
 ***    restrictions as set forth in sub-paragraph (c)(1)(ii) of the Rights in
@@ -48,37 +48,20 @@
 #include "ilint.h"
 #endif
 
+IL_EXTERN ilBool _ilDecompG3(ilPipe pipe, ilPipeInfo *pinfo,
+                             ilImageDes *pimdes);
 
-IL_EXTERN ilBool _ilDecompG3 (
-    ilPipe              pipe,
-    ilPipeInfo         *pinfo,                              
-    ilImageDes         *pimdes
-    );
+IL_EXTERN ilBool _ilDecompG4(ilPipe pipe, ilPipeInfo *pinfo,
+                             ilImageDes *pimdes);
 
-IL_EXTERN ilBool _ilDecompG4 (
-    ilPipe              pipe,
-    ilPipeInfo         *pinfo,                              
-    ilImageDes         *pimdes
-    );
+IL_EXTERN ilBool _ilDecompLZW(ilPipe pipe, ilPipeInfo *pinfo,
+                              ilImageDes *pimdes, ilImageFormat *pimformat);
 
-IL_EXTERN ilBool _ilDecompLZW (
-    ilPipe              pipe,
-    ilPipeInfo         *pinfo,                              
-    ilImageDes         *pimdes,
-    ilImageFormat      *pimformat
-    );
+IL_EXTERN ilBool _ilDecompPackbits(ilPipe pipe, ilPipeInfo *pinfo,
+                                   ilImageDes *pimdes,
+                                   ilImageFormat *pimformat);
 
-IL_EXTERN ilBool _ilDecompPackbits (
-    ilPipe              pipe,
-    ilPipeInfo         *pinfo,
-    ilImageDes         *pimdes,
-    ilImageFormat      *pimformat
-    );
-
-IL_EXTERN ilBool _ilDecompJPEG (
-    ilPipe              pipe,
-    ilPipeInfo         *pInfo,
-    ilImageDes         *pDes
-    );
+IL_EXTERN ilBool _ilDecompJPEG(ilPipe pipe, ilPipeInfo *pInfo,
+                               ilImageDes *pDes);
 
 #endif

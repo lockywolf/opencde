@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         Utility.c $XConsortium: Utility.c /main/5 1996/06/21 17:20:20 ageorge $
- * Language:     C
+ * File:         Utility.c $XConsortium: Utility.c /main/5 1996/06/21 17:20:20
+ * ageorge $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -50,7 +50,7 @@
 #include <limits.h>
 #endif
 #include <sys/stat.h>
-#include <sys/param.h>		/* MAXPATHLEN, MAXHOSTNAMELEN */
+#include <sys/param.h> /* MAXPATHLEN, MAXHOSTNAMELEN */
 #include <X11/Xlib.h>
 #include <X11/Intrinsic.h>
 #include <X11/StringDefs.h>
@@ -64,17 +64,14 @@
 
 #include <string.h>
 
-#define TRUE		1
-#define FALSE		0
-
+#define TRUE 1
+#define FALSE 0
 
 /********    Static Function Declarations    ********/
 
-static char * RemapSpecialDisplayName(
-                        char *dispInfo) ;
+static char *RemapSpecialDisplayName(char *dispInfo);
 
 /********    End Static Function Declarations    ********/
-
 
 /******************
  *
@@ -109,48 +106,43 @@ static char * RemapSpecialDisplayName(
  *
  ******************/
 
-char * * 
-_DtVectorizeInPlace(
-        char *string,
-        char separator )
-{
-/* LOCAL VARIABLES */
-   
-   char **vector, **next_string, *nextc;
-   int num_pieces;
-   
-/* CODE */
-   
-   /* Count the elements in the string and allocate an appropriate size 
-      vector.  There is one more element than separator characters. */
-   num_pieces = 1;
-   nextc = string;
-   while ((nextc = DtStrchr(nextc, separator)))
-   {
-      num_pieces++;
-      nextc++;
-   }
-   
-   vector = (char **) XtMalloc ((Cardinal)(sizeof(char *) * (num_pieces + 1)));
-   
-   /* Set the first element of the vector to point to the start of
-      the string. */
-   *vector = string;
-   next_string = vector + 1;
-   nextc = string;
+char **_DtVectorizeInPlace(char *string, char separator) {
+        /* LOCAL VARIABLES */
 
-   /* Parse out each component, terminating it with a NULL */
-   while ((nextc = DtStrchr(nextc, separator)))
-   {
-      *nextc = '\0';
-      nextc++;
-      *next_string = nextc;
-      next_string++;
-   }
-	
-   /* The last pointer in the vector must be set to NULL. */
-   *next_string = NULL;
-   return (vector);
+        char **vector, **next_string, *nextc;
+        int num_pieces;
+
+        /* CODE */
+
+        /* Count the elements in the string and allocate an appropriate size
+           vector.  There is one more element than separator characters. */
+        num_pieces = 1;
+        nextc = string;
+        while ((nextc = DtStrchr(nextc, separator))) {
+                num_pieces++;
+                nextc++;
+        }
+
+        vector =
+            (char **)XtMalloc((Cardinal)(sizeof(char *) * (num_pieces + 1)));
+
+        /* Set the first element of the vector to point to the start of
+           the string. */
+        *vector = string;
+        next_string = vector + 1;
+        nextc = string;
+
+        /* Parse out each component, terminating it with a NULL */
+        while ((nextc = DtStrchr(nextc, separator))) {
+                *nextc = '\0';
+                nextc++;
+                *next_string = nextc;
+                next_string++;
+        }
+
+        /* The last pointer in the vector must be set to NULL. */
+        *next_string = NULL;
+        return (vector);
 }
 
 /******************
@@ -159,7 +151,7 @@ _DtVectorizeInPlace(
  *
  * Description:
  *
- *	A "string vector" is an array of pointers to strings.  
+ *	A "string vector" is an array of pointers to strings.
  *
  * Synopsis:
  *
@@ -172,22 +164,17 @@ _DtVectorizeInPlace(
  *
  ******************/
 
-void 
-_DtFreeStringVector(
-        char **stringv )
-{
+void _DtFreeStringVector(char **stringv) {
 
-/* CODE */
-   
-   if (stringv)
-   {
-      if (stringv[0]) 
-         XtFree ((char *)stringv[0]);
+        /* CODE */
 
-      XtFree ((char *)stringv);
-   }
+        if (stringv) {
+                if (stringv[0])
+                        XtFree((char *)stringv[0]);
+
+                XtFree((char *)stringv);
+        }
 }
-
 
 /*
  * Functions for mapping a display pointer into a display name.  It
@@ -195,44 +182,36 @@ _DtFreeStringVector(
  * host name.
  */
 
-static char *
-RemapSpecialDisplayName(
-        char *dispInfo )
-{
-   static char * localHost = NULL;
-   char * name;
+static char *RemapSpecialDisplayName(char *dispInfo) {
+        static char *localHost = NULL;
+        char *name;
 
-   _DtSvcProcessLock();
-   if (localHost == NULL)
-   {
-      localHost = XtMalloc((Cardinal)30);
-      DtGetShortHostname(localHost, 30);
-   }
-   _DtSvcProcessUnlock();
+        _DtSvcProcessLock();
+        if (localHost == NULL) {
+                localHost = XtMalloc((Cardinal)30);
+                DtGetShortHostname(localHost, 30);
+        }
+        _DtSvcProcessUnlock();
 
-   name = XtMalloc((Cardinal)(strlen(localHost) + strlen(dispInfo) + 1));
-   (void)strcpy(name, localHost);
-   (void)strcat(name, dispInfo);
-   return(name);
+        name = XtMalloc((Cardinal)(strlen(localHost) + strlen(dispInfo) + 1));
+        (void)strcpy(name, localHost);
+        (void)strcat(name, dispInfo);
+        return (name);
 }
 
 /*
  * Move here from DragUtil.c because the function is useful and DragUtil.c
  * is going away.
  */
-char *
-_DtGetDisplayName(
-        Display *display )
-{
-   char * name = DisplayString(display);
+char *_DtGetDisplayName(Display *display) {
+        char *name = DisplayString(display);
 
-   if (strncmp("unix:", name, 5) == 0)
-      return(RemapSpecialDisplayName(name+4));
-   else if (strncmp("local:", name, 6) == 0)
-      return(RemapSpecialDisplayName(name+5));
-   else if (strncmp(":", name, 1) == 0)
-      return(RemapSpecialDisplayName(name));
+        if (strncmp("unix:", name, 5) == 0)
+                return (RemapSpecialDisplayName(name + 4));
+        else if (strncmp("local:", name, 6) == 0)
+                return (RemapSpecialDisplayName(name + 5));
+        else if (strncmp(":", name, 1) == 0)
+                return (RemapSpecialDisplayName(name));
 
-   return(XtNewString(name));
+        return (XtNewString(name));
 }
-

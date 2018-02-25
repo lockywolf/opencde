@@ -20,16 +20,17 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* 
- * (c) Copyright 1989, 1990, 1991, 1992, 1993 OPEN SOFTWARE FOUNDATION, INC. 
- * ALL RIGHTS RESERVED 
-*/ 
-/* 
+/*
+ * (c) Copyright 1989, 1990, 1991, 1992, 1993 OPEN SOFTWARE FOUNDATION, INC.
+ * ALL RIGHTS RESERVED
+ */
+/*
  * Motif Release 1.2.3
-*/ 
+ */
 #ifdef REV_INFO
 #ifndef lint
-static char rcsid[] = "$XConsortium: WmColormap.c /main/5 1996/10/30 11:14:44 drk $"
+static char rcsid[] =
+    "$XConsortium: WmColormap.c /main/5 1996/10/30 11:14:44 drk $"
 #endif
 #endif
 /*
@@ -48,13 +49,12 @@ static char rcsid[] = "$XConsortium: WmColormap.c /main/5 1996/10/30 11:14:44 dr
 #include "WmColormap.h"
 #include "WmKeyFocus.h"
 
-static Bool ProcessEvents(Display *dpy, XEvent *Event, char *c_pCD);
-
+    static Bool
+    ProcessEvents(Display * dpy, XEvent *Event, char *c_pCD);
 
 /* Global variables */
-	static unsigned long firstRequest, lastRequest;
+static unsigned long firstRequest, lastRequest;
 
-
 /*************************************<->*************************************
  *
  *  InitWorkspaceColormap ()
@@ -69,27 +69,24 @@ static Bool ProcessEvents(Display *dpy, XEvent *Event, char *c_pCD);
  *  Inputs:
  *  -------
  *  pSD = ptr to screen data
- * 
+ *
  *  Outputs:
  *  -------
  *  wmGD = (workspaceColormap)
- * 
+ *
  *************************************<->***********************************/
 
-void InitWorkspaceColormap (WmScreenData *pSD)
-{
-    /*
-     * Setup the default (workspace) colormap:
-     * !!! this should be made more general to get the colormap for the !!!
-     * !!! workspace (root) and then track colormap changes             !!!
-     */
+void InitWorkspaceColormap(WmScreenData *pSD) {
+        /*
+         * Setup the default (workspace) colormap:
+         * !!! this should be made more general to get the colormap for the !!!
+         * !!! workspace (root) and then track colormap changes             !!!
+         */
 
-    pSD->workspaceColormap = DefaultColormap (DISPLAY, pSD->screen);
+        pSD->workspaceColormap = DefaultColormap(DISPLAY, pSD->screen);
 
 } /* END OF FUNCTION InitWorkspaceColormap */
 
-
-
 /*************************************<->*************************************
  *
  *  InitColormapFocus (pSD)
@@ -109,47 +106,37 @@ void InitWorkspaceColormap (WmScreenData *pSD)
  *  Outputs:
  *  -------
  *  *pSD = (colormapFocus)
- * 
+ *
  *************************************<->***********************************/
 
-void InitColormapFocus (WmScreenData *pSD)
-{
-    ClientData *pCD;
-    Boolean sameScreen;
+void InitColormapFocus(WmScreenData *pSD) {
+        ClientData *pCD;
+        Boolean sameScreen;
 
+        /*
+         * Set up the initial colormap focus.  If the colormapFocusPolicy is
+         * "keyboard" or it is "pointer" and the keyboard input focus policy
+         * is "pointer" then set up the initial colormap focus when the
+         * initial keyboard input focus is set up.
+         */
 
-    /*
-     * Set up the initial colormap focus.  If the colormapFocusPolicy is
-     * "keyboard" or it is "pointer" and the keyboard input focus policy
-     * is "pointer" then set up the initial colormap focus when the
-     * initial keyboard input focus is set up.
-     */
+        pSD->colormapFocus = NULL;
 
-    pSD->colormapFocus = NULL;
-
-    if (wmGD.colormapFocusPolicy == CMAP_FOCUS_POINTER)
-    {
-	if (wmGD.keyboardFocusPolicy != KEYBOARD_FOCUS_POINTER)
-	{
-	    if ((pCD = GetClientUnderPointer (&sameScreen)) != NULL)
-	    {
-	        SetColormapFocus (pSD, pCD);
-	    }
-	    else
-	    {
-	        WmInstallColormap (pSD, pSD->workspaceColormap);
-	    }
-	}
-    }
-    else
-    {
-	WmInstallColormap (pSD, pSD->workspaceColormap);
-    }
+        if (wmGD.colormapFocusPolicy == CMAP_FOCUS_POINTER) {
+                if (wmGD.keyboardFocusPolicy != KEYBOARD_FOCUS_POINTER) {
+                        if ((pCD = GetClientUnderPointer(&sameScreen)) !=
+                            NULL) {
+                                SetColormapFocus(pSD, pCD);
+                        } else {
+                                WmInstallColormap(pSD, pSD->workspaceColormap);
+                        }
+                }
+        } else {
+                WmInstallColormap(pSD, pSD->workspaceColormap);
+        }
 
 } /* END OF FUNCTION InitColormapFocus */
 
-
-
 #ifndef OLD_COLORMAP
 /*************************************<->*************************************
  *
@@ -180,36 +167,31 @@ void InitColormapFocus (WmScreenData *pSD)
  *
  *************************************<->***********************************/
 
-void ForceColormapFocus (WmScreenData *pSD, ClientData *pCD)
-{
-    if (pCD && ((pCD->clientState == NORMAL_STATE) ||
-		(pCD->clientState == MAXIMIZED_STATE)))
-    {
-	pSD->colormapFocus = pCD;
+void ForceColormapFocus(WmScreenData *pSD, ClientData *pCD) {
+        if (pCD && ((pCD->clientState == NORMAL_STATE) ||
+                    (pCD->clientState == MAXIMIZED_STATE))) {
+                pSD->colormapFocus = pCD;
 #ifndef OLD_COLORMAP /* colormaps */
-	ProcessColormapList (pSD, pCD);
+                ProcessColormapList(pSD, pCD);
 #else /* OSF original */
-	WmInstallColormap (pSD, pCD->clientColormap);
+                WmInstallColormap(pSD, pCD->clientColormap);
 #endif
-    }
-    else
-    {
-	/*
-	 * The default colormap is installed for minimized windows that have
-	 * the colormap focus.
-	 * !!! should colormaps be installed for icons with client      !!!
-	 * !!! icon windows?  should the client colormap be installed ? !!!
-	 */
+        } else {
+                /*
+                 * The default colormap is installed for minimized windows that
+                 * have the colormap focus.
+                 * !!! should colormaps be installed for icons with client !!!
+                 * !!! icon windows?  should the client colormap be installed ?
+                 * !!!
+                 */
 
-	pSD->colormapFocus = NULL;
-	WmInstallColormap (pSD, pSD->workspaceColormap);
-    }
+                pSD->colormapFocus = NULL;
+                WmInstallColormap(pSD, pSD->workspaceColormap);
+        }
 
 } /* END OF FUNCTION ForceColormapFocus */
 #endif
 
-
-
 /*************************************<->*************************************
  *
  *  SetColormapFocus (pSD, pCD)
@@ -228,48 +210,42 @@ void ForceColormapFocus (WmScreenData *pSD, ClientData *pCD)
  *
  *************************************<->***********************************/
 
-void SetColormapFocus (WmScreenData *pSD, ClientData *pCD)
-{
-    if (pCD == pSD->colormapFocus)
-    {
-	/*
-	 * The focus is already set to the right place.
-	 */
+void SetColormapFocus(WmScreenData *pSD, ClientData *pCD) {
+        if (pCD == pSD->colormapFocus) {
+                /*
+                 * The focus is already set to the right place.
+                 */
 
-	return;
-    }
+                return;
+        }
 #ifndef OLD_COLORMAP
-    ForceColormapFocus (pSD, pCD);
-#else /* OSF original */
+        ForceColormapFocus(pSD, pCD);
+#else                /* OSF original */
 
-    if (pCD && ((pCD->clientState == NORMAL_STATE) ||
-		(pCD->clientState == MAXIMIZED_STATE)))
-    {
-	pSD->colormapFocus = pCD;
+        if (pCD && ((pCD->clientState == NORMAL_STATE) ||
+                    (pCD->clientState == MAXIMIZED_STATE))) {
+                pSD->colormapFocus = pCD;
 #ifndef OLD_COLORMAP /* colormaps */
-	ProcessColormapList (pSD, pCD);
-#else /* OSF original */
-	WmInstallColormap (pSD, pCD->clientColormap);
+                ProcessColormapList(pSD, pCD);
+#else                /* OSF original */
+                WmInstallColormap(pSD, pCD->clientColormap);
 #endif
-    }
-    else
-    {
-	/*
-	 * The default colormap is installed for minimized windows that have
-	 * the colormap focus.
-	 * !!! should colormaps be installed for icons with client      !!!
-	 * !!! icon windows?  should the client colormap be installed ? !!!
-	 */
+        } else {
+                /*
+                 * The default colormap is installed for minimized windows that
+                 * have the colormap focus.
+                 * !!! should colormaps be installed for icons with client !!!
+                 * !!! icon windows?  should the client colormap be installed ?
+                 * !!!
+                 */
 
-	pSD->colormapFocus = NULL;
-	WmInstallColormap (pSD, pSD->workspaceColormap);
-    }
+                pSD->colormapFocus = NULL;
+                WmInstallColormap(pSD, pSD->workspaceColormap);
+        }
 #endif
 
 } /* END OF FUNCTION SetColormapFocus */
 
-
-
 /*************************************<->*************************************
  *
  *  WmInstallColormap (pSD, colormap)
@@ -289,23 +265,19 @@ void SetColormapFocus (WmScreenData *pSD, ClientData *pCD)
  *
  *************************************<->***********************************/
 
-void WmInstallColormap (WmScreenData *pSD, Colormap colormap)
-{
-    /*
-     * !!! this could be generalized to work better for systems that !!!
-     * !!! support multiple installed colormaps                      !!!
-     */
+void WmInstallColormap(WmScreenData *pSD, Colormap colormap) {
+        /*
+         * !!! this could be generalized to work better for systems that !!!
+         * !!! support multiple installed colormaps                      !!!
+         */
 
-    if (colormap != pSD->lastInstalledColormap)
-    {
-	XInstallColormap (DISPLAY, colormap);
-	pSD->lastInstalledColormap = colormap;
-    }
+        if (colormap != pSD->lastInstalledColormap) {
+                XInstallColormap(DISPLAY, colormap);
+                pSD->lastInstalledColormap = colormap;
+        }
 
 } /* END OF FUNCTION WmInstallColormap */
 
-
-
 /*************************************<->*************************************
  *
  *  ResetColormapData (pCD, pWindows, count)
@@ -327,76 +299,69 @@ void WmInstallColormap (WmScreenData *pSD, Colormap colormap)
  *
  *************************************<->***********************************/
 
-void ResetColormapData (ClientData *pCD, Window *pWindows, int count)
-{
-    int i;
+void ResetColormapData(ClientData *pCD, Window *pWindows, int count) {
+        int i;
 
+        if (pCD->clientCmapCount) {
+                if (count == 0) {
+                        /* reset the client colormap to the toplevel window
+                         * colormap */
+                        for (i = 0; i < pCD->clientCmapCount; i++) {
+                                if (pCD->cmapWindows[i] == pCD->client) {
+                                        pCD->clientColormap =
+                                            pCD->clientCmapList[i];
+                                        break;
+                                }
+                        }
+                }
 
-    if (pCD->clientCmapCount)
-    {
-	if (count == 0)
-	{
-	    /* reset the client colormap to the toplevel window colormap */
-	    for (i = 0; i < pCD->clientCmapCount; i++)
-	    {
-		if (pCD->cmapWindows[i] == pCD->client)
-		{
-		    pCD->clientColormap = pCD->clientCmapList[i];
-		    break;
-		}
-	    }
-	}
+                /*
+                 * Free up old contexts.
+                 */
 
-	/*
-	 * Free up old contexts.
-	 */
-
-	for (i = 0; i < pCD->clientCmapCount; i++)
-	{
-	    if (pCD->cmapWindows[i] != pCD->client)
-	    {
-#ifndef	IBM_169380
-		RemoveColormapWindowReference(pCD, pCD->cmapWindows[i]);
+                for (i = 0; i < pCD->clientCmapCount; i++) {
+                        if (pCD->cmapWindows[i] != pCD->client) {
+#ifndef IBM_169380
+                                RemoveColormapWindowReference(
+                                    pCD, pCD->cmapWindows[i]);
 #else
-		XDeleteContext (DISPLAY, pCD->cmapWindows[i],
-		    wmGD.windowContextType);
+                                XDeleteContext(DISPLAY, pCD->cmapWindows[i],
+                                               wmGD.windowContextType);
 #endif
-	    }
-	}
+                        }
+                }
 
-	/*
-	 * Free up old colormap data.
-	 */
+                /*
+                 * Free up old colormap data.
+                 */
 
-	XtFree ((char *)(pCD->cmapWindows));
-	XtFree ((char *)(pCD->clientCmapList));
-	pCD->clientCmapCount = 0;
+                XtFree((char *)(pCD->cmapWindows));
+                XtFree((char *)(pCD->clientCmapList));
+                pCD->clientCmapCount = 0;
 #ifndef OLD_COLORMAP /* colormap */
-	XtFree ((char  *)(pCD->clientCmapFlags));
-	pCD->clientCmapFlags = 0;		/* DEBUG: */
-	pCD->clientCmapFlagsInitialized = 0;
+                XtFree((char *)(pCD->clientCmapFlags));
+                pCD->clientCmapFlags = 0; /* DEBUG: */
+                pCD->clientCmapFlagsInitialized = 0;
 #endif
-    }
+        }
 
-    if (count)
-    {
-	/*
-	 * Set new contexts.
-	 */
+        if (count) {
+                /*
+                 * Set new contexts.
+                 */
 
-	for (i = 0; i < count; i++)
-	{
-	    if (pWindows[i] != pCD->client)
-	    {
-#ifndef	IBM_169380
-		AddColormapWindowReference(pCD, pWindows[i]);
+                for (i = 0; i < count; i++) {
+                        if (pWindows[i] != pCD->client) {
+#ifndef IBM_169380
+                                AddColormapWindowReference(pCD, pWindows[i]);
 #else
-		XSaveContext (DISPLAY, pWindows[i], wmGD.windowContextType,
-		    (caddr_t)pCD);
+                                XSaveContext(DISPLAY, pWindows[i],
+                                             wmGD.windowContextType,
+                                             (caddr_t)pCD);
 #endif
-	    }
-	}
-    }
+                        }
+                }
+        }
 
 } /* END OF FUNCTION ResetColormapData */
 
@@ -413,43 +378,37 @@ void ResetColormapData (ClientData *pCD, Window *pWindows, int count)
  *
  *************************************<->***********************************/
 
-void AddColormapWindowReference (ClientData *pCD, Window window)
-{
-    ClientData          **cmap_window_data;
-    Boolean             context_exists;
-    int                 i;
-    ClientData          **new_cmap_window_data;
+void AddColormapWindowReference(ClientData *pCD, Window window) {
+        ClientData **cmap_window_data;
+        Boolean context_exists;
+        int i;
+        ClientData **new_cmap_window_data;
 
-    context_exists = (!XFindContext (DISPLAY, window,
-                        wmGD.cmapWindowContextType,
-                        (XPointer *) &cmap_window_data));
-    if (context_exists)
-    {
-        for (i = 0; cmap_window_data[i] != NULL; i++)
-        {
-            if (cmap_window_data[i] == pCD)
-            {
-                /* Reference already exists - return */
-                return;
-            }
+        context_exists =
+            (!XFindContext(DISPLAY, window, wmGD.cmapWindowContextType,
+                           (XPointer *)&cmap_window_data));
+        if (context_exists) {
+                for (i = 0; cmap_window_data[i] != NULL; i++) {
+                        if (cmap_window_data[i] == pCD) {
+                                /* Reference already exists - return */
+                                return;
+                        }
+                }
+                new_cmap_window_data =
+                    (ClientData **)XtMalloc((i + 2) * sizeof(ClientData *));
+                memcpy((void *)new_cmap_window_data, (void *)cmap_window_data,
+                       (i + 1) * sizeof(ClientData *));
+                XtFree((char *)cmap_window_data);
+                XDeleteContext(DISPLAY, window, wmGD.cmapWindowContextType);
+        } else {
+                i = 0;
+                new_cmap_window_data =
+                    (ClientData **)XtMalloc(2 * sizeof(ClientData *));
         }
-        new_cmap_window_data = (ClientData **)
-                                XtMalloc((i + 2 ) * sizeof(ClientData *));
-        memcpy((void *)new_cmap_window_data,(void *)cmap_window_data,
-                        (i + 1) * sizeof(ClientData *));
-        XtFree((char *) cmap_window_data);
-        XDeleteContext(DISPLAY, window, wmGD.cmapWindowContextType);
-    }
-    else
-    {
-        i = 0;
-        new_cmap_window_data = (ClientData **)
-                                XtMalloc(2 * sizeof(ClientData *));
-    }
-    new_cmap_window_data[i] = pCD;
-    new_cmap_window_data[i + 1] = NULL;
-    XSaveContext (DISPLAY, window, wmGD.cmapWindowContextType,
-                        (caddr_t)new_cmap_window_data);
+        new_cmap_window_data[i] = pCD;
+        new_cmap_window_data[i + 1] = NULL;
+        XSaveContext(DISPLAY, window, wmGD.cmapWindowContextType,
+                     (caddr_t)new_cmap_window_data);
 }
 
 /*************************************<->*************************************
@@ -464,55 +423,49 @@ void AddColormapWindowReference (ClientData *pCD, Window window)
  *
  *************************************<->***********************************/
 
-void RemoveColormapWindowReference (ClientData *pCD, Window window)
-{
-    ClientData  **cmap_window_data;
-    Boolean     context_exists;
-    int         i;
-    int         reference_idx = -1;
-    ClientData  **new_cmap_window_data;
+void RemoveColormapWindowReference(ClientData *pCD, Window window) {
+        ClientData **cmap_window_data;
+        Boolean context_exists;
+        int i;
+        int reference_idx = -1;
+        ClientData **new_cmap_window_data;
 
-    context_exists = (!XFindContext (DISPLAY, window,
-                        wmGD.cmapWindowContextType,
-                        (XPointer *) &cmap_window_data));
-    if (context_exists)
-    {
-        for (i = 0; cmap_window_data[i] != NULL; i++)
-        {
-            if (cmap_window_data[i] == pCD)
-                reference_idx = i;
-        }
-        if (reference_idx < 0)
-            return;
-
-        if (i > 1)
-        {
-        int     j,idx;
-
-            new_cmap_window_data = (ClientData **)
-                                        XtMalloc(i * sizeof(ClientData *));
-            idx = 0;
-            for (j = 0; cmap_window_data[j] != NULL; j++)
-            {
-                if (j != reference_idx)
-                {
-                    new_cmap_window_data[idx] = cmap_window_data[j];
-                    idx++;
+        context_exists =
+            (!XFindContext(DISPLAY, window, wmGD.cmapWindowContextType,
+                           (XPointer *)&cmap_window_data));
+        if (context_exists) {
+                for (i = 0; cmap_window_data[i] != NULL; i++) {
+                        if (cmap_window_data[i] == pCD)
+                                reference_idx = i;
                 }
-            }
-            new_cmap_window_data[idx] = NULL;
+                if (reference_idx < 0)
+                        return;
+
+                if (i > 1) {
+                        int j, idx;
+
+                        new_cmap_window_data =
+                            (ClientData **)XtMalloc(i * sizeof(ClientData *));
+                        idx = 0;
+                        for (j = 0; cmap_window_data[j] != NULL; j++) {
+                                if (j != reference_idx) {
+                                        new_cmap_window_data[idx] =
+                                            cmap_window_data[j];
+                                        idx++;
+                                }
+                        }
+                        new_cmap_window_data[idx] = NULL;
+                }
+                XtFree((char *)cmap_window_data);
+                XDeleteContext(DISPLAY, window, wmGD.cmapWindowContextType);
+                if (i > 1) {
+                        XSaveContext(DISPLAY, window,
+                                     wmGD.cmapWindowContextType,
+                                     (caddr_t)new_cmap_window_data);
+                }
         }
-        XtFree((char *) cmap_window_data);
-        XDeleteContext(DISPLAY, window, wmGD.cmapWindowContextType);
-        if (i > 1)
-        {
-            XSaveContext (DISPLAY, window,
-                        wmGD.cmapWindowContextType,
-                        (caddr_t)new_cmap_window_data);
-        }
-    }
 }
-#endif	/* IBM_169380 */
+#endif /* IBM_169380 */
 
 /*******************************************************************************
  **
@@ -549,124 +502,124 @@ void RemoveColormapWindowReference (ClientData *pCD, Window window)
  **
  ******************************************************************************/
 
-
-void
-ProcessColormapList (WmScreenData *pSD, ClientData *pCD)
+void ProcessColormapList(WmScreenData *pSD, ClientData *pCD)
 
 {
-	register int i;
-	XEvent event;
+        register int i;
+        XEvent event;
 
+        /*
+         * If there is no client, return.  This can happen when the root gets
+         * focus.
+         */
+        if (!pCD)
+                return;
 
-    /*
-     * If there is no client, return.  This can happen when the root gets focus.
-     */
-	if (!pCD) return;
+        /*
+         * If the window does not have colormap focus, return.  We only install
+         * colormaps for windows with focus.  We'll get another chance when the
+         * window does get focus.
+         */
+        if (pCD != pSD->colormapFocus)
+                return;
 
-    /*
-     * If the window does not have colormap focus, return.  We only install
-     * colormaps for windows with focus.  We'll get another chance when the
-     * window does get focus.
-     */
-	if (pCD != pSD->colormapFocus) return;
+        /*
+         * If window is iconified, return.
+         */
+        if ((pCD->clientState != NORMAL_STATE) &&
+            (pCD->clientState != MAXIMIZED_STATE))
+                return;
 
-    /*
-     * If window is iconified, return.
-     */
-	if (   (pCD->clientState != NORMAL_STATE) 
-	    && (pCD->clientState != MAXIMIZED_STATE)
-	   ) return;
+        /*
+         * If the list doesn't exist, or has just a single item, no conflicts
+         * exist -- just go ahead and install the indicated colormap.
+         */
+        if (pCD->clientCmapCount == 0) {
+                WmInstallColormap(pSD, pCD->clientColormap);
+                return;
+        }
+        if (pCD->clientCmapCount == 1) {
+                WmInstallColormap(pSD, pCD->clientCmapList[0]);
+                return;
+        }
 
-    /*
-     * If the list doesn't exist, or has just a single item, no conflicts
-     * exist -- just go ahead and install the indicated colormap.
-     */
-	if (pCD->clientCmapCount == 0) {
-		WmInstallColormap (pSD, pCD->clientColormap);
-		return;
-	}
-	if (pCD->clientCmapCount == 1) {
-		WmInstallColormap (pSD, pCD->clientCmapList[0]);
-		return;
-	}
+        /*
+         * If the list has already been initialized, we just need to do
+         * installs. Separate out these loops for performance, and because it
+         * isn't nice to grab the server unnecessarily.
+         *
+         * This code should also check for already-installed, once we put in
+         * that capability.
+         */
+        if (pCD->clientCmapFlagsInitialized) {
 
-    /*
-     * If the list has already been initialized, we just need to do installs.
-     * Separate out these loops for performance, and because it isn't nice
-     * to grab the server unnecessarily.
-     *
-     * This code should also check for already-installed, once we put in that
-     * capability.
-     */
-	if (pCD->clientCmapFlagsInitialized) {
+                /* Do the part between the index and zero */
+                for (i = pCD->clientCmapIndex; --i >= 0;) {
+                        if (pCD->clientCmapFlags[i] == ColormapInstalled) {
+                                WmInstallColormap(pSD, pCD->clientCmapList[i]);
+                        }
+                };
 
-	    /* Do the part between the index and zero */
-		for (i=pCD->clientCmapIndex; --i>=0; ) {
-			if (pCD->clientCmapFlags[i] == ColormapInstalled) {
-				WmInstallColormap (pSD, pCD->clientCmapList[i]);
-			   }
-		};
-	
-	    /* Do the part from the end of the list to the index */
-		for (i=pCD->clientCmapCount; --i>= pCD->clientCmapIndex; ) {
-			if (pCD->clientCmapFlags[i] == ColormapInstalled) {
-				WmInstallColormap (pSD, pCD->clientCmapList[i]);
-			}
-		}
+                /* Do the part from the end of the list to the index */
+                for (i = pCD->clientCmapCount; --i >= pCD->clientCmapIndex;) {
+                        if (pCD->clientCmapFlags[i] == ColormapInstalled) {
+                                WmInstallColormap(pSD, pCD->clientCmapList[i]);
+                        }
+                }
 
-	    /**/
-		return;
-	}
+                /**/
+                return;
+        }
 
-    /*
-     * If we get this far, the list has not yet been initialized.
-     *
-     * Stabilize the input queue -- the issue is that we need to know
-     * which colormap notify install and uninstall events are ours.
-     */
-	XGrabServer (DISPLAY);	/* Ensure no one else's events for awhile */
-	XSync (DISPLAY, FALSE);	/* Let pending events settle */
-	firstRequest = NextRequest (DISPLAY); /* First one that can be ours */
+        /*
+         * If we get this far, the list has not yet been initialized.
+         *
+         * Stabilize the input queue -- the issue is that we need to know
+         * which colormap notify install and uninstall events are ours.
+         */
+        XGrabServer(DISPLAY);  /* Ensure no one else's events for awhile */
+        XSync(DISPLAY, FALSE); /* Let pending events settle */
+        firstRequest = NextRequest(DISPLAY); /* First one that can be ours */
 
-    /*
-     * Install the colormaps from last to first -- first is the "highest
-     * priority".  "First" is pCD->clientCmapIndex.
-     *
-     * If the list has not been proocessed before, we need to unconditionally
-     * install each colormap.  Colormap flashing is possible this once.
-     *
-     * If the list has already been processed once, all conflict checking
-     * was done then.  All we need to do this time is to install the colormaps
-     * we know we need.
-     */
+        /*
+         * Install the colormaps from last to first -- first is the "highest
+         * priority".  "First" is pCD->clientCmapIndex.
+         *
+         * If the list has not been proocessed before, we need to
+         * unconditionally install each colormap.  Colormap flashing is possible
+         * this once.
+         *
+         * If the list has already been processed once, all conflict checking
+         * was done then.  All we need to do this time is to install the
+         * colormaps we know we need.
+         */
 
-	/* Do the part between the index and zero */
-	for (i=pCD->clientCmapIndex; --i>=0; ) {
-		WmInstallColormap (pSD, pCD->clientCmapList[i]);
-		pCD->clientCmapFlags[i] = ColormapInstalled;
-	};
+        /* Do the part between the index and zero */
+        for (i = pCD->clientCmapIndex; --i >= 0;) {
+                WmInstallColormap(pSD, pCD->clientCmapList[i]);
+                pCD->clientCmapFlags[i] = ColormapInstalled;
+        };
 
-	/* Do the part from the end of the list to the index */
-	for (i=pCD->clientCmapCount; --i>= pCD->clientCmapIndex; ) {
-		WmInstallColormap (pSD, pCD->clientCmapList[i]);
-		pCD->clientCmapFlags[i] = ColormapInstalled;
-	}
+        /* Do the part from the end of the list to the index */
+        for (i = pCD->clientCmapCount; --i >= pCD->clientCmapIndex;) {
+                WmInstallColormap(pSD, pCD->clientCmapList[i]);
+                pCD->clientCmapFlags[i] = ColormapInstalled;
+        }
 
-    /*
-     * Stabilize the input queue again -- the issue is that we need to know
-     * which colormap notify install and uninstall events we caused.
-     */
-	XSync (DISPLAY, FALSE);			/* Let pending events settle */
-	lastRequest = NextRequest (DISPLAY);	/* Last one that can be ours */
-	XUngrabServer (DISPLAY);		/* Let others use it again */
+        /*
+         * Stabilize the input queue again -- the issue is that we need to know
+         * which colormap notify install and uninstall events we caused.
+         */
+        XSync(DISPLAY, FALSE);              /* Let pending events settle */
+        lastRequest = NextRequest(DISPLAY); /* Last one that can be ours */
+        XUngrabServer(DISPLAY);             /* Let others use it again */
 
-    /* Process the install & uninstall events */
-	XCheckIfEvent (DISPLAY, (XEvent *) &event, ProcessEvents, (char *)pCD);
+        /* Process the install & uninstall events */
+        XCheckIfEvent(DISPLAY, (XEvent *)&event, ProcessEvents, (char *)pCD);
 
-    /* Set that the list has been processed once */
-	pCD->clientCmapFlagsInitialized = True;
+        /* Set that the list has been processed once */
+        pCD->clientCmapFlagsInitialized = True;
 }
-
 
 /*
  * Look over the queue for install and uninstall events on colormap/window
@@ -680,51 +633,49 @@ ProcessColormapList (WmScreenData *pSD, ClientData *pCD)
  *	   else if install event
  *		*) Clear the conflict flag for this colormap window
  */
-static Bool
-ProcessEvents(Display *dpy, XEvent *Event, char *c_pCD)
-{
-	int i;
-	XColormapEvent *pEvent = (XColormapEvent *) Event;
-	ClientData *pCD = (ClientData *) c_pCD;
+static Bool ProcessEvents(Display *dpy, XEvent *Event, char *c_pCD) {
+        int i;
+        XColormapEvent *pEvent = (XColormapEvent *)Event;
+        ClientData *pCD = (ClientData *)c_pCD;
 
-	if (   (pEvent->type == ColormapNotify)
-	    && (pEvent->serial >= firstRequest)
-	    && (pEvent->serial <  lastRequest)
-	    && (pEvent->colormap != None)
-	    && (!pEvent->new)
-	   ) {
-		switch (pEvent->state) {
-		case ColormapInstalled:
-			for (i=0; i<pCD->clientCmapCount; i++) {
-				if (  (pCD->clientCmapList[i]==pEvent->colormap)
-				    &&(pCD->cmapWindows[i]==pEvent->window)
-				   ) {
-					pCD->clientCmapFlags[i]
-						= ColormapInstalled;
-					break;
-				}
-			}
-			break;
-		case ColormapUninstalled:
-			for (i=0; i<pCD->clientCmapCount; i++) {
-				if (  (pCD->clientCmapList[i]==pEvent->colormap)
-				    &&(pCD->cmapWindows[i]==pEvent->window)
-				   ) {
-					pCD->clientCmapFlags[i]
-						= ColormapUninstalled;
-					break;
-				}
-			}
-			break;
-		default:		/* Should never get here */
-			break;
-		}
-	}
+        if ((pEvent->type == ColormapNotify) &&
+            (pEvent->serial >= firstRequest) &&
+            (pEvent->serial < lastRequest) && (pEvent->colormap != None) &&
+            (!pEvent->new)) {
+                switch (pEvent->state) {
+                case ColormapInstalled:
+                        for (i = 0; i < pCD->clientCmapCount; i++) {
+                                if ((pCD->clientCmapList[i] ==
+                                     pEvent->colormap) &&
+                                    (pCD->cmapWindows[i] == pEvent->window)) {
+                                        pCD->clientCmapFlags[i] =
+                                            ColormapInstalled;
+                                        break;
+                                }
+                        }
+                        break;
+                case ColormapUninstalled:
+                        for (i = 0; i < pCD->clientCmapCount; i++) {
+                                if ((pCD->clientCmapList[i] ==
+                                     pEvent->colormap) &&
+                                    (pCD->cmapWindows[i] == pEvent->window)) {
+                                        pCD->clientCmapFlags[i] =
+                                            ColormapUninstalled;
+                                        break;
+                                }
+                        }
+                        break;
+                default: /* Should never get here */
+                        break;
+                }
+        }
 
-    /*
-     * Always return false:
-     *	* so that we get to search the entire queue -- it isn't very long
-     *	* so all events remain on the queue to be handled normally elsewhere
-     */
-	return False;	/* Always, so no events are lost from the queue */
+        /*
+         * Always return false:
+         *	* so that we get to search the entire queue -- it isn't very
+         *long
+         *	* so all events remain on the queue to be handled normally
+         *elsewhere
+         */
+        return False; /* Always, so no events are lost from the queue */
 }

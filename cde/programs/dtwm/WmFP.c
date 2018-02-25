@@ -37,9 +37,7 @@
  *
  ****************************************************************************/
 
-
 #include "WmGlobal.h"
-
 
 #include <Dt/DtP.h>
 #include <Dt/DbReader.h>
@@ -74,24 +72,16 @@
 #include <stdint.h>
 #include <sys/stat.h>
 
+extern void SubpanelTornEventHandler(Widget, XtPointer, XEvent *, Boolean *);
+extern void WorkspaceModifyCB(Widget, Atom, int, XtPointer);
+extern void SessionRestoreData(void);
+extern void UnManageWindow(ClientData *pCD);
+extern void WorkspaceAdjustPanelPosition(Position x, Position y,
+                                         Dimension width, Dimension height);
 
-
-extern void SubpanelTornEventHandler (Widget, XtPointer, XEvent *, Boolean *);
-extern void WorkspaceModifyCB (Widget, Atom, int, XtPointer);
-extern void SessionRestoreData (void);
-extern void UnManageWindow (ClientData *pCD);
-extern void WorkspaceAdjustPanelPosition (Position x,
-                              Position y,
-                              Dimension width,
-                              Dimension height);
-
-static void PushRecallSetData ();
-static void EmbeddedClientSetData ();
-static void EmbeddedClientSetGeometry (WmFpEmbeddedClientData *);
-
-
-
-
+static void PushRecallSetData();
+static void EmbeddedClientSetData();
+static void EmbeddedClientSetGeometry(WmFpEmbeddedClientData *);
 
 /************************************************************************
  *
@@ -105,41 +95,29 @@ static void EmbeddedClientSetGeometry (WmFpEmbeddedClientData *);
  *
  ************************************************************************/
 
-
-void
-EmbeddedClientReposition (Widget    icon,
-                          Position  x,
-                          Dimension adjust)
-
-
+void EmbeddedClientReposition(Widget icon, Position x, Dimension adjust)
 
 {
-   WmFpEmbeddedClientList embedded_client_list = 
-      (WmFpEmbeddedClientList) panel.embedded_client_list;
+        WmFpEmbeddedClientList embedded_client_list =
+            (WmFpEmbeddedClientList)panel.embedded_client_list;
 
-   int i;
-      
+        int i;
 
-   for (i = 0; i < panel.embedded_client_count; i++)
-   {
-      if (XtParent (icon) == XtParent (embedded_client_list[i].wControl) &&
-          embedded_client_list[i].x > x)
-      {
-         if (embedded_client_list[i].pCD != NULL)
-         {
-            embedded_client_list[i].x += adjust;
-            XMoveWindow (XtDisplay (panel.shell),
-                         embedded_client_list[i].pCD->client,
-                         embedded_client_list[i].x, embedded_client_list[i].y);
-         }
-         else
-            embedded_client_list[i].x += adjust;
-      }
-   }
+        for (i = 0; i < panel.embedded_client_count; i++) {
+                if (XtParent(icon) ==
+                        XtParent(embedded_client_list[i].wControl) &&
+                    embedded_client_list[i].x > x) {
+                        if (embedded_client_list[i].pCD != NULL) {
+                                embedded_client_list[i].x += adjust;
+                                XMoveWindow(XtDisplay(panel.shell),
+                                            embedded_client_list[i].pCD->client,
+                                            embedded_client_list[i].x,
+                                            embedded_client_list[i].y);
+                        } else
+                                embedded_client_list[i].x += adjust;
+                }
+        }
 }
-
-
-
 
 /************************************************************************
  *
@@ -154,46 +132,36 @@ EmbeddedClientReposition (Widget    icon,
  *
  ************************************************************************/
 
-
-void
-EmbeddedClientReparent (char   * client_name,
-                        Widget   icon)
-
+void EmbeddedClientReparent(char *client_name, Widget icon)
 
 {
-   WmFpEmbeddedClientList embedded_client_list = 
-      (WmFpEmbeddedClientList) panel.embedded_client_list;
+        WmFpEmbeddedClientList embedded_client_list =
+            (WmFpEmbeddedClientList)panel.embedded_client_list;
 
-   int i;
-      
+        int i;
 
-   for (i = 0; i < panel.embedded_client_count; i++)
-   {
-      if (strcmp (client_name, embedded_client_list[i].pchResName) == 0)
-         break;
-   }
+        for (i = 0; i < panel.embedded_client_count; i++) {
+                if (strcmp(client_name, embedded_client_list[i].pchResName) ==
+                    0)
+                        break;
+        }
 
+        /*  Try to reparent the client to/from the main panel.  If this    */
+        /*  fails, it is because of a dtwm restart and the clients have    */
+        /*  not yet been grabbed.  So just reset the embedded client data  */
 
-   /*  Try to reparent the client to/from the main panel.  If this    */
-   /*  fails, it is because of a dtwm restart and the clients have    */
-   /*  not yet been grabbed.  So just reset the embedded client data  */
-
-   if (ReparentEmbeddedClient (&embedded_client_list[i], icon,
-                               XtWindow (XtParent (icon)),
-                               XtX (icon) + 3, XtY (icon) + 3,
-                               XtWidth(icon) - 6, XtHeight(icon) - 6) == False)
-   {
-      embedded_client_list[i].wControl = icon;
-      embedded_client_list[i].winParent = XtWindow (XtParent (icon));
-      embedded_client_list[i].x = XtX (icon) + 3;
-      embedded_client_list[i].y =  XtY (icon) + 3;
-      embedded_client_list[i].width =  XtWidth (icon) - 6;
-      embedded_client_list[i].height =  XtHeight (icon) - 6;
-   }
+        if (ReparentEmbeddedClient(&embedded_client_list[i], icon,
+                                   XtWindow(XtParent(icon)), XtX(icon) + 3,
+                                   XtY(icon) + 3, XtWidth(icon) - 6,
+                                   XtHeight(icon) - 6) == False) {
+                embedded_client_list[i].wControl = icon;
+                embedded_client_list[i].winParent = XtWindow(XtParent(icon));
+                embedded_client_list[i].x = XtX(icon) + 3;
+                embedded_client_list[i].y = XtY(icon) + 3;
+                embedded_client_list[i].width = XtWidth(icon) - 6;
+                embedded_client_list[i].height = XtHeight(icon) - 6;
+        }
 }
-
-
-
 
 /************************************************************************
  *
@@ -210,149 +178,155 @@ EmbeddedClientReparent (char   * client_name,
  *
  ************************************************************************/
 
-void
-EmbeddedClientRegister (ControlData * control_data,
-                        Boolean       install)
-
+void EmbeddedClientRegister(ControlData *control_data, Boolean install)
 
 {
-   char * client_name;
-   Window client_window;
-   int i, j;
+        char *client_name;
+        Window client_window;
+        int i, j;
 
-   WmFpEmbeddedClientList embedded_client_list = 
-      (WmFpEmbeddedClientList) panel.embedded_client_list;
+        WmFpEmbeddedClientList embedded_client_list =
+            (WmFpEmbeddedClientList)panel.embedded_client_list;
 
-   WmFpEmbeddedClientData * embedded_client = NULL;
+        WmFpEmbeddedClientData *embedded_client = NULL;
 
-   if ((intptr_t) control_data->
-                  element_values[CONTROL_TYPE].parsed_value != CONTROL_CLIENT)
-      return;
+        if ((intptr_t)control_data->element_values[CONTROL_TYPE].parsed_value !=
+            CONTROL_CLIENT)
+                return;
 
+        /*  If this is a control installation, increase the list size, if     */
+        /*  needed, and initialize the embedded client structure.  If it is   */
+        /*  a removal, find the control in the list and remove it by sliding  */
+        /*  each subsequent structure down one element in array.              */
 
-   /*  If this is a control installation, increase the list size, if     */
-   /*  needed, and initialize the embedded client structure.  If it is   */
-   /*  a removal, find the control in the list and remove it by sliding  */
-   /*  each subsequent structure down one element in array.              */
+        client_name = (char *)control_data->element_values[CONTROL_CLIENT_NAME]
+                          .parsed_value;
 
-   client_name = (char *)
-               control_data->element_values[CONTROL_CLIENT_NAME].parsed_value;
+        if (client_name == NULL)
+                client_name =
+                    (char *)control_data->element_values[CONTROL_LABEL]
+                        .parsed_value;
 
-   if (client_name == NULL)
-      client_name = (char *)
-                    control_data->element_values[CONTROL_LABEL].parsed_value;
+        if (install) {
 
-   if (install)
-   {
+                /*  First see if this is an update to an already installed  */
+                /*  embedded client.  If so, simply update the icon field   */
 
-      /*  First see if this is an update to an already installed  */
-      /*  embedded client.  If so, simply update the icon field   */
-      
-      for (i = 0; i < panel.embedded_client_count; i++)
-      {
-	 if (strcmp (client_name, embedded_client_list[i].pchResName) == 0)
-         {
-	    embedded_client_list[i].wControl = control_data->icon;
-            break;
-         }
-      }
+                for (i = 0; i < panel.embedded_client_count; i++) {
+                        if (strcmp(client_name,
+                                   embedded_client_list[i].pchResName) == 0) {
+                                embedded_client_list[i].wControl =
+                                    control_data->icon;
+                                break;
+                        }
+                }
 
-      if (i >= panel.embedded_client_count)
-      {
-         if (panel.embedded_client_count == panel.max_embedded_client_count)
-         {
-            panel.max_embedded_client_count += 10;
-            embedded_client_list = (WmFpEmbeddedClientList) 
-               XtRealloc ((char *) embedded_client_list,
-                          sizeof (WmFpEmbeddedClientData) * 
-			          panel.max_embedded_client_count);
-            panel.embedded_client_list = (XtPointer) embedded_client_list;
-         }
+                if (i >= panel.embedded_client_count) {
+                        if (panel.embedded_client_count ==
+                            panel.max_embedded_client_count) {
+                                panel.max_embedded_client_count += 10;
+                                embedded_client_list =
+                                    (WmFpEmbeddedClientList)XtRealloc(
+                                        (char *)embedded_client_list,
+                                        sizeof(WmFpEmbeddedClientData) *
+                                            panel.max_embedded_client_count);
+                                panel.embedded_client_list =
+                                    (XtPointer)embedded_client_list;
+                        }
 
-         embedded_client = &embedded_client_list[panel.embedded_client_count];
-         panel.embedded_client_count++;
+                        embedded_client =
+                            &embedded_client_list[panel.embedded_client_count];
+                        panel.embedded_client_count++;
 
-         embedded_client->pchResName = XtNewString (client_name);
-         embedded_client->wControl = control_data->icon;
-         embedded_client->winParent = None;
-         embedded_client->pCD = NULL;
-      }
+                        embedded_client->pchResName = XtNewString(client_name);
+                        embedded_client->wControl = control_data->icon;
+                        embedded_client->winParent = None;
+                        embedded_client->pCD = NULL;
+                }
 
-      for (i = 0; i < panel.embedded_client_count - 1; i++)
-      {
-          embedded_client = &embedded_client_list[i];
-          if (embedded_client->pCD != NULL)
-             embedded_client->pCD->pECD = (void *) embedded_client;
-      }
-   }
-   else
-   {
-      for (i = 0; i < panel.embedded_client_count; i++)
-      {
-	 if (embedded_client_list[i].wControl == control_data->icon)
-	 {
-            Position remove_y;
-            Dimension adjust_y;
+                for (i = 0; i < panel.embedded_client_count - 1; i++) {
+                        embedded_client = &embedded_client_list[i];
+                        if (embedded_client->pCD != NULL)
+                                embedded_client->pCD->pECD =
+                                    (void *)embedded_client;
+                }
+        } else {
+                for (i = 0; i < panel.embedded_client_count; i++) {
+                        if (embedded_client_list[i].wControl ==
+                            control_data->icon) {
+                                Position remove_y;
+                                Dimension adjust_y;
 
+                                /*  This block will reparent the client window,
+                                 * move it  */
+                                /*  to a new window location, and remap the
+                                 * window.      */
 
-            /*  This block will reparent the client window, move it  */
-            /*  to a new window location, and remap the window.      */
+                                if (embedded_client_list[i].pCD != NULL) {
+                                        client_window =
+                                            embedded_client_list[i].pCD->client;
+                                        UnManageWindow(
+                                            embedded_client_list[i].pCD);
+                                        XSync(XtDisplay(panel.shell), False);
+                                        XMoveWindow(XtDisplay(panel.shell),
+                                                    client_window, 0, 0);
+                                        XMapWindow(XtDisplay(panel.shell),
+                                                   client_window);
+                                }
 
-            if (embedded_client_list[i].pCD != NULL)
-            {
-               client_window = embedded_client_list[i].pCD->client;
-               UnManageWindow (embedded_client_list[i].pCD);
-               XSync (XtDisplay (panel.shell), False);
-               XMoveWindow (XtDisplay (panel.shell), client_window, 0, 0);
-               XMapWindow (XtDisplay (panel.shell), client_window);
-            }
+                                remove_y = embedded_client_list[i].y;
 
-            remove_y = embedded_client_list[i].y;
+                                /* deleted control height plus 5 pixels of form
+                                 * offset */
 
+                                adjust_y = XtHeight(control_data->icon) + 5;
 
-            /* deleted control height plus 5 pixels of form offset */
+                                panel.embedded_client_count--;
 
-            adjust_y = XtHeight (control_data->icon) + 5;
-            
-            panel.embedded_client_count--;
+                                XtFree(embedded_client_list[i].pchResName);
 
-            XtFree (embedded_client_list[i].pchResName);
+                                for (j = i; j < panel.embedded_client_count;
+                                     j++) {
+                                        embedded_client_list[j] =
+                                            embedded_client_list[j + 1];
+                                        embedded_client =
+                                            &embedded_client_list[j];
 
-	    for (j = i; j < panel.embedded_client_count; j++)
-            {
-	       embedded_client_list[j] = embedded_client_list[j + 1];
-               embedded_client = &embedded_client_list[j];
+                                        if (embedded_client_list[i].pCD !=
+                                            NULL) {
+                                                embedded_client->pCD->pECD =
+                                                    (void *)embedded_client;
 
-               if (embedded_client_list[i].pCD != NULL)
-               {
-                  embedded_client->pCD->pECD = (void *) embedded_client;
+                                                if (XtParent(
+                                                        control_data->icon) ==
+                                                        XtParent(
+                                                            embedded_client
+                                                                ->wControl) &&
+                                                    remove_y <
+                                                        embedded_client->y) {
+                                                        embedded_client->y -=
+                                                            adjust_y;
+                                                        XMoveWindow(
+                                                            XtDisplay(
+                                                                panel.shell),
+                                                            embedded_client->pCD
+                                                                ->client,
+                                                            embedded_client->x,
+                                                            embedded_client->y);
+                                                }
+                                        }
+                                }
 
-                  if (XtParent(control_data->icon) == 
-                      XtParent(embedded_client->wControl) &&
-                      remove_y < embedded_client->y)
-                  {
-                     embedded_client->y -= adjust_y;
-                     XMoveWindow(XtDisplay(panel.shell),
-                                 embedded_client->pCD->client,
-                                 embedded_client->x, embedded_client->y);
-                  }
-               }
-            }
+                                break;
+                        }
+                }
+        }
 
-            break;
-	 }
-      }
-   }
+        /*  Set the embedded client list and count into the window manager's  */
+        /*  screen global data.                                               */
 
-
-   /*  Set the embedded client list and count into the window manager's  */
-   /*  screen global data.                                               */
-   
-   EmbeddedClientSetData ();
+        EmbeddedClientSetData();
 }
-
-
-
 
 /************************************************************************
  *
@@ -362,40 +336,34 @@ EmbeddedClientRegister (ControlData * control_data,
  *
  ************************************************************************/
 
-static void
-EmbeddedClientSetData ()
+static void EmbeddedClientSetData()
 
 {
-   WmScreenData *pSD;
-   int i;
+        WmScreenData *pSD;
+        int i;
 
+        /*  Find the screen which contains the front panel and set it  */
+        /*  embedded client list and count.                            */
 
-   /*  Find the screen which contains the front panel and set it  */
-   /*  embedded client list and count.                            */
-   
-   for (i = 0; i < wmGD.numScreens; i++)
-   {
-      pSD = &(wmGD.Screens[i]);
+        for (i = 0; i < wmGD.numScreens; i++) {
+                pSD = &(wmGD.Screens[i]);
 
-      if (pSD->managed)
-      {
-         if (pSD->wPanelist == panel.form)
-         {
-            pSD->pECD = (struct _WmFpEmbeddedClientData *) panel.embedded_client_list;
-            pSD->numEmbeddedClients = panel.embedded_client_count;
-            break;
-         }
-      }
-   }
+                if (pSD->managed) {
+                        if (pSD->wPanelist == panel.form) {
+                                pSD->pECD = (struct _WmFpEmbeddedClientData *)
+                                                panel.embedded_client_list;
+                                pSD->numEmbeddedClients =
+                                    panel.embedded_client_count;
+                                break;
+                        }
+                }
+        }
 }
-
-
-
 
 /************************************************************************
  *
  *  EmbeddedClientSetGeometry
- *	Set the geometry and parenting window information for an 
+ *	Set the geometry and parenting window information for an
  *	embedded client control.
  *
  *  Inputs: embedded_client_data - a pointer to the structure containing
@@ -407,25 +375,20 @@ EmbeddedClientSetData ()
  ************************************************************************/
 
 static void
-EmbeddedClientSetGeometry (WmFpEmbeddedClientData * embedded_client_data)
-
+EmbeddedClientSetGeometry(WmFpEmbeddedClientData *embedded_client_data)
 
 {
-   Widget control;
-   
-   control = embedded_client_data->wControl;
+        Widget control;
 
-   embedded_client_data->winParent = XtWindow (XtParent (control));
-      
+        control = embedded_client_data->wControl;
 
-   embedded_client_data->x = XtX (control) + 3;
-   embedded_client_data->y = XtY (control) + 3;
-   embedded_client_data->width = XtWidth (control) - 6;
-   embedded_client_data->height = XtHeight (control) - 6;
+        embedded_client_data->winParent = XtWindow(XtParent(control));
+
+        embedded_client_data->x = XtX(control) + 3;
+        embedded_client_data->y = XtY(control) + 3;
+        embedded_client_data->width = XtWidth(control) - 6;
+        embedded_client_data->height = XtHeight(control) - 6;
 }
-
-
-
 
 /************************************************************************
  *
@@ -442,108 +405,101 @@ EmbeddedClientSetGeometry (WmFpEmbeddedClientData * embedded_client_data)
  *
  ************************************************************************/
 
-void
-PushRecallRegister (ControlData * control_data,
-                    Boolean       install)
-
+void PushRecallRegister(ControlData *control_data, Boolean install)
 
 {
-   char * client_name;
-   int i, j;
+        char *client_name;
+        int i, j;
 
-   WmFpPushRecallClientList push_recall_list = 
-      (WmFpPushRecallClientList) panel.push_recall_list;
+        WmFpPushRecallClientList push_recall_list =
+            (WmFpPushRecallClientList)panel.push_recall_list;
 
-   WmFpPushRecallClientData * push_recall = NULL;
+        WmFpPushRecallClientData *push_recall = NULL;
 
+        /*  If this is a control installation, increase the list size, if  */
+        /*  needed, and initialize the push recall structure.  If it is a  */
+        /*  removal, find the control in the push recall list and remove   */
+        /*  it by sliding each subsequent structure down one element in    */
+        /*  array.                                                         */
 
-   /*  If this is a control installation, increase the list size, if  */
-   /*  needed, and initialize the push recall structure.  If it is a  */
-   /*  removal, find the control in the push recall list and remove   */
-   /*  it by sliding each subsequent structure down one element in    */
-   /*  array.                                                         */
+        if (install) {
+                client_name =
+                    (char *)control_data->element_values[CONTROL_CLIENT_NAME]
+                        .parsed_value;
 
-   if (install)
-   {
-      client_name = (char *) control_data->element_values[CONTROL_CLIENT_NAME].parsed_value;
+                if (client_name == NULL)
+                        client_name =
+                            (char *)control_data->element_values[CONTROL_LABEL]
+                                .parsed_value;
 
-      if (client_name == NULL)
-        client_name = (char *) control_data->element_values[CONTROL_LABEL].parsed_value;
+                /*  First see if this is an update to an already installed */
+                /*  push recall client.  If so, simply update the icon field */
 
+                for (i = 0; i < panel.push_recall_count; i++) {
+                        if (strcmp(client_name,
+                                   push_recall_list[i].pchResName) == 0) {
+                                push_recall_list[i].wControl =
+                                    control_data->icon;
+                                break;
+                        }
+                }
 
-      /*  First see if this is an update to an already installed     */
-      /*  push recall client.  If so, simply update the icon field   */
-      
-      for (i = 0; i < panel.push_recall_count; i++)
-      {
-	 if (strcmp (client_name, push_recall_list[i].pchResName) == 0)
-         {
-	    push_recall_list[i].wControl = control_data->icon;
-            break;
-         }
-      }
+                if (i >= panel.push_recall_count) {
+                        if (panel.push_recall_count ==
+                            panel.max_push_recall_count) {
+                                panel.max_push_recall_count += 10;
+                                push_recall_list =
+                                    (WmFpPushRecallClientList)XtRealloc(
+                                        (char *)push_recall_list,
+                                        sizeof(WmFpPushRecallClientData) *
+                                            panel.max_push_recall_count);
+                                panel.push_recall_list =
+                                    (XtPointer)push_recall_list;
+                        }
 
-      if (i >= panel.push_recall_count)
-      {
-         if (panel.push_recall_count == panel.max_push_recall_count)
-         {
-            panel.max_push_recall_count += 10;
-            push_recall_list = (WmFpPushRecallClientList) 
-               XtRealloc ((char *) push_recall_list,
-                          sizeof (WmFpPushRecallClientData) * 
-			          panel.max_push_recall_count);
-            panel.push_recall_list = (XtPointer) push_recall_list;
-         }
+                        push_recall =
+                            &push_recall_list[panel.push_recall_count];
+                        panel.push_recall_count++;
 
-         push_recall = &push_recall_list[panel.push_recall_count];
-         panel.push_recall_count++;
+                        push_recall->pchResName = XtNewString(client_name);
+                        push_recall->wControl = control_data->icon;
+                        push_recall->pCD = NULL;
+                        push_recall->tvTimeout.tv_sec = 0;
+                }
 
-         push_recall->pchResName = XtNewString (client_name);
-         push_recall->wControl = control_data->icon;
-         push_recall->pCD = NULL;
-         push_recall->tvTimeout.tv_sec = 0;
-      }
+                for (i = 0; i < panel.push_recall_count - 1; i++) {
+                        push_recall = &push_recall_list[i];
+                        if (push_recall->pCD != NULL)
+                                push_recall->pCD->pPRCD = (void *)push_recall;
+                }
+        } else {
+                for (i = 0; i < panel.push_recall_count; i++) {
+                        if (push_recall_list[i].wControl ==
+                            control_data->icon) {
+                                panel.push_recall_count--;
 
-      for (i = 0; i < panel.push_recall_count - 1; i++)
-      {
-          push_recall = &push_recall_list[i];
-          if (push_recall->pCD != NULL)
-             push_recall->pCD->pPRCD = (void *) push_recall;
-      }
-   }
-   else
-   {
-      for (i = 0; i < panel.push_recall_count; i++)
-      {
-	 if (push_recall_list[i].wControl == control_data->icon)
-	 {
-            panel.push_recall_count--;
+                                XtFree(push_recall_list[i].pchResName);
 
-            XtFree (push_recall_list[i].pchResName);
+                                for (j = i; j < panel.push_recall_count; j++) {
+                                        push_recall_list[j] =
+                                            push_recall_list[j + 1];
+                                        push_recall = &push_recall_list[j];
 
-	    for (j = i; j < panel.push_recall_count; j++)
-            {
-	       push_recall_list[j] = push_recall_list[j + 1];
-               push_recall = &push_recall_list[j];
+                                        if (push_recall->pCD != NULL)
+                                                push_recall->pCD->pPRCD =
+                                                    (void *)push_recall;
+                                }
 
-               if (push_recall->pCD != NULL)
-                  push_recall->pCD->pPRCD = (void *) push_recall;
-            }
-	    
-	    break;
-	 }
-      }
-   }
+                                break;
+                        }
+                }
+        }
 
+        /*  Set the push recall list and count into the window manager's  */
+        /*  screen global data.                                           */
 
-   /*  Set the push recall list and count into the window manager's  */
-   /*  screen global data.                                           */
-   
-   PushRecallSetData ();
+        PushRecallSetData();
 }
-
-
-
 
 /************************************************************************
  *
@@ -553,35 +509,30 @@ PushRecallRegister (ControlData * control_data,
  *
  ************************************************************************/
 
-static void
-PushRecallSetData ()
+static void PushRecallSetData()
 
 {
-   WmScreenData *pSD;
-   int i;
+        WmScreenData *pSD;
+        int i;
 
+        /*  Find the screen which contains the front panel and set it  */
+        /*  push recall list and count.                                */
 
-   /*  Find the screen which contains the front panel and set it  */
-   /*  push recall list and count.                                */
-   
-   for (i = 0; i < wmGD.numScreens; i++)
-   {
-      pSD = &(wmGD.Screens[i]);
+        for (i = 0; i < wmGD.numScreens; i++) {
+                pSD = &(wmGD.Screens[i]);
 
-      if (pSD->managed)
-      {
-         if (pSD->wPanelist == panel.form)
-         {
-            pSD->pPRCD = (struct _WmFpPushRecallClientData *) panel.push_recall_list;
-            pSD->numPushRecallClients = panel.push_recall_count;
-            break;
-         }
-      }
-   }
+                if (pSD->managed) {
+                        if (pSD->wPanelist == panel.form) {
+                                pSD->pPRCD =
+                                    (struct _WmFpPushRecallClientData *)
+                                        panel.push_recall_list;
+                                pSD->numPushRecallClients =
+                                    panel.push_recall_count;
+                                break;
+                        }
+                }
+        }
 }
-
-
-
 
 /************************************************************************
  *
@@ -595,23 +546,17 @@ PushRecallSetData ()
  *
  ************************************************************************/
 
-
-int
-PushRecallGetData (char * client_name)
-
+int PushRecallGetData(char *client_name)
 
 {
-   WmFpPushRecallClientList push_recall_list = 
-      (WmFpPushRecallClientList) panel.push_recall_list;
-   int i;
-   
-   for (i = 0; i < panel.push_recall_count; i++)
-      if (strcmp (client_name, push_recall_list[i].pchResName) == 0)
-         return (i);
-}
-   
- 
+        WmFpPushRecallClientList push_recall_list =
+            (WmFpPushRecallClientList)panel.push_recall_list;
+        int i;
 
+        for (i = 0; i < panel.push_recall_count; i++)
+                if (strcmp(client_name, push_recall_list[i].pchResName) == 0)
+                        return (i);
+}
 
 /************************************************************************
  *
@@ -620,32 +565,30 @@ PushRecallGetData (char * client_name)
  *
  ************************************************************************/
 
-Widget
-WmPanelistWindowToSubpanel (Display *dpy, Window win)
+Widget WmPanelistWindowToSubpanel(Display *dpy, Window win)
 
 {
-   Widget   subpanel_shell;
-   Widget * child_list;
-   int      num_children;
+        Widget subpanel_shell;
+        Widget *child_list;
+        int num_children;
 
-   Arg      al[2];
-   int      ac;
+        Arg al[2];
+        int ac;
 
+        /*  Get the widget for the subpanel (Should be only child of the shell!)
+         */
 
-   /*  Get the widget for the subpanel (Should be only child of the shell!) */
+        subpanel_shell = XtWindowToWidget(dpy, win);
 
-   subpanel_shell = XtWindowToWidget (dpy, win);
+        ac = 0;
+        XtSetArg(al[ac], XmNchildren, &child_list);
+        ac++;
+        XtSetArg(al[ac], XmNnumChildren, &num_children);
+        ac++;
+        XtGetValues(subpanel_shell, al, ac);
 
-   ac = 0; 
-   XtSetArg (al[ac], XmNchildren, &child_list);  ac++;
-   XtSetArg (al[ac], XmNnumChildren, &num_children);  ac++;
-   XtGetValues (subpanel_shell, al, ac);
-
-   return ((num_children > 0) ? child_list[0] : (Widget)NULL);
+        return ((num_children > 0) ? child_list[0] : (Widget)NULL);
 }
-
-
-
 
 /************************************************************************
  *
@@ -654,16 +597,12 @@ WmPanelistWindowToSubpanel (Display *dpy, Window win)
  *
  ************************************************************************/
 
-void
-WmFrontPanelSetBusy (Boolean on)
+void WmFrontPanelSetBusy(Boolean on)
 
 {
-   if (panel.busy_light_data != NULL)
-      _DtControlSetBusy (panel.busy_light_data->icon, on);
+        if (panel.busy_light_data != NULL)
+                _DtControlSetBusy(panel.busy_light_data->icon, on);
 }
-
-
-
 
 /************************************************************************
  *
@@ -672,44 +611,40 @@ WmFrontPanelSetBusy (Boolean on)
  *
  ************************************************************************/
 
-static void 
-SetGeometry (Widget w, String geometry, Position * x, Position * y)
-			
+static void SetGeometry(Widget w, String geometry, Position *x, Position *y)
+
 {
-   int x_return, y_return;
-   unsigned int width_return, height_return;
-   long flags;
+        int x_return, y_return;
+        unsigned int width_return, height_return;
+        long flags;
 
-   flags = XParseGeometry (geometry, &x_return, &y_return,
-                           &width_return, &height_return);
+        flags = XParseGeometry(geometry, &x_return, &y_return, &width_return,
+                               &height_return);
 
-   if (flags)
-   {
-      if (flags & XValue)
-         *x = (Position) x_return;
+        if (flags) {
+                if (flags & XValue)
+                        *x = (Position)x_return;
 
-      if (flags & XNegative)
-         *x = (Position) (WidthOfScreen (XtScreen (w)) - XtWidth(w))
-                         + x_return;
+                if (flags & XNegative)
+                        *x = (Position)(WidthOfScreen(XtScreen(w)) -
+                                        XtWidth(w)) +
+                             x_return;
 
-      if (flags & YValue)
-         *y = (Position) y_return;
+                if (flags & YValue)
+                        *y = (Position)y_return;
 
-      if (flags & YNegative)
-      {
-         *y = (Position) (HeightOfScreen (XtScreen (w)) - XtHeight(w))
-                         + y_return;
-      }
+                if (flags & YNegative) {
+                        *y = (Position)(HeightOfScreen(XtScreen(w)) -
+                                        XtHeight(w)) +
+                             y_return;
+                }
 
-      if (flags & XValue || flags & YValue || flags & XNegative ||
-          flags & YNegative)
-      {
-         XtMoveWidget (w, *x, *y);
-      }
-   }
+                if (flags & XValue || flags & YValue || flags & XNegative ||
+                    flags & YNegative) {
+                        XtMoveWidget(w, *x, *y);
+                }
+        }
 }
-
-
 
 /************************************************************************
  *
@@ -717,219 +652,200 @@ SetGeometry (Widget w, String geometry, Position * x, Position * y)
  *
  ************************************************************************/
 
-void
-WmPanelistShow (Widget w)
+void WmPanelistShow(Widget w)
 
 {
-   SwitchData * switch_data;
-   Dimension switch_rc_height;   
-   Dimension switch_button_height;   
+        SwitchData *switch_data;
+        Dimension switch_rc_height;
+        Dimension switch_button_height;
 
-   Dimension width = XtWidth(panel.shell);
-   Dimension height = XtHeight(panel.shell);
-   Position x = XtX(panel.shell);
-   Position y = XtY(panel.shell);
-   Dimension screen_width;
+        Dimension width = XtWidth(panel.shell);
+        Dimension height = XtHeight(panel.shell);
+        Position x = XtX(panel.shell);
+        Position y = XtY(panel.shell);
+        Dimension screen_width;
 
-   Display * display;
+        Display *display;
 
-   CompositeWidget  cw;
-   Widget         * widget_list;
-   DtWmHints        vHints;
+        CompositeWidget cw;
+        Widget *widget_list;
+        DtWmHints vHints;
 
-   String    shell_geometry = NULL;
-   char      geometry_buffer[32];
+        String shell_geometry = NULL;
+        char geometry_buffer[32];
 
-   XSizeHints   hints;
-   long	        supplied;
+        XSizeHints hints;
+        long supplied;
 
-   int i;
-   Arg al[20];
-   int ac;
+        int i;
+        Arg al[20];
+        int ac;
 
-   /*  Find the switch data for later processing  */
-   
-   switch_data = NULL;
-   
-   for (i = 0; i < panel.box_data_count; i++)
-   {
-      if (panel.box_data[i]->switch_data != NULL)
-      {
-         switch_data = panel.box_data[i]->switch_data;
-         break;
-      }
-   }
+        /*  Find the switch data for later processing  */
 
+        switch_data = NULL;
 
-   /*  Realize the shell so that it is sized properly for later  */
-   /*  positioning and child repositioning.                      */
+        for (i = 0; i < panel.box_data_count; i++) {
+                if (panel.box_data[i]->switch_data != NULL) {
+                        switch_data = panel.box_data[i]->switch_data;
+                        break;
+                }
+        }
 
-   XtRealizeWidget (panel.shell);
+        /*  Realize the shell so that it is sized properly for later  */
+        /*  positioning and child repositioning.                      */
 
+        XtRealizeWidget(panel.shell);
 
-   /*  See if a geometry has been set.  */
-   
-   ac = 0;
-   XtSetArg (al[ac], XmNgeometry, &shell_geometry);  ac++;
-   XtGetValues (panel.shell, al, ac);
+        /*  See if a geometry has been set.  */
 
+        ac = 0;
+        XtSetArg(al[ac], XmNgeometry, &shell_geometry);
+        ac++;
+        XtGetValues(panel.shell, al, ac);
 
-   /*  If the shell has no default geometry, construct a default    */
-   /*  which will center the panel along the bottom of the display  */
+        /*  If the shell has no default geometry, construct a default    */
+        /*  which will center the panel along the bottom of the display  */
 
-   width = XtWidth (panel.shell);
-   screen_width = WidthOfScreen (XtScreen (panel.shell));
-   display = XtDisplay (panel.shell);
+        width = XtWidth(panel.shell);
+        screen_width = WidthOfScreen(XtScreen(panel.shell));
+        display = XtDisplay(panel.shell);
 
-   if (shell_geometry == NULL)
-   {
-      Position  x;
+        if (shell_geometry == NULL) {
+                Position x;
 
-      if (panel.element_values[PANEL_GEOMETRY].string_value != NULL)
-      {
-        shell_geometry = panel.element_values[PANEL_GEOMETRY].parsed_value;
-      }
-      else
-      {
-         x = (screen_width > width) ? (Position)(screen_width - width) / 2 : 0;
-         snprintf (geometry_buffer, 32 - 1, "+%d-0", x);
-         shell_geometry = geometry_buffer;
-      }
-      
-      XtSetArg (al[0], XmNgeometry, shell_geometry);
-      XtSetValues (panel.shell, al, 1);
-   }
+                if (panel.element_values[PANEL_GEOMETRY].string_value != NULL) {
+                        shell_geometry =
+                            panel.element_values[PANEL_GEOMETRY].parsed_value;
+                } else {
+                        x = (screen_width > width)
+                                ? (Position)(screen_width - width) / 2
+                                : 0;
+                        snprintf(geometry_buffer, 32 - 1, "+%d-0", x);
+                        shell_geometry = geometry_buffer;
+                }
 
+                XtSetArg(al[0], XmNgeometry, shell_geometry);
+                XtSetValues(panel.shell, al, 1);
+        }
 
-   /*  Adjust the positions of the buttons within the switch  */
-   /*  so that they are spaced nicely.                        */
+        /*  Adjust the positions of the buttons within the switch  */
+        /*  so that they are spaced nicely.                        */
 
-   if (switch_data != NULL)
-   {
-      UpdateSwitchGeometry (switch_data->box_data);
+        if (switch_data != NULL) {
+                UpdateSwitchGeometry(switch_data->box_data);
 
+                /*  Reposition or adjust the front panel if it is either off  */
+                /*  the right edge of the screen or larger than the screen    */
 
-      /*  Reposition or adjust the front panel if it is either off  */
-      /*  the right edge of the screen or larger than the screen    */
+                if (width > screen_width) {
+                        Arg al[1];
 
-      if (width > screen_width)
-      {
-         Arg al[1];
+                        while (width > screen_width &&
+                               panel.switch_row_count <
+                                   switch_data->switch_count) {
+                                panel.switch_row_count++;
 
-         while (width > screen_width && 
-                panel.switch_row_count < switch_data->switch_count)
-         {	    
-            panel.switch_row_count++;
+                                XtSetArg(al[0], XmNnumColumns,
+                                         panel.switch_row_count);
+                                XtSetValues(switch_data->rc, al, 1);
 
-            XtSetArg (al[0], XmNnumColumns, panel.switch_row_count);
-            XtSetValues (switch_data->rc, al, 1);
+                                width = XtWidth(panel.shell);
+                        }
+                }
+        }
 
-            width = XtWidth (panel.shell);
-         }
-      }
-   }
+        SetGeometry(panel.shell, shell_geometry, &x, &y);
+        WorkspaceAdjustPanelPosition(x, y, XtWidth(panel.shell),
+                                     XtHeight(panel.shell));
 
-   SetGeometry (panel.shell, shell_geometry, &x, &y);
-   WorkspaceAdjustPanelPosition (x, y, XtWidth (panel.shell),
-                                 XtHeight (panel.shell));
+        /* Set hints to avoid interactive placement */
 
+        if (XGetWMNormalHints(display, XtWindow(panel.shell), &hints,
+                              &supplied) != 0) {
+                hints.flags |= USPosition | USSize;
+                XSetWMNormalHints(display, XtWindow(panel.shell), &hints);
+        }
 
-   /* Set hints to avoid interactive placement */
+        /*  Set the shells icon and title for when it is minimized  */
 
-   if (XGetWMNormalHints(display, XtWindow(panel.shell),
-                         &hints, &supplied) != 0)
-   {
-      hints.flags |= USPosition|USSize;
-      XSetWMNormalHints(display, XtWindow(panel.shell), &hints);
-   }
+        if (switch_data != NULL) {
+                int current_workspace = switch_data->active_switch;
 
+                XtSetArg(al[0], XmNiconName,
+                         switch_data->switch_names[current_workspace]);
+                XtSetArg(al[1], XmNtitle,
+                         switch_data->switch_names[current_workspace]);
+                XtSetValues(panel.shell, al, 2);
+        }
 
-   /*  Set the shells icon and title for when it is minimized  */
-   
-   if (switch_data != NULL)
-   {
-      int current_workspace = switch_data->active_switch;
+        /*  Set panel's window manager hints.  */
 
-      XtSetArg (al[0], XmNiconName, switch_data->switch_names[current_workspace]);
-      XtSetArg (al[1], XmNtitle, switch_data->switch_names[current_workspace]);
-      XtSetValues (panel.shell, al, 2);
-   }
+        vHints.flags = DtWM_HINTS_BEHAVIORS;
+        vHints.behaviors = DtWM_BEHAVIOR_PANEL;
+        _DtWsmSetDtWmHints(XtDisplay(panel.shell), XtWindow(panel.shell),
+                           &vHints);
 
+        /*  Set the subpanel's transientShell to update transientFor and  */
+        /*  Set the subpanel hints.                                       */
 
-   /*  Set panel's window manager hints.  */
+        vHints.behaviors |= DtWM_BEHAVIOR_SUBPANEL;
+        vHints.flags |= DtWM_HINTS_ATTACH_WINDOW;
+        vHints.attachWindow = XtWindow(panel.shell);
 
-   vHints.flags = DtWM_HINTS_BEHAVIORS;
-   vHints.behaviors = DtWM_BEHAVIOR_PANEL;
-   _DtWsmSetDtWmHints (XtDisplay(panel.shell), XtWindow (panel.shell), &vHints);
+        for (i = 0, widget_list = M_PopupList(panel.shell);
+             i < M_NumPopups(panel.shell); i++) {
+                cw = (CompositeWidget)widget_list[i];
 
+                ac = 0;
+                XtSetArg(al[ac], XmNtransientFor, NULL);
+                ac++;
+                XtSetValues((Widget)cw, al, ac);
 
-   /*  Set the subpanel's transientShell to update transientFor and  */
-   /*  Set the subpanel hints.                                       */
+                ac = 0;
+                XtSetArg(al[ac], XmNtransientFor, panel.shell);
+                ac++;
+                XtSetValues((Widget)cw, al, ac);
 
-   vHints.behaviors |= DtWM_BEHAVIOR_SUBPANEL;
-   vHints.flags |= DtWM_HINTS_ATTACH_WINDOW;
-   vHints.attachWindow = XtWindow (panel.shell);
+                if (M_NumChildren(cw) > 0) {
+                        XtRealizeWidget((M_Children(cw))[0]);
+                        _DtWsmSetDtWmHints(XtDisplay(panel.shell),
+                                           XtWindow(widget_list[i]), &vHints);
+                }
+        }
 
-   for (i = 0, widget_list = M_PopupList (panel.shell); 
-        i < M_NumPopups (panel.shell); i++)
-   {
-      cw = (CompositeWidget) widget_list[i];
+        /*  Set the push recall list and count into the window manager's  */
+        /*  screen global data.                                           */
 
-      ac = 0;
-      XtSetArg (al[ac], XmNtransientFor, NULL);  ac++;
-      XtSetValues ((Widget) cw, al, ac);
+        PushRecallSetData();
 
-      ac = 0;
-      XtSetArg (al[ac], XmNtransientFor, panel.shell);  ac++;
-      XtSetValues ((Widget) cw, al, ac);
+        /*  Set up the callback ot the workspace management API for  */
+        /*  catching changes in workspace configuration.             */
 
-      if (M_NumChildren (cw) > 0)
-      {
-         XtRealizeWidget ((M_Children (cw))[0]);
-         _DtWsmSetDtWmHints (XtDisplay (panel.shell), 
-                             XtWindow (widget_list[i]), &vHints);
-      }
-   }
+        DtWsmAddWorkspaceModifiedCallback(panel.shell, WorkspaceModifyCB,
+                                          (XtPointer)switch_data);
 
+        /*  Get the front panel displayed  */
 
-   /*  Set the push recall list and count into the window manager's  */
-   /*  screen global data.                                           */
-   
-   PushRecallSetData ();
+        XtSetMappedWhenManaged(panel.shell, True);
+        XtPopup(panel.shell, XtGrabNone);
 
+        /*  Restore the session information  */
 
-   /*  Set up the callback ot the workspace management API for  */
-   /*  catching changes in workspace configuration.             */
-      
-   DtWsmAddWorkspaceModifiedCallback(panel.shell,
-                                     WorkspaceModifyCB, (XtPointer)switch_data);
+        SessionRestoreData();
 
+        /*  Set up the window and geometry information for the embedded clients
+         */
 
-   /*  Get the front panel displayed  */
+        for (i = 0; i < panel.embedded_client_count; i++)
+                EmbeddedClientSetGeometry(
+                    &(((WmFpEmbeddedClientList)panel.embedded_client_list)[i]));
 
-   XtSetMappedWhenManaged (panel.shell, True);
-   XtPopup (panel.shell, XtGrabNone);
+        /*  Set the embedded client list and count into the window manager's  */
+        /*  screen global data.                                               */
 
-
-   /*  Restore the session information  */
-
-   SessionRestoreData ();
-
-
-   /*  Set up the window and geometry information for the embedded clients  */
-
-   for (i = 0; i < panel.embedded_client_count; i++)
-      EmbeddedClientSetGeometry (&(((WmFpEmbeddedClientList) panel.embedded_client_list)[i]));
-
-
-   /*  Set the embedded client list and count into the window manager's  */
-   /*  screen global data.                                               */
-
-   EmbeddedClientSetData ();
+        EmbeddedClientSetData();
 }
-
-
-
 
 /************************************************************************
  *
@@ -937,87 +853,78 @@ WmPanelistShow (Widget w)
  *
  ************************************************************************/
 
-Widget
-WmPanelistAllocate (Widget    w,
-                    XtPointer global_data,
-                    XtPointer screen_data)
+Widget WmPanelistAllocate(Widget w, XtPointer global_data,
+                          XtPointer screen_data)
 
 {
-   Boolean create_fp;
+        Boolean create_fp;
 
-   panel.app_name = wmGD.mwmName;
-   create_fp = FrontPanelReadDatabases ();
-      
-   if (create_fp)
-   {
+        panel.app_name = wmGD.mwmName;
+        create_fp = FrontPanelReadDatabases();
+
+        if (create_fp) {
 #ifdef DT_PERFORMANCE
-_DtPerfChkpntMsgSend("Begin creating front panel");
+                _DtPerfChkpntMsgSend("Begin creating front panel");
 #endif
 
-      FrontPanelCreate (w);
+                FrontPanelCreate(w);
 
 #ifdef DT_PERFORMANCE
-_DtPerfChkpntMsgSend("End   creating front panel");
+                _DtPerfChkpntMsgSend("End   creating front panel");
 #endif
 
-      panel.global_data = global_data;
-      panel.screen_data = screen_data;
+                panel.global_data = global_data;
+                panel.screen_data = screen_data;
 
-      return (panel.form);
-   }
-   else
-      return(NULL);
+                return (panel.form);
+        } else
+                return (NULL);
 }
-
-
-
 
 /************************************************************************
  *
  *  WmSubpanelPosted
- *	Add an event handler to catch when the subpanel is torn off.  The 
- *	event handler will then change the subpanel's behavior to remain 
+ *	Add an event handler to catch when the subpanel is torn off.  The
+ *	event handler will then change the subpanel's behavior to remain
  *	displayed after a control is selected.
  *
  ************************************************************************/
 
-void
-WmSubpanelPosted (Display * display,
-                  Window  shell_window)
+void WmSubpanelPosted(Display *display, Window shell_window)
 
 {
-   BoxData      * box_data;
-   ControlData  * main_control_data;
-   SubpanelData * subpanel_data;
+        BoxData *box_data;
+        ControlData *main_control_data;
+        SubpanelData *subpanel_data;
 
-   int i, j;
+        int i, j;
 
+        /*  Loop through the main controls to find the subpanel whose   */
+        /*  window matches the parameter shell window and then add the  */
+        /*  event handler for tear off behavoir.                        */
 
-   /*  Loop through the main controls to find the subpanel whose   */
-   /*  window matches the parameter shell window and then add the  */
-   /*  event handler for tear off behavoir.                        */
+        for (i = 0; i < panel.box_data_count; i++) {
+                box_data = panel.box_data[i];
 
-   for (i = 0; i < panel.box_data_count; i++)
-   {
-      box_data = panel.box_data[i];
-      
-      for (j = 0; j < box_data->control_data_count; j++)
-      {
-         main_control_data = box_data->control_data[j];
+                for (j = 0; j < box_data->control_data_count; j++) {
+                        main_control_data = box_data->control_data[j];
 
-         if (main_control_data->subpanel_data != NULL &&
-	     XtWindow (main_control_data->subpanel_data->shell) == shell_window)
-	 {
-            subpanel_data = main_control_data->subpanel_data;
+                        if (main_control_data->subpanel_data != NULL &&
+                            XtWindow(main_control_data->subpanel_data->shell) ==
+                                shell_window) {
+                                subpanel_data =
+                                    main_control_data->subpanel_data;
 
-            subpanel_data->posted_x = XtX (subpanel_data->shell);
+                                subpanel_data->posted_x =
+                                    XtX(subpanel_data->shell);
 
-            XtAddEventHandler (subpanel_data->shell, StructureNotifyMask, False,
-                               (XtEventHandler) SubpanelTornEventHandler,
-                               (XtPointer) main_control_data);
-            break;
-	 }
-      }
-   }
+                                XtAddEventHandler(
+                                    subpanel_data->shell, StructureNotifyMask,
+                                    False,
+                                    (XtEventHandler)SubpanelTornEventHandler,
+                                    (XtPointer)main_control_data);
+                                break;
+                        }
+                }
+        }
 }
-

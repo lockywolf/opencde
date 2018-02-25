@@ -44,12 +44,12 @@
 #include <Xm/Xm.h>
 #include <Xm/Protocols.h>
 
-#define  FREE         (void) free
-#define  FPRINTF      (void) fprintf
-#define  GETHOSTNAME  (void) gethostname
+#define FREE (void)free
+#define FPRINTF (void)fprintf
+#define GETHOSTNAME (void)gethostname
 
-#define  EQUAL(a, b)  !strncmp(a, b, strlen(b))
-#define  MAXLINE      120        /* Maximum length for character strings. */
+#define EQUAL(a, b) !strncmp(a, b, strlen(b))
+#define MAXLINE 120 /* Maximum length for character strings. */
 
 /*  Function:     ds_beep()
  *
@@ -61,13 +61,7 @@
  *  Returns:      None.
  */
 
-void
-ds_beep(Display *display)
-{
-  XBell(display, 0) ;
-}
-
-
+void ds_beep(Display *display) { XBell(display, 0); }
 
 /*  Function:     ds_get_resource()
  *
@@ -85,28 +79,29 @@ ds_beep(Display *display)
  *                be modified.
  */
 
-char *
-ds_get_resource(XrmDatabase rDB, char *appname, char *resource)
-{
-  char app[MAXLINE], res[MAXLINE] ;
-  char cstr[MAXLINE], nstr[MAXLINE] ;
-  char *str_type[20] ;
-  XrmValue value ;
+char *ds_get_resource(XrmDatabase rDB, char *appname, char *resource) {
+        char app[MAXLINE], res[MAXLINE];
+        char cstr[MAXLINE], nstr[MAXLINE];
+        char *str_type[20];
+        XrmValue value;
 
-  strlcpy(app, appname, MAXLINE) ;
-  strlcpy(res, resource, MAXLINE) ;
-  if (isupper(app[0])) app[0] = tolower(app[0]) ;
-  snprintf(nstr, MAXLINE, "%s.%s", app, res) ;
+        strlcpy(app, appname, MAXLINE);
+        strlcpy(res, resource, MAXLINE);
+        if (isupper(app[0]))
+                app[0] = tolower(app[0]);
+        snprintf(nstr, MAXLINE, "%s.%s", app, res);
 
-  if (islower(res[0])) res[0] = toupper(res[0]) ;
-  if (islower(app[0])) app[0] = toupper(app[0]) ;
-  snprintf(cstr, MAXLINE, "%s.%s", app, res) ;
+        if (islower(res[0]))
+                res[0] = toupper(res[0]);
+        if (islower(app[0]))
+                app[0] = toupper(app[0]);
+        snprintf(cstr, MAXLINE, "%s.%s", app, res);
 
-  if (XrmGetResource(rDB, nstr, cstr, str_type, &value) == 0)
-    return((char *) NULL) ;
-  else return(value.addr) ;
+        if (XrmGetResource(rDB, nstr, cstr, str_type, &value) == 0)
+                return ((char *)NULL);
+        else
+                return (value.addr);
 }
-
 
 /*  Function:     ds_load_resources()
  *
@@ -134,56 +129,52 @@ ds_get_resource(XrmDatabase rDB, char *appname, char *resource)
  *  Returns:      X combined resources database.
  */
 
-XrmDatabase
-ds_load_resources(Display *display)
-{
-  XrmDatabase db, rDB ;
-  char *home, name[MAXPATHLEN], *ptr ;
-  int len ;
+XrmDatabase ds_load_resources(Display *display) {
+        XrmDatabase db, rDB;
+        char *home, name[MAXPATHLEN], *ptr;
+        int len;
 
-  rDB  = NULL ;
-  home = getenv("HOME") ;
-  XrmInitialize() ;
+        rDB = NULL;
+        home = getenv("HOME");
+        XrmInitialize();
 
-/* Merge server defaults, created by xrdb. If nor defined, use ~/.Xdefaults. */
+        /* Merge server defaults, created by xrdb. If nor defined, use
+         * ~/.Xdefaults.
+         */
 
-  if (XResourceManagerString(display) != NULL)
-    db = XrmGetStringDatabase(XResourceManagerString(display)) ;
-  else
-    {
-      snprintf(name, MAXPATHLEN, "%s/.Xdefaults", home) ;
-      db = XrmGetFileDatabase(name) ;
-    }
-  XrmMergeDatabases(db, &rDB) ;
+        if (XResourceManagerString(display) != NULL)
+                db = XrmGetStringDatabase(XResourceManagerString(display));
+        else {
+                snprintf(name, MAXPATHLEN, "%s/.Xdefaults", home);
+                db = XrmGetFileDatabase(name);
+        }
+        XrmMergeDatabases(db, &rDB);
 
-/*  Open XENVIRONMENT file or, if not defined, the .Xdefaults, and merge
- *  into existing database.
- */
+        /*  Open XENVIRONMENT file or, if not defined, the .Xdefaults, and merge
+         *  into existing database.
+         */
 
-  if ((ptr = getenv("XENVIRONMENT")) == NULL)
-    {
-      snprintf(name, MAXPATHLEN, "%s/.Xdefaults-", home) ;
-      len = strlen(name) ;
-      GETHOSTNAME(name+len, 1024-len) ;
-      db = XrmGetFileDatabase(name) ;
-    }
-  else db = XrmGetFileDatabase(ptr) ;
-  XrmMergeDatabases(db, &rDB) ;
+        if ((ptr = getenv("XENVIRONMENT")) == NULL) {
+                snprintf(name, MAXPATHLEN, "%s/.Xdefaults-", home);
+                len = strlen(name);
+                GETHOSTNAME(name + len, 1024 - len);
+                db = XrmGetFileDatabase(name);
+        } else
+                db = XrmGetFileDatabase(ptr);
+        XrmMergeDatabases(db, &rDB);
 
-/*  Finally merge in Dtcalc defaults via DTCALCDEF or, if not
- *  defined, the ~/.dtcalcdef file.
- */
+        /*  Finally merge in Dtcalc defaults via DTCALCDEF or, if not
+         *  defined, the ~/.dtcalcdef file.
+         */
 
-  if ((ptr = getenv("DTCALCDEF")) == NULL)
-    {
-      snprintf(name, MAXPATHLEN - 1, "%s/.dtcalcdef", home) ;
-      db = XrmGetFileDatabase(name) ;
-    }
-  else db = XrmGetFileDatabase(ptr) ;
-  XrmMergeDatabases(db, &rDB) ;
-  return(rDB) ;
+        if ((ptr = getenv("DTCALCDEF")) == NULL) {
+                snprintf(name, MAXPATHLEN - 1, "%s/.dtcalcdef", home);
+                db = XrmGetFileDatabase(name);
+        } else
+                db = XrmGetFileDatabase(ptr);
+        XrmMergeDatabases(db, &rDB);
+        return (rDB);
 }
-
 
 /*  Function:     ds_put_resource()
  *
@@ -204,18 +195,16 @@ ds_load_resources(Display *display)
  *                be modified.
  */
 
-void
-ds_put_resource(XrmDatabase *rDB, char *appname, char *rstr, char *rval)
-{
-  char app[MAXLINE], resource[MAXLINE] ;
+void ds_put_resource(XrmDatabase *rDB, char *appname, char *rstr, char *rval) {
+        char app[MAXLINE], resource[MAXLINE];
 
-  strlcpy(app, appname, MAXLINE) ;
-  if (isupper(app[0])) app[0] = tolower(app[0]) ;
-  snprintf(resource, MAXLINE, "%s.%s", app, rstr) ;
+        strlcpy(app, appname, MAXLINE);
+        if (isupper(app[0]))
+                app[0] = tolower(app[0]);
+        snprintf(resource, MAXLINE, "%s.%s", app, rstr);
 
-  XrmPutStringResource(rDB, resource, rval) ;
+        XrmPutStringResource(rDB, resource, rval);
 }
-
 
 /*  Function:     ds_save_cmdline()
  *
@@ -233,12 +222,9 @@ ds_put_resource(XrmDatabase *rDB, char *appname, char *rstr, char *rval)
  *  Returns:      None.
  */
 
-void
-ds_save_cmdline(Display *display, Window w, int argc, char **argv)
-{
-  XSetCommand(display, w, argv, argc) ;
+void ds_save_cmdline(Display *display, Window w, int argc, char **argv) {
+        XSetCommand(display, w, argv, argc);
 }
-
 
 /*  Function:     ds_save_resources()
  *
@@ -252,36 +238,30 @@ ds_save_cmdline(Display *display, Window w, int argc, char **argv)
  *                0          on successful completion.
  */
 
+int ds_save_resources(XrmDatabase rDB, char *filename) {
+        char *home;
+        struct stat statbuf;
 
-int
-ds_save_resources(XrmDatabase rDB, char *filename)
-{
-  char *home;
-  struct stat statbuf ;
+        if (filename == NULL) {
+                if ((filename = getenv("DTCALCDEF")) == NULL) {
+                        home = getenv("HOME");
+                        int filename_size = strlen(home) + 18;
+                        filename = (char *)calloc(1, filename_size);
+                        snprintf(filename, filename_size, "%s/.dtcalcdef",
+                                 home);
+                }
+        }
 
-  if(filename == NULL)
-  {
-    if ((filename = getenv("DTCALCDEF")) == NULL)
-      {
-        home = getenv("HOME") ;
-        int filename_size = strlen(home) + 18;
-        filename = (char*) calloc(1, filename_size) ;
-        snprintf(filename, filename_size, "%s/.dtcalcdef", home) ;
-      }
-  }
+        /* If file exists but user does not have access. */
 
-/* If file exists but user does not have access. */
+        if (stat(filename, &statbuf) != -1 && access(filename, W_OK) != 0) {
+                FREE(filename);
+                return (1);
+        }
 
-  if (stat(filename, &statbuf) != -1 && access(filename, W_OK) != 0)
-    {
-      FREE(filename) ;
-      return(1) ;
-    }
+        /* If file does not exist this call will create it. */
 
-/* If file does not exist this call will create it. */
-
-  XrmPutFileDatabase(rDB, filename) ;
-  FREE(filename) ;
-  return(0) ;
+        XrmPutFileDatabase(rDB, filename);
+        FREE(filename);
+        return (0);
 }
-

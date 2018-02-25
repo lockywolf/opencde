@@ -21,7 +21,7 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $XConsortium: tclUnixSock.c /main/2 1996/08/08 14:47:01 cde-hp $ */
-/* 
+/*
  * tclUnixSock.c --
  *
  *	This file contains Unix-specific socket related code.
@@ -42,12 +42,12 @@
  */
 
 #ifndef SYS_NMLN
-#   define SYS_NMLN 100
+#define SYS_NMLN 100
 #endif
 
 static char hostname[SYS_NMLN + 1];
-static int  hostnameInited = 0;
-
+static int hostnameInited = 0;
+
 /*
  *----------------------------------------------------------------------
  *
@@ -64,25 +64,23 @@ static int  hostnameInited = 0;
  *----------------------------------------------------------------------
  */
 
-char *
-Tcl_GetHostName()
-{
-    struct utsname u;
-    struct hostent *hp;
+char *Tcl_GetHostName() {
+        struct utsname u;
+        struct hostent *hp;
 
-    if (hostnameInited) {
-        return hostname;
-    }
-    
-    if (uname(&u) > -1) {
-        hp = gethostbyname(u.nodename);
-        if (hp != NULL) {
-            strcpy(hostname, hp->h_name);
-        } else {
-            strcpy(hostname, u.nodename);
+        if (hostnameInited) {
+                return hostname;
         }
-        hostnameInited = 1;
-        return hostname;
-    }
-    return (char *) NULL;
+
+        if (uname(&u) > -1) {
+                hp = gethostbyname(u.nodename);
+                if (hp != NULL) {
+                        strcpy(hostname, hp->h_name);
+                } else {
+                        strcpy(hostname, u.nodename);
+                }
+                hostnameInited = 1;
+                return hostname;
+        }
+        return (char *)NULL;
 }

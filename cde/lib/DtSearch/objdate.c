@@ -72,7 +72,7 @@
 #define XOS_USE_NO_LOCKING
 #include <X11/Xos_r.h>
 
-#define PROGNAME	"OBJDATE"
+#define PROGNAME "OBJDATE"
 
 /************************************************/
 /*						*/
@@ -91,72 +91,69 @@
  * Can be used merely to test for valid string format by
  * passing NULL for objdate pointer.
  */
-int	is_objdatestr (char *string, DtSrObjdate *objdptr)
-{
-    static char     parsebuf[24];
-    int             i;
-    char           *token;
-    DtSrObjdate     myobjdate = 0L;
-    _Xstrtokparams  strtok_buf;
+int is_objdatestr(char *string, DtSrObjdate *objdptr) {
+        static char parsebuf[24];
+        int i;
+        char *token;
+        DtSrObjdate myobjdate = 0L;
+        _Xstrtokparams strtok_buf;
 
-    /* Test for "null" objdate (which is valid) */
-    if (strncmp (string, NULLDATESTR, 9) == 0) {
-	if (string[9] == 0 || string[9] == '\n') {
-	    if (objdptr)
-		*objdptr = 0L;
-	    return TRUE;
-	}
-    }
+        /* Test for "null" objdate (which is valid) */
+        if (strncmp(string, NULLDATESTR, 9) == 0) {
+                if (string[9] == 0 || string[9] == '\n') {
+                        if (objdptr)
+                                *objdptr = 0L;
+                        return TRUE;
+                }
+        }
 
-    strncpy (parsebuf, string, sizeof (parsebuf));
-    parsebuf[sizeof (parsebuf) - 1] = '\0';
+        strncpy(parsebuf, string, sizeof(parsebuf));
+        parsebuf[sizeof(parsebuf) - 1] = '\0';
 
-    if ((token = _XStrtok(parsebuf, "/", strtok_buf)) == NULL)
-	return FALSE;
-    i = atoi (token);
-    if (i < 1 || i > 4095)	/* yy */
-	return FALSE;
-    else
-	myobjdate |= (i << 20);
+        if ((token = _XStrtok(parsebuf, "/", strtok_buf)) == NULL)
+                return FALSE;
+        i = atoi(token);
+        if (i < 1 || i > 4095) /* yy */
+                return FALSE;
+        else
+                myobjdate |= (i << 20);
 
-    if ((token = _XStrtok(NULL, "/", strtok_buf)) == NULL)
-	return FALSE;
-    i = atoi (token);
-    if (i < 1 || i > 12)	/* mm */
-	return FALSE;
-    else
-	myobjdate |= (--i << 16);
+        if ((token = _XStrtok(NULL, "/", strtok_buf)) == NULL)
+                return FALSE;
+        i = atoi(token);
+        if (i < 1 || i > 12) /* mm */
+                return FALSE;
+        else
+                myobjdate |= (--i << 16);
 
-    if ((token = _XStrtok(NULL, "~", strtok_buf)) == NULL)
-	return FALSE;
-    i = atoi (token);
-    if (i < 1 || i > 31)	/* dd */
-	return FALSE;
-    else
-	myobjdate |= (i << 11);
+        if ((token = _XStrtok(NULL, "~", strtok_buf)) == NULL)
+                return FALSE;
+        i = atoi(token);
+        if (i < 1 || i > 31) /* dd */
+                return FALSE;
+        else
+                myobjdate |= (i << 11);
 
-    if ((token = _XStrtok(NULL, ":", strtok_buf)) == NULL)
-	return FALSE;
-    i = atoi (token);
-    if (i < 0 || i > 23)	/* hh */
-	return FALSE;
-    else
-	myobjdate |= (i << 6);
+        if ((token = _XStrtok(NULL, ":", strtok_buf)) == NULL)
+                return FALSE;
+        i = atoi(token);
+        if (i < 0 || i > 23) /* hh */
+                return FALSE;
+        else
+                myobjdate |= (i << 6);
 
-    if ((token = _XStrtok(NULL, "\n", strtok_buf)) == NULL)
-	return FALSE;
-    i = atoi (token);
-    if (i < 0 || i > 59)	/* mm */
-	return FALSE;
-    else
-	myobjdate |= i;
+        if ((token = _XStrtok(NULL, "\n", strtok_buf)) == NULL)
+                return FALSE;
+        i = atoi(token);
+        if (i < 0 || i > 59) /* mm */
+                return FALSE;
+        else
+                myobjdate |= i;
 
-    if (objdptr)
-	*objdptr = myobjdate;
-    return TRUE;
-}  /* is_objdatestr() */
-
-
+        if (objdptr)
+                *objdptr = myobjdate;
+        return TRUE;
+} /* is_objdatestr() */
 
 /************************************************/
 /*						*/
@@ -166,31 +163,29 @@ int	is_objdatestr (char *string, DtSrObjdate *objdptr)
 /* Returns TRUE if passed structure is correctly formatted
  * for conversion to DtSrObjdate variable, else returns FALSE.
  */
-int	is_objdatetm (struct tm *objdatetm)
-{
-    if (objdatetm->tm_year < 0)
-	return FALSE;
-    if (objdatetm->tm_year > 4095)
-	return FALSE;
-    if (objdatetm->tm_mon < 0)
-	return FALSE;
-    if (objdatetm->tm_mon > 11)
-	return FALSE;
-    if (objdatetm->tm_mday < 1)
-	return FALSE;
-    if (objdatetm->tm_mday > 31)
-	return FALSE;
-    if (objdatetm->tm_hour < 0)
-	return FALSE;
-    if (objdatetm->tm_hour > 23)
-	return FALSE;
-    if (objdatetm->tm_min < 0)
-	return FALSE;
-    if (objdatetm->tm_min > 59)
-	return FALSE;
-    return TRUE;
-}  /* is_objdatetm() */
-
+int is_objdatetm(struct tm *objdatetm) {
+        if (objdatetm->tm_year < 0)
+                return FALSE;
+        if (objdatetm->tm_year > 4095)
+                return FALSE;
+        if (objdatetm->tm_mon < 0)
+                return FALSE;
+        if (objdatetm->tm_mon > 11)
+                return FALSE;
+        if (objdatetm->tm_mday < 1)
+                return FALSE;
+        if (objdatetm->tm_mday > 31)
+                return FALSE;
+        if (objdatetm->tm_hour < 0)
+                return FALSE;
+        if (objdatetm->tm_hour > 23)
+                return FALSE;
+        if (objdatetm->tm_min < 0)
+                return FALSE;
+        if (objdatetm->tm_min > 59)
+                return FALSE;
+        return TRUE;
+} /* is_objdatetm() */
 
 /************************************************/
 /*						*/
@@ -203,19 +198,17 @@ int	is_objdatetm (struct tm *objdatetm)
  * The output tm structure is suitable for mktime(),
  * but may only work for some formats of strftime().
  */
-struct tm      *objdate2tm (DtSrObjdate objdate)
-{
-    static struct tm	mytm;
-    memset (&mytm, 0, sizeof (struct tm));
-    mytm.tm_year = objdate >> 20;
-    mytm.tm_mon = (objdate >> 16) & 0xf;
-    mytm.tm_mday = (objdate >> 11) & 0x1f;
-    mytm.tm_hour = (objdate >> 6) & 0x1f;
-    mytm.tm_min = objdate & 0x3f;
-    mytm.tm_isdst = -1;
-    return &mytm;
-}  /* objdate2tm() */
-
+struct tm *objdate2tm(DtSrObjdate objdate) {
+        static struct tm mytm;
+        memset(&mytm, 0, sizeof(struct tm));
+        mytm.tm_year = objdate >> 20;
+        mytm.tm_mon = (objdate >> 16) & 0xf;
+        mytm.tm_mday = (objdate >> 11) & 0x1f;
+        mytm.tm_hour = (objdate >> 6) & 0x1f;
+        mytm.tm_min = objdate & 0x3f;
+        mytm.tm_isdst = -1;
+        return &mytm;
+} /* objdate2tm() */
 
 /************************************************/
 /*						*/
@@ -225,19 +218,16 @@ struct tm      *objdate2tm (DtSrObjdate objdate)
 /* Converts DtSrObjdate formatted long int and returns pointer
  * to static date string in .fzk format for debugging.
  */
-char           *objdate2fzkstr (DtSrObjdate objdate)
-{
-    struct tm      *tmptr;
-    static char     strbuf[36];
-    if (objdate == 0L)
-	return NULLDATESTR;
-    tmptr = objdate2tm (objdate);
-    sprintf (strbuf, OBJDATESTR,
-	tmptr->tm_year, tmptr->tm_mon + 1,
-	tmptr->tm_mday, tmptr->tm_hour, tmptr->tm_min);
-    return strbuf;
-}  /* objdate2fzkstr() */
-
+char *objdate2fzkstr(DtSrObjdate objdate) {
+        struct tm *tmptr;
+        static char strbuf[36];
+        if (objdate == 0L)
+                return NULLDATESTR;
+        tmptr = objdate2tm(objdate);
+        sprintf(strbuf, OBJDATESTR, tmptr->tm_year, tmptr->tm_mon + 1,
+                tmptr->tm_mday, tmptr->tm_hour, tmptr->tm_min);
+        return strbuf;
+} /* objdate2fzkstr() */
 
 /************************************************/
 /*						*/
@@ -249,15 +239,10 @@ char           *objdate2fzkstr (DtSrObjdate objdate)
  * DtSrObjdate bitfields map to struct tm fields (see fuzzy.h).
  * Does not validate tm fields (use is_objdate() to confirm).
  */
-DtSrObjdate	tm2objdate (struct tm *tmptr)
-{
-    return ((tmptr->tm_year << 20) |
-	(tmptr->tm_mon << 16) |
-	(tmptr->tm_mday << 11) |
-	(tmptr->tm_hour << 6) |
-	tmptr->tm_min);
-}  /* tm2objdate() */
-
+DtSrObjdate tm2objdate(struct tm *tmptr) {
+        return ((tmptr->tm_year << 20) | (tmptr->tm_mon << 16) |
+                (tmptr->tm_mday << 11) | (tmptr->tm_hour << 6) | tmptr->tm_min);
+} /* tm2objdate() */
 
 /************************************************/
 /*						*/
@@ -270,18 +255,15 @@ DtSrObjdate	tm2objdate (struct tm *tmptr)
  * from inclusion on a hitlist because of date.
  * Zero in any of the three dates is automatic "in range" qualification.
  */
-int	objdate_in_range (
-		DtSrObjdate	recdate,
-		DtSrObjdate	date1,
-		DtSrObjdate	date2)
-{
-    if (recdate == 0L)	/* Null dated record always qualifies */
-	return TRUE;
-    if (date1 != 0L && date1 > recdate)
-	return FALSE;
-    if (date2 != 0L && date2 < recdate)
-	return FALSE;
-    return TRUE;
-}  /* objdate_in_range() */
+int objdate_in_range(DtSrObjdate recdate, DtSrObjdate date1,
+                     DtSrObjdate date2) {
+        if (recdate == 0L) /* Null dated record always qualifies */
+                return TRUE;
+        if (date1 != 0L && date1 > recdate)
+                return FALSE;
+        if (date2 != 0L && date2 < recdate)
+                return FALSE;
+        return TRUE;
+} /* objdate_in_range() */
 
 /********************** OBJDATE.C *************************/

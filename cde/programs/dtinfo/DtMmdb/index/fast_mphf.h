@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,9 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
 
 #ifndef _fast_mphf_h
 #define _fast_mphf_h 1
@@ -59,114 +58,103 @@
 #include "hmphf/mphf_funcs.h"
 #include "hmphf/sorter.h"
 
-
 ///////////////////////////////////////////////////////////////
 // A fast MPHF contruct method proposed by Chen Qi Fan in 4/91.
 // Usually it will compute MPHFs using 2-3 bits/key.
 // Random number table size is reduced to 128 chars.
-// Computation is fast due to the pattern matching 
+// Computation is fast due to the pattern matching
 // used in the searching stage.
 //
 // Reference: VaTech Technical Report TR92-2, SIGIR92 paper.
 //
-// Modification: 
+// Modification:
 //		convert to mmdb version (task started on 9-15-92)
 ///////////////////////////////////////////////////////////////
 
-class tbl_record 
-{
+class tbl_record {
 
-public:
-   int v_seed;
-   atoi_pearson* v_tbl0;
-   atoi_pearson* v_tbl1;
+      public:
+        int v_seed;
+        atoi_pearson *v_tbl0;
+        atoi_pearson *v_tbl1;
 
-public:
-   tbl_record(int sd = 0, atoi_pearson* t1 =0, atoi_pearson* t2 =0) : 
-	v_seed(sd), v_tbl0(t1), v_tbl1(t2) {};
-   ~tbl_record();
+      public:
+        tbl_record(int sd = 0, atoi_pearson *t1 = 0, atoi_pearson *t2 = 0)
+            : v_seed(sd), v_tbl0(t1), v_tbl1(t2){};
+        ~tbl_record();
 };
 
-class tbl_cache
-{
-protected:
-    void_ptr_array f_array;
+class tbl_cache {
+      protected:
+        void_ptr_array f_array;
 
-public:
- 
-   tbl_cache();
-   ~tbl_cache();
+      public:
+        tbl_cache();
+        ~tbl_cache();
 
-   void init_table(int hash_table_sz, int seed, atoi_pearson*&, atoi_pearson*&);
+        void init_table(int hash_table_sz, int seed, atoi_pearson *&,
+                        atoi_pearson *&);
 
-   friend class fast_mphf;
+        friend class fast_mphf;
 };
 
-class fast_mphf : public long_pstring, public ihash
-{
+class fast_mphf : public long_pstring, public ihash {
 
-public:
+      public:
+        fast_mphf(c_code_t = FAST_MPHF_CODE);
+        virtual ~fast_mphf();
 
-   fast_mphf(c_code_t = FAST_MPHF_CODE);
-   virtual ~fast_mphf();
+        MMDB_SIGNATURES(fast_mphf);
 
-   MMDB_SIGNATURES(fast_mphf);
+        void init_persistent_info(persistent_info *);
 
-   void init_persistent_info(persistent_info*);
+        // init the two ascii->integer map tables
+        Boolean init_map_tbls();
 
+        // load the MPHF from files
+        using pstring::asciiIn;
+        virtual io_status asciiIn(istream &);
 
-// init the two ascii->integer map tables 
-   Boolean init_map_tbls();
+        // compute a hash value for a key.
+        virtual int hashTo(const key_type &);
 
-// load the MPHF from files
-   using pstring::asciiIn;
-   virtual io_status asciiIn(istream&);
+        // compute a MPHF
+        virtual Boolean build(const char *data_path);
+        virtual Boolean build(istream &data_stream);
 
-// compute a hash value for a key.
-   virtual int hashTo(const key_type&);
+        // show the mapping from keys to hash values and verify the mphf.
+        // option = 0: no print, only check;
+        // option = 1: print and check.
+        void print_mapping(const char *key_file, int option = 0);
 
-// compute a MPHF
-   virtual Boolean build(const char* data_path);
-   virtual Boolean build(istream& data_stream);
+        void print_gvalues(ostream &out = cerr);
 
-// show the mapping from keys to hash values and verify the mphf.
-// option = 0: no print, only check;
-// option = 1: print and check.
-   void print_mapping( const char*key_file, int option = 0) ;
+        virtual int cdr_sizeof();
+        virtual io_status cdrOut(buffer &);
+        virtual io_status cdrIn(buffer &);
 
-   void print_gvalues(ostream&out = cerr) ;
+      protected:
+        // return the ith g value from the g array (in packed form)
+        int gValue(int, int &gvalue, int &ctl_bit);
 
-   virtual int cdr_sizeof();
-   virtual io_status cdrOut(buffer&);
-   virtual io_status cdrIn(buffer&);
+        void print_tbls(ostream &out = cerr);
+        int print_bits(unsigned, ostream & = cout);
 
-protected:
-
-// return the ith g value from the g array (in packed form)
-   int gValue(int, int& gvalue, int& ctl_bit) ;
-
-   void print_tbls(ostream&out = cerr) ;
-   int print_bits(unsigned, ostream& = cout);
-
-protected:
-
+      protected:
 #ifdef C_API
-   static tbl_cache *v_tbl_cache_ptr;
+        static tbl_cache *v_tbl_cache_ptr;
 #else
-   static tbl_cache v_tbl_cache;
+        static tbl_cache v_tbl_cache;
 #endif
 
-   atoi_pearson *v_tbl0 ,  // table1
-                *v_tbl1 ;  // table2
+        atoi_pearson *v_tbl0, // table1
+            *v_tbl1;          // table2
 
-   Boolean v_long_string_core_indexed;
+        Boolean v_long_string_core_indexed;
 
-   unsigned int v_no_ps,  // number of partitions (buckets)
-                v_p1, v_p2, // parameters p1 and p2.
-                r,
-                v_seed,
-                t;
-
+        unsigned int v_no_ps, // number of partitions (buckets)
+            v_p1, v_p2,       // parameters p1 and p2.
+            r, v_seed, t;
 };
 
 HANDLER_SIGNATURES(fast_mphf)

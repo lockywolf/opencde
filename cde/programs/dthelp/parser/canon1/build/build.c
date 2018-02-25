@@ -41,34 +41,41 @@ This product and information is proprietary of Tandem Computers Incorporated.
 #include "entdef.h"
 
 /* Main procedure */
-int main(argc, argv)
-int argc ;
-char **argv ;
+int main(argc, argv) int argc;
+char **argv;
 {
-int m_prevcon ;
+        int m_prevcon;
 
-if (argc > 1)
-    {
-    if (strchr(argv[1], 'a')) m_malftrace = TRUE ;
-    if (strchr(argv[1], 'A')) m_malftrace = TRUE ;
-    if (strchr(argv[1], 'a')) m_malftrace = TRUE ;
-    if (strchr(argv[1], 'H')) m_heapchk = TRUE ;
-    if (strchr(argv[1], 'm')) standard = TRUE ;
-    if (strchr(argv[1], 'M')) standard = TRUE ;
-    if (strchr(argv[1], 's')) scantrace = TRUE ;
-    if (strchr(argv[1], 'S')) scantrace = TRUE ;
-    }
-initialize() ;
-while (TRUE)
-    {
-    m_token = scan() ;
-    m_prevcon = curcon ;
-    curcon = m_newcon(m_prevcon - 1, m_token - 1) ;
-    if (scantrace)
-    printf(
-    "m_prevcon=%d, m_token=%d, curcon=%d, scanval = %c (%d), line=%d\n",
-    m_prevcon, m_token, curcon, (char)scanval, (int)scanval, m_line) ;
-    #include "case.c"
-    if (m_token == ENDFILE) exit(FALSE) ;
-    }
+        if (argc > 1) {
+                if (strchr(argv[1], 'a'))
+                        m_malftrace = TRUE;
+                if (strchr(argv[1], 'A'))
+                        m_malftrace = TRUE;
+                if (strchr(argv[1], 'a'))
+                        m_malftrace = TRUE;
+                if (strchr(argv[1], 'H'))
+                        m_heapchk = TRUE;
+                if (strchr(argv[1], 'm'))
+                        standard = TRUE;
+                if (strchr(argv[1], 'M'))
+                        standard = TRUE;
+                if (strchr(argv[1], 's'))
+                        scantrace = TRUE;
+                if (strchr(argv[1], 'S'))
+                        scantrace = TRUE;
+        }
+        initialize();
+        while (TRUE) {
+                m_token = scan();
+                m_prevcon = curcon;
+                curcon = m_newcon(m_prevcon - 1, m_token - 1);
+                if (scantrace)
+                        printf("m_prevcon=%d, m_token=%d, curcon=%d, scanval = "
+                               "%c (%d), line=%d\n",
+                               m_prevcon, m_token, curcon, (char)scanval,
+                               (int)scanval, m_line);
+#include "case.c"
+                if (m_token == ENDFILE)
+                        exit(FALSE);
+        }
 }

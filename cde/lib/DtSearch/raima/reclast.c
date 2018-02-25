@@ -56,7 +56,6 @@
 
 */
 
-
 /* ********************** INCLUDE FILES ****************************** */
 
 #include <stdio.h>
@@ -73,69 +72,70 @@
 /* ======================================================================
    d_reclast - find last record occurance in database
 */
-int d_reclast( rec TASK_PARM DBN_PARM )
-int rec;			/* record # to find last occurance of */
+int d_reclast(
+    rec TASK_PARM DBN_PARM) int rec; /* record # to find last occurance of */
 TASK_DECL
-DBN_DECL			/* optional database number */
+DBN_DECL /* optional database number */
 {
-/*
-   RETURNS: db_status.  Sets current record to last record, if found.
-   ASSUMES: nothing.
-*/
-   DB_ADDR dba;			/* current database addr we're scanning */
-   FILE_NO ftype;		/* file desc for file holding rec */
-   F_ADDR last;			/* last slot in file */
-   char FAR *recptr;		/* record from database */
-   RECORD_ENTRY FAR *rec_ptr;	/* RECORD ENTRY for this record */
-   INT rectype;			/* record type from record */
-   F_ADDR rno;			/* current slot we're scanning */
+        /*
+           RETURNS: db_status.  Sets current record to last record, if found.
+           ASSUMES: nothing.
+        */
+        DB_ADDR dba;               /* current database addr we're scanning */
+        FILE_NO ftype;             /* file desc for file holding rec */
+        F_ADDR last;               /* last slot in file */
+        char FAR *recptr;          /* record from database */
+        RECORD_ENTRY FAR *rec_ptr; /* RECORD ENTRY for this record */
+        INT rectype;               /* record type from record */
+        F_ADDR rno;                /* current slot we're scanning */
 
 #ifndef SINGLE_USER
-   int dbopen_sv;		/* saved copy of dbopen */
+        int dbopen_sv; /* saved copy of dbopen */
 #endif
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_IO));
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_IO));
 
-   /* validate and convert record number */
-   if ( nrec_check(rec, &rec, (RECORD_ENTRY FAR * FAR *)&rec_ptr) != S_OKAY)
-      RETURN( db_status );
+        /* validate and convert record number */
+        if (nrec_check(rec, &rec, (RECORD_ENTRY FAR * FAR *)&rec_ptr) != S_OKAY)
+                RETURN(db_status);
 
-   /* get the last record # for this file */
-   ftype = NUM2EXT(rec_ptr->rt_file, ft_offset);
-   if ( (last = dio_pznext(rec_ptr->rt_file)) <= 0 )
-      RETURN( db_status );
+        /* get the last record # for this file */
+        ftype = NUM2EXT(rec_ptr->rt_file, ft_offset);
+        if ((last = dio_pznext(rec_ptr->rt_file)) <= 0)
+                RETURN(db_status);
 
-   /* start at the end, working backwards, find a matching record */
-   rno = last - 1;
-   do {
-      if ( rno < 1)
-	 RETURN ( db_status = S_NOTFOUND );
-      
-      /* create the database address, and read this record */
-      dba = ((FILEMASK & ftype) << FILESHIFT) | (ADDRMASK & rno);
+        /* start at the end, working backwards, find a matching record */
+        rno = last - 1;
+        do {
+                if (rno < 1)
+                        RETURN(db_status = S_NOTFOUND);
+
+                /* create the database address, and read this record */
+                dba = ((FILEMASK & ftype) << FILESHIFT) | (ADDRMASK & rno);
 #ifndef SINGLE_USER
-      dbopen_sv = dbopen;
-      dbopen = 2;		/* setup to allow unlocked read */
+                dbopen_sv = dbopen;
+                dbopen = 2; /* setup to allow unlocked read */
 #endif
-      dio_read(dba, (char FAR * FAR *)&recptr, NOPGHOLD);
+                dio_read(dba, (char FAR *FAR *)&recptr, NOPGHOLD);
 #ifndef SINGLE_USER
-      dbopen = dbopen_sv;
+                dbopen = dbopen_sv;
 #endif
-      if ( db_status != S_OKAY )
-	 RETURN( db_status );
-      
-      /* See if this record is of the type we're looking for */
-      bytecpy(&rectype, recptr, sizeof(INT));
-#ifndef SINGLE_USER
-      rectype &= ~((INT)RLBMASK);	/* remove rlb */
-#endif
-      rno--;
-   } while ( (int)rectype != rec );
+                if (db_status != S_OKAY)
+                        RETURN(db_status);
 
-   /* when we get here, we know a match was found */
-   curr_rec = dba;			/* set current record */
-   RN_REF(rn_type) = rectype;		/* setup for future recprev,recnext */
-   RN_REF(rn_dba) = dba;
-   RETURN( db_status = S_OKAY );
+                /* See if this record is of the type we're looking for */
+                bytecpy(&rectype, recptr, sizeof(INT));
+#ifndef SINGLE_USER
+                rectype &= ~((INT)RLBMASK); /* remove rlb */
+#endif
+                rno--;
+        } while ((int)rectype != rec);
+
+        /* when we get here, we know a match was found */
+        curr_rec = dba;            /* set current record */
+        RN_REF(rn_type) = rectype; /* setup for future recprev,recnext */
+        RN_REF(rn_dba) = dba;
+        RETURN(db_status = S_OKAY);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin reclast.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin reclast.c */

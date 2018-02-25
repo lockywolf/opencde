@@ -29,7 +29,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -63,24 +63,15 @@
  * Static Function Declarations
  *
  */
-static String* BuildStringList(
-			       String list_string,
-			       int i);
-static XtEnum OpenXPrinterOnDisplay(
-				    String printer_name,
-				    String display_spec,
-				    Display** new_display,
-				    char** ct_printer_name);
-static int SpanNonWhitespace(
-			     char* string);
-static int SpanWhitespace(
-			  char* string);
-static int StringToCompoundText(
-				Display* display,
-				char** compound_text,
-				const char* string);
-static Boolean TrimWhitespace(
-			      String s);
+static String *BuildStringList(String list_string, int i);
+static XtEnum OpenXPrinterOnDisplay(String printer_name, String display_spec,
+                                    Display **new_display,
+                                    char **ct_printer_name);
+static int SpanNonWhitespace(char *string);
+static int SpanWhitespace(char *string);
+static int StringToCompoundText(Display *display, char **compound_text,
+                                const char *string);
+static Boolean TrimWhitespace(String s);
 
 /*
  * ------------------------------------------------------------------------
@@ -97,44 +88,37 @@ static Boolean TrimWhitespace(
  *     the returned list by calling _DtPrintFreeStringList.
  *
  */
-static String*
-BuildStringList(String list_string, int i)
-{
-    String string = NULL;
-    /*
-     * parse the next item out of the string list
-     */
-    if(list_string != (String)NULL)
-    {
-	int length;
-	list_string += SpanWhitespace(list_string);
-	length = SpanNonWhitespace(list_string);
-	if(length != 0)
-	{
-	    string = XtCalloc(length+1, sizeof(char));
-	    strncpy(string, list_string, length);
-	    list_string += length;
-	}
-    }
-    if(string == (String)NULL)
-    {
-	/*
-	 * end of string list; allocate the array
-	 */
-	return (String*)XtCalloc(i+1, sizeof(String));
-    }
-    else
-    {
-	/*
-	 * recurse
-	 */
-	String* string_list = BuildStringList(list_string, i+1);
-	/*
-	 * set the string in the list and return
-	 */
-	string_list[i] = string;
-	return string_list;
-    }
+static String *BuildStringList(String list_string, int i) {
+        String string = NULL;
+        /*
+         * parse the next item out of the string list
+         */
+        if (list_string != (String)NULL) {
+                int length;
+                list_string += SpanWhitespace(list_string);
+                length = SpanNonWhitespace(list_string);
+                if (length != 0) {
+                        string = XtCalloc(length + 1, sizeof(char));
+                        strncpy(string, list_string, length);
+                        list_string += length;
+                }
+        }
+        if (string == (String)NULL) {
+                /*
+                 * end of string list; allocate the array
+                 */
+                return (String *)XtCalloc(i + 1, sizeof(String));
+        } else {
+                /*
+                 * recurse
+                 */
+                String *string_list = BuildStringList(list_string, i + 1);
+                /*
+                 * set the string in the list and return
+                 */
+                string_list[i] = string;
+                return string_list;
+        }
 }
 
 /*
@@ -176,13 +160,9 @@ BuildStringList(String list_string, int i)
  *         The display could not be opened.
  *
  */
-static XtEnum
-OpenXPrinterOnDisplay(
-		      String printer_name,
-		      String display_spec,
-		      Display** new_display,
-		      char** ct_printer_name)
-{
+static XtEnum OpenXPrinterOnDisplay(String printer_name, String display_spec,
+                                    Display **new_display,
+                                    char **ct_printer_name) {
 #if 0 && defined(PRINTING_SUPPORTED)
     Display* print_display;
     XPPrinterList printer_list;
@@ -244,7 +224,7 @@ OpenXPrinterOnDisplay(
 	return DtPRINT_INVALID_DISPLAY;
     }
 #else
-    return DtPRINT_NO_PRINTER;
+        return DtPRINT_NO_PRINTER;
 #endif
 }
 
@@ -259,14 +239,12 @@ OpenXPrinterOnDisplay(
  *
  *
  */
-static int
-SpanNonWhitespace(char* string)
-{
-    char* ptr;
-    for(ptr = string;
-	*ptr != '\0' && !DtIsspace(ptr);
-	ptr = DtNextChar(ptr));
-    return ptr - string;
+static int SpanNonWhitespace(char *string) {
+        char *ptr;
+        for (ptr = string; *ptr != '\0' && !DtIsspace(ptr);
+             ptr = DtNextChar(ptr))
+                ;
+        return ptr - string;
 }
 
 /*
@@ -280,14 +258,12 @@ SpanNonWhitespace(char* string)
  *
  *
  */
-static int
-SpanWhitespace(char* string)
-{
-    char* ptr;
-    for(ptr = string;
-	*ptr != '\0' && DtIsspace(ptr);
-	ptr = DtNextChar(ptr));
-    return ptr - string;
+static int SpanWhitespace(char *string) {
+        char *ptr;
+        for (ptr = string; *ptr != '\0' && DtIsspace(ptr);
+             ptr = DtNextChar(ptr))
+                ;
+        return ptr - string;
 }
 
 /*
@@ -308,25 +284,19 @@ SpanWhitespace(char* string)
  *     string using XFree().
  *
  */
-static int
-StringToCompoundText(
-		     Display* display,
-		     char** compound_text,
-		     const char* string)
-{
-    XTextProperty text_prop;
-    int status;
-    
-    status = XmbTextListToTextProperty(display,
-				       (char**)&string, 1,
-				       XCompoundTextStyle,
-				       &text_prop);
-    if(Success == status)
-	*compound_text = (char*)text_prop.value;
-    else
-	*compound_text = (char*)NULL;
+static int StringToCompoundText(Display *display, char **compound_text,
+                                const char *string) {
+        XTextProperty text_prop;
+        int status;
 
-    return status;
+        status = XmbTextListToTextProperty(display, (char **)&string, 1,
+                                           XCompoundTextStyle, &text_prop);
+        if (Success == status)
+                *compound_text = (char *)text_prop.value;
+        else
+                *compound_text = (char *)NULL;
+
+        return status;
 }
 
 /*
@@ -343,49 +313,47 @@ StringToCompoundText(
  *     True if the string was modified; False otherwise.
  *
  */
-static Boolean
-TrimWhitespace(String string)
-{
-    String ptr;
-    int i;
-    String last_non_ws;
-    Boolean modified = False;
+static Boolean TrimWhitespace(String string) {
+        String ptr;
+        int i;
+        String last_non_ws;
+        Boolean modified = False;
 
-    if((String)NULL == string)
-	return modified;
-    /*
-     * find the first non-whitespace character
-     */
-    for(ptr = string; *ptr != '\0' && DtIsspace(ptr); ptr = DtNextChar(ptr));
-    /*
-     * reposition the string
-     */
-    if(ptr != string)
-    {
-	modified = True;
-	for(i = 0; ptr[i] != '\0'; i++)
-	    string[i] = ptr[i];
-	string[i] = '\0';
-    }
-    /*
-     * find the last non-whitespace character
-     */
-    for(ptr = string, last_non_ws = NULL; *ptr != '\0'; ptr = DtNextChar(ptr))
-	if(!DtIsspace(ptr))
-	    last_non_ws = ptr;
-    /*
-     * trim any trailing whitespace
-     */
-    if((String)NULL != last_non_ws)
-    {
-	ptr = DtNextChar(last_non_ws);
-	if(*ptr != '\0')
-	{
-	    modified = True;
-	    *ptr = '\0';
-	}
-    }
-    return modified;
+        if ((String)NULL == string)
+                return modified;
+        /*
+         * find the first non-whitespace character
+         */
+        for (ptr = string; *ptr != '\0' && DtIsspace(ptr);
+             ptr = DtNextChar(ptr))
+                ;
+        /*
+         * reposition the string
+         */
+        if (ptr != string) {
+                modified = True;
+                for (i = 0; ptr[i] != '\0'; i++)
+                        string[i] = ptr[i];
+                string[i] = '\0';
+        }
+        /*
+         * find the last non-whitespace character
+         */
+        for (ptr = string, last_non_ws = NULL; *ptr != '\0';
+             ptr = DtNextChar(ptr))
+                if (!DtIsspace(ptr))
+                        last_non_ws = ptr;
+        /*
+         * trim any trailing whitespace
+         */
+        if ((String)NULL != last_non_ws) {
+                ptr = DtNextChar(last_non_ws);
+                if (*ptr != '\0') {
+                        modified = True;
+                        *ptr = '\0';
+                }
+        }
+        return modified;
 }
 
 /*
@@ -411,7 +379,7 @@ TrimWhitespace(String string)
  *
  *             - if 'spec_net' is DEC_NET, a "::" will be inserted
  *               immediately preceding it.
- *           
+ *
  *         * if the 'screen_num' is specified, a "." will be inserted
  *           immediately preceding it.
  *
@@ -422,75 +390,64 @@ TrimWhitespace(String string)
  *     responsibility of the caller to free the returned specifier by
  *     calling XtFree.
  */
-String
-_DtPrintCreateXPrinterSpecifier(
-				String printer_name,
-				String host_name,
-				DtPrintSpecNet spec_net,
-				int display_num,
-				int screen_num)
-{
-    String printer_specifier;
-    char display_string[32];
-    char screen_string[32];
-    int printer_name_len;
-    int host_name_len;
-    int specifier_len = 0;
-    String separator;
-    /*
-     * printer name length
-     */
-    if(printer_name != (String)NULL)
-	specifier_len += printer_name_len = strlen(printer_name);
-    else
-	printer_name_len = 0;
-    /*
-     * host name length
-     */
-    if(host_name != (String)NULL)
-	specifier_len += host_name_len = strlen(host_name);
-    else
-	host_name_len = 0;
-    /*
-     * printer name / display separator length
-     */
-    if(printer_name_len != 0 && (host_name_len != 0 || display_num != -1))
-    {
-	separator = XPSPEC_NAME_DISP_SEP;
-	specifier_len += XPSPEC_NAME_DISP_SEP_LEN;
-    }
-    else
-	separator = (String)NULL;
-    /*
-     * display number
-     */
-    if(display_num == -1)
-	display_string[0] = '\0';
-    else
-	specifier_len +=
-	    sprintf(display_string, "%s%d",
-		    spec_net == DtPRINT_DEC_NET ? "::" : ":",
-		    display_num);
-    /*
-     * screen number
-     */
-    if(screen_num == -1)
-	screen_string[0] = '\0';
-    else
-	specifier_len +=
-	    sprintf(screen_string, "%s%d", XPSPEC_DISP_SCREEN_SEP, screen_num);
-    /*
-     * create and return the new printer specifier
-     */
-    printer_specifier =	XtMalloc(specifier_len + 1);
-    sprintf(printer_specifier,
-	    "%s%s%s%s%s",
-	    printer_name ? printer_name : "",
-	    separator ? separator : "",
-	    host_name ? host_name : "",
-	    display_string,
-	    screen_string);
-    return printer_specifier;
+String _DtPrintCreateXPrinterSpecifier(String printer_name, String host_name,
+                                       DtPrintSpecNet spec_net, int display_num,
+                                       int screen_num) {
+        String printer_specifier;
+        char display_string[32];
+        char screen_string[32];
+        int printer_name_len;
+        int host_name_len;
+        int specifier_len = 0;
+        String separator;
+        /*
+         * printer name length
+         */
+        if (printer_name != (String)NULL)
+                specifier_len += printer_name_len = strlen(printer_name);
+        else
+                printer_name_len = 0;
+        /*
+         * host name length
+         */
+        if (host_name != (String)NULL)
+                specifier_len += host_name_len = strlen(host_name);
+        else
+                host_name_len = 0;
+        /*
+         * printer name / display separator length
+         */
+        if (printer_name_len != 0 &&
+            (host_name_len != 0 || display_num != -1)) {
+                separator = XPSPEC_NAME_DISP_SEP;
+                specifier_len += XPSPEC_NAME_DISP_SEP_LEN;
+        } else
+                separator = (String)NULL;
+        /*
+         * display number
+         */
+        if (display_num == -1)
+                display_string[0] = '\0';
+        else
+                specifier_len += sprintf(
+                    display_string, "%s%d",
+                    spec_net == DtPRINT_DEC_NET ? "::" : ":", display_num);
+        /*
+         * screen number
+         */
+        if (screen_num == -1)
+                screen_string[0] = '\0';
+        else
+                specifier_len += sprintf(screen_string, "%s%d",
+                                         XPSPEC_DISP_SCREEN_SEP, screen_num);
+        /*
+         * create and return the new printer specifier
+         */
+        printer_specifier = XtMalloc(specifier_len + 1);
+        sprintf(printer_specifier, "%s%s%s%s%s",
+                printer_name ? printer_name : "", separator ? separator : "",
+                host_name ? host_name : "", display_string, screen_string);
+        return printer_specifier;
 }
 
 /*
@@ -506,19 +463,14 @@ _DtPrintCreateXPrinterSpecifier(
  *     None.
  *
  */
-void
-_DtPrintFreeStringList(
-			 String* server_list)
-{
-    if(server_list)
-    {
-	int i;
-	for(i = 0; server_list[i] != (String)NULL; i++)
-	{
-	    XtFree(server_list[i]);
-	}
-	XtFree((char*)server_list);
-    }
+void _DtPrintFreeStringList(String *server_list) {
+        if (server_list) {
+                int i;
+                for (i = 0; server_list[i] != (String)NULL; i++) {
+                        XtFree(server_list[i]);
+                }
+                XtFree((char *)server_list);
+        }
 }
 
 /*
@@ -535,49 +487,48 @@ _DtPrintFreeStringList(
  *     memory allocated for the returned String by calling XtFree.
  *
  */
-String
-_DtPrintGetDefaultXPrinterName(
-			       Widget w)
-{
-    String default_printer;
+String _DtPrintGetDefaultXPrinterName(Widget w) {
+        String default_printer;
 
-    if((Widget)NULL == w)
-    {
-	default_printer = (String)NULL;
-    }
-    else
-    {
-	XtResource res_struct;
-	/*
-	 * initialize the resource structure
-	 */
-	res_struct.resource_name = "xpPrinter";
-	res_struct.resource_class = "XpPrinter";
-	res_struct.resource_type =  XmRString;
-	res_struct.resource_size = sizeof(String);
-	res_struct.resource_offset = 0;
-	res_struct.default_type = XmRImmediate;
-	res_struct.default_addr = (XtPointer)NULL;
-	/*
-	 * pick up the printer list application resource value for the
-	 * passed widget
-	 */
-	XtGetApplicationResources(w, (XtPointer)&default_printer,
-				  &res_struct, 1, (ArgList)NULL, 0);
-    }
-    /*
-     * if the resource is undefined, search for an appropriate
-     * environment variable
-     */
-    if(default_printer != (String)NULL);
-    else if((default_printer = getenv("XPRINTER")) != (String)NULL);
-    else if((default_printer = getenv("PDPRINTER")) != (String)NULL);
-    else if((default_printer = getenv("LPDEST")) != (String)NULL);
-    else if((default_printer = getenv("PRINTER")) != (String)NULL);
-    /*
-     * return a copy of the printer name
-     */
-    return XtNewString(default_printer);
+        if ((Widget)NULL == w) {
+                default_printer = (String)NULL;
+        } else {
+                XtResource res_struct;
+                /*
+                 * initialize the resource structure
+                 */
+                res_struct.resource_name = "xpPrinter";
+                res_struct.resource_class = "XpPrinter";
+                res_struct.resource_type = XmRString;
+                res_struct.resource_size = sizeof(String);
+                res_struct.resource_offset = 0;
+                res_struct.default_type = XmRImmediate;
+                res_struct.default_addr = (XtPointer)NULL;
+                /*
+                 * pick up the printer list application resource value for the
+                 * passed widget
+                 */
+                XtGetApplicationResources(w, (XtPointer)&default_printer,
+                                          &res_struct, 1, (ArgList)NULL, 0);
+        }
+        /*
+         * if the resource is undefined, search for an appropriate
+         * environment variable
+         */
+        if (default_printer != (String)NULL)
+                ;
+        else if ((default_printer = getenv("XPRINTER")) != (String)NULL)
+                ;
+        else if ((default_printer = getenv("PDPRINTER")) != (String)NULL)
+                ;
+        else if ((default_printer = getenv("LPDEST")) != (String)NULL)
+                ;
+        else if ((default_printer = getenv("PRINTER")) != (String)NULL)
+                ;
+        /*
+         * return a copy of the printer name
+         */
+        return XtNewString(default_printer);
 }
 
 /*
@@ -596,44 +547,38 @@ _DtPrintGetDefaultXPrinterName(
  *     _DtPrintFreeStringList.
  *
  */
-String*
-_DtPrintGetXpPrinterList(
-			 Widget w)
-{
-    XtResource res_struct;
-    String xp_printer_list;
-    /*
-     * initialize the resource structure
-     */
-    res_struct.resource_name = "xpPrinterList";
-    res_struct.resource_class = "XpPrinterList";
-    res_struct.resource_type =  XmRString;
-    res_struct.resource_size = sizeof(String);
-    res_struct.resource_offset = 0;
-    res_struct.default_type = XmRImmediate;
-    res_struct.default_addr = (XtPointer)NULL;
-    /*
-     * pick up the printer list application resource value for the passed
-     * widget
-     */
-    XtGetApplicationResources(w, (XtPointer)&xp_printer_list,
-			      &res_struct, 1, (ArgList)NULL, 0);
-    /*
-     * if the resource is undefined, use the environment variable
-     */
-    if(xp_printer_list == (String)NULL)
-    {
-	xp_printer_list = getenv("XPRINTERLIST");
-    }
-    /*
-     * build the array of printer names
-     */
-    if(xp_printer_list != (String)NULL)
-    {
-	return BuildStringList(xp_printer_list, 0);
-    }
-    else
-	return (String*)NULL;
+String *_DtPrintGetXpPrinterList(Widget w) {
+        XtResource res_struct;
+        String xp_printer_list;
+        /*
+         * initialize the resource structure
+         */
+        res_struct.resource_name = "xpPrinterList";
+        res_struct.resource_class = "XpPrinterList";
+        res_struct.resource_type = XmRString;
+        res_struct.resource_size = sizeof(String);
+        res_struct.resource_offset = 0;
+        res_struct.default_type = XmRImmediate;
+        res_struct.default_addr = (XtPointer)NULL;
+        /*
+         * pick up the printer list application resource value for the passed
+         * widget
+         */
+        XtGetApplicationResources(w, (XtPointer)&xp_printer_list, &res_struct,
+                                  1, (ArgList)NULL, 0);
+        /*
+         * if the resource is undefined, use the environment variable
+         */
+        if (xp_printer_list == (String)NULL) {
+                xp_printer_list = getenv("XPRINTERLIST");
+        }
+        /*
+         * build the array of printer names
+         */
+        if (xp_printer_list != (String)NULL) {
+                return BuildStringList(xp_printer_list, 0);
+        } else
+                return (String *)NULL;
 }
 
 /*
@@ -657,45 +602,41 @@ _DtPrintGetXpPrinterList(
  *     _DtPrintFreeStringList.
  *
  */
-String*
-_DtPrintGetXpServerList(
-			Widget w)
-{
-    XtResource res_struct;
-    String xp_server_list;
-    int error_base;
-    int event_base;
-    String* server_list;
-    int i;
-    /*
-     * initialize the resource structure
-     */
-    res_struct.resource_name = "xpServerList";
-    res_struct.resource_class = "XpServerList";
-    res_struct.resource_type =  XmRString;
-    res_struct.resource_size = sizeof(String);
-    res_struct.resource_offset = 0;
-    res_struct.default_type = XmRImmediate;
-    res_struct.default_addr = (XtPointer)NULL;
-    /*
-     * pick up the server list application resource value for the passed
-     * widget
-     */
-    if((Widget)NULL == w)
-	xp_server_list = (String)NULL;
-    else
-	XtGetApplicationResources(w, (XtPointer)&xp_server_list,
-				  &res_struct, 1, (ArgList)NULL, 0);
-    /*
-     * if the resource is undefined, use the environment variable value
-     */
-    if(xp_server_list == (String)NULL)
-    {
-	xp_server_list = getenv("XPSERVERLIST");
-    }
-    /*
-     * convert to a list of strings
-     */
+String *_DtPrintGetXpServerList(Widget w) {
+        XtResource res_struct;
+        String xp_server_list;
+        int error_base;
+        int event_base;
+        String *server_list;
+        int i;
+        /*
+         * initialize the resource structure
+         */
+        res_struct.resource_name = "xpServerList";
+        res_struct.resource_class = "XpServerList";
+        res_struct.resource_type = XmRString;
+        res_struct.resource_size = sizeof(String);
+        res_struct.resource_offset = 0;
+        res_struct.default_type = XmRImmediate;
+        res_struct.default_addr = (XtPointer)NULL;
+        /*
+         * pick up the server list application resource value for the passed
+         * widget
+         */
+        if ((Widget)NULL == w)
+                xp_server_list = (String)NULL;
+        else
+                XtGetApplicationResources(w, (XtPointer)&xp_server_list,
+                                          &res_struct, 1, (ArgList)NULL, 0);
+        /*
+         * if the resource is undefined, use the environment variable value
+         */
+        if (xp_server_list == (String)NULL) {
+                xp_server_list = getenv("XPSERVERLIST");
+        }
+                /*
+                 * convert to a list of strings
+                 */
 #if 0 && defined(PRINTING_SUPPORTED)
     if((Widget)NULL != w
        &&
@@ -714,40 +655,34 @@ _DtPrintGetXpServerList(
     }
     else
 #endif /* PRINTING_SUPPORTED */
-	server_list = (String*)NULL;
-    /*
-     * default the display number to ":0" if needed
-     */
-    for(i = 0; server_list && server_list[i]; i++)
-    {
-	String host_name;
-	int display_num;
-	/*
-	 * check to see if display number is specified
-	 */
-	_DtPrintParseXDisplaySpecifier(server_list[i],
-				       &host_name,
-				       (DtPrintSpecNet*)NULL,
-				       &display_num,
-				       (int*)NULL);
-	if(display_num == -1)
-	{
-	    /*
-	     * display number not specified; default to ":0"
-	     */
-	    XtFree(server_list[i]);
-	    server_list[i] =
-		_DtPrintCreateXPrinterSpecifier((String)NULL, host_name,
-						DtPRINT_TCP_IPC, 0, -1);
-	}
-	XtFree(host_name);
-    }
-    /*
-     * return
-     */
-    return server_list;
+        server_list = (String *)NULL;
+        /*
+         * default the display number to ":0" if needed
+         */
+        for (i = 0; server_list && server_list[i]; i++) {
+                String host_name;
+                int display_num;
+                /*
+                 * check to see if display number is specified
+                 */
+                _DtPrintParseXDisplaySpecifier(server_list[i], &host_name,
+                                               (DtPrintSpecNet *)NULL,
+                                               &display_num, (int *)NULL);
+                if (display_num == -1) {
+                        /*
+                         * display number not specified; default to ":0"
+                         */
+                        XtFree(server_list[i]);
+                        server_list[i] = _DtPrintCreateXPrinterSpecifier(
+                            (String)NULL, host_name, DtPRINT_TCP_IPC, 0, -1);
+                }
+                XtFree(host_name);
+        }
+        /*
+         * return
+         */
+        return server_list;
 }
-
 
 /*
  * ------------------------------------------------------------------------
@@ -776,113 +711,102 @@ _DtPrintGetXpServerList(
  *     None.
  *
  */
-void
-_DtPrintParseXDisplaySpecifier(
-			       const String display_spec,
-			       String* host_name,
-			       DtPrintSpecNet* spec_net,
-			       int* display_num,
-			       int* screen_num)
-{
-    char* ptr;
+void _DtPrintParseXDisplaySpecifier(const String display_spec,
+                                    String *host_name, DtPrintSpecNet *spec_net,
+                                    int *display_num, int *screen_num) {
+        char *ptr;
 
-    if(display_spec == (String)NULL)
-    {
-	/*
-	 * not much to do with a NULL display spec
-	 */
-	if(host_name) *host_name = (String)NULL;
-	if(spec_net) *spec_net = DtPRINT_NET_UNSPECIFIED;
-	if(display_num) *display_num = -1;
-	if(screen_num) *screen_num = -1;
-	return;
-    }
-    /*
-     * find the start of the display number in the display spec
-     */
-    ptr = DtStrchr(display_spec, ':');
-    if(ptr == (char*)NULL)
-    {
-	/*
-	 * not found, return -1 for display and screen
-	 */
-	if(spec_net) *spec_net = DtPRINT_NET_UNSPECIFIED;
-	if(display_num) *display_num = -1;
-	if(screen_num) *screen_num = -1;
-	/*
-	 * return the host name as a copy of the display spec
-	 */
-	if(host_name) *host_name = XtNewString(display_spec);
-    }
-    else
-    {
-	int num;
-	/*
-	 * skip over the ':', determine if this is a DECnet specifier,
-	 * and pick up the display num if specified
-	 */
-	++ptr;
-	if(*ptr == '\0')
-	{
-	    if(spec_net) *spec_net = DtPRINT_NET_UNSPECIFIED;
-	    num = -1;
-	}
-	else
-	{
-	    if(*ptr == ':')
-	    {
-		if(spec_net) *spec_net = DtPRINT_DEC_NET;
-		++ptr;
-	    }
-	    else
-	    {
-		if(spec_net) *spec_net = DtPRINT_TCP_IPC;
-	    }
-	    if(*ptr == '\0')
-		num = -1;
-	    else
-		num = (int)strtol(ptr, &ptr, 10);
-	}
-	if(display_num) *display_num = num;
-	if(screen_num)
-	{
-	    if(num == -1)
-	    {
-		*screen_num = -1;
-	    }
-	    else
-	    {
-		/*
-		 * parse out the screen number
-		 */
-		if(*ptr == '.' && *(ptr+1) != '\0')
-		{
-		    ++ptr;
-		    num = (int)strtol(ptr, &ptr, 10);
-		    if(screen_num) *screen_num = num;
-		}
-		else
-		{
-		    /*
-		     * not found, return -1 for screen
-		     */
-		    *screen_num = -1;
-		}
-	    }
-	}
-	if(host_name)
-	{
-	    /*
-	     * allocate a new string containing just the host name
-	     */
-	    int host_name_len = DtStrcspn(display_spec, ":");
-	    *host_name = XtMalloc(host_name_len+1);
-	    strncpy(*host_name, display_spec, host_name_len);
-	    (*host_name)[host_name_len] = '\0';
-	}
-    }
+        if (display_spec == (String)NULL) {
+                /*
+                 * not much to do with a NULL display spec
+                 */
+                if (host_name)
+                        *host_name = (String)NULL;
+                if (spec_net)
+                        *spec_net = DtPRINT_NET_UNSPECIFIED;
+                if (display_num)
+                        *display_num = -1;
+                if (screen_num)
+                        *screen_num = -1;
+                return;
+        }
+        /*
+         * find the start of the display number in the display spec
+         */
+        ptr = DtStrchr(display_spec, ':');
+        if (ptr == (char *)NULL) {
+                /*
+                 * not found, return -1 for display and screen
+                 */
+                if (spec_net)
+                        *spec_net = DtPRINT_NET_UNSPECIFIED;
+                if (display_num)
+                        *display_num = -1;
+                if (screen_num)
+                        *screen_num = -1;
+                /*
+                 * return the host name as a copy of the display spec
+                 */
+                if (host_name)
+                        *host_name = XtNewString(display_spec);
+        } else {
+                int num;
+                /*
+                 * skip over the ':', determine if this is a DECnet specifier,
+                 * and pick up the display num if specified
+                 */
+                ++ptr;
+                if (*ptr == '\0') {
+                        if (spec_net)
+                                *spec_net = DtPRINT_NET_UNSPECIFIED;
+                        num = -1;
+                } else {
+                        if (*ptr == ':') {
+                                if (spec_net)
+                                        *spec_net = DtPRINT_DEC_NET;
+                                ++ptr;
+                        } else {
+                                if (spec_net)
+                                        *spec_net = DtPRINT_TCP_IPC;
+                        }
+                        if (*ptr == '\0')
+                                num = -1;
+                        else
+                                num = (int)strtol(ptr, &ptr, 10);
+                }
+                if (display_num)
+                        *display_num = num;
+                if (screen_num) {
+                        if (num == -1) {
+                                *screen_num = -1;
+                        } else {
+                                /*
+                                 * parse out the screen number
+                                 */
+                                if (*ptr == '.' && *(ptr + 1) != '\0') {
+                                        ++ptr;
+                                        num = (int)strtol(ptr, &ptr, 10);
+                                        if (screen_num)
+                                                *screen_num = num;
+                                } else {
+                                        /*
+                                         * not found, return -1 for screen
+                                         */
+                                        *screen_num = -1;
+                                }
+                        }
+                }
+                if (host_name) {
+                        /*
+                         * allocate a new string containing just the host name
+                         */
+                        int host_name_len = DtStrcspn(display_spec, ":");
+                        *host_name = XtMalloc(host_name_len + 1);
+                        strncpy(*host_name, display_spec, host_name_len);
+                        (*host_name)[host_name_len] = '\0';
+                }
+        }
 }
-
 
 /*
  * ------------------------------------------------------------------------
@@ -910,51 +834,50 @@ _DtPrintParseXDisplaySpecifier(
  *     None.
  *
  */
-void
-_DtPrintParseXPrinterSpecifier(
-			       const String specifier,
-			       String* printer_name,
-			       String* display_spec)
-{
-    if(specifier == (String)NULL)
-    {
-	if(printer_name) *printer_name = (String)NULL;
-	if(display_spec) *display_spec = (String)NULL;
-    }
-    else
-    {
-	String delim_ptr;
-	/*
-	 * determine the offset of the printer name / display name delimiter
-	 * ('@') within the X Printer Specifier
-	 */
-	delim_ptr = DtStrchr(specifier, XPSPEC_NAME_DISP_SEP_CHAR);
-	if(delim_ptr == (String)NULL)
-	{
-	    /*
-	     * no delimiter found; specifier consists of printer name only
-	     */
-	    if(printer_name) *printer_name = XtNewString(specifier);
-	    if(display_spec) *display_spec = XtNewString("");
-	}
-	else
-	{
-	    /*
-	     * copy the printer name portion from the specifier
-	     */
-	    if(printer_name)
-	    {
-		int printer_name_len = delim_ptr - specifier;
-		*printer_name = (String)XtMalloc(printer_name_len + 1);
-		strncpy(*printer_name, specifier, printer_name_len);
-		(*printer_name)[printer_name_len] = '\0';
-	    }
-	    /*
-	     * copy the display name portion from the specifier
-	     */
-	    if(display_spec) *display_spec = XtNewString(delim_ptr+1);
-	}
-    }
+void _DtPrintParseXPrinterSpecifier(const String specifier,
+                                    String *printer_name,
+                                    String *display_spec) {
+        if (specifier == (String)NULL) {
+                if (printer_name)
+                        *printer_name = (String)NULL;
+                if (display_spec)
+                        *display_spec = (String)NULL;
+        } else {
+                String delim_ptr;
+                /*
+                 * determine the offset of the printer name / display name
+                 * delimiter
+                 * ('@') within the X Printer Specifier
+                 */
+                delim_ptr = DtStrchr(specifier, XPSPEC_NAME_DISP_SEP_CHAR);
+                if (delim_ptr == (String)NULL) {
+                        /*
+                         * no delimiter found; specifier consists of printer
+                         * name only
+                         */
+                        if (printer_name)
+                                *printer_name = XtNewString(specifier);
+                        if (display_spec)
+                                *display_spec = XtNewString("");
+                } else {
+                        /*
+                         * copy the printer name portion from the specifier
+                         */
+                        if (printer_name) {
+                                int printer_name_len = delim_ptr - specifier;
+                                *printer_name =
+                                    (String)XtMalloc(printer_name_len + 1);
+                                strncpy(*printer_name, specifier,
+                                        printer_name_len);
+                                (*printer_name)[printer_name_len] = '\0';
+                        }
+                        /*
+                         * copy the display name portion from the specifier
+                         */
+                        if (display_spec)
+                                *display_spec = XtNewString(delim_ptr + 1);
+                }
+        }
 }
 
 /*
@@ -1015,156 +938,134 @@ _DtPrintParseXPrinterSpecifier(
  *         could not be opened.
  *
  */
-XtEnum
-_DtPrintVerifyXPrinter(
-		       Widget w,
-		       String printer_spec,
-		       String* new_printer_spec,
-		       Display** new_display
+XtEnum _DtPrintVerifyXPrinter(Widget w, String printer_spec,
+                              String *new_printer_spec, Display **new_display
 #if 0 && defined(PRINTING_SUPPORTED)
 		       ,XPContext* new_context
 #endif /* PRINTING_SUPPORTED */
-                       )
-{
-    String default_printer;
-    String printer_name;
-    String display_spec;
-    XtEnum status;
-    Display* print_display;
-    char* ct_printer_name;
-    String trimmed_spec;
-    /*
-     * initialize the printer spec return parm
-     */
-    *new_printer_spec = (String)NULL;
-    /*
-     * determine a default printer if the passed printer spec is NULL
-     */
-    if(printer_spec == (String)NULL)
-    {
-	default_printer = _DtPrintGetDefaultXPrinterName(w);
-	if(default_printer == (String)NULL)
-	    return DtPRINT_NO_DEFAULT;
-	else
-	    printer_spec = default_printer;
-    }
-    else
-	default_printer = (String)NULL;
-    /*
-     * trim whitespace from the printer spec if needed
-     */
-    trimmed_spec = XtNewString(printer_spec);
-    if(TrimWhitespace(trimmed_spec))
-    {
-	printer_spec = trimmed_spec;
-    }
-    else
-    {
-	XtFree(trimmed_spec);
-	trimmed_spec = (String)NULL;
-    }
-    /*
-     * break the printer specifier into its printer name and display
-     * specifier components
-     */
-    _DtPrintParseXPrinterSpecifier(printer_spec,
-				   &printer_name,
-				   &display_spec);
-    if(*printer_name == '\0')
-    {
-	/*
-	 * printer name is missing
-	 */
-	status = DtPRINT_PRINTER_MISSING;
-    }
-    else
-    {
-	/*
-	 * if the display spec is empty, search the server list for a
-	 * suitable display
-	 */
-	if(*display_spec == '\0')
-	{
-	    String* server_list;
-	    int i;
-	    /*
-	     * find a server in the server list that manages the printer
-	     */
-	    status = DtPRINT_NO_DEFAULT_DISPLAY;
-	    if((server_list = _DtPrintGetXpServerList(w)) != (String*)NULL)
-	    {
-		for(i = 0; server_list[i] != (String)NULL; i++)
-		{
-		    if(OpenXPrinterOnDisplay(printer_name,
-					     server_list[i],
-					     &print_display,
-					     &ct_printer_name)
-		       == DtPRINT_SUCCESS)
-		    {
-			status = DtPRINT_SUCCESS;
-			*new_printer_spec =
-			    _DtPrintCreateXPrinterSpecifier(
-						    printer_name,
-						    server_list[i],
-						    DtPRINT_NET_UNSPECIFIED,
-						    -1, -1);
-			break;
-		    }
-		}
-		_DtPrintFreeStringList(server_list);
-	    }
-	}
-	else
-	{
-	    String host_name;
-	    int display_num;
-	    /*
-	     * check to see if display number is specified
-	     */
-	    _DtPrintParseXDisplaySpecifier(display_spec,
-					   &host_name,
-					   (DtPrintSpecNet*)NULL,
-					   &display_num,
-					   (int*)NULL);
-	    if(display_num == -1)
-	    {
-		String new_display_spec;
-		/*
-		 * display number not specified; default to ":0"
-		 */
-		new_display_spec =
-		    _DtPrintCreateXPrinterSpecifier((String)NULL, host_name,
-						    DtPRINT_TCP_IPC, 0, -1);
-		/*
-		 * create new printer name for return, even if
-		 * OpenXPrinterOnDisplay is unsuccessful
-		 */
-		*new_printer_spec =
-		    _DtPrintCreateXPrinterSpecifier(printer_name,
-						    new_display_spec,
-						    DtPRINT_NET_UNSPECIFIED,
-						    -1, -1);
-		/*
-		 * use the new display spec
-		 */
-		XtFree(display_spec);
-		display_spec = new_display_spec;
-	    }
-	    XtFree(host_name);
-	    /*
-	     * open the print display
-	     */
-	    status = OpenXPrinterOnDisplay(printer_name,
-					   display_spec,
-					   &print_display,
-					   &ct_printer_name);
-	}
-    }
-    if(status == DtPRINT_SUCCESS)
-    {
-	/*
-	 * initialize the print context
-	 */
+) {
+        String default_printer;
+        String printer_name;
+        String display_spec;
+        XtEnum status;
+        Display *print_display;
+        char *ct_printer_name;
+        String trimmed_spec;
+        /*
+         * initialize the printer spec return parm
+         */
+        *new_printer_spec = (String)NULL;
+        /*
+         * determine a default printer if the passed printer spec is NULL
+         */
+        if (printer_spec == (String)NULL) {
+                default_printer = _DtPrintGetDefaultXPrinterName(w);
+                if (default_printer == (String)NULL)
+                        return DtPRINT_NO_DEFAULT;
+                else
+                        printer_spec = default_printer;
+        } else
+                default_printer = (String)NULL;
+        /*
+         * trim whitespace from the printer spec if needed
+         */
+        trimmed_spec = XtNewString(printer_spec);
+        if (TrimWhitespace(trimmed_spec)) {
+                printer_spec = trimmed_spec;
+        } else {
+                XtFree(trimmed_spec);
+                trimmed_spec = (String)NULL;
+        }
+        /*
+         * break the printer specifier into its printer name and display
+         * specifier components
+         */
+        _DtPrintParseXPrinterSpecifier(printer_spec, &printer_name,
+                                       &display_spec);
+        if (*printer_name == '\0') {
+                /*
+                 * printer name is missing
+                 */
+                status = DtPRINT_PRINTER_MISSING;
+        } else {
+                /*
+                 * if the display spec is empty, search the server list for a
+                 * suitable display
+                 */
+                if (*display_spec == '\0') {
+                        String *server_list;
+                        int i;
+                        /*
+                         * find a server in the server list that manages the
+                         * printer
+                         */
+                        status = DtPRINT_NO_DEFAULT_DISPLAY;
+                        if ((server_list = _DtPrintGetXpServerList(w)) !=
+                            (String *)NULL) {
+                                for (i = 0; server_list[i] != (String)NULL;
+                                     i++) {
+                                        if (OpenXPrinterOnDisplay(
+                                                printer_name, server_list[i],
+                                                &print_display,
+                                                &ct_printer_name) ==
+                                            DtPRINT_SUCCESS) {
+                                                status = DtPRINT_SUCCESS;
+                                                *new_printer_spec =
+                                                    _DtPrintCreateXPrinterSpecifier(
+                                                        printer_name,
+                                                        server_list[i],
+                                                        DtPRINT_NET_UNSPECIFIED,
+                                                        -1, -1);
+                                                break;
+                                        }
+                                }
+                                _DtPrintFreeStringList(server_list);
+                        }
+                } else {
+                        String host_name;
+                        int display_num;
+                        /*
+                         * check to see if display number is specified
+                         */
+                        _DtPrintParseXDisplaySpecifier(
+                            display_spec, &host_name, (DtPrintSpecNet *)NULL,
+                            &display_num, (int *)NULL);
+                        if (display_num == -1) {
+                                String new_display_spec;
+                                /*
+                                 * display number not specified; default to ":0"
+                                 */
+                                new_display_spec =
+                                    _DtPrintCreateXPrinterSpecifier(
+                                        (String)NULL, host_name,
+                                        DtPRINT_TCP_IPC, 0, -1);
+                                /*
+                                 * create new printer name for return, even if
+                                 * OpenXPrinterOnDisplay is unsuccessful
+                                 */
+                                *new_printer_spec =
+                                    _DtPrintCreateXPrinterSpecifier(
+                                        printer_name, new_display_spec,
+                                        DtPRINT_NET_UNSPECIFIED, -1, -1);
+                                /*
+                                 * use the new display spec
+                                 */
+                                XtFree(display_spec);
+                                display_spec = new_display_spec;
+                        }
+                        XtFree(host_name);
+                        /*
+                         * open the print display
+                         */
+                        status = OpenXPrinterOnDisplay(
+                            printer_name, display_spec, &print_display,
+                            &ct_printer_name);
+                }
+        }
+        if (status == DtPRINT_SUCCESS) {
+        /*
+         * initialize the print context
+         */
 #if 0 && defined(PRINTING_SUPPORTED)
 	if((char*)NULL != ct_printer_name)
 	{
@@ -1175,59 +1076,50 @@ _DtPrintVerifyXPrinter(
 	    *new_context = XpCreateContext(print_display, printer_name);
 	XpSetContext(print_display, *new_context);
 #endif /* PRINTING_SUPPORTED */
-	/*
-	 * update the display return parm
-	 */
-	*new_display = print_display;
-    }
-    /*
-     * check to see if the trimmed spec was used
-     */
-    if(trimmed_spec != (String)NULL)
-    {
-	if(*new_printer_spec == (String)NULL)
-	{
-	    /*
-	     * the trimmed spec was used as is; return it as the new
-	     * printer specifier
-	     */
-	    *new_printer_spec = trimmed_spec;
-	}
-	else
-	{
-	    /*
-	     * a modified version of the trimmed spec was used
-	     */
-	    XtFree(trimmed_spec);
-	}
-	XtFree(default_printer);
-    }
-    else if(default_printer != (String)NULL)
-    {
-	/*
-	 * check to see if the default printer was used without
-	 * modification
-	 */
-	if(*new_printer_spec == (String)NULL)
-	{
-	    /*
-	     * the default printer was used as is; return it as the new
-	     * printer specifier
-	     */
-	    *new_printer_spec = default_printer;
-	}
-	else
-	{
-	    /*
-	     * a modified version of the default printer was used
-	     */
-	    XtFree(default_printer);
-	}
-    }
-    /*
-     * clean up and return
-     */
-    XtFree(printer_name);
-    XtFree(display_spec);
-    return status;
+                /*
+                 * update the display return parm
+                 */
+                *new_display = print_display;
+        }
+        /*
+         * check to see if the trimmed spec was used
+         */
+        if (trimmed_spec != (String)NULL) {
+                if (*new_printer_spec == (String)NULL) {
+                        /*
+                         * the trimmed spec was used as is; return it as the new
+                         * printer specifier
+                         */
+                        *new_printer_spec = trimmed_spec;
+                } else {
+                        /*
+                         * a modified version of the trimmed spec was used
+                         */
+                        XtFree(trimmed_spec);
+                }
+                XtFree(default_printer);
+        } else if (default_printer != (String)NULL) {
+                /*
+                 * check to see if the default printer was used without
+                 * modification
+                 */
+                if (*new_printer_spec == (String)NULL) {
+                        /*
+                         * the default printer was used as is; return it as the
+                         * new printer specifier
+                         */
+                        *new_printer_spec = default_printer;
+                } else {
+                        /*
+                         * a modified version of the default printer was used
+                         */
+                        XtFree(default_printer);
+                }
+        }
+        /*
+         * clean up and return
+         */
+        XtFree(printer_name);
+        XtFree(display_spec);
+        return status;
 }

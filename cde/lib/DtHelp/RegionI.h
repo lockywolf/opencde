@@ -38,30 +38,26 @@
  **  (c) Copyright 1993, 1994 Novell, Inc.
  ****************************************************************************
  ************************************<+>*************************************/
-#ifndef	_DtHelpRegionI_h
-#define	_DtHelpRegionI_h
+#ifndef _DtHelpRegionI_h
+#define _DtHelpRegionI_h
 
 /********    Public Enum Declarations    ********/
 
-enum	_dtHelpDARegType
-    {
-      _DtHelpDAGraphic,
-      _DtHelpDASpc
-    };
+enum _dtHelpDARegType { _DtHelpDAGraphic, _DtHelpDASpc };
 
 typedef enum _dtHelpDARegType _DtHelpDARegType;
 
 /********    Public Structure Declarations    ********/
 
-typedef	struct _dtHelpDARegion {
-	short			inited;
-	_DtHelpDARegType	type;
-	_DtCvPointer		handle;
+typedef struct _dtHelpDARegion {
+        short inited;
+        _DtHelpDARegType type;
+        _DtCvPointer handle;
 } _DtHelpDARegion;
 
-typedef	struct _dtHelpDASpcInfo {
-	char			*name;
-	_DtHelpFontHints	 spc_fonts;
+typedef struct _dtHelpDASpcInfo {
+        char *name;
+        _DtHelpFontHints spc_fonts;
 } _DtHelpDASpcInfo;
 
 #endif /* _DtHelpRegionI_h */

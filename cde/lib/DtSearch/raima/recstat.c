@@ -47,48 +47,45 @@
 #include "vista.h"
 #include "dbtype.h"
 
-
-#ifndef	 NO_TIMESTAMP
+#ifndef NO_TIMESTAMP
 /* Test timestamp status of record
-*/
-d_recstat(dba, rts TASK_PARM)
-DB_ADDR dba;
-ULONG   rts;
-TASK_DECL
-{
-   INT rec;
-   char FAR *ptr;
-   ULONG cts, uts;
+ */
+d_recstat(dba, rts TASK_PARM) DB_ADDR dba;
+ULONG rts;
+TASK_DECL {
+        INT rec;
+        char FAR *ptr;
+        ULONG cts, uts;
 
-   DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(RECORD_IO));
+        DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(RECORD_IO));
 
-   if ((check_dba(dba) != S_OKAY) || (dio_read(dba, (char FAR * FAR *)&ptr, NOPGHOLD) != S_OKAY))
-      RETURN( db_status );
+        if ((check_dba(dba) != S_OKAY) ||
+            (dio_read(dba, (char FAR *FAR *)&ptr, NOPGHOLD) != S_OKAY))
+                RETURN(db_status);
 
-   /* get record id */
-   bytecpy(&rec, ptr, sizeof(INT));
-   if ( rec >= 0 ) {
-      rec &= ~RLBMASK; /* mask off rlb */
-#ifndef	 ONE_DB
-      rec += curr_db_table->rt_offset;
+        /* get record id */
+        bytecpy(&rec, ptr, sizeof(INT));
+        if (rec >= 0) {
+                rec &= ~RLBMASK; /* mask off rlb */
+#ifndef ONE_DB
+                rec += curr_db_table->rt_offset;
 #endif
-      if ( record_table[rec].rt_flags & TIMESTAMPED ) {
-	 bytecpy(&cts, ptr + RECCRTIME, sizeof(ULONG));
-	 if ( cts > rts )
-	    db_status = S_DELETED;
-	 else {
-	    bytecpy(&uts, ptr + RECUPTIME, sizeof(ULONG));
-	    if ( uts > rts )
-	       db_status = S_UPDATED;
-	 }
-      }
-      else
-	 dberr(S_TIMESTAMP);
-   }
-   else
-      db_status = S_DELETED;
+                if (record_table[rec].rt_flags & TIMESTAMPED) {
+                        bytecpy(&cts, ptr + RECCRTIME, sizeof(ULONG));
+                        if (cts > rts)
+                                db_status = S_DELETED;
+                        else {
+                                bytecpy(&uts, ptr + RECUPTIME, sizeof(ULONG));
+                                if (uts > rts)
+                                        db_status = S_UPDATED;
+                        }
+                } else
+                        dberr(S_TIMESTAMP);
+        } else
+                db_status = S_DELETED;
 
-   RETURN( db_status );
+        RETURN(db_status);
 }
 #endif
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin recstat.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin recstat.c */

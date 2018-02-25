@@ -34,10 +34,9 @@
 namespace SP_NAMESPACE {
 #endif
 
-template<class T>
-class StringResource : public String<T>, public Resource {
-public:
-  StringResource(const String<T> &s) : String<T>(s) { }
+template <class T> class StringResource : public String<T>, public Resource {
+      public:
+        StringResource(const String<T> &s) : String<T>(s) {}
 };
 
 #ifdef SP_NAMESPACE

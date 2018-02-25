@@ -20,7 +20,7 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* XlcGeneric.h 1.3 - Fujitsu source for CDEnext    95/12/07 10:53:07 	*/ 
+/* XlcGeneric.h 1.3 - Fujitsu source for CDEnext    95/12/07 10:53:07 	*/
 /* $XConsortium: _fallcGeneric.h /main/1 1996/04/08 15:17:24 cde-fuj $ */
 /*
  * Copyright 1992, 1993 by TOSHIBA Corp.
@@ -62,109 +62,109 @@
 #include "_fallcPubI.h"
 
 typedef struct _ByteInfo {
-     unsigned char start,end;
+        unsigned char start, end;
 } ByteInfoRec, *ByteInfo;
 
 typedef struct _ByteInfoList {
-    int 	M;                          /* 1 <= M <= length */
-    int 	byteinfo_num;
-    ByteInfo 	byteinfo;
+        int M; /* 1 <= M <= length */
+        int byteinfo_num;
+        ByteInfo byteinfo;
 } ByteInfoListRec, *ByteInfoList;
 
 /* conversion_type values */
-#define LOCALCONV      1
-#define FILECONV       2
-#define FUNCTIONCONV   4
+#define LOCALCONV 1
+#define FILECONV 2
+#define FUNCTIONCONV 4
 
 typedef struct _Conversion {
-    unsigned long 	conversion_type;
-    int       		conv_num;
-    FontScope 		convlist;
-    char      		*cnv_file;
-    XlcConv    		cnvfunc;
+        unsigned long conversion_type;
+        int conv_num;
+        FontScope convlist;
+        char *cnv_file;
+        XlcConv cnvfunc;
 } ConversionRec, *Conversion;
 
 typedef struct _ExtdSegment {
-    char    	*name;
-    XlcSide 	side;
-    FontScope 	area;
-    int 	area_num;
-    XlcCharSet  charset;
+        char *name;
+        XlcSide side;
+        FontScope area;
+        int area_num;
+        XlcCharSet charset;
 } ExtdSegmentRec, *ExtdSegment;
 
 typedef struct _SegConvRec {
-    int         	length;
-    char        	*source_encoding;
-    XlcCharSet		source;
-    char        	*destination_encoding;
-    XlcCharSet		dest;
-    FontScopeRec   	range;
-    int         	conv_num;
-    FontScope   	conv;
+        int length;
+        char *source_encoding;
+        XlcCharSet source;
+        char *destination_encoding;
+        XlcCharSet dest;
+        FontScopeRec range;
+        int conv_num;
+        FontScope conv;
 } SegConvRec, *SegConv;
 
 typedef struct _ParseInfoRec *ParseInfo;
 
 typedef struct _CodeSetRec {
-    XlcCharSet 		*charset_list;
-    int 		num_charsets;
-    int 		cs_num;
-    XlcSide 		side;
-    int 		length;
-    ByteInfoList 	byteM;
-    Conversion 		mbconv;
-    Conversion 		ctconv;
-    ExtdSegment 	ctextseg;
-    ParseInfo 		parse_info;
-    unsigned long 	wc_encoding;
+        XlcCharSet *charset_list;
+        int num_charsets;
+        int cs_num;
+        XlcSide side;
+        int length;
+        ByteInfoList byteM;
+        Conversion mbconv;
+        Conversion ctconv;
+        ExtdSegment ctextseg;
+        ParseInfo parse_info;
+        unsigned long wc_encoding;
 } CodeSetRec, *CodeSet;
 
 typedef enum {
-    E_GL,			/* GL encoding */
-    E_GR,			/* GR encoding */
-    E_SS,			/* single shift */
-    E_LSL,			/* locking shift left */
-    E_LSR,			/* locking shift right */
-    E_LAST
+        E_GL,  /* GL encoding */
+        E_GR,  /* GR encoding */
+        E_SS,  /* single shift */
+        E_LSL, /* locking shift left */
+        E_LSR, /* locking shift right */
+        E_LAST
 } EncodingType;
 
 typedef struct _ParseInfoRec {
-    EncodingType 	type;
-    char 		*encoding;
-    CodeSet 		codeset;
+        EncodingType type;
+        char *encoding;
+        CodeSet codeset;
 } ParseInfoRec;
 
 /*
  * XLCd private data
  */
 
-#define XLC_GENERIC(lcd, x)	(((XLCdGeneric) lcd->core)->gen.x)
-#define XLC_GENERIC_PART(lcd)	(&(((XLCdGeneric) lcd->core)->gen))
+#define XLC_GENERIC(lcd, x) (((XLCdGeneric)lcd->core)->gen.x)
+#define XLC_GENERIC_PART(lcd) (&(((XLCdGeneric)lcd->core)->gen))
 
 typedef struct _XLCdGenericPart {
-    int 		codeset_num;
-    CodeSet 		*codeset_list;
-    unsigned char 	*mb_parse_table;
-    int 		mb_parse_list_num;
-    ParseInfo 		*mb_parse_list;
-    unsigned long 	wc_encode_mask;
-    unsigned long 	wc_shift_bits;
-    CodeSet 		initial_state_GL;
-    CodeSet 		initial_state_GR;
-    int  		segment_conv_num;  /* UDC */
-    SegConv 		segment_conv;      /* UDC */
+        int codeset_num;
+        CodeSet *codeset_list;
+        unsigned char *mb_parse_table;
+        int mb_parse_list_num;
+        ParseInfo *mb_parse_list;
+        unsigned long wc_encode_mask;
+        unsigned long wc_shift_bits;
+        CodeSet initial_state_GL;
+        CodeSet initial_state_GR;
+        int segment_conv_num; /* UDC */
+        SegConv segment_conv; /* UDC */
 #ifndef X_NOT_STDC_ENV
-    Bool 		use_stdc_env;
-    Bool 		force_convert_to_mb;
+        Bool use_stdc_env;
+        Bool force_convert_to_mb;
 #endif
 } XLCdGenericPart;
 
 typedef struct _XLCdGenericRec {
-    XLCdCoreRec 	core;	
-    XLCdPublicPart 	pub;
-    XLCdGenericPart 	gen;	
+        XLCdCoreRec core;
+        XLCdPublicPart pub;
+        XLCdGenericPart gen;
 } XLCdGenericRec, *XLCdGeneric;
 
 extern XLCdMethods _fallcGenericMethods;
 
-#endif  /* _XLCGENERIC_H_ */
+#endif /* _XLCGENERIC_H_ */

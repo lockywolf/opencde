@@ -26,7 +26,7 @@
  * (c) Copyright 1993,1994,1996 Hewlett-Packard Company.
  * (c) Copyright 1993,1994,1996 International Business Machines Corp.
  * (c) Copyright 1993,1994,1996 Sun Microsystems, Inc.
- * (c) Copyright 1993,1994,1996 Novell, Inc. 
+ * (c) Copyright 1993,1994,1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -44,14 +44,13 @@
  ************************************<+>*************************************/
 #include <stdio.h>
 #include <X11/Intrinsic.h>
-#include <Dt/Wsm.h> 
-#include <Dt/WsmP.h> 
+#include <Dt/Wsm.h>
+#include <Dt/WsmP.h>
 #include <Dt/WsmM.h>
 #include <Dt/Service.h>
 #include <Xm/Xm.h>
 #include <Xm/AtomMgr.h>
 #include <Tt/tttk.h>
-
 
 /*************************************<->*************************************
  *
@@ -77,21 +76,16 @@
  *  Comments:
  *  ---------
  *  public interface to _DtWsmDeleteWorkspace()
- * 
+ *
  *************************************<->***********************************/
-int
-DtWsmDeleteWorkspace (
-	Widget widget,
-        Atom aWs)
-{
-  int rcode = _DtWsmDeleteWorkspace(widget, aWs);
+int DtWsmDeleteWorkspace(Widget widget, Atom aWs) {
+        int rcode = _DtWsmDeleteWorkspace(widget, aWs);
 
-  if (rcode == dtmsg_SUCCESS)
-    return Success;
-  else /* rcode == dtmsg_FAIL */
-    return rcode;
+        if (rcode == dtmsg_SUCCESS)
+                return Success;
+        else /* rcode == dtmsg_FAIL */
+                return rcode;
 }
-
 
 /*************************************<->*************************************
  *
@@ -115,41 +109,36 @@ DtWsmDeleteWorkspace (
  *
  *  Comments:
  *  ---------
- * 
+ *
  *************************************<->***********************************/
-int
-_DtWsmDeleteWorkspace (
-	Widget widget,
-        Atom aWs)
-{
-    char	pch[40];
-    Tt_message	msg;
-    Tt_status	status;
+int _DtWsmDeleteWorkspace(Widget widget, Atom aWs) {
+        char pch[40];
+        Tt_message msg;
+        Tt_status status;
 
-    sprintf (pch, "0x%lx", aWs);
-    msg = tttk_message_create(0, TT_REQUEST, TT_SESSION, 0,
-	    "DtWorkspace_Delete", 0);
-    status = tt_ptr_error(msg);
-    if (status != TT_OK) {
-	return dtmsg_FAIL;
-    }
-    status = tt_message_arg_add(msg, TT_IN, Tttk_string, pch);
-    if (status != TT_OK) {
-	return dtmsg_FAIL;
-    }
-    status = tt_message_callback_add(msg, _DtWsmConsumeReply);
-    if (status != TT_OK) {
-	return dtmsg_FAIL;
-    }
-    status = tt_message_send(msg);
-    if (status != TT_OK) {
-	return dtmsg_FAIL;
-    }
+        sprintf(pch, "0x%lx", aWs);
+        msg = tttk_message_create(0, TT_REQUEST, TT_SESSION, 0,
+                                  "DtWorkspace_Delete", 0);
+        status = tt_ptr_error(msg);
+        if (status != TT_OK) {
+                return dtmsg_FAIL;
+        }
+        status = tt_message_arg_add(msg, TT_IN, Tttk_string, pch);
+        if (status != TT_OK) {
+                return dtmsg_FAIL;
+        }
+        status = tt_message_callback_add(msg, _DtWsmConsumeReply);
+        if (status != TT_OK) {
+                return dtmsg_FAIL;
+        }
+        status = tt_message_send(msg);
+        if (status != TT_OK) {
+                return dtmsg_FAIL;
+        }
 
-    return (dtmsg_SUCCESS);
+        return (dtmsg_SUCCESS);
 
 } /* END OF FUNCTION _DtWsmDeleteWorkspace */
-
 
 /*************************************<->*************************************
  *
@@ -175,19 +164,16 @@ _DtWsmDeleteWorkspace (
  *  Comments:
  *  ---------
  *  public interface to _DtWsmCreateWorkspace()
- * 
+ *
  *************************************<->***********************************/
-int
-DtWsmAddWorkspace (Widget widget, char * pchTitle)
-{
-  int rcode = _DtWsmCreateWorkspace(widget, pchTitle);
+int DtWsmAddWorkspace(Widget widget, char *pchTitle) {
+        int rcode = _DtWsmCreateWorkspace(widget, pchTitle);
 
-  if (rcode == dtmsg_SUCCESS)
-    return Success;
-  else /* rcode == dtmsg_FAIL */
-    return rcode;
+        if (rcode == dtmsg_SUCCESS)
+                return Success;
+        else /* rcode == dtmsg_FAIL */
+                return rcode;
 }
-
 
 /*************************************<->*************************************
  *
@@ -213,33 +199,31 @@ DtWsmAddWorkspace (Widget widget, char * pchTitle)
  *  ---------
  *  The odd-ball successful return value is a CDE 1.0 bug being
  *  preserved for backward compatibility.
- * 
+ *
  *************************************<->***********************************/
-int
-_DtWsmCreateWorkspace (Widget widget, char * pchTitle)
-{
-    Tt_message	msg;
-    Tt_status	status;
+int _DtWsmCreateWorkspace(Widget widget, char *pchTitle) {
+        Tt_message msg;
+        Tt_status status;
 
-    msg = tttk_message_create(0, TT_REQUEST, TT_SESSION, 0,
-	    "DtWorkspace_Add", 0);
-    status = tt_ptr_error(msg);
-    if (status != TT_OK) {
-	return dtmsg_FAIL;
-    }
-    status = tt_message_arg_add(msg, TT_IN, Tttk_string, pchTitle);
-    if (status != TT_OK) {
-	return dtmsg_FAIL;
-    }
-    status = tt_message_callback_add(msg, _DtWsmConsumeReply);
-    if (status != TT_OK) {
-	return dtmsg_FAIL;
-    }
-    status = tt_message_send(msg);
-    if (status != TT_OK) {
-	return dtmsg_FAIL;
-    }
+        msg = tttk_message_create(0, TT_REQUEST, TT_SESSION, 0,
+                                  "DtWorkspace_Add", 0);
+        status = tt_ptr_error(msg);
+        if (status != TT_OK) {
+                return dtmsg_FAIL;
+        }
+        status = tt_message_arg_add(msg, TT_IN, Tttk_string, pchTitle);
+        if (status != TT_OK) {
+                return dtmsg_FAIL;
+        }
+        status = tt_message_callback_add(msg, _DtWsmConsumeReply);
+        if (status != TT_OK) {
+                return dtmsg_FAIL;
+        }
+        status = tt_message_send(msg);
+        if (status != TT_OK) {
+                return dtmsg_FAIL;
+        }
 
-    return (dtmsg_SUCCESS);
+        return (dtmsg_SUCCESS);
 
 } /* END OF FUNCTION _DtWsmCreateWorkspace */

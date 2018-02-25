@@ -20,7 +20,7 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* lcRM.c 1.1 - Fujitsu source for CDEnext    95/11/06 20:32:40 	*/ 
+/* lcRM.c 1.1 - Fujitsu source for CDEnext    95/11/06 20:32:40 	*/
 /* $XConsortium: _fallcRM.c /main/1 1996/04/08 15:18:41 cde-fuj $ */
 /*
  * Copyright 1992, 1993 by TOSHIBA Corp.
@@ -52,94 +52,71 @@
 #include <stdio.h>
 
 typedef struct _StateRec {
-    XLCd lcd;
-    XlcConv conv;
+        XLCd lcd;
+        XlcConv conv;
 } StateRec, *State;
 
-static void
-mbinit(state)
-    XPointer state;
+static void mbinit(state) XPointer state;
+{ _fallcResetConverter(((State)state)->conv); }
+
+static char mbchar(state, str, lenp) XPointer state;
+char *str;
+int *lenp;
 {
-    _fallcResetConverter(((State) state)->conv);
+        XlcConv conv = ((State)state)->conv;
+        XlcCharSet charset;
+        char *from, *to, buf[BUFSIZ];
+        int from_left, to_left;
+        XPointer args[1];
+
+        from = str;
+        *lenp = from_left = XLC_PUBLIC(((State)state)->lcd, mb_cur_max);
+        to = buf;
+        to_left = BUFSIZ;
+        args[0] = (XPointer)&charset;
+
+        _fallcConvert(conv, (XPointer *)&from, &from_left, (XPointer *)&to,
+                      &to_left, args, 1);
+
+        *lenp -= from_left;
+
+        /* XXX */
+        return buf[0];
 }
 
-static char
-mbchar(state, str, lenp)
-    XPointer state;
-    char *str;
-    int *lenp;
+static void mbfinish(state) XPointer state;
+{}
+
+static char *lcname(state) XPointer state;
+{ return ((State)state)->lcd->core->name; }
+
+static void destroy(state) XPointer state;
 {
-    XlcConv conv = ((State) state)->conv;
-    XlcCharSet charset;
-    char *from, *to, buf[BUFSIZ];
-    int from_left, to_left;
-    XPointer args[1];
-
-    from = str;
-    *lenp = from_left = XLC_PUBLIC(((State) state)->lcd, mb_cur_max);
-    to = buf;
-    to_left = BUFSIZ;
-    args[0] = (XPointer) &charset;
-
-    _fallcConvert(conv, (XPointer *) &from, &from_left, (XPointer *) &to,
-		&to_left, args, 1);
-    
-    *lenp -= from_left;
-
-    /* XXX */
-    return buf[0];
+        _fallcCloseConverter(((State)state)->conv);
+        _falCloseLC(((State)state)->lcd);
+        Xfree((char *)state);
 }
 
-static void
-mbfinish(state)
-    XPointer state;
+static XrmMethodsRec rm_methods = {mbinit, mbchar, mbfinish, lcname, destroy};
+
+XrmMethods _falrmDefaultInitParseInfo(lcd, rm_state) XLCd lcd;
+XPointer *rm_state;
 {
-}
+        State state;
 
-static char *
-lcname(state)
-    XPointer state;
-{
-    return ((State) state)->lcd->core->name;
-}
+        state = (State)Xmalloc(sizeof(StateRec));
+        if (state == NULL)
+                return (XrmMethods)NULL;
 
-static void
-destroy(state)
-    XPointer state;
-{
-    _fallcCloseConverter(((State) state)->conv);
-    _falCloseLC(((State) state)->lcd);
-    Xfree((char *) state);
-}
+        state->lcd = lcd;
+        state->conv = _fallcOpenConverter(lcd, XlcNMultiByte, lcd, XlcNChar);
+        if (state->conv == NULL) {
+                Xfree((char *)state);
 
-static XrmMethodsRec rm_methods = {
-    mbinit,
-    mbchar,
-    mbfinish,
-    lcname,
-    destroy
-} ;
+                return (XrmMethods)NULL;
+        }
 
-XrmMethods
-_falrmDefaultInitParseInfo(lcd, rm_state)
-    XLCd lcd;
-    XPointer *rm_state;
-{
-    State state;
+        *rm_state = (XPointer)state;
 
-    state = (State) Xmalloc(sizeof(StateRec));
-    if (state == NULL)
-	return (XrmMethods) NULL;
-
-    state->lcd = lcd;
-    state->conv = _fallcOpenConverter(lcd, XlcNMultiByte, lcd, XlcNChar);
-    if (state->conv == NULL) {
-	Xfree((char *) state);
-
-	return (XrmMethods) NULL;
-    }
-    
-    *rm_state = (XPointer) state;
-    
-    return &rm_methods;
+        return &rm_methods;
 }

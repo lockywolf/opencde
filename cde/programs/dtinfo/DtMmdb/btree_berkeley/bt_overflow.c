@@ -99,50 +99,48 @@ static char sccsid[] = "@(#)bt_overflow.c	8.1 (Berkeley) 6/4/93";
  * Returns:
  *	RET_ERROR, RET_SUCCESS
  */
-int
-__ovfl_get(t, p, ssz, buf, bufsz)
-	BTREE *t;
-	void *p;
-	size_t *ssz;
-	char **buf;
-	size_t *bufsz;
+int __ovfl_get(t, p, ssz, buf, bufsz) BTREE *t;
+void *p;
+size_t *ssz;
+char **buf;
+size_t *bufsz;
 {
-	PAGE *h;
-	pgno_t pg;
-	size_t nb, plen, sz;
+        PAGE *h;
+        pgno_t pg;
+        size_t nb, plen, sz;
 
-	memmove(&pg, p, sizeof(pgno_t));
-	memmove(&sz, (char *)p + sizeof(pgno_t), sizeof(size_t));
-	*ssz = sz;
+        memmove(&pg, p, sizeof(pgno_t));
+        memmove(&sz, (char *)p + sizeof(pgno_t), sizeof(size_t));
+        *ssz = sz;
 
 #ifdef DEBUG
-	if (pg == P_INVALID || sz == 0)
-		abort();
+        if (pg == P_INVALID || sz == 0)
+                abort();
 #endif
-	/* Make the buffer bigger as necessary. */
-	if (*bufsz < sz) {
-		if ((*buf = __fix_realloc(*buf, sz)) == NULL)
-			return (RET_ERROR);
-		*bufsz = sz;
-	}
+        /* Make the buffer bigger as necessary. */
+        if (*bufsz < sz) {
+                if ((*buf = __fix_realloc(*buf, sz)) == NULL)
+                        return (RET_ERROR);
+                *bufsz = sz;
+        }
 
-	/*
-	 * Step through the linked list of pages, copying the data on each one
-	 * into the buffer.  Never copy more than the data's length.
-	 */
-	plen = t->bt_psize - BTDATAOFF;
-	for (p = *buf;; p = (char *)p + nb, pg = h->nextpg) {
-		if ((h = mpool_get(t->bt_mp, pg, 0)) == NULL)
-			return (RET_ERROR);
+        /*
+         * Step through the linked list of pages, copying the data on each one
+         * into the buffer.  Never copy more than the data's length.
+         */
+        plen = t->bt_psize - BTDATAOFF;
+        for (p = *buf;; p = (char *)p + nb, pg = h->nextpg) {
+                if ((h = mpool_get(t->bt_mp, pg, 0)) == NULL)
+                        return (RET_ERROR);
 
-		nb = MIN(sz, plen);
-		memmove(p, (char *)h + BTDATAOFF, nb);
-		mpool_put(t->bt_mp, h, 0);
+                nb = MIN(sz, plen);
+                memmove(p, (char *)h + BTDATAOFF, nb);
+                mpool_put(t->bt_mp, h, 0);
 
-		if ((sz -= nb) == 0)
-			break;
-	}
-	return (RET_SUCCESS);
+                if ((sz -= nb) == 0)
+                        break;
+        }
+        return (RET_SUCCESS);
 }
 
 /*
@@ -156,47 +154,45 @@ __ovfl_get(t, p, ssz, buf, bufsz)
  * Returns:
  *	RET_ERROR, RET_SUCCESS
  */
-int
-__ovfl_put(t, dbt, pg)
-	BTREE *t;
-	const DBT *dbt;
-	pgno_t *pg;
+int __ovfl_put(t, dbt, pg) BTREE *t;
+const DBT *dbt;
+pgno_t *pg;
 {
-	PAGE *h, *last;
-	void *p;
-	pgno_t npg;
-	size_t nb, plen, sz;
+        PAGE *h, *last;
+        void *p;
+        pgno_t npg;
+        size_t nb, plen, sz;
 
-	/*
-	 * Allocate pages and copy the key/data record into them.  Store the
-	 * number of the first page in the chain.
-	 */
-	plen = t->bt_psize - BTDATAOFF;
-	for (last = NULL, p = dbt->data, sz = dbt->size;;
-	    p = (char *)p + plen, last = h) {
-		if ((h = __bt_new(t, &npg)) == NULL)
-			return (RET_ERROR);
+        /*
+         * Allocate pages and copy the key/data record into them.  Store the
+         * number of the first page in the chain.
+         */
+        plen = t->bt_psize - BTDATAOFF;
+        for (last = NULL, p = dbt->data, sz = dbt->size;;
+             p = (char *)p + plen, last = h) {
+                if ((h = __bt_new(t, &npg)) == NULL)
+                        return (RET_ERROR);
 
-		h->pgno = npg;
-		h->nextpg = h->prevpg = P_INVALID;
-		h->flags = P_OVERFLOW;
-		h->lower = h->upper = 0;
+                h->pgno = npg;
+                h->nextpg = h->prevpg = P_INVALID;
+                h->flags = P_OVERFLOW;
+                h->lower = h->upper = 0;
 
-		nb = MIN(sz, plen);
-		memmove((char *)h + BTDATAOFF, p, nb);
+                nb = MIN(sz, plen);
+                memmove((char *)h + BTDATAOFF, p, nb);
 
-		if (last) {
-			last->nextpg = h->pgno;
-			mpool_put(t->bt_mp, last, MPOOL_DIRTY);
-		} else
-			*pg = h->pgno;
+                if (last) {
+                        last->nextpg = h->pgno;
+                        mpool_put(t->bt_mp, last, MPOOL_DIRTY);
+                } else
+                        *pg = h->pgno;
 
-		if ((sz -= nb) == 0) {
-			mpool_put(t->bt_mp, h, MPOOL_DIRTY);
-			break;
-		}
-	}
-	return (RET_SUCCESS);
+                if ((sz -= nb) == 0) {
+                        mpool_put(t->bt_mp, h, MPOOL_DIRTY);
+                        break;
+                }
+        }
+        return (RET_SUCCESS);
 }
 
 /*
@@ -209,39 +205,37 @@ __ovfl_put(t, dbt, pg)
  * Returns:
  *	RET_ERROR, RET_SUCCESS
  */
-int
-__ovfl_delete(t, p)
-	BTREE *t;
-	void *p;
+int __ovfl_delete(t, p) BTREE *t;
+void *p;
 {
-	PAGE *h;
-	pgno_t pg;
-	size_t plen, sz;
+        PAGE *h;
+        pgno_t pg;
+        size_t plen, sz;
 
-	memmove(&pg, p, sizeof(pgno_t));
-	memmove(&sz, (char *)p + sizeof(pgno_t), sizeof(size_t));
+        memmove(&pg, p, sizeof(pgno_t));
+        memmove(&sz, (char *)p + sizeof(pgno_t), sizeof(size_t));
 
 #ifdef DEBUG
-	if (pg == P_INVALID || sz == 0)
-		abort();
+        if (pg == P_INVALID || sz == 0)
+                abort();
 #endif
-	if ((h = mpool_get(t->bt_mp, pg, 0)) == NULL)
-		return (RET_ERROR);
+        if ((h = mpool_get(t->bt_mp, pg, 0)) == NULL)
+                return (RET_ERROR);
 
-	/* Don't delete chains used by internal pages. */
-	if (h->flags & P_PRESERVE) {
-		mpool_put(t->bt_mp, h, 0);
-		return (RET_SUCCESS);
-	}
+        /* Don't delete chains used by internal pages. */
+        if (h->flags & P_PRESERVE) {
+                mpool_put(t->bt_mp, h, 0);
+                return (RET_SUCCESS);
+        }
 
-	/* Step through the chain, calling the free routine for each page. */
-	for (plen = t->bt_psize - BTDATAOFF;; sz -= plen) {
-		pg = h->nextpg;
-		__bt_free(t, h);
-		if (sz <= plen)
-			break;
-		if ((h = mpool_get(t->bt_mp, pg, 0)) == NULL)
-			return (RET_ERROR);
-	}
-	return (RET_SUCCESS);
+        /* Step through the chain, calling the free routine for each page. */
+        for (plen = t->bt_psize - BTDATAOFF;; sz -= plen) {
+                pg = h->nextpg;
+                __bt_free(t, h);
+                if (sz <= plen)
+                        break;
+                if ((h = mpool_get(t->bt_mp, pg, 0)) == NULL)
+                        return (RET_ERROR);
+        }
+        return (RET_SUCCESS);
 }

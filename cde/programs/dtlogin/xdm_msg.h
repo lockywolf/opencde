@@ -27,16 +27,14 @@
  * (c) Copyright 1993, 1994 Sun Microsystems, Inc.                      *
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
-#ifndef _H_XDM_MSG 
-#define _H_XDM_MSG 
+#ifndef _H_XDM_MSG
+#define _H_XDM_MSG
 #include <limits.h>
 #include <nl_types.h>
 #define MF_XDM "xdm.cat"
 
-
-
-/* The following was generated from ../../../../../../../src/gos/2d/XTOP/aixclients/xdm/xdm.msg. */
-
+/* The following was generated from
+ * ../../../../../../../src/gos/2d/XTOP/aixclients/xdm/xdm.msg. */
 
 /* definitions for set MS_XDM */
 #define MS_XDM 1
@@ -359,4 +357,4 @@
 #define M_MSG_223 6
 #define M_MSG_224 7
 #define M_MSG_225 8
-#endif 
+#endif

@@ -29,7 +29,7 @@
  */
 
 #ifndef _POSIX_SOURCE
-#define _POSIX_SOURCE 1		/* we want to be POSIX-compliant */
+#define _POSIX_SOURCE 1 /* we want to be POSIX-compliant */
 #endif
 
 #include <uil/UilDef.h>

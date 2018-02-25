@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: isapplmw.c /main/3 1995/10/23 11:35:35 rswiston $ 			 				 */
+/*%%  $XConsortium: isapplmw.c /main/3 1995/10/23 11:35:35 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)isapplmw.c 1.5 89/07/17 Copyr 1988 Sun Micro";
 #endif
@@ -39,7 +40,6 @@ static char sccsid[] = "@(#)isapplmw.c 1.5 89/07/17 Copyr 1988 Sun Micro";
  *	Write Application magic string
  */
 
-
 #include "isam_impl.h"
 #include <sys/file.h>
 #include <sys/time.h>
@@ -53,63 +53,61 @@ static char sccsid[] = "@(#)isapplmw.c 1.5 89/07/17 Copyr 1988 Sun Micro";
  *
  */
 
-int 
-_isapplmw(isfd, magicstring)
-    int			isfd;
-    char		*magicstring;
+int _isapplmw(isfd, magicstring) int isfd;
+char *magicstring;
 {
-    register Fab	*fab;
-    int			ret;
-    Fcb                 *fcb;
-    char                cntl_page[CP_NKEYS_OFF];
+        register Fab *fab;
+        int ret;
+        Fcb *fcb;
+        char cntl_page[CP_NKEYS_OFF];
 
-    /*
-     * Get File Access Block.
-     */
-    if ((fab = _isfd_find(isfd)) == NULL) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Get File Access Block.
+         */
+        if ((fab = _isfd_find(isfd)) == NULL) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-    /*
-     * Check that the open mode was ISOUTPUT, or ISINOUT.
-     */
-    if (fab->openmode != OM_OUTPUT && fab->openmode != OM_INOUT) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Check that the open mode was ISOUTPUT, or ISINOUT.
+         */
+        if (fab->openmode != OM_OUTPUT && fab->openmode != OM_INOUT) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-    /*
-     * Check the length of the magic string
-     */
-    if ((int)strlen(magicstring) > CP_APPLMAGIC_LEN) {
-	_setiserrno2(EBADARG, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Check the length of the magic string
+         */
+        if ((int)strlen(magicstring) > CP_APPLMAGIC_LEN) {
+                _setiserrno2(EBADARG, '9', '0');
+                return (ISERROR);
+        }
 
-    _isam_entryhook();
+        _isam_entryhook();
 
-    /*
-     * Get FCB corresponding to the isfhandle handle.
-     */
-    if ((fcb = _openfcb(&fab->isfhandle, &fab->errcode)) == NULL) {
-	_isam_exithook();
-	return (ISERROR);
-    }
+        /*
+         * Get FCB corresponding to the isfhandle handle.
+         */
+        if ((fcb = _openfcb(&fab->isfhandle, &fab->errcode)) == NULL) {
+                _isam_exithook();
+                return (ISERROR);
+        }
 
-    /* Write the new data */
-    
-    _isseekpg(fcb->datfd, ISCNTLPGOFF);
-    (void)read(fcb->datfd, cntl_page, sizeof(cntl_page));
-    strncpy(cntl_page + CP_APPLMAGIC_OFF, magicstring, CP_APPLMAGIC_LEN);
-    _isseekpg(fcb->datfd, ISCNTLPGOFF);
-    (void)write(fcb->datfd, cntl_page, sizeof(cntl_page));
+        /* Write the new data */
 
-    _amseterrcode(&fab->errcode, ISOK);
-    _isam_exithook();
-    ret = ISOK;
+        _isseekpg(fcb->datfd, ISCNTLPGOFF);
+        (void)read(fcb->datfd, cntl_page, sizeof(cntl_page));
+        strncpy(cntl_page + CP_APPLMAGIC_OFF, magicstring, CP_APPLMAGIC_LEN);
+        _isseekpg(fcb->datfd, ISCNTLPGOFF);
+        (void)write(fcb->datfd, cntl_page, sizeof(cntl_page));
 
-    _seterr_errcode(&fab->errcode);
+        _amseterrcode(&fab->errcode, ISOK);
+        _isam_exithook();
+        ret = ISOK;
 
-    return (ret);			     /* Successful write */
+        _seterr_errcode(&fab->errcode);
+
+        return (ret); /* Successful write */
 }

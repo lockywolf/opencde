@@ -42,10 +42,10 @@
  **
  **
  *******************************************************************
- **  (c) Copyright Hewlett-Packard Company, 1990.  All rights are  
- **  reserved.  Copying or other reproduction of this program      
- **  except for archival purposes is prohibited without prior      
- **  written consent of Hewlett-Packard Company.		     
+ **  (c) Copyright Hewlett-Packard Company, 1990.  All rights are
+ **  reserved.  Copying or other reproduction of this program
+ **  except for archival purposes is prohibited without prior
+ **  written consent of Hewlett-Packard Company.
  ********************************************************************
  **
  **
@@ -61,7 +61,6 @@
 #include "SmProtocol.h"
 #include "SmXSMP.h"
 
-
 /*************************************<->*************************************
  *
  *  GetStandardProperties -
@@ -73,7 +72,7 @@
  *  Inputs:
  *  ------
  *  window = window for which we are getting properties
- * 
+ *
  *  Outputs:
  *  -------
  *  argv = data returned from WM_COMMAND property (to restart client)
@@ -90,78 +89,71 @@
  *  BEWARE OF THESE ROUTINES:  The XGetWindowProperty routine returns 0 if
  *  it succeeds.  These routines (which were derived from XGetWindowProperty
  *  return 0 if they FAIL.
- * 
+ *
  *************************************<->***********************************/
-Status GetStandardProperties(
-        Window 			window,
-	int			screen,
-        int 			*argc,			/* RETURNED */
-        char 			***argv,		/* RETURNED */
-        char 			**clientMachine,	/* RETURNED */
-	Boolean 		*xsmpClient)		/* RETURNED */
+Status GetStandardProperties(Window window, int screen,
+                             int *argc,            /* RETURNED */
+                             char ***argv,         /* RETURNED */
+                             char **clientMachine, /* RETURNED */
+                             Boolean *xsmpClient)  /* RETURNED */
 {
-  int 				cc;
-  long				suppliedRet;
-  XTextProperty			sessProp;
-  Atom				actType;
-  int				actFormat;
-  unsigned long			bytesAfter;
-  unsigned long 		nitems;
-  unsigned char 		*data = NULL;
+        int cc;
+        long suppliedRet;
+        XTextProperty sessProp;
+        Atom actType;
+        int actFormat;
+        unsigned long bytesAfter;
+        unsigned long nitems;
+        unsigned char *data = NULL;
 
-  /*
-   * If this client is participating in the XSMP, then don't save
-   * it as a proxy (pre-XSMP) client.  However, do cache its
-   * screen number before returning.
-   */
-  if (XGetWindowProperty(smGD.display, window, XaSmClientId, 0L,
-			 (long) BUFSIZ, False, XA_STRING, &actType,
-			 &actFormat, &nitems, &bytesAfter, &data) == Success) 
-  {
-      if (data && actType == XA_STRING)
-      {
-	  ClientRecPtr		pClient;
+        /*
+         * If this client is participating in the XSMP, then don't save
+         * it as a proxy (pre-XSMP) client.  However, do cache its
+         * screen number before returning.
+         */
+        if (XGetWindowProperty(smGD.display, window, XaSmClientId, 0L,
+                               (long)BUFSIZ, False, XA_STRING, &actType,
+                               &actFormat, &nitems, &bytesAfter,
+                               &data) == Success) {
+                if (data && actType == XA_STRING) {
+                        ClientRecPtr pClient;
 
-	  for (pClient = connectedList; pClient != NULL; 
-	       pClient = pClient->next) {
-	       if (!strcmp ((char *) data, pClient->clientId)) {
-		   pClient->screenNum = screen;
-		   break;
-	       }
-	  }
-          *xsmpClient = True;
-          SM_FREE ((char *) data);
-  	  return (0);
-      }
-      SM_FREE ((char *) data);
-  }
-  *xsmpClient = False;
+                        for (pClient = connectedList; pClient != NULL;
+                             pClient = pClient->next) {
+                                if (!strcmp((char *)data, pClient->clientId)) {
+                                        pClient->screenNum = screen;
+                                        break;
+                                }
+                        }
+                        *xsmpClient = True;
+                        SM_FREE((char *)data);
+                        return (0);
+                }
+                SM_FREE((char *)data);
+        }
+        *xsmpClient = False;
 
-  /*
-   * Get WM_COMMAND property
-   */
-  if ((cc=XGetCommand(smGD.display,window,argv,argc))==0)
-      return(cc);
+        /*
+         * Get WM_COMMAND property
+         */
+        if ((cc = XGetCommand(smGD.display, window, argv, argc)) == 0)
+                return (cc);
 
-  /*
-   * If there is no argc or argv - don't bother going on.  We're not
-   * going to save anything anyway
-   */
-  if(*argc == 0)
-      return(0);
+        /*
+         * If there is no argc or argv - don't bother going on.  We're not
+         * going to save anything anyway
+         */
+        if (*argc == 0)
+                return (0);
 
+        /*
+         * Get WM_CLIENT_MACHINE property
+         */
+        if ((cc = XGetWMClientMachine(smGD.display, window, &sessProp)) == 0) {
+                *clientMachine = NULL;
+        } else {
+                *clientMachine = (char *)sessProp.value;
+        }
 
-  /*
-   * Get WM_CLIENT_MACHINE property
-   */
-  if ((cc=XGetWMClientMachine(smGD.display,window,&sessProp))==0)
-  {
-      *clientMachine = NULL;
-  }
-  else
-  {
-      *clientMachine =  (char *) sessProp.value;
-  }
-
-  return(1);
+        return (1);
 }

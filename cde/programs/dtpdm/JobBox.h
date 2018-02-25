@@ -29,7 +29,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -41,7 +41,6 @@
 /*
  * public PdmJobBox methods
  */
-extern PdmSetupBox* PdmJobBoxNew(void);
-
+extern PdmSetupBox *PdmJobBoxNew(void);
 
 #endif /* _pdmJobBox_h */

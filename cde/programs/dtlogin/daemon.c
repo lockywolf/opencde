@@ -56,56 +56,54 @@
 #include <termio.h>
 #endif
 
-extern void exit ();
+extern void exit();
 
+void BecomeDaemon(void) {
+        register int i;
 
-void
-BecomeDaemon( void )
-{
-    register int i;
+        /*
+         * fork so that the process goes into the background automatically. Also
+         * has a nice side effect of having the child process get inherited by
+         * init (pid 1).
+         */
 
-    /*
-     * fork so that the process goes into the background automatically. Also
-     * has a nice side effect of having the child process get inherited by
-     * init (pid 1).
-     */
+        if (fork())      /* if parent */
+                exit(0); /* then no more work to do */
 
-    if (fork ())			/* if parent */
-      exit (0);				/* then no more work to do */
-
-    /*
-     * Close standard file descriptors and get rid of controlling tty
-     */
+                /*
+                 * Close standard file descriptors and get rid of controlling
+                 * tty
+                 */
 
 #ifdef __osf__
-/* use setsid() instead of setpgrp() */
-    setsid();
+        /* use setsid() instead of setpgrp() */
+        setsid();
 #else
-#if defined(SYSV) || defined (SVR4) || defined(linux)
-    setpgrp ();
+#if defined(SYSV) || defined(SVR4) || defined(linux)
+        setpgrp();
 #else
-    setpgrp (0, getpid());
+        setpgrp(0, getpid());
 #endif
 #endif /* __osf__ */
 
-    close (0); 
-    close (1);
-    close (2);
+        close(0);
+        close(1);
+        close(2);
 
-    if ((i = open ("/dev/tty", O_RDWR)) >= 0) {	/* did open succeed? */
+        if ((i = open("/dev/tty", O_RDWR)) >= 0) { /* did open succeed? */
 #if defined(SYSV) && defined(TIOCTTY)
-	int zero = 0;
-	(void) ioctl (i, TIOCTTY, &zero);
+                int zero = 0;
+                (void)ioctl(i, TIOCTTY, &zero);
 #else
-	(void) ioctl (i, TIOCNOTTY, (char *) 0);    /* detach, BSD style */
+                (void)ioctl(i, TIOCNOTTY, (char *)0); /* detach, BSD style */
 #endif
-	(void) close (i);
-    }
+                (void)close(i);
+        }
 
-    /*
-     * Set up the standard file descriptors.
-     */
-    (void) open ("/", O_RDONLY);	/* root inode already in core */
-    (void) dup2 (0, 1);
-    (void) dup2 (0, 2);
+        /*
+         * Set up the standard file descriptors.
+         */
+        (void)open("/", O_RDONLY); /* root inode already in core */
+        (void)dup2(0, 1);
+        (void)dup2(0, 2);
 }

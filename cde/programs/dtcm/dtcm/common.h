@@ -24,7 +24,8 @@
 **
 **  common.h
 **
-**  static char sccsid[] = "@(#)common.h 1.6 94/11/07 Copyr 1991 Sun Microsystems, Inc."; 
+**  static char sccsid[] = "@(#)common.h 1.6 94/11/07 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $XConsortium: common.h /main/3 1995/11/03 10:21:02 rswiston $
 **
@@ -57,17 +58,17 @@
 #if LATER
 typedef struct {
         int data_version;
-        char* target;
+        char *target;
 } Cdata;
 
-extern Cdata	*get_cdata		P(());
-extern void	free_cd_from_blist	P(());
+extern Cdata *get_cdata P(());
+extern void free_cd_from_blist P(());
 #endif
-extern void	reset_values		P(());
-extern void	backup_values		P(());
-extern void	blist_write_names	P(());
-extern Boolean	duplicate_cd		P(());
-extern char	*get_appt_str		P(());
-extern void	common_update_lists	P(());
+extern void reset_values P(());
+extern void backup_values P(());
+extern void blist_write_names P(());
+extern Boolean duplicate_cd P(());
+extern char *get_appt_str P(());
+extern void common_update_lists P(());
 
 #endif

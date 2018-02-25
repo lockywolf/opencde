@@ -28,5 +28,5 @@
 //          if (status) { fprintf(stderr, "failed"); }
 
 enum RENDERER_ENGINE_T { ONLINE, PRINT };
-extern int validate_stylesheet( const char *buf,int buf_size, enum RENDERER_ENGINE_T ); 
-
+extern int validate_stylesheet(const char *buf, int buf_size,
+                               enum RENDERER_ENGINE_T);

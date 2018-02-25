@@ -28,7 +28,6 @@
 
 #ifndef CDE_NEXT
 
-
 #else
 #include "dti_cc/CC_Slist.h"
 #include "dti_cc/cc_povec.h"
@@ -40,7 +39,7 @@ class Element;
 class Expression;
 class FeatureValue;
 class VariableTable;
-class ResolverStackElement ;
+class ResolverStackElement;
 class Symbol;
 
 /*
@@ -51,41 +50,36 @@ class dlist_array<Symbol> ;
 #endif
 */
 
-
 /* **************************************************************
  * class Feature
 
  a symbol, value pairing where symbol is the feature name
  * ************************************************************** */
 
+class Feature {
+      public:
+        Feature(const Symbol &, FeatureValue *);
+        Feature(const Feature &);
+        ~Feature();
 
-class Feature
-{
-public:
-  Feature(const Symbol &, FeatureValue *);
-  Feature(const Feature &);
-  ~Feature();
+        const Symbol &name() const { return f_name; }
+        const FeatureValue *value() const { return f_value; }
 
+        FeatureValue *evaluate() const;
 
-  const Symbol       &name()	const	{ return f_name ; }
-  const FeatureValue *value()	const	{ return f_value ; }	
+        // destructively modifies f_value
+        void merge(const Feature &);
 
-  FeatureValue *evaluate() const;
+        ostream &print(ostream &) const;
 
-  // destructively modifies f_value 
-  void merge(const Feature &);
+        unsigned int operator==(const Feature &);
 
-  ostream &print(ostream &) const ;
+      private:
+        void assembleChainFeatures(FeatureValue *x);
 
-  unsigned int operator==(const Feature&);
-
-private:
-  void assembleChainFeatures(FeatureValue* x);
-
-private:
-  Symbol	f_name ;
-  FeatureValue *f_value;
-
+      private:
+        Symbol f_name;
+        FeatureValue *f_value;
 };
 
 /* **************************************************************
@@ -102,56 +96,51 @@ class FeatureSet : public CC_TPtrSlist<Feature>
 class FeatureSet : public CC_TPtrSlist<Feature>
 #endif
 {
-public:
-  FeatureSet();
-  FeatureSet(const FeatureSet &); /* copy */
-  FeatureSet(const FeatureSet &,
-	     const FeatureSet &); /* merge */
-  virtual ~FeatureSet();
+      public:
+        FeatureSet();
+        FeatureSet(const FeatureSet &);                     /* copy */
+        FeatureSet(const FeatureSet &, const FeatureSet &); /* merge */
+        virtual ~FeatureSet();
 
-  void			add(Feature *);
-  const Feature	       *lookup(const Symbol *) const ;
-  const Feature	       *lookup(const Symbol &) const;
-  const Feature	       *lookup(const char *) const;
+        void add(Feature *);
+        const Feature *lookup(const Symbol *) const;
+        const Feature *lookup(const Symbol &) const;
+        const Feature *lookup(const char *) const;
 
-  // find a chain, eg for "prefix.font.size" use */
-  // deep_lookup("prefix","font","size", 0); 
-  // returns 0 if not found 
-  const Feature	       *deep_lookup(const char * ...) const ;
-  const Feature	       *deep_lookup(const Symbol * ...) const ;
-
+        // find a chain, eg for "prefix.font.size" use */
+        // deep_lookup("prefix","font","size", 0);
+        // returns 0 if not found
+        const Feature *deep_lookup(const char *...) const;
+        const Feature *deep_lookup(const Symbol *...) const;
 
 #ifndef CDE_NEXT
-  const Feature	       *deep_lookup(const dlist_array<Symbol> &) const ;
+        const Feature *deep_lookup(const dlist_array<Symbol> &) const;
 #else
-  const Feature	       *deep_lookup(const dlist_array<Symbol> &) const ;
+        const Feature *deep_lookup(const dlist_array<Symbol> &) const;
 #endif
 
-// remve a feature that is specified by a chain
-  void removeFeature(const char * ...) ;
+        // remve a feature that is specified by a chain
+        void removeFeature(const char *...);
 
-  // returns new feature set with all unresolved expressions resolved
-  FeatureSet *evaluate() const; 
-  // evaluate self and place answers into result_set, returns result set
-  FeatureSet *evaluate(FeatureSet *result_set) const ;
+        // returns new feature set with all unresolved expressions resolved
+        FeatureSet *evaluate() const;
+        // evaluate self and place answers into result_set, returns result set
+        FeatureSet *evaluate(FeatureSet *result_set) const;
 
-  unsigned int operator == (const FeatureSet &) const ;
+        unsigned int operator==(const FeatureSet &) const;
 
-  ostream &print(ostream &) const ;
+        ostream &print(ostream &) const;
 
-private:
-
-  static unsigned int	f_print_indent_level ;
-  
+      private:
+        static unsigned int f_print_indent_level;
 };
 
 /* **************************************************************
  * Printing
  * ************************************************************** */
 
-ostream &operator << (ostream &o, const Feature &f);
-ostream &operator << (ostream &o, const FeatureSet &f);
-
+ostream &operator<<(ostream &o, const Feature &f);
+ostream &operator<<(ostream &o, const FeatureSet &f);
 
 #endif /* _Feature_h */
 /* DO NOT ADD ANY LINES AFTER THIS #endif */

@@ -60,8 +60,8 @@
 #include <stdio.h>
 #include <nl_types.h>
 
-FILE	*aa_stderr =		NULL;
-char	*aa_argv0 =		"<argv0>";
-nl_catd	dtsearch_catd =		(nl_catd) -1;
-nl_catd	austools_catd =		(nl_catd) -1;
-void	*ausapi_msglist =	NULL;	/* really (LLIST *) */
+FILE *aa_stderr = NULL;
+char *aa_argv0 = "<argv0>";
+nl_catd dtsearch_catd = (nl_catd)-1;
+nl_catd austools_catd = (nl_catd)-1;
+void *ausapi_msglist = NULL; /* really (LLIST *) */

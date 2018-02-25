@@ -31,19 +31,18 @@
 
 void main(
 #if defined(M_PROTO)
-  int argc, char **argv
+    int argc, char **argv
 #endif
-  ) ;
+);
 
-void main(argc, argv)
-  int argc ;
-  char **argv ;
-  {
-    if (argc != 2) {
-      fprintf(stderr, "Usage: emptyfil filename\n") ;
-      exit(1) ;
-      }
-    if (! fopen(argv[1], "w"))
-      fprintf(stderr, "Unable to open %s\n", argv[1]) ;
-    return 0;
-    }
+void main(argc, argv) int argc;
+char **argv;
+{
+        if (argc != 2) {
+                fprintf(stderr, "Usage: emptyfil filename\n");
+                exit(1);
+        }
+        if (!fopen(argv[1], "w"))
+                fprintf(stderr, "Unable to open %s\n", argv[1]);
+        return 0;
+}

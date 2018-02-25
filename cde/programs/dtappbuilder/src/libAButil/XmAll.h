@@ -27,7 +27,7 @@
  * @(#)XmAll.h	1.5 01 Feb 1994	cde_app_builder/src/libAButil
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -48,7 +48,7 @@
  */
 
 #ifndef _POSIX_SOURCE
-#define _POSIX_SOURCE 1		/* we want to be POSIX-compliant */
+#define _POSIX_SOURCE 1 /* we want to be POSIX-compliant */
 #endif
 
 #include <Xm/XmAll.h>

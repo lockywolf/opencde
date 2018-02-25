@@ -33,21 +33,21 @@
 #include <dirent.h>
 
 class DirectoryIterator {
- public:
-  DirectoryIterator(const CString &);
-  ~DirectoryIterator();
+      public:
+        DirectoryIterator(const CString &);
+        ~DirectoryIterator();
 
-  enum directoryState { good_ = 0, bad_ = 1, done_ = 2 };
+        enum directoryState { good_ = 0, bad_ = 1, done_ = 2 };
 
-  struct dirent * operator()();
-  
-  int bad()    { return state & bad_; }
-  int good()   { return state & good_; }
-  int done()   { return state & done_; }
+        struct dirent *operator()();
 
- private:
-  DirectoryIterator() {}
+        int bad() { return state & bad_; }
+        int good() { return state & good_; }
+        int done() { return state & done_; }
 
-  DIR * theDir;
-  int   state;
+      private:
+        DirectoryIterator() {}
+
+        DIR *theDir;
+        int state;
 };

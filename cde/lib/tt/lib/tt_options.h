@@ -26,23 +26,23 @@
  * (c) Copyright 1993, 1994, 1996 Hewlett-Packard Company.
  * (c) Copyright 1993, 1994, 1996 International Business Machines Corp.
  * (c) Copyright 1990, 1993, 1994, 1996 Sun Microsystems, Inc.
- * (c) Copyright 1993, 1994, 1996 Novell, Inc. 
+ * (c) Copyright 1993, 1994, 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
 
 #ifndef _TT_OPTIONS_H
 #define _TT_OPTIONS_H
-/* 
+/*
  * This file controls any compilation-time options. The current set of
  * options is:
- * 
+ *
  * OPT_UNIX_SOCKET_RPC -- if defined then code to do rpc over unix
- *                        sockets is enabled (speeds up intra-system rpcs). 
- * 
+ *                        sockets is enabled (speeds up intra-system rpcs).
+ *
  * OPT_TLI -- if defined then rpc code is compiled for the new
  *            transport-independent rpc
- * 
+ *
  * OPT_DLOPEN_X11 -- if defined then any code that would use libX11 will
  *                   attempt to dlopen it at runtime rather than require
  *                   the application to link with the library.
@@ -53,7 +53,7 @@
  *
  * OPT_ADDMSG_DIRECT -- if defined then messages are sent directly
  *			down a client's signalling fd rather than
- *			incurring an additional rpc. 
+ *			incurring an additional rpc.
  *
  * OPT_SECURE_RPC -- if defined then code for implementing DES authorization
  *	             is included.
@@ -70,13 +70,13 @@
  *
  * OPT_BUG_SUNOS_5 -- used to flag special hacks only needed because
  *   of bugs or quirks in SunOS 5.x.
- * 
+ *
  * OPT_BUG_HPUX -- used to flag special hacks only needed because
  *   of bugs or quirks in HP-UX.
- * 
+ *
  * OPT_BUG_RPCINTR -- used to flag that RPC_INTR is not defined
  *   in enum clnt_stat.
- * 
+ *
  * OPT_BUG_SGI -- used to flag special hacks only needed because of
  *   bugs or quirks in SGI IRIX.
  *
@@ -90,7 +90,7 @@
  *   <rcp/xdr.h> defines x_putlong and x_getlong to not take "long*".
  *
  * OPT_POSIX_SIGNAL -- set to assume posix-style sigaction() call.
- * OPT_BSD_SIGNAL -- set to assume bsd-style signal() call. 
+ * OPT_BSD_SIGNAL -- set to assume bsd-style signal() call.
  *   If *neither* OPT_POSIX_SIGNAL or OPT_BSD_SIGNAL is defined, use
  *   the old SVR2-style sigset().
  *
@@ -130,7 +130,7 @@
  * OPT_TAR_HAS_EXCLUDE_OPTION -- set if the system tar command has the X
  *   option for excluding files, which tttar uses to avoid extracting the
  *   extra file it bundles into the tar file. If this option is not available,
- *   the tttarfile file will appear after extracts, a small flaw but not a 
+ *   the tttarfile file will appear after extracts, a small flaw but not a
  *   fatal one.
  *
  * OPT_HAS_REALPATH -- set if the system provides a realpath() library
@@ -182,19 +182,19 @@
 /*
  * Defaults - #undef then #define them if a platform needs them changed.
  */
-#define	OPT_PING_TRIES		5
-#define OPT_PING_SLEEP		1
-#define OPT_MAX_GET_SESSIONS	100
-#define	OPT_GARBAGE_IN_PARALLEL	0	/* used as a const */
+#define OPT_PING_TRIES 5
+#define OPT_PING_SLEEP 1
+#define OPT_MAX_GET_SESSIONS 100
+#define OPT_GARBAGE_IN_PARALLEL 0 /* used as a const */
 
 /* Allow -DXTHREADS to be specified by the Makefile. */
 #ifdef XTHREADS
-# define OPT_XTHREADS		1
+#define OPT_XTHREADS 1
 #endif
 
-#undef  OPT_DO_AUTO_GARBAGE_COLLECT
+#undef OPT_DO_AUTO_GARBAGE_COLLECT
 
-/* 
+/*
  * WARNING: This file isn't universally included. Adding a new option
  * entails ensuring that this file is properly included in all the files
  * that depend on that option. This is done to minimize re-compile time
@@ -202,9 +202,9 @@
  */
 #if defined(__GNUG__)
 /* g++ often cannot see an implicit cast to char */
-# define GNU_STRCAST (char *)
+#define GNU_STRCAST (char *)
 #else
-# define GNU_STRCAST
+#define GNU_STRCAST
 #endif
 
 /*
@@ -213,445 +213,448 @@
  * from the definitions cpp gives us.
  */
 #if defined(sun)
-# if !defined(OS_VERSION)
-#  if defined(OSMajorVersion)
-#   define OS_VERSION		OSMajorVersion
-#   define OS_MINOR_VERSION	OSMinorVersion
-#  else
-#   if !defined(_STDIO_H) && !defined(__stdio_h)
-#    include <stdio.h>
-#   endif
-#   if defined(_SIZE_T)
-#    define OS_VERSION		5
-#   else
-#    define OS_VERSION		4
-#   endif
-#  endif
-# endif
+#if !defined(OS_VERSION)
+#if defined(OSMajorVersion)
+#define OS_VERSION OSMajorVersion
+#define OS_MINOR_VERSION OSMinorVersion
+#else
+#if !defined(_STDIO_H) && !defined(__stdio_h)
+#include <stdio.h>
+#endif
+#if defined(_SIZE_T)
+#define OS_VERSION 5
+#else
+#define OS_VERSION 4
+#endif
+#endif
+#endif
 #endif
 
 #if defined(_AIX)
-# undef  OPT_UNIX_SOCKET_RPC 
-# undef  OPT_TLI 
-# undef  OPT_DLOPEN_X11 
-# undef  OPT_DLOPEN_CE 
-# undef  OPT_ADDMSG_DIRECT
-# define OPT_BUG_AIX
-# undef  OPT_SECURE_RPC 
-# undef  OPT_CLASSING_ENGINE 
-# undef  OPT_BSD_SIGNAL
-# define OPT_POSIX_SIGNAL
-# undef  OPT_BSD_WAIT
-# undef  OPT_DGETTEXT
-# define OPT_CATGETS
-# define OPT_GETDTABLESIZE
-# undef  OPT_SYSINFO
-# define OPT_CPP_PATH		"/usr/ccs/lib/cpp"
-# define OPT_CPP_OPTIONS	""
-# define OPT_STRERROR
-# undef  OPT_SVR4_GETMNTENT
-# undef  OPT_LOCKF_MNTENT
-# define OPT_DEFINE_SIG_PF
-# undef  OPT_TAR_HAS_EXCLUDE_OPTION
-# undef  OPT_HAS_REALPATH 
-# define OPT_AUTOMOUNT_PATH_FIX
-/* # define OPT_XTHREADS   	1 */	/* Defaulted by -DXTHREADS */
+#undef OPT_UNIX_SOCKET_RPC
+#undef OPT_TLI
+#undef OPT_DLOPEN_X11
+#undef OPT_DLOPEN_CE
+#undef OPT_ADDMSG_DIRECT
+#define OPT_BUG_AIX
+#undef OPT_SECURE_RPC
+#undef OPT_CLASSING_ENGINE
+#undef OPT_BSD_SIGNAL
+#define OPT_POSIX_SIGNAL
+#undef OPT_BSD_WAIT
+#undef OPT_DGETTEXT
+#define OPT_CATGETS
+#define OPT_GETDTABLESIZE
+#undef OPT_SYSINFO
+#define OPT_CPP_PATH "/usr/ccs/lib/cpp"
+#define OPT_CPP_OPTIONS ""
+#define OPT_STRERROR
+#undef OPT_SVR4_GETMNTENT
+#undef OPT_LOCKF_MNTENT
+#define OPT_DEFINE_SIG_PF
+#undef OPT_TAR_HAS_EXCLUDE_OPTION
+#undef OPT_HAS_REALPATH
+#define OPT_AUTOMOUNT_PATH_FIX
+/* # define OPT_XTHREADS   	1 */ /* Defaulted by -DXTHREADS */
 
 #elif defined(sun) && (OS_VERSION <= 4)
 
-# define OPT_UNIX_SOCKET_RPC 
-# undef  OPT_TLI 
-	/* for 4.1.1 systems turning on any dlopen features on the    */
-	/* client side would break clients with ld errors unless they */
-	/* linked with -ldl. OPT_DLOPEN_CE is ok since clients don't  */
-	/* ever execute ce_* functions.				      */
-# undef  OPT_DLOPEN_X11 
-# undef  OPT_DLOPEN_CE 
-# undef  OPT_ADDMSG_DIRECT 
-# define OPT_SECURE_RPC 
-# undef  OPT_CLASSING_ENGINE
-# undef  OPT_PATCH
-# define OPT_BSD_SIGNAL
-# define OPT_BSD_WAIT
-# define OPT_DGETTEXT
-# undef  OPT_CATGETS
-# undef  OPT_GETDTABLESIZE
-# undef  OPT_SYSINFO
-# define OPT_CPP_PATH		"/usr/lib/cpp"
-# define OPT_CPP_OPTIONS	 "-B"
-# undef  OPT_STRERROR
-# undef  OPT_SVR4_GETMNTENT
-# undef  OPT_LOCKF_MNTENT
-# define OPT_LOCAL_MOUNT_TYPE	MNTTYPE_42
-# undef  OPT_OLD_RPC
-# undef  OPT_DEFINE_SIG_PF
-# define OPT_TAR_HAS_EXCLUDE_OPTION
+#define OPT_UNIX_SOCKET_RPC
+#undef OPT_TLI
+/* for 4.1.1 systems turning on any dlopen features on the    */
+/* client side would break clients with ld errors unless they */
+/* linked with -ldl. OPT_DLOPEN_CE is ok since clients don't  */
+/* ever execute ce_* functions.				      */
+#undef OPT_DLOPEN_X11
+#undef OPT_DLOPEN_CE
+#undef OPT_ADDMSG_DIRECT
+#define OPT_SECURE_RPC
+#undef OPT_CLASSING_ENGINE
+#undef OPT_PATCH
+#define OPT_BSD_SIGNAL
+#define OPT_BSD_WAIT
+#define OPT_DGETTEXT
+#undef OPT_CATGETS
+#undef OPT_GETDTABLESIZE
+#undef OPT_SYSINFO
+#define OPT_CPP_PATH "/usr/lib/cpp"
+#define OPT_CPP_OPTIONS "-B"
+#undef OPT_STRERROR
+#undef OPT_SVR4_GETMNTENT
+#undef OPT_LOCKF_MNTENT
+#define OPT_LOCAL_MOUNT_TYPE MNTTYPE_42
+#undef OPT_OLD_RPC
+#undef OPT_DEFINE_SIG_PF
+#define OPT_TAR_HAS_EXCLUDE_OPTION
 
-# define OPT_BUG_SUNOS_4
+#define OPT_BUG_SUNOS_4
 
-# define OPT_HAS_REALPATH
-# undef  OPT_AUTOMOUNT_PATH_FIX
+#define OPT_HAS_REALPATH
+#undef OPT_AUTOMOUNT_PATH_FIX
 
 #elif defined(sun) && (OS_VERSION >= 5)
 
-# undef  OPT_UNIX_SOCKET_RPC 
-# define OPT_TLI 
-# undef  OPT_DLOPEN_X11
-# undef  OPT_DLOPEN_CE
-# undef  OPT_ADDMSG_DIRECT 
-# define OPT_SECURE_RPC 
-# undef  OPT_CLASSING_ENGINE
-# undef  OPT_BSD_SIGNAL
-# define OPT_POSIX_SIGNAL
-# undef  OPT_BSD_WAIT
-# undef  OPT_DGETTEXT
-# define OPT_CATGETS
-# undef  OPT_GETDTABLESIZE
-# define OPT_SYSINFO
-# define OPT_STRERROR
-# define OPT_CPP_PATH		"/usr/ccs/lib/cpp"
-# define OPT_CPP_OPTIONS	"-B"
-# define OPT_SVR4_GETMNTENT
-# define OPT_LOCKF_MNTENT
-# define OPT_LOCAL_MOUNT_TYPE	MNTTYPE_UFS
-# undef  OPT_DEFINE_SIG_PF
-# define OPT_TAR_HAS_EXCLUDE_OPTION
+#undef OPT_UNIX_SOCKET_RPC
+#define OPT_TLI
+#undef OPT_DLOPEN_X11
+#undef OPT_DLOPEN_CE
+#undef OPT_ADDMSG_DIRECT
+#define OPT_SECURE_RPC
+#undef OPT_CLASSING_ENGINE
+#undef OPT_BSD_SIGNAL
+#define OPT_POSIX_SIGNAL
+#undef OPT_BSD_WAIT
+#undef OPT_DGETTEXT
+#define OPT_CATGETS
+#undef OPT_GETDTABLESIZE
+#define OPT_SYSINFO
+#define OPT_STRERROR
+#define OPT_CPP_PATH "/usr/ccs/lib/cpp"
+#define OPT_CPP_OPTIONS "-B"
+#define OPT_SVR4_GETMNTENT
+#define OPT_LOCKF_MNTENT
+#define OPT_LOCAL_MOUNT_TYPE MNTTYPE_UFS
+#undef OPT_DEFINE_SIG_PF
+#define OPT_TAR_HAS_EXCLUDE_OPTION
 
-# define OPT_HAS_REALPATH
-# undef  OPT_AUTOMOUNT_PATH_FIX
+#define OPT_HAS_REALPATH
+#undef OPT_AUTOMOUNT_PATH_FIX
 
 /* Does not work on X86 */
-# if defined(i386) && OS_MINOR_VERSION <= 4
-#  undef OPT_GARBAGE_THREADS
-#  undef OPT_SOLARIS_THREADED_TRIES
-# else
-#  define OPT_SOLARIS_THREADS		1
-/* #  define OPT_XTHREADS   		1 */	/* Defaulted by -DXTHREADS */
-#  define OPT_GARBAGE_THREADS		1
-#  define OPT_SOLARIS_THREADED_TRIES	10
-# endif
+#if defined(i386) && OS_MINOR_VERSION <= 4
+#undef OPT_GARBAGE_THREADS
+#undef OPT_SOLARIS_THREADED_TRIES
+#else
+#define OPT_SOLARIS_THREADS 1
+/* #  define OPT_XTHREADS   		1 */ /* Defaulted by -DXTHREADS */
+#define OPT_GARBAGE_THREADS 1
+#define OPT_SOLARIS_THREADED_TRIES 10
+#endif
 
 /* Solaris 2.5 and above, supports clnt_create_timed(3N) */
-# if (OS_MINOR_VERSION >= 5)
-#  define OPT_HAS_CLNT_CREATE_TIMED	1
-#  define OPT_CLNT_CREATE_TIMEOUT	30
-# endif
+#if (OS_MINOR_VERSION >= 5)
+#define OPT_HAS_CLNT_CREATE_TIMED 1
+#define OPT_CLNT_CREATE_TIMEOUT 30
+#endif
 
 /* TURN THESE OFF FOR NOW */
-# undef OPT_GARBAGE_IN_PARALLEL
-# undef OPT_GARBAGE_THREADS
+#undef OPT_GARBAGE_IN_PARALLEL
+#undef OPT_GARBAGE_THREADS
 
 /* Turn ON/OFF parallel threads for garbage collection */
-# if defined(OPT_DO_AUTO_GARBAGE_COLLECT) && defined(OPT_SOLARIS_THREADS)
-#  define OPT_GARBAGE_IN_PARALLEL	1
-#  define OPT_GARBAGE_THREADS		1
-# else
-#  define OPT_GARBAGE_IN_PARALLEL	0	/* used as a const */
-#  undef  OPT_GARBAGE_THREADS
-# endif
+#if defined(OPT_DO_AUTO_GARBAGE_COLLECT) && defined(OPT_SOLARIS_THREADS)
+#define OPT_GARBAGE_IN_PARALLEL 1
+#define OPT_GARBAGE_THREADS 1
+#else
+#define OPT_GARBAGE_IN_PARALLEL 0 /* used as a const */
+#undef OPT_GARBAGE_THREADS
+#endif
 
 #elif defined(sgi)
 /* these are probably way obsolete now that irix is svr4 based */
-# define OPT_UNIX_SOCKET_RPC 
-# undef  OPT_TLI 
-# undef  OPT_DLOPEN_X11 
-# undef  OPT_DLOPEN_CE 
-# undef  OPT_ADDMSG_DIRECT 
-# undef  OPT_SECURE_RPC 
-# undef  OPT_CLASSING_ENGINE 
-# define OPT_TAR_HAS_EXCLUDE_OPTION
+#define OPT_UNIX_SOCKET_RPC
+#undef OPT_TLI
+#undef OPT_DLOPEN_X11
+#undef OPT_DLOPEN_CE
+#undef OPT_ADDMSG_DIRECT
+#undef OPT_SECURE_RPC
+#undef OPT_CLASSING_ENGINE
+#define OPT_TAR_HAS_EXCLUDE_OPTION
 
 #elif defined(ultrix)
 
-# undef OPT_UNIX_SOCKET_RPC
-# undef  OPT_TLI 
-# undef  OPT_DLOPEN_X11 
-# undef  OPT_DLOPEN_CE 
-# undef  OPT_ADDMSG_DIRECT 
-# undef  OPT_SECURE_RPC 
-# undef  OPT_CLASSING_ENGINE 
-# undef  OPT_TAR_HAS_EXCLUDE_OPTION
+#undef OPT_UNIX_SOCKET_RPC
+#undef OPT_TLI
+#undef OPT_DLOPEN_X11
+#undef OPT_DLOPEN_CE
+#undef OPT_ADDMSG_DIRECT
+#undef OPT_SECURE_RPC
+#undef OPT_CLASSING_ENGINE
+#undef OPT_TAR_HAS_EXCLUDE_OPTION
 
 #elif defined(__hpux) || defined(hpux)
 
-# undef  OPT_UNIX_SOCKET_RPC 
-# undef  OPT_TLI 
-# undef  OPT_DLOPEN_X11 
-# undef  OPT_DLOPEN_CE 
-# undef  OPT_ADDMSG_DIRECT
-# define OPT_BUG_HPUX
-# undef  OPT_SECURE_RPC 
-# undef  OPT_CLASSING_ENGINE 
-# undef  OPT_BSD_SIGNAL
-# define OPT_POSIX_SIGNAL
-# undef  OPT_BSD_WAIT
-# undef  OPT_DGETTEXT
-# define OPT_CATGETS
-# undef  OPT_GETDTABLESIZE
-# undef  OPT_SYSINFO
-# define OPT_HAS_REALPATH
-# define OPT_AUTOMOUNT_PATH_FIX
+#undef OPT_UNIX_SOCKET_RPC
+#undef OPT_TLI
+#undef OPT_DLOPEN_X11
+#undef OPT_DLOPEN_CE
+#undef OPT_ADDMSG_DIRECT
+#define OPT_BUG_HPUX
+#undef OPT_SECURE_RPC
+#undef OPT_CLASSING_ENGINE
+#undef OPT_BSD_SIGNAL
+#define OPT_POSIX_SIGNAL
+#undef OPT_BSD_WAIT
+#undef OPT_DGETTEXT
+#define OPT_CATGETS
+#undef OPT_GETDTABLESIZE
+#undef OPT_SYSINFO
+#define OPT_HAS_REALPATH
+#define OPT_AUTOMOUNT_PATH_FIX
 /*
  * re-define these. HP-UX does not seem to want to wake up a swapped
  * process. The timeouts have to be increased so that HP-UX has time
  * to swap in ttsession (if it is out).
  */
-# undef  OPT_PING_TRIES
-# define OPT_PING_TRIES		10
-# undef  OPT_PING_SLEEP
-# define OPT_PING_SLEEP		2
-# if OSMAJORVERSION < 10
-#  define OPT_CPP_PATH		"/lib/cpp"
-# else
-#  define OPT_CPP_PATH		"/opt/langtools/lbin/cpp"
-# endif
-# define OPT_CPP_OPTIONS	""
-# define OPT_STRERROR
-# undef  OPT_SVR4_GETMNTENT
-# undef  OPT_LOCKF_MNTENT
-# define OPT_LOCAL_MOUNT_TYPE	MNTTYPE_HFS
-# define OPT_DEFINE_SIG_PF
-# undef  OPT_TAR_HAS_EXCLUDE_OPTION
-# define OPT_BUG_RPCINTR
+#undef OPT_PING_TRIES
+#define OPT_PING_TRIES 10
+#undef OPT_PING_SLEEP
+#define OPT_PING_SLEEP 2
+#if OSMAJORVERSION < 10
+#define OPT_CPP_PATH "/lib/cpp"
+#else
+#define OPT_CPP_PATH "/opt/langtools/lbin/cpp"
+#endif
+#define OPT_CPP_OPTIONS ""
+#define OPT_STRERROR
+#undef OPT_SVR4_GETMNTENT
+#undef OPT_LOCKF_MNTENT
+#define OPT_LOCAL_MOUNT_TYPE MNTTYPE_HFS
+#define OPT_DEFINE_SIG_PF
+#undef OPT_TAR_HAS_EXCLUDE_OPTION
+#define OPT_BUG_RPCINTR
 
 #elif defined(USL)
-# if !defined(__STDIO_H)
-#  include <stdio.h>
-# endif
-# undef  OPT_UNIX_SOCKET_RPC 
-# define OPT_TLI 
-# if defined(PROF) /* can't use dlopen if profiling. */
-#  undef  OPT_DLOPEN_X11 
-#  undef  OPT_DLOPEN_CE 
-# else
-#  define OPT_DLOPEN_X11 
-#  define OPT_DLOPEN_CE 
-# endif
-# undef  OPT_ADDMSG_DIRECT 
-# undef  OPT_SECURE_RPC 
-# undef  OPT_CLASSING_ENGINE
-# undef  OPT_BSD_SIGNAL
-# define OPT_POSIX_SIGNAL
-# undef  OPT_BSD_WAIT
-# undef  OPT_DGETTEXT
-# define OPT_CATGETS
-# undef  OPT_GETDTABLESIZE
-# define OPT_SYSINFO
-# define OPT_STRERROR
-# define OPT_CPP_PATH		"/usr/ccs/lib/cpp"
-# define OPT_CPP_OPTIONS	""
-# define OPT_SVR4_GETMNTENT
+#if !defined(__STDIO_H)
+#include <stdio.h>
+#endif
+#undef OPT_UNIX_SOCKET_RPC
+#define OPT_TLI
+#if defined(PROF) /* can't use dlopen if profiling. */
+#undef OPT_DLOPEN_X11
+#undef OPT_DLOPEN_CE
+#else
+#define OPT_DLOPEN_X11
+#define OPT_DLOPEN_CE
+#endif
+#undef OPT_ADDMSG_DIRECT
+#undef OPT_SECURE_RPC
+#undef OPT_CLASSING_ENGINE
+#undef OPT_BSD_SIGNAL
+#define OPT_POSIX_SIGNAL
+#undef OPT_BSD_WAIT
+#undef OPT_DGETTEXT
+#define OPT_CATGETS
+#undef OPT_GETDTABLESIZE
+#define OPT_SYSINFO
+#define OPT_STRERROR
+#define OPT_CPP_PATH "/usr/ccs/lib/cpp"
+#define OPT_CPP_OPTIONS ""
+#define OPT_SVR4_GETMNTENT
 /* the reason for locking MNTENT is to sync with the Solaris automounter,
  * which doesn't apply on UnixWare.  It probably wouldn't hurt to
  * do the lockf there, but things seem to be working without it...
  */
-# undef  OPT_LOCKF_MNTENT
-# define OPT_BUG_USL
-# if defined(OSMAJORVERSION) && (OSMAJORVERSION > 1)
-#  define OPT_BUG_UW_2
-# else
-#  define OPT_BUG_UW_1
-# endif
-# define OPT_LOCAL_MOUNT_TYPE	"vxfs"
-# define OPT_DEFINE_SIG_PF
-# define OPT_TAR_HAS_EXCLUDE_OPTION
-# define OPT_HAS_REALPATH
+#undef OPT_LOCKF_MNTENT
+#define OPT_BUG_USL
+#if defined(OSMAJORVERSION) && (OSMAJORVERSION > 1)
+#define OPT_BUG_UW_2
+#else
+#define OPT_BUG_UW_1
+#endif
+#define OPT_LOCAL_MOUNT_TYPE "vxfs"
+#define OPT_DEFINE_SIG_PF
+#define OPT_TAR_HAS_EXCLUDE_OPTION
+#define OPT_HAS_REALPATH
 
 #elif defined(__uxp__)
-# if !defined(__STDIO_H)
-#  include <stdio.h>
-# endif
-# undef  OPT_UNIX_SOCKET_RPC 
-# define OPT_TLI 
-# if defined(PROF) /* can't use dlopen if profiling. */
-#  undef  OPT_DLOPEN_X11 
-#  undef  OPT_DLOPEN_CE 
-# else
-#  define OPT_DLOPEN_X11 
-#  define OPT_DLOPEN_CE 
-# endif
-# undef  OPT_ADDMSG_DIRECT 
-# undef  OPT_SECURE_RPC 
-# undef  OPT_CLASSING_ENGINE
-# undef  OPT_BSD_SIGNAL
-# define OPT_POSIX_SIGNAL
-# undef  OPT_BSD_WAIT
-# undef  OPT_DGETTEXT
-# define OPT_CATGETS
-# undef  OPT_GETDTABLESIZE
-# define OPT_SYSINFO
-# define OPT_STRERROR
-# define OPT_CPP_PATH		"/usr/ccs/lib/cpp"
-# define OPT_CPP_OPTIONS	""
-# define OPT_SVR4_GETMNTENT
+#if !defined(__STDIO_H)
+#include <stdio.h>
+#endif
+#undef OPT_UNIX_SOCKET_RPC
+#define OPT_TLI
+#if defined(PROF) /* can't use dlopen if profiling. */
+#undef OPT_DLOPEN_X11
+#undef OPT_DLOPEN_CE
+#else
+#define OPT_DLOPEN_X11
+#define OPT_DLOPEN_CE
+#endif
+#undef OPT_ADDMSG_DIRECT
+#undef OPT_SECURE_RPC
+#undef OPT_CLASSING_ENGINE
+#undef OPT_BSD_SIGNAL
+#define OPT_POSIX_SIGNAL
+#undef OPT_BSD_WAIT
+#undef OPT_DGETTEXT
+#define OPT_CATGETS
+#undef OPT_GETDTABLESIZE
+#define OPT_SYSINFO
+#define OPT_STRERROR
+#define OPT_CPP_PATH "/usr/ccs/lib/cpp"
+#define OPT_CPP_OPTIONS ""
+#define OPT_SVR4_GETMNTENT
 /* the reason for locking MNTENT is to sync with the Solaris automounter,
  * which doesn't apply on UnixWare.  It probably wouldn't hurt to
  * do the lockf there, but things seem to be working without it...
  */
-# undef  OPT_LOCKF_MNTENT
-# define OPT_BUG_UXP
-# define OPT_LOCAL_MOUNT_TYPE	"vxfs"
-# define OPT_DEFINE_SIG_PF
-# define OPT_TAR_HAS_EXCLUDE_OPTION
-# define OPT_HAS_REALPATH
+#undef OPT_LOCKF_MNTENT
+#define OPT_BUG_UXP
+#define OPT_LOCAL_MOUNT_TYPE "vxfs"
+#define OPT_DEFINE_SIG_PF
+#define OPT_TAR_HAS_EXCLUDE_OPTION
+#define OPT_HAS_REALPATH
 
 #elif defined(__osf__)
-# define OPT_UNIX_SOCKET_RPC
-# undef  OPT_TLI
-# undef  OPT_DLOPEN_X11
-# undef  OPT_DLOPEN_CE
-# undef  OPT_ADDMSG_DIRECT
-# undef  OPT_SECURE_RPC
-# undef  OPT_CLASSING_ENGINE
-# undef  OPT_BSD_SIGNAL
-# define OPT_POSIX_SIGNAL
-# undef  OPT_BSD_WAIT
-# undef  OPT_PATCH
-# undef  OPT_I18N
-# define OPT_CATGETS
-# undef  OPT_GETDTABLESIZE
-# undef  OPT_SYSINFO
-# define OPT_CPP_PATH		"/usr/ccs/lib/cpp"
-# define OPT_CPP_OPTIONS	""
-# define OPT_STRERROR
-# undef  OPT_SVR4_GETMNTENT
-# define OPT_LOCAL_MOUNT_TYPE	MNTTYPE_UFS
-# define OPT_DEFINE_SIG_PF
-# undef  OPT_TAR_HAS_EXCLUDE_OPTION
-# undef  OPT_HAS_REALPATH 
-# if defined(OSMAJORVERSION) && (OSMAJORVERSION >= 4)
-#  define OPT_XDR_LONG_TYPE	int
-# endif
+#define OPT_UNIX_SOCKET_RPC
+#undef OPT_TLI
+#undef OPT_DLOPEN_X11
+#undef OPT_DLOPEN_CE
+#undef OPT_ADDMSG_DIRECT
+#undef OPT_SECURE_RPC
+#undef OPT_CLASSING_ENGINE
+#undef OPT_BSD_SIGNAL
+#define OPT_POSIX_SIGNAL
+#undef OPT_BSD_WAIT
+#undef OPT_PATCH
+#undef OPT_I18N
+#define OPT_CATGETS
+#undef OPT_GETDTABLESIZE
+#undef OPT_SYSINFO
+#define OPT_CPP_PATH "/usr/ccs/lib/cpp"
+#define OPT_CPP_OPTIONS ""
+#define OPT_STRERROR
+#undef OPT_SVR4_GETMNTENT
+#define OPT_LOCAL_MOUNT_TYPE MNTTYPE_UFS
+#define OPT_DEFINE_SIG_PF
+#undef OPT_TAR_HAS_EXCLUDE_OPTION
+#undef OPT_HAS_REALPATH
+#if defined(OSMAJORVERSION) && (OSMAJORVERSION >= 4)
+#define OPT_XDR_LONG_TYPE int
+#endif
 
 #elif defined(linux)
 
-# undef  OPT_UNIX_SOCKET_RPC 
-# undef  OPT_TLI 
-# undef  OPT_DLOPEN_X11 
-# undef  OPT_DLOPEN_CE 
-# undef  OPT_ADDMSG_DIRECT 
-# undef  OPT_SECURE_RPC 
-# undef  OPT_CLASSING_ENGINE
-# undef  OPT_PATCH
-# define OPT_POSIX_SIGNAL
-# undef  OPT_BSD_WAIT
-# undef  OPT_DGETTEXT
-# define OPT_CATGETS
-# undef  OPT_GETDTABLESIZE
-# undef  OPT_SYSINFO
-# define OPT_CPP_PATH		"/usr/bin/cpp"
-# define OPT_CPP_OPTIONS	 ""
-# define OPT_STRERROR
-# undef  OPT_SVR4_GETMNTENT
-# undef  OPT_LOCKF_MNTENT
-# define OPT_LOCAL_MOUNT_TYPE	"ext2fs"
-# undef  OPT_OLD_RPC
-# define OPT_DEFINE_SIG_PF
-# define OPT_TAR_HAS_EXCLUDE_OPTION
-# define OPT_HAS_REALPATH
-# define OPT_AUTOMOUNT_PATH_FIX
-# define OPT_BUG_RPCINTR
-# undef  OPT_XTHREADS 
+#undef OPT_UNIX_SOCKET_RPC
+#undef OPT_TLI
+#undef OPT_DLOPEN_X11
+#undef OPT_DLOPEN_CE
+#undef OPT_ADDMSG_DIRECT
+#undef OPT_SECURE_RPC
+#undef OPT_CLASSING_ENGINE
+#undef OPT_PATCH
+#define OPT_POSIX_SIGNAL
+#undef OPT_BSD_WAIT
+#undef OPT_DGETTEXT
+#define OPT_CATGETS
+#undef OPT_GETDTABLESIZE
+#undef OPT_SYSINFO
+#define OPT_CPP_PATH "/usr/bin/cpp"
+#define OPT_CPP_OPTIONS ""
+#define OPT_STRERROR
+#undef OPT_SVR4_GETMNTENT
+#undef OPT_LOCKF_MNTENT
+#define OPT_LOCAL_MOUNT_TYPE "ext2fs"
+#undef OPT_OLD_RPC
+#define OPT_DEFINE_SIG_PF
+#define OPT_TAR_HAS_EXCLUDE_OPTION
+#define OPT_HAS_REALPATH
+#define OPT_AUTOMOUNT_PATH_FIX
+#define OPT_BUG_RPCINTR
+#undef OPT_XTHREADS
 
 #elif defined(__OpenBSD__)
 
-# undef  OPT_UNIX_SOCKET_RPC 
-# undef  OPT_TLI 
-# undef  OPT_DLOPEN_X11 
-# undef  OPT_DLOPEN_CE 
-# undef  OPT_ADDMSG_DIRECT 
-# undef  OPT_SECURE_RPC 
-# undef  OPT_CLASSING_ENGINE
-# undef  OPT_PATCH
-# define OPT_POSIX_SIGNAL
-# undef  OPT_BSD_WAIT
-# undef  OPT_DGETTEXT
-# define OPT_CATGETS
-# undef  OPT_GETDTABLESIZE
-# undef  OPT_SYSINFO
-# define OPT_CPP_PATH		"/usr/libexec/cpp"
-# define OPT_CPP_OPTIONS	""
-# define OPT_STRERROR
-# undef  OPT_SVR4_GETMNTENT
-# undef  OPT_LOCKF_MNTENT
-# define OPT_LOCAL_MOUNT_TYPE	MNTTYPE_UFS
-# undef  OPT_OLD_RPC
-# define OPT_DEFINE_SIG_PF
-# define OPT_TAR_HAS_EXCLUDE_OPTION
-# define OPT_HAS_REALPATH
-# define OPT_AUTOMOUNT_PATH_FIX
-# define OPT_BUG_RPCINTR
-# undef  OPT_XTHREADS 
+#undef OPT_UNIX_SOCKET_RPC
+#undef OPT_TLI
+#undef OPT_DLOPEN_X11
+#undef OPT_DLOPEN_CE
+#undef OPT_ADDMSG_DIRECT
+#undef OPT_SECURE_RPC
+#undef OPT_CLASSING_ENGINE
+#undef OPT_PATCH
+#define OPT_POSIX_SIGNAL
+#undef OPT_BSD_WAIT
+#undef OPT_DGETTEXT
+#define OPT_CATGETS
+#undef OPT_GETDTABLESIZE
+#undef OPT_SYSINFO
+#define OPT_CPP_PATH "/usr/libexec/cpp"
+#define OPT_CPP_OPTIONS ""
+#define OPT_STRERROR
+#undef OPT_SVR4_GETMNTENT
+#undef OPT_LOCKF_MNTENT
+#define OPT_LOCAL_MOUNT_TYPE MNTTYPE_UFS
+#undef OPT_OLD_RPC
+#define OPT_DEFINE_SIG_PF
+#define OPT_TAR_HAS_EXCLUDE_OPTION
+#define OPT_HAS_REALPATH
+#define OPT_AUTOMOUNT_PATH_FIX
+#define OPT_BUG_RPCINTR
+#undef OPT_XTHREADS
 
 #elif defined(__FreeBSD__)
-# undef  OPT_UNIX_SOCKET_RPC 
-# undef  OPT_TLI 
-# undef  OPT_DLOPEN_X11 
-# undef  OPT_DLOPEN_CE 
-# undef  OPT_ADDMSG_DIRECT 
-# undef  OPT_SECURE_RPC 
-# undef  OPT_CLASSING_ENGINE
-# undef  OPT_PATCH
-# define OPT_POSIX_SIGNAL
-# undef  OPT_BSD_WAIT
-# undef  OPT_DGETTEXT
-# define OPT_CATGETS
-# undef  OPT_GETDTABLESIZE
-# undef  OPT_SYSINFO
-# if defined(OSMAJORVERSION) && (OSMAJORVERSION >= 5)
-#  define OPT_CPP_PATH		"/usr/bin/cpp"
-# else
-#  define OPT_CPP_PATH		"/usr/libexec/cpp"
-# endif
-# define OPT_CPP_OPTIONS	""
-# define OPT_STRERROR
-# undef  OPT_SVR4_GETMNTENT
-# undef  OPT_LOCKF_MNTENT
-# define OPT_LOCAL_MOUNT_TYPE	MNTTYPE_UFS
-# undef  OPT_OLD_RPC
-# define OPT_DEFINE_SIG_PF
-# define OPT_TAR_HAS_EXCLUDE_OPTION
-# define OPT_HAS_REALPATH
-# define OPT_AUTOMOUNT_PATH_FIX
-# define OPT_BUG_RPCINTR
-# undef  OPT_XTHREADS 
-# define OPT_CONST_CORRECT
+#undef OPT_UNIX_SOCKET_RPC
+#undef OPT_TLI
+#undef OPT_DLOPEN_X11
+#undef OPT_DLOPEN_CE
+#undef OPT_ADDMSG_DIRECT
+#undef OPT_SECURE_RPC
+#undef OPT_CLASSING_ENGINE
+#undef OPT_PATCH
+#define OPT_POSIX_SIGNAL
+#undef OPT_BSD_WAIT
+#undef OPT_DGETTEXT
+#define OPT_CATGETS
+#undef OPT_GETDTABLESIZE
+#undef OPT_SYSINFO
+#if defined(OSMAJORVERSION) && (OSMAJORVERSION >= 5)
+#define OPT_CPP_PATH "/usr/bin/cpp"
+#else
+#define OPT_CPP_PATH "/usr/libexec/cpp"
+#endif
+#define OPT_CPP_OPTIONS ""
+#define OPT_STRERROR
+#undef OPT_SVR4_GETMNTENT
+#undef OPT_LOCKF_MNTENT
+#define OPT_LOCAL_MOUNT_TYPE MNTTYPE_UFS
+#undef OPT_OLD_RPC
+#define OPT_DEFINE_SIG_PF
+#define OPT_TAR_HAS_EXCLUDE_OPTION
+#define OPT_HAS_REALPATH
+#define OPT_AUTOMOUNT_PATH_FIX
+#define OPT_BUG_RPCINTR
+#undef OPT_XTHREADS
+#define OPT_CONST_CORRECT
 
 #elif defined(__NetBSD__)
-# undef  OPT_UNIX_SOCKET_RPC
-# undef  OPT_TLI
-# undef  OPT_DLOPEN_X11
-# undef  OPT_DLOPEN_CE
-# undef  OPT_ADDMSG_DIRECT
-# undef  OPT_SECURE_RPC
-# undef  OPT_CLASSING_ENGINE
-# undef  OPT_PATCH
-# define OPT_POSIX_SIGNAL
-# undef  OPT_BSD_WAIT
-# undef  OPT_DGETTEXT
-# define OPT_CATGETS
-# undef  OPT_GETDTABLESIZE
-# undef  OPT_SYSINFO
-# define OPT_CPP_PATH		"/usr/bin/cpp"
-# define OPT_CPP_OPTIONS	""
-# define OPT_STRERROR
-# undef  OPT_SVR4_GETMNTENT
-# undef  OPT_LOCKF_MNTENT
-# define OPT_LOCAL_MOUNT_TYPE	MNTTYPE_UFS
-# undef  OPT_OLD_RPC
-# define OPT_DEFINE_SIG_PF
-# define OPT_TAR_HAS_EXCLUDE_OPTION
-# define OPT_HAS_REALPATH
-# define OPT_AUTOMOUNT_PATH_FIX
-# define OPT_BUG_RPCINTR
-# undef  OPT_XTHREADS
-# define OPT_CONST_CORRECT
-# define HAS_STATVFS
+#undef OPT_UNIX_SOCKET_RPC
+#undef OPT_TLI
+#undef OPT_DLOPEN_X11
+#undef OPT_DLOPEN_CE
+#undef OPT_ADDMSG_DIRECT
+#undef OPT_SECURE_RPC
+#undef OPT_CLASSING_ENGINE
+#undef OPT_PATCH
+#define OPT_POSIX_SIGNAL
+#undef OPT_BSD_WAIT
+#undef OPT_DGETTEXT
+#define OPT_CATGETS
+#undef OPT_GETDTABLESIZE
+#undef OPT_SYSINFO
+#define OPT_CPP_PATH "/usr/bin/cpp"
+#define OPT_CPP_OPTIONS ""
+#define OPT_STRERROR
+#undef OPT_SVR4_GETMNTENT
+#undef OPT_LOCKF_MNTENT
+#define OPT_LOCAL_MOUNT_TYPE MNTTYPE_UFS
+#undef OPT_OLD_RPC
+#define OPT_DEFINE_SIG_PF
+#define OPT_TAR_HAS_EXCLUDE_OPTION
+#define OPT_HAS_REALPATH
+#define OPT_AUTOMOUNT_PATH_FIX
+#define OPT_BUG_RPCINTR
+#undef OPT_XTHREADS
+#define OPT_CONST_CORRECT
+#define HAS_STATVFS
 
 #else
 /* Unknown configuration, complain */
-}}}} You must edit lib/tt_options.h and add a section defining the options for your configuration.
+}
+}
+}
+} You must edit lib/tt_options.h and add a section defining the options for your configuration.
 
 #endif
 
-#endif				/* _TT_OPTIONS_H */
+#endif /* _TT_OPTIONS_H */

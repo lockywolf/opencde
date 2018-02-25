@@ -43,7 +43,7 @@ name, are the same for all programs.
 /* Maximum length of an element name */
 #define M_NAMELEN 64
 
-/* M_NONNAME, M_NMSTART, M_NAMECHAR, and M_DIGIT are used to indicate 
+/* M_NONNAME, M_NMSTART, M_NAMECHAR, and M_DIGIT are used to indicate
    which characters can appear within element names*/
 #define M_NONNAME 0
 #define M_NMSTART 1
@@ -54,31 +54,30 @@ name, are the same for all programs.
 #define M_CHARSETLEN 256
 
 /* Structure for entities */
-typedef struct m_entity M_ENTITY ;
+typedef struct m_entity M_ENTITY;
 struct m_entity {
-  unsigned char type ;
-  unsigned char wheredef ;
-  M_WCHAR *content ;
-  M_WCHAR *name ;
+        unsigned char type;
+        unsigned char wheredef;
+        M_WCHAR *content;
+        M_WCHAR *name;
 #if defined(BUILDEXTERN) || defined(ELTEXTERN)
-  int index ;
-  M_ENTITY *next ;
+        int index;
+        M_ENTITY *next;
 #endif
-#if ! defined(BUILDEXTERN)
-  int codeindex ;
+#if !defined(BUILDEXTERN)
+        int codeindex;
 #endif
-  } ;
+};
 
 /* Declarations for character types */
 typedef struct {
-  LOGICAL type ;
-  /* Must be same type as EOF */
-  int upper ;
-  int lower ;
-  } M_CHARTYPE ;
+        LOGICAL type;
+        /* Must be same type as EOF */
+        int upper;
+        int lower;
+} M_CHARTYPE;
 
-
-#define m_ischar(x) ((int) (x) >= 0 && (int) (x) < M_CHARSETLEN)
+#define m_ischar(x) ((int)(x) >= 0 && (int)(x) < M_CHARSETLEN)
 #define m_cttype(x) (m_ischar(x) ? m_ctarray[x].type : M_NONNAME)
 #define m_ctupper(x) (m_ischar(x) ? m_ctarray[x].upper : x)
 #define m_ctlower(x) (m_ischar(x) ? m_ctarray[x].lower : x)

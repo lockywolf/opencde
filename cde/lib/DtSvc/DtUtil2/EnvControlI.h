@@ -41,21 +41,22 @@
  **
  ****************************<+>*************************************/
 /*******************************************************************
-	The environment variables
+        The environment variables
 *******************************************************************/
 #define BIN_PATH_ENVIRON "PATH"
 #define NLS_PATH_ENVIRON "NLSPATH"
 #define SYSTEM_APPL_PATH_ENVIRON "XFILESEARCHPATH"
-#define PM_PATH_ENVIRON	"XMICONSEARCHPATH"
-#define BM_PATH_ENVIRON	"XMICONBMSEARCHPATH"
+#define PM_PATH_ENVIRON "XMICONSEARCHPATH"
+#define BM_PATH_ENVIRON "XMICONBMSEARCHPATH"
 
 /*******************************************************************
-	The default DT path strings, architecture-dependent
+        The default DT path strings, architecture-dependent
 *******************************************************************/
-#define BIN_PATH_STRING	 CDE_INSTALLATION_TOP "/bin"
+#define BIN_PATH_STRING CDE_INSTALLATION_TOP "/bin"
 
-#define NLS_PATH_STRING  CDE_INSTALLATION_TOP "/lib/nls/msg/%L/%N.cat:" \
-                         CDE_INSTALLATION_TOP "/lib/nls/msg/C/%N.cat"
+#define NLS_PATH_STRING                                                        \
+        CDE_INSTALLATION_TOP "/lib/nls/msg/%L/%N.cat:" CDE_INSTALLATION_TOP    \
+                             "/lib/nls/msg/C/%N.cat"
 
 #if defined(sun)
 #define X_BIN_PATH_STRING "/usr/openwin/bin"
@@ -92,33 +93,33 @@
  *      will not modify the settings in the "custom resources" locations.
  *
  */
-#define SYSTEM_APPL_PATH_STRING  CDE_CONFIGURATION_TOP "/app-defaults/%L/%N:" \
-                                 CDE_CONFIGURATION_TOP "/app-defaults/C/%N:" \
-                                 CDE_INSTALLATION_TOP "/app-defaults/%L/%N:" \
-                                 CDE_INSTALLATION_TOP "/app-defaults/C/%N"
-
+#define SYSTEM_APPL_PATH_STRING                                                \
+        CDE_CONFIGURATION_TOP "/app-defaults/%L/%N:" CDE_CONFIGURATION_TOP     \
+                              "/app-defaults/C/%N:" CDE_INSTALLATION_TOP       \
+                              "/app-defaults/%L/%N:" CDE_INSTALLATION_TOP      \
+                              "/app-defaults/C/%N"
 
 /**********************************************************************
  * Data representation of the user's DT environment
  **********************************************************************/
 
 typedef struct environStruct {
-	char * pmPath;
-	char * binPath;
-	char * nlsPath;
-	char * sysApplPath;
-	char * bmPath;
+        char *pmPath;
+        char *binPath;
+        char *nlsPath;
+        char *sysApplPath;
+        char *bmPath;
 } _environStruct;
 
 /**********************************************************************
  * Miscellaneous
  **********************************************************************/
-#define BV_BINPATH                      (1<<0)
-#define BV_SYSAPPLPATH                  (1<<1)
-#define BV_NLSPATH                      (1<<2)
-#define BV_PMPATH                       (1<<3)
-#define BV_BMPATH                       (1<<4)
+#define BV_BINPATH (1 << 0)
+#define BV_SYSAPPLPATH (1 << 1)
+#define BV_NLSPATH (1 << 2)
+#define BV_PMPATH (1 << 3)
+#define BV_BMPATH (1 << 4)
 
-#define MAX_ENV_STRING			(2*BUFSIZ)
+#define MAX_ENV_STRING (2 * BUFSIZ)
 
 /****************************        eof       **********************/

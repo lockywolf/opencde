@@ -35,22 +35,17 @@
 
 class Sep : public MotifUI {
 
- private:
+      private:
+        SeparatorStyle _style;
 
-   SeparatorStyle _style;
+      public:
+        Sep(MotifUI *parent, SeparatorStyle style = SHADOW_ETCHED_IN);
+        Sep(char *category, MotifUI *parent,
+            SeparatorStyle style = SHADOW_ETCHED_IN);
 
- public:
-
-   Sep(MotifUI * parent,
-       SeparatorStyle style = SHADOW_ETCHED_IN);
-   Sep(char *category,
-       MotifUI * parent,
-       SeparatorStyle style = SHADOW_ETCHED_IN);
-
-   const UI_Class UIClass()           { return SEPARATOR; }
-   const int UISubClass()             { return _style; }
-   const char *const UIClassName()    { return "Sep"; }
-
+        const UI_Class UIClass() { return SEPARATOR; }
+        const int UISubClass() { return _style; }
+        const char *const UIClassName() { return "Sep"; }
 };
 
 #endif /* SEP_H */

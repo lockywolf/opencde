@@ -21,7 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:	boolean.h $XConsortium: boolean.h /main/3 1995/10/26 16:10:48 rswiston $
+ * File:	boolean.h $XConsortium: boolean.h /main/3 1995/10/26 16:10:48
+ * rswiston $
  *
  * (c) Copyright 1993, 1994 Hewlett-Packard Company
  * (c) Copyright 1993, 1994 International Business Machines Corp.
@@ -33,7 +34,7 @@
 #define __BOOLEAN_H_
 
 #if defined(__aix)
-#undef  NULL
+#undef NULL
 #define NULL 0
 #endif
 
@@ -47,10 +48,10 @@
 #ifndef B_FALSE
 #define B_FALSE _B_FALSE
 #endif
-#endif   /* sun && _XOPEN_SOURCE */
+#endif /* sun && _XOPEN_SOURCE */
 
 #ifndef boolean
-typedef	boolean_t	boolean;
+typedef boolean_t boolean;
 #endif
 
 #ifndef TRUE
@@ -61,7 +62,6 @@ typedef	boolean_t	boolean;
 #define FALSE B_FALSE
 #endif
 #endif /* SVR4 */
-
 
 #if !defined(SVR4)
 #ifndef TRUE
@@ -75,5 +75,5 @@ typedef	boolean_t	boolean;
 #ifndef boolean
 typedef int boolean;
 #endif
-#endif	/* ! SVR4 */
+#endif /* ! SVR4 */
 #endif /* __BOOLEAN_H_ */

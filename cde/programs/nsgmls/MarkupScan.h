@@ -32,12 +32,7 @@ namespace SP_NAMESPACE {
 #endif
 
 struct MarkupScan {
-  enum Type {
-    normal,
-    in,
-    out,
-    suppress
-    };
+        enum Type { normal, in, out, suppress };
 };
 
 #ifdef SP_NAMESPACE

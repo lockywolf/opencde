@@ -29,86 +29,88 @@
 
 #include "Exceptions.hh"
 
-class Unexpected : public Exception{
-public:
-  /* BEWARE! we keep a pointer to the string without copying it! */
-  Unexpected(const char *msg)  { msg_ = msg; };
+class Unexpected : public Exception {
+      public:
+        /* BEWARE! we keep a pointer to the string without copying it! */
+        Unexpected(const char *msg) { msg_ = msg; };
 
-  const char *msg(void) { return msg_; };
+        const char *msg(void) { return msg_; };
 
-  DECLARE_EXCEPTION(Unexpected, Exception)
-  
-private:
-  const char *msg_;
+        DECLARE_EXCEPTION(Unexpected, Exception)
+
+      private:
+        const char *msg_;
 };
-
 
 class Token;
 
-class Task{
-public:
-  virtual ~Task() {};
-  
-  virtual void markup(const Token& t) = 0 /* throw(Unexpected) */;
+class Task {
+      public:
+        virtual ~Task(){};
 
-  virtual void data(const char *chars,
-		    size_t len) = 0;
+        virtual void markup(const Token &t) = 0 /* throw(Unexpected) */;
 
+        virtual void data(const char *chars, size_t len) = 0;
 };
 
-class ComplexTask: public Task{
+class ComplexTask : public Task {
 
-public:
-  virtual void markup(const Token& t) /* throw(Unexpected) */;
+      public:
+        virtual void markup(const Token &t) /* throw(Unexpected) */;
 
-  virtual void data(const char *chars,
-		    size_t len);
-protected:
-  ComplexTask();
-  ~ComplexTask();
+        virtual void data(const char *chars, size_t len);
 
-  void removeAllSubTasks();
-  void addSubTask(Task *);
+      protected:
+        ComplexTask();
+        ~ComplexTask();
 
-  void stopSubTask(Task *);
+        void removeAllSubTasks();
+        void addSubTask(Task *);
 
-#define KILLSUBTASK(t) { if(t) { stopSubTask(t); delete t; t = NULL; } }
+        void stopSubTask(Task *);
 
-  Task *subtask(int i) { return subtasks[i]; };
+#define KILLSUBTASK(t)                                                         \
+        {                                                                      \
+                if (t) {                                                       \
+                        stopSubTask(t);                                        \
+                        delete t;                                              \
+                        t = NULL;                                              \
+                }                                                              \
+        }
 
-protected:
-  Task **subtasks;
-  int    used;
+        Task *subtask(int i) { return subtasks[i]; };
 
-private:
-  int    alloc;
+      protected:
+        Task **subtasks;
+        int used;
 
-  void grow(int);
+      private:
+        int alloc;
+
+        void grow(int);
 };
 
 #define TEST_TASK 0
 #if TEST_TASK
 
-class TestTask : public Task{
+class TestTask : public Task {
 
-public:
-  virtual void markup(const Token& t) /* throw(Unexpected) */;
+      public:
+        virtual void markup(const Token &t) /* throw(Unexpected) */;
 
-  virtual void data(const char *chars,
-		    size_t len);
+        virtual void data(const char *chars, size_t len);
 };
 
-class TestTask2: public ComplexTask{
+class TestTask2 : public ComplexTask {
 
-protected:
-  int f_base;
-  
-public:
-  virtual void markup(const Token& t) /* throw(Unexpected) */;
+      protected:
+        int f_base;
 
-  virtual void data(const char *chars,
-		    size_t len);
-  TestTask2();
+      public:
+        virtual void markup(const Token &t) /* throw(Unexpected) */;
+
+        virtual void data(const char *chars, size_t len);
+        TestTask2();
 };
 #endif /* TEST_TASK */
 

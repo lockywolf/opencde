@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         spcd_event.h $XConsortium: spcd_event.h /main/3 1995/11/01 11:22:05 rswiston $
- * Language:     C
+ * File:         spcd_event.h $XConsortium: spcd_event.h /main/3 1995/11/01
+ * 11:22:05 rswiston $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -39,44 +39,44 @@
 
 extern SbInputId SPCD_AddInput
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-    (int fd, SbInputCallbackProc proc, void* data);
+    (int fd, SbInputCallbackProc proc, void *data);
 #else
     ();
 #endif
-    
+
 extern SbInputId SPCD_AddException
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-    (int fd, SbInputCallbackProc proc, void* data);
+    (int fd, SbInputCallbackProc proc, void *data);
 #else
-   ();
+    ();
 #endif
 
 extern void SPCD_RemoveInput
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (SbInputId id);
+    (SbInputId id);
 #else
-   ();
+    ();
 #endif
 
 extern void SPCD_RemoveException
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (SbInputId id);
+    (SbInputId id);
 #else
-   ();
+    ();
 #endif
 
 extern void SPCD_MainLoopUntil
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (Boolean *flag);
+    (Boolean *flag);
 #else
-   ();
+    ();
 #endif
 
 extern void SPCD_BreakMainLoop
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (void);
+    (void);
 #else
-   ();
+    ();
 #endif
 
-#endif	/* _SPCD_event_h */
+#endif /* _SPCD_event_h */

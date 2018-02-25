@@ -40,51 +40,48 @@ class DtMainW;
 
 class DtSetModList : public Dialog {
 
-   friend void OkCB(void *);
-   friend void ApplyCB(void *);
-   friend void CancelCB(void *);
-   friend void HelpCB(void *);
-   friend void SelectAllCB(void *);
-   friend void UnSelectAllCB(void *);
+        friend void OkCB(void *);
+        friend void ApplyCB(void *);
+        friend void CancelCB(void *);
+        friend void HelpCB(void *);
+        friend void SelectAllCB(void *);
+        friend void UnSelectAllCB(void *);
 
- private:
+      private:
+        boolean _has_been_posted;
+        Container *_container;
+        DtMainW *mainw;
+        Container *_workarea;
+        LabelObj *_info;
+        Button *select_all;
+        Button *unselect_all;
 
-   boolean _has_been_posted;
-   Container *_container;
-   DtMainW *mainw;
-   Container *_workarea;
-   LabelObj *_info;
-   Button *select_all;
-   Button *unselect_all;
+        // dialog buttons
+        Button *ok;
+        Button *apply;
+        Button *cancel;
+        Button *help;
 
-   // dialog buttons
-   Button *ok;
-   Button *apply;
-   Button *cancel;
-   Button *help;
+        static void OkCB(void *);
+        static void ApplyCB(void *);
+        static void CancelCB(void *);
+        static void HelpCB(void *);
+        static void SelectAllCB(void *);
+        static void UnSelectAllCB(void *);
 
-   static void OkCB(void *);
-   static void ApplyCB(void *);
-   static void CancelCB(void *);
-   static void HelpCB(void *);
-   static void SelectAllCB(void *);
-   static void UnSelectAllCB(void *);
+        boolean SetVisiblity(boolean flag);
+        ButtonCallback _filterCB;
+        void CloseCB();
 
-   boolean SetVisiblity(boolean flag);
-   ButtonCallback _filterCB;
-   void CloseCB();
+        void Apply();
+        void Cancel();
+        boolean HandleHelpRequest();
 
-   void Apply();
-   void Cancel();
-   boolean HandleHelpRequest();
-
- public:
-
-   DtSetModList(AnyUI *parent, char *name, BaseUI *container,
-		ButtonCallback filterCB);
-   virtual ~DtSetModList();
-   void Reset();
-
+      public:
+        DtSetModList(AnyUI *parent, char *name, BaseUI *container,
+                     ButtonCallback filterCB);
+        virtual ~DtSetModList();
+        void Reset();
 };
 
 #endif /* DTSETMODLIST_H */

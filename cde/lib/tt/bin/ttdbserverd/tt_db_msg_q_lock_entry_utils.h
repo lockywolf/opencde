@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: tt_db_msg_q_lock_entry_utils.h /main/3 1995/10/20 16:42:16 rswiston $ 			 				 */
+/*%%  $XConsortium: tt_db_msg_q_lock_entry_utils.h /main/3 1995/10/20 16:42:16
+ * rswiston $ 			 				 */
 /*
  * tt_db_msg_q_lock_entry_utils.h - Declares the _Tt_db_msg_q_lock_entry class
  * utilities.

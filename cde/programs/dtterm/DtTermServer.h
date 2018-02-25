@@ -31,37 +31,28 @@
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
 
-#ifndef	_DtTermServer_h
-#define	_DtTermServer_h
+#ifndef _DtTermServer_h
+#define _DtTermServer_h
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 extern "C" {
-#endif	/* __cplusplus */
+#endif /* __cplusplus */
 
 extern char *ServerFailureMessage;
 extern int ServerFailureErrno;
 extern int InstanceCount;
 extern int PingInterval;
 
-extern Boolean ServerStartSession(
-    Widget		  topLevel,
-    int			  argc,
-    char		**argv,
-    Boolean		  server,
-    char		 *serverId,
-    Boolean		  exitOnLastClose,
-    Boolean		  block,
-    Boolean		  loginShell,
-    char		**commandToExec
-);
+extern Boolean ServerStartSession(Widget topLevel, int argc, char **argv,
+                                  Boolean server, char *serverId,
+                                  Boolean exitOnLastClose, Boolean block,
+                                  Boolean loginShell, char **commandToExec);
 
-extern void ServerInstanceTerminated(
-    Widget		  w
-);
+extern void ServerInstanceTerminated(Widget w);
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 } /* close scope of 'extern "C"'... */
-#endif	/* __cplusplus */
+#endif /* __cplusplus */
 
 /* DON'T ADD ANYTHING AFTER THIS #endif... */
-#endif	/* _DtTermServer_h */
+#endif /* _DtTermServer_h */

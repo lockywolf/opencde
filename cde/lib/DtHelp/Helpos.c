@@ -42,7 +42,6 @@
  ****************************************************************************
  ************************************<+>*************************************/
 
-
 #include <sys/param.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,7 +51,7 @@
 #include <X11/Xos_r.h>
 #include <unistd.h>
 #ifndef _SUN_OS /* don't need the nl_types.h file */
-# include <nl_types.h>
+#include <nl_types.h>
 #endif /* ! _SUN_OS */
 
 #include <X11/Intrinsic.h>
@@ -72,13 +71,9 @@
 static const int NL_CAT_LOCALE = 0;
 #endif
 
-
-
 /* Global Message Catalog file names */
-static char *CatFileName=NULL;
+static char *CatFileName = NULL;
 
-
-
 /*****************************************************************************
  * Function:	   Boolean _DtHelpOSGetHomeDirName(
  *
@@ -91,48 +86,40 @@ static char *CatFileName=NULL;
  * Description:
  *
  *****************************************************************************/
-void _DtHelpOSGetHomeDirName(
-    String outptr,
-    size_t len)
+void _DtHelpOSGetHomeDirName(String outptr, size_t len)
 
 /* outptr is allocated outside this function, just filled here. */
 /* this solution leads to less change in the current (mwm) code */
 {
-   int uid;
-   static char *ptr = NULL;
-   _Xgetpwparams	pwd_buf;
-   struct passwd *	pwd_ret;
+        int uid;
+        static char *ptr = NULL;
+        _Xgetpwparams pwd_buf;
+        struct passwd *pwd_ret;
 
-    _DtHelpProcessLock();
-    if (ptr == NULL) {
-	if((ptr = (char *)getenv("HOME")) == NULL) {
-	    if((ptr = (char *)getenv("USER")) != NULL)
-		pwd_ret = _XGetpwnam(ptr, pwd_buf);
-	    else {
-		uid = getuid();
-		pwd_ret = _XGetpwuid(uid, pwd_buf);
-	    }
-	    if (pwd_ret != NULL)
-		ptr = pwd_ret->pw_dir;
-	    else
-		ptr = NULL;
-	}
-    }
+        _DtHelpProcessLock();
+        if (ptr == NULL) {
+                if ((ptr = (char *)getenv("HOME")) == NULL) {
+                        if ((ptr = (char *)getenv("USER")) != NULL)
+                                pwd_ret = _XGetpwnam(ptr, pwd_buf);
+                        else {
+                                uid = getuid();
+                                pwd_ret = _XGetpwuid(uid, pwd_buf);
+                        }
+                        if (pwd_ret != NULL)
+                                ptr = pwd_ret->pw_dir;
+                        else
+                                ptr = NULL;
+                }
+        }
 
-    if (ptr) {
-        strncpy(outptr, ptr, len);
-        outptr[len-1] = '\0';		/* Make sure it is Null terminated */
-    }
-    else
-        outptr[0] = '\0' ;
-    _DtHelpProcessUnlock();
+        if (ptr) {
+                strncpy(outptr, ptr, len);
+                outptr[len - 1] = '\0'; /* Make sure it is Null terminated */
+        } else
+                outptr[0] = '\0';
+        _DtHelpProcessUnlock();
 }
 
-
-
-
-
-
 /*****************************************************************************
  * Function:	   _DtHelpGetUserSearchPath(
  *
@@ -149,46 +136,40 @@ void _DtHelpOSGetHomeDirName(
  *                  or uses the default path.
  *
  *****************************************************************************/
-String _DtHelpGetUserSearchPath(void)
-{
-  String path;
-  char homedir[MAXPATHLEN];
-  String localPath;
-  extern char * _DtCliSrvGetDtUserSession();  /* in libCliSrv */
+String _DtHelpGetUserSearchPath(void) {
+        String path;
+        char homedir[MAXPATHLEN];
+        String localPath;
+        extern char *_DtCliSrvGetDtUserSession(); /* in libCliSrv */
 
-   localPath = (char *)getenv (DtUSER_FILE_SEARCH_ENV);
-   if (localPath  == NULL)
-   {
-       char * session;
+        localPath = (char *)getenv(DtUSER_FILE_SEARCH_ENV);
+        if (localPath == NULL) {
+                char *session;
 
-       /* Use our default path */
-       _DtHelpOSGetHomeDirName(homedir, sizeof(homedir));
-       session = _DtCliSrvGetDtUserSession();
+                /* Use our default path */
+                _DtHelpOSGetHomeDirName(homedir, sizeof(homedir));
+                session = _DtCliSrvGetDtUserSession();
 
-      int path_size = 3*strlen(session) + 6*strlen(homedir) + strlen(DtDEFAULT_USER_PATH_FORMAT);
-       path = calloc(1, path_size);
-       snprintf(path, path_size, DtDEFAULT_USER_PATH_FORMAT,
-                     homedir, session, homedir, session, homedir, session,
-                     homedir, homedir, homedir);
-       free(session);
-       /* homedir is a local array */
+                int path_size = 3 * strlen(session) + 6 * strlen(homedir) +
+                                strlen(DtDEFAULT_USER_PATH_FORMAT);
+                path = calloc(1, path_size);
+                snprintf(path, path_size, DtDEFAULT_USER_PATH_FORMAT, homedir,
+                         session, homedir, session, homedir, session, homedir,
+                         homedir, homedir);
+                free(session);
+                /* homedir is a local array */
 
-       /* Return our expanded default path */
-       return(path);
-   }
-   else
-   {
-       /* Make a local copy for us */
-       localPath = strdup(localPath);
+                /* Return our expanded default path */
+                return (path);
+        } else {
+                /* Make a local copy for us */
+                localPath = strdup(localPath);
 
-       /* Just Use our local path */
-       return (localPath);
-   }
-
+                /* Just Use our local path */
+                return (localPath);
+        }
 }
 
-
-
 /*****************************************************************************
  * Function:	   _DtHelpGetSystemSearchPath(
  *
@@ -205,22 +186,18 @@ String _DtHelpGetUserSearchPath(void)
  *                  or uses the default path.
  *
  *****************************************************************************/
-String _DtHelpGetSystemSearchPath(void)
-{
-   char * path;
+String _DtHelpGetSystemSearchPath(void) {
+        char *path;
 
-   /* try to retrieve env var value */
-   path = getenv(DtSYS_FILE_SEARCH_ENV);
+        /* try to retrieve env var value */
+        path = getenv(DtSYS_FILE_SEARCH_ENV);
 
-   /* if fail, use default */
-   if (NULL == path)
-      path = DtDEFAULT_SYSTEM_PATH;
+        /* if fail, use default */
+        if (NULL == path)
+                path = DtDEFAULT_SYSTEM_PATH;
 
-   return strdup(path);
+        return strdup(path);
 }
-
-
-
 
 /*****************************************************************************
  * Function:	   void DtHelpSetCatalogName(char *catFile);
@@ -243,46 +220,38 @@ String _DtHelpGetSystemSearchPath(void)
  *
  *
  *****************************************************************************/
-void DtHelpSetCatalogName(
-        char* catFile)
-{
-  int len;
+void DtHelpSetCatalogName(char *catFile) {
+        int len;
 
-  _DtHelpProcessLock();
-  /* Setup our Message Catalog file names */
-  if (catFile == NULL)
-    {
-      /* Setup the short and long versions */
-      CatFileName = strdup("DtHelp");
-    }
-  else
-    {
-      /* If we have a full path, just use it */
-      if (*catFile == '/')
-        CatFileName = strdup(catFile);
-      else
-        {
-          /* hp-ux os does not work with the ".cat" extention, so
-           * if one exists, remove it.
-           */
+        _DtHelpProcessLock();
+        /* Setup our Message Catalog file names */
+        if (catFile == NULL) {
+                /* Setup the short and long versions */
+                CatFileName = strdup("DtHelp");
+        } else {
+                /* If we have a full path, just use it */
+                if (*catFile == '/')
+                        CatFileName = strdup(catFile);
+                else {
+                        /* hp-ux os does not work with the ".cat" extention, so
+                         * if one exists, remove it.
+                         */
 
-           if (strcmp(&catFile[strlen(catFile) -4], ".cat") != 0)
-            CatFileName = strdup(catFile);
-          else
-            {
-              /* Create our CatFileName with out the extention */
-              len = strlen(catFile) -4;
-              CatFileName = malloc(len +1);
-              strncpy (CatFileName, catFile, len);
-              CatFileName[len]= '\0';
-            }
+                        if (strcmp(&catFile[strlen(catFile) - 4], ".cat") != 0)
+                                CatFileName = strdup(catFile);
+                        else {
+                                /* Create our CatFileName with out the extention
+                                 */
+                                len = strlen(catFile) - 4;
+                                CatFileName = malloc(len + 1);
+                                strncpy(CatFileName, catFile, len);
+                                CatFileName[len] = '\0';
+                        }
+                }
         }
-    }
-  _DtHelpProcessUnlock();
+        _DtHelpProcessUnlock();
 }
 
-
-
 #ifndef NO_MESSAGE_CATALOG
 /*****************************************************************************
  * Function:	   Boolean _DtHelpGetMessage(
@@ -297,54 +266,47 @@ void DtHelpSetCatalogName(
  *                 cache proper cache creek message catalog file.
  *
  *****************************************************************************/
-char *_DtHelpGetMessage(
-        int set,
-        int n,
-        char *s)
-{
-   char *msg;
-   char *loc;
-   nl_catd catopen();
-   char *catgets();
-   static int first = 1;
-   static nl_catd nlmsg_fd;
+char *_DtHelpGetMessage(int set, int n, char *s) {
+        char *msg;
+        char *loc;
+        nl_catd catopen();
+        char *catgets();
+        static int first = 1;
+        static nl_catd nlmsg_fd;
 
-   _DtHelpProcessLock();
-   if ( first )
-   {
+        _DtHelpProcessLock();
+        if (first) {
 
-     /* Setup our default message catalog names if none have been set! */
-     if (CatFileName  == NULL)
-       {
-         /* Setup the short and long versions */
+                /* Setup our default message catalog names if none have been
+                 * set! */
+                if (CatFileName == NULL) {
+                /* Setup the short and long versions */
 #ifdef __ultrix
-         CatFileName = strdup("DtHelp.cat");
+                        CatFileName = strdup("DtHelp.cat");
 #else
-         CatFileName = strdup("DtHelp");
+                        CatFileName = strdup("DtHelp");
 #endif
-       }
+                }
 
-     loc = _DtHelpGetLocale();
-     if (!loc || !(strcmp (loc, "C")))
-	/*
-	 * If LANG is not set or if LANG=C, then there
-	 * is no need to open the message catalog - just
-	 * return the built-in string "s".
-	 */
-	nlmsg_fd = (nl_catd) -1;
-     else
-	nlmsg_fd = catopen(CatFileName, NL_CAT_LOCALE);
+                loc = _DtHelpGetLocale();
+                if (!loc || !(strcmp(loc, "C")))
+                        /*
+                         * If LANG is not set or if LANG=C, then there
+                         * is no need to open the message catalog - just
+                         * return the built-in string "s".
+                         */
+                        nlmsg_fd = (nl_catd)-1;
+                else
+                        nlmsg_fd = catopen(CatFileName, NL_CAT_LOCALE);
 
-     first = 0;
-   }
+                first = 0;
+        }
 
-   msg=catgets(nlmsg_fd,set,n,s);
-   _DtHelpProcessUnlock();
-   return (msg);
+        msg = catgets(nlmsg_fd, set, n, s);
+        _DtHelpProcessUnlock();
+        return (msg);
 }
 #endif
-
-
 
 /*****************************************************************************
  * Function:	   char * _DtHelpGetLocale(
@@ -360,15 +322,15 @@ char *_DtHelpGetMessage(
  *                 If that is NULL, returns NULL.
  *
  *****************************************************************************/
-char *_DtHelpGetLocale()
-{
-    char *loc;
+char *_DtHelpGetLocale() {
+        char *loc;
 
-    loc = setlocale(LC_MESSAGES, NULL);
-    if (NULL == loc || '\0' == loc[0]) loc = getenv("LANG");
-    if (NULL == loc || '\0' == loc[0]) return NULL;
+        loc = setlocale(LC_MESSAGES, NULL);
+        if (NULL == loc || '\0' == loc[0])
+                loc = getenv("LANG");
+        if (NULL == loc || '\0' == loc[0])
+                return NULL;
 
-    loc = strdup(loc);    /* getenv() returns ptr to private memory */
-    return loc;
+        loc = strdup(loc); /* getenv() returns ptr to private memory */
+        return loc;
 }
-

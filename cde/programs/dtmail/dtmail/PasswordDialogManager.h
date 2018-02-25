@@ -26,7 +26,7 @@
  *	$XConsortium: PasswordDialogManager.h /main/4 1996/04/21 19:42:56 drk $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -49,26 +49,23 @@
 #include "PromptDialogManager.h"
 
 class PasswordDialogManager : public PromptDialogManager {
-private:
+      private:
+        Widget _user;
+        Widget _password;
+        static void modifyVerifyCallback(Widget, XtPointer,
+                                         XmTextVerifyCallbackStruct *);
+        char _pwd[100]; // Big enough for most reasonable passwords.
+      protected:
+        Widget createDialog(Widget);
 
-  Widget _user;
-  Widget _password;
-  static void modifyVerifyCallback(Widget, XtPointer, XmTextVerifyCallbackStruct *);
-  char _pwd[100]; // Big enough for most reasonable passwords.
-protected:
-    
-  Widget createDialog ( Widget );
-    
-public:
-  
-  PasswordDialogManager ( char * );
-  void modifyVerify( Widget,XmTextVerifyCallbackStruct * );
+      public:
+        PasswordDialogManager(char *);
+        void modifyVerify(Widget, XmTextVerifyCallbackStruct *);
 #ifdef DEAD_WOOD
-  char *userName();
-  char *password();
-  void resetPassword();
+        char *userName();
+        char *password();
+        void resetPassword();
 #endif /* DEAD_WOOD */
-
 };
 
 extern PasswordDialogManager *thePasswordDialogManager;

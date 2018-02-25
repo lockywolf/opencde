@@ -43,99 +43,102 @@
 #include "vista.h"
 #include "dbtype.h"
 
-
 /* Rename database file
-*/
-int
-d_renfile(dbn, fno, fnm TASK_PARM)
-CONST char FAR *dbn;  /* database containing file to be renamed */
-FILE_NO fno;  /* file id number for file to be renamed */
-CONST char FAR *fnm;  /* new file name */
-TASK_DECL
-{
-   REN_ENTRY_P r;
+ */
+int d_renfile(dbn, fno, fnm TASK_PARM) CONST
+    char FAR *dbn;   /* database containing file to be renamed */
+FILE_NO fno;         /* file id number for file to be renamed */
+CONST char FAR *fnm; /* new file name */
+TASK_DECL {
+        REN_ENTRY_P r;
 
-   DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(LOCK_ALL));
+        DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(LOCK_ALL));
 
-   if ( dbopen ) RETURN( dberr(S_DBOPEN) );
+        if (dbopen)
+                RETURN(dberr(S_DBOPEN));
 
-   r.ptr = (REN_ENTRY FAR *)ALLOC(&r, sizeof(REN_ENTRY), "r");
-   if ( r.ptr == NULL )
-      RETURN( dberr(S_NOMEMORY) );
-   ll_access(&ren_list);
-   if ( ll_append(&ren_list, (CHAR_P FAR *)&r) != S_OKAY ) {
-      RETURN( db_status );
-   }
-   r.ptr->Ren_db_name.ptr = 
-      ALLOC(&r.ptr->Ren_db_name, strlen(dbn)+1,"r.ptr->Ren_db_name");
-   r.ptr->File_name.ptr = 
-      ALLOC(&r.ptr->File_name, strlen(fnm)+1,"r.ptr->File_name");
-   if ( ! r.ptr->Ren_db_name.ptr || ! r.ptr->File_name.ptr )
-      RETURN( dberr(S_NOMEMORY) );
+        r.ptr = (REN_ENTRY FAR *)ALLOC(&r, sizeof(REN_ENTRY), "r");
+        if (r.ptr == NULL)
+                RETURN(dberr(S_NOMEMORY));
+        ll_access(&ren_list);
+        if (ll_append(&ren_list, (CHAR_P FAR *)&r) != S_OKAY) {
+                RETURN(db_status);
+        }
+        r.ptr->Ren_db_name.ptr =
+            ALLOC(&r.ptr->Ren_db_name, strlen(dbn) + 1, "r.ptr->Ren_db_name");
+        r.ptr->File_name.ptr =
+            ALLOC(&r.ptr->File_name, strlen(fnm) + 1, "r.ptr->File_name");
+        if (!r.ptr->Ren_db_name.ptr || !r.ptr->File_name.ptr)
+                RETURN(dberr(S_NOMEMORY));
 
-   strcpy(r.ptr->Ren_db_name.ptr, dbn);
-   strcpy(r.ptr->File_name.ptr, fnm);
-   r.ptr->file_no = fno;
+        strcpy(r.ptr->Ren_db_name.ptr, dbn);
+        strcpy(r.ptr->File_name.ptr, fnm);
+        r.ptr->file_no = fno;
 
-   MEM_UNLOCK(&r.ptr->Ren_db_name);
-   MEM_UNLOCK(&r.ptr->File_name);
-   ll_deaccess(&ren_list);
+        MEM_UNLOCK(&r.ptr->Ren_db_name);
+        MEM_UNLOCK(&r.ptr->File_name);
+        ll_deaccess(&ren_list);
 
-   RETURN( db_status = S_OKAY );
+        RETURN(db_status = S_OKAY);
 }
-
 
 /* Process renamed file table
-*/
-int
-renfiles()
-{
-   register int dbt_lc;			/* loop control */
-   REN_ENTRY_P FAR *rp;
-#ifndef	 ONE_DB
-   DB_ENTRY FAR *db_ptr;
+ */
+int renfiles() {
+        register int dbt_lc; /* loop control */
+        REN_ENTRY_P FAR *rp;
+#ifndef ONE_DB
+        DB_ENTRY FAR *db_ptr;
 #endif
 
-   if ( ll_access(&ren_list) ) {
-#ifndef	 ONE_DB
-      db_ptr = curr_db_table;		/* Have to save it because of macros */
+        if (ll_access(&ren_list)) {
+#ifndef ONE_DB
+                db_ptr = curr_db_table; /* Have to save it because of macros */
 #endif
-      while ((rp = (REN_ENTRY_P FAR *)ll_next(&ren_list)) != NULL) {
-	 MEM_LOCK(&rp->ptr->Ren_db_name);
-	 MEM_LOCK(&rp->ptr->File_name);
-#ifndef	 ONE_DB
-	 for (dbt_lc = no_of_dbs, curr_db_table = db_table;
-	      --dbt_lc >= 0; ++curr_db_table) {
+                while ((rp = (REN_ENTRY_P FAR *)ll_next(&ren_list)) != NULL) {
+                        MEM_LOCK(&rp->ptr->Ren_db_name);
+                        MEM_LOCK(&rp->ptr->File_name);
+#ifndef ONE_DB
+                        for (dbt_lc = no_of_dbs, curr_db_table = db_table;
+                             --dbt_lc >= 0; ++curr_db_table) {
 #endif
-	    if (strcmp(rp->ptr->Ren_db_name.ptr, DB_REF(db_name)) == 0) {
-	       if ( rp->ptr->file_no < 0 || rp->ptr->file_no >= DB_REF(Size_ft) ) {
-		  MEM_UNLOCK(&rp->ptr->Ren_db_name);
-		  MEM_UNLOCK(&rp->ptr->File_name);
-		  FREE(&rp->ptr->Ren_db_name);
-		  FREE(&rp->ptr->File_name);
-		  ll_deaccess(&ren_list);
-		  return( dberr(S_RENAME) );
-	       }
-	       strcpy(file_table[NUM2INT(rp->ptr->file_no, ft_offset)].ft_name,
-		      rp->ptr->File_name.ptr);
-#ifndef	 ONE_DB
-	       break;
+                                if (strcmp(rp->ptr->Ren_db_name.ptr,
+                                           DB_REF(db_name)) == 0) {
+                                        if (rp->ptr->file_no < 0 ||
+                                            rp->ptr->file_no >=
+                                                DB_REF(Size_ft)) {
+                                                MEM_UNLOCK(
+                                                    &rp->ptr->Ren_db_name);
+                                                MEM_UNLOCK(&rp->ptr->File_name);
+                                                FREE(&rp->ptr->Ren_db_name);
+                                                FREE(&rp->ptr->File_name);
+                                                ll_deaccess(&ren_list);
+                                                return (dberr(S_RENAME));
+                                        }
+                                        strcpy(
+                                            file_table[NUM2INT(rp->ptr->file_no,
+                                                               ft_offset)]
+                                                .ft_name,
+                                            rp->ptr->File_name.ptr);
+#ifndef ONE_DB
+                                        break;
 #endif
-	    }
-#ifndef	 ONE_DB
-	 }
+                                }
+#ifndef ONE_DB
+                        }
 #endif
-	 MEM_UNLOCK(&rp->ptr->Ren_db_name);
-	 MEM_UNLOCK(&rp->ptr->File_name);
-	 FREE(&rp->ptr->Ren_db_name);
-	 FREE(&rp->ptr->File_name);
-      }
-#ifndef	 ONE_DB
-      curr_db_table = db_ptr;
+                        MEM_UNLOCK(&rp->ptr->Ren_db_name);
+                        MEM_UNLOCK(&rp->ptr->File_name);
+                        FREE(&rp->ptr->Ren_db_name);
+                        FREE(&rp->ptr->File_name);
+                }
+#ifndef ONE_DB
+                curr_db_table = db_ptr;
 #endif
-   }
-   ll_deaccess(&ren_list);
-   ll_free(&ren_list);
-   return( db_status = S_OKAY );
+        }
+        ll_deaccess(&ren_list);
+        ll_free(&ren_list);
+        return (db_status = S_OKAY);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin renfile.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin renfile.c */

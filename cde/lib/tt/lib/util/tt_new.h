@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: tt_new.h /main/3 1995/10/23 10:41:57 rswiston $ 			 				 */
+/*%%  $XConsortium: tt_new.h /main/3 1995/10/23 10:41:57 rswiston $
+ */
 /*-*-C++-*-
  * @(#)tt_new.h	1.13 @(#)
  * tt_new.h - defines the new and delete operators for all TT classes
@@ -46,11 +47,10 @@
 #define bool_t int
 #endif
 #if defined(sun)
-#  define MALLOCTYPE	char
+#define MALLOCTYPE char
 #else
-#  define MALLOCTYPE	void
+#define MALLOCTYPE void
 #endif
-
 
 //
 // All classes must at least inherit from this class in order to
@@ -58,8 +58,8 @@
 //
 class _Tt_allocated {
       public:
-	void		*operator new(size_t s);
-	void		operator  delete(void *p);
+        void *operator new(size_t s);
+        void operator delete(void *p);
 };
 
 #endif

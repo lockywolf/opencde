@@ -23,7 +23,7 @@
 /* $XConsortium: solaris.h /main/7 1996/10/30 11:12:37 drk $ */
 /*******************************************************************************
 **
-**  solaris.h 1.9 95/09/10 
+**  solaris.h 1.9 95/09/10
 **
 **  Copyright 1993, 1994, 1995 Sun Microsystems, Inc.  All rights reserved.
 **
@@ -51,48 +51,45 @@
 **
 *******************************************************************************/
 
-
 #ifndef _DTLOGIN_SOLARIS_H
 #define _DTLOGIN_SOLARIS_H
 
 #include <sys/types.h>
 
 #ifdef PAM
-#include    <security/pam_appl.h>
-#define	SOLARIS_SUCCESS	PAM_SUCCESS
+#include <security/pam_appl.h>
+#define SOLARIS_SUCCESS PAM_SUCCESS
 #endif
 
 #ifdef SUNAUTH
-#include    <security/ia_appl.h>
+#include <security/ia_appl.h>
 #define SOALRIS_SUCCESS IA_SUCCESS
 #endif
 
-
 /* Solaris utmp mgt flags */
 
-#define	SOLARIS_UPDATE_ENTRY  	1	/* Update an existing entry */
-#define	SOLARIS_NOLOG		2	/* Don't log the new session */
-#define	SOLARIS_LOGIN		4	/* login type entry (sigh...) */
- 
-/* Errors returned by solaris_setutmp_mgmt/solaris_reset_utmp_mgmt() */
-#define	SOLARIS_NOENTRY		27 	/* No entry found */
-#define	SOLARIS_ENTRYFAIL	28	/* Couldn't edit the entry */
+#define SOLARIS_UPDATE_ENTRY 1 /* Update an existing entry */
+#define SOLARIS_NOLOG 2        /* Don't log the new session */
+#define SOLARIS_LOGIN 4        /* login type entry (sigh...) */
 
-/* user credential UID/GID erros */ 
-#define	SOLARIS_BAD_GID		29	/* Invalid Group ID */
-#define	SOLARIS_INITGROUP_FAIL	30	/* group IDs init failed */
-#define	SOLARIS_BAD_UID		31	/* Invaid User ID */
-#define	SOLARIS_SETGROUP_FAIL	32	/* Set of group IDs failed */
+/* Errors returned by solaris_setutmp_mgmt/solaris_reset_utmp_mgmt() */
+#define SOLARIS_NOENTRY 27   /* No entry found */
+#define SOLARIS_ENTRYFAIL 28 /* Couldn't edit the entry */
+
+/* user credential UID/GID erros */
+#define SOLARIS_BAD_GID 29        /* Invalid Group ID */
+#define SOLARIS_INITGROUP_FAIL 30 /* group IDs init failed */
+#define SOLARIS_BAD_UID 31        /* Invaid User ID */
+#define SOLARIS_SETGROUP_FAIL 32  /* Set of group IDs failed */
 
 /*
  *	External procedure declarations
  */
 
-
-extern int solaris_authentication(char*, char*, char*, char*, char*);
-extern int solaris_accounting(char*, char*, char[], char*, 
-			      char*, pid_t, int, int);
-extern int solaris_setcred(char*, char *, uid_t, gid_t);
+extern int solaris_authentication(char *, char *, char *, char *, char *);
+extern int solaris_accounting(char *, char *, char[], char *, char *, pid_t,
+                              int, int);
+extern int solaris_setcred(char *, char *, uid_t, gid_t);
 extern int solaris_setdevperm(char *, uid_t, gid_t);
 extern int solaris_resetdevperm(char *);
 
@@ -103,6 +100,5 @@ extern int audit_login_success(void);
 extern int audit_login_save_pw(struct passwd *pwd);
 extern int audit_login_bad_pw(void);
 extern int audit_login_maxtrys(void);
-
 
 #endif /* _DTLOGIN_SOLARIS_H */

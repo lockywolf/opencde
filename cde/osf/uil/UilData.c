@@ -20,16 +20,16 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* 
+/*
  *  @OSF_COPYRIGHT@
  *  COPYRIGHT NOTICE
  *  Copyright (c) 1990, 1991, 1992, 1993 Open Software Foundation, Inc.
  *  ALL RIGHTS RESERVED (MOTIF). See the file named COPYRIGHT.MOTIF for
  *  the full copyright text.
-*/ 
-/* 
+ */
+/*
  * HISTORY
-*/ 
+ */
 #ifdef REV_INFO
 #ifndef lint
 static char rcsid[] = "$TOG: UilData.c /main/14 1999/04/16 10:41:44 mgreess $"
@@ -37,7 +37,7 @@ static char rcsid[] = "$TOG: UilData.c /main/14 1999/04/16 10:41:44 mgreess $"
 #endif
 
 /*
-*  (c) Copyright 1989, 1990, DIGITAL EQUIPMENT CORPORATION, MAYNARD, MASS. */
+ *  (c) Copyright 1989, 1990, DIGITAL EQUIPMENT CORPORATION, MAYNARD, MASS. */
 
 /*
 **++
@@ -51,7 +51,6 @@ static char rcsid[] = "$TOG: UilData.c /main/14 1999/04/16 10:41:44 mgreess $"
 **
 **--
 **/
-
 
 /*
 **
@@ -77,60 +76,53 @@ static char rcsid[] = "$TOG: UilData.c /main/14 1999/04/16 10:41:44 mgreess $"
 #include "UilDefI.h"
 #include "UilSymGen.h"
 
-/*
-**
-**  DEFINE and MACRO DEFINITIONS
-**
-**/
+    /*
+    **
+    **  DEFINE and MACRO DEFINITIONS
+    **
+    **/
 
+    /*
+    **
+    **  EXTERNAL VARIABLE DECLARATIONS
+    **
+    **/
 
+    /*
+    **
+    **  GLOBAL VARIABLE DECLARATIONS
+    **
+    **/
 
-/*
-**
-**  EXTERNAL VARIABLE DECLARATIONS
-**
-**/
+    /*    Case sensitivity switch; TRUE if case sensitive.    */
 
-
-
-/*
-**
-**  GLOBAL VARIABLE DECLARATIONS
-**
-**/
-
-/*    Case sensitivity switch; TRUE if case sensitive.    */
-
-
-
-externaldef(uil_comp_glbl) boolean	uil_v_case_sensitive = TRUE;
+    externaldef(uil_comp_glbl) boolean uil_v_case_sensitive = TRUE;
 
 /*    Location to store error type.    */
 
-externaldef(uil_comp_glbl) jmp_buf	uil_az_error_env_block;
-externaldef(uil_comp_glbl) boolean	uil_az_error_env_valid = FALSE;
+externaldef(uil_comp_glbl) jmp_buf uil_az_error_env_block;
+externaldef(uil_comp_glbl) boolean uil_az_error_env_valid = FALSE;
 
 /*    Debugging switches.    */
 
 #if debug_version
-externaldef(uil_comp_glbl) boolean	uil_v_dump_tokens = FALSE;
-externaldef(uil_comp_glbl) boolean	uil_v_dump_symbols = FALSE;
+externaldef(uil_comp_glbl) boolean uil_v_dump_tokens = FALSE;
+externaldef(uil_comp_glbl) boolean uil_v_dump_symbols = FALSE;
 #endif
 
-externaldef(uil_comp_glbl) status	uil_l_compile_status = uil_k_success_status;
-externaldef(uil_comp_glbl) Uil_compile_desc_type   *Uil_compile_desc_ptr = NULL;
-externaldef(uil_comp_glbl) int		Uil_percent_complete = 0;
-externaldef(uil_comp_glbl) int		Uil_lines_processed = 0;
-externaldef(uil_comp_glbl) char	*Uil_current_file = "";
-
+externaldef(uil_comp_glbl) status uil_l_compile_status = uil_k_success_status;
+externaldef(uil_comp_glbl) Uil_compile_desc_type *Uil_compile_desc_ptr = NULL;
+externaldef(uil_comp_glbl) int Uil_percent_complete = 0;
+externaldef(uil_comp_glbl) int Uil_lines_processed = 0;
+externaldef(uil_comp_glbl) char *Uil_current_file = "";
 
 /*	Define the user-defined object and default character set */
-externaldef(uil_sym_glbl) unsigned short int	uil_sym_user_defined_object =
-		sym_k_user_defined_object;
-externaldef(uil_sym_glbl) unsigned short int	uil_sym_default_charset =
-		sym_k_iso_latin1_charset;
-externaldef(uil_sym_glbl) unsigned short int	uil_sym_isolatin1_charset =
-		sym_k_iso_latin1_charset;
+externaldef(uil_sym_glbl) unsigned short int uil_sym_user_defined_object =
+    sym_k_user_defined_object;
+externaldef(uil_sym_glbl) unsigned short int uil_sym_default_charset =
+    sym_k_iso_latin1_charset;
+externaldef(uil_sym_glbl) unsigned short int uil_sym_isolatin1_charset =
+    sym_k_iso_latin1_charset;
 
 /*	argument types, allowed tables, constraints, related arguments */
 #include "UilSymArTy.h"
@@ -149,11 +141,11 @@ externaldef(uil_sym_glbl) unsigned short int	uil_sym_isolatin1_charset =
 
 /*	Define mapping of sym_k_..._value to data type names. */
 externaldef(uil_comp_glbl) int uil_max_value = sym_k_max_value;
-externaldef(uil_comp_glbl) char *uil_datatype_names [] = {
-    "",	/* NOT USED */
+externaldef(uil_comp_glbl) char *uil_datatype_names[] = {
+    "", /* NOT USED */
     "any",
     "boolean",
-    "string",		/* char 8 */
+    "string", /* char 8 */
     "compound_string",
     "float",
     "integer",
@@ -201,10 +193,8 @@ externaldef(uil_comp_glbl) char *uil_datatype_names [] = {
 /*	The keyword tables */
 #include "UilKeyTab.h"
 
-
 /*
 **
 **  OWN VARIABLE DECLARATIONS
 **
 **/
-

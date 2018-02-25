@@ -31,11 +31,11 @@
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
 
-#ifndef	_Dt_TermEnhance_h
-#define	_Dt_TermEnhance_h
+#ifndef _Dt_TermEnhance_h
+#define _Dt_TermEnhance_h
 
 #include "TermPrimBuffer.h"
 extern void _DtTermEnhProc(Widget w, enhValues values, TermEnhInfo info);
 
-#endif	/* _Dt_TermEnhance_h */
+#endif /* _Dt_TermEnhance_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif... */

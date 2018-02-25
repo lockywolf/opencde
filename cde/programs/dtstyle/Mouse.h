@@ -32,7 +32,7 @@
  **  file
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -43,11 +43,9 @@
 
 /* External Interface */
 
-
-extern void popup_mouseBB( Widget shell) ;
-extern void restoreMouse( Widget shell, XrmDatabase db) ;
-extern void saveMouse( int fd) ;
-
+extern void popup_mouseBB(Widget shell);
+extern void restoreMouse(Widget shell, XrmDatabase db);
+extern void saveMouse(int fd);
 
 #endif /* _mouse_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

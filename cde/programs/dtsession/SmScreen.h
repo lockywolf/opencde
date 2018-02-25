@@ -40,7 +40,7 @@
  **   managing external screen savers
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -48,33 +48,30 @@
  ************************************<+>*************************************/
 #ifndef _smscreen_h
 #define _smscreen_h
- 
-/* 
- *  #include statements 
- */
 
-
-/* 
- *  #define statements 
- */
-
-/* 
- * typedef statements 
+/*
+ *  #include statements
  */
 
 /*
- *  External variables  
+ *  #define statements
  */
 
+/*
+ * typedef statements
+ */
 
-/*  
- *  External Interface  
+/*
+ *  External variables
+ */
+
+/*
+ *  External Interface
  */
 
 extern void StartScreenSaver(void);
 extern void StopScreenSaver(void);
 extern void *SmSaverParseSaverList(char *);
-
 
 #endif /*_smscreen_h*/
 /* DON'T ADD ANYTHING AFTER THIS #endif */

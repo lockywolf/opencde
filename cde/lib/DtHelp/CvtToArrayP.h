@@ -42,7 +42,6 @@
 #ifndef _DtHelpCvtToArrayP_h
 #define _DtHelpCvtToArrayP_h
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -51,12 +50,12 @@ extern "C" {
 /*********************************
  * Title Chunk types
  *********************************/
-#define DT_HELP_CE_END		0
-#define DT_HELP_CE_STRING	(1 << 0)
-#define DT_HELP_CE_CHARSET	(1 << 1)
-#define DT_HELP_CE_FONT_PTR	(1 << 2)
-#define DT_HELP_CE_SPC		(1 << 3)
-#define DT_HELP_CE_NEWLINE	(1 << 4)
+#define DT_HELP_CE_END 0
+#define DT_HELP_CE_STRING (1 << 0)
+#define DT_HELP_CE_CHARSET (1 << 1)
+#define DT_HELP_CE_FONT_PTR (1 << 2)
+#define DT_HELP_CE_SPC (1 << 3)
+#define DT_HELP_CE_NEWLINE (1 << 4)
 
 /********    Public Typedef Declarations    ********/
 /********    Public Enum Declarations    ********/
@@ -68,7 +67,7 @@ extern "C" {
 /********    Public Function Declarations    ********/
 
 #ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
 #endif /* _DtHelpCvtToArrayP_h */

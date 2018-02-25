@@ -40,7 +40,6 @@
  *
  */
 
-
 /*
  *  lib_func_strings.c
  */
@@ -68,18 +67,17 @@
 /*
  * abmfP_lib_cvt_file_to_pixmap
  */
-static LibFuncRec abmfP_lrc_cvt_file_to_pixmap = 
-{
+static LibFuncRec abmfP_lrc_cvt_file_to_pixmap = {
     /* name */
     "dtb_cvt_file_to_pixmap",
-    
+
     /* proto */
     "int dtb_cvt_file_to_pixmap(\n"
     "    String	fileName,\n"
     "    Widget	widget,\n"
     "    Pixmap	*pixmapReturnPtr\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * Create/load a Pixmap given an XPM or Bitmap files\n"
@@ -134,7 +132,8 @@ static LibFuncRec abmfP_lrc_cvt_file_to_pixmap =
     "\n"
     "    if (!pixmap_found)\n"
     "    {\n"
-    "        sprintf(image_path, \"%s/bitmaps/%s\", dtb_get_exe_dir(), fileName);\n"
+    "        sprintf(image_path, \"%s/bitmaps/%s\", dtb_get_exe_dir(), "
+    "fileName);\n"
     "        pixmap = XmGetPixmap(screen, image_path, fgPixel, bgPixel);\n"
     "    }\n"
     "    pixmap_found = ((pixmap != 0) && (pixmap != XmUNSPECIFIED_PIXMAP));\n"
@@ -148,32 +147,33 @@ static LibFuncRec abmfP_lrc_cvt_file_to_pixmap =
     "    pixmapReturn = pixmap;\n"
     "    return 0;\n"
     "#undef pixmapReturn\n"
-    "}"
-}; /* abmfP_lrc_cvt_file_to_pixmap */
+    "}"}; /* abmfP_lrc_cvt_file_to_pixmap */
 LibFunc abmfP_lib_cvt_file_to_pixmap = &(abmfP_lrc_cvt_file_to_pixmap);
 
 /*
  * abmfP_lib_create_greyed_pixmap
  */
-static LibFuncRec abmfP_lrc_create_greyed_pixmap = 
-{
+static LibFuncRec abmfP_lrc_create_greyed_pixmap = {
     /* name */
     "dtb_create_greyed_pixmap",
-    
+
     /* proto */
     "Pixmap dtb_create_greyed_pixmap(\n"
     "    Widget	widget,\n"
     "    Pixmap	pixmap\n"
     ");",
-    
+
     /* def */
     "/*\n"
-    " * For a given pixmap, create a 50% greyed version.  Most likely this will\n"
-    " * be used where the source pixmap is the labelPixmap for a widget and an \n"
+    " * For a given pixmap, create a 50% greyed version.  Most likely this "
+    "will\n"
+    " * be used where the source pixmap is the labelPixmap for a widget and an "
+    "\n"
     " * insensitivePixmap is needed so the widget will look right when it is \n"
     " * \"not sensitive\" (\"greyed out\" or \"inactive\").\n"
     " * \n"
-    " * NOTE: This routine creates a Pixmap, which is an X server resource.  The\n"
+    " * NOTE: This routine creates a Pixmap, which is an X server resource.  "
+    "The\n"
     " *       created pixmap must be freed by the caller when it is no longer\n"
     " *	 needed.\n"
     " */\n"
@@ -205,7 +205,8 @@ static LibFuncRec abmfP_lrc_create_greyed_pixmap =
     "	NULL);\n"
     "\n"
     "    /* Get width/height of source pixmap */\n"
-    "    if (!XGetGeometry(dpy,pixmap,&root,&x,&y,&width,&height,&bw,&depth)) {\n"
+    "    if (!XGetGeometry(dpy,pixmap,&root,&x,&y,&width,&height,&bw,&depth)) "
+    "{\n"
     "	    return((Pixmap)0);\n"
     "    }\n"
     "    gcv.foreground = background;\n"
@@ -216,31 +217,31 @@ static LibFuncRec abmfP_lrc_create_greyed_pixmap =
     "    gc = XtGetGC(widget, gcm, &gcv);\n"
     "\n"
     "    /* Create insensitive pixmap */\n"
-    "    insensitive_pixmap = XCreatePixmap(dpy, pixmap, width, height, depth);\n"
-    "    XCopyArea(dpy, pixmap, insensitive_pixmap, gc, 0, 0, width, height, 0, 0);\n"
+    "    insensitive_pixmap = XCreatePixmap(dpy, pixmap, width, height, "
+    "depth);\n"
+    "    XCopyArea(dpy, pixmap, insensitive_pixmap, gc, 0, 0, width, height, "
+    "0, 0);\n"
     "    XFillRectangle(dpy, insensitive_pixmap, gc, 0, 0, width, height);\n"
     "\n"
     "    XtReleaseGC(widget, gc);\n"
     "    return(insensitive_pixmap);\n"
-    "}"
-}; /* abmfP_lrc_create_greyed_pixmap */
+    "}"}; /* abmfP_lrc_create_greyed_pixmap */
 LibFunc abmfP_lib_create_greyed_pixmap = &(abmfP_lrc_create_greyed_pixmap);
 
 /*
  * abmfP_lib_set_label_pixmaps
  */
-static LibFuncRec abmfP_lrc_set_label_pixmaps = 
-{
+static LibFuncRec abmfP_lrc_set_label_pixmaps = {
     /* name */
     "dtb_set_label_pixmaps",
-    
+
     /* proto */
     "int dtb_set_label_pixmaps(\n"
     "    Widget	widget,\n"
     "    Pixmap	labelPixmap,\n"
     "    Pixmap	labelInsensitivePixmap\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * Sets the label and insensitive label pixmaps of the widget.  \n"
@@ -275,24 +276,22 @@ static LibFuncRec abmfP_lrc_set_label_pixmaps =
     "    }\n"
     "\n"
     "    return 0;\n"
-    "}"
-}; /* abmfP_lrc_set_label_pixmaps */
+    "}"}; /* abmfP_lrc_set_label_pixmaps */
 LibFunc abmfP_lib_set_label_pixmaps = &(abmfP_lrc_set_label_pixmaps);
 
 /*
  * abmfP_lib_file_has_extension
  */
-static LibFuncRec abmfP_lrc_file_has_extension = 
-{
+static LibFuncRec abmfP_lrc_file_has_extension = {
     /* name */
     "dtb_file_has_extension",
-    
+
     /* proto */
     "Boolean dtb_file_has_extension(\n"
     "    String	fileName, \n"
     "    String	extension\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * Returns True if the fileName has the extension\n"
@@ -323,18 +322,16 @@ static LibFuncRec abmfP_lrc_file_has_extension =
     "        }\n"
     "    }\n"
     "    return hasExt;\n"
-    "}"
-}; /* abmfP_lrc_file_has_extension */
+    "}"}; /* abmfP_lrc_file_has_extension */
 LibFunc abmfP_lib_file_has_extension = &(abmfP_lrc_file_has_extension);
 
 /*
  * abmfP_lib_cvt_filebase_to_pixmap
  */
-static LibFuncRec abmfP_lrc_cvt_filebase_to_pixmap = 
-{
+static LibFuncRec abmfP_lrc_cvt_filebase_to_pixmap = {
     /* name */
     "dtb_cvt_filebase_to_pixmap",
-    
+
     /* proto */
     "int dtb_cvt_filebase_to_pixmap(\n"
     "    Widget	widget,\n"
@@ -342,7 +339,7 @@ static LibFuncRec abmfP_lrc_cvt_filebase_to_pixmap =
     "    String	extension,\n"
     "    Pixmap	*pixmap_ptr\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * Appends the extension to fileBase and attempts to load in\n"
@@ -363,25 +360,23 @@ static LibFuncRec abmfP_lrc_cvt_filebase_to_pixmap =
     "    strcat(fileName, extension);\n"
     "    rc = dtb_cvt_file_to_pixmap(fileName, widget, pixmap_ptr);\n"
     "    return rc;\n"
-    "}"
-}; /* abmfP_lrc_cvt_filebase_to_pixmap */
+    "}"}; /* abmfP_lrc_cvt_filebase_to_pixmap */
 LibFunc abmfP_lib_cvt_filebase_to_pixmap = &(abmfP_lrc_cvt_filebase_to_pixmap);
 
 /*
  * abmfP_lib_cvt_image_file_to_pixmap
  */
-static LibFuncRec abmfP_lrc_cvt_image_file_to_pixmap = 
-{
+static LibFuncRec abmfP_lrc_cvt_image_file_to_pixmap = {
     /* name */
     "dtb_cvt_image_file_to_pixmap",
-    
+
     /* proto */
     "int dtb_cvt_image_file_to_pixmap(\n"
     "		Widget	widget,\n"
     "		String	fileName,\n"
     "		Pixmap	*pixmap\n"
     ");",
-    
+
     /* def */
     "int\n"
     "dtb_cvt_image_file_to_pixmap(\n"
@@ -404,28 +399,37 @@ static LibFuncRec abmfP_lrc_cvt_image_file_to_pixmap =
     "    }\n"
     "    else /* Append extensions to locate best graphic match */\n"
     "    {\n"
-    "    	XtVaGetValues(XtIsSubclass(widget, xmGadgetClass)? XtParent(widget) : widget, \n"
+    "    	XtVaGetValues(XtIsSubclass(widget, xmGadgetClass)? "
+    "XtParent(widget) : widget, \n"
     "		XmNdepth, &depth, NULL);\n"
     "\n"
     "    	if (depth > 1) /* Look for Color Graphics First */\n"
     "    	{\n"
-    "    	    rc = dtb_cvt_filebase_to_pixmap(widget, fileName, \".pm\", &tmpPixmap);\n"
+    "    	    rc = dtb_cvt_filebase_to_pixmap(widget, fileName, \".pm\", "
+    "&tmpPixmap);\n"
     "    	    if (rc < 0)\n"
-    "	    	rc = dtb_cvt_filebase_to_pixmap(widget, fileName, \".xpm\", &tmpPixmap);\n"
+    "	    	rc = dtb_cvt_filebase_to_pixmap(widget, fileName, \".xpm\", "
+    "&tmpPixmap);\n"
     "	    if (rc < 0)\n"
-    "            	rc = dtb_cvt_filebase_to_pixmap(widget, fileName, \".bm\", &tmpPixmap);\n"
+    "            	rc = dtb_cvt_filebase_to_pixmap(widget, fileName, "
+    "\".bm\", &tmpPixmap);\n"
     "            if (rc < 0) \n"
-    "            	rc = dtb_cvt_filebase_to_pixmap(widget, fileName, \".xbm\", &tmpPixmap); \n"
+    "            	rc = dtb_cvt_filebase_to_pixmap(widget, fileName, "
+    "\".xbm\", &tmpPixmap); \n"
     "    	}\n"
     "    	else /* Look for Monochrome First */\n"
     "    	{\n"
-    "            rc = dtb_cvt_filebase_to_pixmap(widget, fileName, \".bm\", &tmpPixmap);\n"
+    "            rc = dtb_cvt_filebase_to_pixmap(widget, fileName, \".bm\", "
+    "&tmpPixmap);\n"
     "            if (rc < 0)\n"
-    "            	rc = dtb_cvt_filebase_to_pixmap(widget, fileName, \".xbm\", &tmpPixmap);\n"
+    "            	rc = dtb_cvt_filebase_to_pixmap(widget, fileName, "
+    "\".xbm\", &tmpPixmap);\n"
     "            if (rc < 0) \n"
-    "            	rc = dtb_cvt_filebase_to_pixmap(widget, fileName, \".pm\", &tmpPixmap); \n"
+    "            	rc = dtb_cvt_filebase_to_pixmap(widget, fileName, "
+    "\".pm\", &tmpPixmap); \n"
     "            if (rc < 0) \n"
-    "            	rc = dtb_cvt_filebase_to_pixmap(widget, fileName, \".xpm\", &tmpPixmap);  \n"
+    "            	rc = dtb_cvt_filebase_to_pixmap(widget, fileName, "
+    "\".xpm\", &tmpPixmap);  \n"
     "    	}\n"
     "    }\n"
     "\n"
@@ -437,27 +441,27 @@ static LibFuncRec abmfP_lrc_cvt_image_file_to_pixmap =
     "\n"
     "    *pixmap = tmpPixmap;\n"
     "    return 0;\n"
-    "}"
-}; /* abmfP_lrc_cvt_image_file_to_pixmap */
-LibFunc abmfP_lib_cvt_image_file_to_pixmap = &(abmfP_lrc_cvt_image_file_to_pixmap);
+    "}"}; /* abmfP_lrc_cvt_image_file_to_pixmap */
+LibFunc abmfP_lib_cvt_image_file_to_pixmap =
+    &(abmfP_lrc_cvt_image_file_to_pixmap);
 
 /*
  * abmfP_lib_set_label_from_image_file
  */
-static LibFuncRec abmfP_lrc_set_label_from_image_file = 
-{
+static LibFuncRec abmfP_lrc_set_label_from_image_file = {
     /* name */
     "dtb_set_label_from_image_file",
-    
+
     /* proto */
     "int dtb_set_label_from_image_file(\n"
     "		Widget	widget,\n"
     "		String	fileName\n"
     ");",
-    
+
     /* def */
     "/* \n"
-    " * Sets the XmNlabel from the image file (either xbitmap or xpixmap format).\n"
+    " * Sets the XmNlabel from the image file (either xbitmap or xpixmap "
+    "format).\n"
     " *\n"
     " * returns negative on error.\n"
     " */\n"
@@ -486,18 +490,17 @@ static LibFuncRec abmfP_lrc_set_label_from_image_file =
     "    }\n"
     "\n"
     "    return 0;\n"
-    "}"
-}; /* abmfP_lrc_set_label_from_image_file */
-LibFunc abmfP_lib_set_label_from_image_file = &(abmfP_lrc_set_label_from_image_file);
+    "}"}; /* abmfP_lrc_set_label_from_image_file */
+LibFunc abmfP_lib_set_label_from_image_file =
+    &(abmfP_lrc_set_label_from_image_file);
 
 /*
  * abmfP_lib_set_label_from_bitmap_data
  */
-static LibFuncRec abmfP_lrc_set_label_from_bitmap_data = 
-{
+static LibFuncRec abmfP_lrc_set_label_from_bitmap_data = {
     /* name */
     "dtb_set_label_from_bitmap_data",
-    
+
     /* proto */
     "int dtb_set_label_from_bitmap_data(\n"
     "    Widget		widget,\n"
@@ -505,7 +508,7 @@ static LibFuncRec abmfP_lrc_set_label_from_bitmap_data =
     "    int			height,\n"
     "    unsigned char	*bitmapData\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * Sets both the sensitive and insensitve pixmaps\n"
@@ -551,7 +554,8 @@ static LibFuncRec abmfP_lrc_set_label_from_bitmap_data =
     "	    window = RootWindowOfScreen(screen);\n"
     "	}\n"
     "\n"
-    "	XtVaGetValues(XtIsSubclass(widget, xmGadgetClass)? XtParent(widget) : widget,\n"
+    "	XtVaGetValues(XtIsSubclass(widget, xmGadgetClass)? XtParent(widget) : "
+    "widget,\n"
     "		XmNbackground,	&widgetBg,\n"
     "		XmNforeground,	&widgetFg,\n"
     "		XmNdepth,	&widgetDepth,\n"
@@ -579,24 +583,23 @@ static LibFuncRec abmfP_lrc_set_label_from_bitmap_data =
     "    dtb_set_label_pixmaps(widget, labelPixmap, 0);\n"
     "\n"
     "    return 0;\n"
-    "}"
-}; /* abmfP_lrc_set_label_from_bitmap_data */
-LibFunc abmfP_lib_set_label_from_bitmap_data = &(abmfP_lrc_set_label_from_bitmap_data);
+    "}"}; /* abmfP_lrc_set_label_from_bitmap_data */
+LibFunc abmfP_lib_set_label_from_bitmap_data =
+    &(abmfP_lrc_set_label_from_bitmap_data);
 
 /*
  * abmfP_lib_set_label_from_xpm_data
  */
-static LibFuncRec abmfP_lrc_set_label_from_xpm_data = 
-{
+static LibFuncRec abmfP_lrc_set_label_from_xpm_data = {
     /* name */
     "dtb_set_label_from_xpm_data",
-    
+
     /* proto */
     "int dtb_set_label_from_xpm_data(\n"
     "    Widget	widget,\n"
     "    char	*xpmData[]\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * Sets both the sensitive and insensitve pixmaps\n"
@@ -641,18 +644,17 @@ static LibFuncRec abmfP_lrc_set_label_from_xpm_data =
     "    dtb_set_label_pixmaps(widget, labelPixmap, 0);\n"
     "\n"
     "    return 0;\n"
-    "}"
-}; /* abmfP_lrc_set_label_from_xpm_data */
-LibFunc abmfP_lib_set_label_from_xpm_data = &(abmfP_lrc_set_label_from_xpm_data);
+    "}"}; /* abmfP_lrc_set_label_from_xpm_data */
+LibFunc abmfP_lib_set_label_from_xpm_data =
+    &(abmfP_lrc_set_label_from_xpm_data);
 
 /*
  * abmfP_lib_cvt_resource_from_string
  */
-static LibFuncRec abmfP_lrc_cvt_resource_from_string = 
-{
+static LibFuncRec abmfP_lrc_cvt_resource_from_string = {
     /* name */
     "dtb_cvt_resource_from_string",
-    
+
     /* proto */
     "unsigned long dtb_cvt_resource_from_string(\n"
     "    Widget		parent,\n"
@@ -661,7 +663,7 @@ static LibFuncRec abmfP_lrc_cvt_resource_from_string =
     "    String		res_str_value,\n"
     "    unsigned long	error_value\n"
     ");",
-    
+
     /* def */
     "unsigned long\n"
     "dtb_cvt_resource_from_string(\n"
@@ -749,23 +751,22 @@ static LibFuncRec abmfP_lrc_cvt_resource_from_string =
     "    }\n"
     "\n"
     "    return cvt_value_return;\n"
-    "}"
-}; /* abmfP_lrc_cvt_resource_from_string */
-LibFunc abmfP_lib_cvt_resource_from_string = &(abmfP_lrc_cvt_resource_from_string);
+    "}"}; /* abmfP_lrc_cvt_resource_from_string */
+LibFunc abmfP_lib_cvt_resource_from_string =
+    &(abmfP_lrc_cvt_resource_from_string);
 
 /*
  * abmfP_lib_save_toplevel_widget
  */
-static LibFuncRec abmfP_lrc_save_toplevel_widget = 
-{
+static LibFuncRec abmfP_lrc_save_toplevel_widget = {
     /* name */
     "dtb_save_toplevel_widget",
-    
+
     /* proto */
     "void dtb_save_toplevel_widget(\n"
     "    Widget	toplevel\n"
     ");",
-    
+
     /* def */
     "/*\n"
     "** Routines to save and access the toplevel widget for an application.\n"
@@ -779,43 +780,39 @@ static LibFuncRec abmfP_lrc_save_toplevel_widget =
     ")\n"
     "{\n"
     "	dtb_project_toplevel_widget = toplevel;\n"
-    "}"
-}; /* abmfP_lrc_save_toplevel_widget */
+    "}"}; /* abmfP_lrc_save_toplevel_widget */
 LibFunc abmfP_lib_save_toplevel_widget = &(abmfP_lrc_save_toplevel_widget);
 
 /*
  * abmfP_lib_get_toplevel_widget
  */
-static LibFuncRec abmfP_lrc_get_toplevel_widget = 
-{
+static LibFuncRec abmfP_lrc_get_toplevel_widget = {
     /* name */
     "dtb_get_toplevel_widget",
-    
+
     /* proto */
     "Widget dtb_get_toplevel_widget();",
-    
+
     /* def */
     "Widget\n"
     "dtb_get_toplevel_widget()\n"
     "{\n"
     "	return(dtb_project_toplevel_widget);\n"
-    "}"
-}; /* abmfP_lrc_get_toplevel_widget */
+    "}"}; /* abmfP_lrc_get_toplevel_widget */
 LibFunc abmfP_lib_get_toplevel_widget = &(abmfP_lrc_get_toplevel_widget);
 
 /*
  * abmfP_lib_remove_sash_focus
  */
-static LibFuncRec abmfP_lrc_remove_sash_focus = 
-{
+static LibFuncRec abmfP_lrc_remove_sash_focus = {
     /* name */
     "dtb_remove_sash_focus",
-    
+
     /* proto */
     "void dtb_remove_sash_focus(\n"
     "    Widget	widget\n"
     ");",
-    
+
     /* def */
     "/*\n"
     "** Function to turn off traversal on the invisible sash within a\n"
@@ -841,26 +838,25 @@ static LibFuncRec abmfP_lrc_remove_sash_focus =
     "    for(i = 0; i < numChildren; i++)\n"
     "	if (XtIsSubclass(children[i], xmSashWidgetClass))\n"
     "	    XtVaSetValues(children[i], XmNtraversalOn, False, NULL);\n"
-    "}"
-}; /* abmfP_lrc_remove_sash_focus */
+    "}"}; /* abmfP_lrc_remove_sash_focus */
 LibFunc abmfP_lib_remove_sash_focus = &(abmfP_lrc_remove_sash_focus);
 
 /*
  * abmfP_lib_save_command
  */
-static LibFuncRec abmfP_lrc_save_command = 
-{
+static LibFuncRec abmfP_lrc_save_command = {
     /* name */
     "dtb_save_command",
-    
+
     /* proto */
     "void dtb_save_command(\n"
     "    char	*argv0\n"
     ");",
-    
+
     /* def */
     "/*\n"
-    " ** Routines to save and access the command used to invoke the application. \n"
+    " ** Routines to save and access the command used to invoke the "
+    "application. \n"
     " */\n"
     "void\n"
     "dtb_save_command(\n"
@@ -881,45 +877,41 @@ static LibFuncRec abmfP_lrc_save_command =
     "	    strcpy(dtb_exe_dir, exe_dir);\n"
     "	}\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_save_command */
+    "}"}; /* abmfP_lrc_save_command */
 LibFunc abmfP_lib_save_command = &(abmfP_lrc_save_command);
 
 /*
  * abmfP_lib_get_command
  */
-static LibFuncRec abmfP_lrc_get_command = 
-{
+static LibFuncRec abmfP_lrc_get_command = {
     /* name */
     "dtb_get_command",
-    
+
     /* proto */
     "char *  dtb_get_command();",
-    
+
     /* def */
     "char * \n"
     "dtb_get_command() \n"
     "{\n"
     "    return(dtb_save_command_str); \n"
-    "}"
-}; /* abmfP_lrc_get_command */
+    "}"}; /* abmfP_lrc_get_command */
 LibFunc abmfP_lib_get_command = &(abmfP_lrc_get_command);
 
 /*
  * abmfP_lib_help_dispatch
  */
-static LibFuncRec abmfP_lrc_help_dispatch = 
-{
+static LibFuncRec abmfP_lrc_help_dispatch = {
     /* name */
     "dtb_help_dispatch",
-    
+
     /* proto */
     "void dtb_help_dispatch(\n"
     "    Widget 	widget,\n"
     "    XtPointer 	clientData,\n"
     "    XtPointer 	callData\n"
     ");",
-    
+
     /* def */
     "/* \n"
     "** Generic callback function to be attached as XmNhelpCallback and\n"
@@ -944,29 +936,40 @@ static LibFuncRec abmfP_lrc_help_dispatch =
     "    static Widget	MoreButton;\n"
     "\n"
     "    /* \n"
-    "    ** In order to save the more-help info (help volume & location ID) as part\n"
-    "    ** of the quick help dialog's backtrack mechanism, we have to splice the \n"
-    "    ** volume & ID strings together and save them as the help volume field.\n"
-    "    ** If there isn't supplemental help information, we save a null string.\n"
+    "    ** In order to save the more-help info (help volume & location ID) as "
+    "part\n"
+    "    ** of the quick help dialog's backtrack mechanism, we have to splice "
+    "the \n"
+    "    ** volume & ID strings together and save them as the help volume "
+    "field.\n"
+    "    ** If there isn't supplemental help information, we save a null "
+    "string.\n"
     "    **\n"
-    "    ** Checking the status of the more-help info also lets us decide whether\n"
+    "    ** Checking the status of the more-help info also lets us decide "
+    "whether\n"
     "    ** the \"More...\" button should be enabled on the dialog.\n"
     "    */\n"
-    "    if( help_data->help_volume     ==0 || *(help_data->help_volume) == NULL ||\n"
-    "	help_data->help_locationID ==0 || *(help_data->help_locationID)== NULL){\n"
+    "    if( help_data->help_volume     ==0 || *(help_data->help_volume) == "
+    "NULL ||\n"
+    "	help_data->help_locationID ==0 || *(help_data->help_locationID)== "
+    "NULL){\n"
     "		buffer[0] = '\\0';\n"
     "    }\n"
     "    else {\n"
-    "	sprintf(buffer,\"%s/%s\",help_data->help_volume,help_data->help_locationID);\n"
+    "	sprintf(buffer,\"%s/"
+    "%s\",help_data->help_volume,help_data->help_locationID);\n"
     "    }\n"
     "\n"
     "    /* \n"
-    "    ** If this is our first time to post help, create the proper dialog and\n"
+    "    ** If this is our first time to post help, create the proper dialog "
+    "and\n"
     "    ** set its attributes to suit the current object.  If not, then just\n"
     "    ** update the attributes.\n"
     "    **\n"
-    "    ** (You have to be careful about gratuitous SetValues on the dialog because\n"
-    "    ** its internal stack mechanism takes repeated settings as separate items\n"
+    "    ** (You have to be careful about gratuitous SetValues on the dialog "
+    "because\n"
+    "    ** its internal stack mechanism takes repeated settings as separate "
+    "items\n"
     "    ** and updates the stack for each.)\n"
     "    */\n"
     "    if(Quick_help_dialog == (Widget)0) {\n"
@@ -976,7 +979,8 @@ static LibFuncRec abmfP_lrc_help_dispatch =
     "	XtSetArg(wargs[i],DtNhelpType, DtHELP_TYPE_DYNAMIC_STRING); i++;\n"
     "	XtSetArg(wargs[i],DtNstringData,help_data->help_text);      i++;\n"
     "        XtSetArg(wargs[i],DtNhelpVolume,buffer);		    i++;\n"
-    "	Quick_help_dialog = DtCreateHelpQuickDialog(dtb_get_toplevel_widget(),\n"
+    "	Quick_help_dialog = "
+    "DtCreateHelpQuickDialog(dtb_get_toplevel_widget(),\n"
     "		\"Help\",wargs,i);\n"
     "\n"
     "	/* \n"
@@ -1001,7 +1005,8 @@ static LibFuncRec abmfP_lrc_help_dispatch =
     "	XtAddCallback(back_button,XmNactivateCallback,dtb_help_back_hdlr,\n"
     "		(XtPointer)Quick_help_dialog);\n"
     "    }\n"
-    "    /* Otherwise the dialog already exists so we just set the attributes. */\n"
+    "    /* Otherwise the dialog already exists so we just set the attributes. "
+    "*/\n"
     "    else {\n"
     "	/* \n"
     "	** If we have supplemental help info, enable the more button.\n"
@@ -1023,31 +1028,33 @@ static LibFuncRec abmfP_lrc_help_dispatch =
     "\n"
     "    /* Now display the help dialog */\n"
     "    XtManageChild(Quick_help_dialog);\n"
-    "}"
-}; /* abmfP_lrc_help_dispatch */
+    "}"}; /* abmfP_lrc_help_dispatch */
 LibFunc abmfP_lib_help_dispatch = &(abmfP_lrc_help_dispatch);
 
 /*
  * abmfP_lib_help_back_hdlr
  */
-static LibFuncRec abmfP_lrc_help_back_hdlr = 
-{
+static LibFuncRec abmfP_lrc_help_back_hdlr = {
     /* name */
     "dtb_help_back_hdlr",
-    
+
     /* proto */
     "void dtb_help_back_hdlr(\n"
     "    Widget 	widget,\n"
     "    XtPointer 	clientData,\n"
     "    XtPointer 	callData\n"
     ");",
-    
+
     /* def */
     "/*\n"
-    "** Callback that is added to the QuickHelpDialog widget's \"Backtrack\" button\n"
-    "** and is used to control the \"More..\" button.  At each step in the backtrack,\n"
-    "** this routine checks to see if there is help volume & location info stored\n"
-    "** in the dialog's helpVolume resource.  If so, then the \"More...\" button is\n"
+    "** Callback that is added to the QuickHelpDialog widget's \"Backtrack\" "
+    "button\n"
+    "** and is used to control the \"More..\" button.  At each step in the "
+    "backtrack,\n"
+    "** this routine checks to see if there is help volume & location info "
+    "stored\n"
+    "** in the dialog's helpVolume resource.  If so, then the \"More...\" "
+    "button is\n"
     "** enabled.  If not, then it is disabled.\n"
     "*/\n"
     "void\n"
@@ -1062,7 +1069,8 @@ static LibFuncRec abmfP_lrc_help_back_hdlr =
     "    Widget		more_button;\n"
     "    Widget		help_dialog = (Widget)clientData;\n"
     "\n"
-    "    /* Fetch the saved volume/locationID information from the dialog widget */\n"
+    "    /* Fetch the saved volume/locationID information from the dialog "
+    "widget */\n"
     "    XtVaGetValues(help_dialog,\n"
     "	DtNhelpVolume,&buffer,\n"
     "	DtNstringData,&text,\n"
@@ -1072,7 +1080,8 @@ static LibFuncRec abmfP_lrc_help_back_hdlr =
     "    more_button = DtHelpQuickDialogGetChild(help_dialog,\n"
     "		DtHELP_QUICK_MORE_BUTTON);\n"
     "    /* \n"
-    "    ** Parse the combined volume/locationID string.  Disable the \"More...\"\n"
+    "    ** Parse the combined volume/locationID string.  Disable the "
+    "\"More...\"\n"
     "    ** button if there isn't any help info, and enable it if there is.\n"
     "    */\n"
     "    if( buffer == 0 || (*buffer == NULL) ||\n"
@@ -1082,30 +1091,30 @@ static LibFuncRec abmfP_lrc_help_back_hdlr =
     "    else {\n"
     "		XtSetSensitive(more_button,True);\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_help_back_hdlr */
+    "}"}; /* abmfP_lrc_help_back_hdlr */
 LibFunc abmfP_lib_help_back_hdlr = &(abmfP_lrc_help_back_hdlr);
 
 /*
  * abmfP_lib_more_help_dispatch
  */
-static LibFuncRec abmfP_lrc_more_help_dispatch = 
-{
+static LibFuncRec abmfP_lrc_more_help_dispatch = {
     /* name */
     "dtb_more_help_dispatch",
-    
+
     /* proto */
     "void dtb_more_help_dispatch(\n"
     "    Widget 	widget,\n"
     "    XtPointer 	clientData,\n"
     "    XtPointer 	callData\n"
     ");",
-    
+
     /* def */
     "/*\n"
     "** This callback is invoked when the user presses \"More...\" on the\n"
-    "** QuickHelpDialog.  It figures out whether a help volume entry is associated\n"
-    "** with the displayed help text, and if so it brings up a GeneralHelpDialog\n"
+    "** QuickHelpDialog.  It figures out whether a help volume entry is "
+    "associated\n"
+    "** with the displayed help text, and if so it brings up a "
+    "GeneralHelpDialog\n"
     "** to display the appropriate help volume information.\n"
     "*/\n"
     "void\n"
@@ -1123,15 +1132,18 @@ static LibFuncRec abmfP_lrc_more_help_dispatch =
     "    Widget		help_dialog = (Widget)clientData;\n"
     "    Widget		more_button;\n"
     "\n"
-    "    /* Fetch the saved volume/locationID information from the dialog widget */\n"
+    "    /* Fetch the saved volume/locationID information from the dialog "
+    "widget */\n"
     "    XtVaGetValues(help_dialog,\n"
     "	DtNhelpVolume,&buffer,\n"
     "	NULL);\n"
     "\n"
     "    /* \n"
     "    ** Parse the combined volume/locationID string.  If that fails there\n"
-    "    ** must be no data, so don't bother displaying the GeneralHelpDialog.\n"
-    "    ** (We shouldn't be in this callback routine if that happens, though...)\n"
+    "    ** must be no data, so don't bother displaying the "
+    "GeneralHelpDialog.\n"
+    "    ** (We shouldn't be in this callback routine if that happens, "
+    "though...)\n"
     "    */\n"
     "    if( (cp=strrchr(buffer,'/')) != (char *)NULL) {\n"
     "	*cp++ = 0;\n"
@@ -1158,24 +1170,23 @@ static LibFuncRec abmfP_lrc_more_help_dispatch =
     "        XtSetValues(GeneralHelpDialog,wargs,i);\n"
     "    }\n"
     "\n"
-    "    /* Now take down the quick help dialog and display the full help one */\n"
+    "    /* Now take down the quick help dialog and display the full help one "
+    "*/\n"
     "    XtManageChild(GeneralHelpDialog);\n"
     "    XtUnmanageChild(help_dialog);\n"
-    "}"
-}; /* abmfP_lrc_more_help_dispatch */
+    "}"}; /* abmfP_lrc_more_help_dispatch */
 LibFunc abmfP_lib_more_help_dispatch = &(abmfP_lrc_more_help_dispatch);
 
 /*
  * abmfP_lib_do_onitem_help
  */
-static LibFuncRec abmfP_lrc_do_onitem_help = 
-{
+static LibFuncRec abmfP_lrc_do_onitem_help = {
     /* name */
     "dtb_do_onitem_help",
-    
+
     /* proto */
     "void dtb_do_onitem_help();",
-    
+
     /* def */
     "/*\n"
     "** Utility function used to provide support for on-item help.\n"
@@ -1187,7 +1198,8 @@ static LibFuncRec abmfP_lrc_do_onitem_help =
     "{\n"
     "    Widget	target;\n"
     "\n"
-    "    /* Call the DtHelp routine that supports interactive on-item help. */\n"
+    "    /* Call the DtHelp routine that supports interactive on-item help. "
+    "*/\n"
     "    if(DtHelpReturnSelectedWidgetId(dtb_get_toplevel_widget(),\n"
     "	(Cursor)NULL,&target) != DtHELP_SELECT_VALID) return;\n"
     "	\n"
@@ -1206,24 +1218,22 @@ static LibFuncRec abmfP_lrc_do_onitem_help =
     "	}\n"
     "    }\n"
     "    return;\n"
-    "}"
-}; /* abmfP_lrc_do_onitem_help */
+    "}"}; /* abmfP_lrc_do_onitem_help */
 LibFunc abmfP_lib_do_onitem_help = &(abmfP_lrc_do_onitem_help);
 
 /*
  * abmfP_lib_show_help_volume_info
  */
-static LibFuncRec abmfP_lrc_show_help_volume_info = 
-{
+static LibFuncRec abmfP_lrc_show_help_volume_info = {
     /* name */
     "dtb_show_help_volume_info",
-    
+
     /* proto */
     "int dtb_show_help_volume_info(\n"
     "    char	*volume_name,\n"
     "    char	*location_id\n"
     ");",
-    
+
     /* def */
     "/*\n"
     "** Utility function called to display help volume information.\n"
@@ -1263,25 +1273,23 @@ static LibFuncRec abmfP_lrc_show_help_volume_info =
     "    XtManageChild(GeneralHelpDialog);\n"
     "\n"
     "    return(0);\n"
-    "}"
-}; /* abmfP_lrc_show_help_volume_info */
+    "}"}; /* abmfP_lrc_show_help_volume_info */
 LibFunc abmfP_lib_show_help_volume_info = &(abmfP_lrc_show_help_volume_info);
 
 /*
  * abmfP_lib_session_save
  */
-static LibFuncRec abmfP_lrc_session_save = 
-{
+static LibFuncRec abmfP_lrc_session_save = {
     /* name */
     "dtb_session_save",
-    
+
     /* proto */
     "void dtb_session_save(\n"
     "    Widget 	widget,\n"
     "    XtPointer 	clientData,\n"
     "    XtPointer 	callData\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * dtb_session_save()\n"
@@ -1318,7 +1326,8 @@ static LibFuncRec abmfP_lrc_session_save =
     "    /*\n"
     "     * Get session file path/name to store application's state\n"
     "     */\n"
-    "    if (DtSessionSavePath(widget, &session_file_path, &session_file_name) == False)\n"
+    "    if (DtSessionSavePath(widget, &session_file_path, &session_file_name) "
+    "== False)\n"
     "        return;\n"
     "\n"
     "    /*\n"
@@ -1443,21 +1452,19 @@ static LibFuncRec abmfP_lrc_session_save =
     "     */\n"
     "    XtFree ((char *)session_file_path);\n"
     "    XtFree ((char *)session_file_name);\n"
-    "}"
-}; /* abmfP_lrc_session_save */
+    "}"}; /* abmfP_lrc_session_save */
 LibFunc abmfP_lib_session_save = &(abmfP_lrc_session_save);
 
 /*
  * abmfP_lib_get_client_session_saveCB
  */
-static LibFuncRec abmfP_lrc_get_client_session_saveCB = 
-{
+static LibFuncRec abmfP_lrc_get_client_session_saveCB = {
     /* name */
     "dtb_get_client_session_saveCB",
-    
+
     /* proto */
     "DtbClientSessionSaveCB dtb_get_client_session_saveCB();",
-    
+
     /* def */
     "/*\n"
     " * dtb_get_client_session_saveCB()\n"
@@ -1467,23 +1474,22 @@ static LibFuncRec abmfP_lrc_get_client_session_saveCB =
     "{\n"
     "    return(dtb_client_session_saveCB);\n"
     "\n"
-    "}"
-}; /* abmfP_lrc_get_client_session_saveCB */
-LibFunc abmfP_lib_get_client_session_saveCB = &(abmfP_lrc_get_client_session_saveCB);
+    "}"}; /* abmfP_lrc_get_client_session_saveCB */
+LibFunc abmfP_lib_get_client_session_saveCB =
+    &(abmfP_lrc_get_client_session_saveCB);
 
 /*
  * abmfP_lib_set_client_session_saveCB
  */
-static LibFuncRec abmfP_lrc_set_client_session_saveCB = 
-{
+static LibFuncRec abmfP_lrc_set_client_session_saveCB = {
     /* name */
     "dtb_set_client_session_saveCB",
-    
+
     /* proto */
     "void dtb_set_client_session_saveCB(\n"
     "    DtbClientSessionSaveCB 	session_saveCB\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * dtb_set_client_session_saveCB()\n"
@@ -1495,24 +1501,23 @@ static LibFuncRec abmfP_lrc_set_client_session_saveCB =
     "{\n"
     "    dtb_client_session_saveCB = session_saveCB;\n"
     "\n"
-    "}"
-}; /* abmfP_lrc_set_client_session_saveCB */
-LibFunc abmfP_lib_set_client_session_saveCB = &(abmfP_lrc_set_client_session_saveCB);
+    "}"}; /* abmfP_lrc_set_client_session_saveCB */
+LibFunc abmfP_lib_set_client_session_saveCB =
+    &(abmfP_lrc_set_client_session_saveCB);
 
 /*
  * abmfP_lib_session_restore
  */
-static LibFuncRec abmfP_lrc_session_restore = 
-{
+static LibFuncRec abmfP_lrc_session_restore = {
     /* name */
     "dtb_session_restore",
-    
+
     /* proto */
     "void dtb_session_restore(\n"
     "    Widget 	widget,\n"
     "    char 	*session_file\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * dtb_session_restore()\n"
@@ -1541,7 +1546,8 @@ static LibFuncRec abmfP_lrc_session_restore =
     "    /*\n"
     "     * Get path of session file to read\n"
     "     */\n"
-    "    if (DtSessionRestorePath(widget, &session_file_path, session_file) == False)\n"
+    "    if (DtSessionRestorePath(widget, &session_file_path, session_file) == "
+    "False)\n"
     "        return;\n"
     "\n"
     "    /*\n"
@@ -1562,23 +1568,21 @@ static LibFuncRec abmfP_lrc_session_restore =
     "    if (!session_file_path)\n"
     "        XtFree((char *)session_file_path);\n"
     "\n"
-    "}"
-}; /* abmfP_lrc_session_restore */
+    "}"}; /* abmfP_lrc_session_restore */
 LibFunc abmfP_lib_session_restore = &(abmfP_lrc_session_restore);
 
 /*
  * abmfP_lib_set_client_session_restoreCB
  */
-static LibFuncRec abmfP_lrc_set_client_session_restoreCB = 
-{
+static LibFuncRec abmfP_lrc_set_client_session_restoreCB = {
     /* name */
     "dtb_set_client_session_restoreCB",
-    
+
     /* proto */
     "void dtb_set_client_session_restoreCB(\n"
     "    DtbClientSessionRestoreCB 	session_restoreCB\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * dtb_set_client_session_restoreCB()\n"
@@ -1590,21 +1594,20 @@ static LibFuncRec abmfP_lrc_set_client_session_restoreCB =
     "{\n"
     "    dtb_client_session_restoreCB = session_restoreCB;\n"
     "\n"
-    "}"
-}; /* abmfP_lrc_set_client_session_restoreCB */
-LibFunc abmfP_lib_set_client_session_restoreCB = &(abmfP_lrc_set_client_session_restoreCB);
+    "}"}; /* abmfP_lrc_set_client_session_restoreCB */
+LibFunc abmfP_lib_set_client_session_restoreCB =
+    &(abmfP_lrc_set_client_session_restoreCB);
 
 /*
  * abmfP_lib_get_client_session_restoreCB
  */
-static LibFuncRec abmfP_lrc_get_client_session_restoreCB = 
-{
+static LibFuncRec abmfP_lrc_get_client_session_restoreCB = {
     /* name */
     "dtb_get_client_session_restoreCB",
-    
+
     /* proto */
     "DtbClientSessionRestoreCB dtb_get_client_session_restoreCB();",
-    
+
     /* def */
     "/*\n"
     " * dtb_get_client_session_restoreCB()\n"
@@ -1614,18 +1617,17 @@ static LibFuncRec abmfP_lrc_get_client_session_restoreCB =
     "{\n"
     "    return(dtb_client_session_restoreCB);\n"
     "\n"
-    "}"
-}; /* abmfP_lrc_get_client_session_restoreCB */
-LibFunc abmfP_lib_get_client_session_restoreCB = &(abmfP_lrc_get_client_session_restoreCB);
+    "}"}; /* abmfP_lrc_get_client_session_restoreCB */
+LibFunc abmfP_lib_get_client_session_restoreCB =
+    &(abmfP_lrc_get_client_session_restoreCB);
 
 /*
  * abmfP_lib_create_message_dlg
  */
-static LibFuncRec abmfP_lrc_create_message_dlg = 
-{
+static LibFuncRec abmfP_lrc_create_message_dlg = {
     /* name */
     "dtb_create_message_dlg",
-    
+
     /* proto */
     "Widget dtb_create_message_dlg(\n"
     "    Widget		parent,\n"
@@ -1633,7 +1635,7 @@ static LibFuncRec abmfP_lrc_create_message_dlg =
     "    XmString		override_msg,\n"
     "    DtbObjectHelpData	override_help\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * Create a Message Dialog.\n"
@@ -1772,25 +1774,23 @@ static LibFuncRec abmfP_lrc_create_message_dlg =
     "		 (XtPointer) override_help);\n"
     "\n"
     "    return(msg_dlg);\n"
-    "}"
-}; /* abmfP_lrc_create_message_dlg */
+    "}"}; /* abmfP_lrc_create_message_dlg */
 LibFunc abmfP_lib_create_message_dlg = &(abmfP_lrc_create_message_dlg);
 
 /*
  * abmfP_lib_destroyCB
  */
-static LibFuncRec abmfP_lrc_destroyCB = 
-{
+static LibFuncRec abmfP_lrc_destroyCB = {
     /* name */
     "destroyCB",
-    
+
     /* proto */
     "static void destroyCB(\n"
     "    Widget      widget,\n"
     "    XtPointer   client_data,\n"
     "    XtPointer   call_data\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * popdownCallback for MessageBox.\n"
@@ -1816,24 +1816,22 @@ static LibFuncRec abmfP_lrc_destroyCB =
     "    }\n"
     "\n"
     "    XtDestroyWidget(widget);\n"
-    "}"
-}; /* abmfP_lrc_destroyCB */
+    "}"}; /* abmfP_lrc_destroyCB */
 LibFunc abmfP_lib_destroyCB = &(abmfP_lrc_destroyCB);
 
 /*
  * abmfP_lib_MessageBoxGetActionButton
  */
-static LibFuncRec abmfP_lrc_MessageBoxGetActionButton = 
-{
+static LibFuncRec abmfP_lrc_MessageBoxGetActionButton = {
     /* name */
     "dtb_MessageBoxGetActionButton",
-    
+
     /* proto */
     "Widget dtb_MessageBoxGetActionButton(\n"
     "    Widget	msg_dlg,\n"
     "    DTB_BUTTON	which_btn\n"
     ");",
-    
+
     /* def */
     "/* \n"
     " * Get handle to Action2 button.\n"
@@ -1864,18 +1862,17 @@ static LibFuncRec abmfP_lrc_MessageBoxGetActionButton =
     "	}\n"
     "    }\n"
     "    return (action_button);\n"
-    "}"
-}; /* abmfP_lrc_MessageBoxGetActionButton */
-LibFunc abmfP_lib_MessageBoxGetActionButton = &(abmfP_lrc_MessageBoxGetActionButton);
+    "}"}; /* abmfP_lrc_MessageBoxGetActionButton */
+LibFunc abmfP_lib_MessageBoxGetActionButton =
+    &(abmfP_lrc_MessageBoxGetActionButton);
 
 /*
  * abmfP_lib_show_message
  */
-static LibFuncRec abmfP_lrc_show_message = 
-{
+static LibFuncRec abmfP_lrc_show_message = {
     /* name */
     "dtb_show_message",
-    
+
     /* proto */
     "void dtb_show_message(\n"
     "    Widget		parent,\n"
@@ -1883,7 +1880,7 @@ static LibFuncRec abmfP_lrc_show_message =
     "    XmString		override_msg,\n"
     "    DtbObjectHelpData	override_help\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * Use this routine to post a non-modal message. It should\n"
@@ -1903,7 +1900,8 @@ static LibFuncRec abmfP_lrc_show_message =
     "\n"
     "    if (override_help != (DtbObjectHelpData) NULL)\n"
     "    {\n"
-    "	help_data_copy = (DtbObjectHelpData)XtMalloc(sizeof(DtbObjectHelpDataRec));\n"
+    "	help_data_copy = "
+    "(DtbObjectHelpData)XtMalloc(sizeof(DtbObjectHelpDataRec));\n"
     "\n"
     "	help_data_copy->help_text = override_help->help_text ? \n"
     "		XtNewString(override_help->help_text) : \n"
@@ -1924,19 +1922,23 @@ static LibFuncRec abmfP_lrc_show_message =
     "\n"
     "    /* Add Callbacks if necessary */\n"
     "    if (mbr->action1_callback != (XtCallbackProc) NULL)\n"
-    "        XtAddCallback(msg_dlg, XmNokCallback, mbr->action1_callback, NULL);\n"
+    "        XtAddCallback(msg_dlg, XmNokCallback, mbr->action1_callback, "
+    "NULL);\n"
     "    if (mbr->cancel_callback != (XtCallbackProc) NULL)\n"
-    "        XtAddCallback(msg_dlg, XmNcancelCallback, mbr->cancel_callback, NULL);\n"
+    "        XtAddCallback(msg_dlg, XmNcancelCallback, mbr->cancel_callback, "
+    "NULL);\n"
     "    if (mbr->action2_callback != (XtCallbackProc) NULL)\n"
     "    {\n"
-    "	action_btn = dtb_MessageBoxGetActionButton(msg_dlg, DTB_ACTION2_BUTTON);\n"
+    "	action_btn = dtb_MessageBoxGetActionButton(msg_dlg, "
+    "DTB_ACTION2_BUTTON);\n"
     "	if (action_btn != 0)\n"
     "            XtAddCallback(action_btn, XmNactivateCallback,\n"
     "			  mbr->action2_callback, NULL);\n"
     "    }\n"
     "    if (mbr->action3_callback != (XtCallbackProc) NULL)\n"
     "    {\n"
-    "        action_btn = dtb_MessageBoxGetActionButton(msg_dlg, DTB_ACTION3_BUTTON);        if (action_btn != 0)\n"
+    "        action_btn = dtb_MessageBoxGetActionButton(msg_dlg, "
+    "DTB_ACTION3_BUTTON);        if (action_btn != 0)\n"
     "            XtAddCallback(action_btn, XmNactivateCallback,\n"
     "                          mbr->action3_callback, NULL);\n"
     "    }\n"
@@ -1958,18 +1960,16 @@ static LibFuncRec abmfP_lrc_show_message =
     "\n"
     "    XtManageChild(msg_dlg);\n"
     "    XRaiseWindow(XtDisplay(msg_dlg), XtWindow(XtParent(msg_dlg)));\n"
-    "}"
-}; /* abmfP_lrc_show_message */
+    "}"}; /* abmfP_lrc_show_message */
 LibFunc abmfP_lib_show_message = &(abmfP_lrc_show_message);
 
 /*
  * abmfP_lib_show_modal_message
  */
-static LibFuncRec abmfP_lrc_show_modal_message = 
-{
+static LibFuncRec abmfP_lrc_show_modal_message = {
     /* name */
     "dtb_show_modal_message",
-    
+
     /* proto */
     "DTB_MODAL_ANSWER dtb_show_modal_message(\n"
     "    Widget		parent,\n"
@@ -1978,7 +1978,7 @@ static LibFuncRec abmfP_lrc_show_modal_message =
     "    DtbObjectHelpData	override_help,\n"
     "    Widget         	*modal_dlg_pane_out_ptr\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * Use this routine to post a modal message.\n"
@@ -1999,20 +1999,24 @@ static LibFuncRec abmfP_lrc_show_modal_message =
     "    Widget			modal_dlg_pane = (Widget) 0;\n"
     "    Widget			action2_button = (Widget) 0;\n"
     "    Widget			action3_button = (Widget) 0;\n"
-    "    DtbObjectHelpData		help_data_copy = (DtbObjectHelpData)NULL;\n"
+    "    DtbObjectHelpData		help_data_copy = "
+    "(DtbObjectHelpData)NULL;\n"
     "    DTB_MODAL_ANSWER		answer = DTB_ANSWER_NONE;\n"
     "    XtCallbackRec ok_callback[] = {\n"
-    "            {(XtCallbackProc)modal_dlgCB, (XtPointer) DTB_ANSWER_ACTION1},\n"
+    "            {(XtCallbackProc)modal_dlgCB, (XtPointer) "
+    "DTB_ANSWER_ACTION1},\n"
     "            {(XtCallbackProc) NULL, (XtPointer) NULL}\n"
     "    };\n"
     "    XtCallbackRec cancel_callback[] = {\n"
-    "            {(XtCallbackProc)modal_dlgCB, (XtPointer) DTB_ANSWER_CANCEL},\n"
+    "            {(XtCallbackProc)modal_dlgCB, (XtPointer) "
+    "DTB_ANSWER_CANCEL},\n"
     "            {(XtCallbackProc) NULL, (XtPointer) NULL}\n"
     "    };\n"
     "\n"
     "    if (override_help != (DtbObjectHelpData) NULL)\n"
     "    {\n"
-    "	help_data_copy = (DtbObjectHelpData)XtMalloc(sizeof(DtbObjectHelpDataRec));\n"
+    "	help_data_copy = "
+    "(DtbObjectHelpData)XtMalloc(sizeof(DtbObjectHelpDataRec));\n"
     "\n"
     "	help_data_copy->help_text = override_help->help_text ? \n"
     "		XtNewString(override_help->help_text) : \n"
@@ -2080,7 +2084,8 @@ static LibFuncRec abmfP_lrc_show_modal_message =
     "\n"
     "    /* Popup Modal MessageDialog and wait for answer */\n"
     "    XtManageChild(modal_dlg_pane);\n"
-    "    XRaiseWindow(XtDisplay(modal_dlg_pane), XtWindow(XtParent(modal_dlg_pane)));\n"
+    "    XRaiseWindow(XtDisplay(modal_dlg_pane), "
+    "XtWindow(XtParent(modal_dlg_pane)));\n"
     "\n"
     "    app = XtDisplayToApplicationContext(XtDisplay(modal_dlg_pane));\n"
     "    while (answer == DTB_ANSWER_NONE)\n"
@@ -2091,25 +2096,23 @@ static LibFuncRec abmfP_lrc_show_modal_message =
     "        (*modal_dlg_pane_out_ptr) = modal_dlg_pane;\n"
     "    }\n"
     "    return(answer);\n"
-    "}"
-}; /* abmfP_lrc_show_modal_message */
+    "}"}; /* abmfP_lrc_show_modal_message */
 LibFunc abmfP_lib_show_modal_message = &(abmfP_lrc_show_modal_message);
 
 /*
  * abmfP_lib_modal_dlgCB
  */
-static LibFuncRec abmfP_lrc_modal_dlgCB = 
-{
+static LibFuncRec abmfP_lrc_modal_dlgCB = {
     /* name */
     "modal_dlgCB",
-    
+
     /* proto */
     "static void modal_dlgCB(\n"
     "    Widget      widget,\n"
     "    XtPointer   client_data,\n"
     "    XtPointer   call_data\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * This is the activateCallback for the MessageBox buttons.\n"
@@ -2129,24 +2132,22 @@ static LibFuncRec abmfP_lrc_modal_dlgCB =
     " \n"
     "    /* Will cause Modal dialog to return */\n"
     "    *answerp = op;\n"
-    "}"
-}; /* abmfP_lrc_modal_dlgCB */
+    "}"}; /* abmfP_lrc_modal_dlgCB */
 LibFunc abmfP_lib_modal_dlgCB = &(abmfP_lrc_modal_dlgCB);
 
 /*
  * abmfP_lib_children_center
  */
-static LibFuncRec abmfP_lrc_children_center = 
-{
+static LibFuncRec abmfP_lrc_children_center = {
     /* name */
     "dtb_children_center",
-    
+
     /* proto */
     "void dtb_children_center(\n"
     "    Widget		form,\n"
     "    DTB_CENTERING_TYPES	type\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * This function will center all the passed form's children.\n"
@@ -2180,24 +2181,22 @@ static LibFuncRec abmfP_lrc_children_center =
     "    {\n"
     "	dtb_center(children_list[i], type);\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_children_center */
+    "}"}; /* abmfP_lrc_children_center */
 LibFunc abmfP_lib_children_center = &(abmfP_lrc_children_center);
 
 /*
  * abmfP_lib_children_uncenter
  */
-static LibFuncRec abmfP_lrc_children_uncenter = 
-{
+static LibFuncRec abmfP_lrc_children_uncenter = {
     /* name */
     "dtb_children_uncenter",
-    
+
     /* proto */
     "void dtb_children_uncenter(\n"
     "    Widget		form,\n"
     "    DTB_CENTERING_TYPES	type\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * This function 'uncenters' the children of the passed\n"
@@ -2231,24 +2230,22 @@ static LibFuncRec abmfP_lrc_children_uncenter =
     "    {\n"
     "	dtb_uncenter(children_list[i], type);\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_children_uncenter */
+    "}"}; /* abmfP_lrc_children_uncenter */
 LibFunc abmfP_lib_children_uncenter = &(abmfP_lrc_children_uncenter);
 
 /*
  * abmfP_lib_center
  */
-static LibFuncRec abmfP_lrc_center = 
-{
+static LibFuncRec abmfP_lrc_center = {
     /* name */
     "dtb_center",
-    
+
     /* proto */
     "void dtb_center(\n"
     "    Widget		form_child,\n"
     "    DTB_CENTERING_TYPES	type\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * This function centers the passed widget.\n"
@@ -2270,24 +2267,22 @@ static LibFuncRec abmfP_lrc_center =
     "   XtAddEventHandler(form_child,\n"
     "            StructureNotifyMask, False,\n"
     "            centering_handler, (XtPointer)type);\n"
-    "}"
-}; /* abmfP_lrc_center */
+    "}"}; /* abmfP_lrc_center */
 LibFunc abmfP_lib_center = &(abmfP_lrc_center);
 
 /*
  * abmfP_lib_uncenter
  */
-static LibFuncRec abmfP_lrc_uncenter = 
-{
+static LibFuncRec abmfP_lrc_uncenter = {
     /* name */
     "dtb_uncenter",
-    
+
     /* proto */
     "void dtb_uncenter(\n"
     "    Widget		form_child,\n"
     "    DTB_CENTERING_TYPES	type\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * This function 'uncenters' the passed widget.\n"
@@ -2308,24 +2303,22 @@ static LibFuncRec abmfP_lrc_uncenter =
     "   XtRemoveEventHandler(form_child,\n"
     "            StructureNotifyMask, False,\n"
     "            centering_handler, (XtPointer)type);\n"
-    "}"
-}; /* abmfP_lrc_uncenter */
+    "}"}; /* abmfP_lrc_uncenter */
 LibFunc abmfP_lib_uncenter = &(abmfP_lrc_uncenter);
 
 /*
  * abmfP_lib_center_widget
  */
-static LibFuncRec abmfP_lrc_center_widget = 
-{
+static LibFuncRec abmfP_lrc_center_widget = {
     /* name */
     "center_widget",
-    
+
     /* proto */
     "static void  center_widget(\n"
     "    Widget		form_child,\n"
     "    DTB_CENTERING_TYPES	type\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * This function centers the passed widget.\n"
@@ -2346,7 +2339,8 @@ static LibFuncRec abmfP_lrc_center_widget =
     "    unsigned char	left_attach = XmATTACH_NONE,\n"
     "			top_attach = XmATTACH_NONE;\n"
     "\n"
-    "    if (!form_child || !XtIsManaged(form_child) || !XtIsRealized(form_child))\n"
+    "    if (!form_child || !XtIsManaged(form_child) || "
+    "!XtIsRealized(form_child))\n"
     "	return;\n"
     "\n"
     "    parent = XtParent(form_child);\n"
@@ -2406,24 +2400,22 @@ static LibFuncRec abmfP_lrc_center_widget =
     "	}\n"
     "	break;\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_center_widget */
+    "}"}; /* abmfP_lrc_center_widget */
 LibFunc abmfP_lib_center_widget = &(abmfP_lrc_center_widget);
 
 /*
  * abmfP_lib_uncenter_widget
  */
-static LibFuncRec abmfP_lrc_uncenter_widget = 
-{
+static LibFuncRec abmfP_lrc_uncenter_widget = {
     /* name */
     "uncenter_widget",
-    
+
     /* proto */
     "static void  uncenter_widget(\n"
     "    Widget		form_child,\n"
     "    DTB_CENTERING_TYPES	type\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * This function 'uncenters' the passed widget.\n"
@@ -2439,7 +2431,8 @@ static LibFuncRec abmfP_lrc_uncenter_widget =
     "    unsigned char	left_attach = XmATTACH_NONE,\n"
     "			top_attach = XmATTACH_NONE;\n"
     "\n"
-    "    if (!form_child || !XtIsManaged(form_child) || !XtIsRealized(form_child))\n"
+    "    if (!form_child || !XtIsManaged(form_child) || "
+    "!XtIsRealized(form_child))\n"
     "	return;\n"
     "\n"
     "    parent = XtParent(form_child);\n"
@@ -2486,18 +2479,16 @@ static LibFuncRec abmfP_lrc_uncenter_widget =
     "		NULL);\n"
     "	break;\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_uncenter_widget */
+    "}"}; /* abmfP_lrc_uncenter_widget */
 LibFunc abmfP_lib_uncenter_widget = &(abmfP_lrc_uncenter_widget);
 
 /*
  * abmfP_lib_centering_handler
  */
-static LibFuncRec abmfP_lrc_centering_handler = 
-{
+static LibFuncRec abmfP_lrc_centering_handler = {
     /* name */
     "centering_handler",
-    
+
     /* proto */
     "static void centering_handler(\n"
     "    Widget	widget,\n"
@@ -2505,7 +2496,7 @@ static LibFuncRec abmfP_lrc_centering_handler =
     "    XEvent	*event,\n"
     "    Boolean	*cont_dispatch\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * Event handler to center a widget\n"
@@ -2533,23 +2524,21 @@ static LibFuncRec abmfP_lrc_centering_handler =
     "	return;\n"
     "\n"
     "    center_widget(resized_child, type);\n"
-    "}"
-}; /* abmfP_lrc_centering_handler */
+    "}"}; /* abmfP_lrc_centering_handler */
 LibFunc abmfP_lib_centering_handler = &(abmfP_lrc_centering_handler);
 
 /*
  * abmfP_lib_get_label_widget
  */
-static LibFuncRec abmfP_lrc_get_label_widget = 
-{
+static LibFuncRec abmfP_lrc_get_label_widget = {
     /* name */
     "get_label_widget",
-    
+
     /* proto */
     "static Widget get_label_widget(\n"
     "    Widget	widget\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * Given a widget, return it's label widget.\n"
@@ -2572,7 +2561,8 @@ static LibFuncRec abmfP_lrc_get_label_widget =
     "    }\n"
     "\n"
     "    subobj_name = XtName(widget);\n"
-    "    label_name = (char *)XtMalloc(1 + strlen(subobj_name) + strlen(\"_label\") + 5);\n"
+    "    label_name = (char *)XtMalloc(1 + strlen(subobj_name) + "
+    "strlen(\"_label\") + 5);\n"
     "    label_name[0] = '*';\n"
     "    strcpy(label_name+1, subobj_name);\n"
     "    if ((underscore_ptr = strrchr(label_name, '_')) != NULL)\n"
@@ -2608,24 +2598,22 @@ static LibFuncRec abmfP_lrc_get_label_widget =
     "        return(get_label_widget(children_list[0]));\n"
     "\n"
     "    return (0);\n"
-    "}"
-}; /* abmfP_lrc_get_label_widget */
+    "}"}; /* abmfP_lrc_get_label_widget */
 LibFunc abmfP_lib_get_label_widget = &(abmfP_lrc_get_label_widget);
 
 /*
  * abmfP_lib_get_offset_from_ancestor
  */
-static LibFuncRec abmfP_lrc_get_offset_from_ancestor = 
-{
+static LibFuncRec abmfP_lrc_get_offset_from_ancestor = {
     /* name */
     "get_offset_from_ancestor",
-    
+
     /* proto */
     "static Position get_offset_from_ancestor(\n"
     "    Widget	ancestor,\n"
     "    Widget	w\n"
     ");",
-    
+
     /* def */
     "static Position\n"
     "get_offset_from_ancestor(\n"
@@ -2656,23 +2644,22 @@ static LibFuncRec abmfP_lrc_get_offset_from_ancestor =
     "    }\n"
     "\n"
     "    return (offset);\n"
-    "}"
-}; /* abmfP_lrc_get_offset_from_ancestor */
-LibFunc abmfP_lib_get_offset_from_ancestor = &(abmfP_lrc_get_offset_from_ancestor);
+    "}"}; /* abmfP_lrc_get_offset_from_ancestor */
+LibFunc abmfP_lib_get_offset_from_ancestor =
+    &(abmfP_lrc_get_offset_from_ancestor);
 
 /*
  * abmfP_lib_get_label_width
  */
-static LibFuncRec abmfP_lrc_get_label_width = 
-{
+static LibFuncRec abmfP_lrc_get_label_width = {
     /* name */
     "get_label_width",
-    
+
     /* proto */
     "static Dimension get_label_width(\n"
     "    Widget	widget\n"
     ");",
-    
+
     /* def */
     "static Dimension\n"
     "get_label_width(\n"
@@ -2699,18 +2686,16 @@ static LibFuncRec abmfP_lrc_get_label_width =
     "    }\n"
     "    \n"
     "    return (lbl_width);\n"
-    "}"
-}; /* abmfP_lrc_get_label_width */
+    "}"}; /* abmfP_lrc_get_label_width */
 LibFunc abmfP_lib_get_label_width = &(abmfP_lrc_get_label_width);
 
 /*
  * abmfP_lib_get_widest_label
  */
-static LibFuncRec abmfP_lrc_get_widest_label = 
-{
+static LibFuncRec abmfP_lrc_get_widest_label = {
     /* name */
     "get_widest_label",
-    
+
     /* proto */
     "static void get_widest_label(\n"
     "    WidgetList	list,\n"
@@ -2718,7 +2703,7 @@ static LibFuncRec abmfP_lrc_get_widest_label =
     "    Widget	*child_widget,\n"
     "    Dimension	*label_width\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "get_widest_label(\n"
@@ -2747,18 +2732,16 @@ static LibFuncRec abmfP_lrc_get_widest_label =
     "    \n"
     "    *child_widget = cur_widest;\n"
     "    *label_width = cur_width;\n"
-    "}"
-}; /* abmfP_lrc_get_widest_label */
+    "}"}; /* abmfP_lrc_get_widest_label */
 LibFunc abmfP_lib_get_widest_label = &(abmfP_lrc_get_widest_label);
 
 /*
  * abmfP_lib_get_widest_value
  */
-static LibFuncRec abmfP_lrc_get_widest_value = 
-{
+static LibFuncRec abmfP_lrc_get_widest_value = {
     /* name */
     "get_widest_value",
-    
+
     /* proto */
     "static void get_widest_value(\n"
     "    WidgetList	list,\n"
@@ -2766,7 +2749,7 @@ static LibFuncRec abmfP_lrc_get_widest_value =
     "    Widget	*child_widget,\n"
     "    Dimension	*value_width\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "get_widest_value(\n"
@@ -2798,24 +2781,22 @@ static LibFuncRec abmfP_lrc_get_widest_value =
     "    \n"
     "    *child_widget = cur_widest;\n"
     "    *value_width = cur_width;\n"
-    "}"
-}; /* abmfP_lrc_get_widest_value */
+    "}"}; /* abmfP_lrc_get_widest_value */
 LibFunc abmfP_lib_get_widest_value = &(abmfP_lrc_get_widest_value);
 
 /*
  * abmfP_lib_get_widget_rect
  */
-static LibFuncRec abmfP_lrc_get_widget_rect = 
-{
+static LibFuncRec abmfP_lrc_get_widget_rect = {
     /* name */
     "get_widget_rect",
-    
+
     /* proto */
     "static void get_widget_rect(\n"
     "    Widget widget,\n"
     "    XRectangle *rect\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "get_widget_rect(\n"
@@ -2832,18 +2813,16 @@ static LibFuncRec abmfP_lrc_get_widget_rect =
     "        XtNx,           (XtArgVal)&(rect->x),\n"
     "        XtNy,           (XtArgVal)&(rect->y),\n"
     "        NULL);\n"
-    "}"
-}; /* abmfP_lrc_get_widget_rect */
+    "}"}; /* abmfP_lrc_get_widget_rect */
 LibFunc abmfP_lib_get_widget_rect = &(abmfP_lrc_get_widget_rect);
 
 /*
  * abmfP_lib_get_greatest_size
  */
-static LibFuncRec abmfP_lrc_get_greatest_size = 
-{
+static LibFuncRec abmfP_lrc_get_greatest_size = {
     /* name */
     "get_greatest_size",
-    
+
     /* proto */
     "static void get_greatest_size(\n"
     "    Widget	*list,\n"
@@ -2853,7 +2832,7 @@ static LibFuncRec abmfP_lrc_get_greatest_size =
     "    Widget	*tallest,\n"
     "    Widget	*widest\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "get_greatest_size(\n"
@@ -2898,18 +2877,16 @@ static LibFuncRec abmfP_lrc_get_greatest_size =
     "	if (tallest != NULL && *height > previous_height)\n"
     "		*tallest = list[i];\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_get_greatest_size */
+    "}"}; /* abmfP_lrc_get_greatest_size */
 LibFunc abmfP_lib_get_greatest_size = &(abmfP_lrc_get_greatest_size);
 
 /*
  * abmfP_lib_get_group_cell_size
  */
-static LibFuncRec abmfP_lrc_get_group_cell_size = 
-{
+static LibFuncRec abmfP_lrc_get_group_cell_size = {
     /* name */
     "get_group_cell_size",
-    
+
     /* proto */
     "static void get_group_cell_size(\n"
     "    Widget		parent,\n"
@@ -2917,7 +2894,7 @@ static LibFuncRec abmfP_lrc_get_group_cell_size =
     "    int			*cell_width,\n"
     "    int			*cell_height\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "get_group_cell_size(\n"
@@ -2942,18 +2919,16 @@ static LibFuncRec abmfP_lrc_get_group_cell_size =
     "    get_greatest_size(children_list, num_children,\n"
     "		cell_width, cell_height,\n"
     "		(Widget *)NULL, (Widget *)NULL);\n"
-    "}"
-}; /* abmfP_lrc_get_group_cell_size */
+    "}"}; /* abmfP_lrc_get_group_cell_size */
 LibFunc abmfP_lib_get_group_cell_size = &(abmfP_lrc_get_group_cell_size);
 
 /*
  * abmfP_lib_get_group_row_col
  */
-static LibFuncRec abmfP_lrc_get_group_row_col = 
-{
+static LibFuncRec abmfP_lrc_get_group_row_col = {
     /* name */
     "get_group_row_col",
-    
+
     /* proto */
     "static void get_group_row_col(\n"
     "    Widget		parent,\n"
@@ -2961,7 +2936,7 @@ static LibFuncRec abmfP_lrc_get_group_row_col =
     "    int			*rows,\n"
     "    int			*cols\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "get_group_row_col(\n"
@@ -3002,25 +2977,25 @@ static LibFuncRec abmfP_lrc_get_group_row_col =
     "    }\n"
     "\n"
     "    if (num_cols <= 0)\n"
-    "        num_cols = (num_children/num_rows) + ((num_children % num_rows) ? 1 : 0);\n"
+    "        num_cols = (num_children/num_rows) + ((num_children % num_rows) ? "
+    "1 : 0);\n"
     "\n"
     "    if (num_rows <= 0)\n"
-    "        num_rows = (num_children/num_cols) + ((num_children % num_cols) ? 1 : 0);\n"
+    "        num_rows = (num_children/num_cols) + ((num_children % num_cols) ? "
+    "1 : 0);\n"
     "\n"
     "    *rows = num_rows;\n"
     "    *cols = num_cols;\n"
-    "}"
-}; /* abmfP_lrc_get_group_row_col */
+    "}"}; /* abmfP_lrc_get_group_row_col */
 LibFunc abmfP_lib_get_group_row_col = &(abmfP_lrc_get_group_row_col);
 
 /*
  * abmfP_lib_get_group_child
  */
-static LibFuncRec abmfP_lrc_get_group_child = 
-{
+static LibFuncRec abmfP_lrc_get_group_child = {
     /* name */
     "get_group_child",
-    
+
     /* proto */
     "static Widget get_group_child(\n"
     "    Widget		parent,\n"
@@ -3028,7 +3003,7 @@ static LibFuncRec abmfP_lrc_get_group_child =
     "    int			x_pos,\n"
     "    int			y_pos\n"
     ");",
-    
+
     /* def */
     "static Widget\n"
     "get_group_child(\n"
@@ -3118,18 +3093,16 @@ static LibFuncRec abmfP_lrc_get_group_child =
     "    }\n"
     "\n"
     "    return (ret_child);\n"
-    "}"
-}; /* abmfP_lrc_get_group_child */
+    "}"}; /* abmfP_lrc_get_group_child */
 LibFunc abmfP_lib_get_group_child = &(abmfP_lrc_get_group_child);
 
 /*
  * abmfP_lib_children_align
  */
-static LibFuncRec abmfP_lrc_children_align = 
-{
+static LibFuncRec abmfP_lrc_children_align = {
     /* name */
     "dtb_children_align",
-    
+
     /* proto */
     "void dtb_children_align(\n"
     "    Widget		parent,\n"
@@ -3142,7 +3115,7 @@ static LibFuncRec abmfP_lrc_children_align =
     "    int			hoffset,\n"
     "    int			voffset\n"
     ");",
-    
+
     /* def */
     "void\n"
     "dtb_children_align(\n"
@@ -3189,10 +3162,12 @@ static LibFuncRec abmfP_lrc_children_align =
     "\n"
     "    /*\n"
     "     * Register expose handler\n"
-    "     * Some group objects depend on it's members' sizes for their layout.\n"
+    "     * Some group objects depend on it's members' sizes for their "
+    "layout.\n"
     "     * Unfortunately, some group members have invalid sizes prior to\n"
     "     * XtRealize(), so the group layout has to be recalculated after the\n"
-    "     * group is realized or exposed in this case, since there is no realize\n"
+    "     * group is realized or exposed in this case, since there is no "
+    "realize\n"
     "     * callback.\n"
     "     */\n"
     "    switch(group_info->group_type)\n"
@@ -3228,25 +3203,23 @@ static LibFuncRec abmfP_lrc_children_align =
     "\n"
     "    XtAddCallback(parent, XtNdestroyCallback, \n"
     "		free_group_info, (XtPointer)group_info);\n"
-    "}"
-}; /* abmfP_lrc_children_align */
+    "}"}; /* abmfP_lrc_children_align */
 LibFunc abmfP_lib_children_align = &(abmfP_lrc_children_align);
 
 /*
  * abmfP_lib_align_children
  */
-static LibFuncRec abmfP_lrc_align_children = 
-{
+static LibFuncRec abmfP_lrc_align_children = {
     /* name */
     "align_children",
-    
+
     /* proto */
     "static void align_children(\n"
     "    Widget		parent,\n"
     "    DtbGroupInfo	*group_info,\n"
     "    Boolean		init\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "align_children(\n"
@@ -3280,18 +3253,16 @@ static LibFuncRec abmfP_lrc_align_children =
     "\n"
     "    }\n"
     "\n"
-    "}"
-}; /* abmfP_lrc_align_children */
+    "}"}; /* abmfP_lrc_align_children */
 LibFunc abmfP_lib_align_children = &(abmfP_lrc_align_children);
 
 /*
  * abmfP_lib_align_handler
  */
-static LibFuncRec abmfP_lrc_align_handler = 
-{
+static LibFuncRec abmfP_lrc_align_handler = {
     /* name */
     "align_handler",
-    
+
     /* proto */
     "static void align_handler(\n"
     "    Widget	widget,\n"
@@ -3299,7 +3270,7 @@ static LibFuncRec abmfP_lrc_align_handler =
     "    XEvent	*event,\n"
     "    Boolean	*cont_dispatch\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "align_handler(\n"
@@ -3337,7 +3308,8 @@ static LibFuncRec abmfP_lrc_align_handler =
     "\n"
     "	if (xcon->window != xcon->event)\n"
     "	{\n"
-    "            resized_child = XtWindowToWidget(XtDisplay(widget), xcon->window);\n"
+    "            resized_child = XtWindowToWidget(XtDisplay(widget), "
+    "xcon->window);\n"
     "\n"
     "            switch(group_info->group_type)\n"
     "            {\n"
@@ -3396,18 +3368,16 @@ static LibFuncRec abmfP_lrc_align_handler =
     "    XtAddEventHandler(widget,\n"
     "                SubstructureNotifyMask, False,\n"
     "                align_handler, (XtPointer)client_data);\n"
-    "}"
-}; /* abmfP_lrc_align_handler */
+    "}"}; /* abmfP_lrc_align_handler */
 LibFunc abmfP_lib_align_handler = &(abmfP_lrc_align_handler);
 
 /*
  * abmfP_lib_expose_handler
  */
-static LibFuncRec abmfP_lrc_expose_handler = 
-{
+static LibFuncRec abmfP_lrc_expose_handler = {
     /* name */
     "expose_handler",
-    
+
     /* proto */
     "static void expose_handler(\n"
     "    Widget	widget,\n"
@@ -3415,7 +3385,7 @@ static LibFuncRec abmfP_lrc_expose_handler =
     "    XEvent	*event,\n"
     "    Boolean	*cont_dispatch\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "expose_handler(\n"
@@ -3505,25 +3475,23 @@ static LibFuncRec abmfP_lrc_expose_handler =
     "            SubstructureNotifyMask, False,\n"
     "            align_handler, (XtPointer)group_info);\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_expose_handler */
+    "}"}; /* abmfP_lrc_expose_handler */
 LibFunc abmfP_lib_expose_handler = &(abmfP_lrc_expose_handler);
 
 /*
  * abmfP_lib_free_group_info
  */
-static LibFuncRec abmfP_lrc_free_group_info = 
-{
+static LibFuncRec abmfP_lrc_free_group_info = {
     /* name */
     "free_group_info",
-    
+
     /* proto */
     "static void		 free_group_info(\n"
     "    Widget	widget,\n"
     "    XtPointer	client_data,\n"
     "    XtPointer	call_data\n"
     ");",
-    
+
     /* def */
     "static void		\n"
     "free_group_info(\n"
@@ -3535,25 +3503,23 @@ static LibFuncRec abmfP_lrc_free_group_info =
     "    DtbGroupInfo	*group_info = (DtbGroupInfo *)client_data;;\n"
     "\n"
     "    XtFree((char *)group_info);\n"
-    "}"
-}; /* abmfP_lrc_free_group_info */
+    "}"}; /* abmfP_lrc_free_group_info */
 LibFunc abmfP_lib_free_group_info = &(abmfP_lrc_free_group_info);
 
 /*
  * abmfP_lib_align_rows
  */
-static LibFuncRec abmfP_lrc_align_rows = 
-{
+static LibFuncRec abmfP_lrc_align_rows = {
     /* name */
     "align_rows",
-    
+
     /* proto */
     "static void align_rows(\n"
     "    Widget		parent,\n"
     "    DtbGroupInfo	*group_info,\n"
     "    Boolean		init\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "align_rows(\n"
@@ -3562,7 +3528,8 @@ static LibFuncRec abmfP_lrc_align_rows =
     "    Boolean		init\n"
     ")\n"
     "{\n"
-    "    if (!parent || !group_info || (group_info->group_type == DTB_GROUP_COLUMNS))\n"
+    "    if (!parent || !group_info || (group_info->group_type == "
+    "DTB_GROUP_COLUMNS))\n"
     "	return;\n"
     "\n"
     "    switch (group_info->row_align)\n"
@@ -3582,25 +3549,23 @@ static LibFuncRec abmfP_lrc_align_rows =
     "        default:\n"
     "        break;\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_align_rows */
+    "}"}; /* abmfP_lrc_align_rows */
 LibFunc abmfP_lib_align_rows = &(abmfP_lrc_align_rows);
 
 /*
  * abmfP_lib_align_cols
  */
-static LibFuncRec abmfP_lrc_align_cols = 
-{
+static LibFuncRec abmfP_lrc_align_cols = {
     /* name */
     "align_cols",
-    
+
     /* proto */
     "static void align_cols(\n"
     "    Widget		parent,\n"
     "    DtbGroupInfo	*group_info,\n"
     "    Boolean		init\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "align_cols(\n"
@@ -3609,7 +3574,8 @@ static LibFuncRec abmfP_lrc_align_cols =
     "    Boolean		init\n"
     ")\n"
     "{\n"
-    "    if (!parent || !group_info || (group_info->group_type == DTB_GROUP_ROWS))\n"
+    "    if (!parent || !group_info || (group_info->group_type == "
+    "DTB_GROUP_ROWS))\n"
     "	return;\n"
     "\n"
     "    switch (group_info->col_align)\n"
@@ -3633,24 +3599,22 @@ static LibFuncRec abmfP_lrc_align_cols =
     "        default:\n"
     "        break;\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_align_cols */
+    "}"}; /* abmfP_lrc_align_cols */
 LibFunc abmfP_lib_align_cols = &(abmfP_lrc_align_cols);
 
 /*
  * abmfP_lib_align_left
  */
-static LibFuncRec abmfP_lrc_align_left = 
-{
+static LibFuncRec abmfP_lrc_align_left = {
     /* name */
     "align_left",
-    
+
     /* proto */
     "static void align_left(\n"
     "    Widget		parent,\n"
     "    DtbGroupInfo	*group_info\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "align_left(\n"
@@ -3752,24 +3716,22 @@ static LibFuncRec abmfP_lrc_align_left =
     "	    }\n"
     "        }\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_align_left */
+    "}"}; /* abmfP_lrc_align_left */
 LibFunc abmfP_lib_align_left = &(abmfP_lrc_align_left);
 
 /*
  * abmfP_lib_align_right
  */
-static LibFuncRec abmfP_lrc_align_right = 
-{
+static LibFuncRec abmfP_lrc_align_right = {
     /* name */
     "align_right",
-    
+
     /* proto */
     "static void align_right(\n"
     "    Widget		parent,\n"
     "    DtbGroupInfo	*group_info\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "align_right(\n"
@@ -3876,24 +3838,22 @@ static LibFuncRec abmfP_lrc_align_right =
     "	    }\n"
     "        }\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_align_right */
+    "}"}; /* abmfP_lrc_align_right */
 LibFunc abmfP_lib_align_right = &(abmfP_lrc_align_right);
 
 /*
  * abmfP_lib_align_labels
  */
-static LibFuncRec abmfP_lrc_align_labels = 
-{
+static LibFuncRec abmfP_lrc_align_labels = {
     /* name */
     "align_labels",
-    
+
     /* proto */
     "static void align_labels(\n"
     "    Widget		parent,\n"
     "    DtbGroupInfo	*group_info\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "align_labels(\n"
@@ -3936,8 +3896,10 @@ static LibFuncRec abmfP_lrc_align_labels =
     "    \n"
     "    get_group_cell_size(parent, group_info, &cell_width, &cell_height);\n"
     "\n"
-    "    get_widest_label(children_list, num_children, &child, &max_label_width);\n"
-    "    get_widest_value(children_list, num_children, &child, &max_value_width);\n"
+    "    get_widest_label(children_list, num_children, &child, "
+    "&max_label_width);\n"
+    "    get_widest_value(children_list, num_children, &child, "
+    "&max_value_width);\n"
     "\n"
     "    if (cell_width < (int)(max_label_width + max_value_width))\n"
     "        cell_width = (int)(max_label_width + max_value_width);\n"
@@ -3996,25 +3958,23 @@ static LibFuncRec abmfP_lrc_align_labels =
     "\n"
     "    if (num_rows > 0)\n"
     "        XtFree((char*)one_col);\n"
-    "}"
-}; /* abmfP_lrc_align_labels */
+    "}"}; /* abmfP_lrc_align_labels */
 LibFunc abmfP_lib_align_labels = &(abmfP_lrc_align_labels);
 
 /*
  * abmfP_lib_align_vcenter
  */
-static LibFuncRec abmfP_lrc_align_vcenter = 
-{
+static LibFuncRec abmfP_lrc_align_vcenter = {
     /* name */
     "align_vcenter",
-    
+
     /* proto */
     "static void align_vcenter(\n"
     "    Widget		parent,\n"
     "    DtbGroupInfo	*group_info,\n"
     "    Boolean		init\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "align_vcenter(\n"
@@ -4063,13 +4023,15 @@ static LibFuncRec abmfP_lrc_align_vcenter =
     "\n"
     "    if (group_type == DTB_GROUP_ROWSCOLUMNS)\n"
     "    {\n"
-    "        group_width = (num_columns * cell_width) + ((num_columns-1) * offset);\n"
+    "        group_width = (num_columns * cell_width) + ((num_columns-1) * "
+    "offset);\n"
     "    }\n"
     "\n"
     "    for (i = 0; i < num_columns; i++)\n"
     "    {\n"
     "        if (group_type == DTB_GROUP_ROWSCOLUMNS)\n"
-    "	    gridline = (((i * (cell_width + offset)) + (cell_width/2)) * 100)/group_width;\n"
+    "	    gridline = (((i * (cell_width + offset)) + (cell_width/2)) * "
+    "100)/group_width;\n"
     "	else\n"
     "	    gridline = 50;\n"
     "\n"
@@ -4114,24 +4076,22 @@ static LibFuncRec abmfP_lrc_align_vcenter =
     "	    XtSetValues(child, args, n);\n"
     "        }\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_align_vcenter */
+    "}"}; /* abmfP_lrc_align_vcenter */
 LibFunc abmfP_lib_align_vcenter = &(abmfP_lrc_align_vcenter);
 
 /*
  * abmfP_lib_align_top
  */
-static LibFuncRec abmfP_lrc_align_top = 
-{
+static LibFuncRec abmfP_lrc_align_top = {
     /* name */
     "align_top",
-    
+
     /* proto */
     "static void align_top(\n"
     "    Widget		parent,\n"
     "    DtbGroupInfo	*group_info\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "align_top(\n"
@@ -4197,22 +4157,28 @@ static LibFuncRec abmfP_lrc_align_top =
     "\n"
     "	        if (previous_child)\n"
     "	        {\n"
-    "                    DTB_GROUP_TYPES	group_type = group_info->group_type;\n"
+    "                    DTB_GROUP_TYPES	group_type = "
+    "group_info->group_type;\n"
     "	            int			offset = group_info->voffset;\n"
     "    \n"
     "                    if (group_type == DTB_GROUP_ROWSCOLUMNS)\n"
     "		    {\n"
     "			Dimension	height = 0;\n"
     "\n"
-    "			XtVaGetValues(previous_child, XmNheight, &height, NULL);\n"
+    "			XtVaGetValues(previous_child, XmNheight, &height, "
+    "NULL);\n"
     "\n"
     "		        offset += (cell_height - (int)(height));\n"
     "		    }\n"
     "\n"
-    "	            XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET);	n++;\n"
-    "	            XtSetArg(args[n], XmNtopWidget, previous_child);		n++;\n"
-    "	            XtSetArg(args[n], XmNtopOffset, offset);			n++;\n"
-    "	            XtSetArg(args[n], XmNbottomAttachment, XmATTACH_NONE);	n++;\n"
+    "	            XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET);	"
+    "n++;\n"
+    "	            XtSetArg(args[n], XmNtopWidget, previous_child);		"
+    "n++;\n"
+    "	            XtSetArg(args[n], XmNtopOffset, offset);			"
+    "n++;\n"
+    "	            XtSetArg(args[n], XmNbottomAttachment, XmATTACH_NONE);	"
+    "n++;\n"
     "\n"
     "	            XtSetValues(child, args, n);\n"
     "	        }\n"
@@ -4223,34 +4189,36 @@ static LibFuncRec abmfP_lrc_align_top =
     "\n"
     "	    if (previous_child)\n"
     "	    {\n"
-    "	        XtSetArg(args[n], XmNtopAttachment, XmATTACH_OPPOSITE_WIDGET);	n++;\n"
-    "	        XtSetArg(args[n], XmNtopWidget, previous_child);		n++;\n"
-    "	        XtSetArg(args[n], XmNtopOffset, 0);				n++;\n"
-    "	        XtSetArg(args[n], XmNbottomAttachment, XmATTACH_NONE);		n++;\n"
+    "	        XtSetArg(args[n], XmNtopAttachment, XmATTACH_OPPOSITE_WIDGET);	"
+    "n++;\n"
+    "	        XtSetArg(args[n], XmNtopWidget, previous_child);		"
+    "n++;\n"
+    "	        XtSetArg(args[n], XmNtopOffset, 0);				"
+    "n++;\n"
+    "	        XtSetArg(args[n], XmNbottomAttachment, XmATTACH_NONE);		"
+    "n++;\n"
     "\n"
     "	        XtSetValues(child, args, n);\n"
     "	    }\n"
     "\n"
     "        }\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_align_top */
+    "}"}; /* abmfP_lrc_align_top */
 LibFunc abmfP_lib_align_top = &(abmfP_lrc_align_top);
 
 /*
  * abmfP_lib_align_bottom
  */
-static LibFuncRec abmfP_lrc_align_bottom = 
-{
+static LibFuncRec abmfP_lrc_align_bottom = {
     /* name */
     "align_bottom",
-    
+
     /* proto */
     "static void align_bottom(\n"
     "    Widget		parent,\n"
     "    DtbGroupInfo	*group_info\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "align_bottom(\n"
@@ -4332,10 +4300,14 @@ static LibFuncRec abmfP_lrc_align_bottom =
     "                    if (group_info->group_type == DTB_GROUP_ROWSCOLUMNS)\n"
     "		        offset += (cell_height - height);\n"
     "\n"
-    "	            XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET);	n++;\n"
-    "	            XtSetArg(args[n], XmNtopWidget, previous_child);		n++;\n"
-    "	            XtSetArg(args[n], XmNtopOffset, offset);			n++;\n"
-    "	            XtSetArg(args[n], XmNbottomAttachment, XmATTACH_NONE);	n++;\n"
+    "	            XtSetArg(args[n], XmNtopAttachment, XmATTACH_WIDGET);	"
+    "n++;\n"
+    "	            XtSetArg(args[n], XmNtopWidget, previous_child);		"
+    "n++;\n"
+    "	            XtSetArg(args[n], XmNtopOffset, offset);			"
+    "n++;\n"
+    "	            XtSetArg(args[n], XmNbottomAttachment, XmATTACH_NONE);	"
+    "n++;\n"
     "\n"
     "	            XtSetValues(child, args, n);\n"
     "	        }\n"
@@ -4356,25 +4328,23 @@ static LibFuncRec abmfP_lrc_align_bottom =
     "	    }\n"
     "        }\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_align_bottom */
+    "}"}; /* abmfP_lrc_align_bottom */
 LibFunc abmfP_lib_align_bottom = &(abmfP_lrc_align_bottom);
 
 /*
  * abmfP_lib_align_hcenter
  */
-static LibFuncRec abmfP_lrc_align_hcenter = 
-{
+static LibFuncRec abmfP_lrc_align_hcenter = {
     /* name */
     "align_hcenter",
-    
+
     /* proto */
     "static void align_hcenter(\n"
     "    Widget		parent,\n"
     "    DtbGroupInfo	*group_info,\n"
     "    Boolean		init\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "align_hcenter(\n"
@@ -4422,14 +4392,16 @@ static LibFuncRec abmfP_lrc_align_hcenter =
     "\n"
     "    if (group_type == DTB_GROUP_ROWSCOLUMNS)\n"
     "    {\n"
-    "        group_height = (num_rows * cell_height) + ((num_rows-1) * offset);\n"
+    "        group_height = (num_rows * cell_height) + ((num_rows-1) * "
+    "offset);\n"
     "    }\n"
     "\n"
     "    for (j = 0; j < num_rows; j++)\n"
     "    {\n"
     "        if (group_type == DTB_GROUP_ROWSCOLUMNS)\n"
     "	    gridline = \n"
-    "		(((j * (cell_height + offset)) + (cell_height/2)) * 100)/group_height;\n"
+    "		(((j * (cell_height + offset)) + (cell_height/2)) * "
+    "100)/group_height;\n"
     "	else\n"
     "	    gridline = 50;\n"
     "\n"
@@ -4474,52 +4446,50 @@ static LibFuncRec abmfP_lrc_align_hcenter =
     "	    XtSetValues(child, args, n);\n"
     "        }\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_align_hcenter */
+    "}"}; /* abmfP_lrc_align_hcenter */
 LibFunc abmfP_lib_align_hcenter = &(abmfP_lrc_align_hcenter);
 
 /*
  * abmfP_lib_get_exe_dir
  */
-static LibFuncRec abmfP_lrc_get_exe_dir = 
-{
+static LibFuncRec abmfP_lrc_get_exe_dir = {
     /* name */
     "dtb_get_exe_dir",
-    
+
     /* proto */
     "String dtb_get_exe_dir(void);",
-    
+
     /* def */
     "/*\n"
-    " * Returns the directory that the executable for this process was loaded \n"
+    " * Returns the directory that the executable for this process was loaded "
+    "\n"
     " * from.\n"
     " */\n"
     "String\n"
     "dtb_get_exe_dir(void)\n"
     "{\n"
     "    return dtb_exe_dir;\n"
-    "}"
-}; /* abmfP_lrc_get_exe_dir */
+    "}"}; /* abmfP_lrc_get_exe_dir */
 LibFunc abmfP_lib_get_exe_dir = &(abmfP_lrc_get_exe_dir);
 
 /*
  * abmfP_lib_determine_exe_dir
  */
-static LibFuncRec abmfP_lrc_determine_exe_dir = 
-{
+static LibFuncRec abmfP_lrc_determine_exe_dir = {
     /* name */
     "determine_exe_dir",
-    
+
     /* proto */
     "static int  determine_exe_dir(\n"
     "    char 	*argv0,\n"
     "    char 	*buf,\n"
     "    int 	bufSize\n"
     ");",
-    
+
     /* def */
     "/*\n"
-    " * Determines the directory the executable for this process was loaded from.\n"
+    " * Determines the directory the executable for this process was loaded "
+    "from.\n"
     " */\n"
     "static int \n"
     "determine_exe_dir(\n"
@@ -4585,25 +4555,23 @@ static LibFuncRec abmfP_lrc_determine_exe_dir =
     "    }\n"
     "\n"
     "    return foundDir? 0:-1;\n"
-    "}"
-}; /* abmfP_lrc_determine_exe_dir */
+    "}"}; /* abmfP_lrc_determine_exe_dir */
 LibFunc abmfP_lib_determine_exe_dir = &(abmfP_lrc_determine_exe_dir);
 
 /*
  * abmfP_lib_determine_exe_dir_from_argv
  */
-static LibFuncRec abmfP_lrc_determine_exe_dir_from_argv = 
-{
+static LibFuncRec abmfP_lrc_determine_exe_dir_from_argv = {
     /* name */
     "determine_exe_dir_from_argv",
-    
+
     /* proto */
     "static int determine_exe_dir_from_argv(\n"
     "    char 	*argv0,\n"
     "    char 	*buf,\n"
     "    int 	bufSize\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " *  Looks for absolute path in arv[0].\n"
@@ -4631,25 +4599,24 @@ static LibFuncRec abmfP_lrc_determine_exe_dir_from_argv =
     "    }\n"
     "\n"
     "    return foundit? 0:-1;\n"
-    "}"
-}; /* abmfP_lrc_determine_exe_dir_from_argv */
-LibFunc abmfP_lib_determine_exe_dir_from_argv = &(abmfP_lrc_determine_exe_dir_from_argv);
+    "}"}; /* abmfP_lrc_determine_exe_dir_from_argv */
+LibFunc abmfP_lib_determine_exe_dir_from_argv =
+    &(abmfP_lrc_determine_exe_dir_from_argv);
 
 /*
  * abmfP_lib_determine_exe_dir_from_path
  */
-static LibFuncRec abmfP_lrc_determine_exe_dir_from_path = 
-{
+static LibFuncRec abmfP_lrc_determine_exe_dir_from_path = {
     /* name */
     "determine_exe_dir_from_path",
-    
+
     /* proto */
     "static int determine_exe_dir_from_path (\n"
     "    char 	*argv0,\n"
     "    char 	*buf,\n"
     "    int 	bufSize\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * Assumes: bufSize > 0\n"
@@ -4690,7 +4657,8 @@ static LibFuncRec abmfP_lrc_determine_exe_dir_from_path =
     "    while ((!foundDir) && (moreDirs))\n"
     "    {\n"
     "	/* find the current directory name */\n"
-    "	for (i= iCurrentPathStart; (i < iPathVarLen) && (szPathVar[i] != ':'); \n"
+    "	for (i= iCurrentPathStart; (i < iPathVarLen) && (szPathVar[i] != ':'); "
+    "\n"
     "	    )\n"
     "    	{\n"
     "	    ++i;\n"
@@ -4702,7 +4670,8 @@ static LibFuncRec abmfP_lrc_determine_exe_dir_from_path =
     "	}\n"
     "\n"
     "	/* create a possible path to the executable */\n"
-    "	strncpy(szCurrentPath, &szPathVar[iCurrentPathStart], iCurrentPathLen);\n"
+    "	strncpy(szCurrentPath, &szPathVar[iCurrentPathStart], "
+    "iCurrentPathLen);\n"
     "	szCurrentPath[iCurrentPathLen]= 0;\n"
     "	strcat(szCurrentPath, \"/\");\n"
     "	strcat(szCurrentPath, szExeName);\n"
@@ -4740,25 +4709,24 @@ static LibFuncRec abmfP_lrc_determine_exe_dir_from_path =
     "	buf[bufSize-1]= 0;\n"
     "    }\n"
     "    return foundDir? 0:-1;\n"
-    "}"
-}; /* abmfP_lrc_determine_exe_dir_from_path */
-LibFunc abmfP_lib_determine_exe_dir_from_path = &(abmfP_lrc_determine_exe_dir_from_path);
+    "}"}; /* abmfP_lrc_determine_exe_dir_from_path */
+LibFunc abmfP_lib_determine_exe_dir_from_path =
+    &(abmfP_lrc_determine_exe_dir_from_path);
 
 /*
  * abmfP_lib_path_is_executable
  */
-static LibFuncRec abmfP_lrc_path_is_executable = 
-{
+static LibFuncRec abmfP_lrc_path_is_executable = {
     /* name */
     "path_is_executable",
-    
+
     /* proto */
     "static Boolean path_is_executable(\n"
     "    char 	*path,\n"
     "    uid_t	euid,\n"
     "    gid_t 	egid\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * returns False is path does not exist or is not executable\n"
@@ -4803,8 +4771,10 @@ static LibFuncRec abmfP_lrc_path_is_executable =
     "	if (!bDetermined)\n"
     "	{\n"
     "	    if (   (((sStat.st_mode & S_IXOTH) != 0)    )\n"
-    "		|| (((sStat.st_mode & S_IXGRP) != 0) && (sStat.st_gid == egid))\n"
-    "		|| (((sStat.st_mode & S_IXUSR) != 0) && (sStat.st_gid == euid))\n"
+    "		|| (((sStat.st_mode & S_IXGRP) != 0) && (sStat.st_gid == "
+    "egid))\n"
+    "		|| (((sStat.st_mode & S_IXUSR) != 0) && (sStat.st_gid == "
+    "euid))\n"
     "	       )\n"
     "	    {\n"
     "		bDetermined= True;\n"
@@ -4814,23 +4784,21 @@ static LibFuncRec abmfP_lrc_path_is_executable =
     "    } /* if stat */\n"
     "\n"
     "    return bExecutable;\n"
-    "}"
-}; /* abmfP_lrc_path_is_executable */
+    "}"}; /* abmfP_lrc_path_is_executable */
 LibFunc abmfP_lib_path_is_executable = &(abmfP_lrc_path_is_executable);
 
 /*
  * abmfP_lib_set_tt_msg_quitCB
  */
-static LibFuncRec abmfP_lrc_set_tt_msg_quitCB = 
-{
+static LibFuncRec abmfP_lrc_set_tt_msg_quitCB = {
     /* name */
     "dtb_set_tt_msg_quitCB",
-    
+
     /* proto */
     "void dtb_set_tt_msg_quitCB(\n"
     "    DtbTTMsgHandlerCB 	msg_quitCB\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * dtb_set_tt_msg_quitCB()\n"
@@ -4841,21 +4809,19 @@ static LibFuncRec abmfP_lrc_set_tt_msg_quitCB =
     ")\n"
     "{\n"
     "    dtb_tt_msg_quitCB = msg_quitCB;\n"
-    "}"
-}; /* abmfP_lrc_set_tt_msg_quitCB */
+    "}"}; /* abmfP_lrc_set_tt_msg_quitCB */
 LibFunc abmfP_lib_set_tt_msg_quitCB = &(abmfP_lrc_set_tt_msg_quitCB);
 
 /*
  * abmfP_lib_get_tt_msg_quitCB
  */
-static LibFuncRec abmfP_lrc_get_tt_msg_quitCB = 
-{
+static LibFuncRec abmfP_lrc_get_tt_msg_quitCB = {
     /* name */
     "dtb_get_tt_msg_quitCB",
-    
+
     /* proto */
     "static DtbTTMsgHandlerCB dtb_get_tt_msg_quitCB();",
-    
+
     /* def */
     "/*\n"
     " * dtb_get_tt_msg_quitCB()\n"
@@ -4864,23 +4830,21 @@ static LibFuncRec abmfP_lrc_get_tt_msg_quitCB =
     "dtb_get_tt_msg_quitCB()\n"
     "{\n"
     "    return(dtb_tt_msg_quitCB);\n"
-    "}"
-}; /* abmfP_lrc_get_tt_msg_quitCB */
+    "}"}; /* abmfP_lrc_get_tt_msg_quitCB */
 LibFunc abmfP_lib_get_tt_msg_quitCB = &(abmfP_lrc_get_tt_msg_quitCB);
 
 /*
  * abmfP_lib_tt_msg_quit
  */
-static LibFuncRec abmfP_lrc_tt_msg_quit = 
-{
+static LibFuncRec abmfP_lrc_tt_msg_quit = {
     /* name */
     "dtb_tt_msg_quit",
-    
+
     /* proto */
     "static Boolean dtb_tt_msg_quit(\n"
     "    Tt_message	msg\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * dtb_tt_msg_quit()\n"
@@ -4900,23 +4864,21 @@ static LibFuncRec abmfP_lrc_tt_msg_quit =
     "	handled = msg_quitCB(msg, (void *)NULL);\n"
     "\n"
     "    return handled;\n"
-    "}"
-}; /* abmfP_lrc_tt_msg_quit */
+    "}"}; /* abmfP_lrc_tt_msg_quit */
 LibFunc abmfP_lib_tt_msg_quit = &(abmfP_lrc_tt_msg_quit);
 
 /*
  * abmfP_lib_set_tt_msg_do_commandCB
  */
-static LibFuncRec abmfP_lrc_set_tt_msg_do_commandCB = 
-{
+static LibFuncRec abmfP_lrc_set_tt_msg_do_commandCB = {
     /* name */
     "dtb_set_tt_msg_do_commandCB",
-    
+
     /* proto */
     "void dtb_set_tt_msg_do_commandCB(\n"
     "    DtbTTMsgHandlerCB 	msg_do_commandCB\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * dtb_set_tt_msg_do_commandCB()\n"
@@ -4927,21 +4889,20 @@ static LibFuncRec abmfP_lrc_set_tt_msg_do_commandCB =
     ")\n"
     "{\n"
     "    dtb_tt_msg_do_commandCB = msg_do_commandCB;\n"
-    "}"
-}; /* abmfP_lrc_set_tt_msg_do_commandCB */
-LibFunc abmfP_lib_set_tt_msg_do_commandCB = &(abmfP_lrc_set_tt_msg_do_commandCB);
+    "}"}; /* abmfP_lrc_set_tt_msg_do_commandCB */
+LibFunc abmfP_lib_set_tt_msg_do_commandCB =
+    &(abmfP_lrc_set_tt_msg_do_commandCB);
 
 /*
  * abmfP_lib_get_tt_msg_do_commandCB
  */
-static LibFuncRec abmfP_lrc_get_tt_msg_do_commandCB = 
-{
+static LibFuncRec abmfP_lrc_get_tt_msg_do_commandCB = {
     /* name */
     "dtb_get_tt_msg_do_commandCB",
-    
+
     /* proto */
     "static DtbTTMsgHandlerCB dtb_get_tt_msg_do_commandCB();",
-    
+
     /* def */
     "/* \n"
     " * dtb_get_tt_msg_do_commandCB()\n"
@@ -4950,23 +4911,22 @@ static LibFuncRec abmfP_lrc_get_tt_msg_do_commandCB =
     "dtb_get_tt_msg_do_commandCB()\n"
     "{ \n"
     "    return(dtb_tt_msg_do_commandCB);\n"
-    "}"
-}; /* abmfP_lrc_get_tt_msg_do_commandCB */
-LibFunc abmfP_lib_get_tt_msg_do_commandCB = &(abmfP_lrc_get_tt_msg_do_commandCB);
+    "}"}; /* abmfP_lrc_get_tt_msg_do_commandCB */
+LibFunc abmfP_lib_get_tt_msg_do_commandCB =
+    &(abmfP_lrc_get_tt_msg_do_commandCB);
 
 /*
  * abmfP_lib_tt_msg_do_command
  */
-static LibFuncRec abmfP_lrc_tt_msg_do_command = 
-{
+static LibFuncRec abmfP_lrc_tt_msg_do_command = {
     /* name */
     "dtb_tt_msg_do_command",
-    
+
     /* proto */
     "static Boolean dtb_tt_msg_do_command(\n"
     "    Tt_message	msg\n"
     ");",
-    
+
     /* def */
     "/* \n"
     " * dtb_tt_msg_do_command()\n"
@@ -4986,23 +4946,21 @@ static LibFuncRec abmfP_lrc_tt_msg_do_command =
     "        handled = msg_do_commandCB(msg, (void *)NULL);\n"
     " \n"
     "    return handled;\n"
-    "}"
-}; /* abmfP_lrc_tt_msg_do_command */
+    "}"}; /* abmfP_lrc_tt_msg_do_command */
 LibFunc abmfP_lib_tt_msg_do_command = &(abmfP_lrc_tt_msg_do_command);
 
 /*
  * abmfP_lib_set_tt_msg_get_statusCB
  */
-static LibFuncRec abmfP_lrc_set_tt_msg_get_statusCB = 
-{
+static LibFuncRec abmfP_lrc_set_tt_msg_get_statusCB = {
     /* name */
     "dtb_set_tt_msg_get_statusCB",
-    
+
     /* proto */
     "void dtb_set_tt_msg_get_statusCB(\n"
     "    DtbTTMsgHandlerCB 	msg_get_statusCB\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * dtb_set_tt_msg_get_statusCB()\n"
@@ -5013,21 +4971,20 @@ static LibFuncRec abmfP_lrc_set_tt_msg_get_statusCB =
     ")\n"
     "{\n"
     "    dtb_tt_msg_get_statusCB = msg_get_statusCB;\n"
-    "}"
-}; /* abmfP_lrc_set_tt_msg_get_statusCB */
-LibFunc abmfP_lib_set_tt_msg_get_statusCB = &(abmfP_lrc_set_tt_msg_get_statusCB);
+    "}"}; /* abmfP_lrc_set_tt_msg_get_statusCB */
+LibFunc abmfP_lib_set_tt_msg_get_statusCB =
+    &(abmfP_lrc_set_tt_msg_get_statusCB);
 
 /*
  * abmfP_lib_get_tt_msg_get_statusCB
  */
-static LibFuncRec abmfP_lrc_get_tt_msg_get_statusCB = 
-{
+static LibFuncRec abmfP_lrc_get_tt_msg_get_statusCB = {
     /* name */
     "dtb_get_tt_msg_get_statusCB",
-    
+
     /* proto */
     "static DtbTTMsgHandlerCB dtb_get_tt_msg_get_statusCB();",
-    
+
     /* def */
     "/* \n"
     " * dtb_get_tt_msg_get_statusCB()\n"
@@ -5036,23 +4993,22 @@ static LibFuncRec abmfP_lrc_get_tt_msg_get_statusCB =
     "dtb_get_tt_msg_get_statusCB()\n"
     "{ \n"
     "    return(dtb_tt_msg_get_statusCB);\n"
-    "}"
-}; /* abmfP_lrc_get_tt_msg_get_statusCB */
-LibFunc abmfP_lib_get_tt_msg_get_statusCB = &(abmfP_lrc_get_tt_msg_get_statusCB);
+    "}"}; /* abmfP_lrc_get_tt_msg_get_statusCB */
+LibFunc abmfP_lib_get_tt_msg_get_statusCB =
+    &(abmfP_lrc_get_tt_msg_get_statusCB);
 
 /*
  * abmfP_lib_tt_msg_get_status
  */
-static LibFuncRec abmfP_lrc_tt_msg_get_status = 
-{
+static LibFuncRec abmfP_lrc_tt_msg_get_status = {
     /* name */
     "dtb_tt_msg_get_status",
-    
+
     /* proto */
     "static Boolean dtb_tt_msg_get_status(\n"
     "    Tt_message  msg\n"
     ");",
-    
+
     /* def */
     "/* \n"
     " * dtb_tt_msg_get_status()\n"
@@ -5072,23 +5028,21 @@ static LibFuncRec abmfP_lrc_tt_msg_get_status =
     "        handled = msg_get_statusCB(msg, (void *)NULL);\n"
     "\n"
     "    return handled;\n"
-    "}"
-}; /* abmfP_lrc_tt_msg_get_status */
+    "}"}; /* abmfP_lrc_tt_msg_get_status */
 LibFunc abmfP_lib_tt_msg_get_status = &(abmfP_lrc_tt_msg_get_status);
 
 /*
  * abmfP_lib_set_tt_msg_pause_resumeCB
  */
-static LibFuncRec abmfP_lrc_set_tt_msg_pause_resumeCB = 
-{
+static LibFuncRec abmfP_lrc_set_tt_msg_pause_resumeCB = {
     /* name */
     "dtb_set_tt_msg_pause_resumeCB",
-    
+
     /* proto */
     "void dtb_set_tt_msg_pause_resumeCB(\n"
     "    DtbTTMsgHandlerCB 	msg_pause_resumeCB\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * dtb_set_tt_msg_pause_resumeCB()\n"
@@ -5099,21 +5053,20 @@ static LibFuncRec abmfP_lrc_set_tt_msg_pause_resumeCB =
     ")\n"
     "{\n"
     "    dtb_tt_msg_pause_resumeCB = msg_pause_resumeCB;\n"
-    "}"
-}; /* abmfP_lrc_set_tt_msg_pause_resumeCB */
-LibFunc abmfP_lib_set_tt_msg_pause_resumeCB = &(abmfP_lrc_set_tt_msg_pause_resumeCB);
+    "}"}; /* abmfP_lrc_set_tt_msg_pause_resumeCB */
+LibFunc abmfP_lib_set_tt_msg_pause_resumeCB =
+    &(abmfP_lrc_set_tt_msg_pause_resumeCB);
 
 /*
  * abmfP_lib_get_tt_msg_pause_resumeCB
  */
-static LibFuncRec abmfP_lrc_get_tt_msg_pause_resumeCB = 
-{
+static LibFuncRec abmfP_lrc_get_tt_msg_pause_resumeCB = {
     /* name */
     "dtb_get_tt_msg_pause_resumeCB",
-    
+
     /* proto */
     "static DtbTTMsgHandlerCB dtb_get_tt_msg_pause_resumeCB();",
-    
+
     /* def */
     "/* \n"
     " * dtb_get_tt_msg_pause_resumeCB()\n"
@@ -5122,24 +5075,23 @@ static LibFuncRec abmfP_lrc_get_tt_msg_pause_resumeCB =
     "dtb_get_tt_msg_pause_resumeCB()\n"
     "{ \n"
     "    return(dtb_tt_msg_pause_resumeCB);\n"
-    "}"
-}; /* abmfP_lrc_get_tt_msg_pause_resumeCB */
-LibFunc abmfP_lib_get_tt_msg_pause_resumeCB = &(abmfP_lrc_get_tt_msg_pause_resumeCB);
+    "}"}; /* abmfP_lrc_get_tt_msg_pause_resumeCB */
+LibFunc abmfP_lib_get_tt_msg_pause_resumeCB =
+    &(abmfP_lrc_get_tt_msg_pause_resumeCB);
 
 /*
  * abmfP_lib_tt_msg_pause_resume
  */
-static LibFuncRec abmfP_lrc_tt_msg_pause_resume = 
-{
+static LibFuncRec abmfP_lrc_tt_msg_pause_resume = {
     /* name */
     "dtb_tt_msg_pause_resume",
-    
+
     /* proto */
     "static Boolean dtb_tt_msg_pause_resume(\n"
     "    Tt_message	msg,\n"
     "    Boolean	sensitive\n"
     ");",
-    
+
     /* def */
     "/* \n"
     " * dtb_tt_msg_pause_resume()\n"
@@ -5160,25 +5112,23 @@ static LibFuncRec abmfP_lrc_tt_msg_pause_resume =
     "        handled = msg_pause_resumeCB(msg, (void *)sensitive);\n"
     "\n"
     "    return handled;\n"
-    "}"
-}; /* abmfP_lrc_tt_msg_pause_resume */
+    "}"}; /* abmfP_lrc_tt_msg_pause_resume */
 LibFunc abmfP_lib_tt_msg_pause_resume = &(abmfP_lrc_tt_msg_pause_resume);
 
 /*
  * abmfP_lib_tt_contractCB
  */
-static LibFuncRec abmfP_lrc_tt_contractCB = 
-{
+static LibFuncRec abmfP_lrc_tt_contractCB = {
     /* name */
     "dtb_tt_contractCB",
-    
+
     /* proto */
     "Tt_message dtb_tt_contractCB(\n"
     "    Tt_message	msg,\n"
     "    void	*client_data,\n"
     "    Tt_message	contract\n"
     ");",
-    
+
     /* def */
     "/* \n"
     " * dtb_tt_contractCB()\n"
@@ -5232,21 +5182,19 @@ static LibFuncRec abmfP_lrc_tt_contractCB =
     "	}\n"
     "	return msg;\n"
     "\n"
-    "}"
-}; /* abmfP_lrc_tt_contractCB */
+    "}"}; /* abmfP_lrc_tt_contractCB */
 LibFunc abmfP_lib_tt_contractCB = &(abmfP_lrc_tt_contractCB);
 
 /*
  * abmfP_lib_tt_close
  */
-static LibFuncRec abmfP_lrc_tt_close = 
-{
+static LibFuncRec abmfP_lrc_tt_close = {
     /* name */
     "dtb_tt_close",
-    
+
     /* proto */
     "void dtb_tt_close();",
-    
+
     /* def */
     "/*\n"
     " * dtb_tt_close()\n"
@@ -5256,25 +5204,23 @@ static LibFuncRec abmfP_lrc_tt_close =
     "dtb_tt_close()\n"
     "{\n"
     "    ttdt_close(NULL, NULL, True);\n"
-    "}"
-}; /* abmfP_lrc_tt_close */
+    "}"}; /* abmfP_lrc_tt_close */
 LibFunc abmfP_lib_tt_close = &(abmfP_lrc_tt_close);
 
 /*
  * abmfP_lib_call_help_callback
  */
-static LibFuncRec abmfP_lrc_call_help_callback = 
-{
+static LibFuncRec abmfP_lrc_call_help_callback = {
     /* name */
     "dtb_call_help_callback",
-    
+
     /* proto */
     "void  dtb_call_help_callback(\n"
     "    Widget widget,\n"
     "    XtPointer clientData,\n"
     "    XtPointer callData\n"
     ");",
-    
+
     /* def */
     "/* \n"
     "** dtb_call_help_callback()\n"
@@ -5292,21 +5238,19 @@ static LibFuncRec abmfP_lrc_call_help_callback =
     "	Widget target = (Widget)clientData;\n"
     "\n"
     "	XtCallCallbacks(target,XmNhelpCallback,(XtPointer)NULL);\n"
-    "}"
-}; /* abmfP_lrc_call_help_callback */
+    "}"}; /* abmfP_lrc_call_help_callback */
 LibFunc abmfP_lib_call_help_callback = &(abmfP_lrc_call_help_callback);
 
 /*
  * abmfP_lib_popup_menu_register
  */
-static LibFuncRec abmfP_lrc_popup_menu_register = 
-{
+static LibFuncRec abmfP_lrc_popup_menu_register = {
     /* name */
     "dtb_popup_menu_register",
-    
+
     /* proto */
     "int  dtb_popup_menu_register(Widget popupMenu, Widget parent);",
-    
+
     /* def */
     "/*\n"
     " * Registers a popup menu to be brought by button three on the parent\n"
@@ -5386,18 +5330,16 @@ static LibFuncRec abmfP_lrc_popup_menu_register =
     "    }\n"
     "\n"
     "    return 0;\n"
-    "}"
-}; /* abmfP_lrc_popup_menu_register */
+    "}"}; /* abmfP_lrc_popup_menu_register */
 LibFunc abmfP_lib_popup_menu_register = &(abmfP_lrc_popup_menu_register);
 
 /*
  * abmfP_lib_popup_menu
  */
-static LibFuncRec abmfP_lrc_popup_menu = 
-{
+static LibFuncRec abmfP_lrc_popup_menu = {
     /* name */
     "dtb_popup_menu",
-    
+
     /* proto */
     "static void dtb_popup_menu(\n"
     "    Widget	widget,\n"
@@ -5405,7 +5347,7 @@ static LibFuncRec abmfP_lrc_popup_menu =
     "    String	*params,\n"
     "    Cardinal	*num_params\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "dtb_popup_menu(\n"
@@ -5434,28 +5376,27 @@ static LibFuncRec abmfP_lrc_popup_menu =
     "	XmMenuPosition(menu, (XButtonPressedEvent*)event);\n"
     "	XtManageChild(menu);\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_popup_menu */
+    "}"}; /* abmfP_lrc_popup_menu */
 LibFunc abmfP_lib_popup_menu = &(abmfP_lrc_popup_menu);
 
 /*
  * abmfP_lib_popup_menu_destroyCB
  */
-static LibFuncRec abmfP_lrc_popup_menu_destroyCB = 
-{
+static LibFuncRec abmfP_lrc_popup_menu_destroyCB = {
     /* name */
     "dtb_popup_menu_destroyCB",
-    
+
     /* proto */
     "static void  dtb_popup_menu_destroyCB(\n"
     "			Widget		widget,\n"
     "			XtPointer	clientData,\n"
     "			XtPointer	callData\n"
     ");",
-    
+
     /* def */
     "/*\n"
-    " * This keeps the list of popup menus up-to-date, if widgets are destroyed\n"
+    " * This keeps the list of popup menus up-to-date, if widgets are "
+    "destroyed\n"
     " */\n"
     "static void \n"
     "dtb_popup_menu_destroyCB(\n"
@@ -5475,18 +5416,16 @@ static LibFuncRec abmfP_lrc_popup_menu_destroyCB =
     "	    break;\n"
     "	}\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_popup_menu_destroyCB */
+    "}"}; /* abmfP_lrc_popup_menu_destroyCB */
 LibFunc abmfP_lib_popup_menu_destroyCB = &(abmfP_lrc_popup_menu_destroyCB);
 
 /*
  * abmfP_lib_drag_site_register
  */
-static LibFuncRec abmfP_lrc_drag_site_register = 
-{
+static LibFuncRec abmfP_lrc_drag_site_register = {
     /* name */
     "dtb_drag_site_register",
-    
+
     /* proto */
     "int dtb_drag_site_register(\n"
     "                        Widget 			widget,\n"
@@ -5499,7 +5438,7 @@ static LibFuncRec abmfP_lrc_drag_site_register =
     "			Pixmap			cursorMask,\n"
     "			DtbDragSiteHandle	*dragSiteHandleOut\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * Returns non-negative if successful.\n"
@@ -5517,7 +5456,8 @@ static LibFuncRec abmfP_lrc_drag_site_register =
     "			DtbDragSiteHandle	*dragSiteHandleOut\n"
     ")\n"
     "{\n"
-    "    DtbDragSite dragSite = (DtbDragSite)XtCalloc(1,sizeof(DtbDragSiteRec));\n"
+    "    DtbDragSite dragSite = "
+    "(DtbDragSite)XtCalloc(1,sizeof(DtbDragSiteRec));\n"
     "    Widget	sourceIcon = 0;\n"
     "\n"
     "    if (dragSite != NULL)\n"
@@ -5543,8 +5483,10 @@ static LibFuncRec abmfP_lrc_drag_site_register =
     "    }\n"
     "    \n"
     "    /*\n"
-    "     * Pass back a handle, so that this can be freed, later. Unregistering\n"
-    "     * drag sites is not currently implemented, but this gives the ability\n"
+    "     * Pass back a handle, so that this can be freed, later. "
+    "Unregistering\n"
+    "     * drag sites is not currently implemented, but this gives the "
+    "ability\n"
     "     * to provide this functionality in the future.\n"
     "     */\n"
     "    if (dragSiteHandleOut != NULL)\n"
@@ -5552,18 +5494,16 @@ static LibFuncRec abmfP_lrc_drag_site_register =
     "        *dragSiteHandleOut = (DtbDragSiteHandle)dragSite;\n"
     "    }\n"
     "    return 0;\n"
-    "}"
-}; /* abmfP_lrc_drag_site_register */
+    "}"}; /* abmfP_lrc_drag_site_register */
 LibFunc abmfP_lib_drag_site_register = &(abmfP_lrc_drag_site_register);
 
 /*
  * abmfP_lib_drop_site_register
  */
-static LibFuncRec abmfP_lrc_drop_site_register = 
-{
+static LibFuncRec abmfP_lrc_drop_site_register = {
     /* name */
     "dtb_drop_site_register",
-    
+
     /* proto */
     "int dtb_drop_site_register(\n"
     "                        Widget                  widget,\n"
@@ -5571,10 +5511,11 @@ static LibFuncRec abmfP_lrc_drop_site_register =
     "                        DtDndProtocol		protocols,\n"
     "                        unsigned char           operations,\n"
     "                        Boolean                 dropsOnChildren,\n"
-    "                        Boolean                 preservePreviousRegistration,\n"
+    "                        Boolean                 "
+    "preservePreviousRegistration,\n"
     "                        DtbDropSiteHandle       *dropSiteHandleOut\n"
     ");",
-    
+
     /* def */
     "int\n"
     "dtb_drop_site_register(\n"
@@ -5583,7 +5524,8 @@ static LibFuncRec abmfP_lrc_drop_site_register =
     "                        DtDndProtocol		protocols,\n"
     "                        unsigned char           operations,\n"
     "                        Boolean                 dropsOnChildren,\n"
-    "                        Boolean                 preservePreviousRegistration,\n"
+    "                        Boolean                 "
+    "preservePreviousRegistration,\n"
     "                        DtbDropSiteHandle       *dropSiteHandleOut\n"
     ")\n"
     "{\n"
@@ -5602,7 +5544,8 @@ static LibFuncRec abmfP_lrc_drop_site_register =
     "        dropSite->protocols = protocols;\n"
     "        dropSite->operations = operations;\n"
     "        dropSite->dropsOnChildren = dropsOnChildren;\n"
-    "        dropSite->preservePreviousRegistration = preservePreviousRegistration;\n"
+    "        dropSite->preservePreviousRegistration = "
+    "preservePreviousRegistration;\n"
     "        dropSite->animateCBRec[0].callback = dtb_drop_animateCB;\n"
     "        dropSite->animateCBRec[0].closure = (XtPointer)dropSite;\n"
     "        dropSite->transferCBRec[0].callback = dtb_drop_transferCB;\n"
@@ -5615,7 +5558,8 @@ static LibFuncRec abmfP_lrc_drop_site_register =
     "        regInfo.preservePreviousRegistration = \n"
     "				dropSite->preservePreviousRegistration;\n"
     "        regInfo.respondToDropsOnChildren = dropSite->dropsOnChildren;\n"
-    "        dropSite->callback(widget, DTB_DND_REGISTER, &regInfo, NULL, NULL);\n"
+    "        dropSite->callback(widget, DTB_DND_REGISTER, &regInfo, NULL, "
+    "NULL);\n"
     "\n"
     "        /* actually register it! */\n"
     "        DtDndVaDropRegister(\n"
@@ -5636,21 +5580,19 @@ static LibFuncRec abmfP_lrc_drop_site_register =
     "    }\n"
     "\n"
     "    return ((dropSite == NULL)? -1:0);\n"
-    "}"
-}; /* abmfP_lrc_drop_site_register */
+    "}"}; /* abmfP_lrc_drop_site_register */
 LibFunc abmfP_lib_drop_site_register = &(abmfP_lrc_drop_site_register);
 
 /*
  * abmfP_lib_drag_terminate
  */
-static LibFuncRec abmfP_lrc_drag_terminate = 
-{
+static LibFuncRec abmfP_lrc_drag_terminate = {
     /* name */
     "dtb_drag_terminate",
-    
+
     /* proto */
     "static int dtb_drag_terminate(DtbDragSite dragSite);",
-    
+
     /* def */
     "static int\n"
     "dtb_drag_terminate(DtbDragSite dragSite)\n"
@@ -5662,30 +5604,29 @@ static LibFuncRec abmfP_lrc_drag_terminate =
     "    dragSite->dragToRootCBRec[0].closure = NULL;\n"
     "    dragSite->dragFinishCBRec[0].closure = NULL;\n"
     "    return 0;\n"
-    "}"
-}; /* abmfP_lrc_drag_terminate */
+    "}"}; /* abmfP_lrc_drag_terminate */
 LibFunc abmfP_lib_drag_terminate = &(abmfP_lrc_drag_terminate);
 
 /*
  * abmfP_lib_drag_button1_motion_handler
  */
-static LibFuncRec abmfP_lrc_drag_button1_motion_handler = 
-{
+static LibFuncRec abmfP_lrc_drag_button1_motion_handler = {
     /* name */
     "dtb_drag_button1_motion_handler",
-    
+
     /* proto */
     "static void dtb_drag_button1_motion_handler(\n"
     "        Widget          dragInitiator,\n"
     "        XtPointer       clientData,\n"
     "        XEvent         *event\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * dragMotionHandler\n"
     " *\n"
-    " * Determine if the pointer has moved beyond the drag threshold while button 1\n"
+    " * Determine if the pointer has moved beyond the drag threshold while "
+    "button 1\n"
     " * was being held down.\n"
     " */\n"
     "static void\n"
@@ -5721,21 +5662,20 @@ static LibFuncRec abmfP_lrc_drag_button1_motion_handler =
     "                dragInitialY = -1;\n"
     "        }\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_drag_button1_motion_handler */
-LibFunc abmfP_lib_drag_button1_motion_handler = &(abmfP_lrc_drag_button1_motion_handler);
+    "}"}; /* abmfP_lrc_drag_button1_motion_handler */
+LibFunc abmfP_lib_drag_button1_motion_handler =
+    &(abmfP_lrc_drag_button1_motion_handler);
 
 /*
  * abmfP_lib_drag_start
  */
-static LibFuncRec abmfP_lrc_drag_start = 
-{
+static LibFuncRec abmfP_lrc_drag_start = {
     /* name */
     "dtb_drag_start",
-    
+
     /* proto */
     "static int dtb_drag_start(DtbDragSite dragSite, XEvent *event);",
-    
+
     /* def */
     "static int\n"
     "dtb_drag_start(DtbDragSite dragSite, XEvent *event)\n"
@@ -5762,7 +5702,8 @@ static LibFuncRec abmfP_lrc_drag_start =
     "    dragStart.numItems = 1;\n"
     "    if (dragSite->callback != NULL)\n"
     "    {\n"
-    "        dragSite->callback(DTB_DND_DRAG_START, &dragStart, NULL,NULL,NULL,NULL);\n"
+    "        dragSite->callback(DTB_DND_DRAG_START, &dragStart, "
+    "NULL,NULL,NULL,NULL);\n"
     "    }\n"
     "\n"
     "    n = 0;\n"
@@ -5777,7 +5718,8 @@ static LibFuncRec abmfP_lrc_drag_start =
     "    }\n"
     "    if (dragStart.allowDropOnRootWindow)\n"
     "    {\n"
-    "	XtSetArg(args[n], DtNdropOnRootCallback, (XtPointer)dragSite->dragToRootCBRec); ++n;\n"
+    "	XtSetArg(args[n], DtNdropOnRootCallback, "
+    "(XtPointer)dragSite->dragToRootCBRec); ++n;\n"
     "    }\n"
     "    if (DtDndDragStart(dragSite->widget, event, \n"
     "	dragStart.protocol,\n"
@@ -5791,25 +5733,23 @@ static LibFuncRec abmfP_lrc_drag_start =
     "	return -1;\n"
     "    }\n"
     "    return 0;\n"
-    "}"
-}; /* abmfP_lrc_drag_start */
+    "}"}; /* abmfP_lrc_drag_start */
 LibFunc abmfP_lib_drag_start = &(abmfP_lrc_drag_start);
 
 /*
  * abmfP_lib_drag_convertCB
  */
-static LibFuncRec abmfP_lrc_drag_convertCB = 
-{
+static LibFuncRec abmfP_lrc_drag_convertCB = {
     /* name */
     "dtb_drag_convertCB",
-    
+
     /* proto */
     "static void dtb_drag_convertCB(\n"
     "			Widget		dragContext,\n"
     "			XtPointer	clientData,\n"
     "			XtPointer	callData\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "dtb_drag_convertCB(\n"
@@ -5838,7 +5778,8 @@ static LibFuncRec abmfP_lrc_drag_convertCB =
     "			dragData->data.files[i] = \"/etc/passwd\";\n"
     "		    break;\n"
     "		    case DtDND_TEXT_TRANSFER:\n"
-    "			dragData->data.strings[i] = XmStringCreateLocalized(\"Hello, world!\\n\");\n"
+    "			dragData->data.strings[i] = "
+    "XmStringCreateLocalized(\"Hello, world!\\n\");\n"
     "		    break;\n"
     "		}\n"
     "	    }\n"
@@ -5849,25 +5790,23 @@ static LibFuncRec abmfP_lrc_drag_convertCB =
     "	    dragSite->callback(DTB_DND_DELETE,NULL,NULL,NULL,convert,NULL);\n"
     "	break;\n"
     "    }\n"
-    "}"
-}; /* abmfP_lrc_drag_convertCB */
+    "}"}; /* abmfP_lrc_drag_convertCB */
 LibFunc abmfP_lib_drag_convertCB = &(abmfP_lrc_drag_convertCB);
 
 /*
  * abmfP_lib_drag_to_rootCB
  */
-static LibFuncRec abmfP_lrc_drag_to_rootCB = 
-{
+static LibFuncRec abmfP_lrc_drag_to_rootCB = {
     /* name */
     "dtb_drag_to_rootCB",
-    
+
     /* proto */
     "static void dtb_drag_to_rootCB(\n"
     "			Widget		dragContext,\n"
     "			XtPointer	clientData,\n"
     "			XtPointer	callData\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "dtb_drag_to_rootCB(\n"
@@ -5883,25 +5822,23 @@ static LibFuncRec abmfP_lrc_drag_to_rootCB =
     "    dropInfo.droppedOnRootWindow = True;\n"
     "    dragSite->callback(DTB_DND_DROPPED_ON_ROOT_WINDOW,\n"
     "			NULL,NULL,&dropInfo,NULL,NULL);\n"
-    "}"
-}; /* abmfP_lrc_drag_to_rootCB */
+    "}"}; /* abmfP_lrc_drag_to_rootCB */
 LibFunc abmfP_lib_drag_to_rootCB = &(abmfP_lrc_drag_to_rootCB);
 
 /*
  * abmfP_lib_drag_finishCB
  */
-static LibFuncRec abmfP_lrc_drag_finishCB = 
-{
+static LibFuncRec abmfP_lrc_drag_finishCB = {
     /* name */
     "dtb_drag_finishCB",
-    
+
     /* proto */
     "static void dtb_drag_finishCB(\n"
     "			Widget		dragContext,\n"
     "			XtPointer	clientData,\n"
     "			XtPointer	callData\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "dtb_drag_finishCB(\n"
@@ -5911,22 +5848,21 @@ static LibFuncRec abmfP_lrc_drag_finishCB =
     ")\n"
     "{\n"
     "    DtbDragSite			dragSite = (DtbDragSite)clientData;\n"
-    "    DtDndDragFinishCallback	finish = (DtDndDragFinishCallback)callData;\n"
+    "    DtDndDragFinishCallback	finish = "
+    "(DtDndDragFinishCallback)callData;\n"
     "\n"
     "    dragSite->callback(DTB_DND_FINISH,NULL,NULL,NULL,NULL,finish);\n"
     "    dtb_drag_terminate((DtbDragSite)clientData);\n"
-    "}"
-}; /* abmfP_lrc_drag_finishCB */
+    "}"}; /* abmfP_lrc_drag_finishCB */
 LibFunc abmfP_lib_drag_finishCB = &(abmfP_lrc_drag_finishCB);
 
 /*
  * abmfP_lib_default_dragCB
  */
-static LibFuncRec abmfP_lrc_default_dragCB = 
-{
+static LibFuncRec abmfP_lrc_default_dragCB = {
     /* name */
     "dtb_default_dragCB",
-    
+
     /* proto */
     "void  dtb_default_dragCB(\n"
     "			DTB_DND_REQUEST			request,\n"
@@ -5936,7 +5872,7 @@ static LibFuncRec abmfP_lrc_default_dragCB =
     "			DtDndConvertCallback		deleteSource,\n"
     "			DtDndDragFinishCallback		finish\n"
     ");",
-    
+
     /* def */
     "void \n"
     "dtb_default_dragCB(\n"
@@ -5990,7 +5926,8 @@ static LibFuncRec abmfP_lrc_default_dragCB =
     "	 **\n"
     "	 ** The dragged data was dropped on the root window.\n"
     "	 **/\n"
-    "        printf(\"action: dtb_default_dragCB(DTB_DND_DROPPED_ON_ROOT_WINDOW)\\n\");\n"
+    "        printf(\"action: "
+    "dtb_default_dragCB(DTB_DND_DROPPED_ON_ROOT_WINDOW)\\n\");\n"
     "        /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/\n"
     "	break;\n"
     "\n"
@@ -6008,18 +5945,16 @@ static LibFuncRec abmfP_lrc_default_dragCB =
     "    \n"
     "    /*** DTB_USER_CODE_START vvv Add C code below vvv ***/\n"
     "    /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/\n"
-    "}"
-}; /* abmfP_lrc_default_dragCB */
+    "}"}; /* abmfP_lrc_default_dragCB */
 LibFunc abmfP_lib_default_dragCB = &(abmfP_lrc_default_dragCB);
 
 /*
  * abmfP_lib_default_dropCB
  */
-static LibFuncRec abmfP_lrc_default_dropCB = 
-{
+static LibFuncRec abmfP_lrc_default_dropCB = {
     /* name */
     "dtb_default_dropCB",
-    
+
     /* proto */
     "void  dtb_default_dropCB(\n"
     "    Widget			widget,\n"
@@ -6028,7 +5963,7 @@ static LibFuncRec abmfP_lrc_default_dropCB =
     "    DtDndTransferCallback	receiveInfo,\n"
     "    DtDndDropAnimateCallback	animateInfo\n"
     ");",
-    
+
     /* def */
     "/*\n"
     " * NOTE: THE PARAMETERS OF TYPE *Callback ARE NOT CALLBACKS! THEY ARE\n"
@@ -6091,25 +6026,23 @@ static LibFuncRec abmfP_lrc_default_dropCB =
     "    \n"
     "    /*** DTB_USER_CODE_START vvv Add C code below vvv ***/\n"
     "    /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/\n"
-    "}"
-}; /* abmfP_lrc_default_dropCB */
+    "}"}; /* abmfP_lrc_default_dropCB */
 LibFunc abmfP_lib_default_dropCB = &(abmfP_lrc_default_dropCB);
 
 /*
  * abmfP_lib_drop_animateCB
  */
-static LibFuncRec abmfP_lrc_drop_animateCB = 
-{
+static LibFuncRec abmfP_lrc_drop_animateCB = {
     /* name */
     "dtb_drop_animateCB",
-    
+
     /* proto */
     "static void dtb_drop_animateCB(\n"
     "			Widget		dragContext,\n"
     "			XtPointer	clientData,\n"
     "			XtPointer	callData\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "dtb_drop_animateCB(\n"
@@ -6123,25 +6056,23 @@ static LibFuncRec abmfP_lrc_drop_animateCB =
     "					(DtDndDropAnimateCallback)callData;\n"
     "    dropSite->callback(\n"
     "	dropSite->widget, DTB_DND_ANIMATE, NULL, NULL, animateInfo);\n"
-    "}"
-}; /* abmfP_lrc_drop_animateCB */
+    "}"}; /* abmfP_lrc_drop_animateCB */
 LibFunc abmfP_lib_drop_animateCB = &(abmfP_lrc_drop_animateCB);
 
 /*
  * abmfP_lib_drop_transferCB
  */
-static LibFuncRec abmfP_lrc_drop_transferCB = 
-{
+static LibFuncRec abmfP_lrc_drop_transferCB = {
     /* name */
     "dtb_drop_transferCB",
-    
+
     /* proto */
     "static void dtb_drop_transferCB(\n"
     "			Widget		dragContext,\n"
     "			XtPointer	clientData,\n"
     "			XtPointer	callData\n"
     ");",
-    
+
     /* def */
     "static void\n"
     "dtb_drop_transferCB(\n"
@@ -6151,10 +6082,10 @@ static LibFuncRec abmfP_lrc_drop_transferCB =
     ")\n"
     "{\n"
     "    DtbDropSite			dropSite = (DtbDropSite)clientData;\n"
-    "    DtDndTransferCallback	transferInfo = (DtDndTransferCallback)callData;\n"
+    "    DtDndTransferCallback	transferInfo = "
+    "(DtDndTransferCallback)callData;\n"
     "\n"
     "    dropSite->callback(\n"
     "	dropSite->widget, DTB_DND_RECEIVE_DATA, NULL, transferInfo, NULL);\n"
-    "}"
-}; /* abmfP_lrc_drop_transferCB */
+    "}"}; /* abmfP_lrc_drop_transferCB */
 LibFunc abmfP_lib_drop_transferCB = &(abmfP_lrc_drop_transferCB);

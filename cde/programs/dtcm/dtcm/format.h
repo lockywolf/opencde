@@ -24,7 +24,8 @@
 **
 **  format.h
 **
-**  static char sccsid[] = "@(#)format.h 1.11 94/11/07 Copyr 1991 Sun Microsystems, Inc.";
+**  static char sccsid[] = "@(#)format.h 1.11 94/11/07 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $XConsortium: format.h /main/3 1995/11/03 10:27:14 rswiston $
 **
@@ -57,19 +58,19 @@
 #include "calendar.h"
 #include "props.h"
 
-#define DEFAULT_APPT_LEN	50
-#define DEFAULT_GAPPT_LEN	80
+#define DEFAULT_APPT_LEN 50
+#define DEFAULT_GAPPT_LEN 80
 
-
-extern void format_date		P((Tick, OrderingType, char*, int, int, int, int));
-extern void format_date3	P((Tick, OrderingType, SeparatorType, char*, int));
-extern Boolean format_line	P((Tick, char*, char*, int, int, Boolean,
-				   DisplayType));
-extern void format_line2	P((Dtcm_appointment*, char*, int, char*, int,
-				   DisplayType));
-extern void format_appt		P((Dtcm_appointment*, char*, int, DisplayType, int));
-extern void format_maxchars	P((Dtcm_appointment*, char*, int, int, DisplayType));
-extern void format_gappt	P((Dtcm_appointment*, char*, char*, int,
-				   DisplayType, int));
+extern void format_date P((Tick, OrderingType, char *, int, int, int, int));
+extern void format_date3 P((Tick, OrderingType, SeparatorType, char *, int));
+extern Boolean format_line P((Tick, char *, char *, int, int, Boolean,
+                              DisplayType));
+extern void format_line2 P((Dtcm_appointment *, char *, int, char *, int,
+                            DisplayType));
+extern void format_appt P((Dtcm_appointment *, char *, int, DisplayType, int));
+extern void format_maxchars P((Dtcm_appointment *, char *, int, int,
+                               DisplayType));
+extern void format_gappt P((Dtcm_appointment *, char *, char *, int,
+                            DisplayType, int));
 
 #endif

@@ -25,16 +25,16 @@
 #ifndef __SGMLName_h
 #define __SGMLName_h
 
-class SGMLName{
+class SGMLName {
 
- public:
-  static int intern(const char*, int upcase = 0);
+      public:
+        static int intern(const char *, int upcase = 0);
 
-  static const char *lookup(int) /* throw(KeyError) */;
+        static const char *lookup(int) /* throw(KeyError) */;
 
-  enum DeclaredValue { IMPLIED, CDATA, NOTATION, TOKEN, ENTITY, qty };
+        enum DeclaredValue { IMPLIED, CDATA, NOTATION, TOKEN, ENTITY, qty };
 
-  static void init();
+        static void init();
 };
 
 #endif

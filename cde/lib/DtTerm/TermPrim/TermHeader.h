@@ -34,32 +34,33 @@
  * (c) Copyright 1996 Hitachi.						*
  */
 
-#ifndef	_Dt_TermHeader_h
-#define	_Dt_TermHeader_h
+#ifndef _Dt_TermHeader_h
+#define _Dt_TermHeader_h
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <sys/param.h>	/* for MIN, MAX macros */
+#include <sys/param.h> /* for MIN, MAX macros */
 #include <Xm/Xm.h>
 #include <X11/Xos.h>
 
-#if defined(linux) || defined(UXPArchitecture) || (defined(USL) && (OSMAJORVERSION > 1)) || defined(CSRG_BASED)
-#define _NFILE   FOPEN_MAX
+#if defined(linux) || defined(UXPArchitecture) ||                              \
+    (defined(USL) && (OSMAJORVERSION > 1)) || defined(CSRG_BASED)
+#define _NFILE FOPEN_MAX
 #endif
 
-#ifndef	MIN
-#define	MIN(a,b)	(((a) > (b)) ? (b) : (a))
-#endif	/* MIN */
-#ifndef	MAX
-#define	MAX(a,b)	(((a) < (b)) ? (b) : (a))
-#endif	/* MAX */
+#ifndef MIN
+#define MIN(a, b) (((a) > (b)) ? (b) : (a))
+#endif /* MIN */
+#ifndef MAX
+#define MAX(a, b) (((a) < (b)) ? (b) : (a))
+#endif /* MAX */
 
 /********    Conditionally defined macros for thread_safe DtTerm ******/
 #ifdef XTHREADS
-#define _DtTermWidgetToAppContext(w) \
+#define _DtTermWidgetToAppContext(w)                                           \
         XtAppContext app = XtWidgetToApplicationContext(w)
-#define _DtTermDisplayToAppContext(d) \
+#define _DtTermDisplayToAppContext(d)                                          \
         XtAppContext app = XtDisplayToApplicationContext(d)
 #define _DtTermAppLock(app) XtAppLock(app)
 #define _DtTermAppUnlock(app) XtAppUnlock(app)
@@ -74,5 +75,5 @@
 #define _DtTermProcessUnlock()
 #endif /* XTHREADS */
 
-#endif	/* _Dt_TermHeader_h */
+#endif /* _Dt_TermHeader_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif... */

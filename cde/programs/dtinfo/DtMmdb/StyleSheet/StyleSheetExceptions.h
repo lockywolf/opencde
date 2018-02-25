@@ -41,102 +41,77 @@
 #define CASTUTEXCEPT
 #define CASTUVEXCEPT
 
-class StyleSheetException : public Exception
-{
-public:
-  DECLARE_EXCEPTION(StyleSheetException, Exception)
-  virtual ~StyleSheetException();
+class StyleSheetException : public Exception {
+      public:
+        DECLARE_EXCEPTION(StyleSheetException, Exception)
+        virtual ~StyleSheetException();
 };
 
-class StyleSheetSyntaxError : public StyleSheetException
-{
-public:
-  DECLARE_EXCEPTION(StyleSheetSyntaxError, StyleSheetException)
-  
+class StyleSheetSyntaxError : public StyleSheetException {
+      public:
+        DECLARE_EXCEPTION(StyleSheetSyntaxError, StyleSheetException)
 };
 
-class badEvaluationException : public StyleSheetException
-{
-public:
-  DECLARE_EXCEPTION(badEvaluationException, StyleSheetException)
+class badEvaluationException : public StyleSheetException {
+      public:
+        DECLARE_EXCEPTION(badEvaluationException, StyleSheetException)
 
-  virtual ~badEvaluationException();
+        virtual ~badEvaluationException();
 };
 
-class badCastException : public StyleSheetException
-{
-public:
-  DECLARE_EXCEPTION(badCastException, StyleSheetException)
+class badCastException : public StyleSheetException {
+      public:
+        DECLARE_EXCEPTION(badCastException, StyleSheetException)
 };
 
-class undefinedVariableException : public badEvaluationException
-{
-public:
-  DECLARE_EXCEPTION(undefinedVariableException, badEvaluationException)
+class undefinedVariableException : public badEvaluationException {
+      public:
+        DECLARE_EXCEPTION(undefinedVariableException, badEvaluationException)
 
-  undefinedVariableException(const Symbol &v)
-    : badEvaluationException(),
-    f_variable_name(v)
-    {}
+        undefinedVariableException(const Symbol &v)
+            : badEvaluationException(), f_variable_name(v) {}
 
-private:
-  Symbol	f_variable_name;
-
+      private:
+        Symbol f_variable_name;
 };
 
-class undefinedAttributeException : public badEvaluationException
-{
-public:
-  DECLARE_EXCEPTION(undefinedAttributeException, badEvaluationException)
+class undefinedAttributeException : public badEvaluationException {
+      public:
+        DECLARE_EXCEPTION(undefinedAttributeException, badEvaluationException)
 
-  undefinedAttributeException(const Symbol &a)
-    : badEvaluationException(),
-    f_attribute_name(a)
-    {}
+        undefinedAttributeException(const Symbol &a)
+            : badEvaluationException(), f_attribute_name(a) {}
 
-private:
-  Symbol	f_attribute_name;
+      private:
+        Symbol f_attribute_name;
 };
 
-class docParserException : public Exception
-{
-public:
-  DECLARE_EXCEPTION(docParserException, Exception)
+class docParserException : public Exception {
+      public:
+        DECLARE_EXCEPTION(docParserException, Exception)
 };
 
-class unknownTagException : public docParserException
-{
-public:
-  DECLARE_EXCEPTION(unknownTagException, docParserException)
-  
+class unknownTagException : public docParserException {
+      public:
+        DECLARE_EXCEPTION(unknownTagException, docParserException)
 };
 
-class docParserUnexpectedCharacter : public docParserException
-{
-public:
-  DECLARE_EXCEPTION(docParserUnexpectedCharacter, docParserException)
-  
+class docParserUnexpectedCharacter : public docParserException {
+      public:
+        DECLARE_EXCEPTION(docParserUnexpectedCharacter, docParserException)
 };
-class docParserUnexpectedTag : public docParserException
-{
-public:
-  DECLARE_EXCEPTION(docParserUnexpectedTag, docParserException)
-  
+class docParserUnexpectedTag : public docParserException {
+      public:
+        DECLARE_EXCEPTION(docParserUnexpectedTag, docParserException)
 };
-class docParserUnexpectedData : public docParserException
-{
-public:
-  DECLARE_EXCEPTION(docParserUnexpectedData, docParserException)
-  
+class docParserUnexpectedData : public docParserException {
+      public:
+        DECLARE_EXCEPTION(docParserUnexpectedData, docParserException)
 };
-class docParserUnexpectedEof : public docParserException
-{
-public:
-  DECLARE_EXCEPTION(docParserUnexpectedEof, docParserException)
-  
+class docParserUnexpectedEof : public docParserException {
+      public:
+        DECLARE_EXCEPTION(docParserUnexpectedEof, docParserException)
 };
-
-
 
 #endif /* _StyleSheetExceptions_h */
 /* DO NOT ADD ANY LINES AFTER THIS #endif */

@@ -32,29 +32,26 @@
 #ifndef _Dtksh_exextra_h
 #define _Dtksh_exextra_h
 
+#define EXKSH_EXTRA_TABLE                                                      \
+        {"call", NV_BLTIN | BLT_ENV | BLT_SPC, do_call},                       \
+            {"field_comp", NV_BLTIN | BLT_ENV | BLT_SPC, do_field_comp},       \
+            {"field_get", NV_BLTIN | BLT_ENV | BLT_SPC, do_field_get},         \
+            {"sizeof", NV_BLTIN | BLT_ENV | BLT_SPC, do_sizeof},               \
+            {"findsym", NV_BLTIN | BLT_ENV | BLT_SPC, do_findsym},             \
+            {"finddef", NV_BLTIN | BLT_ENV | BLT_SPC, do_finddef},             \
+            {"deflist", NV_BLTIN | BLT_ENV | BLT_SPC, do_deflist},             \
+            {"define", NV_BLTIN | BLT_ENV | BLT_SPC, do_define},               \
+            {"structlist", NV_BLTIN | BLT_ENV | BLT_SPC, do_structlist},       \
+            {"deref", NV_BLTIN | BLT_ENV | BLT_SPC, do_deref},                 \
+            {"struct", NV_BLTIN | BLT_ENV | BLT_SPC, do_struct},               \
+            {"typedef", NV_BLTIN | BLT_ENV | BLT_SPC, do_typedef},             \
+            {"symbolic", NV_BLTIN | BLT_ENV | BLT_SPC, do_symbolic},
 
-#define EXKSH_EXTRA_TABLE \
-	{ "call", NV_BLTIN|BLT_ENV|BLT_SPC, do_call }, \
-	{ "field_comp", NV_BLTIN|BLT_ENV|BLT_SPC, do_field_comp }, \
-	{ "field_get", NV_BLTIN|BLT_ENV|BLT_SPC, do_field_get }, \
-	{ "sizeof", NV_BLTIN|BLT_ENV|BLT_SPC, do_sizeof }, \
-	{ "findsym", NV_BLTIN|BLT_ENV|BLT_SPC, do_findsym }, \
-	{ "finddef", NV_BLTIN|BLT_ENV|BLT_SPC, do_finddef }, \
-	{ "deflist", NV_BLTIN|BLT_ENV|BLT_SPC, do_deflist }, \
-	{ "define", NV_BLTIN|BLT_ENV|BLT_SPC, do_define }, \
-	{ "structlist", NV_BLTIN|BLT_ENV|BLT_SPC, do_structlist }, \
-	{ "deref", NV_BLTIN|BLT_ENV|BLT_SPC, do_deref }, \
-	{ "struct", NV_BLTIN|BLT_ENV|BLT_SPC, do_struct }, \
-	{ "typedef", NV_BLTIN|BLT_ENV|BLT_SPC, do_typedef }, \
-	{ "symbolic", NV_BLTIN|BLT_ENV|BLT_SPC, do_symbolic }, \
+#define EXKSH_EXTRA_VAR                                                        \
+        "RET", NV_NOFREE | NV_RDONLY, (char *)(&xk_ret_buffer[0]), "PRDEBUG",  \
+            NV_NOFREE | NV_INTEGER, (char *)(&xk_prdebug),
 
-
-#define EXKSH_EXTRA_VAR \
-	"RET",	NV_NOFREE|NV_RDONLY, (char*)(&xk_ret_buffer[0]), \
-	"PRDEBUG",	NV_NOFREE|NV_INTEGER, (char*)(&xk_prdebug),
-
-#define EXKSH_EXTRA_ALIAS \
-	"args",		NV_NOFREE|NV_EXPORT, "setargs \"$@\"",
+#define EXKSH_EXTRA_ALIAS "args", NV_NOFREE | NV_EXPORT, "setargs \"$@\"",
 
 #endif /* _Dtksh_exextra_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

@@ -28,21 +28,20 @@
  *  This is unpublished proprietary source code of FUJITSU LIMITED
  */
 
-
-#include<X11/Xfuncs.h>
+#include <X11/Xfuncs.h>
 
 #ifndef MIN
-#define MIN(a,b) ((a)>(b)?(b):(a))
+#define MIN(a, b) ((a) > (b) ? (b) : (a))
 #endif
 #ifndef MAX
-#define MAX(a,b) ((a)>(b)?(a):(b))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
 #endif
 
 typedef struct _GlyphMap {
-    char	*bits;
-    int		h;
-    int		w;
-    int		widthBytes;
+        char *bits;
+        int h;
+        int w;
+        int widthBytes;
 } GlyphMap;
 
 /*
@@ -51,120 +50,123 @@ typedef struct _GlyphMap {
  */
 
 typedef struct _TempFont {
-    FontInfoPtr pFI;
-    CharInfoPtr pCI;
-    unsigned char *pGlyphs;
-    FontPropPtr pFP;
-    CharInfoPtr pInkCI;
-    CharInfoPtr pInkMin;
-    CharInfoPtr pInkMax;
+        FontInfoPtr pFI;
+        CharInfoPtr pCI;
+        unsigned char *pGlyphs;
+        FontPropPtr pFP;
+        CharInfoPtr pInkCI;
+        CharInfoPtr pInkMin;
+        CharInfoPtr pInkMax;
 } TempFont; /* not called font since collides with type in X.h */
 
 #ifdef vax
 
-#	define DEFAULTGLPAD 	1		/* default padding for glyphs */
-#	define DEFAULTBITORDER 	LSBFirst	/* default bitmap bit order */
-#	define DEFAULTBYTEORDER LSBFirst	/* default bitmap byte order */
-#	define DEFAULTSCANUNIT	1		/* default bitmap scan unit */
+#define DEFAULTGLPAD 1            /* default padding for glyphs */
+#define DEFAULTBITORDER LSBFirst  /* default bitmap bit order */
+#define DEFAULTBYTEORDER LSBFirst /* default bitmap byte order */
+#define DEFAULTSCANUNIT 1         /* default bitmap scan unit */
 #else
-# ifdef sun
+#ifdef sun
 
-#  if (sun386 || sun5)
-#	define DEFAULTGLPAD 	4		/* default padding for glyphs */
-#	define DEFAULTBITORDER 	LSBFirst	/* default bitmap bit order */
-#	define DEFAULTBYTEORDER LSBFirst	/* default bitmap byte order */
-#	define DEFAULTSCANUNIT	1		/* default bitmap scan unit */
-#  else
-#	define DEFAULTGLPAD 	4		/* default padding for glyphs */
-#	define DEFAULTBITORDER 	MSBFirst	/* default bitmap bit order */
-#	define DEFAULTBYTEORDER MSBFirst	/* default bitmap byte order */
-#	define DEFAULTSCANUNIT	1		/* default bitmap scan unit */
-#  endif
-
-# else
-#  ifdef apollo
-
-#	define DEFAULTGLPAD 	2		/* default padding for glyphs */
-#	define DEFAULTBITORDER 	MSBFirst	/* default bitmap bit order */
-#	define DEFAULTBYTEORDER MSBFirst	/* default bitmap byte order */
-#	define DEFAULTSCANUNIT	1		/* default bitmap scan unit */
-
-#  else
-#   ifdef ibm032
-
-#	define DEFAULTGLPAD 	1		/* default padding for glyphs */
-#	define DEFAULTBITORDER 	MSBFirst	/* default bitmap bit order */
-#	define DEFAULTBYTEORDER MSBFirst	/* default bitmap byte order */
-#	define DEFAULTSCANUNIT	1		/* default bitmap scan unit */
-
-#   else
-#    ifdef hpux
-
-#	define DEFAULTGLPAD 	2		/* default padding for glyphs */
-#	define DEFAULTBITORDER 	MSBFirst	/* default bitmap bit order */
-#	define DEFAULTBYTEORDER MSBFirst	/* default bitmap byte order */
-#	define DEFAULTSCANUNIT	1		/* default bitmap scan unit */
-
-#    else
-#     ifdef pegasus
-
-#	define DEFAULTGLPAD 	4		/* default padding for glyphs */
-#	define DEFAULTBITORDER 	MSBFirst	/* default bitmap bit order */
-#	define DEFAULTBYTEORDER MSBFirst	/* default bitmap byte order */
-#	define DEFAULTSCANUNIT	1		/* default bitmap scan unit */
-
-#     else
-#      ifdef macII
-
-#       define DEFAULTGLPAD     4               /* default padding for glyphs */
-#       define DEFAULTBITORDER  MSBFirst        /* default bitmap bit order */
-#	define DEFAULTBYTEORDER MSBFirst	/* default bitmap byte order */
-#	define DEFAULTSCANUNIT	1		/* default bitmap scan unit */
-
-#      else
-#       ifdef mips
-#        ifdef MIPSEL
-
-#	  define DEFAULTGLPAD 	  4		/* default padding for glyphs */
-#	  define DEFAULTBITORDER  LSBFirst	/* default bitmap bit order */
-#	  define DEFAULTBYTEORDER LSBFirst	/* default bitmap byte order */
-#	  define DEFAULTSCANUNIT  1		/* default bitmap scan unit */
-
-#        else
-#	  define DEFAULTGLPAD 	  4		/* default padding for glyphs */
-#	  define DEFAULTBITORDER  MSBFirst	/* default bitmap bit order */
-#	  define DEFAULTBYTEORDER MSBFirst	/* default bitmap byte order */
-#	  define DEFAULTSCANUNIT  1		/* default bitmap scan unit */
-#        endif
-
-#       else
-#	 ifdef __uxp__
-
-#	  define DEFAULTGLPAD 	  4		/* default padding for glyphs */
-#	  define DEFAULTBITORDER  MSBFirst	/* default bitmap bit order */
-#	  define DEFAULTBYTEORDER MSBFirst	/* default bitmap byte order */
-#	  define DEFAULTSCANUNIT  1		/* default bitmap scan unit */
-
-#	 else
-#	  define DEFAULTGLPAD     1		/* default padding for glyphs */
-#	  define DEFAULTBITORDER  MSBFirst	/* default bitmap bit order */
-#	  define DEFAULTBYTEORDER MSBFirst	/* default bitmap byte order */
-#	  define DEFAULTSCANUNIT  1		/* default bitmap scan unit */
-
-#	 endif
-#       endif
-#      endif
-#     endif
-#    endif
-#   endif
-#  endif
-# endif
+#if (sun386 || sun5)
+#define DEFAULTGLPAD 4            /* default padding for glyphs */
+#define DEFAULTBITORDER LSBFirst  /* default bitmap bit order */
+#define DEFAULTBYTEORDER LSBFirst /* default bitmap byte order */
+#define DEFAULTSCANUNIT 1         /* default bitmap scan unit */
+#else
+#define DEFAULTGLPAD 4            /* default padding for glyphs */
+#define DEFAULTBITORDER MSBFirst  /* default bitmap bit order */
+#define DEFAULTBYTEORDER MSBFirst /* default bitmap byte order */
+#define DEFAULTSCANUNIT 1         /* default bitmap scan unit */
 #endif
 
-#define GLWIDTHBYTESPADDED(bits,nbytes) \
-	((nbytes) == 1 ? (((bits)+7)>>3)	/* pad to 1 byte */ \
-	:(nbytes) == 2 ? ((((bits)+15)>>3)&~1)	/* pad to 2 bytes */ \
-	:(nbytes) == 4 ? ((((bits)+31)>>3)&~3)	/* pad to 4 bytes */ \
-	:(nbytes) == 8 ? ((((bits)+63)>>3)&~7)	/* pad to 8 bytes */ \
-	: 0)
+#else
+#ifdef apollo
 
+#define DEFAULTGLPAD 2            /* default padding for glyphs */
+#define DEFAULTBITORDER MSBFirst  /* default bitmap bit order */
+#define DEFAULTBYTEORDER MSBFirst /* default bitmap byte order */
+#define DEFAULTSCANUNIT 1         /* default bitmap scan unit */
+
+#else
+#ifdef ibm032
+
+#define DEFAULTGLPAD 1            /* default padding for glyphs */
+#define DEFAULTBITORDER MSBFirst  /* default bitmap bit order */
+#define DEFAULTBYTEORDER MSBFirst /* default bitmap byte order */
+#define DEFAULTSCANUNIT 1         /* default bitmap scan unit */
+
+#else
+#ifdef hpux
+
+#define DEFAULTGLPAD 2            /* default padding for glyphs */
+#define DEFAULTBITORDER MSBFirst  /* default bitmap bit order */
+#define DEFAULTBYTEORDER MSBFirst /* default bitmap byte order */
+#define DEFAULTSCANUNIT 1         /* default bitmap scan unit */
+
+#else
+#ifdef pegasus
+
+#define DEFAULTGLPAD 4            /* default padding for glyphs */
+#define DEFAULTBITORDER MSBFirst  /* default bitmap bit order */
+#define DEFAULTBYTEORDER MSBFirst /* default bitmap byte order */
+#define DEFAULTSCANUNIT 1         /* default bitmap scan unit */
+
+#else
+#ifdef macII
+
+#define DEFAULTGLPAD 4            /* default padding for glyphs */
+#define DEFAULTBITORDER MSBFirst  /* default bitmap bit order */
+#define DEFAULTBYTEORDER MSBFirst /* default bitmap byte order */
+#define DEFAULTSCANUNIT 1         /* default bitmap scan unit */
+
+#else
+#ifdef mips
+#ifdef MIPSEL
+
+#define DEFAULTGLPAD 4            /* default padding for glyphs */
+#define DEFAULTBITORDER LSBFirst  /* default bitmap bit order */
+#define DEFAULTBYTEORDER LSBFirst /* default bitmap byte order */
+#define DEFAULTSCANUNIT 1         /* default bitmap scan unit */
+
+#else
+#define DEFAULTGLPAD 4            /* default padding for glyphs */
+#define DEFAULTBITORDER MSBFirst  /* default bitmap bit order */
+#define DEFAULTBYTEORDER MSBFirst /* default bitmap byte order */
+#define DEFAULTSCANUNIT 1         /* default bitmap scan unit */
+#endif
+
+#else
+#ifdef __uxp__
+
+#define DEFAULTGLPAD 4            /* default padding for glyphs */
+#define DEFAULTBITORDER MSBFirst  /* default bitmap bit order */
+#define DEFAULTBYTEORDER MSBFirst /* default bitmap byte order */
+#define DEFAULTSCANUNIT 1         /* default bitmap scan unit */
+
+#else
+#define DEFAULTGLPAD 1            /* default padding for glyphs */
+#define DEFAULTBITORDER MSBFirst  /* default bitmap bit order */
+#define DEFAULTBYTEORDER MSBFirst /* default bitmap byte order */
+#define DEFAULTSCANUNIT 1         /* default bitmap scan unit */
+
+#endif
+#endif
+#endif
+#endif
+#endif
+#endif
+#endif
+#endif
+#endif
+
+#define GLWIDTHBYTESPADDED(bits, nbytes)                                       \
+        ((nbytes) == 1                                                         \
+             ? (((bits) + 7) >> 3) /* pad to 1 byte */                         \
+             : (nbytes) == 2                                                   \
+                   ? ((((bits) + 15) >> 3) & ~1) /* pad to 2 bytes */          \
+                   : (nbytes) == 4                                             \
+                         ? ((((bits) + 31) >> 3) & ~3) /* pad to 4 bytes */    \
+                         : (nbytes) == 8 ? ((((bits) + 63) >> 3) &             \
+                                            ~7) /* pad to 8 bytes */           \
+                                         : 0)

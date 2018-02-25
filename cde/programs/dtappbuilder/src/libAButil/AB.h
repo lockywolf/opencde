@@ -27,7 +27,7 @@
  * @(#)AB.h	1.1 11 Feb 1994	cde_app_builder/src/libAButil
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -46,12 +46,11 @@
  * <ab_private/AB.h>
  *
  * This file should be included by ALL app builder source files!
- * And it should be included before any other ab include files 
+ * And it should be included before any other ab include files
  * ( <ab_private/x.h>, <ab/x.h>, "x.h" ).
  *
  * It sets DEBUG parameters, and affects the entire product
  */
-
 
 /*
  * Turn on POSIX compliance.  This mostly affect system header files.
@@ -60,18 +59,16 @@
 #define _POSIX_SOURCE 1
 #endif
 
-
 /*
  * Set the DEBUG compile-time parameter to be exactly the opposite of
  * NDEBUG
  */
 #ifndef NDEBUG
-    #ifndef DEBUG
-        #define DEBUG 1
-    #endif
-#else
-    #undef DEBUG
+#ifndef DEBUG
+#define DEBUG 1
 #endif
-
+#else
+#undef DEBUG
+#endif
 
 #endif /* _ABUTIL_AB_H_ */

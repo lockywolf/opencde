@@ -35,15 +35,15 @@
 #include "cstring.h"
 
 class Options {
- public:
-  Options (unsigned int, char **);
- ~Options () {}
+      public:
+        Options(unsigned int, char **);
+        ~Options() {}
 
-  int       Verbose () const         { return (flags & 1); }
-  int       Retain () const          { return (flags & 2); }
+        int Verbose() const { return (flags & 1); }
+        int Retain() const { return (flags & 2); }
 
- private:
-  unsigned char flags;
+      private:
+        unsigned char flags;
 };
 
 #endif

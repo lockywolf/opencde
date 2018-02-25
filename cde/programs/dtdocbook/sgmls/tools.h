@@ -22,7 +22,7 @@
  */
 /* $XConsortium: tools.h /main/3 1996/06/19 17:18:54 drk $ */
 /* TOOLS.H: Definitions for type declarations, printing, bit handling, etc.
-*/
+ */
 
 #if CHAR_SIGNED
 typedef unsigned char UNCH;
@@ -69,19 +69,19 @@ typedef unsigned UNS;
 #endif /* not BSD_STRINGS */
 
 /* Macros for bit manipulation.
-*/
-#define SET(word, bits)          ((word) |= (bits))    /* Turn bits on */
-#define RESET(word, bits)        ((word) &= ~(bits))   /* Turn bits off */
-#define GET(word, bits)          ((word) & (bits))     /* 1=any bit on */
-#define BITOFF(word, bits)       (GET(word, bits)==0)  /* 1=no bits on */
-#define BITON(word, bits)        ((word) & (bits))     /* 1=any bit on */
+ */
+#define SET(word, bits) ((word) |= (bits))        /* Turn bits on */
+#define RESET(word, bits) ((word) &= ~(bits))     /* Turn bits off */
+#define GET(word, bits) ((word) & (bits))         /* 1=any bit on */
+#define BITOFF(word, bits) (GET(word, bits) == 0) /* 1=no bits on */
+#define BITON(word, bits) ((word) & (bits))       /* 1=any bit on */
 
-#define ETDCDATA (dumetd)          /* Dummy etd pointer for #PCDATA. */
-#define ETDNULL  (dumetd + 1)      /* Dummy etd pointer for null tag. */
-#define ETDNET   (dumetd + 2)      /* Dummy etd pointer for NET delimiter. */
-#define BADPTR(p) \
-  ((p) == NULL || (p) == ETDCDATA || (p) == ETDNULL || (p) == ETDNET)
-#define PTRNUM(p) ((p) == NULL ? 0 : ((p) - dumetd) + 1)
+#define ETDCDATA (dumetd)    /* Dummy etd pointer for #PCDATA. */
+#define ETDNULL (dumetd + 1) /* Dummy etd pointer for null tag. */
+#define ETDNET (dumetd + 2)  /* Dummy etd pointer for NET delimiter. */
+#define BADPTR(p)                                                              \
+        ((p) == NULL || (p) == ETDCDATA || (p) == ETDNULL || (p) == ETDNET)
+#define PTRNUM(p) ((p) == NULL ? 0 : ((p)-dumetd) + 1)
 
 #ifdef USE_PROTOTYPES
 #define P(parms) parms

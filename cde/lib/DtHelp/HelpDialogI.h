@@ -46,44 +46,38 @@
 #include <Dt/HelpDialog.h>
 #include "HelpDialogP.h"
 
-
 /* Update list defines use in _DtHelpUpdateDisplayArea */
 
-#define DtHISTORY_AND_JUMP      1
-#define DtHISTORY_ONLY          2
-#define DtJUMP_ONLY             3
-
+#define DtHISTORY_AND_JUMP 1
+#define DtHISTORY_ONLY 2
+#define DtJUMP_ONLY 3
 
 /* Defines for processing a request to "Top Level..." */
-#define DtBROWSER_HOME          _DtHelpDefaultLocationId
-#define DtBROWSER_NAME          "browser.hv"
-
+#define DtBROWSER_HOME _DtHelpDefaultLocationId
+#define DtBROWSER_NAME "browser.hv"
 
 /* Jump List Max */
 
-#define DtJUMP_LIST_MAX         999
-
-
+#define DtJUMP_LIST_MAX 999
 
 /****************************************************************
  *
  *  Current Color Info Structure Definition
  *
  ****************************************************************/
-typedef	struct	_colorStruct {
-    Pixel	background;
-    Pixel	foreground;
-    Pixel	topShadow;
-    Pixel	bottomShadow;
-    Pixel	select;
+typedef struct _colorStruct {
+        Pixel background;
+        Pixel foreground;
+        Pixel topShadow;
+        Pixel bottomShadow;
+        Pixel select;
 } ColorStruct;
-
 
 /*****************************************************************************
  * Function:	     void _DtHelpUpdateDisplayArea(
  *                             char                  *locationId,
  *                             DtHelpDialogWidget   nw,
- *                             int                   listUpdateType, 
+ *                             int                   listUpdateType,
  *                             int                   topicUpdateType);
  *
  *
@@ -96,13 +90,9 @@ typedef	struct	_colorStruct {
  * Purpose: 	    Updates the History List for the current help dialog.
  *
  *****************************************************************************/
-extern void _DtHelpUpdateDisplayArea(
-    char *locationId,
-    DtHelpDialogWidget nw,
-    Boolean vol_changed,
-    int listUpdateType,
-    int topicUpdateType);
-
+extern void _DtHelpUpdateDisplayArea(char *locationId, DtHelpDialogWidget nw,
+                                     Boolean vol_changed, int listUpdateType,
+                                     int topicUpdateType);
 
 /*****************************************************************************
  * Function:	     void _DtHelpUpdateJumpList(
@@ -119,11 +109,7 @@ extern void _DtHelpUpdateDisplayArea(
  * Purpose: 	    Updates the History List for the current help dialog.
  *
  *****************************************************************************/
-extern void _DtHelpUpdateJumpList(
-    char *topicInfo,
-    int topicType,
-    Widget nw);
-
+extern void _DtHelpUpdateJumpList(char *topicInfo, int topicType, Widget nw);
 
 /*****************************************************************************
  * Function:	    void _DtHelpDialogHypertextCB(
@@ -137,7 +123,7 @@ extern void _DtHelpUpdateJumpList(
  *                                      structure.
  *
  *                  clientData          Specifies the client data passed into
- *                                      the hypertext callback. 
+ *                                      the hypertext callback.
  *
  * Return Value:    Void.
  *
@@ -145,14 +131,13 @@ extern void _DtHelpUpdateJumpList(
  *                  display area.
  *
  *****************************************************************************/
-extern void _DtHelpDialogHypertextCB (
-    XtPointer pDisplayAreaStruct,
-    XtPointer clientData,
-    DtHelpHyperTextStruct *hyperData);
+extern void _DtHelpDialogHypertextCB(XtPointer pDisplayAreaStruct,
+                                     XtPointer clientData,
+                                     DtHelpHyperTextStruct *hyperData);
 
 /*****************************************************************************
- * Function:	    void _DtHelpSetupDisplayType(DtHelpDialogWidget nw);  
- *                                            int updateType);  
+ * Function:	    void _DtHelpSetupDisplayType(DtHelpDialogWidget nw);
+ *                                            int updateType);
  *
  *
  * Parameters:      nw          Specifies the current help dialog widget.
@@ -163,13 +148,11 @@ extern void _DtHelpDialogHypertextCB (
  *                  in the current help dialog and sets it up for display.
  *
  *****************************************************************************/
-extern void _DtHelpSetupDisplayType(
-     DtHelpDialogWidget nw,
-     Boolean vol_changed,
-     int updateType);
+extern void _DtHelpSetupDisplayType(DtHelpDialogWidget nw, Boolean vol_changed,
+                                    int updateType);
 
 /*****************************************************************************
- * Function:	    void _DtHelpTopicListFree (DtTopicListStruct *pHead);  
+ * Function:	    void _DtHelpTopicListFree (DtTopicListStruct *pHead);
  *
  *
  * Parameters:      pHead   Specifies the head pointer to the topic list.
@@ -179,104 +162,92 @@ extern void _DtHelpSetupDisplayType(
  * Purpose: 	    Frees all elements in a Topic List.
  *
  *****************************************************************************/
-extern void _DtHelpTopicListFree(
-    DtTopicListStruct *pHead);
+extern void _DtHelpTopicListFree(DtTopicListStruct *pHead);
 
 /*****************************************************************************
  * Function:	   extern void DisplayHistoryCB(
- *                            Widget w,   
+ *                            Widget w,
  *                            XtPointer client_data,
  *                            XtPointer call_data);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
  *
- * Purpose: 	   This routine will cause the history dialog to be 
+ * Return Value:
+ *
+ * Purpose: 	   This routine will cause the history dialog to be
  *                 posted.
  *
  ****************************************************************************/
-extern void  _DtHelpDisplayHistoryCB(
-    Widget w,
-    XtPointer client_data,
-    XtPointer call_data );
+extern void _DtHelpDisplayHistoryCB(Widget w, XtPointer client_data,
+                                    XtPointer call_data);
 
 /*****************************************************************************
  * Function:	   extern void _DtHelpDisplayBackCB(
- *                            Widget w,   
+ *                            Widget w,
  *                            XtPointer client_data,
  *                            XtPointer call_data);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
+ *
+ * Return Value:
  *
  * Purpose: 	   This routine will cause the top element in the jump
  *                 stack to be displayed.
  *
  ****************************************************************************/
-extern void  _DtHelpDisplayBackCB(
-    Widget w,
-    XtPointer client_data,
-    XtPointer call_data);
-
+extern void _DtHelpDisplayBackCB(Widget w, XtPointer client_data,
+                                 XtPointer call_data);
 
 /*****************************************************************************
  * Function:	   extern void _DtHelpDuplicateWindowCB(
- *                             Widget w,   
+ *                             Widget w,
  *                             XtPointer client_data,
  *                             XtPointer call_data);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
+ *
+ * Return Value:
  *
  * Purpose: 	   This routine creates a new help widget by forcing the
  *                 equivelent of a Jump New hyper text call
  *
  ****************************************************************************/
-extern void  _DtHelpDuplicateWindowCB(
-    Widget w,
-    XtPointer client_data,
-    XtPointer call_data);
+extern void _DtHelpDuplicateWindowCB(Widget w, XtPointer client_data,
+                                     XtPointer call_data);
 
 /*****************************************************************************
  * Function:	       void _DtHelpDisplayIndexCB(
- *                            Widget w,   
+ *                            Widget w,
  *                            XtPointer client_data,
  *                            XtPointer call_data);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
  *
- * Purpose: 	   This routine will cause the index dialog to be 
+ * Return Value:
+ *
+ * Purpose: 	   This routine will cause the index dialog to be
  *                 posted.
  *
  ****************************************************************************/
-extern void  _DtHelpDisplayIndexCB(
-    Widget w,
-    XtPointer client_data,
-    XtPointer call_data);
+extern void _DtHelpDisplayIndexCB(Widget w, XtPointer client_data,
+                                  XtPointer call_data);
 
 /*****************************************************************************
  * Function:	       void  _DtHelpDisplayBrowserHomeCB(
- *                            Widget w,   
+ *                            Widget w,
  *                            XtPointer client_data,
  *                            XtPointer call_data);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
  *
- * Purpose: 	   This routine will cause the top level of the browser.hv 
+ * Return Value:
+ *
+ * Purpose: 	   This routine will cause the top level of the browser.hv
  *                 help volume to be displayed.
  *
  ****************************************************************************/
-extern void  _DtHelpDisplayBrowserHomeCB(
-    Widget w,
-    XtPointer client_data,
-    XtPointer call_data);
+extern void _DtHelpDisplayBrowserHomeCB(Widget w, XtPointer client_data,
+                                        XtPointer call_data);
 
 /*****************************************************************************
  * Function:        _DtHelpFilterExecCmdCB
@@ -292,10 +263,8 @@ extern void  _DtHelpDisplayBrowserHomeCB(
  * Memory:
  *   The caller must free memory allocated for the ret_filteredCmdStr
  *****************************************************************************/
-extern int _DtHelpFilterExecCmdCB(
-    void *   clientData,
-    const char *   cmdStr,
-    char * * ret_filteredCmdStr);
+extern int _DtHelpFilterExecCmdCB(void *clientData, const char *cmdStr,
+                                  char **ret_filteredCmdStr);
 
 #endif /* _HelpDialogI_h */
 /* Do not add anything after this endif. */

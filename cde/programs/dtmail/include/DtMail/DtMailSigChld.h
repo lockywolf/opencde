@@ -27,7 +27,7 @@
  *	$XConsortium: DtMailSigChld.h /main/4 1996/04/21 19:44:52 drk $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement bertween
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -48,7 +48,7 @@
 extern "C" {
 #endif
 
-    void ChildExitNotify(const int pid, const int status);
+void ChildExitNotify(const int pid, const int status);
 
 #ifdef __cplusplus
 }

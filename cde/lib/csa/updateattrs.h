@@ -37,42 +37,30 @@
 #include "cm.h"
 #include "nametbl.h"
 
-extern CSA_return_code _DtCmUpdateAttributes P((
-			uint		numsrc,
-			cms_attribute	*srcattrs,
-			uint		*numdst,
-			cms_attribute	**dstattrs,
-			_DtCmNameTable	**tbl,
-			boolean_t	caltbl,
-			int		**types,
-			boolean_t	makecopy));
+extern CSA_return_code _DtCmUpdateAttributes
+    P((uint numsrc, cms_attribute *srcattrs, uint *numdst,
+       cms_attribute **dstattrs, _DtCmNameTable **tbl, boolean_t caltbl,
+       int **types, boolean_t makecopy));
 
-extern CSA_return_code _DtCmUpdateAttribute P((
-			cms_attribute	*from,
-			cms_attribute	*to));
+extern CSA_return_code _DtCmUpdateAttribute P((cms_attribute * from,
+                                               cms_attribute *to));
 
-extern CSA_return_code _DtCmUpdateAccessListAttrVal P((
-			cms_attribute_value *newval,
-			cms_attribute_value **attrval));
+extern CSA_return_code _DtCmUpdateAccessListAttrVal
+    P((cms_attribute_value * newval, cms_attribute_value **attrval));
 
-extern CSA_return_code _DtCmUpdateSint32AttrVal P((
-				cms_attribute_value *newval,
-				cms_attribute_value **attrval));
+extern CSA_return_code _DtCmUpdateSint32AttrVal
+    P((cms_attribute_value * newval, cms_attribute_value **attrval));
 
-extern CSA_return_code _DtCmUpdateStringAttrVal P((
-				cms_attribute_value *newval,
-				cms_attribute_value **attrval));
+extern CSA_return_code _DtCmUpdateStringAttrVal
+    P((cms_attribute_value * newval, cms_attribute_value **attrval));
 
-extern CSA_return_code _DtCmUpdateReminderAttrVal P((
-				cms_attribute_value *newval,
-				cms_attribute_value **attrval));
+extern CSA_return_code _DtCmUpdateReminderAttrVal
+    P((cms_attribute_value * newval, cms_attribute_value **attrval));
 
-extern CSA_return_code _DtCmUpdateDateTimeListAttrVal P((
-				cms_attribute_value *newval,
-				cms_attribute_value **attrval));
+extern CSA_return_code _DtCmUpdateDateTimeListAttrVal
+    P((cms_attribute_value * newval, cms_attribute_value **attrval));
 
-extern CSA_return_code _DtCmUpdateOpaqueDataAttrVal P((
-				cms_attribute_value *newval,
-				cms_attribute_value **attrval));
+extern CSA_return_code _DtCmUpdateOpaqueDataAttrVal
+    P((cms_attribute_value * newval, cms_attribute_value **attrval));
 
 #endif

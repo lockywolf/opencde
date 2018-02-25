@@ -32,7 +32,7 @@
  **  file
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -43,11 +43,9 @@
 
 /* External Interface */
 
-
-extern void popup_keyboardBB( Widget shell) ;
-extern void restoreKeybd( Widget shell, XrmDatabase db) ;
-extern void saveKeybd( int fd) ;
-
+extern void popup_keyboardBB(Widget shell);
+extern void restoreKeybd(Widget shell, XrmDatabase db);
+extern void saveKeybd(int fd);
 
 #endif /* _keyboard_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

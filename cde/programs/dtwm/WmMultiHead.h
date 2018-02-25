@@ -26,10 +26,10 @@
 #include "WmGlobal.h"
 
 typedef struct _WmHeadInfo {
-    int x_org;
-    int y_org;
-    unsigned int width;
-    unsigned int height;
+        int x_org;
+        int y_org;
+        unsigned int width;
+        unsigned int height;
 } WmHeadInfo_t, *WmHeadInfoPtr_t;
 
 WmHeadInfo_t *GetHeadInfo(const ClientData *pcd);

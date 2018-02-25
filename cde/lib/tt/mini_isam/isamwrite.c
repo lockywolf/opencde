@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: isamwrite.c /main/3 1995/10/23 11:35:14 rswiston $ 			 				 */
+/*%%  $XConsortium: isamwrite.c /main/3 1995/10/23 11:35:14 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)isamwrite.c 1.6 89/07/17 Copyr 1988 Sun Micro";
 #endif
@@ -37,17 +38,17 @@ static char sccsid[] = "@(#)isamwrite.c 1.6 89/07/17 Copyr 1988 Sun Micro";
  *
  * Description: _amwrite()
  *	Write record to  ISAM file.
- *	
+ *
  *
  */
 
 #include "isam_impl.h"
 
-static int _addkeys2 ();
+static int _addkeys2();
 extern long *ismaxlong;
 
 /*
- * _amwrite(isfhandle, record, reclen, curpos, 
+ * _amwrite(isfhandle, record, reclen, curpos,
  * 	    recnum, errcode)
  *
  * _amwrite() writes a new record to ISAM file.
@@ -65,98 +66,97 @@ extern long *ismaxlong;
  *
  */
 
-int
-_amwrite(isfhandle, record, reclen, curpos, recnum, errcode)
-    Bytearray		*isfhandle;
-    char		*record;
-    int			reclen;
-    Bytearray		*curpos;
-    Recno		*recnum;
-    struct errcode	*errcode;
+int _amwrite(isfhandle, record, reclen, curpos, recnum,
+             errcode) Bytearray *isfhandle;
+char *record;
+int reclen;
+Bytearray *curpos;
+Recno *recnum;
+struct errcode *errcode;
 {
-    Fcb			*fcb = NULL;
-    Recno		recnum2;
-    Crp 		*crp;
-    int			err;
-    int			(*rec_write)();
+        Fcb *fcb = NULL;
+        Recno recnum2;
+        Crp *crp;
+        int err;
+        int (*rec_write)();
 
-    _isam_entryhook();
+        _isam_entryhook();
 
-    /*
-     * Get FCB corresponding to the isfhandle handle.
-     */
-    if ((fcb = _openfcb(isfhandle, errcode)) == NULL) {
-	_isam_exithook();
-	return (ISERROR);
-    }
+        /*
+         * Get FCB corresponding to the isfhandle handle.
+         */
+        if ((fcb = _openfcb(isfhandle, errcode)) == NULL) {
+                _isam_exithook();
+                return (ISERROR);
+        }
 
-    rec_write = (fcb->varflag?_vlrec_write:_flrec_write);
+        rec_write = (fcb->varflag ? _vlrec_write : _flrec_write);
 
-    /*
-     * Update information in FCB from CNTL page on the disk
-     */
-    (void)_isfcb_cntlpg_r2(fcb);
+        /*
+         * Update information in FCB from CNTL page on the disk
+         */
+        (void)_isfcb_cntlpg_r2(fcb);
 
-    if (rec_write(fcb, record, &recnum2, reclen) == ISERROR) {
-	_isfatal_error("_amwrite() cannot write record");
-    }
+        if (rec_write(fcb, record, &recnum2, reclen) == ISERROR) {
+                _isfatal_error("_amwrite() cannot write record");
+        }
 
-    /*
-     * Update all keys.
-     */
-    if ((err = _addkeys2(fcb, record, recnum2, curpos)) != ISOK) {
-	_amseterrcode(errcode, err);	
-	goto ERROR;
-    }
-    
-    fcb->nrecords++;
-    
-    *recnum = recnum2;
-    _amseterrcode(errcode, ISOK);
+        /*
+         * Update all keys.
+         */
+        if ((err = _addkeys2(fcb, record, recnum2, curpos)) != ISOK) {
+                _amseterrcode(errcode, err);
+                goto ERROR;
+        }
 
-    _issignals_mask();
-    _isdisk_commit();
-    _isdisk_sync();
-    _isdisk_inval();
+        fcb->nrecords++;
 
-    /*
-     * Return new current record position.
-     */
-    crp = (Crp *) curpos->data;
+        *recnum = recnum2;
+        _amseterrcode(errcode, ISOK);
 
-    crp->flag = CRP_ON;
-    crp->recno = recnum2;
+        _issignals_mask();
+        _isdisk_commit();
+        _isdisk_sync();
+        _isdisk_inval();
 
-    /*
-     * Update CNTL Page from the FCB.
-     */
-    (void)_isfcb_cntlpg_w2(fcb);
-    _issignals_unmask();
+        /*
+         * Return new current record position.
+         */
+        crp = (Crp *)curpos->data;
 
-    _isam_exithook();
-    return (ISOK);
+        crp->flag = CRP_ON;
+        crp->recno = recnum2;
 
- ERROR:
-    
-    _isdisk_rollback();
-    _isdisk_inval();
+        /*
+         * Update CNTL Page from the FCB.
+         */
+        (void)_isfcb_cntlpg_w2(fcb);
+        _issignals_unmask();
 
-    /*
-     * If error is not EDUPL position undefined.
-     */
-    if (errcode->iserrno != EDUPL) {
-	((Crp *)curpos->data)->flag = CRP_UNDEF;
-    }
+        _isam_exithook();
+        return (ISOK);
 
-    /*
-     * Restore FCB from CNTL page.
-     */
-    if (fcb) (void)_isfcb_cntlpg_r2(fcb);
+ERROR:
 
-    _isam_exithook();
-    return (ISERROR);
+        _isdisk_rollback();
+        _isdisk_inval();
+
+        /*
+         * If error is not EDUPL position undefined.
+         */
+        if (errcode->iserrno != EDUPL) {
+                ((Crp *)curpos->data)->flag = CRP_UNDEF;
+        }
+
+        /*
+         * Restore FCB from CNTL page.
+         */
+        if (fcb)
+                (void)_isfcb_cntlpg_r2(fcb);
+
+        _isam_exithook();
+        return (ISERROR);
 }
-
 
 /*
  * _addkeys()
@@ -166,48 +166,46 @@ _amwrite(isfhandle, record, reclen, curpos, recnum, errcode)
  * Returns ISOK, or EDUPS.
  */
 
-int _addkeys (fcb, record, recnum)
-    register Fcb     	*fcb;
-    char                *record;
-    Recno	        recnum;
+int _addkeys(fcb, record, recnum) register Fcb *fcb;
+char *record;
+Recno recnum;
 {
-    int                         nkeys = fcb->nkeys;
-    register int                i;
-    int				err;
+        int nkeys = fcb->nkeys;
+        register int i;
+        int err;
 
-    for (i = 0; i < nkeys; i++) {
-	if ((err = _add1key(fcb, fcb->keys + i, record, recnum, 
-			    (char*)NULL)) != ISOK)
-	    return (err);
-    }
+        for (i = 0; i < nkeys; i++) {
+                if ((err = _add1key(fcb, fcb->keys + i, record, recnum,
+                                    (char *)NULL)) != ISOK)
+                        return (err);
+        }
 
-    return (ISOK);
-}      
+        return (ISOK);
+}
 
-Static int
-_addkeys2 (fcb, record, recnum, curpos)
-    Fcb			*fcb;
-    char                *record;
-    Recno	        recnum;
-    Bytearray		*curpos;
+Static int _addkeys2(fcb, record, recnum, curpos) Fcb *fcb;
+char *record;
+Recno recnum;
+Bytearray *curpos;
 {
-    int                	nkeys = fcb->nkeys;
-    register int        i;
-    int			err;
-    Crp			*crp;
-    int			keyid;
-    Keydesc2		*keydesc2;
+        int nkeys = fcb->nkeys;
+        register int i;
+        int err;
+        Crp *crp;
+        int keyid;
+        Keydesc2 *keydesc2;
 
-    crp = (Crp *)curpos->data;
-    keyid = crp->keyid;
+        crp = (Crp *)curpos->data;
+        keyid = crp->keyid;
 
-    for (i = 0; i < nkeys; i++) {
-	keydesc2 = fcb->keys + i;
-        if ((err =_add1key(fcb, keydesc2, record, recnum,
-			      (keydesc2->k2_keyid == keyid) ?
-			      crp->key : (char *) NULL)) != ISOK)
-	    return (err);
-    }
+        for (i = 0; i < nkeys; i++) {
+                keydesc2 = fcb->keys + i;
+                if ((err = _add1key(fcb, keydesc2, record, recnum,
+                                    (keydesc2->k2_keyid == keyid)
+                                        ? crp->key
+                                        : (char *)NULL)) != ISOK)
+                        return (err);
+        }
 
-    return (ISOK);
-}      
+        return (ISOK);
+}

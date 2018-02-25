@@ -27,7 +27,7 @@
  *	@(#)dtb_utils.h	1.1 20 Sep 1994	cde_app_builder/src/abmf
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -48,9 +48,7 @@
 
 #include <ab/util_types.h>
 
-void 	dtb_save_command(char *argv0);
-STRING	dtb_get_exe_dir(void);
-
+void dtb_save_command(char *argv0);
+STRING dtb_get_exe_dir(void);
 
 #endif /* _ABMF_DTB_UTILS_H_ */
-

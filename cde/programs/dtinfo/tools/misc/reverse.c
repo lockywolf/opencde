@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,22 +44,20 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
 
 #include <stdio.h>
 
-main(argc, argv)
-int argc ;
-char **argv ;
+main(argc, argv) int argc;
+char **argv;
 {
-  int i ;
-  for (i = argc ; i > 1 ; i--)
-    {
-      fputs(argv[i -1],stdout);
-      fputs(" ", stdout);
-    }
-  fputs("\n",stdout);
-  fflush(stdout);
-  return 0 ;
+        int i;
+        for (i = argc; i > 1; i--) {
+                fputs(argv[i - 1], stdout);
+                fputs(" ", stdout);
+        }
+        fputs("\n", stdout);
+        fflush(stdout);
+        return 0;
 }

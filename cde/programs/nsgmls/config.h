@@ -73,13 +73,13 @@
 #undef SP_POSIX_FILENAMES
 #define SP_MSDOS_FILENAMES
 #define SP_SHORT_HEADERS
-#pragma warning ( disable : 4660 ) // already instantiated
-#pragma warning ( disable : 4661 ) // missing def for decl member
-#pragma warning ( disable : 4786 ) // debug symbol truncated (>255 chars)
-#pragma warning ( disable : 4018 ) // signed/unsigned mismatch
-#pragma warning ( disable : 4251 ) // __declspec(dllexport)
-#pragma warning ( disable : 4275 )
-#pragma warning ( disable : 4237 ) // future reserved keyword
+#pragma warning(disable : 4660) // already instantiated
+#pragma warning(disable : 4661) // missing def for decl member
+#pragma warning(disable : 4786) // debug symbol truncated (>255 chars)
+#pragma warning(disable : 4018) // signed/unsigned mismatch
+#pragma warning(disable : 4251) // __declspec(dllexport)
+#pragma warning(disable : 4275)
+#pragma warning(disable : 4237) // future reserved keyword
 #define huge verybig
 #if _MSC_VER == 900
 #define SP_DECLARE_PLACEMENT_OPERATOR_NEW
@@ -192,7 +192,7 @@
 #define SP_MSDOS_FILENAMES
 #undef SP_INCLUDE_UNISTD_H
 #define SP_INCLUDE_IO_H
-#define S_IFMT (S_IFDIR|S_IFCHR|S_IFREG)
+#define S_IFMT (S_IFDIR | S_IFCHR | S_IFREG)
 #endif
 
 #ifndef SP_ANSI_FOR_SCOPE

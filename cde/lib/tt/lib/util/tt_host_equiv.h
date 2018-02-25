@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: tt_host_equiv.h /main/3 1995/10/23 10:39:54 rswiston $ 			 				 */
+/*%%  $XConsortium: tt_host_equiv.h /main/3 1995/10/23 10:39:54 rswiston $
+ */
 /*
  *
  * tt_host_equiv.h
@@ -45,46 +46,45 @@
 #include "util/tt_string.h"
 #include "util/tt_table.h"
 
-declare_list_of(_Tt_hostname_cache)
-declare_table_of(_Tt_hostname_cache)
-declare_ptr_to(_Tt_host_equiv)
+declare_list_of(_Tt_hostname_cache) declare_table_of(_Tt_hostname_cache)
+    declare_ptr_to(_Tt_host_equiv)
 
-class _Tt_hostname_cache : public _Tt_object {
-	public:
-		// a null constructor is required by the
-		// table_of macro; DO NOT USE THIS.
-		_Tt_hostname_cache();
+        class _Tt_hostname_cache : public _Tt_object {
+      public:
+        // a null constructor is required by the
+        // table_of macro; DO NOT USE THIS.
+        _Tt_hostname_cache();
 
-		_Tt_hostname_cache(_Tt_string & hostname);
+        _Tt_hostname_cache(_Tt_string &hostname);
 
-		~_Tt_hostname_cache();
+        ~_Tt_hostname_cache();
 
-		// key functions must be static
-		static _Tt_string h_keyfn(_Tt_object_ptr & p);
+        // key functions must be static
+        static _Tt_string h_keyfn(_Tt_object_ptr &p);
 
-		_Tt_string hostname_val() { return hostname; }
+        _Tt_string hostname_val() { return hostname; }
 
-		_Tt_string	hostname;
+        _Tt_string hostname;
 
-		// length of each address in _addr_list
-		int addr_length;
+        // length of each address in _addr_list
+        int addr_length;
 
-		_Tt_string_list_ptr addr_list;
+        _Tt_string_list_ptr addr_list;
 };
 
 class _Tt_host_equiv : public _Tt_object {
       public:
-		_Tt_host_equiv();
+        _Tt_host_equiv();
 
-		~_Tt_host_equiv();
+        ~_Tt_host_equiv();
 
-		_Tt_string prefix_host(const _Tt_string & host1,
-				       const _Tt_string & localhost);
+        _Tt_string prefix_host(const _Tt_string &host1,
+                               const _Tt_string &localhost);
 
-		int hostname_equiv(const _Tt_string & host1,
-				   const _Tt_string & host2);
+        int hostname_equiv(const _Tt_string &host1, const _Tt_string &host2);
+
       private:
-		_Tt_hostname_cache_table_ptr _cache_table;
+        _Tt_hostname_cache_table_ptr _cache_table;
 };
 
-#endif				/* _TT_HOST_EQUIV_H */
+#endif /* _TT_HOST_EQUIV_H */

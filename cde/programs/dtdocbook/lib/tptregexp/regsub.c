@@ -46,59 +46,58 @@
 #include "regmagic.h"
 
 #ifndef CHARBITS
-#define	UCHARAT(p)	((int)*(unsigned char *)(p))
+#define UCHARAT(p) ((int)*(unsigned char *)(p))
 #else
-#define	UCHARAT(p)	((int)*(p)&CHARBITS)
+#define UCHARAT(p) ((int)*(p)&CHARBITS)
 #endif
 
 /*
  - regsub - perform substitutions after a regexp match
  */
-void
-tpt_regsub(prog, source, dest)
-regexp *prog;
+void tpt_regsub(prog, source, dest) regexp *prog;
 char *source;
 char *dest;
 {
-	register char *src;
-	register char *dst;
-	register char c;
-	register int no;
-	register int len;
-	extern char *strncpy();
+        register char *src;
+        register char *dst;
+        register char c;
+        register int no;
+        register int len;
+        extern char *strncpy();
 
-	if (prog == NULL || source == NULL || dest == NULL) {
-		tpt_regerror("NULL parm to regsub");
-		return;
-	}
-	if (UCHARAT(prog->program) != MAGIC) {
-		tpt_regerror("damaged regexp fed to regsub");
-		return;
-	}
+        if (prog == NULL || source == NULL || dest == NULL) {
+                tpt_regerror("NULL parm to regsub");
+                return;
+        }
+        if (UCHARAT(prog->program) != MAGIC) {
+                tpt_regerror("damaged regexp fed to regsub");
+                return;
+        }
 
-	src = source;
-	dst = dest;
-	while ((c = *src++) != '\0') {
-		if (c == '&')
-			no = 0;
-		else if (c == '\\' && '0' <= *src && *src <= '9')
-			no = *src++ - '0';
-		else
-			no = -1;
+        src = source;
+        dst = dest;
+        while ((c = *src++) != '\0') {
+                if (c == '&')
+                        no = 0;
+                else if (c == '\\' && '0' <= *src && *src <= '9')
+                        no = *src++ - '0';
+                else
+                        no = -1;
 
-		if (no < 0) {	/* Ordinary character. */
-			if (c == '\\' && (*src == '\\' || *src == '&'))
-				c = *src++;
-			*dst++ = c;
-		} else if (prog->startp[no] != NULL && prog->endp[no] != NULL) {
-			len = prog->endp[no] - prog->startp[no];
-			(void) strncpy(dst, prog->startp[no], len);
-			dst += len;
-			if (len != 0 && *(dst-1) == '\0') {	/* strncpy hit NUL. */
-				tpt_regerror("damaged match string");
-				return;
-			}
-		}
-	}
-	*dst++ = '\0';
+                if (no < 0) { /* Ordinary character. */
+                        if (c == '\\' && (*src == '\\' || *src == '&'))
+                                c = *src++;
+                        *dst++ = c;
+                } else if (prog->startp[no] != NULL && prog->endp[no] != NULL) {
+                        len = prog->endp[no] - prog->startp[no];
+                        (void)strncpy(dst, prog->startp[no], len);
+                        dst += len;
+                        if (len != 0 &&
+                            *(dst - 1) == '\0') { /* strncpy hit NUL. */
+                                tpt_regerror("damaged match string");
+                                return;
+                        }
+                }
+        }
+        *dst++ = '\0';
 }

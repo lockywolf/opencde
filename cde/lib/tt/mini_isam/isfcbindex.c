@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: isfcbindex.c /main/3 1995/10/23 11:38:43 rswiston $ 			 				 */
+/*%%  $XConsortium: isfcbindex.c /main/3 1995/10/23 11:38:43 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)isfcbindex.c 1.3 89/07/17 Copyr 1988 Sun Micro";
 #endif
@@ -35,9 +36,9 @@ static char sccsid[] = "@(#)isfcbindex.c 1.3 89/07/17 Copyr 1988 Sun Micro";
 /*
  * isfcbindex.c
  *
- * Description: 
+ * Description:
  *	Functions that deal with the key descriptors in FCB
- *	
+ *
  *
  */
 
@@ -51,19 +52,17 @@ Static int _keypart2cmp();
  *
  */
 
-int
-_isfcb_primkeyadd(fcb, keydesc2)
-    Fcb			*fcb;
-    Keydesc2		*keydesc2;
+int _isfcb_primkeyadd(fcb, keydesc2) Fcb *fcb;
+Keydesc2 *keydesc2;
 {
-    /*
-     * Assign keyid.
-     */
-    keydesc2->k2_keyid = ++fcb->lastkeyid;
+        /*
+         * Assign keyid.
+         */
+        keydesc2->k2_keyid = ++fcb->lastkeyid;
 
-    fcb->keys[0] = *keydesc2;
+        fcb->keys[0] = *keydesc2;
 
-    return (ISOK);
+        return (ISOK);
 }
 
 /*
@@ -73,16 +72,14 @@ _isfcb_primkeyadd(fcb, keydesc2)
  *
  */
 
-int
-_isfcb_primkeydel(fcb)
-    Fcb			*fcb;
+int _isfcb_primkeydel(fcb) Fcb *fcb;
 {
-    if (FCB_NOPRIMARY_KEY(fcb))
-	return (EBADARG);
+        if (FCB_NOPRIMARY_KEY(fcb))
+                return (EBADARG);
 
-    memset((char *)&fcb->keys[0], 0, sizeof(fcb->keys[0]));
+        memset((char *)&fcb->keys[0], 0, sizeof(fcb->keys[0]));
 
-    return (ISOK);
+        return (ISOK);
 }
 
 /*
@@ -92,31 +89,27 @@ _isfcb_primkeydel(fcb)
  *
  */
 
-int
-_isfcb_altkeyadd(fcb, keydesc2)
-    Fcb			*fcb;
-    Keydesc2		*keydesc2;
+int _isfcb_altkeyadd(fcb, keydesc2) Fcb *fcb;
+Keydesc2 *keydesc2;
 {
-    assert (fcb->nkeys < MAXNKEYS); 
+        assert(fcb->nkeys < MAXNKEYS);
 
-    /*
-     * Assign keyid.
-     */
-    keydesc2->k2_keyid = ++fcb->lastkeyid;
+        /*
+         * Assign keyid.
+         */
+        keydesc2->k2_keyid = ++fcb->lastkeyid;
 
-    /*
-     * Reallocate fcb->keys table.
-     */
-    fcb->keys = (Keydesc2 *) 
-	_isrealloc((char *)fcb->keys, 
-		   (unsigned) (sizeof(Keydesc2) * (fcb->nkeys + 1)));
+        /*
+         * Reallocate fcb->keys table.
+         */
+        fcb->keys = (Keydesc2 *)_isrealloc(
+            (char *)fcb->keys, (unsigned)(sizeof(Keydesc2) * (fcb->nkeys + 1)));
 
-    fcb->keys[fcb->nkeys] = *keydesc2;
+        fcb->keys[fcb->nkeys] = *keydesc2;
 
-    fcb->nkeys++;
-    return (ISOK);
+        fcb->nkeys++;
+        return (ISOK);
 }
-
 
 /*
  * pkeydesc2 = _isfcb_findkey(fcb, keydesc2)
@@ -125,33 +118,32 @@ _isfcb_altkeyadd(fcb, keydesc2)
  *
  */
 
-Keydesc2 *
-_isfcb_findkey(fcb, keydesc2)
-    register Fcb	*fcb;
-    Keydesc2		*keydesc2;
+Keydesc2 *_isfcb_findkey(fcb, keydesc2) register Fcb *fcb;
+Keydesc2 *keydesc2;
 {
-    int                 nkeys = fcb->nkeys;
-    register Keydesc2	*kp2;
-    register int	j, i;
-    int			nparts;
+        int nkeys = fcb->nkeys;
+        register Keydesc2 *kp2;
+        register int j, i;
+        int nparts;
 
-    for (i = 0; i < nkeys; i++) {
-	kp2 = fcb->keys + i;
+        for (i = 0; i < nkeys; i++) {
+                kp2 = fcb->keys + i;
 
-	if (keydesc2->k2_nparts == kp2->k2_nparts) {
-	    
-	    nparts = keydesc2->k2_nparts;
-	    for (j = 0; j < nparts; j++) {
-		if (_keypart2cmp(keydesc2->k2_part + j, kp2->k2_part + j) != 0)
-		    break;
-	    }	
-	    
-	    if (j == nparts)
-		return (kp2);
-	}
-    }  
-    
-    return ((struct keydesc2 *) 0);	     /* Key descriptor not found */
+                if (keydesc2->k2_nparts == kp2->k2_nparts) {
+
+                        nparts = keydesc2->k2_nparts;
+                        for (j = 0; j < nparts; j++) {
+                                if (_keypart2cmp(keydesc2->k2_part + j,
+                                                 kp2->k2_part + j) != 0)
+                                        break;
+                        }
+
+                        if (j == nparts)
+                                return (kp2);
+                }
+        }
+
+        return ((struct keydesc2 *)0); /* Key descriptor not found */
 }
 
 /*
@@ -161,59 +153,56 @@ _isfcb_findkey(fcb, keydesc2)
  *
  */
 
-int
-_isfcb_altkeydel(fcb, keydesc2)
-    register Fcb	*fcb;
-    Keydesc2		*keydesc2;
+int _isfcb_altkeydel(fcb, keydesc2) register Fcb *fcb;
+Keydesc2 *keydesc2;
 {
-    int                 nkeys = fcb->nkeys;
-    register int        i, j;
-    register Keydesc2	*kp2;
-    int			nparts;
+        int nkeys = fcb->nkeys;
+        register int i, j;
+        register Keydesc2 *kp2;
+        int nparts;
 
-    for (i = 0; i < nkeys; i++) {
-	kp2 = fcb->keys + i;
+        for (i = 0; i < nkeys; i++) {
+                kp2 = fcb->keys + i;
 
-	if (keydesc2->k2_nparts == kp2->k2_nparts) {
-	    
-	    nparts = keydesc2->k2_nparts;
-	    for (j = 0; j < nparts; j++) {
-		if (_keypart2cmp(keydesc2->k2_part + j, kp2->k2_part + j) != 0)
-		    break;
-	    }	
-	    
-	    if (j == nparts)
-		break;			     /* Key found */
-	}
-    }  
+                if (keydesc2->k2_nparts == kp2->k2_nparts) {
 
-    if (i >= nkeys)
-	return (EBADKEY);		     /* Key descriptor not found */
+                        nparts = keydesc2->k2_nparts;
+                        for (j = 0; j < nparts; j++) {
+                                if (_keypart2cmp(keydesc2->k2_part + j,
+                                                 kp2->k2_part + j) != 0)
+                                        break;
+                        }
 
-    if (i == 0) {
-	return (EPRIMKEY);		     /* Cannot delete primary key */
-    }
-    
-    /*
-     * Shift the end of the table toward the beginning to delete the entry.
-     */
-    if (i < nkeys - 1) {
-	memcpy( (char *)(fcb->keys + i),(char *)(fcb->keys + i + 1), 
-	      (nkeys - 1 - i) * sizeof (fcb->keys[0]));
-    }
+                        if (j == nparts)
+                                break; /* Key found */
+                }
+        }
 
-    fcb->nkeys--;
+        if (i >= nkeys)
+                return (EBADKEY); /* Key descriptor not found */
 
-    return (ISOK);
+        if (i == 0) {
+                return (EPRIMKEY); /* Cannot delete primary key */
+        }
+
+        /*
+         * Shift the end of the table toward the beginning to delete the entry.
+         */
+        if (i < nkeys - 1) {
+                memcpy((char *)(fcb->keys + i), (char *)(fcb->keys + i + 1),
+                       (nkeys - 1 - i) * sizeof(fcb->keys[0]));
+        }
+
+        fcb->nkeys--;
+
+        return (ISOK);
 }
 
 /* compare key parts */
-Static int
-_keypart2cmp(l,r)
-    register struct keypart2 *l, *r;
+Static int _keypart2cmp(l, r) register struct keypart2 *l, *r;
 {
-    return !(l->kp2_type == r->kp2_type && l->kp2_start == r->kp2_start &&
-	     l->kp2_leng == r->kp2_leng);
+        return !(l->kp2_type == r->kp2_type && l->kp2_start == r->kp2_start &&
+                 l->kp2_leng == r->kp2_leng);
 }
 
 /*
@@ -223,19 +212,17 @@ _keypart2cmp(l,r)
  *
  */
 
-Keydesc2 *
-_isfcb_indfindkey(fcb, keyid)
-    register Fcb	*fcb;
-    int			keyid;
+Keydesc2 *_isfcb_indfindkey(fcb, keyid) register Fcb *fcb;
+int keyid;
 {
-    int                 nkeys = fcb->nkeys;
-    register Keydesc2	*keys = fcb->keys;
-    register int	i;
-    
-    for (i = 0; i < nkeys; i++) {
-	if (keys[i].k2_keyid == keyid)
-	    break;
-    }  
-    
-    return ((i == nkeys) ? NULL : keys + i);
+        int nkeys = fcb->nkeys;
+        register Keydesc2 *keys = fcb->keys;
+        register int i;
+
+        for (i = 0; i < nkeys; i++) {
+                if (keys[i].k2_keyid == keyid)
+                        break;
+        }
+
+        return ((i == nkeys) ? NULL : keys + i);
 }

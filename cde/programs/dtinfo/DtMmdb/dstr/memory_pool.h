@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,10 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
-
 
 #ifndef _memory_pool
 #define _memory_pool 1
@@ -61,86 +59,79 @@
 
 class chunk_carrier;
 
-class chunk_manage_record_t : public dlist_cell
-{
+class chunk_manage_record_t : public dlist_cell {
 
-public:
-   chunk_carrier* chunk_carrier_ptr;
+      public:
+        chunk_carrier *chunk_carrier_ptr;
 
-   chunk_manage_record_t( chunk_carrier* chk_carr) :
-      chunk_carrier_ptr(chk_carr) {};
-   virtual ~chunk_manage_record_t() {};
+        chunk_manage_record_t(chunk_carrier *chk_carr)
+            : chunk_carrier_ptr(chk_carr){};
+        virtual ~chunk_manage_record_t(){};
 };
 
-typedef chunk_manage_record_t* chunk_manage_recordPtr;
+typedef chunk_manage_record_t *chunk_manage_recordPtr;
 
+class chunk_carrier {
 
-class chunk_carrier
-{
+      public:
+        chunk_carrier(int chunk_sz, int chunks);
+        virtual ~chunk_carrier();
 
-public:
-   chunk_carrier(int chunk_sz, int chunks);
-   virtual ~chunk_carrier();
+        dlist *init_ptrs();
 
-   dlist* init_ptrs();
+      protected:
+        int alloc_sz;
+        int chunk_sz;
+        int max_chunks;
+        char *carrier_ptr;
 
-protected:
-   int alloc_sz;
-   int chunk_sz;
-   int max_chunks;
-   char* carrier_ptr;
-
-   friend class fix_chunk_pool;
-   friend class memory_pool;
+        friend class fix_chunk_pool;
+        friend class memory_pool;
 };
 
+class fix_chunk_pool {
 
-class fix_chunk_pool 
-{
+      public:
+        fix_chunk_pool(int chunk_sz);
+        virtual ~fix_chunk_pool();
 
-public:
-   fix_chunk_pool(int chunk_sz);
-   virtual ~fix_chunk_pool();
+        // return char*
+        virtual char *alloc();
 
-// return char*
-   virtual char* alloc();
+        // free a char*
+        virtual void free(char *);
 
-// free a char*
-   virtual void free(char*); 
+      protected:
+        int chunk_sz;
+        int chunks;
+        dlist chunk_carrier_list;
+        dlist free_chunk_list;
 
-protected:
-   int chunk_sz;
-   int chunks;
-   dlist chunk_carrier_list;
-   dlist free_chunk_list;
-
-   void init_one_chunk_carrier();
+        void init_one_chunk_carrier();
 };
-
 
 typedef void_ptr_array vm_pool_array_t;
 
-class memory_pool
-{
+class memory_pool {
 
-public:
-   memory_pool(int max_alloc_size = MAX_CHUNK_SZ);
-   virtual ~memory_pool();
+      public:
+        memory_pool(int max_alloc_size = MAX_CHUNK_SZ);
+        virtual ~memory_pool();
 
-// return char*
-   virtual char* alloc(size_t sz); 
+        // return char*
+        virtual char *alloc(size_t sz);
 
-// free a char*
-   virtual void free(char*); 
+        // free a char*
+        virtual void free(char *);
 
-protected:
-   int max_alloc_size_from_pool;
-   vm_pool_array_t vm_pool_vector; 
+      protected:
+        int max_alloc_size_from_pool;
+        vm_pool_array_t vm_pool_vector;
 };
 
 #ifdef C_API
 #define g_memory_pool (*g_memory_pool_ptr)
-extern memory_pool* g_memory_pool_ptr;
+extern memory_pool *g_memory_pool_ptr;
 #endif
 
 #endif

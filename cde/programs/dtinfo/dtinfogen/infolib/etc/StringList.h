@@ -33,31 +33,32 @@
  *
  ***********************************/
 
-class StringList{
-  
-public:
-  StringList(void);
-  ~StringList();
+class StringList {
 
-  const char * append(const char*); /* returns a copy, owned by this obj. */
+      public:
+        StringList(void);
+        ~StringList();
 
-  void add(char*); /* caller relinquishes ownership */
+        const char *
+        append(const char *); /* returns a copy, owned by this obj. */
 
-  size_t qty() { return used; };
+        void add(char *); /* caller relinquishes ownership */
 
-  const char *item(size_t indx) { return items[indx]; };
-  const char **array() { return (const char **)items; };
+        size_t qty() { return used; };
 
-  void reset();
+        const char *item(size_t indx) { return items[indx]; };
+        const char **array() { return (const char **)items; };
 
-protected:
-  char **items;
-  size_t used;
+        void reset();
 
-private:
-  void grow(size_t n);
+      protected:
+        char **items;
+        size_t used;
 
-  size_t alloc;
+      private:
+        void grow(size_t n);
+
+        size_t alloc;
 };
 
 #endif /* __StringList_h */

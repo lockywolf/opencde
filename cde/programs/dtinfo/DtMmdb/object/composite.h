@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,9 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
 
 #ifndef _composite_h
 #define _composite_h 1
@@ -56,72 +55,63 @@
 #include "object/handler.h"
 
 /******************************************
-* composite object class
-*******************************************/
-class composite: public root
-{
+ * composite object class
+ *******************************************/
+class composite : public root {
 
-public:
-   NEW_AND_DELETE_SIGNATURES(composite);
+      public:
+        NEW_AND_DELETE_SIGNATURES(composite);
 
-   composite(c_code_t c_id = COMPOSITE_CODE);
-   composite(const composite& x);
-   virtual ~composite() {};
+        composite(c_code_t c_id = COMPOSITE_CODE);
+        composite(const composite &x);
+        virtual ~composite(){};
 
-// iteration over components
-   virtual int first() const;
-   virtual handler* get_component(int) ;
-   //virtual handler* get_component(oid_t&) ;
-   virtual void next(int& index) const;
-   
-// number of components 
-   virtual int count() const { return v_sz; };
+        // iteration over components
+        virtual int first() const;
+        virtual handler *get_component(int);
+        // virtual handler* get_component(oid_t&) ;
+        virtual void next(int &index) const;
 
-   MMDB_SIGNATURES(composite);
+        // number of components
+        virtual int count() const { return v_sz; };
 
-// insert a component
-   virtual Boolean insert_component(const oid_t&) {
-     return true; };
+        MMDB_SIGNATURES(composite);
 
-// update a component
-   virtual Boolean update_component(int, const oid_t&) {
-     return true; 
-   };
+        // insert a component
+        virtual Boolean insert_component(const oid_t &) { return true; };
 
-   void set_mode(obj_mode_t, Boolean);
+        // update a component
+        virtual Boolean update_component(int, const oid_t &) { return true; };
 
-   Boolean test_io_mode(int mode);
+        void set_mode(obj_mode_t, Boolean);
 
-// compacted disk representation In and Out functions
-   virtual int cdr_sizeof();
-   virtual io_status cdrOut(buffer&);
-   virtual io_status cdrIn(buffer&);
+        Boolean test_io_mode(int mode);
 
+        // compacted disk representation In and Out functions
+        virtual int cdr_sizeof();
+        virtual io_status cdrOut(buffer &);
+        virtual io_status cdrIn(buffer &);
 
-   Boolean swap_order() {
-     return (storage_ptr) ? storage_ptr -> swap_order() : false;
-   };
+        Boolean swap_order() {
+                return (storage_ptr) ? storage_ptr->swap_order() : false;
+        };
 
-
-protected:
-   unsigned int v_sz;  // number of components
+      protected:
+        unsigned int v_sz; // number of components
 };
 
-typedef composite* compositePtr;
+typedef composite *compositePtr;
 
-class composite_handler : public handler
-{
+class composite_handler : public handler {
 
-public:
-   composite_handler()  {};
-   composite_handler(const oid_t&, storagePtr = 0);
-   virtual ~composite_handler();
+      public:
+        composite_handler(){};
+        composite_handler(const oid_t &, storagePtr = 0);
+        virtual ~composite_handler();
 
-   composite* operator ->();
+        composite *operator->();
 
-   handler* _get_component(int i);
+        handler *_get_component(int i);
 };
-
-   
 
 #endif

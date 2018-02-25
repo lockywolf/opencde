@@ -21,7 +21,7 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $XConsortium: tclUtil.c /main/5 1996/08/08 14:47:12 cde-hp $ */
-/* 
+/*
  * tclUtil.c --
  *
  *	This file contains utility procedures that are used by many Tcl
@@ -57,16 +57,15 @@
  *				in the argument.
  */
 
-#define USE_BRACES		2
-#define BRACES_UNMATCHED	4
+#define USE_BRACES 2
+#define BRACES_UNMATCHED 4
 
 /*
  * Function prototypes for local procedures in this file:
  */
 
-static void		SetupAppendBuffer _ANSI_ARGS_((Interp *iPtr,
-			    int newSpace));
-
+static void SetupAppendBuffer _ANSI_ARGS_((Interp * iPtr, int newSpace));
+
 /*
  *----------------------------------------------------------------------
  *
@@ -101,196 +100,207 @@ static void		SetupAppendBuffer _ANSI_ARGS_((Interp *iPtr,
  *----------------------------------------------------------------------
  */
 
-int
-TclFindElement(interp, list, elementPtr, nextPtr, sizePtr, bracePtr)
-    Tcl_Interp *interp;		/* Interpreter to use for error reporting. 
-				 * If NULL, then no error message is left
-				 * after errors. */
-    register char *list;	/* String containing Tcl list with zero
-				 * or more elements (possibly in braces). */
-    char **elementPtr;		/* Fill in with location of first significant
-				 * character in first element of list. */
-    char **nextPtr;		/* Fill in with location of character just
-				 * after all white space following end of
-				 * argument (i.e. next argument or end of
-				 * list). */
-    int *sizePtr;		/* If non-zero, fill in with size of
-				 * element. */
-    int *bracePtr;		/* If non-zero fill in with non-zero/zero
-				 * to indicate that arg was/wasn't
-				 * in braces. */
+int TclFindElement(interp, list, elementPtr, nextPtr, sizePtr, bracePtr)
+    Tcl_Interp *interp; /* Interpreter to use for error reporting.
+                         * If NULL, then no error message is left
+                         * after errors. */
+register char *list;    /* String containing Tcl list with zero
+                         * or more elements (possibly in braces). */
+char **elementPtr;      /* Fill in with location of first significant
+                         * character in first element of list. */
+char **nextPtr;         /* Fill in with location of character just
+                         * after all white space following end of
+                         * argument (i.e. next argument or end of
+                         * list). */
+int *sizePtr;           /* If non-zero, fill in with size of
+                         * element. */
+int *bracePtr;          /* If non-zero fill in with non-zero/zero
+                         * to indicate that arg was/wasn't
+                         * in braces. */
 {
-    register char *p;
-    int openBraces = 0;
-    int inQuotes = 0;
-    int size;
+        register char *p;
+        int openBraces = 0;
+        int inQuotes = 0;
+        int size;
 
-    /*
-     * Skim off leading white space and check for an opening brace or
-     * quote.   Note:  use of "isascii" below and elsewhere in this
-     * procedure is a temporary hack (7/27/90) because Mx uses characters
-     * with the high-order bit set for some things.  This should probably
-     * be changed back eventually, or all of Tcl should call isascii.
-     */
+        /*
+         * Skim off leading white space and check for an opening brace or
+         * quote.   Note:  use of "isascii" below and elsewhere in this
+         * procedure is a temporary hack (7/27/90) because Mx uses characters
+         * with the high-order bit set for some things.  This should probably
+         * be changed back eventually, or all of Tcl should call isascii.
+         */
 
-    while (isspace(UCHAR(*list))) {
-	list++;
-    }
-    if (*list == '{') {
-	openBraces = 1;
-	list++;
-    } else if (*list == '"') {
-	inQuotes = 1;
-	list++;
-    }
-    if (bracePtr != 0) {
-	*bracePtr = openBraces;
-    }
-    p = list;
+        while (isspace(UCHAR(*list))) {
+                list++;
+        }
+        if (*list == '{') {
+                openBraces = 1;
+                list++;
+        } else if (*list == '"') {
+                inQuotes = 1;
+                list++;
+        }
+        if (bracePtr != 0) {
+                *bracePtr = openBraces;
+        }
+        p = list;
 
-    /*
-     * Find the end of the element (either a space or a close brace or
-     * the end of the string).
-     */
+        /*
+         * Find the end of the element (either a space or a close brace or
+         * the end of the string).
+         */
 
-    while (1) {
-	switch (*p) {
+        while (1) {
+                switch (*p) {
 
-	    /*
-	     * Open brace: don't treat specially unless the element is
-	     * in braces.  In this case, keep a nesting count.
-	     */
+                        /*
+                         * Open brace: don't treat specially unless the element
+                         * is in braces.  In this case, keep a nesting count.
+                         */
 
-	    case '{':
-		if (openBraces != 0) {
-		    openBraces++;
-		}
-		break;
+                case '{':
+                        if (openBraces != 0) {
+                                openBraces++;
+                        }
+                        break;
 
-	    /*
-	     * Close brace: if element is in braces, keep nesting
-	     * count and quit when the last close brace is seen.
-	     */
+                        /*
+                         * Close brace: if element is in braces, keep nesting
+                         * count and quit when the last close brace is seen.
+                         */
 
-	    case '}':
-		if (openBraces == 1) {
-		    char *p2;
+                case '}':
+                        if (openBraces == 1) {
+                                char *p2;
 
-		    size = p - list;
-		    p++;
-		    if (isspace(UCHAR(*p)) || (*p == 0)) {
-			goto done;
-		    }
-		    for (p2 = p; (*p2 != 0) && (!isspace(UCHAR(*p2)))
-			    && (p2 < p+20); p2++) {
-			/* null body */
-		    }
-		    if (interp != NULL) {
-			Tcl_ResetResult(interp);
-			sprintf(interp->result,
-				"list element in braces followed by \"%.*s\" instead of space",
-				(int) (p2-p), p);
-		    }
-		    return TCL_ERROR;
-		} else if (openBraces != 0) {
-		    openBraces--;
-		}
-		break;
+                                size = p - list;
+                                p++;
+                                if (isspace(UCHAR(*p)) || (*p == 0)) {
+                                        goto done;
+                                }
+                                for (p2 = p;
+                                     (*p2 != 0) && (!isspace(UCHAR(*p2))) &&
+                                     (p2 < p + 20);
+                                     p2++) {
+                                        /* null body */
+                                }
+                                if (interp != NULL) {
+                                        Tcl_ResetResult(interp);
+                                        sprintf(interp->result,
+                                                "list element in braces "
+                                                "followed by \"%.*s\" instead "
+                                                "of space",
+                                                (int)(p2 - p), p);
+                                }
+                                return TCL_ERROR;
+                        } else if (openBraces != 0) {
+                                openBraces--;
+                        }
+                        break;
 
-	    /*
-	     * Backslash:  skip over everything up to the end of the
-	     * backslash sequence.
-	     */
+                        /*
+                         * Backslash:  skip over everything up to the end of the
+                         * backslash sequence.
+                         */
 
-	    case '\\': {
-		int size;
+                case '\\': {
+                        int size;
 
-		(void) Tcl_Backslash(p, &size);
-		p += size - 1;
-		break;
-	    }
+                        (void)Tcl_Backslash(p, &size);
+                        p += size - 1;
+                        break;
+                }
 
-	    /*
-	     * Space: ignore if element is in braces or quotes;  otherwise
-	     * terminate element.
-	     */
+                        /*
+                         * Space: ignore if element is in braces or quotes;
+                         * otherwise terminate element.
+                         */
 
-	    case ' ':
-	    case '\f':
-	    case '\n':
-	    case '\r':
-	    case '\t':
-	    case '\v':
-		if ((openBraces == 0) && !inQuotes) {
-		    size = p - list;
-		    goto done;
-		}
-		break;
+                case ' ':
+                case '\f':
+                case '\n':
+                case '\r':
+                case '\t':
+                case '\v':
+                        if ((openBraces == 0) && !inQuotes) {
+                                size = p - list;
+                                goto done;
+                        }
+                        break;
 
-	    /*
-	     * Double-quote:  if element is in quotes then terminate it.
-	     */
+                        /*
+                         * Double-quote:  if element is in quotes then terminate
+                         * it.
+                         */
 
-	    case '"':
-		if (inQuotes) {
-		    char *p2;
+                case '"':
+                        if (inQuotes) {
+                                char *p2;
 
-		    size = p-list;
-		    p++;
-		    if (isspace(UCHAR(*p)) || (*p == 0)) {
-			goto done;
-		    }
-		    for (p2 = p; (*p2 != 0) && (!isspace(UCHAR(*p2)))
-			    && (p2 < p+20); p2++) {
-			/* null body */
-		    }
-		    if (interp != NULL) {
-			Tcl_ResetResult(interp);
-			sprintf(interp->result,
-				"list element in quotes followed by \"%.*s\" %s", (int) (p2-p), p,
-				"instead of space");
-		    }
-		    return TCL_ERROR;
-		}
-		break;
+                                size = p - list;
+                                p++;
+                                if (isspace(UCHAR(*p)) || (*p == 0)) {
+                                        goto done;
+                                }
+                                for (p2 = p;
+                                     (*p2 != 0) && (!isspace(UCHAR(*p2))) &&
+                                     (p2 < p + 20);
+                                     p2++) {
+                                        /* null body */
+                                }
+                                if (interp != NULL) {
+                                        Tcl_ResetResult(interp);
+                                        sprintf(interp->result,
+                                                "list element in quotes "
+                                                "followed by \"%.*s\" %s",
+                                                (int)(p2 - p), p,
+                                                "instead of space");
+                                }
+                                return TCL_ERROR;
+                        }
+                        break;
 
-	    /*
-	     * End of list:  terminate element.
-	     */
+                        /*
+                         * End of list:  terminate element.
+                         */
 
-	    case 0:
-		if (openBraces != 0) {
-		    if (interp != NULL) {
-			Tcl_SetResult(interp, "unmatched open brace in list",
-				TCL_STATIC);
-		    }
-		    return TCL_ERROR;
-		} else if (inQuotes) {
-		    if (interp != NULL) {
-			Tcl_SetResult(interp, "unmatched open quote in list",
-				TCL_STATIC);
-		    }
-		    return TCL_ERROR;
-		}
-		size = p - list;
-		goto done;
+                case 0:
+                        if (openBraces != 0) {
+                                if (interp != NULL) {
+                                        Tcl_SetResult(
+                                            interp,
+                                            "unmatched open brace in list",
+                                            TCL_STATIC);
+                                }
+                                return TCL_ERROR;
+                        } else if (inQuotes) {
+                                if (interp != NULL) {
+                                        Tcl_SetResult(
+                                            interp,
+                                            "unmatched open quote in list",
+                                            TCL_STATIC);
+                                }
+                                return TCL_ERROR;
+                        }
+                        size = p - list;
+                        goto done;
+                }
+                p++;
+        }
 
-	}
-	p++;
-    }
-
-    done:
-    while (isspace(UCHAR(*p))) {
-	p++;
-    }
-    *elementPtr = list;
-    *nextPtr = p;
-    if (sizePtr != 0) {
-	*sizePtr = size;
-    }
-    return TCL_OK;
+done:
+        while (isspace(UCHAR(*p))) {
+                p++;
+        }
+        *elementPtr = list;
+        *nextPtr = p;
+        if (sizePtr != 0) {
+                *sizePtr = size;
+        }
+        return TCL_OK;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -311,30 +321,29 @@ TclFindElement(interp, list, elementPtr, nextPtr, sizePtr, bracePtr)
  *----------------------------------------------------------------------
  */
 
-void
-TclCopyAndCollapse(count, src, dst)
-    int count;			/* Total number of characters to copy
-				 * from src. */
-    register char *src;		/* Copy from here... */
-    register char *dst;		/* ... to here. */
+void TclCopyAndCollapse(count, src,
+                        dst) int count; /* Total number of characters to copy
+                                         * from src. */
+register char *src;                     /* Copy from here... */
+register char *dst;                     /* ... to here. */
 {
-    register char c;
-    int numRead;
+        register char c;
+        int numRead;
 
-    for (c = *src; count > 0; src++, c = *src, count--) {
-	if (c == '\\') {
-	    *dst = Tcl_Backslash(src, &numRead);
-	    dst++;
-	    src += numRead-1;
-	    count -= numRead-1;
-	} else {
-	    *dst = c;
-	    dst++;
-	}
-    }
-    *dst = 0;
+        for (c = *src; count > 0; src++, c = *src, count--) {
+                if (c == '\\') {
+                        *dst = Tcl_Backslash(src, &numRead);
+                        dst++;
+                        src += numRead - 1;
+                        count -= numRead - 1;
+                } else {
+                        *dst = c;
+                        dst++;
+                }
+        }
+        *dst = 0;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -365,72 +374,73 @@ TclCopyAndCollapse(count, src, dst)
  *----------------------------------------------------------------------
  */
 
-int
-Tcl_SplitList(interp, list, argcPtr, argvPtr)
-    Tcl_Interp *interp;		/* Interpreter to use for error reporting. 
-				 * If NULL, then no error message is left. */
-    char *list;			/* Pointer to string with list structure. */
-    int *argcPtr;		/* Pointer to location to fill in with
-				 * the number of elements in the list. */
-    char ***argvPtr;		/* Pointer to place to store pointer to array
-				 * of pointers to list elements. */
+int Tcl_SplitList(interp, list, argcPtr, argvPtr)
+    Tcl_Interp *interp; /* Interpreter to use for error reporting.
+                         * If NULL, then no error message is left. */
+char *list;             /* Pointer to string with list structure. */
+int *argcPtr;           /* Pointer to location to fill in with
+                         * the number of elements in the list. */
+char ***argvPtr;        /* Pointer to place to store pointer to array
+                         * of pointers to list elements. */
 {
-    char **argv;
-    register char *p;
-    int size, i, result, elSize, brace;
-    char *element;
+        char **argv;
+        register char *p;
+        int size, i, result, elSize, brace;
+        char *element;
 
-    /*
-     * Figure out how much space to allocate.  There must be enough
-     * space for both the array of pointers and also for a copy of
-     * the list.  To estimate the number of pointers needed, count
-     * the number of space characters in the list.
-     */
+        /*
+         * Figure out how much space to allocate.  There must be enough
+         * space for both the array of pointers and also for a copy of
+         * the list.  To estimate the number of pointers needed, count
+         * the number of space characters in the list.
+         */
 
-    for (size = 1, p = list; *p != 0; p++) {
-	if (isspace(UCHAR(*p))) {
-	    size++;
-	}
-    }
-    size++;			/* Leave space for final NULL pointer. */
-    argv = (char **) ckalloc((unsigned)
-	    ((size * sizeof(char *)) + (p - list) + 1));
-    for (i = 0, p = ((char *) argv) + size*sizeof(char *);
-	    *list != 0; i++) {
-	result = TclFindElement(interp, list, &element, &list, &elSize, &brace);
-	if (result != TCL_OK) {
-	    ckfree((char *) argv);
-	    return result;
-	}
-	if (*element == 0) {
-	    break;
-	}
-	if (i >= size) {
-	    ckfree((char *) argv);
-	    if (interp != NULL) {
-		Tcl_SetResult(interp, "internal error in Tcl_SplitList",
-			TCL_STATIC);
-	    }
-	    return TCL_ERROR;
-	}
-	argv[i] = p;
-	if (brace) {
-	    strncpy(p, element, (size_t) elSize);
-	    p += elSize;
-	    *p = 0;
-	    p++;
-	} else {
-	    TclCopyAndCollapse(elSize, element, p);
-	    p += elSize+1;
-	}
-    }
+        for (size = 1, p = list; *p != 0; p++) {
+                if (isspace(UCHAR(*p))) {
+                        size++;
+                }
+        }
+        size++; /* Leave space for final NULL pointer. */
+        argv = (char **)ckalloc(
+            (unsigned)((size * sizeof(char *)) + (p - list) + 1));
+        for (i = 0, p = ((char *)argv) + size * sizeof(char *); *list != 0;
+             i++) {
+                result = TclFindElement(interp, list, &element, &list, &elSize,
+                                        &brace);
+                if (result != TCL_OK) {
+                        ckfree((char *)argv);
+                        return result;
+                }
+                if (*element == 0) {
+                        break;
+                }
+                if (i >= size) {
+                        ckfree((char *)argv);
+                        if (interp != NULL) {
+                                Tcl_SetResult(interp,
+                                              "internal error in Tcl_SplitList",
+                                              TCL_STATIC);
+                        }
+                        return TCL_ERROR;
+                }
+                argv[i] = p;
+                if (brace) {
+                        strncpy(p, element, (size_t)elSize);
+                        p += elSize;
+                        *p = 0;
+                        p++;
+                } else {
+                        TclCopyAndCollapse(elSize, element, p);
+                        p += elSize + 1;
+                }
+        }
 
-    argv[i] = NULL;
-    *argvPtr = argv;
-    *argcPtr = i;
-    return TCL_OK;
+        argv[i] = NULL;
+        *argvPtr = argv;
+        *argcPtr = i;
+        return TCL_OK;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -454,106 +464,105 @@ Tcl_SplitList(interp, list, argcPtr, argvPtr)
  *----------------------------------------------------------------------
  */
 
-int
-Tcl_ScanElement(string, flagPtr)
-    char *string;		/* String to convert to Tcl list element. */
-    int *flagPtr;		/* Where to store information to guide
-				 * Tcl_ConvertElement. */
+int Tcl_ScanElement(
+    string, flagPtr) char *string; /* String to convert to Tcl list element. */
+int *flagPtr;                      /* Where to store information to guide
+                                    * Tcl_ConvertElement. */
 {
-    int flags, nestingLevel;
-    register char *p;
+        int flags, nestingLevel;
+        register char *p;
 
-    /*
-     * This procedure and Tcl_ConvertElement together do two things:
-     *
-     * 1. They produce a proper list, one that will yield back the
-     * argument strings when evaluated or when disassembled with
-     * Tcl_SplitList.  This is the most important thing.
-     * 
-     * 2. They try to produce legible output, which means minimizing the
-     * use of backslashes (using braces instead).  However, there are
-     * some situations where backslashes must be used (e.g. an element
-     * like "{abc": the leading brace will have to be backslashed.  For
-     * each element, one of three things must be done:
-     *
-     * (a) Use the element as-is (it doesn't contain anything special
-     * characters).  This is the most desirable option.
-     *
-     * (b) Enclose the element in braces, but leave the contents alone.
-     * This happens if the element contains embedded space, or if it
-     * contains characters with special interpretation ($, [, ;, or \),
-     * or if it starts with a brace or double-quote, or if there are
-     * no characters in the element.
-     *
-     * (c) Don't enclose the element in braces, but add backslashes to
-     * prevent special interpretation of special characters.  This is a
-     * last resort used when the argument would normally fall under case
-     * (b) but contains unmatched braces.  It also occurs if the last
-     * character of the argument is a backslash or if the element contains
-     * a backslash followed by newline.
-     *
-     * The procedure figures out how many bytes will be needed to store
-     * the result (actually, it overestimates).  It also collects information
-     * about the element in the form of a flags word.
-     */
+        /*
+         * This procedure and Tcl_ConvertElement together do two things:
+         *
+         * 1. They produce a proper list, one that will yield back the
+         * argument strings when evaluated or when disassembled with
+         * Tcl_SplitList.  This is the most important thing.
+         *
+         * 2. They try to produce legible output, which means minimizing the
+         * use of backslashes (using braces instead).  However, there are
+         * some situations where backslashes must be used (e.g. an element
+         * like "{abc": the leading brace will have to be backslashed.  For
+         * each element, one of three things must be done:
+         *
+         * (a) Use the element as-is (it doesn't contain anything special
+         * characters).  This is the most desirable option.
+         *
+         * (b) Enclose the element in braces, but leave the contents alone.
+         * This happens if the element contains embedded space, or if it
+         * contains characters with special interpretation ($, [, ;, or \),
+         * or if it starts with a brace or double-quote, or if there are
+         * no characters in the element.
+         *
+         * (c) Don't enclose the element in braces, but add backslashes to
+         * prevent special interpretation of special characters.  This is a
+         * last resort used when the argument would normally fall under case
+         * (b) but contains unmatched braces.  It also occurs if the last
+         * character of the argument is a backslash or if the element contains
+         * a backslash followed by newline.
+         *
+         * The procedure figures out how many bytes will be needed to store
+         * the result (actually, it overestimates).  It also collects
+         * information about the element in the form of a flags word.
+         */
 
-    nestingLevel = 0;
-    flags = 0;
-    if (string == NULL) {
-	string = "";
-    }
-    p = string;
-    if ((*p == '{') || (*p == '"') || (*p == 0)) {
-	flags |= USE_BRACES;
-    }
-    for ( ; *p != 0; p++) {
-	switch (*p) {
-	    case '{':
-		nestingLevel++;
-		break;
-	    case '}':
-		nestingLevel--;
-		if (nestingLevel < 0) {
-		    flags |= TCL_DONT_USE_BRACES|BRACES_UNMATCHED;
-		}
-		break;
-	    case '[':
-	    case '$':
-	    case ';':
-	    case ' ':
-	    case '\f':
-	    case '\n':
-	    case '\r':
-	    case '\t':
-	    case '\v':
-		flags |= USE_BRACES;
-		break;
-	    case '\\':
-		if ((p[1] == 0) || (p[1] == '\n')) {
-		    flags = TCL_DONT_USE_BRACES;
-		} else {
-		    int size;
+        nestingLevel = 0;
+        flags = 0;
+        if (string == NULL) {
+                string = "";
+        }
+        p = string;
+        if ((*p == '{') || (*p == '"') || (*p == 0)) {
+                flags |= USE_BRACES;
+        }
+        for (; *p != 0; p++) {
+                switch (*p) {
+                case '{':
+                        nestingLevel++;
+                        break;
+                case '}':
+                        nestingLevel--;
+                        if (nestingLevel < 0) {
+                                flags |= TCL_DONT_USE_BRACES | BRACES_UNMATCHED;
+                        }
+                        break;
+                case '[':
+                case '$':
+                case ';':
+                case ' ':
+                case '\f':
+                case '\n':
+                case '\r':
+                case '\t':
+                case '\v':
+                        flags |= USE_BRACES;
+                        break;
+                case '\\':
+                        if ((p[1] == 0) || (p[1] == '\n')) {
+                                flags = TCL_DONT_USE_BRACES;
+                        } else {
+                                int size;
 
-		    (void) Tcl_Backslash(p, &size);
-		    p += size-1;
-		    flags |= USE_BRACES;
-		}
-		break;
-	}
-    }
-    if (nestingLevel != 0) {
-	flags = TCL_DONT_USE_BRACES | BRACES_UNMATCHED;
-    }
-    *flagPtr = flags;
+                                (void)Tcl_Backslash(p, &size);
+                                p += size - 1;
+                                flags |= USE_BRACES;
+                        }
+                        break;
+                }
+        }
+        if (nestingLevel != 0) {
+                flags = TCL_DONT_USE_BRACES | BRACES_UNMATCHED;
+        }
+        *flagPtr = flags;
 
-    /*
-     * Allow enough space to backslash every character plus leave
-     * two spaces for braces.
-     */
+        /*
+         * Allow enough space to backslash every character plus leave
+         * two spaces for braces.
+         */
 
-    return 2*(p-string) + 2;
+        return 2 * (p - string) + 2;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -576,115 +585,117 @@ Tcl_ScanElement(string, flagPtr)
  *----------------------------------------------------------------------
  */
 
-int
-Tcl_ConvertElement(src, dst, flags)
-    register char *src;		/* Source information for list element. */
-    char *dst;			/* Place to put list-ified element. */
-    int flags;			/* Flags produced by Tcl_ScanElement. */
+int Tcl_ConvertElement(
+    src, dst,
+    flags) register char *src; /* Source information for list element. */
+char *dst;                     /* Place to put list-ified element. */
+int flags;                     /* Flags produced by Tcl_ScanElement. */
 {
-    register char *p = dst;
+        register char *p = dst;
 
-    /*
-     * See the comment block at the beginning of the Tcl_ScanElement
-     * code for details of how this works.
-     */
+        /*
+         * See the comment block at the beginning of the Tcl_ScanElement
+         * code for details of how this works.
+         */
 
-    if ((src == NULL) || (*src == 0)) {
-	p[0] = '{';
-	p[1] = '}';
-	p[2] = 0;
-	return 2;
-    }
-    if ((flags & USE_BRACES) && !(flags & TCL_DONT_USE_BRACES)) {
-	*p = '{';
-	p++;
-	for ( ; *src != 0; src++, p++) {
-	    *p = *src;
-	}
-	*p = '}';
-	p++;
-    } else {
-	if (*src == '{') {
-	    /*
-	     * Can't have a leading brace unless the whole element is
-	     * enclosed in braces.  Add a backslash before the brace.
-	     * Furthermore, this may destroy the balance between open
-	     * and close braces, so set BRACES_UNMATCHED.
-	     */
+        if ((src == NULL) || (*src == 0)) {
+                p[0] = '{';
+                p[1] = '}';
+                p[2] = 0;
+                return 2;
+        }
+        if ((flags & USE_BRACES) && !(flags & TCL_DONT_USE_BRACES)) {
+                *p = '{';
+                p++;
+                for (; *src != 0; src++, p++) {
+                        *p = *src;
+                }
+                *p = '}';
+                p++;
+        } else {
+                if (*src == '{') {
+                        /*
+                         * Can't have a leading brace unless the whole element
+                         * is enclosed in braces.  Add a backslash before the
+                         * brace. Furthermore, this may destroy the balance
+                         * between open and close braces, so set
+                         * BRACES_UNMATCHED.
+                         */
 
-	    p[0] = '\\';
-	    p[1] = '{';
-	    p += 2;
-	    src++;
-	    flags |= BRACES_UNMATCHED;
-	}
-	for (; *src != 0 ; src++) {
-	    switch (*src) {
-		case ']':
-		case '[':
-		case '$':
-		case ';':
-		case ' ':
-		case '\\':
-		case '"':
-		    *p = '\\';
-		    p++;
-		    break;
-		case '{':
-		case '}':
-		    /*
-		     * It may not seem necessary to backslash braces, but
-		     * it is.  The reason for this is that the resulting
-		     * list element may actually be an element of a sub-list
-		     * enclosed in braces (e.g. if Tcl_DStringStartSublist
-		     * has been invoked), so there may be a brace mismatch
-		     * if the braces aren't backslashed.
-		     */
+                        p[0] = '\\';
+                        p[1] = '{';
+                        p += 2;
+                        src++;
+                        flags |= BRACES_UNMATCHED;
+                }
+                for (; *src != 0; src++) {
+                        switch (*src) {
+                        case ']':
+                        case '[':
+                        case '$':
+                        case ';':
+                        case ' ':
+                        case '\\':
+                        case '"':
+                                *p = '\\';
+                                p++;
+                                break;
+                        case '{':
+                        case '}':
+                                /*
+                                 * It may not seem necessary to backslash
+                                 * braces, but it is.  The reason for this is
+                                 * that the resulting list element may actually
+                                 * be an element of a sub-list enclosed in
+                                 * braces (e.g. if Tcl_DStringStartSublist has
+                                 * been invoked), so there may be a brace
+                                 * mismatch if the braces aren't backslashed.
+                                 */
 
-		    if (flags & BRACES_UNMATCHED) {
-			*p = '\\';
-			p++;
-		    }
-		    break;
-		case '\f':
-		    *p = '\\';
-		    p++;
-		    *p = 'f';
-		    p++;
-		    continue;
-		case '\n':
-		    *p = '\\';
-		    p++;
-		    *p = 'n';
-		    p++;
-		    continue;
-		case '\r':
-		    *p = '\\';
-		    p++;
-		    *p = 'r';
-		    p++;
-		    continue;
-		case '\t':
-		    *p = '\\';
-		    p++;
-		    *p = 't';
-		    p++;
-		    continue;
-		case '\v':
-		    *p = '\\';
-		    p++;
-		    *p = 'v';
-		    p++;
-		    continue;
-	    }
-	    *p = *src;
-	    p++;
-	}
-    }
-    *p = '\0';
-    return p-dst;
+                                if (flags & BRACES_UNMATCHED) {
+                                        *p = '\\';
+                                        p++;
+                                }
+                                break;
+                        case '\f':
+                                *p = '\\';
+                                p++;
+                                *p = 'f';
+                                p++;
+                                continue;
+                        case '\n':
+                                *p = '\\';
+                                p++;
+                                *p = 'n';
+                                p++;
+                                continue;
+                        case '\r':
+                                *p = '\\';
+                                p++;
+                                *p = 'r';
+                                p++;
+                                continue;
+                        case '\t':
+                                *p = '\\';
+                                p++;
+                                *p = 't';
+                                p++;
+                                continue;
+                        case '\v':
+                                *p = '\\';
+                                p++;
+                                *p = 'v';
+                                p++;
+                                continue;
+                        }
+                        *p = *src;
+                        p++;
+                }
+        }
+        *p = '\0';
+        return p - dst;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -706,56 +717,54 @@ Tcl_ConvertElement(src, dst, flags)
  *----------------------------------------------------------------------
  */
 
-char *
-Tcl_Merge(argc, argv)
-    int argc;			/* How many strings to merge. */
-    char **argv;		/* Array of string values. */
+char *Tcl_Merge(argc, argv) int argc; /* How many strings to merge. */
+char **argv;                          /* Array of string values. */
 {
-#   define LOCAL_SIZE 20
-    int localFlags[LOCAL_SIZE], *flagPtr;
-    int numChars;
-    char *result;
-    register char *dst;
-    int i;
+#define LOCAL_SIZE 20
+        int localFlags[LOCAL_SIZE], *flagPtr;
+        int numChars;
+        char *result;
+        register char *dst;
+        int i;
 
-    /*
-     * Pass 1: estimate space, gather flags.
-     */
+        /*
+         * Pass 1: estimate space, gather flags.
+         */
 
-    if (argc <= LOCAL_SIZE) {
-	flagPtr = localFlags;
-    } else {
-	flagPtr = (int *) ckalloc((unsigned) argc*sizeof(int));
-    }
-    numChars = 1;
-    for (i = 0; i < argc; i++) {
-	numChars += Tcl_ScanElement(argv[i], &flagPtr[i]) + 1;
-    }
+        if (argc <= LOCAL_SIZE) {
+                flagPtr = localFlags;
+        } else {
+                flagPtr = (int *)ckalloc((unsigned)argc * sizeof(int));
+        }
+        numChars = 1;
+        for (i = 0; i < argc; i++) {
+                numChars += Tcl_ScanElement(argv[i], &flagPtr[i]) + 1;
+        }
 
-    /*
-     * Pass two: copy into the result area.
-     */
+        /*
+         * Pass two: copy into the result area.
+         */
 
-    result = (char *) ckalloc((unsigned) numChars);
-    dst = result;
-    for (i = 0; i < argc; i++) {
-	numChars = Tcl_ConvertElement(argv[i], dst, flagPtr[i]);
-	dst += numChars;
-	*dst = ' ';
-	dst++;
-    }
-    if (dst == result) {
-	*dst = 0;
-    } else {
-	dst[-1] = 0;
-    }
+        result = (char *)ckalloc((unsigned)numChars);
+        dst = result;
+        for (i = 0; i < argc; i++) {
+                numChars = Tcl_ConvertElement(argv[i], dst, flagPtr[i]);
+                dst += numChars;
+                *dst = ' ';
+                dst++;
+        }
+        if (dst == result) {
+                *dst = 0;
+        } else {
+                dst[-1] = 0;
+        }
 
-    if (flagPtr != localFlags) {
-	ckfree((char *) flagPtr);
-    }
-    return result;
+        if (flagPtr != localFlags) {
+                ckfree((char *)flagPtr);
+        }
+        return result;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -775,58 +784,56 @@ Tcl_Merge(argc, argv)
  *----------------------------------------------------------------------
  */
 
-char *
-Tcl_Concat(argc, argv)
-    int argc;			/* Number of strings to concatenate. */
-    char **argv;		/* Array of strings to concatenate. */
+char *Tcl_Concat(argc, argv) int argc; /* Number of strings to concatenate. */
+char **argv;                           /* Array of strings to concatenate. */
 {
-    int totalSize, i;
-    register char *p;
-    char *result;
+        int totalSize, i;
+        register char *p;
+        char *result;
 
-    for (totalSize = 1, i = 0; i < argc; i++) {
-	totalSize += strlen(argv[i]) + 1;
-    }
-    result = (char *) ckalloc((unsigned) totalSize);
-    if (argc == 0) {
-	*result = '\0';
-	return result;
-    }
-    for (p = result, i = 0; i < argc; i++) {
-	char *element;
-	int length;
+        for (totalSize = 1, i = 0; i < argc; i++) {
+                totalSize += strlen(argv[i]) + 1;
+        }
+        result = (char *)ckalloc((unsigned)totalSize);
+        if (argc == 0) {
+                *result = '\0';
+                return result;
+        }
+        for (p = result, i = 0; i < argc; i++) {
+                char *element;
+                int length;
 
-	/*
-	 * Clip white space off the front and back of the string
-	 * to generate a neater result, and ignore any empty
-	 * elements.
-	 */
+                /*
+                 * Clip white space off the front and back of the string
+                 * to generate a neater result, and ignore any empty
+                 * elements.
+                 */
 
-	element = argv[i];
-	while (isspace(UCHAR(*element))) {
-	    element++;
-	}
-	for (length = strlen(element);
-		(length > 0) && (isspace(UCHAR(element[length-1])));
-		length--) {
-	    /* Null loop body. */
-	}
-	if (length == 0) {
-	    continue;
-	}
-	(void) strncpy(p, element, (size_t) length);
-	p += length;
-	*p = ' ';
-	p++;
-    }
-    if (p != result) {
-	p[-1] = 0;
-    } else {
-	*p = 0;
-    }
-    return result;
+                element = argv[i];
+                while (isspace(UCHAR(*element))) {
+                        element++;
+                }
+                for (length = strlen(element);
+                     (length > 0) && (isspace(UCHAR(element[length - 1])));
+                     length--) {
+                        /* Null loop body. */
+                }
+                if (length == 0) {
+                        continue;
+                }
+                (void)strncpy(p, element, (size_t)length);
+                p += length;
+                *p = ' ';
+                p++;
+        }
+        if (p != result) {
+                p[-1] = 0;
+        } else {
+                *p = 0;
+        }
+        return result;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -846,124 +853,125 @@ Tcl_Concat(argc, argv)
  *----------------------------------------------------------------------
  */
 
-int
-Tcl_StringMatch(string, pattern)
-    register char *string;	/* String. */
-    register char *pattern;	/* Pattern, which may contain
-				 * special characters. */
+int Tcl_StringMatch(string, pattern) register char *string; /* String. */
+register char *pattern; /* Pattern, which may contain
+                         * special characters. */
 {
-    char c2;
+        char c2;
 
-    while (1) {
-	/* See if we're at the end of both the pattern and the string.
-	 * If so, we succeeded.  If we're at the end of the pattern
-	 * but not at the end of the string, we failed.
-	 */
-	
-	if (*pattern == 0) {
-	    if (*string == 0) {
-		return 1;
-	    } else {
-		return 0;
-	    }
-	}
-	if ((*string == 0) && (*pattern != '*')) {
-	    return 0;
-	}
+        while (1) {
+                /* See if we're at the end of both the pattern and the string.
+                 * If so, we succeeded.  If we're at the end of the pattern
+                 * but not at the end of the string, we failed.
+                 */
 
-	/* Check for a "*" as the next pattern character.  It matches
-	 * any substring.  We handle this by calling ourselves
-	 * recursively for each postfix of string, until either we
-	 * match or we reach the end of the string.
-	 */
-	
-	if (*pattern == '*') {
-	    pattern += 1;
-	    if (*pattern == 0) {
-		return 1;
-	    }
-	    while (1) {
-		if (Tcl_StringMatch(string, pattern)) {
-		    return 1;
-		}
-		if (*string == 0) {
-		    return 0;
-		}
-		string += 1;
-	    }
-	}
-    
-	/* Check for a "?" as the next pattern character.  It matches
-	 * any single character.
-	 */
+                if (*pattern == 0) {
+                        if (*string == 0) {
+                                return 1;
+                        } else {
+                                return 0;
+                        }
+                }
+                if ((*string == 0) && (*pattern != '*')) {
+                        return 0;
+                }
 
-	if (*pattern == '?') {
-	    goto thisCharOK;
-	}
+                /* Check for a "*" as the next pattern character.  It matches
+                 * any substring.  We handle this by calling ourselves
+                 * recursively for each postfix of string, until either we
+                 * match or we reach the end of the string.
+                 */
 
-	/* Check for a "[" as the next pattern character.  It is followed
-	 * by a list of characters that are acceptable, or by a range
-	 * (two characters separated by "-").
-	 */
-	
-	if (*pattern == '[') {
-	    pattern += 1;
-	    while (1) {
-		if ((*pattern == ']') || (*pattern == 0)) {
-		    return 0;
-		}
-		if (*pattern == *string) {
-		    break;
-		}
-		if (pattern[1] == '-') {
-		    c2 = pattern[2];
-		    if (c2 == 0) {
-			return 0;
-		    }
-		    if ((*pattern <= *string) && (c2 >= *string)) {
-			break;
-		    }
-		    if ((*pattern >= *string) && (c2 <= *string)) {
-			break;
-		    }
-		    pattern += 2;
-		}
-		pattern += 1;
-	    }
-	    while (*pattern != ']') {
-		if (*pattern == 0) {
-		    pattern--;
-		    break;
-		}
-		pattern += 1;
-	    }
-	    goto thisCharOK;
-	}
-    
-	/* If the next pattern character is '/', just strip off the '/'
-	 * so we do exact matching on the character that follows.
-	 */
-	
-	if (*pattern == '\\') {
-	    pattern += 1;
-	    if (*pattern == 0) {
-		return 0;
-	    }
-	}
+                if (*pattern == '*') {
+                        pattern += 1;
+                        if (*pattern == 0) {
+                                return 1;
+                        }
+                        while (1) {
+                                if (Tcl_StringMatch(string, pattern)) {
+                                        return 1;
+                                }
+                                if (*string == 0) {
+                                        return 0;
+                                }
+                                string += 1;
+                        }
+                }
 
-	/* There's no special character.  Just make sure that the next
-	 * characters of each string match.
-	 */
-	
-	if (*pattern != *string) {
-	    return 0;
-	}
+                /* Check for a "?" as the next pattern character.  It matches
+                 * any single character.
+                 */
 
-	thisCharOK: pattern += 1;
-	string += 1;
-    }
+                if (*pattern == '?') {
+                        goto thisCharOK;
+                }
+
+                /* Check for a "[" as the next pattern character.  It is
+                 * followed by a list of characters that are acceptable, or by a
+                 * range (two characters separated by "-").
+                 */
+
+                if (*pattern == '[') {
+                        pattern += 1;
+                        while (1) {
+                                if ((*pattern == ']') || (*pattern == 0)) {
+                                        return 0;
+                                }
+                                if (*pattern == *string) {
+                                        break;
+                                }
+                                if (pattern[1] == '-') {
+                                        c2 = pattern[2];
+                                        if (c2 == 0) {
+                                                return 0;
+                                        }
+                                        if ((*pattern <= *string) &&
+                                            (c2 >= *string)) {
+                                                break;
+                                        }
+                                        if ((*pattern >= *string) &&
+                                            (c2 <= *string)) {
+                                                break;
+                                        }
+                                        pattern += 2;
+                                }
+                                pattern += 1;
+                        }
+                        while (*pattern != ']') {
+                                if (*pattern == 0) {
+                                        pattern--;
+                                        break;
+                                }
+                                pattern += 1;
+                        }
+                        goto thisCharOK;
+                }
+
+                /* If the next pattern character is '/', just strip off the '/'
+                 * so we do exact matching on the character that follows.
+                 */
+
+                if (*pattern == '\\') {
+                        pattern += 1;
+                        if (*pattern == 0) {
+                                return 0;
+                        }
+                }
+
+                /* There's no special character.  Just make sure that the next
+                 * characters of each string match.
+                 */
+
+                if (*pattern != *string) {
+                        return 0;
+                }
+
+        thisCharOK:
+                pattern += 1;
+                string += 1;
+        }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -981,59 +989,58 @@ Tcl_StringMatch(string, pattern)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_SetResult(interp, string, freeProc)
-    Tcl_Interp *interp;		/* Interpreter with which to associate the
-				 * return value. */
-    char *string;		/* Value to be returned.  If NULL,
-				 * the result is set to an empty string. */
-    Tcl_FreeProc *freeProc;	/* Gives information about the string:
-				 * TCL_STATIC, TCL_VOLATILE, or the address
-				 * of a Tcl_FreeProc such as free. */
+void Tcl_SetResult(interp, string, freeProc)
+    Tcl_Interp *interp; /* Interpreter with which to associate the
+                         * return value. */
+char *string;           /* Value to be returned.  If NULL,
+                         * the result is set to an empty string. */
+Tcl_FreeProc *freeProc; /* Gives information about the string:
+                         * TCL_STATIC, TCL_VOLATILE, or the address
+                         * of a Tcl_FreeProc such as free. */
 {
-    register Interp *iPtr = (Interp *) interp;
-    int length;
-    Tcl_FreeProc *oldFreeProc = iPtr->freeProc;
-    char *oldResult = iPtr->result;
+        register Interp *iPtr = (Interp *)interp;
+        int length;
+        Tcl_FreeProc *oldFreeProc = iPtr->freeProc;
+        char *oldResult = iPtr->result;
 
-    if (string == NULL) {
-	iPtr->resultSpace[0] = 0;
-	iPtr->result = iPtr->resultSpace;
-	iPtr->freeProc = 0;
-    } else if (freeProc == TCL_DYNAMIC) {
-	iPtr->result = string;
-	iPtr->freeProc = TCL_DYNAMIC;
-    } else if (freeProc == TCL_VOLATILE) {
-	length = strlen(string);
-	if (length > TCL_RESULT_SIZE) {
-	    iPtr->result = (char *) ckalloc((unsigned) length+1);
-	    iPtr->freeProc = TCL_DYNAMIC;
-	} else {
-	    iPtr->result = iPtr->resultSpace;
-	    iPtr->freeProc = 0;
-	}
-	strcpy(iPtr->result, string);
-    } else {
-	iPtr->result = string;
-	iPtr->freeProc = freeProc;
-    }
+        if (string == NULL) {
+                iPtr->resultSpace[0] = 0;
+                iPtr->result = iPtr->resultSpace;
+                iPtr->freeProc = 0;
+        } else if (freeProc == TCL_DYNAMIC) {
+                iPtr->result = string;
+                iPtr->freeProc = TCL_DYNAMIC;
+        } else if (freeProc == TCL_VOLATILE) {
+                length = strlen(string);
+                if (length > TCL_RESULT_SIZE) {
+                        iPtr->result = (char *)ckalloc((unsigned)length + 1);
+                        iPtr->freeProc = TCL_DYNAMIC;
+                } else {
+                        iPtr->result = iPtr->resultSpace;
+                        iPtr->freeProc = 0;
+                }
+                strcpy(iPtr->result, string);
+        } else {
+                iPtr->result = string;
+                iPtr->freeProc = freeProc;
+        }
 
-    /*
-     * If the old result was dynamically-allocated, free it up.  Do it
-     * here, rather than at the beginning, in case the new result value
-     * was part of the old result value.
-     */
+        /*
+         * If the old result was dynamically-allocated, free it up.  Do it
+         * here, rather than at the beginning, in case the new result value
+         * was part of the old result value.
+         */
 
-    if (oldFreeProc != 0) {
-	if ((oldFreeProc == TCL_DYNAMIC)
-		|| (oldFreeProc == (Tcl_FreeProc *) free)) {
-	    ckfree(oldResult);
-	} else {
-	    (*oldFreeProc)(oldResult);
-	}
-    }
+        if (oldFreeProc != 0) {
+                if ((oldFreeProc == TCL_DYNAMIC) ||
+                    (oldFreeProc == (Tcl_FreeProc *)free)) {
+                        ckfree(oldResult);
+                } else {
+                        (*oldFreeProc)(oldResult);
+                }
+        }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1053,60 +1060,58 @@ Tcl_SetResult(interp, string, freeProc)
  *----------------------------------------------------------------------
  */
 
-	/* VARARGS2 */
-void
-Tcl_AppendResult TCL_VARARGS_DEF(Tcl_Interp *,arg1)
-{
-    va_list argList;
-    register Interp *iPtr;
-    char *string;
-    int newSpace;
+/* VARARGS2 */
+void Tcl_AppendResult TCL_VARARGS_DEF(Tcl_Interp *, arg1) {
+        va_list argList;
+        register Interp *iPtr;
+        char *string;
+        int newSpace;
 
-    /*
-     * First, scan through all the arguments to see how much space is
-     * needed.
-     */
+        /*
+         * First, scan through all the arguments to see how much space is
+         * needed.
+         */
 
-    iPtr = (Interp *)arg1;
-    va_start(argList, arg1);
-    newSpace = 0;
-    while (1) {
-	string = va_arg(argList, char *);
-	if (string == NULL) {
-	    break;
-	}
-	newSpace += strlen(string);
-    }
-    va_end(argList);
+        iPtr = (Interp *)arg1;
+        va_start(argList, arg1);
+        newSpace = 0;
+        while (1) {
+                string = va_arg(argList, char *);
+                if (string == NULL) {
+                        break;
+                }
+                newSpace += strlen(string);
+        }
+        va_end(argList);
 
-    /*
-     * If the append buffer isn't already setup and large enough
-     * to hold the new data, set it up.
-     */
+        /*
+         * If the append buffer isn't already setup and large enough
+         * to hold the new data, set it up.
+         */
 
-    if ((iPtr->result != iPtr->appendResult)
-	    || (iPtr->appendResult[iPtr->appendUsed] != 0)
-	    || ((newSpace + iPtr->appendUsed) >= iPtr->appendAvl)) {
-       SetupAppendBuffer(iPtr, newSpace);
-    }
+        if ((iPtr->result != iPtr->appendResult) ||
+            (iPtr->appendResult[iPtr->appendUsed] != 0) ||
+            ((newSpace + iPtr->appendUsed) >= iPtr->appendAvl)) {
+                SetupAppendBuffer(iPtr, newSpace);
+        }
 
-    /*
-     * Final step:  go through all the argument strings again, copying
-     * them into the buffer.
-     */
+        /*
+         * Final step:  go through all the argument strings again, copying
+         * them into the buffer.
+         */
 
-    va_start(argList, arg1);
-    while (1) {
-	string = va_arg(argList, char *);
-	if (string == NULL) {
-	    break;
-	}
-	strcpy(iPtr->appendResult + iPtr->appendUsed, string);
-	iPtr->appendUsed += strlen(string);
-    }
-    va_end(argList);
+        va_start(argList, arg1);
+        while (1) {
+                string = va_arg(argList, char *);
+                if (string == NULL) {
+                        break;
+                }
+                strcpy(iPtr->appendResult + iPtr->appendUsed, string);
+                iPtr->appendUsed += strlen(string);
+        }
+        va_end(argList);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1128,43 +1133,42 @@ Tcl_AppendResult TCL_VARARGS_DEF(Tcl_Interp *,arg1)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_AppendElement(interp, string)
-    Tcl_Interp *interp;		/* Interpreter whose result is to be
-				 * extended. */
-    char *string;		/* String to convert to list element and
-				 * add to result. */
+void Tcl_AppendElement(interp, string)
+    Tcl_Interp *interp; /* Interpreter whose result is to be
+                         * extended. */
+char *string;           /* String to convert to list element and
+                         * add to result. */
 {
-    register Interp *iPtr = (Interp *) interp;
-    int size, flags;
-    char *dst;
+        register Interp *iPtr = (Interp *)interp;
+        int size, flags;
+        char *dst;
 
-    /*
-     * See how much space is needed, and grow the append buffer if
-     * needed to accommodate the list element.
-     */
+        /*
+         * See how much space is needed, and grow the append buffer if
+         * needed to accommodate the list element.
+         */
 
-    size = Tcl_ScanElement(string, &flags) + 1;
-    if ((iPtr->result != iPtr->appendResult)
-	    || (iPtr->appendResult[iPtr->appendUsed] != 0)
-	    || ((size + iPtr->appendUsed) >= iPtr->appendAvl)) {
-       SetupAppendBuffer(iPtr, size+iPtr->appendUsed);
-    }
+        size = Tcl_ScanElement(string, &flags) + 1;
+        if ((iPtr->result != iPtr->appendResult) ||
+            (iPtr->appendResult[iPtr->appendUsed] != 0) ||
+            ((size + iPtr->appendUsed) >= iPtr->appendAvl)) {
+                SetupAppendBuffer(iPtr, size + iPtr->appendUsed);
+        }
 
-    /*
-     * Convert the string into a list element and copy it to the
-     * buffer that's forming, with a space separator if needed.
-     */
+        /*
+         * Convert the string into a list element and copy it to the
+         * buffer that's forming, with a space separator if needed.
+         */
 
-    dst = iPtr->appendResult + iPtr->appendUsed;
-    if (TclNeedSpace(iPtr->appendResult, dst)) {
-	iPtr->appendUsed++;
-	*dst = ' ';
-	dst++;
-    }
-    iPtr->appendUsed += Tcl_ConvertElement(string, dst, flags);
+        dst = iPtr->appendResult + iPtr->appendUsed;
+        if (TclNeedSpace(iPtr->appendResult, dst)) {
+                iPtr->appendUsed++;
+                *dst = ' ';
+                dst++;
+        }
+        iPtr->appendUsed += Tcl_ConvertElement(string, dst, flags);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1183,65 +1187,64 @@ Tcl_AppendElement(interp, string)
  *----------------------------------------------------------------------
  */
 
-static void
-SetupAppendBuffer(iPtr, newSpace)
-    register Interp *iPtr;	/* Interpreter whose result is being set up. */
-    int newSpace;		/* Make sure that at least this many bytes
-				 * of new information may be added. */
+static void SetupAppendBuffer(iPtr, newSpace) register Interp
+    *iPtr;    /* Interpreter whose result is being set up. */
+int newSpace; /* Make sure that at least this many bytes
+               * of new information may be added. */
 {
-    int totalSpace;
+        int totalSpace;
 
-    /*
-     * Make the append buffer larger, if that's necessary, then
-     * copy the current result into the append buffer and make the
-     * append buffer the official Tcl result.
-     */
+        /*
+         * Make the append buffer larger, if that's necessary, then
+         * copy the current result into the append buffer and make the
+         * append buffer the official Tcl result.
+         */
 
-    if (iPtr->result != iPtr->appendResult) {
-	/*
-	 * If an oversized buffer was used recently, then free it up
-	 * so we go back to a smaller buffer.  This avoids tying up
-	 * memory forever after a large operation.
-	 */
+        if (iPtr->result != iPtr->appendResult) {
+                /*
+                 * If an oversized buffer was used recently, then free it up
+                 * so we go back to a smaller buffer.  This avoids tying up
+                 * memory forever after a large operation.
+                 */
 
-	if (iPtr->appendAvl > 500) {
-	    ckfree(iPtr->appendResult);
-	    iPtr->appendResult = NULL;
-	    iPtr->appendAvl = 0;
-	}
-	iPtr->appendUsed = strlen(iPtr->result);
-    } else if (iPtr->result[iPtr->appendUsed] != 0) {
-	/*
-	 * Most likely someone has modified a result created by
-	 * Tcl_AppendResult et al. so that it has a different size.
-	 * Just recompute the size.
-	 */
+                if (iPtr->appendAvl > 500) {
+                        ckfree(iPtr->appendResult);
+                        iPtr->appendResult = NULL;
+                        iPtr->appendAvl = 0;
+                }
+                iPtr->appendUsed = strlen(iPtr->result);
+        } else if (iPtr->result[iPtr->appendUsed] != 0) {
+                /*
+                 * Most likely someone has modified a result created by
+                 * Tcl_AppendResult et al. so that it has a different size.
+                 * Just recompute the size.
+                 */
 
-	iPtr->appendUsed = strlen(iPtr->result);
-    }
-    totalSpace = newSpace + iPtr->appendUsed;
-    if (totalSpace >= iPtr->appendAvl) {
-	char *new;
+                iPtr->appendUsed = strlen(iPtr->result);
+        }
+        totalSpace = newSpace + iPtr->appendUsed;
+        if (totalSpace >= iPtr->appendAvl) {
+                char *new;
 
-	if (totalSpace < 100) {
-	    totalSpace = 200;
-	} else {
-	    totalSpace *= 2;
-	}
-	new = (char *) ckalloc((unsigned) totalSpace);
-	strcpy(new, iPtr->result);
-	if (iPtr->appendResult != NULL) {
-	    ckfree(iPtr->appendResult);
-	}
-	iPtr->appendResult = new;
-	iPtr->appendAvl = totalSpace;
-    } else if (iPtr->result != iPtr->appendResult) {
-	strcpy(iPtr->appendResult, iPtr->result);
-    }
-    Tcl_FreeResult(iPtr);
-    iPtr->result = iPtr->appendResult;
+                if (totalSpace < 100) {
+                        totalSpace = 200;
+                } else {
+                        totalSpace *= 2;
+                }
+                new = (char *)ckalloc((unsigned)totalSpace);
+                strcpy(new, iPtr->result);
+                if (iPtr->appendResult != NULL) {
+                        ckfree(iPtr->appendResult);
+                }
+                iPtr->appendResult = new;
+                iPtr->appendAvl = totalSpace;
+        } else if (iPtr->result != iPtr->appendResult) {
+                strcpy(iPtr->appendResult, iPtr->result);
+        }
+        Tcl_FreeResult(iPtr);
+        iPtr->result = iPtr->appendResult;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1261,19 +1264,17 @@ SetupAppendBuffer(iPtr, newSpace)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_ResetResult(interp)
-    Tcl_Interp *interp;		/* Interpreter for which to clear result. */
+void Tcl_ResetResult(interp)
+    Tcl_Interp *interp; /* Interpreter for which to clear result. */
 {
-    register Interp *iPtr = (Interp *) interp;
+        register Interp *iPtr = (Interp *)interp;
 
-    Tcl_FreeResult(iPtr);
-    iPtr->result = iPtr->resultSpace;
-    iPtr->resultSpace[0] = 0;
-    iPtr->flags &=
-	    ~(ERR_ALREADY_LOGGED | ERR_IN_PROGRESS | ERROR_CODE_SET);
+        Tcl_FreeResult(iPtr);
+        iPtr->result = iPtr->resultSpace;
+        iPtr->resultSpace[0] = 0;
+        iPtr->flags &= ~(ERR_ALREADY_LOGGED | ERR_IN_PROGRESS | ERROR_CODE_SET);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1294,36 +1295,34 @@ Tcl_ResetResult(interp)
  *
  *----------------------------------------------------------------------
  */
-	/* VARARGS2 */
-void
-Tcl_SetErrorCode TCL_VARARGS_DEF(Tcl_Interp *,arg1)
-{
-    va_list argList;
-    char *string;
-    int flags;
-    Interp *iPtr;
+/* VARARGS2 */
+void Tcl_SetErrorCode TCL_VARARGS_DEF(Tcl_Interp *, arg1) {
+        va_list argList;
+        char *string;
+        int flags;
+        Interp *iPtr;
 
-    /*
-     * Scan through the arguments one at a time, appending them to
-     * $errorCode as list elements.
-     */
+        /*
+         * Scan through the arguments one at a time, appending them to
+         * $errorCode as list elements.
+         */
 
-    iPtr = (Interp *)arg1;
-    va_start(argList, arg1);
-    flags = TCL_GLOBAL_ONLY | TCL_LIST_ELEMENT;
-    while (1) {
-	string = va_arg(argList, char *);
-	if (string == NULL) {
-	    break;
-	}
-	(void) Tcl_SetVar2((Tcl_Interp *) iPtr, "errorCode",
-		(char *) NULL, string, flags);
-	flags |= TCL_APPEND_VALUE;
-    }
-    va_end(argList);
-    iPtr->flags |= ERROR_CODE_SET;
+        iPtr = (Interp *)arg1;
+        va_start(argList, arg1);
+        flags = TCL_GLOBAL_ONLY | TCL_LIST_ELEMENT;
+        while (1) {
+                string = va_arg(argList, char *);
+                if (string == NULL) {
+                        break;
+                }
+                (void)Tcl_SetVar2((Tcl_Interp *)iPtr, "errorCode", (char *)NULL,
+                                  string, flags);
+                flags |= TCL_APPEND_VALUE;
+        }
+        va_end(argList);
+        iPtr->flags |= ERROR_CODE_SET;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1347,29 +1346,29 @@ Tcl_SetErrorCode TCL_VARARGS_DEF(Tcl_Interp *,arg1)
  *----------------------------------------------------------------------
  */
 
-int
-TclGetListIndex(interp, string, indexPtr)
-    Tcl_Interp *interp;			/* Interpreter for error reporting. */
-    char *string;			/* String containing list index. */
-    int *indexPtr;			/* Where to store index. */
+int TclGetListIndex(interp, string, indexPtr)
+    Tcl_Interp *interp; /* Interpreter for error reporting. */
+char *string;           /* String containing list index. */
+int *indexPtr;          /* Where to store index. */
 {
-    if (isdigit(UCHAR(*string)) || (*string == '-')) {
-	if (Tcl_GetInt(interp, string, indexPtr) != TCL_OK) {
-	    return TCL_ERROR;
-	}
-	if (*indexPtr < 0) {
-	    *indexPtr = 0;
-	}
-    } else if (strncmp(string, "end", strlen(string)) == 0) {
-	*indexPtr = INT_MAX;
-    } else {
-	Tcl_AppendResult(interp, "bad index \"", string,
-		"\": must be integer or \"end\"", (char *) NULL);
-	return TCL_ERROR;
-    }
-    return TCL_OK;
+        if (isdigit(UCHAR(*string)) || (*string == '-')) {
+                if (Tcl_GetInt(interp, string, indexPtr) != TCL_OK) {
+                        return TCL_ERROR;
+                }
+                if (*indexPtr < 0) {
+                        *indexPtr = 0;
+                }
+        } else if (strncmp(string, "end", strlen(string)) == 0) {
+                *indexPtr = INT_MAX;
+        } else {
+                Tcl_AppendResult(interp, "bad index \"", string,
+                                 "\": must be integer or \"end\"",
+                                 (char *)NULL);
+                return TCL_ERROR;
+        }
+        return TCL_OK;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1396,73 +1395,74 @@ TclGetListIndex(interp, string, indexPtr)
  *----------------------------------------------------------------------
  */
 
-Tcl_RegExp
-Tcl_RegExpCompile(interp, string)
-    Tcl_Interp *interp;			/* For use in error reporting. */
-    char *string;			/* String for which to produce
-					 * compiled regular expression. */
+Tcl_RegExp Tcl_RegExpCompile(interp, string)
+    Tcl_Interp *interp; /* For use in error reporting. */
+char *string;           /* String for which to produce
+                         * compiled regular expression. */
 {
-    register Interp *iPtr = (Interp *) interp;
-    int i, length;
-    regexp *result;
+        register Interp *iPtr = (Interp *)interp;
+        int i, length;
+        regexp *result;
 
-    length = strlen(string);
-    for (i = 0; i < NUM_REGEXPS; i++) {
-	if ((length == iPtr->patLengths[i])
-		&& (strcmp(string, iPtr->patterns[i]) == 0)) {
-	    /*
-	     * Move the matched pattern to the first slot in the
-	     * cache and shift the other patterns down one position.
-	     */
+        length = strlen(string);
+        for (i = 0; i < NUM_REGEXPS; i++) {
+                if ((length == iPtr->patLengths[i]) &&
+                    (strcmp(string, iPtr->patterns[i]) == 0)) {
+                        /*
+                         * Move the matched pattern to the first slot in the
+                         * cache and shift the other patterns down one position.
+                         */
 
-	    if (i != 0) {
-		int j;
-		char *cachedString;
+                        if (i != 0) {
+                                int j;
+                                char *cachedString;
 
-		cachedString = iPtr->patterns[i];
-		result = iPtr->regexps[i];
-		for (j = i-1; j >= 0; j--) {
-		    iPtr->patterns[j+1] = iPtr->patterns[j];
-		    iPtr->patLengths[j+1] = iPtr->patLengths[j];
-		    iPtr->regexps[j+1] = iPtr->regexps[j];
-		}
-		iPtr->patterns[0] = cachedString;
-		iPtr->patLengths[0] = length;
-		iPtr->regexps[0] = result;
-	    }
-	    return (Tcl_RegExp) iPtr->regexps[0];
-	}
-    }
+                                cachedString = iPtr->patterns[i];
+                                result = iPtr->regexps[i];
+                                for (j = i - 1; j >= 0; j--) {
+                                        iPtr->patterns[j + 1] =
+                                            iPtr->patterns[j];
+                                        iPtr->patLengths[j + 1] =
+                                            iPtr->patLengths[j];
+                                        iPtr->regexps[j + 1] = iPtr->regexps[j];
+                                }
+                                iPtr->patterns[0] = cachedString;
+                                iPtr->patLengths[0] = length;
+                                iPtr->regexps[0] = result;
+                        }
+                        return (Tcl_RegExp)iPtr->regexps[0];
+                }
+        }
 
-    /*
-     * No match in the cache.  Compile the string and add it to the
-     * cache.
-     */
+        /*
+         * No match in the cache.  Compile the string and add it to the
+         * cache.
+         */
 
-    TclRegError((char *) NULL);
-    result = TclRegComp(string);
-    if (TclGetRegError() != NULL) {
-	Tcl_AppendResult(interp,
-	    "couldn't compile regular expression pattern: ",
-	    TclGetRegError(), (char *) NULL);
-	return NULL;
-    }
-    if (iPtr->patterns[NUM_REGEXPS-1] != NULL) {
-	ckfree(iPtr->patterns[NUM_REGEXPS-1]);
-	ckfree((char *) iPtr->regexps[NUM_REGEXPS-1]);
-    }
-    for (i = NUM_REGEXPS - 2; i >= 0; i--) {
-	iPtr->patterns[i+1] = iPtr->patterns[i];
-	iPtr->patLengths[i+1] = iPtr->patLengths[i];
-	iPtr->regexps[i+1] = iPtr->regexps[i];
-    }
-    iPtr->patterns[0] = (char *) ckalloc((unsigned) (length+1));
-    strcpy(iPtr->patterns[0], string);
-    iPtr->patLengths[0] = length;
-    iPtr->regexps[0] = result;
-    return (Tcl_RegExp) result;
+        TclRegError((char *)NULL);
+        result = TclRegComp(string);
+        if (TclGetRegError() != NULL) {
+                Tcl_AppendResult(
+                    interp, "couldn't compile regular expression pattern: ",
+                    TclGetRegError(), (char *)NULL);
+                return NULL;
+        }
+        if (iPtr->patterns[NUM_REGEXPS - 1] != NULL) {
+                ckfree(iPtr->patterns[NUM_REGEXPS - 1]);
+                ckfree((char *)iPtr->regexps[NUM_REGEXPS - 1]);
+        }
+        for (i = NUM_REGEXPS - 2; i >= 0; i--) {
+                iPtr->patterns[i + 1] = iPtr->patterns[i];
+                iPtr->patLengths[i + 1] = iPtr->patLengths[i];
+                iPtr->regexps[i + 1] = iPtr->regexps[i];
+        }
+        iPtr->patterns[0] = (char *)ckalloc((unsigned)(length + 1));
+        strcpy(iPtr->patterns[0], string);
+        iPtr->patLengths[0] = length;
+        iPtr->regexps[0] = result;
+        return (Tcl_RegExp)result;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1484,31 +1484,31 @@ Tcl_RegExpCompile(interp, string)
  *----------------------------------------------------------------------
  */
 
-int
-Tcl_RegExpExec(interp, re, string, start)
-    Tcl_Interp *interp;		/* Interpreter to use for error reporting. */
-    Tcl_RegExp re;		/* Compiled regular expression;  must have
-				 * been returned by previous call to
-				 * Tcl_RegExpCompile. */
-    char *string;		/* String against which to match re. */
-    char *start;		/* If string is part of a larger string,
-				 * this identifies beginning of larger
-				 * string, so that "^" won't match. */
+int Tcl_RegExpExec(interp, re, string, start)
+    Tcl_Interp *interp; /* Interpreter to use for error reporting. */
+Tcl_RegExp re;          /* Compiled regular expression;  must have
+                         * been returned by previous call to
+                         * Tcl_RegExpCompile. */
+char *string;           /* String against which to match re. */
+char *start;            /* If string is part of a larger string,
+                         * this identifies beginning of larger
+                         * string, so that "^" won't match. */
 {
-    int match;
+        int match;
 
-    regexp *regexpPtr = (regexp *) re;
-    TclRegError((char *) NULL);
-    match = TclRegExec(regexpPtr, string, start);
-    if (TclGetRegError() != NULL) {
-	Tcl_ResetResult(interp);
-	Tcl_AppendResult(interp, "error while matching regular expression: ",
-		TclGetRegError(), (char *) NULL);
-	return -1;
-    }
-    return match;
+        regexp *regexpPtr = (regexp *)re;
+        TclRegError((char *)NULL);
+        match = TclRegExec(regexpPtr, string, start);
+        if (TclGetRegError() != NULL) {
+                Tcl_ResetResult(interp);
+                Tcl_AppendResult(interp,
+                                 "error while matching regular expression: ",
+                                 TclGetRegError(), (char *)NULL);
+                return -1;
+        }
+        return match;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1528,29 +1528,28 @@ Tcl_RegExpExec(interp, re, string, start)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_RegExpRange(re, index, startPtr, endPtr)
-    Tcl_RegExp re;		/* Compiled regular expression that has
-				 * been passed to Tcl_RegExpExec. */
-    int index;			/* 0 means give the range of the entire
-				 * match, > 0 means give the range of
-				 * a matching subrange.  Must be no greater
-				 * than NSUBEXP. */
-    char **startPtr;		/* Store address of first character in
-				 * (sub-) range here. */
-    char **endPtr;		/* Store address of character just after last
-				 * in (sub-) range here. */
+void Tcl_RegExpRange(re, index, startPtr, endPtr)
+    Tcl_RegExp re; /* Compiled regular expression that has
+                    * been passed to Tcl_RegExpExec. */
+int index;         /* 0 means give the range of the entire
+                    * match, > 0 means give the range of
+                    * a matching subrange.  Must be no greater
+                    * than NSUBEXP. */
+char **startPtr;   /* Store address of first character in
+                    * (sub-) range here. */
+char **endPtr;     /* Store address of character just after last
+                    * in (sub-) range here. */
 {
-    regexp *regexpPtr = (regexp *) re;
+        regexp *regexpPtr = (regexp *)re;
 
-    if (index >= NSUBEXP) {
-	*startPtr = *endPtr = NULL;
-    } else {
-	*startPtr = regexpPtr->startp[index];
-	*endPtr = regexpPtr->endp[index];
-    }
+        if (index >= NSUBEXP) {
+                *startPtr = *endPtr = NULL;
+        } else {
+                *startPtr = regexpPtr->startp[index];
+                *endPtr = regexpPtr->endp[index];
+        }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1570,22 +1569,21 @@ Tcl_RegExpRange(re, index, startPtr, endPtr)
  *----------------------------------------------------------------------
  */
 
-int
-Tcl_RegExpMatch(interp, string, pattern)
-    Tcl_Interp *interp;		/* Used for error reporting. */
-    char *string;		/* String. */
-    char *pattern;		/* Regular expression to match against
-				 * string. */
+int Tcl_RegExpMatch(interp, string,
+                    pattern) Tcl_Interp *interp; /* Used for error reporting. */
+char *string;                                    /* String. */
+char *pattern; /* Regular expression to match against
+                * string. */
 {
-    Tcl_RegExp re;
+        Tcl_RegExp re;
 
-    re = Tcl_RegExpCompile(interp, pattern);
-    if (re == NULL) {
-	return -1;
-    }
-    return Tcl_RegExpExec(interp, re, string, string);
+        re = Tcl_RegExpCompile(interp, pattern);
+        if (re == NULL) {
+                return -1;
+        }
+        return Tcl_RegExpExec(interp, re, string, string);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1604,17 +1602,16 @@ Tcl_RegExpMatch(interp, string, pattern)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_DStringInit(dsPtr)
-    register Tcl_DString *dsPtr;	/* Pointer to structure for
-					 * dynamic string. */
+void Tcl_DStringInit(
+    dsPtr) register Tcl_DString *dsPtr; /* Pointer to structure for
+                                         * dynamic string. */
 {
-    dsPtr->string = dsPtr->staticSpace;
-    dsPtr->length = 0;
-    dsPtr->spaceAvl = TCL_DSTRING_STATIC_SIZE;
-    dsPtr->staticSpace[0] = 0;
+        dsPtr->string = dsPtr->staticSpace;
+        dsPtr->length = 0;
+        dsPtr->spaceAvl = TCL_DSTRING_STATIC_SIZE;
+        dsPtr->staticSpace[0] = 0;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1633,56 +1630,56 @@ Tcl_DStringInit(dsPtr)
  *----------------------------------------------------------------------
  */
 
-char *
-Tcl_DStringAppend(dsPtr, string, length)
-    register Tcl_DString *dsPtr;	/* Structure describing dynamic
-					 * string. */
-    char *string;			/* String to append.  If length is
-					 * -1 then this must be
-					 * null-terminated. */
-    int length;				/* Number of characters from string
-					 * to append.  If < 0, then append all
-					 * of string, up to null at end. */
+char *Tcl_DStringAppend(
+    dsPtr, string,
+    length) register Tcl_DString *dsPtr; /* Structure describing dynamic
+                                          * string. */
+char *string;                            /* String to append.  If length is
+                                          * -1 then this must be
+                                          * null-terminated. */
+int length;                              /* Number of characters from string
+                                          * to append.  If < 0, then append all
+                                          * of string, up to null at end. */
 {
-    int newSize;
-    char *newString, *dst, *end;
+        int newSize;
+        char *newString, *dst, *end;
 
-    if (length < 0) {
-	length = strlen(string);
-    }
-    newSize = length + dsPtr->length;
+        if (length < 0) {
+                length = strlen(string);
+        }
+        newSize = length + dsPtr->length;
 
-    /*
-     * Allocate a larger buffer for the string if the current one isn't
-     * large enough.  Allocate extra space in the new buffer so that there
-     * will be room to grow before we have to allocate again.
-     */
+        /*
+         * Allocate a larger buffer for the string if the current one isn't
+         * large enough.  Allocate extra space in the new buffer so that there
+         * will be room to grow before we have to allocate again.
+         */
 
-    if (newSize >= dsPtr->spaceAvl) {
-	dsPtr->spaceAvl = newSize*2;
-	newString = (char *) ckalloc((unsigned) dsPtr->spaceAvl);
-	memcpy((VOID *)newString, (VOID *) dsPtr->string,
-		(size_t) dsPtr->length);
-	if (dsPtr->string != dsPtr->staticSpace) {
-	    ckfree(dsPtr->string);
-	}
-	dsPtr->string = newString;
-    }
+        if (newSize >= dsPtr->spaceAvl) {
+                dsPtr->spaceAvl = newSize * 2;
+                newString = (char *)ckalloc((unsigned)dsPtr->spaceAvl);
+                memcpy((VOID *)newString, (VOID *)dsPtr->string,
+                       (size_t)dsPtr->length);
+                if (dsPtr->string != dsPtr->staticSpace) {
+                        ckfree(dsPtr->string);
+                }
+                dsPtr->string = newString;
+        }
 
-    /*
-     * Copy the new string into the buffer at the end of the old
-     * one.
-     */
+        /*
+         * Copy the new string into the buffer at the end of the old
+         * one.
+         */
 
-    for (dst = dsPtr->string + dsPtr->length, end = string+length;
-	    string < end; string++, dst++) {
-	*dst = *string;
-    }
-    *dst = 0;
-    dsPtr->length += length;
-    return dsPtr->string;
+        for (dst = dsPtr->string + dsPtr->length, end = string + length;
+             string < end; string++, dst++) {
+                *dst = *string;
+        }
+        *dst = 0;
+        dsPtr->length += length;
+        return dsPtr->string;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1701,53 +1698,52 @@ Tcl_DStringAppend(dsPtr, string, length)
  *----------------------------------------------------------------------
  */
 
-char *
-Tcl_DStringAppendElement(dsPtr, string)
-    register Tcl_DString *dsPtr;	/* Structure describing dynamic
-					 * string. */
-    char *string;			/* String to append.  Must be
-					 * null-terminated. */
+char *Tcl_DStringAppendElement(
+    dsPtr, string) register Tcl_DString *dsPtr; /* Structure describing dynamic
+                                                 * string. */
+char *string;                                   /* String to append.  Must be
+                                                 * null-terminated. */
 {
-    int newSize, flags;
-    char *dst, *newString;
+        int newSize, flags;
+        char *dst, *newString;
 
-    newSize = Tcl_ScanElement(string, &flags) + dsPtr->length + 1;
+        newSize = Tcl_ScanElement(string, &flags) + dsPtr->length + 1;
 
-    /*
-     * Allocate a larger buffer for the string if the current one isn't
-     * large enough.  Allocate extra space in the new buffer so that there
-     * will be room to grow before we have to allocate again.
-     * SPECIAL NOTE: must use memcpy, not strcpy, to copy the string
-     * to a larger buffer, since there may be embedded NULLs in the
-     * string in some cases.
-     */
+        /*
+         * Allocate a larger buffer for the string if the current one isn't
+         * large enough.  Allocate extra space in the new buffer so that there
+         * will be room to grow before we have to allocate again.
+         * SPECIAL NOTE: must use memcpy, not strcpy, to copy the string
+         * to a larger buffer, since there may be embedded NULLs in the
+         * string in some cases.
+         */
 
-    if (newSize >= dsPtr->spaceAvl) {
-	dsPtr->spaceAvl = newSize*2;
-	newString = (char *) ckalloc((unsigned) dsPtr->spaceAvl);
-	memcpy((VOID *) newString, (VOID *) dsPtr->string,
-		(size_t) dsPtr->length);
-	if (dsPtr->string != dsPtr->staticSpace) {
-	    ckfree(dsPtr->string);
-	}
-	dsPtr->string = newString;
-    }
+        if (newSize >= dsPtr->spaceAvl) {
+                dsPtr->spaceAvl = newSize * 2;
+                newString = (char *)ckalloc((unsigned)dsPtr->spaceAvl);
+                memcpy((VOID *)newString, (VOID *)dsPtr->string,
+                       (size_t)dsPtr->length);
+                if (dsPtr->string != dsPtr->staticSpace) {
+                        ckfree(dsPtr->string);
+                }
+                dsPtr->string = newString;
+        }
 
-    /*
-     * Convert the new string to a list element and copy it into the
-     * buffer at the end, with a space, if needed.
-     */
+        /*
+         * Convert the new string to a list element and copy it into the
+         * buffer at the end, with a space, if needed.
+         */
 
-    dst = dsPtr->string + dsPtr->length;
-    if (TclNeedSpace(dsPtr->string, dst)) {
-	*dst = ' ';
-	dst++;
-	dsPtr->length++;
-    }
-    dsPtr->length += Tcl_ConvertElement(string, dst, flags);
-    return dsPtr->string;
+        dst = dsPtr->string + dsPtr->length;
+        if (TclNeedSpace(dsPtr->string, dst)) {
+                *dst = ' ';
+                dst++;
+                dsPtr->length++;
+        }
+        dsPtr->length += Tcl_ConvertElement(string, dst, flags);
+        return dsPtr->string;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1768,38 +1764,37 @@ Tcl_DStringAppendElement(dsPtr, string)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_DStringSetLength(dsPtr, length)
-    register Tcl_DString *dsPtr;	/* Structure describing dynamic
-					 * string. */
-    int length;				/* New length for dynamic string. */
+void Tcl_DStringSetLength(
+    dsPtr, length) register Tcl_DString *dsPtr; /* Structure describing dynamic
+                                                 * string. */
+int length; /* New length for dynamic string. */
 {
-    if (length < 0) {
-	length = 0;
-    }
-    if (length >= dsPtr->spaceAvl) {
-	char *newString;
+        if (length < 0) {
+                length = 0;
+        }
+        if (length >= dsPtr->spaceAvl) {
+                char *newString;
 
-	dsPtr->spaceAvl = length+1;
-	newString = (char *) ckalloc((unsigned) dsPtr->spaceAvl);
+                dsPtr->spaceAvl = length + 1;
+                newString = (char *)ckalloc((unsigned)dsPtr->spaceAvl);
 
-	/*
-	 * SPECIAL NOTE: must use memcpy, not strcpy, to copy the string
-	 * to a larger buffer, since there may be embedded NULLs in the
-	 * string in some cases.
-	 */
+                /*
+                 * SPECIAL NOTE: must use memcpy, not strcpy, to copy the string
+                 * to a larger buffer, since there may be embedded NULLs in the
+                 * string in some cases.
+                 */
 
-	memcpy((VOID *) newString, (VOID *) dsPtr->string,
-		(size_t) dsPtr->length);
-	if (dsPtr->string != dsPtr->staticSpace) {
-	    ckfree(dsPtr->string);
-	}
-	dsPtr->string = newString;
-    }
-    dsPtr->length = length;
-    dsPtr->string[length] = 0;
+                memcpy((VOID *)newString, (VOID *)dsPtr->string,
+                       (size_t)dsPtr->length);
+                if (dsPtr->string != dsPtr->staticSpace) {
+                        ckfree(dsPtr->string);
+                }
+                dsPtr->string = newString;
+        }
+        dsPtr->length = length;
+        dsPtr->string[length] = 0;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1818,20 +1813,19 @@ Tcl_DStringSetLength(dsPtr, length)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_DStringFree(dsPtr)
-    register Tcl_DString *dsPtr;	/* Structure describing dynamic
-					 * string. */
+void Tcl_DStringFree(
+    dsPtr) register Tcl_DString *dsPtr; /* Structure describing dynamic
+                                         * string. */
 {
-    if (dsPtr->string != dsPtr->staticSpace) {
-	ckfree(dsPtr->string);
-    }
-    dsPtr->string = dsPtr->staticSpace;
-    dsPtr->length = 0;
-    dsPtr->spaceAvl = TCL_DSTRING_STATIC_SIZE;
-    dsPtr->staticSpace[0] = 0;
+        if (dsPtr->string != dsPtr->staticSpace) {
+                ckfree(dsPtr->string);
+        }
+        dsPtr->string = dsPtr->staticSpace;
+        dsPtr->length = 0;
+        dsPtr->spaceAvl = TCL_DSTRING_STATIC_SIZE;
+        dsPtr->staticSpace[0] = 0;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1852,29 +1846,28 @@ Tcl_DStringFree(dsPtr)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_DStringResult(interp, dsPtr)
-    Tcl_Interp *interp;			/* Interpreter whose result is to be
-					 * reset. */
-    Tcl_DString *dsPtr;			/* Dynamic string that is to become
-					 * the result of interp. */
+void Tcl_DStringResult(interp, dsPtr)
+    Tcl_Interp *interp; /* Interpreter whose result is to be
+                         * reset. */
+Tcl_DString *dsPtr;     /* Dynamic string that is to become
+                         * the result of interp. */
 {
-    Tcl_ResetResult(interp);
-    if (dsPtr->string != dsPtr->staticSpace) {
-	interp->result = dsPtr->string;
-	interp->freeProc = TCL_DYNAMIC;
-    } else if (dsPtr->length < TCL_RESULT_SIZE) {
-	interp->result = ((Interp *) interp)->resultSpace;
-	strcpy(interp->result, dsPtr->string);
-    } else {
-	Tcl_SetResult(interp, dsPtr->string, TCL_VOLATILE);
-    }
-    dsPtr->string = dsPtr->staticSpace;
-    dsPtr->length = 0;
-    dsPtr->spaceAvl = TCL_DSTRING_STATIC_SIZE;
-    dsPtr->staticSpace[0] = 0;
+        Tcl_ResetResult(interp);
+        if (dsPtr->string != dsPtr->staticSpace) {
+                interp->result = dsPtr->string;
+                interp->freeProc = TCL_DYNAMIC;
+        } else if (dsPtr->length < TCL_RESULT_SIZE) {
+                interp->result = ((Interp *)interp)->resultSpace;
+                strcpy(interp->result, dsPtr->string);
+        } else {
+                Tcl_SetResult(interp, dsPtr->string, TCL_VOLATILE);
+        }
+        dsPtr->string = dsPtr->staticSpace;
+        dsPtr->length = 0;
+        dsPtr->spaceAvl = TCL_DSTRING_STATIC_SIZE;
+        dsPtr->staticSpace[0] = 0;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1893,44 +1886,45 @@ Tcl_DStringResult(interp, dsPtr)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_DStringGetResult(interp, dsPtr)
-    Tcl_Interp *interp;			/* Interpreter whose result is to be
-					 * reset. */
-    Tcl_DString *dsPtr;			/* Dynamic string that is to become
-					 * the result of interp. */
+void Tcl_DStringGetResult(interp, dsPtr)
+    Tcl_Interp *interp; /* Interpreter whose result is to be
+                         * reset. */
+Tcl_DString *dsPtr;     /* Dynamic string that is to become
+                         * the result of interp. */
 {
-    Interp *iPtr = (Interp *) interp;
-    if (dsPtr->string != dsPtr->staticSpace) {
-	ckfree(dsPtr->string);
-    }
-    dsPtr->length = strlen(iPtr->result);
-    if (iPtr->freeProc != NULL) {
-	if ((iPtr->freeProc == TCL_DYNAMIC)
-		|| (iPtr->freeProc == (Tcl_FreeProc *) free)) {
-	    dsPtr->string = iPtr->result;
-	    dsPtr->spaceAvl = dsPtr->length+1;
-	} else {
-	    dsPtr->string = (char *) ckalloc((unsigned) (dsPtr->length+1));
-	    strcpy(dsPtr->string, iPtr->result);
-	    (*iPtr->freeProc)(iPtr->result);
-	}
-	dsPtr->spaceAvl = dsPtr->length+1;
-	iPtr->freeProc = NULL;
-    } else {
-	if (dsPtr->length < TCL_DSTRING_STATIC_SIZE) {
-	    dsPtr->string = dsPtr->staticSpace;
-	    dsPtr->spaceAvl = TCL_DSTRING_STATIC_SIZE;
-	} else {
-	    dsPtr->string = (char *) ckalloc((unsigned) (dsPtr->length + 1));
-	    dsPtr->spaceAvl = dsPtr->length + 1;
-	}
-	strcpy(dsPtr->string, iPtr->result);
-    }
-    iPtr->result = iPtr->resultSpace;
-    iPtr->resultSpace[0] = 0;
+        Interp *iPtr = (Interp *)interp;
+        if (dsPtr->string != dsPtr->staticSpace) {
+                ckfree(dsPtr->string);
+        }
+        dsPtr->length = strlen(iPtr->result);
+        if (iPtr->freeProc != NULL) {
+                if ((iPtr->freeProc == TCL_DYNAMIC) ||
+                    (iPtr->freeProc == (Tcl_FreeProc *)free)) {
+                        dsPtr->string = iPtr->result;
+                        dsPtr->spaceAvl = dsPtr->length + 1;
+                } else {
+                        dsPtr->string =
+                            (char *)ckalloc((unsigned)(dsPtr->length + 1));
+                        strcpy(dsPtr->string, iPtr->result);
+                        (*iPtr->freeProc)(iPtr->result);
+                }
+                dsPtr->spaceAvl = dsPtr->length + 1;
+                iPtr->freeProc = NULL;
+        } else {
+                if (dsPtr->length < TCL_DSTRING_STATIC_SIZE) {
+                        dsPtr->string = dsPtr->staticSpace;
+                        dsPtr->spaceAvl = TCL_DSTRING_STATIC_SIZE;
+                } else {
+                        dsPtr->string =
+                            (char *)ckalloc((unsigned)(dsPtr->length + 1));
+                        dsPtr->spaceAvl = dsPtr->length + 1;
+                }
+                strcpy(dsPtr->string, iPtr->result);
+        }
+        iPtr->result = iPtr->resultSpace;
+        iPtr->resultSpace[0] = 0;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1949,17 +1943,15 @@ Tcl_DStringGetResult(interp, dsPtr)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_DStringStartSublist(dsPtr)
-    Tcl_DString *dsPtr;			/* Dynamic string. */
+void Tcl_DStringStartSublist(dsPtr) Tcl_DString *dsPtr; /* Dynamic string. */
 {
-    if (TclNeedSpace(dsPtr->string, dsPtr->string + dsPtr->length)) {
-	Tcl_DStringAppend(dsPtr, " {", -1);
-    } else {
-	Tcl_DStringAppend(dsPtr, "{", -1);
-    }
+        if (TclNeedSpace(dsPtr->string, dsPtr->string + dsPtr->length)) {
+                Tcl_DStringAppend(dsPtr, " {", -1);
+        } else {
+                Tcl_DStringAppend(dsPtr, "{", -1);
+        }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -1979,13 +1971,9 @@ Tcl_DStringStartSublist(dsPtr)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_DStringEndSublist(dsPtr)
-    Tcl_DString *dsPtr;			/* Dynamic string. */
-{
-    Tcl_DStringAppend(dsPtr, "}", -1);
-}
-
+void Tcl_DStringEndSublist(dsPtr) Tcl_DString *dsPtr; /* Dynamic string. */
+{ Tcl_DStringAppend(dsPtr, "}", -1); }
+
 /*
  *----------------------------------------------------------------------
  *
@@ -2006,34 +1994,33 @@ Tcl_DStringEndSublist(dsPtr)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_PrintDouble(interp, value, dst)
-    Tcl_Interp *interp;			/* Interpreter whose tcl_precision
-					 * variable controls printing. */
-    double value;			/* Value to print as string. */
-    char *dst;				/* Where to store converted value;
-					 * must have at least TCL_DOUBLE_SPACE
-					 * characters. */
+void Tcl_PrintDouble(interp, value,
+                     dst) Tcl_Interp *interp; /* Interpreter whose tcl_precision
+                                               * variable controls printing. */
+double value;                                 /* Value to print as string. */
+char *dst;                                    /* Where to store converted value;
+                                               * must have at least TCL_DOUBLE_SPACE
+                                               * characters. */
 {
-    register char *p;
-    sprintf(dst, ((Interp *) interp)->pdFormat, value);
+        register char *p;
+        sprintf(dst, ((Interp *)interp)->pdFormat, value);
 
-    /*
-     * If the ASCII result looks like an integer, add ".0" so that it
-     * doesn't look like an integer anymore.  This prevents floating-point
-     * values from being converted to integers unintentionally.
-     */
+        /*
+         * If the ASCII result looks like an integer, add ".0" so that it
+         * doesn't look like an integer anymore.  This prevents floating-point
+         * values from being converted to integers unintentionally.
+         */
 
-    for (p = dst; *p != 0; p++) {
-	if ((*p == '.') || (isalpha(UCHAR(*p)))) {
-	    return;
-	}
-    }
-    p[0] = '.';
-    p[1] = '0';
-    p[2] = 0;
+        for (p = dst; *p != 0; p++) {
+                if ((*p == '.') || (isalpha(UCHAR(*p)))) {
+                        return;
+                }
+        }
+        p[0] = '.';
+        p[1] = '0';
+        p[2] = 0;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -2054,53 +2041,55 @@ Tcl_PrintDouble(interp, value, dst)
  *----------------------------------------------------------------------
  */
 
-	/* ARGSUSED */
-char *
-TclPrecTraceProc(clientData, interp, name1, name2, flags)
-    ClientData clientData;	/* Not used. */
-    Tcl_Interp *interp;		/* Interpreter containing variable. */
-    char *name1;		/* Name of variable. */
-    char *name2;		/* Second part of variable name. */
-    int flags;			/* Information about what happened. */
+/* ARGSUSED */
+char *TclPrecTraceProc(clientData, interp, name1, name2,
+                       flags) ClientData clientData; /* Not used. */
+Tcl_Interp *interp; /* Interpreter containing variable. */
+char *name1;        /* Name of variable. */
+char *name2;        /* Second part of variable name. */
+int flags;          /* Information about what happened. */
 {
-    register Interp *iPtr = (Interp *) interp;
-    char *value, *end;
-    int prec;
+        register Interp *iPtr = (Interp *)interp;
+        char *value, *end;
+        int prec;
 
-    /*
-     * If the variable is unset, then recreate the trace and restore
-     * the default value of the format string.
-     */
+        /*
+         * If the variable is unset, then recreate the trace and restore
+         * the default value of the format string.
+         */
 
-    if (flags & TCL_TRACE_UNSETS) {
-	if ((flags & TCL_TRACE_DESTROYED) && !(flags & TCL_INTERP_DESTROYED)) {
-	    Tcl_TraceVar2(interp, name1, name2,
-		    TCL_GLOBAL_ONLY|TCL_TRACE_WRITES|TCL_TRACE_UNSETS,
-		    TclPrecTraceProc, clientData);
-	}
-	strcpy(iPtr->pdFormat, DEFAULT_PD_FORMAT);
-	iPtr->pdPrec = DEFAULT_PD_PREC;
-	return (char *) NULL;
-    }
+        if (flags & TCL_TRACE_UNSETS) {
+                if ((flags & TCL_TRACE_DESTROYED) &&
+                    !(flags & TCL_INTERP_DESTROYED)) {
+                        Tcl_TraceVar2(interp, name1, name2,
+                                      TCL_GLOBAL_ONLY | TCL_TRACE_WRITES |
+                                          TCL_TRACE_UNSETS,
+                                      TclPrecTraceProc, clientData);
+                }
+                strcpy(iPtr->pdFormat, DEFAULT_PD_FORMAT);
+                iPtr->pdPrec = DEFAULT_PD_PREC;
+                return (char *)NULL;
+        }
 
-    value = Tcl_GetVar2(interp, name1, name2, flags & TCL_GLOBAL_ONLY);
-    if (value == NULL) {
-	value = "";
-    }
-    prec = strtoul(value, &end, 10);
-    if ((prec <= 0) || (prec > TCL_MAX_PREC) || (prec > 100) ||
-	    (end == value) || (*end != 0)) {
-	char oldValue[10];
+        value = Tcl_GetVar2(interp, name1, name2, flags & TCL_GLOBAL_ONLY);
+        if (value == NULL) {
+                value = "";
+        }
+        prec = strtoul(value, &end, 10);
+        if ((prec <= 0) || (prec > TCL_MAX_PREC) || (prec > 100) ||
+            (end == value) || (*end != 0)) {
+                char oldValue[10];
 
-	sprintf(oldValue, "%d", iPtr->pdPrec);
-	Tcl_SetVar2(interp, name1, name2, oldValue, flags & TCL_GLOBAL_ONLY);
-	return "improper value for precision";
-    }
-    sprintf(iPtr->pdFormat, "%%.%dg", prec);
-    iPtr->pdPrec = prec;
-    return (char *) NULL;
+                sprintf(oldValue, "%d", iPtr->pdPrec);
+                Tcl_SetVar2(interp, name1, name2, oldValue,
+                            flags & TCL_GLOBAL_ONLY);
+                return "improper value for precision";
+        }
+        sprintf(iPtr->pdFormat, "%%.%dg", prec);
+        iPtr->pdPrec = prec;
+        return (char *)NULL;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -2119,40 +2108,39 @@ TclPrecTraceProc(clientData, interp, name1, name2, flags)
  *----------------------------------------------------------------------
  */
 
-int
-TclNeedSpace(start, end)
-    char *start;		/* First character in string. */
-    char *end;			/* End of string (place where space will
-				 * be added, if appropriate). */
+int TclNeedSpace(start, end) char *start; /* First character in string. */
+char *end; /* End of string (place where space will
+            * be added, if appropriate). */
 {
-    /*
-     * A space is needed unless either
-     * (a) we're at the start of the string, or
-     * (b) the trailing characters of the string consist of one or more
-     *     open curly braces preceded by a space or extending back to
-     *     the beginning of the string.
-     * (c) the trailing characters of the string consist of a space
-     *	   preceded by a character other than backslash.
-     */
+        /*
+         * A space is needed unless either
+         * (a) we're at the start of the string, or
+         * (b) the trailing characters of the string consist of one or more
+         *     open curly braces preceded by a space or extending back to
+         *     the beginning of the string.
+         * (c) the trailing characters of the string consist of a space
+         *	   preceded by a character other than backslash.
+         */
 
-    if (end == start) {
-	return 0;
-    }
-    end--;
-    if (*end != '{') {
-	if (isspace(UCHAR(*end)) && ((end == start) || (end[-1] != '\\'))) {
-	    return 0;
-	}
-	return 1;
-    }
-    do {
-	if (end == start) {
-	    return 0;
-	}
-	end--;
-    } while (*end == '{');
-    if (isspace(UCHAR(*end))) {
-	return 0;
-    }
-    return 1;
+        if (end == start) {
+                return 0;
+        }
+        end--;
+        if (*end != '{') {
+                if (isspace(UCHAR(*end)) &&
+                    ((end == start) || (end[-1] != '\\'))) {
+                        return 0;
+                }
+                return 1;
+        }
+        do {
+                if (end == start) {
+                        return 0;
+                }
+                end--;
+        } while (*end == '{');
+        if (isspace(UCHAR(*end))) {
+                return 0;
+        }
+        return 1;
 }

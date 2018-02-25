@@ -32,15 +32,11 @@ Copyright 1988, 1989 Hewlett-Packard Co.
 
 void m_exit(
 #if defined(M_PROTO)
-  int status
+    int status
 #endif
-  ) ;
+);
 
 /* Exit function called by utilities used in PARSER and other programs in
    the MARKUP system */
-void m_exit(status)
-  int status ;
-  {
-    exit(status) ;
-    }
-
+void m_exit(status) int status;
+{ exit(status); }

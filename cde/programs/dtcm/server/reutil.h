@@ -34,30 +34,27 @@
 #include "rerule.h"
 #include "repeat.h"
 
-#define EOT	2147483647
+#define EOT 2147483647
 
-#define RE_DAILY(re)    (re->re_data.re_daily)
-#define RE_WEEKLY(re)   (re->re_data.re_weekly)
-#define RE_MONTHLY(re)  (re->re_data.re_monthly)
-#define RE_YEARLY(re)   (re->re_data.re_yearly)
+#define RE_DAILY(re) (re->re_data.re_daily)
+#define RE_WEEKLY(re) (re->re_data.re_weekly)
+#define RE_MONTHLY(re) (re->re_data.re_monthly)
+#define RE_YEARLY(re) (re->re_data.re_yearly)
 #define RES_DSTATE(res) (res->res_data.ds)
 #define RES_WSTATE(res) (res->res_data.ws)
 #define RES_MSTATE(res) (res->res_data.ms)
 #define RES_YSTATE(res) (res->res_data.ys)
-#define SAME_DAY(tm1, tm2)  (((tm1)->tm_year == (tm2)->tm_year && \
-                             (tm1)->tm_mon == (tm2)->tm_mon && \
-                             (tm1)->tm_mday == (tm2)->tm_mday))
-#define SAME_MONTH(tm1, tm2) (((tm1)->tm_year == (tm2)->tm_year && \
-                              (tm1)->tm_mon == (tm2)->tm_mon))
-#define TIME_OF_DAY(tm)   ((tm)->tm_hour * 60 * 60 + \
-                         (tm)->tm_min * 60 + \
-                         (tm)->tm_sec)
-#define TIMEOFMONTH(tm) (((tm)->tm_mday - 1) * 24 * 60 * 60 + \
-			 (tm)->tm_hour * 60 * 60 + \
-                         (tm)->tm_min * 60 + \
-                         (tm)->tm_sec)
-#define HOURTOSEC(time) ((time/100) * 60 * 60 + \
-                         (time%100) * 60)
+#define SAME_DAY(tm1, tm2)                                                     \
+        (((tm1)->tm_year == (tm2)->tm_year &&                                  \
+          (tm1)->tm_mon == (tm2)->tm_mon && (tm1)->tm_mday == (tm2)->tm_mday))
+#define SAME_MONTH(tm1, tm2)                                                   \
+        (((tm1)->tm_year == (tm2)->tm_year && (tm1)->tm_mon == (tm2)->tm_mon))
+#define TIME_OF_DAY(tm)                                                        \
+        ((tm)->tm_hour * 60 * 60 + (tm)->tm_min * 60 + (tm)->tm_sec)
+#define TIMEOFMONTH(tm)                                                        \
+        (((tm)->tm_mday - 1) * 24 * 60 * 60 + (tm)->tm_hour * 60 * 60 +        \
+         (tm)->tm_min * 60 + (tm)->tm_sec)
+#define HOURTOSEC(time) ((time / 100) * 60 * 60 + (time % 100) * 60)
 
 extern int GetWDayDiff(const int, const int);
 extern int DayExists(const int, const int, const int);
@@ -71,14 +68,11 @@ extern int same_week(struct tm *, struct tm *);
 
 extern Tick ClosestTick(const Tick, const Tick, RepeatEvent *,
                         RepeatEventState **);
-extern Tick NextTick(const Tick, const Tick, RepeatEvent *,
-                        RepeatEventState *);
-extern Tick PrevTick(const Tick, const Tick, RepeatEvent *,
-                        RepeatEventState *);
+extern Tick NextTick(const Tick, const Tick, RepeatEvent *, RepeatEventState *);
+extern Tick PrevTick(const Tick, const Tick, RepeatEvent *, RepeatEventState *);
 extern Tick LastTick(const Tick, RepeatEvent *);
 extern int CountEvents(Tick, RepeatEvent *re, CSA_date_time_entry *);
-extern Tick DeriveNewStartTime(const Tick, RepeatEvent *old_re, const Tick, 
-			const Tick, RepeatEvent *new_re);
-
+extern Tick DeriveNewStartTime(const Tick, RepeatEvent *old_re, const Tick,
+                               const Tick, RepeatEvent *new_re);
 
 #endif /* _REUTIL_H */

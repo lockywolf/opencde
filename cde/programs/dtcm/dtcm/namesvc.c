@@ -48,7 +48,8 @@
  */
 
 #ifndef lint
-static  char sccsid[] = "@(#)namesvc.c 1.5 94/11/07 Copyr 1993 Sun Microsystems, Inc.";
+static char sccsid[] =
+    "@(#)namesvc.c 1.5 94/11/07 Copyr 1993 Sun Microsystems, Inc.";
 #endif
 
 #if 0

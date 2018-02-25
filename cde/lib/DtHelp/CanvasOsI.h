@@ -41,7 +41,6 @@
 #ifndef _DtCanvasOsI_h
 #define _DtCanvasOsI_h
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -61,15 +60,11 @@ extern "C" {
 /********    Internal Macros Declarations    ********/
 
 /********    Internal Function Declarations    ********/
-extern	int		_DtCvRunInterp(
-				int		(*filter)(),
-				_DtCvPointer	  client_data,
-				char		 *interp,
-				char		 *data,
-				char		**ret_data);
+extern int _DtCvRunInterp(int (*filter)(), _DtCvPointer client_data,
+                          char *interp, char *data, char **ret_data);
 
 #ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
 #endif /* _DtCanvasOsI_h */

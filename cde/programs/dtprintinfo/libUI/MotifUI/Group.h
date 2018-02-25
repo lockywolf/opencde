@@ -35,26 +35,21 @@
 
 class Group : public MotifUI {
 
- private:
-   
-   Widget _label;
-   Widget _rc;
-   GroupType _group_type;
+      private:
+        Widget _label;
+        Widget _rc;
+        GroupType _group_type;
 
- public:
+      public:
+        Group(MotifUI *parent, char *name, GroupType group_type = RADIO_GROUP);
 
-   Group(MotifUI *parent,
-	 char *name,
-	 GroupType group_type = RADIO_GROUP);
+        const Widget InnerWidget() { return _rc; }
+        const UI_Class UIClass() { return GROUP; }
+        const int UISubClass() { return _group_type; }
+        const char *const UIClassName() { return "Group"; }
 
-   const Widget InnerWidget()         { return _rc; }
-   const UI_Class UIClass()           { return GROUP; }
-   const int UISubClass()             { return _group_type; }
-   const char *const UIClassName()    { return "Group"; }
-
-   // Override SetName, need to set label name, not BaseWidget
-   boolean SetName(char *);
-
+        // Override SetName, need to set label name, not BaseWidget
+        boolean SetName(char *);
 };
 
 #endif /* GROUP_H */

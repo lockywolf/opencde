@@ -35,20 +35,19 @@
 
 class DtDetailsLabel : public MotifUI {
 
-   static void ClickCB(Widget, XtPointer, XtPointer);
+        static void ClickCB(Widget, XtPointer, XtPointer);
 
-   static boolean first_time;
-   static XmString bottom_label[];
-   static Pixmap blank_pixmap;
-   static Pixmap blank_mask;
+        static boolean first_time;
+        static XmString bottom_label[];
+        static Pixmap blank_pixmap;
+        static Pixmap blank_mask;
 
- public:
+      public:
+        DtDetailsLabel(MotifUI *parent);
+        void Update(boolean show_only_my_jobs);
 
-   DtDetailsLabel(MotifUI *parent);
-   void Update(boolean show_only_my_jobs);
-
-   const UI_Class UIClass()           { return LABEL; }
-   const char *const UIClassName()    { return "DtDetailsLabel"; }
+        const UI_Class UIClass() { return LABEL; }
+        const char *const UIClassName() { return "DtDetailsLabel"; }
 };
 
 #endif // DTDETAILSLABEL_H

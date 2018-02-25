@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: ttdbck.h /main/3 1995/10/20 16:34:12 rswiston $ 			 				 */
+/*%%  $XConsortium: ttdbck.h /main/3 1995/10/20 16:34:12 rswiston $
+ */
 /*
  *
  * ttdbck.h
@@ -41,7 +42,7 @@
 #include "options_tt.h"
 #include "mp_typedb.h"
 
-extern char *progname;			// from argv[0]
+extern char *progname; // from argv[0]
 extern Spec_list_ptr specs_to_repair;
 extern _Tt_typedb_ptr *tdb_ptr;
 extern Dbck_specoptions *opts;

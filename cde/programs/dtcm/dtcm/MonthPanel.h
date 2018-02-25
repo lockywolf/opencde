@@ -59,55 +59,51 @@ extern "C" {
 #endif
 
 #ifndef XmIsMonthPanel
-#define XmIsMonthPanel(w)	XtIsSubclass(w, xmMonthPanelWidgetClass)
+#define XmIsMonthPanel(w) XtIsSubclass(w, xmMonthPanelWidgetClass)
 #endif /* XmIsMonthPanel */
 
 externalref WidgetClass xmMonthPanelWidgetClass;
 
-typedef struct _XmMonthPanelClassRec * XmMonthPanelWidgetClass;
-typedef struct _XmMonthPanelRec      * XmMonthPanelWidget;
+typedef struct _XmMonthPanelClassRec *XmMonthPanelWidgetClass;
+typedef struct _XmMonthPanelRec *XmMonthPanelWidget;
 
 typedef enum { MONTH_SELECTION, DAY_SELECTION } XmMonthPanelSelectionType;
 
 typedef struct {
-   XmMonthPanelSelectionType	type;
-   int day;
+        XmMonthPanelSelectionType type;
+        int day;
 } XmMonthPanelCallbackStruct;
 
 /********    Public Function Declarations    ********/
 
-extern Widget XmCreateMonthPanel( 
-                        Widget parent,
-                        char *name,
-                        ArgList args,
-                        Cardinal argCount) ;
+extern Widget XmCreateMonthPanel(Widget parent, char *name, ArgList args,
+                                 Cardinal argCount);
 
 /********    End Public Function Declarations    ********/
 
 /********    Resource Strings    ********/
-#define	XmNmonth		"month"
-#define	XmCMonth		"Month"
-#define	XmNyear			"year"
-#define	XmCYear			"Year"
-#define XmNtitleFormat		"titleFormat"
-#define XmCTitleFormat		"TitleFormat"
-#define XmNactiveDays		"activeDays"
-#define XmCActiveDays		"ActiveDays"
-#define XmNactiveHeader		"activeHeader"
-#define XmCActiveHeader		"ActiveHeader"
-#define XmNshowPanelHeader	"showPanelHeader"
-#define XmCShowPanelHeader	"ShowPanelHeader"
-#define XmNshowColumnHeaders	"showColumnHeaders"
-#define XmCShowColumnHeaders	"ShowColumnHeaders"
+#define XmNmonth "month"
+#define XmCMonth "Month"
+#define XmNyear "year"
+#define XmCYear "Year"
+#define XmNtitleFormat "titleFormat"
+#define XmCTitleFormat "TitleFormat"
+#define XmNactiveDays "activeDays"
+#define XmCActiveDays "ActiveDays"
+#define XmNactiveHeader "activeHeader"
+#define XmCActiveHeader "ActiveHeader"
+#define XmNshowPanelHeader "showPanelHeader"
+#define XmCShowPanelHeader "ShowPanelHeader"
+#define XmNshowColumnHeaders "showColumnHeaders"
+#define XmCShowColumnHeaders "ShowColumnHeaders"
 /*
 #define XmNshowSeparator	"showSeparator"
 #define XmCShowSeparator	"ShowSeparator"
 */
 /********    End Resource Strings    ********/
 
-
 #ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
 #endif /* _XmMonthPanel_h */

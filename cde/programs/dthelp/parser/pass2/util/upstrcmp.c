@@ -31,22 +31,23 @@
 
 int m_upper(
 #if defined(M_PROTO)
-  int c
+    int c
 #endif
-  ) ;
+);
 
 int m_upstrcmp(
 #if defined(M_PROTO)
-  char *p, char *q
+    char *p, char *q
 #endif
-  ) ;
+);
 
-int m_upstrcmp(p, q)
-  char *p, *q ;
-  {
-    do {
-      if (m_upper((int) *p) < m_upper((int) *q)) return(-1) ;
-      if (m_upper((int) *p) > m_upper((int) *q++)) return(1) ;
-      } while (*p++) ;
-    return(0) ;
-    }
+int m_upstrcmp(p, q) char *p, *q;
+{
+        do {
+                if (m_upper((int)*p) < m_upper((int)*q))
+                        return (-1);
+                if (m_upper((int)*p) > m_upper((int)*q++))
+                        return (1);
+        } while (*p++);
+        return (0);
+}

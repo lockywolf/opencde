@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         Symbolic.h $XConsortium: Symbolic.h /main/3 1995/10/26 15:45:51 rswiston $
- * Language:     C
+ * File:         Symbolic.h $XConsortium: Symbolic.h /main/3 1995/10/26 15:45:51
+ * rswiston $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -59,26 +59,24 @@ free for the user to fill in on his own.
 */
 
 typedef struct _XeSymbol {
-    XeString   name;
-    void       *value;
-} *XeSymbol;
+        XeString name;
+        void *value;
+} * XeSymbol;
 
-/* 
+/*
 This type is used for the XeRegisterFunction() routine.
 */
 
-typedef void (*XeAnyFunction) ();
-
+typedef void (*XeAnyFunction)();
 
 /*
 The second type of table is where the user defines his own type of
-data, hash functions, compare functions, etc.   
+data, hash functions, compare functions, etc.
 */
 
 /* The following types for the the user configurable functions that */
 /* are set with the Xe_set_syms_fns() routine.                      */
 /* ---------------------------------------------------------------- */
-
 
 /* CMP_FN:  								*/
 /*									*/
@@ -96,11 +94,10 @@ data, hash functions, compare functions, etc.
 /* -------------------------------------------------------------------- */
 
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   typedef int (*XeSymFn_cmp) (void *, void *);     /* 0 mean match */
+typedef int (*XeSymFn_cmp)(void *, void *); /* 0 mean match */
 #else
-   typedef int (*XeSymFn_cmp) ();
+typedef int (*XeSymFn_cmp)();
 #endif
-
 
 /* HASH_FN:  								   */
 /*									   */
@@ -118,9 +115,9 @@ data, hash functions, compare functions, etc.
 /* ----------------------------------------------------------------------- */
 
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   typedef unsigned int (*XeSymFn_hash)  (void *, unsigned int);
+typedef unsigned int (*XeSymFn_hash)(void *, unsigned int);
 #else
-   typedef unsigned int (*XeSymFn_hash)  ();
+typedef unsigned int (*XeSymFn_hash)();
 #endif
 
 /* INIT_FN:  								*/
@@ -154,9 +151,9 @@ data, hash functions, compare functions, etc.
 /* -------------------------------------------------------------------- */
 
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   typedef void * (*XeSymFn_init)(void *, unsigned int);
+typedef void *(*XeSymFn_init)(void *, unsigned int);
 #else
-   typedef void * (*XeSymFn_init)();
+typedef void *(*XeSymFn_init)();
 #endif
 
 /* CLEAN_FN:  								*/
@@ -170,7 +167,7 @@ data, hash functions, compare functions, etc.
 /*									*/
 /*   If created by Xe_intern_anysym() 					*/
 /*									*/
-/*     1) If a "clean_fn" is configured,					*/
+/*     1) If a "clean_fn" is configured, */
 /*        - init_fn( user's data pointer, "size" )			*/
 /*     2) If "size" != 0 during at creation time,			*/
 /*        - free( user's data pointer )					*/
@@ -184,60 +181,55 @@ data, hash functions, compare functions, etc.
 /* -------------------------------------------------------------------- */
 
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   typedef void (*XeSymFn_clean)  (void *);
+typedef void (*XeSymFn_clean)(void *);
 #else
-   typedef void (*XeSymFn_clean)  ();
+typedef void (*XeSymFn_clean)();
 #endif
-   
+
 /* This is what an internal symbol table entry looks like: */
 /* ------------------------------------------------------- */
 typedef struct _XeSymtabList {
-    struct _XeSymtabList *rest;
-    void       		 *data;
-    Boolean    		 data_is_XeSymbol;
-    Boolean    		 data_is_malloc_mem;
-} *XeSymtabList;
-
+        struct _XeSymtabList *rest;
+        void *data;
+        Boolean data_is_XeSymbol;
+        Boolean data_is_malloc_mem;
+} * XeSymtabList;
 
 /* This is the master record for a symbol table */
 /* -------------------------------------------- */
 
-typedef struct _XeSymTable
-{
-    unsigned int   hashsize;    /* # of hash buckets.                   */
-    XeSymtabList   *list;	/* Hash buckets.                        */
+typedef struct _XeSymTable {
+        unsigned int hashsize; /* # of hash buckets.                   */
+        XeSymtabList *list;    /* Hash buckets.                        */
 
-    XeSymtabList   curr_list;   /* Used to dump/traver the table.       */
-    unsigned int   curr_hash;
-    
-    XeSymFn_cmp    cmp_fn;      /* Read above description with each     */
-    XeSymFn_hash   hash_fn;     /* function typedef for more info.      */
-    XeSymFn_init   init_fn;	
-    XeSymFn_clean  clean_fn;	
-} *XeSymTable;
+        XeSymtabList curr_list; /* Used to dump/traver the table.       */
+        unsigned int curr_hash;
 
+        XeSymFn_cmp cmp_fn;   /* Read above description with each     */
+        XeSymFn_hash hash_fn; /* function typedef for more info.      */
+        XeSymFn_init init_fn;
+        XeSymFn_clean clean_fn;
+} * XeSymTable;
 
 /* Create a new hashtable. "hashsize must be power of 2 if using default */
 /* hash function (no checking is done to ensure this).                   */
 /* --------------------------------------------------------------------- */
 XeSymTable Xe_new_symtab
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (unsigned int hashsize);
+    (unsigned int hashsize);
 #else
-   ();
+    ();
 #endif
-
 
 /* Create the default symbol table.  If already created, just */
 /* return the symtable pointer. 			      */
 /* ---------------------------------------------------------- */
 XeSymTable Xe_default_symtab
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (void);
+    (void);
 #else
-   ();
+    ();
 #endif
-
 
 /* Configure user defined function for use with symtab routines.   */
 /* NOTE: Be sure you understand the interaction of these functions */
@@ -247,28 +239,23 @@ XeSymTable Xe_default_symtab
 /* --------------------------------------------------------------- */
 XeSymTable Xe_set_sym_fns
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (XeSymTable     t, 
-    XeSymFn_cmp    cmp_fn, 
-    XeSymFn_init   init_fn,
-    XeSymFn_clean  clean_fn, 
-    XeSymFn_hash   hash_fn);
+    (XeSymTable t, XeSymFn_cmp cmp_fn, XeSymFn_init init_fn,
+     XeSymFn_clean clean_fn, XeSymFn_hash hash_fn);
 #else
-   ();
+    ();
 #endif
-
 
 /* Find or create a symbol for "name".  Its "value" is set to NULL.  */
 /* None of the user defined init/cmp, etc functions are honored by   */
 /* this routine                                                      */
 /* WARNING: Read the notes for the function typedef's above.         */
 /* ----------------------------------------------------------------- */
-XeSymbol Xe_intern 
+XeSymbol Xe_intern
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (XeSymTable t, ConstXeString const name);
+    (XeSymTable t, ConstXeString const name);
 #else
-   ();
+    ();
 #endif
-
 
 /* Find the symbol for "name".  NULL is returned if not found.       */
 /* None of the user defined init/cmp, etc functions are honored by   */
@@ -277,96 +264,92 @@ XeSymbol Xe_intern
 /* ----------------------------------------------------------------- */
 XeSymbol Xe_lookup
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (XeSymTable t, ConstXeString const name);
+    (XeSymTable t, ConstXeString const name);
 #else
-   ();
+    ();
 #endif
- 
 
 /****************************************************************************/
 /*  LISTS 								    */
 
-typedef struct _XeList {   
-   struct _XeList *rest;
-   void 	  *data; 
-} *XeList;
+typedef struct _XeList {
+        struct _XeList *rest;
+        void *data;
+} * XeList;
 
 /* make a list from data and rest */
 /* ------------------------------ */
-XeList Xe_make_list 
+XeList Xe_make_list
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (void *data, XeList rest);
+    (void *data, XeList rest);
 #else
-   ();
+    ();
 #endif
-
 
 /****************************************************************************/
 /* QUEUES 								    */
 
 typedef struct _XeQueue {
-  XeList head;
-  XeList tail;
-  void * null;      
-} *XeQueue;
+        XeList head;
+        XeList tail;
+        void *null;
+} * XeQueue;
 
 /* for static or auto struct queues */
 /* -------------------------------- */
-XeQueue Xe_init_queue 
+XeQueue Xe_init_queue
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (XeQueue q, void * nullval);
+    (XeQueue q, void *nullval);
 #else
-   ();
-#endif
-	
-XeQueue Xe_make_queue 
-#if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (void * nullval);
-#else
-   ();
+    ();
 #endif
 
-void Xe_release_queue 
+XeQueue Xe_make_queue
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (XeQueue q);
+    (void *nullval);
 #else
-   ();
+    ();
+#endif
+
+void Xe_release_queue
+#if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
+    (XeQueue q);
+#else
+    ();
 #endif
 
 /* nullval returned if queue empty */
 /* ------------------------------- */
-void * Xe_pop_queue 
+void *Xe_pop_queue
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (XeQueue q);
+    (XeQueue q);
 #else
-   ();
+    ();
 #endif
 
 /* nullval returned if not found   */
 /* ------------------------------- */
-void * Xe_delete_queue_element 
+void *Xe_delete_queue_element
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (XeQueue q, void * val);
+    (XeQueue q, void *val);
 #else
-   ();
+    ();
 #endif
 
-void Xe_push_queue 
+void Xe_push_queue
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (XeQueue q, void * val);
+    (XeQueue q, void *val);
 #else
-   ();
+    ();
 #endif
 
 /* user declares his own "type var" */
 /* -------------------------------- */
-#define Xe_for_queue(type,var,q)	\
-	XeList q_next, q_list;		\
-	for(q_list = q->head;		\
-	    q_list && (var = (type) q_list->data, q_next = q_list->rest , 1);\
-	    q_list = q_next)
-
+#define Xe_for_queue(type, var, q)                                             \
+        XeList q_next, q_list;                                                 \
+        for (q_list = q->head;                                                 \
+             q_list && (var = (type)q_list->data, q_next = q_list->rest, 1);   \
+             q_list = q_next)
 
 /*  PUT NOTHING AFTER THIS endif */
 #endif /* _Symbolic_h_ */
-

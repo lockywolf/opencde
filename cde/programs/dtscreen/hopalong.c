@@ -30,7 +30,8 @@
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
 /*-
- * hopalong.c - Real Plane Fractals for dtscreen, the X Window System lockscreen.
+ * hopalong.c - Real Plane Fractals for dtscreen, the X Window System
+ *lockscreen.
  *
  * Copyright (c) 1991 by Patrick J. Naughton.
  *
@@ -55,87 +56,86 @@
 #include <stdlib.h>
 
 typedef struct {
-    int         centerx;
-    int         centery;	/* center of the screen */
-    double      a;
-    double      b;
-    double      c;
-    double      i;
-    double      j;		/* hopalong parameters */
-    int         inc;
-    int         pix;
-    long        startTime;
-}           hopstruct;
+        int centerx;
+        int centery; /* center of the screen */
+        double a;
+        double b;
+        double c;
+        double i;
+        double j; /* hopalong parameters */
+        int inc;
+        int pix;
+        long startTime;
+} hopstruct;
 
-static XPoint *pointBuffer = 0;	/* pointer for XDrawPoints */
+static XPoint *pointBuffer = 0; /* pointer for XDrawPoints */
 
 #define TIMEOUT 30
 
-void
-inithop(perwindow *pwin)
-{
-    double      range;
-    XWindowAttributes xgwa;
-    hopstruct  *hp;
+void inithop(perwindow *pwin) {
+        double range;
+        XWindowAttributes xgwa;
+        hopstruct *hp;
 
-    if (pwin->data) free(pwin->data);
-    pwin->data = (void *)malloc(sizeof(hopstruct));
-    memset(pwin->data, '\0', sizeof(hopstruct));
-    hp = (hopstruct *)pwin->data;
-    XGetWindowAttributes(dsp, pwin->w, &xgwa);
-    hp->centerx = xgwa.width / 2;
-    hp->centery = xgwa.height / 2;
-    range = sqrt((double) hp->centerx * hp->centerx +
-		 (double) hp->centery * hp->centery) /
-	(10.0 + random() % 10);
+        if (pwin->data)
+                free(pwin->data);
+        pwin->data = (void *)malloc(sizeof(hopstruct));
+        memset(pwin->data, '\0', sizeof(hopstruct));
+        hp = (hopstruct *)pwin->data;
+        XGetWindowAttributes(dsp, pwin->w, &xgwa);
+        hp->centerx = xgwa.width / 2;
+        hp->centery = xgwa.height / 2;
+        range = sqrt((double)hp->centerx * hp->centerx +
+                     (double)hp->centery * hp->centery) /
+                (10.0 + random() % 10);
 
-    hp->pix = 0;
-    hp->inc = (int) ((random() / MAXRAND) * 200) - 100;
-    hp->a = (random() / MAXRAND) * range - range / 2.0;
-    hp->b = (random() / MAXRAND) * range - range / 2.0;
-    hp->c = (random() / MAXRAND) * range - range / 2.0;
-    if (!(random() % 2))
-	hp->c = 0.0;
+        hp->pix = 0;
+        hp->inc = (int)((random() / MAXRAND) * 200) - 100;
+        hp->a = (random() / MAXRAND) * range - range / 2.0;
+        hp->b = (random() / MAXRAND) * range - range / 2.0;
+        hp->c = (random() / MAXRAND) * range - range / 2.0;
+        if (!(random() % 2))
+                hp->c = 0.0;
 
-    hp->i = hp->j = 0.0;
+        hp->i = hp->j = 0.0;
 
-    if (!pointBuffer)
-	pointBuffer = (XPoint *) malloc(batchcount * sizeof(XPoint));
+        if (!pointBuffer)
+                pointBuffer = (XPoint *)malloc(batchcount * sizeof(XPoint));
 
-    XSetForeground(dsp, pwin->gc, BlackPixelOfScreen(pwin->perscreen->screen));
-    XFillRectangle(dsp, pwin->w, pwin->gc, 0, 0,
-		   hp->centerx * 2, hp->centery * 2);
-    XSetForeground(dsp, pwin->gc, WhitePixelOfScreen(pwin->perscreen->screen));
-    hp->startTime = seconds();
+        XSetForeground(dsp, pwin->gc,
+                       BlackPixelOfScreen(pwin->perscreen->screen));
+        XFillRectangle(dsp, pwin->w, pwin->gc, 0, 0, hp->centerx * 2,
+                       hp->centery * 2);
+        XSetForeground(dsp, pwin->gc,
+                       WhitePixelOfScreen(pwin->perscreen->screen));
+        hp->startTime = seconds();
 }
 
+void drawhop(perwindow *pwin) {
+        double oldj;
+        int k = batchcount;
+        XPoint *xp = pointBuffer;
+        hopstruct *hp = (hopstruct *)pwin->data;
 
-void
-drawhop(perwindow *pwin)
-{
-    double      oldj;
-    int         k = batchcount;
-    XPoint     *xp = pointBuffer;
-    hopstruct  *hp = (hopstruct *)pwin->data;
-
-    hp->inc++;
-    if (!mono && pwin->perscreen->npixels > 2) {
-	XSetForeground(dsp, pwin->gc, pwin->perscreen->pixels[hp->pix]);
-	if (++hp->pix >= pwin->perscreen->npixels)
-	    hp->pix = 0;
-    }
-    while (k--) {
-	oldj = hp->j;
-	hp->j = hp->a - hp->i;
-	hp->i = oldj + (hp->i < 0
-			? sqrt(fabs(hp->b * (hp->i + hp->inc) - hp->c))
-			: -sqrt(fabs(hp->b * (hp->i + hp->inc) - hp->c)));
-	xp->x = hp->centerx + (int) (hp->i + hp->j);
-	xp->y = hp->centery - (int) (hp->i - hp->j);
-	xp++;
-    }
-    XDrawPoints(dsp, pwin->w, pwin->gc,
-		pointBuffer, batchcount, CoordModeOrigin);
-    if (seconds() - hp->startTime > TIMEOUT)
-	inithop(pwin);
+        hp->inc++;
+        if (!mono && pwin->perscreen->npixels > 2) {
+                XSetForeground(dsp, pwin->gc, pwin->perscreen->pixels[hp->pix]);
+                if (++hp->pix >= pwin->perscreen->npixels)
+                        hp->pix = 0;
+        }
+        while (k--) {
+                oldj = hp->j;
+                hp->j = hp->a - hp->i;
+                hp->i = oldj +
+                        (hp->i < 0
+                             ? sqrt(fabs(hp->b * (hp->i + hp->inc) - hp->c))
+                             : -sqrt(fabs(hp->b * (hp->i + hp->inc) - hp->c)));
+                xp->x = hp->centerx + (int)(hp->i + hp->j);
+                xp->y = hp->centery - (int)(hp->i - hp->j);
+                xp++;
+        }
+        XDrawPoints(dsp, pwin->w, pwin->gc, pointBuffer, batchcount,
+                    CoordModeOrigin);
+        if (seconds() - hp->startTime > TIMEOUT)
+                inithop(pwin);
 }

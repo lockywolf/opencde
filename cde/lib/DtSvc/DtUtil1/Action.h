@@ -41,31 +41,31 @@ extern "C" {
  * Argument types
  */
 
-#define DtACTION_FILE	 1	/* file argument */
-#define DtACTION_BUFFER	 2	/* buffer argument */
-#define DtACTION_STRING	 3	/* string argument */
-#define DtACTION_NULLARG 4	/* untyped return-only argument */
+#define DtACTION_FILE 1    /* file argument */
+#define DtACTION_BUFFER 2  /* buffer argument */
+#define DtACTION_STRING 3  /* string argument */
+#define DtACTION_NULLARG 4 /* untyped return-only argument */
 
 typedef struct {
-	void *bp;		/* location of buffer */
-	int size;		/* size of buffer in bytes */
-	char *type;		/* (opt.) type of buffer */
-        char *name;		/* (opt.) name of buffer object */
-        Boolean writable;	/* allow changes to buffer object? */
+        void *bp;         /* location of buffer */
+        int size;         /* size of buffer in bytes */
+        char *type;       /* (opt.) type of buffer */
+        char *name;       /* (opt.) name of buffer object */
+        Boolean writable; /* allow changes to buffer object? */
 } DtActionBuffer;
 
 typedef struct {
-	char *name;
+        char *name;
 } DtActionFile;
 
 typedef struct {
-	/*
-	 * Structure containing argument information
-	 */
-	int argClass;		/* see argument types */
-	union {
-		DtActionFile	file;
-		DtActionBuffer	buffer;
+        /*
+         * Structure containing argument information
+         */
+        int argClass; /* see argument types */
+        union {
+                DtActionFile file;
+                DtActionBuffer buffer;
         } u;
 } DtActionArg;
 
@@ -73,17 +73,16 @@ typedef struct {
  * DtActionStatus codes
  */
 typedef enum {
-	DtACTION_OK,			/* If not any of the below */
-	DtACTION_INVALID_ID,		/* ID is not valid */
-	DtACTION_INVOKED,		/* the action invocation step is done */
-	DtACTION_STATUS_UPDATE,		/* status update */
-	DtACTION_DONE,			/* normal action termination code */
-	DtACTION_FAILED,		/* error running action */
-	DtACTION_CANCELED		/* normal action termination by cancel*/
+        DtACTION_OK,            /* If not any of the below */
+        DtACTION_INVALID_ID,    /* ID is not valid */
+        DtACTION_INVOKED,       /* the action invocation step is done */
+        DtACTION_STATUS_UPDATE, /* status update */
+        DtACTION_DONE,          /* normal action termination code */
+        DtACTION_FAILED,        /* error running action */
+        DtACTION_CANCELED       /* normal action termination by cancel*/
 } DtActionStatus;
 
-typedef void (*DtDbReloadCallbackProc)(
-		XtPointer	clientData);
+typedef void (*DtDbReloadCallbackProc)(XtPointer clientData);
 
 /*
  * DtActionInvocationID is the fundamental user-space handle to invoked
@@ -91,46 +90,33 @@ typedef void (*DtDbReloadCallbackProc)(
  */
 typedef unsigned long DtActionInvocationID;
 
-typedef void (*DtActionCallbackProc) (
-		DtActionInvocationID	id,
-		XtPointer	client_data,
-		DtActionArg	*actionArgPtr,
-		int		actionArgCount,
-		DtActionStatus	status);
+typedef void (*DtActionCallbackProc)(DtActionInvocationID id,
+                                     XtPointer client_data,
+                                     DtActionArg *actionArgPtr,
+                                     int actionArgCount, DtActionStatus status);
 
 /*
  * Functions
  */
 
-extern Boolean DtActionExists(
-		char		*actionName);
+extern Boolean DtActionExists(char *actionName);
 
-extern char * DtActionLabel(
-		char		*actionName);
+extern char *DtActionLabel(char *actionName);
 
-extern char * DtActionDescription(
-		char		*actionName);
+extern char *DtActionDescription(char *actionName);
 
-extern void DtDbReloadNotify ( 
-		DtDbReloadCallbackProc proc, 
-		XtPointer	clientData);
+extern void DtDbReloadNotify(DtDbReloadCallbackProc proc, XtPointer clientData);
 
 extern void DtDbLoad(void);
 
-extern DtActionInvocationID DtActionInvoke (
-		Widget		w,
-		char		*action,
-		DtActionArg 	*args,
-		int		argCount,
-		char		*termOpts,
-		char		*execHost,
-		char		*contextDir,
-		int		useIndicator,
-		DtActionCallbackProc statusUpdateCb,
-		XtPointer	client_data);
+extern DtActionInvocationID DtActionInvoke(Widget w, char *action,
+                                           DtActionArg *args, int argCount,
+                                           char *termOpts, char *execHost,
+                                           char *contextDir, int useIndicator,
+                                           DtActionCallbackProc statusUpdateCb,
+                                           XtPointer client_data);
 
-extern char * DtActionIcon(
-		char		*actionName);
+extern char *DtActionIcon(char *actionName);
 
 #ifdef __cplusplus
 }

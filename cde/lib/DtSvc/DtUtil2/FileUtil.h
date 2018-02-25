@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         FileUtil.h $XConsortium: FileUtil.h /main/4 1995/10/26 15:21:50 rswiston $
- * Language:     C
+ * File:         FileUtil.h $XConsortium: FileUtil.h /main/4 1995/10/26 15:21:50
+ * rswiston $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -35,8 +35,7 @@
 #ifndef _FileUtil_h
 #define _FileUtil_h
 
-extern int _DtCreateDirs( char *path,
-                         int mode) ;
+extern int _DtCreateDirs(char *path, int mode);
 
 /******************
  *
@@ -45,14 +44,14 @@ extern int _DtCreateDirs( char *path,
  * Description:
  *
  *	This function is passed a directory path to create and the mode
- *	for the directory.  It will create any of the parent directories 
+ *	for the directory.  It will create any of the parent directories
  *	on the path that do not already exist.
  *
  *	This function may fail if any of the directories on the path already
  *	exist and are not writable.  If some component of the path already
- *	exists and is not a directory, a failure will be returned.  
+ *	exists and is not a directory, a failure will be returned.
  *
- *	If some component of the path exists as a directory but does not have 
+ *	If some component of the path exists as a directory but does not have
  *	the specified mode, this will NOT cause a failure to be returned.
  *	This implies that if this function is called to create a writeable
  *	directory, it is possible for the function to return successfully
@@ -69,8 +68,7 @@ extern int _DtCreateDirs( char *path,
  *
  ******************/
 
-
-extern int _DtIsOpenableDir( char *path) ;
+extern int _DtIsOpenableDir(char *path);
 
 /******************
  *
@@ -88,17 +86,13 @@ extern int _DtIsOpenableDir( char *path) ;
  *
  *	status = _DtIsOpenableDir (cpath)
  *
- *	int status;		Returns 1 for openable directories, 
+ *	int status;		Returns 1 for openable directories,
  *				0 otherwise.
  *	char *cpath;		The directory name to test.
  *
  ******************/
 
-
-extern int 
-_DtIsOpenableDirContext(
-        char *path,
-        char **ret_path ) ;
+extern int _DtIsOpenableDirContext(char *path, char **ret_path);
 
 /******************
  *
@@ -118,18 +112,14 @@ _DtIsOpenableDirContext(
  *
  *	status = _DtIsOpenableDirContext (cpath, ret_ptr)
  *
- *	int status;		Returns 1 for openable directories, 
+ *	int status;		Returns 1 for openable directories,
  *				0 otherwise.
  *	char *cpath;		The directory name to test.
  *      char ** ret_ptr;        Where to place internal format.
  *
  ******************/
 
-
-extern char * _DtReaddirLstat( 
-                        char *dir_name,
-                        DIR *dirp,
-                        struct stat *st_buf) ;
+extern char *_DtReaddirLstat(char *dir_name, DIR *dirp, struct stat *st_buf);
 
 /******************
  *
@@ -138,12 +128,12 @@ extern char * _DtReaddirLstat(
  * Description:
  *
  *	This function reads the next entry out of a directory that has
- *	been opened with opendir and returns lstat information on it.  
+ *	been opened with opendir and returns lstat information on it.
  *	For more information on reading a directory, see directory(3C).
  *	For more information on lstat information, see stat(2).
  *
  *	This function returns a pointer to the full pathname of the directory
- *	entry.  This memory is owned by this function and must not be 
+ *	entry.  This memory is owned by this function and must not be
  *	freed.  If the caller wants to keep the filename, it must make its
  *	own copy.  When the end of the directory is encountered, NULL is
  *	returned.

@@ -24,7 +24,8 @@
 **
 **  yearglance.h
 **
-**  static char sccsid[] = "@(#)yearglance.h 1.13 94/12/22 Copyr 1991 Sun Microsystems, Inc."; 
+**  static char sccsid[] = "@(#)yearglance.h 1.13 94/12/22 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $XConsortium: yearglance.h /main/4 1996/04/12 14:59:19 rswiston $
 **
@@ -58,16 +59,16 @@ extern int month_row_col[12][2];
 #define COL 1
 
 typedef struct year {
-	Widget	form;
-	Widget	label_form;
-        Widget  *month_panels;
-	Widget  year_label;
-	int	year_shown;
+        Widget form;
+        Widget label_form;
+        Widget *month_panels;
+        Widget year_label;
+        int year_shown;
 } Year;
 
-extern void	cleanup_after_yearview  P((Calendar *));
-extern void	year_button		P((Widget, XtPointer, XtPointer));
-extern CSA_return_code paint_year	P((Calendar*));
-extern void     print_std_year_range    P((int, int));
+extern void cleanup_after_yearview P((Calendar *));
+extern void year_button P((Widget, XtPointer, XtPointer));
+extern CSA_return_code paint_year P((Calendar *));
+extern void print_std_year_range P((int, int));
 
 #endif

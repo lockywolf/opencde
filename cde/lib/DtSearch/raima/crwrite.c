@@ -47,64 +47,63 @@
 #include "vista.h"
 #include "dbtype.h"
 
-
 /* Write data to a field  in the current record
-*/
-int
-d_crwrite(field, data TASK_PARM DBN_PARM)
-long field; /* field constant */
+ */
+int d_crwrite(field, data TASK_PARM DBN_PARM) long field; /* field constant */
 char FAR *data; /* data area to contain field contents */
 TASK_DECL
-DBN_DECL    /* database number */
+DBN_DECL /* database number */
 {
-#ifndef	 NO_TIMESTAMP
-   ULONG timestamp;
+#ifndef NO_TIMESTAMP
+        ULONG timestamp;
 #endif
-   int stat, fld, rec;
-   RECORD_ENTRY FAR *rec_ptr;
-   FIELD_ENTRY FAR *fld_ptr;
+        int stat, fld, rec;
+        RECORD_ENTRY FAR *rec_ptr;
+        FIELD_ENTRY FAR *fld_ptr;
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_IO));
-   
-   if (nfld_check(field, &rec, &fld, (RECORD_ENTRY FAR * FAR *)&rec_ptr, (FIELD_ENTRY FAR * FAR *)&fld_ptr) != S_OKAY)
-      RETURN( db_status );
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_IO));
 
-   /* compound keys cannot be updated directly */
-   if ( fld_ptr->fd_type == COMKEY )
-      RETURN( dberr(S_ISCOMKEY) );
+        if (nfld_check(field, &rec, &fld, (RECORD_ENTRY FAR * FAR *)&rec_ptr,
+                       (FIELD_ENTRY FAR * FAR *)&fld_ptr) != S_OKAY)
+                RETURN(db_status);
 
-   /* field used in compound keys cannot be updated directly */
-   if ( fld_ptr->fd_flags & COMKEYED )
-      RETURN( dberr(S_COMKEY) );
+        /* compound keys cannot be updated directly */
+        if (fld_ptr->fd_type == COMKEY)
+                RETURN(dberr(S_ISCOMKEY));
 
-   /* Make sure we have a current record */
-   if ( ! curr_rec )
-      RETURN( dberr(S_NOCR) );
+        /* field used in compound keys cannot be updated directly */
+        if (fld_ptr->fd_flags & COMKEYED)
+                RETURN(dberr(S_COMKEY));
 
-   /* Read current record */
-   if ( dio_read( curr_rec, (char FAR * FAR *)&crloc , PGHOLD) != S_OKAY )
-      RETURN( db_status );
-	    
-   /* check out the field */
-   if ( (stat = r_chkfld(fld, fld_ptr, crloc, data)) != S_OKAY ) {
-      dio_release(curr_rec);
-      RETURN( db_status = stat );
-   }
-   /* put data into record and return */
-   if ( r_pfld(fld, fld_ptr, crloc, data, &curr_rec) != S_OKAY )
-      RETURN( db_status );
-#ifndef	 NO_TIMESTAMP
-   /* check for timestamp */
-   if ( rec_ptr->rt_flags & TIMESTAMPED ) {
-      timestamp = dio_pzgetts(rec_ptr->rt_file);
-      bytecpy( crloc + RECUPTIME, &timestamp, sizeof(LONG));
-   }
+        /* Make sure we have a current record */
+        if (!curr_rec)
+                RETURN(dberr(S_NOCR));
+
+        /* Read current record */
+        if (dio_read(curr_rec, (char FAR *FAR *)&crloc, PGHOLD) != S_OKAY)
+                RETURN(db_status);
+
+        /* check out the field */
+        if ((stat = r_chkfld(fld, fld_ptr, crloc, data)) != S_OKAY) {
+                dio_release(curr_rec);
+                RETURN(db_status = stat);
+        }
+        /* put data into record and return */
+        if (r_pfld(fld, fld_ptr, crloc, data, &curr_rec) != S_OKAY)
+                RETURN(db_status);
+#ifndef NO_TIMESTAMP
+        /* check for timestamp */
+        if (rec_ptr->rt_flags & TIMESTAMPED) {
+                timestamp = dio_pzgetts(rec_ptr->rt_file);
+                bytecpy(crloc + RECUPTIME, &timestamp, sizeof(LONG));
+        }
 #endif
-   dio_write(curr_rec, NULL, PGFREE);
-#ifndef	 NO_TIMESTAMP
-   if (( db_status == S_OKAY ) && ( rec_ptr->rt_flags & TIMESTAMPED ))
-      cr_time = timestamp;
+        dio_write(curr_rec, NULL, PGFREE);
+#ifndef NO_TIMESTAMP
+        if ((db_status == S_OKAY) && (rec_ptr->rt_flags & TIMESTAMPED))
+                cr_time = timestamp;
 #endif
-   RETURN( db_status );
+        RETURN(db_status);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin crwrite.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin crwrite.c */

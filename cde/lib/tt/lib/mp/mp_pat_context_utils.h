@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp_pat_context_utils.h /main/3 1995/10/23 10:26:36 rswiston $ 			 				 */
+/*%%  $XConsortium: mp_pat_context_utils.h /main/3 1995/10/23 10:26:36 rswiston
+ * $ 			 				 */
 /* -*-C++-*-
  *
  * @(#)mp_pat_context_utils.h	1.4 30 Jul 1993
@@ -44,6 +45,6 @@
 #include <mp/mp_context_utils.h>
 
 class _Tt_pat_context;
-declare_derived_list_of(_Tt_pat_context,_Tt_context)
+declare_derived_list_of(_Tt_pat_context, _Tt_context)
 
-#endif				/* MP_PAT_CONTEXT_UTILS_H */
+#endif /* MP_PAT_CONTEXT_UTILS_H */

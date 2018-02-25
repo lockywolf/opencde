@@ -24,10 +24,10 @@
 /*
  *	$XConsortium: bil_loadattP.h /main/3 1995/11/06 18:24:55 rswiston $
  *
- *	@(#)bil_loadattP.h	1.47 22 Nov 1994	
+ *	@(#)bil_loadattP.h	1.47 22 Nov 1994
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -162,18 +162,18 @@ extern STRING bilP_load_attachment_type(BIL_TOKEN);
 extern STRING bilP_load_attachment_value(BIL_TOKEN);
 extern STRING bilP_load_attachment_offset(BIL_TOKEN);
 extern STRING bilP_load_att_label_position(BIL_TOKEN);
-extern STRING bilP_load_att_help_volume( BIL_TOKEN);
-extern STRING bilP_load_att_help_location( BIL_TOKEN);
+extern STRING bilP_load_att_help_volume(BIL_TOKEN);
+extern STRING bilP_load_att_help_location(BIL_TOKEN);
 extern STRING bilP_load_att_word_wrap(BIL_TOKEN);
 extern STRING bilP_load_att_line_style(BIL_TOKEN);
 extern STRING bilP_load_att_arrow_style(BIL_TOKEN);
-extern STRING bilP_load_att_active(BIL_TOKEN );
-extern STRING bilP_load_att_iconic(BIL_TOKEN );
+extern STRING bilP_load_att_active(BIL_TOKEN);
+extern STRING bilP_load_att_iconic(BIL_TOKEN);
 extern STRING bilP_load_att_combo_box_style(BIL_TOKEN);
 extern STRING bilP_load_att_show_value(BIL_TOKEN);
-extern STRING bilP_load_att_slider_type( BIL_TOKEN);
+extern STRING bilP_load_att_slider_type(BIL_TOKEN);
 extern STRING bilP_load_selection_mode(BIL_TOKEN);
-extern STRING bilP_load_att_ok_label(BIL_TOKEN );
+extern STRING bilP_load_att_ok_label(BIL_TOKEN);
 extern STRING bilP_load_att_auto_dismiss(BIL_TOKEN);
 extern STRING bilP_load_att_directory(BIL_TOKEN);
 extern STRING bilP_load_att_direction(BIL_TOKEN);

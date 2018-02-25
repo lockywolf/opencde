@@ -80,38 +80,31 @@ cgenP_get_envCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    DtbCgenEnvDialogInfo        env_dlg = (DtbCgenEnvDialogInfo)clientData;
-    STRING                      var_name = NULL;
-    STRING                      var_value = NULL;
-    int                         index = 0;
+        DtbCgenEnvDialogInfo env_dlg = (DtbCgenEnvDialogInfo)clientData;
+        STRING var_name = NULL;
+        STRING var_value = NULL;
+        int index = 0;
 
-    var_name = XmTextFieldGetString(env_dlg->name_textf);
-    if (util_strempty(var_name))
-    {
-	/* clean out the value textpane */
-	XmTextSetString(env_dlg->textpane, NULL);
-    }
-    else
-    {
-        if (strlist_str_exists(user_env_vars, var_name))
-        {
-            var_value = (STRING) strlist_get_str_data(user_env_vars, var_name);
+        var_name = XmTextFieldGetString(env_dlg->name_textf);
+        if (util_strempty(var_name)) {
+                /* clean out the value textpane */
+                XmTextSetString(env_dlg->textpane, NULL);
+        } else {
+                if (strlist_str_exists(user_env_vars, var_name)) {
+                        var_value = (STRING)strlist_get_str_data(user_env_vars,
+                                                                 var_name);
+                } else {
+                        /* not in list */
+                        var_value = getenv(var_name);
+                }
+                if (var_value == NULL) {
+                        XmTextSetString(env_dlg->textpane,
+                                        catgets(Dtb_project_catd, 100, 58,
+                                                "*** Not Set ***"));
+                } else {
+                        XmTextSetString(env_dlg->textpane, var_value);
+                }
         }
-        else
-        {
-            /* not in list */
-            var_value = getenv(var_name);
-        }
-	if (var_value == NULL)
-	{
-	    XmTextSetString(env_dlg->textpane, catgets(Dtb_project_catd, 100, 58, "*** Not Set ***"));
-	}
-	else
-	{
-	    XmTextSetString(env_dlg->textpane, var_value);
-	}
-	
-    }
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -129,31 +122,32 @@ cgenP_set_envCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    DtbCgenEnvDialogInfo        env_dlg = (DtbCgenEnvDialogInfo)clientData;
-    STRING                      var_name = NULL;
-    STRING                      var_value = NULL;
-    STRING                      old_var_value = NULL;
+        DtbCgenEnvDialogInfo env_dlg = (DtbCgenEnvDialogInfo)clientData;
+        STRING var_name = NULL;
+        STRING var_value = NULL;
+        STRING old_var_value = NULL;
 
-    var_name = XmTextFieldGetString(env_dlg->name_textf);
+        var_name = XmTextFieldGetString(env_dlg->name_textf);
 
-    if (util_strempty(var_name))
-        return;
+        if (util_strempty(var_name))
+                return;
 
-    var_value = XmTextGetString(env_dlg->textpane);
+        var_value = XmTextGetString(env_dlg->textpane);
 
-    if (strlist_str_exists(user_env_vars, var_name))
-    {
-        /* the user has set this before - we need to deallocate
-         * the string we allocated
-         */
-        old_var_value = (STRING) strlist_get_str_data(user_env_vars, var_name);
-        util_free(old_var_value);
-        strlist_remove_str(user_env_vars, var_name);
-    }
-    if (!util_strempty(var_value))
-        strlist_add_str(user_env_vars, var_name, (void *)strdup(var_value));
-    else
-        strlist_add_str(user_env_vars, var_name, (void *)NULL);
+        if (strlist_str_exists(user_env_vars, var_name)) {
+                /* the user has set this before - we need to deallocate
+                 * the string we allocated
+                 */
+                old_var_value =
+                    (STRING)strlist_get_str_data(user_env_vars, var_name);
+                util_free(old_var_value);
+                strlist_remove_str(user_env_vars, var_name);
+        }
+        if (!util_strempty(var_value))
+                strlist_add_str(user_env_vars, var_name,
+                                (void *)strdup(var_value));
+        else
+                strlist_add_str(user_env_vars, var_name, (void *)NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -170,34 +164,33 @@ cgenP_reset_envCB(
 )
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
-    DtbCgenEnvDialogInfo        env_dlg = (DtbCgenEnvDialogInfo)clientData;
-    STRING                      var_name = NULL;
-    STRING                      var_value = NULL;
+        DtbCgenEnvDialogInfo env_dlg = (DtbCgenEnvDialogInfo)clientData;
+        STRING var_name = NULL;
+        STRING var_value = NULL;
 
-    var_name = XmTextFieldGetString(env_dlg->name_textf);
+        var_name = XmTextFieldGetString(env_dlg->name_textf);
 
-    if (util_strempty(var_name))
-        return;
+        if (util_strempty(var_name))
+                return;
 
-    if (strlist_str_exists(user_env_vars, var_name))
-    {
-        /* the user has set this before - we need to deallocate
-         * the string we allocated
-         */
-        var_value = (STRING) strlist_get_str_data(user_env_vars, var_name);
-        util_free(var_value);
-        strlist_remove_str(user_env_vars, var_name);
-    }
-    var_value = getenv(var_name);
+        if (strlist_str_exists(user_env_vars, var_name)) {
+                /* the user has set this before - we need to deallocate
+                 * the string we allocated
+                 */
+                var_value =
+                    (STRING)strlist_get_str_data(user_env_vars, var_name);
+                util_free(var_value);
+                strlist_remove_str(user_env_vars, var_name);
+        }
+        var_value = getenv(var_name);
 
-    if (var_value == NULL)
-    {
-	XmTextSetString(env_dlg->textpane, catgets(Dtb_project_catd, 100, 58, "*** Not Set ***"));
-    }
-    else
-    {
-	XmTextSetString(env_dlg->textpane, var_value);
-    }
+        if (var_value == NULL) {
+                XmTextSetString(
+                    env_dlg->textpane,
+                    catgets(Dtb_project_catd, 100, 58, "*** Not Set ***"));
+        } else {
+                XmTextSetString(env_dlg->textpane, var_value);
+        }
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -217,10 +210,9 @@ cgenP_init_env_list(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    if (user_env_vars == NULL)
-    {
-        user_env_vars = strlist_create();
-    }
+        if (user_env_vars == NULL) {
+                user_env_vars = strlist_create();
+        }
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -237,14 +229,14 @@ cgenP_cancel_envCB(
 )
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
-    DtbCgenEnvDialogInfo        env_dlg = (DtbCgenEnvDialogInfo)clientData;
-    char buf[10];
+        DtbCgenEnvDialogInfo env_dlg = (DtbCgenEnvDialogInfo)clientData;
+        char buf[10];
 
-    sprintf(buf, "");
-    XmTextFieldSetString(env_dlg->name_textf, buf);
-    XmTextSetString(env_dlg->textpane, buf);
-    
-    XtPopdown(env_dlg->dialog);
+        sprintf(buf, "");
+        XmTextFieldSetString(env_dlg->name_textf, buf);
+        XmTextSetString(env_dlg->textpane, buf);
+
+        XtPopdown(env_dlg->dialog);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     

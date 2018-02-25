@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: isdelcurr.c /main/3 1995/10/23 11:37:32 rswiston $ 			 				 */
+/*%%  $XConsortium: isdelcurr.c /main/3 1995/10/23 11:37:32 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)isdelcurr.c 1.8 89/07/17 Copyr 1988 Sun Micro";
 #endif
@@ -36,9 +37,8 @@ static char sccsid[] = "@(#)isdelcurr.c 1.8 89/07/17 Copyr 1988 Sun Micro";
  * isdelcurr.c
  *
  * Description:
- *	Delete current record from ISAM file. 
+ *	Delete current record from ISAM file.
  */
-
 
 #include "isam_impl.h"
 #include <sys/time.h>
@@ -48,7 +48,7 @@ static int _amdelcurr();
 /*
  * err = isdelcurr(isfd, record)
  *
- * Isdelcurr() modifies the current record in ISAM file. 
+ * Isdelcurr() modifies the current record in ISAM file.
  * All indexes of the ISAM file are updated.
  *
  * Current record position is not changed.
@@ -64,39 +64,37 @@ static int _amdelcurr();
  *		was deleted by another process.
  */
 
-int 
-isdelcurr(isfd)
-    int			isfd;
+int isdelcurr(isfd) int isfd;
 {
-    int			_am_delcurr();
-    register Fab	*fab;
-    int			ret;
-    int			recnum;
+        int _am_delcurr();
+        register Fab *fab;
+        int ret;
+        int recnum;
 
-    /*
-     * Get File Access Block.
-     */
-    if ((fab = _isfd_find(isfd)) == NULL) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Get File Access Block.
+         */
+        if ((fab = _isfd_find(isfd)) == NULL) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-    /*
-     * Check that the open mode was  ISINOUT.
-     */
-    if (fab->openmode != OM_INOUT) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Check that the open mode was  ISINOUT.
+         */
+        if (fab->openmode != OM_INOUT) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-    if ((ret = _amdelcurr(&fab->isfhandle, &fab->curpos,
-			  &recnum, &fab->errcode)) == ISOK) {
-	isrecnum = recnum;		     /* Set isrecnum */
-    }
+        if ((ret = _amdelcurr(&fab->isfhandle, &fab->curpos, &recnum,
+                              &fab->errcode)) == ISOK) {
+                isrecnum = recnum; /* Set isrecnum */
+        }
 
-    _seterr_errcode(&fab->errcode);
+        _seterr_errcode(&fab->errcode);
 
-    return (ret);			     /* Successful write */
+        return (ret); /* Successful write */
 }
 
 /*
@@ -114,99 +112,94 @@ isdelcurr(isfd)
  *
  */
 
-static int
-_amdelcurr(isfhandle, curpos, recnum, errcode)
-    Bytearray		*isfhandle;
-    Bytearray		*curpos;
-    Recno		*recnum;
-    struct errcode	*errcode;
+static int _amdelcurr(isfhandle, curpos, recnum, errcode) Bytearray *isfhandle;
+Bytearray *curpos;
+Recno *recnum;
+struct errcode *errcode;
 {
-    Fcb			*fcb = NULL;
-    Crp			*crp;
-    char		recbuf[ISMAXRECLEN];
-    int			reclen;
-    int			(*rec_read)();
-    int			(*rec_delete)();
+        Fcb *fcb = NULL;
+        Crp *crp;
+        char recbuf[ISMAXRECLEN];
+        int reclen;
+        int (*rec_read)();
+        int (*rec_delete)();
 
-    _isam_entryhook();
+        _isam_entryhook();
 
-    /*
-     * Get FCB corresponding to the isfhandle handle.
-     */
-    if ((fcb = _openfcb(isfhandle, errcode)) == NULL) {
-	_isam_exithook();
-	return (ISERROR);
-    }
+        /*
+         * Get FCB corresponding to the isfhandle handle.
+         */
+        if ((fcb = _openfcb(isfhandle, errcode)) == NULL) {
+                _isam_exithook();
+                return (ISERROR);
+        }
 
-    rec_read = (fcb->varflag?_vlrec_read:_flrec_read);
-    rec_delete = (fcb->varflag?_vlrec_delete:_flrec_delete);
+        rec_read = (fcb->varflag ? _vlrec_read : _flrec_read);
+        rec_delete = (fcb->varflag ? _vlrec_delete : _flrec_delete);
 
-    /*
-     * Get info from current record position structure.
-     */
-    crp = (Crp *) curpos->data;
+        /*
+         * Get info from current record position structure.
+         */
+        crp = (Crp *)curpos->data;
 
-    if (crp->flag != CRP_ON) {
-	_amseterrcode(errcode, ENOCURR);
-	goto ERROR;
-    }
+        if (crp->flag != CRP_ON) {
+                _amseterrcode(errcode, ENOCURR);
+                goto ERROR;
+        }
 
-    /*
-     * Update information in FCB from CNTL page on the disk
-     */
-    (void)_isfcb_cntlpg_r2(fcb);
+        /*
+         * Update information in FCB from CNTL page on the disk
+         */
+        (void)_isfcb_cntlpg_r2(fcb);
 
-    /*
-     * We must read the record first to be able to delete keys.
-     */
-    if (rec_read(fcb, recbuf, crp->recno, &reclen) != ISOK) {
-	_amseterrcode(errcode, ENOCURR);
-	goto ERROR;
-    }
+        /*
+         * We must read the record first to be able to delete keys.
+         */
+        if (rec_read(fcb, recbuf, crp->recno, &reclen) != ISOK) {
+                _amseterrcode(errcode, ENOCURR);
+                goto ERROR;
+        }
 
-    if (rec_delete(fcb, crp->recno) != ISOK) {
-	_amseterrcode(errcode, ENOCURR);
-	goto ERROR;
-    }
+        if (rec_delete(fcb, crp->recno) != ISOK) {
+                _amseterrcode(errcode, ENOCURR);
+                goto ERROR;
+        }
 
-    *recnum = crp->recno;
+        *recnum = crp->recno;
 
-    fcb->nrecords--;
+        fcb->nrecords--;
 
-    /*
-     * Delete associated entries from all indexes.
-     */
-    _delkeys(fcb, recbuf, crp->recno);
+        /*
+         * Delete associated entries from all indexes.
+         */
+        _delkeys(fcb, recbuf, crp->recno);
 
-    _amseterrcode(errcode, ISOK);
+        _amseterrcode(errcode, ISOK);
 
-    _issignals_mask();
-    _isdisk_commit();
-    _isdisk_sync();
-    _isdisk_inval();
+        _issignals_mask();
+        _isdisk_commit();
+        _isdisk_sync();
+        _isdisk_inval();
 
-    /*
-     * Update CNTL Page from the FCB.
-     */
-    (void)_isfcb_cntlpg_w2(fcb);
-    _issignals_unmask();
+        /*
+         * Update CNTL Page from the FCB.
+         */
+        (void)_isfcb_cntlpg_w2(fcb);
+        _issignals_unmask();
 
-    _isam_exithook();
-    return (ISOK);
+        _isam_exithook();
+        return (ISOK);
 
- ERROR:
-    _isdisk_rollback();
-    _isdisk_inval();
+ERROR:
+        _isdisk_rollback();
+        _isdisk_inval();
 
-    /*
-     * Restore FCB from CNTL page.
-     */
-    if (fcb) (void)_isfcb_cntlpg_r2(fcb);
+        /*
+         * Restore FCB from CNTL page.
+         */
+        if (fcb)
+                (void)_isfcb_cntlpg_r2(fcb);
 
-    _isam_exithook();
-    return (ISERROR);
+        _isam_exithook();
+        return (ISERROR);
 }
-
-
-
-

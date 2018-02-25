@@ -28,9 +28,5 @@
 #include "userinc.h"
 #include "globdec.h"
 
-void *m_openent(entcontent)
-  M_WCHAR *entcontent ;
-  {
-    return((void *) fopen(entcontent, "r")) ;
-    }
-
+void *m_openent(entcontent) M_WCHAR *entcontent;
+{ return ((void *)fopen(entcontent, "r")); }

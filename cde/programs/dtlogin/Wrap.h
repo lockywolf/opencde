@@ -43,7 +43,7 @@
  * Revision 1.1.3.2  1994/07/08  21:01:55  Peter_Derr
  * 	Hide names for silly export rule.
  * 	[1994/05/18  17:57:54  Peter_Derr]
- * 
+ *
  * $EndLog$
  */
 /* $XConsortium: Wrap.h /main/2 1996/01/29 18:00:15 mgreess $ */
@@ -51,9 +51,11 @@
  * header file for compatibility with something useful
  */
 
-typedef unsigned char auth_cblock[8];	/* block size */
+typedef unsigned char auth_cblock[8]; /* block size */
 
-typedef struct auth_ks_struct { auth_cblock _; } auth_wrapper_schedule[16];
+typedef struct auth_ks_struct {
+        auth_cblock _;
+} auth_wrapper_schedule[16];
 
 extern void _XdmcpWrapperToOddParity();
 

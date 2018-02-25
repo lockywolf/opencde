@@ -31,71 +31,66 @@
 // collectionIterator iterates over MMDB's cset objects through
 // index.
 
-class collectionIterator
-{
-public:
-   collectionIterator(info_base*, int set_position);
-   virtual ~collectionIterator();
+class collectionIterator {
+      public:
+        collectionIterator(info_base *, int set_position);
+        virtual ~collectionIterator();
 
-// advance the iterator to the next position.
-// A newly constructed iterator's position is
-// undefined. This operator must be called to
-// advance to the 1st position.
+        // advance the iterator to the next position.
+        // A newly constructed iterator's position is
+        // undefined. This operator must be called to
+        // advance to the 1st position.
 
-// return 1 if advance successful and 0 otherwize.
-   virtual unsigned int operator++() ;
+        // return 1 if advance successful and 0 otherwize.
+        virtual unsigned int operator++();
 
-protected:
-   oid_t get_oid(int index);
+      protected:
+        oid_t get_oid(int index);
 
-protected:
-   cset_handler* f_set_ptr;
-   info_base* f_base;
-   int f_index;
+      protected:
+        cset_handler *f_set_ptr;
+        info_base *f_base;
+        int f_index;
 };
 
 // iterator over node set
-class nodeCollectionIterator : public collectionIterator
-{
+class nodeCollectionIterator : public collectionIterator {
 
-public:
-   nodeCollectionIterator(info_base*);
-   ~nodeCollectionIterator();
+      public:
+        nodeCollectionIterator(info_base *);
+        ~nodeCollectionIterator();
 
-   const char* get_locator();
+        const char *get_locator();
 };
 
 // iterator over graphic set
-class graphicCollectionIterator : public collectionIterator
-{
+class graphicCollectionIterator : public collectionIterator {
 
-public:
-   graphicCollectionIterator(info_base*);
-   ~graphicCollectionIterator();
+      public:
+        graphicCollectionIterator(info_base *);
+        ~graphicCollectionIterator();
 
-   const char* get_locator();
+        const char *get_locator();
 };
 
 // iterator over stylesheet set
-class stylesheetCollectionIterator : public collectionIterator
-{
+class stylesheetCollectionIterator : public collectionIterator {
 
-public:
-   stylesheetCollectionIterator(info_base*);
-   ~stylesheetCollectionIterator();
+      public:
+        stylesheetCollectionIterator(info_base *);
+        ~stylesheetCollectionIterator();
 
-   const char* get_locator();
+        const char *get_locator();
 };
 
 // iterator over locator set
-class locatorCollectionIterator : public collectionIterator
-{
+class locatorCollectionIterator : public collectionIterator {
 
-public:
-   locatorCollectionIterator(info_base*);
-   ~locatorCollectionIterator();
+      public:
+        locatorCollectionIterator(info_base *);
+        ~locatorCollectionIterator();
 
-   const char* get_locator();
+        const char *get_locator();
 };
 
 #endif

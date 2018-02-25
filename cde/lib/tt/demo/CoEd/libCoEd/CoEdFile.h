@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: CoEdFile.h /main/3 1995/10/20 17:06:55 rswiston $ 			 				 */
+/*%%  $XConsortium: CoEdFile.h /main/3 1995/10/20 17:06:55 rswiston $
+ */
 /* -*-C++-*-
  *
  * CoEdFile.h
@@ -63,18 +64,18 @@
 #include "CoEd.h"
 
 class CoEdFileList {
-    public:
-	CoEdFileList();
-	~CoEdFileList();
+      public:
+        CoEdFileList();
+        ~CoEdFileList();
 
-	void		push( CoEdFile *change );
-	void		append( CoEdFile *change );
-	CoEdStatus	handleMsg( const char *path, Tt_message msg );
+        void push(CoEdFile *change);
+        void append(CoEdFile *change);
+        CoEdStatus handleMsg(const char *path, Tt_message msg);
 
-    private:
-	CoEdFile       *_head;
-	CoEdFile       *_tail;
-	int		_count;
+      private:
+        CoEdFile *_head;
+        CoEdFile *_tail;
+        int _count;
 };
 
 #include "CoEd.h"

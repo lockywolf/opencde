@@ -35,9 +35,9 @@ namespace SP_NAMESPACE {
 #endif
 
 struct SrInfo {
-  String<EquivCode> chars;
-  int bSequenceLength;
-  String<EquivCode> chars2;
+        String<EquivCode> chars;
+        int bSequenceLength;
+        String<EquivCode> chars2;
 };
 
 #ifdef SP_NAMESPACE

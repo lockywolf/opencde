@@ -32,8 +32,8 @@
 #ifndef DtUNISTD_INCLUDED
 #define DtUNISTD_INCLUDED
 
-#  define FNM_PATHNAME 	  01    /* flag for pathname matching */
-#  define _FNM_PERIOD	  02    /* flag for explicitly matching leading '.'s */
-#  define _FNM_UAE	  04    /* flag for csh pattern matching */
+#define FNM_PATHNAME 01 /* flag for pathname matching */
+#define _FNM_PERIOD 02  /* flag for explicitly matching leading '.'s */
+#define _FNM_UAE 04     /* flag for csh pattern matching */
 
 #endif /* DtUNISTD_INCLUDED */

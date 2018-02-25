@@ -26,7 +26,7 @@
  *	$XConsortium: Image.h /main/4 1996/04/21 19:42:14 drk $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -46,16 +46,16 @@
 #include <X11/Intrinsic.h>
 #include <X11/StringDefs.h>
 
-
 class Image {
- private:
-  XImage	*_image;
-  unsigned int	_width,_height;
-  char 		*_filename;
- public:
-  Image( Widget, char * );
-  ~Image();
-  XImage *image() { return _image; }
+      private:
+        XImage *_image;
+        unsigned int _width, _height;
+        char *_filename;
+
+      public:
+        Image(Widget, char *);
+        ~Image();
+        XImage *image() { return _image; }
 };
 
 #endif

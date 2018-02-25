@@ -35,41 +35,42 @@
 namespace SP_NAMESPACE {
 #endif
 
-template<class T>
-class Owner {
-public:
-  Owner() : p_(0) { }
-  Owner(T *p) : p_(p) { }
-  ~Owner();
-  void operator=(T *p) {
-    if (p_) del();
-    p_ = p;
-  }
-  operator int() const { return p_ != 0; }
-  T *pointer() const { return p_; }
-  T *operator->() const { return p_; }
-  T &operator*() const { return *p_; }
-  void swap(Owner<T> &x) {
-    T *tem = p_;
-    p_ = x.p_;
-    x.p_ = tem;
-  }
-  T *extract() {
-    T *tem = p_;
-    p_ = 0;
-    return tem;
-  }
-  void clear() {
-    if (p_) {
-      del();
-      p_ = 0;
-    }
-  }
-private:
-  Owner(const Owner<T> &) {}
-  void operator=(const Owner<T> &) {}
-  void del();
-  T *p_;
+template <class T> class Owner {
+      public:
+        Owner() : p_(0) {}
+        Owner(T *p) : p_(p) {}
+        ~Owner();
+        void operator=(T *p) {
+                if (p_)
+                        del();
+                p_ = p;
+        }
+        operator int() const { return p_ != 0; }
+        T *pointer() const { return p_; }
+        T *operator->() const { return p_; }
+        T &operator*() const { return *p_; }
+        void swap(Owner<T> &x) {
+                T *tem = p_;
+                p_ = x.p_;
+                x.p_ = tem;
+        }
+        T *extract() {
+                T *tem = p_;
+                p_ = 0;
+                return tem;
+        }
+        void clear() {
+                if (p_) {
+                        del();
+                        p_ = 0;
+                }
+        }
+
+      private:
+        Owner(const Owner<T> &) {}
+        void operator=(const Owner<T> &) {}
+        void del();
+        T *p_;
 };
 
 #ifdef SP_NAMESPACE

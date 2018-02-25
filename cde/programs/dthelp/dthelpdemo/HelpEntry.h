@@ -25,7 +25,7 @@
  *****************************************************************************
  **
  **  File:         HelpEntry.h
- ** 
+ **
  **  Project:      CDE dthelpdemo sample program.
  **
  **  Description:  Header file containing all the help entry
@@ -43,34 +43,18 @@
 #ifndef _HelpEntry_h
 #define _HelpEntry_h
 
-
 /* Help Dialog, main entry point */
 #define DIALOG_HELP_ID "_hometopic"
 
 /* HELP widget Entry Point Id's  */
-#define CREATE_FRAME        "API"
-#define CONTROL1_FRAME      "TOOLKIT"
-#define CONTROL2_FRAME      "controlTestId"
-#define MORE_BTN_ID         "QUICKHELP"
-
+#define CREATE_FRAME "API"
+#define CONTROL1_FRAME "TOOLKIT"
+#define CONTROL2_FRAME "controlTestId"
+#define MORE_BTN_ID "QUICKHELP"
 
 /* Menubar Id's */
-#define APP_MENU_ID                "_hometopic"
-#define VER_MENU_ID                "_copyright"
-
+#define APP_MENU_ID "_hometopic"
+#define VER_MENU_ID "_copyright"
 
 #endif /* _HelpEntry_h */
 /* Do not add anything after this endif. */
-
-
-
-
-
-
-
-
-
-
-
-
-

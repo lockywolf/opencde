@@ -33,12 +33,11 @@
 
 /* Function callable by interface designers.  Returns number of parameters
    of specified element (-1 indicates error). */
-int m_parcount(elt)
-  M_WCHAR *elt ;
-  {
-    M_ELEMENT eltid ;
+int m_parcount(elt) M_WCHAR *elt;
+{
+        M_ELEMENT eltid;
 
-    if (! (eltid = m_packedlook(m_entree, elt))) return(-1) ;
-    return(m_element[eltid - 1].parcount) ;
-    }
-
+        if (!(eltid = m_packedlook(m_entree, elt)))
+                return (-1);
+        return (m_element[eltid - 1].parcount);
+}

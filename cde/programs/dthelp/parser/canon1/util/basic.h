@@ -45,8 +45,9 @@ typedef unsigned char M_CHAR8;
 typedef wchar_t M_WCHAR;
 
 /* For function prototypes */
-typedef char * M_POINTER;
-#if defined(hpux) || defined(__aix) || defined(sun) || defined(USL) || defined(__uxp__)
+typedef char *M_POINTER;
+#if defined(hpux) || defined(__aix) || defined(sun) || defined(USL) ||         \
+    defined(__uxp__)
 /* Old unix stuff
  *#define void int
  *#define M_NOPAR
@@ -61,72 +62,72 @@ typedef char * M_POINTER;
 
 char *MakeMByteString(
 #if defined(M_PROTO)
-  const M_WCHAR *from
+    const M_WCHAR *from
 #endif
-  );
+);
 
 M_WCHAR *MakeWideCharString(
 #if defined(M_PROTO)
-  const char *from
+    const char *from
 #endif
-  );
+);
 
 int w_strcmp(
 #if defined(M_PROTO)
-  const M_WCHAR *string1, const M_WCHAR *string2
+    const M_WCHAR *string1, const M_WCHAR *string2
 #endif
-  );
+);
 
 M_WCHAR *w_strcpy(
 #if defined(M_PROTO)
-  M_WCHAR *string1, const M_WCHAR *string2
+    M_WCHAR *string1, const M_WCHAR *string2
 #endif
-  );
+);
 
 M_WCHAR *w_strncpy(
 #if defined(M_PROTO)
-  M_WCHAR *string1, const M_WCHAR *string2, int max
+    M_WCHAR *string1, const M_WCHAR *string2, int max
 #endif
-  );
+);
 
 int w_strlen(
 #if defined(M_PROTO)
-  const M_WCHAR *string
+    const M_WCHAR *string
 #endif
-  );
+);
 
 M_WCHAR *w_strchr(
 #if defined(M_PROTO)
-  M_WCHAR *string, const M_WCHAR chr
+    M_WCHAR *string, const M_WCHAR chr
 #endif
-  );
+);
 
 M_WCHAR *w_strstr(
 #if defined(M_PROTO)
-  M_WCHAR *string1, M_WCHAR *string2
+    M_WCHAR *string1, M_WCHAR *string2
 #endif
-  );
+);
 
 void *m_malloc(
 #if defined(M_PROTO)
-  int size, char *msg
+    int size, char *msg
 #endif
-) ;
+);
 
 void m_free(
 #if defined(M_PROTO)
-  void *block, char *msg
+    void *block, char *msg
 #endif
-  ) ;
+);
 
 void m_err2(
 #if defined(M_PROTO)
-  const char *text, const M_WCHAR *arg1, const M_WCHAR *arg2
+    const char *text, const M_WCHAR *arg1, const M_WCHAR *arg2
 #endif
-  ) ;
+);
 
 int mb_getwc(
 #if defined(M_PROTO)
-  void *m_ptr
+    void *m_ptr
 #endif
-  ) ;
+);

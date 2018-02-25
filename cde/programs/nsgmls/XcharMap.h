@@ -36,29 +36,32 @@
 namespace SP_NAMESPACE {
 #endif
 
-template<class T>
-class SharedXcharMap : public Resource {
-public:
-  SharedXcharMap();
-  SharedXcharMap(T defaultValue);
-  T *ptr() { return v + 1; }
-private:
-  T v[2 + charMax];
+template <class T> class SharedXcharMap : public Resource {
+      public:
+        SharedXcharMap();
+        SharedXcharMap(T defaultValue);
+        T *ptr() { return v + 1; }
+
+      private:
+        T v[2 + charMax];
 };
 
-template<class T>
-class XcharMap {
-public:
-  XcharMap();
-  XcharMap(T defaultValue);
-  T operator[](Xchar c) const { return ptr_[c]; }
-  void setRange(Char min, Char max, T val);
-  void setChar(Char c, T val) { ptr_[c] = val; }
-  void setEe(T val) { ptr_[-1] = val; }
-  void clear() { ptr_ = 0; sharedMap_.clear(); }
-private:
-  T *ptr_;
-  Ptr<SharedXcharMap<T> > sharedMap_;
+template <class T> class XcharMap {
+      public:
+        XcharMap();
+        XcharMap(T defaultValue);
+        T operator[](Xchar c) const { return ptr_[c]; }
+        void setRange(Char min, Char max, T val);
+        void setChar(Char c, T val) { ptr_[c] = val; }
+        void setEe(T val) { ptr_[-1] = val; }
+        void clear() {
+                ptr_ = 0;
+                sharedMap_.clear();
+        }
+
+      private:
+        T *ptr_;
+        Ptr<SharedXcharMap<T> > sharedMap_;
 };
 
 #ifdef SP_NAMESPACE

@@ -27,13 +27,13 @@ and the Massachusetts Institute of Technology, Cambridge, Massachusetts.
 
                         All Rights Reserved
 
-Permission to use, copy, modify, and distribute this software and its 
-documentation for any purpose and without fee is hereby granted, 
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
 provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in 
+both that copyright notice and this permission notice appear in
 supporting documentation, and that the names of Digital or MIT not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  
+software without specific, written prior permission.
 
 DIGITAL DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
 ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL
@@ -50,7 +50,6 @@ This is unpublished proprietary source code of FUJITSU LIMITED
 
 ******************************************************************/
 
-
 #ifndef OS_H
 #define OS_H
 #include "misc.h"
@@ -59,10 +58,10 @@ This is unpublished proprietary source code of FUJITSU LIMITED
 #include <alloca.h>
 #endif
 
-#define NullFID ((FID) 0)
+#define NullFID ((FID)0)
 
-#define SCREEN_SAVER_ON   0
-#define SCREEN_SAVER_OFF  1
+#define SCREEN_SAVER_ON 0
+#define SCREEN_SAVER_OFF 1
 #define SCREEN_SAVER_FORCER 2
 
 #if defined(stellar) || defined(__uxp__)
@@ -71,7 +70,7 @@ This is unpublished proprietary source code of FUJITSU LIMITED
 #define MAX_REQUEST_SIZE 16384
 #endif
 
-typedef pointer	FID;
+typedef pointer FID;
 typedef struct _FontPathRec *FontPathPtr;
 typedef struct _NewClientRec *NewClientPtr;
 
@@ -86,38 +85,37 @@ typedef struct _NewClientRec *NewClientPtr;
 extern char *alloca();
 
 #if HCVERSION < 21003
-#define ALLOCATE_LOCAL(size)	alloca((int)(size))
+#define ALLOCATE_LOCAL(size) alloca((int)(size))
 pragma on(alloca);
 #else /* HCVERSION >= 21003 */
-#define	ALLOCATE_LOCAL(size)	_Alloca((int)(size))
+#define ALLOCATE_LOCAL(size) _Alloca((int)(size))
 #endif /* HCVERSION < 21003 */
 
-#define DEALLOCATE_LOCAL(ptr)  /* as nothing */
+#define DEALLOCATE_LOCAL(ptr) /* as nothing */
 
 #endif /* defined(__HIGHC__) */
-
 
 #if defined(__GNUC__) || defined(__uxp__)
 #if !defined(linux)
 #define alloca ___builtin_alloca
 #endif
 #define ALLOCATE_LOCAL(size) alloca((int)(size))
-#define DEALLOCATE_LOCAL(ptr)  /* as nothing */
-#else /* ! __GNUC__ ! __uxp__ */
+#define DEALLOCATE_LOCAL(ptr) /* as nothing */
+#else                         /* ! __GNUC__ ! __uxp__ */
 /*
  * warning: mips alloca is unsuitable in the server, do not use.
  */
 #if defined(vax) || defined(sun) || defined(apollo) || defined(stellar)
 /*
  * Some System V boxes extract alloca.o from /lib/libPW.a; if you
- * decide that you don't want to use alloca, you might want to fix 
+ * decide that you don't want to use alloca, you might want to fix
  * ../os/4.2bsd/Imakefile
  */
 char *alloca();
 #define ALLOCATE_LOCAL(size) alloca((int)(size))
-#define DEALLOCATE_LOCAL(ptr)  /* as nothing */
-#endif /* who does alloca */
-#endif /* __GNUC__ */
+#define DEALLOCATE_LOCAL(ptr) /* as nothing */
+#endif                        /* who does alloca */
+#endif                        /* __GNUC__ */
 
 #endif /* NO_ALLOCA */
 
@@ -126,41 +124,40 @@ char *alloca();
 #define DEALLOCATE_LOCAL(ptr) Xfree((pointer)(ptr))
 #endif /* ALLOCATE_LOCAL */
 
-
 #define xalloc(size) Xalloc((unsigned long)(size))
 #define xrealloc(ptr, size) Xrealloc((pointer)(ptr), (unsigned long)(size))
 #define xfree(ptr) Xfree((pointer)(ptr))
 
-int		ReadRequestFromClient();
+int ReadRequestFromClient();
 #ifndef strcat
-char		*strcat();
+char *strcat();
 #endif
 #ifndef strncat
-char		*strncat();
+char *strncat();
 #endif
 #ifndef strcpy
-char		*strcpy();
+char *strcpy();
 #endif
 #ifndef strncpy
-char		*strncpy();
+char *strncpy();
 #endif
-Bool		CloseDownConnection();
-FontPathPtr	GetFontPath();
-FontPathPtr	ExpandFontNamePattern();
-FID		FiOpenForRead();
-void		CreateWellKnownSockets();
-int		SetDefaultFontPath();
-void		FreeFontRecord();
-int		SetFontPath();
-void		ErrorF();
-void		Error();
-void		FatalError();
-void		ProcessCommandLine();
-void		Xfree();
-void		FlushAllOutput();
-void		FlushIfCriticalOutputPending();
-unsigned long	*Xalloc();
-unsigned long	*Xrealloc();
-long		GetTimeInMillis();
+Bool CloseDownConnection();
+FontPathPtr GetFontPath();
+FontPathPtr ExpandFontNamePattern();
+FID FiOpenForRead();
+void CreateWellKnownSockets();
+int SetDefaultFontPath();
+void FreeFontRecord();
+int SetFontPath();
+void ErrorF();
+void Error();
+void FatalError();
+void ProcessCommandLine();
+void Xfree();
+void FlushAllOutput();
+void FlushIfCriticalOutputPending();
+unsigned long *Xalloc();
+unsigned long *Xrealloc();
+long GetTimeInMillis();
 
 #endif /* OS_H */

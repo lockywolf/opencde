@@ -42,17 +42,17 @@ namespace SP_NAMESPACE {
 #endif
 
 class TokenMessageArg : public MessageArg {
-public:
-  TokenMessageArg(Token token, Mode mode,
-		  const ConstPtr<Syntax> &syntax,
-		  const ConstPtr<Sd> &sd);
-  MessageArg *copy() const;
-  void append(MessageBuilder &) const;
-private:
-  Token token_;
-  Mode mode_;
-  ConstPtr<Syntax> syntax_;
-  ConstPtr<Sd> sd_;
+      public:
+        TokenMessageArg(Token token, Mode mode, const ConstPtr<Syntax> &syntax,
+                        const ConstPtr<Sd> &sd);
+        MessageArg *copy() const;
+        void append(MessageBuilder &) const;
+
+      private:
+        Token token_;
+        Mode mode_;
+        ConstPtr<Syntax> syntax_;
+        ConstPtr<Sd> sd_;
 };
 
 #ifdef SP_NAMESPACE

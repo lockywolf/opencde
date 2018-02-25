@@ -35,11 +35,6 @@ This product and information is proprietary of Tandem Computers Incorporated.
 /* Include generated file */
 #include "efile.c"
 
-
 /* Perform the m_action-th end-code in the interface */
-void m_endcase(m_action)
-  int m_action ;
-  {
-    (*m_etable[m_action])() ;
-    }
-
+void m_endcase(m_action) int m_action;
+{ (*m_etable[m_action])(); }

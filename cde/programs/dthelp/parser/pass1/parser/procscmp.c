@@ -35,5 +35,3 @@ This product and information is proprietary of Tandem Computers Incorporated.
 
 /* Include any procedures specified by the interface designer */
 #include "procs.c"
-
-

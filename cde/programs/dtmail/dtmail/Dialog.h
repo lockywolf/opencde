@@ -26,7 +26,7 @@
  *	$XConsortium: Dialog.h /main/4 1996/04/21 19:41:19 drk $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -49,42 +49,37 @@ class RoamMenuWindow;
 
 class Dialog : public UIComponent {
 
-  public:
-    Dialog(char *, RoamMenuWindow *);
-    Dialog(RoamMenuWindow *);		// For custom dialogs.
+      public:
+        Dialog(char *, RoamMenuWindow *);
+        Dialog(RoamMenuWindow *); // For custom dialogs.
 
-    virtual ~Dialog();
-    virtual void initialize();
-    
-// Accessors
-    
-    RoamMenuWindow *parent() { return _parent; };
-    Widget work_area(){ return _workArea; }
-    
-// Mutators
-    
-    virtual void title( char * );
-    virtual void popped_up()=0;
-    virtual void popped_down()=0;
-    virtual void popup()=0;
-    virtual void popdown()=0;
-    virtual void manage();
-    virtual void busyCursor();
-    virtual void normalCursor();
-    
+        virtual ~Dialog();
+        virtual void initialize();
 
-    
-  protected:
+        // Accessors
 
-    virtual Widget createWorkArea( Widget ) = 0;
-    static void popdownCallback ( Widget, XtPointer, XmAnyCallbackStruct * );
-    static void popupCallback( Widget, XtPointer, XmAnyCallbackStruct * );
+        RoamMenuWindow *parent() { return _parent; };
+        Widget work_area() { return _workArea; }
 
-  private:
+        // Mutators
 
-    Widget _workArea;
-    RoamMenuWindow *_parent;
+        virtual void title(char *);
+        virtual void popped_up() = 0;
+        virtual void popped_down() = 0;
+        virtual void popup() = 0;
+        virtual void popdown() = 0;
+        virtual void manage();
+        virtual void busyCursor();
+        virtual void normalCursor();
 
+      protected:
+        virtual Widget createWorkArea(Widget) = 0;
+        static void popdownCallback(Widget, XtPointer, XmAnyCallbackStruct *);
+        static void popupCallback(Widget, XtPointer, XmAnyCallbackStruct *);
+
+      private:
+        Widget _workArea;
+        RoamMenuWindow *_parent;
 };
 
 #endif

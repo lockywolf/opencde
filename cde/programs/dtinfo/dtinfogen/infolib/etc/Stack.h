@@ -26,55 +26,56 @@
 #define STACK_HEADER
 
 //-----------------------------------------------------------------------
-class Element{
+class Element {
 
-friend class Stack;
-friend class SearchEngine;  
-  
-protected:
-  int name;
-  Element *next;
-  Element( int aName, Element *v=0) { name = aName; next = v; }
-  int GetName() const { return name; }
-  
+        friend class Stack;
+        friend class SearchEngine;
+
+      protected:
+        int name;
+        Element *next;
+        Element(int aName, Element *v = 0) {
+                name = aName;
+                next = v;
+        }
+        int GetName() const { return name; }
 };
 
 class Stack {
-private:
-  Element *currentToken;
-  
-public:
-  void push( Element *tok ) { tok->next = currentToken; currentToken = tok; }
-  
-  Element *pop()  {
-    Element *ptr;
-  
-    if ( currentToken ) {
-      ptr = currentToken;
-      currentToken = ptr->next;
-      return ( ptr );
-    }
-    else {
-      return ( NULL );
-    }
-  }
+      private:
+        Element *currentToken;
 
-  Element *GetTopToken() { return ( currentToken ); }
+      public:
+        void push(Element *tok) {
+                tok->next = currentToken;
+                currentToken = tok;
+        }
 
-  Stack() { currentToken = NULL; }
-  ~Stack();
-    
+        Element *pop() {
+                Element *ptr;
+
+                if (currentToken) {
+                        ptr = currentToken;
+                        currentToken = ptr->next;
+                        return (ptr);
+                } else {
+                        return (NULL);
+                }
+        }
+
+        Element *GetTopToken() { return (currentToken); }
+
+        Stack() { currentToken = NULL; }
+        ~Stack();
 };
 
-inline
-Stack::~Stack()
-{
-  Element *pt = currentToken;
-  while ( pt ) {
-    Element *tmp = pt;
-    pt = pt->next;
-    delete tmp;
-  }
+inline Stack::~Stack() {
+        Element *pt = currentToken;
+        while (pt) {
+                Element *tmp = pt;
+                pt = pt->next;
+                delete tmp;
+        }
 }
-    
+
 #endif

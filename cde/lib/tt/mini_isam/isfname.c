@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: isfname.c /main/3 1995/10/23 11:40:04 rswiston $ 			 				 */
+/*%%  $XConsortium: isfname.c /main/3 1995/10/23 11:40:04 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)isfname.c 1.3 89/07/17 Copyr 1988 Sun Micro";
 #endif
@@ -53,12 +54,10 @@ char *_lastelement();
  * Conversion is done in place.
  */
 
-void
-_makedat_isfname(isfname)
-    char	*isfname;
+void _makedat_isfname(isfname) char *isfname;
 {
-    /* Append .rec */
-    (void) strcat(isfname, DAT_SUFFIX);
+        /* Append .rec */
+        (void)strcat(isfname, DAT_SUFFIX);
 }
 
 /*
@@ -68,12 +67,10 @@ _makedat_isfname(isfname)
  * Conversion is done in place.
  */
 
-void
-_makeind_isfname(isfname)
-    char	*isfname;
+void _makeind_isfname(isfname) char *isfname;
 {
-    /* Append .ind */
-    (void) strcat(isfname, IND_SUFFIX);
+        /* Append .ind */
+        (void)strcat(isfname, IND_SUFFIX);
 }
 
 /*
@@ -83,14 +80,11 @@ _makeind_isfname(isfname)
  * Conversion is done in place.
  */
 
-void
-_makevar_isfname(isfname)
-    char	*isfname;
+void _makevar_isfname(isfname) char *isfname;
 {
-    /* Append .var */
-    (void) strcat(isfname, VAR_SUFFIX);
+        /* Append .var */
+        (void)strcat(isfname, VAR_SUFFIX);
 }
-
 
 /*
  * _removelast(path)
@@ -98,33 +92,30 @@ _makevar_isfname(isfname)
  * Remove last element of path. E.g. /usr/db/part yields /usr/db.
  */
 
-void
-_removelast(path)
-    char		*path;
+void _removelast(path) char *path;
 {
-    register char	*p;
+        register char *p;
 
-    for (p = path + strlen(path); *--p != '/' && p >= path; ) 
-	*p = '\0';
+        for (p = path + strlen(path); *--p != '/' && p >= path;)
+                *p = '\0';
 }
 
 /*
  * _lastelement(path)
  *
- * Return pointer to the last element in the path. 
+ * Return pointer to the last element in the path.
  * E.g.: _lastelement("/usr/temp") returns "temp".
  */
 
-char *
-_lastelement(path)
-    char	*path;
+char *_lastelement(path) char *path;
 {
-    register	char	*p;
-    
-    p = path + strlen(path);
+        register char *p;
 
-    while (*--p != '/' && p > path)
-	{ ; }
+        p = path + strlen(path);
 
-    return ((*p == '/') ? (p + 1) : p);
+        while (*--p != '/' && p > path) {
+                ;
+        }
+
+        return ((*p == '/') ? (p + 1) : p);
 }

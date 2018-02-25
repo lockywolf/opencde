@@ -36,20 +36,19 @@
 #define REF_NAME 269
 #define TYPE 270
 #define ValueListOpt 271
-typedef union
-{
- unsigned char 	charData;
- unsigned char* charPtrData;
- int   		intData;
- float		realData;
- FeatureValue*	valueData;
+typedef union {
+        unsigned char charData;
+        unsigned char *charPtrData;
+        int intData;
+        float realData;
+        FeatureValue *valueData;
 
- defv_t*    	valueListPtrData;
- TypeValues*   	typeValuesPtrData;
- type_values_list_t*   	typeValuesListPtrData;
+        defv_t *valueListPtrData;
+        TypeValues *typeValuesPtrData;
+        type_values_list_t *typeValuesListPtrData;
 
- def_list_t*	defListPtrData;
- FeatureDef*	defPtrData;
+        def_list_t *defListPtrData;
+        FeatureDef *defPtrData;
 
 } YYSTYPE;
 extern YYSTYPE defParserlval;

@@ -27,18 +27,18 @@
  * UNPUBLISHED -- rights reserved under the Copyright Laws of the United
  * States.  Use of a copyright notice is precautionary only and does not
  * imply publication or disclosure.
- * 
+ *
  * This software contains confidential information and trade secrets of HaL
  * Computer Systems, Inc.  Use, disclosure, or reproduction is prohibited
  * without the prior express written permission of HaL Computer Systems, Inc.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject to
  * restrictions as set forth in subparagraph (c)(l)(ii) of the Rights in
  * Technical Data and Computer Software clause at DFARS 252.227-7013.
  *                        HaL Computer Systems, Inc.
  *                  1315 Dell Avenue, Campbell, CA  95008
- * 
+ *
  */
 
 // This code is automatically generated in -*- C++ -*-
@@ -49,26 +49,29 @@
 #include <Xm/ToggleB.h>
 
 class WXmToggleButton : public WXmLabel {
-public :
-   DEFINE_INIT (WXmToggleButton, WXmLabel, xmToggleButtonWidgetClass)
-inline	void	State (int set, int notify = FALSE) const { XmToggleButtonSetState (widget, set, notify); }
-inline	Boolean	State () const	{ return XmToggleButtonGetState (widget); }
+      public:
+        DEFINE_INIT(WXmToggleButton, WXmLabel, xmToggleButtonWidgetClass)
+        inline void State(int set, int notify = FALSE) const {
+                XmToggleButtonSetState(widget, set, notify);
+        }
+        inline Boolean State() const { return XmToggleButtonGetState(widget); }
 
-	DEFINE_GETTER_SETTER (IndicatorType,unsigned char,"indicatorType")
-	DEFINE_GETTER_SETTER (VisibleWhenOff,Boolean,"visibleWhenOff")
-	DEFINE_GETTER_SETTER (Spacing,Dimension,"spacing")
-	DEFINE_GETTER_SETTER (SelectPixmap,Pixmap,"selectPixmap")
-	DEFINE_GETTER_SETTER (SelectInsensitivePixmap,Pixmap,"selectInsensitivePixmap")
-	DEFINE_GETTER_SETTER (Set,Boolean,"set")
-	DEFINE_GETTER_SETTER (IndicatorOn,Boolean,"indicatorOn")
-	DEFINE_GETTER_SETTER (IndicatorSize,Dimension,"indicatorSize")
-	DEFINE_GETTER_SETTER (FillOnSelect,Boolean,"fillOnSelect")
-	DEFINE_GETTER_SETTER (SelectColor,Pixel,"selectColor")
-	DEFINE_CALLBACK (ValueChangedCallback,"valueChangedCallback")
-	DEFINE_CALLBACK (ArmCallback,"armCallback")
-	DEFINE_CALLBACK (DisarmCallback,"disarmCallback")
+        DEFINE_GETTER_SETTER(IndicatorType, unsigned char, "indicatorType")
+        DEFINE_GETTER_SETTER(VisibleWhenOff, Boolean, "visibleWhenOff")
+        DEFINE_GETTER_SETTER(Spacing, Dimension, "spacing")
+        DEFINE_GETTER_SETTER(SelectPixmap, Pixmap, "selectPixmap")
+        DEFINE_GETTER_SETTER(SelectInsensitivePixmap, Pixmap,
+                             "selectInsensitivePixmap")
+        DEFINE_GETTER_SETTER(Set, Boolean, "set")
+        DEFINE_GETTER_SETTER(IndicatorOn, Boolean, "indicatorOn")
+        DEFINE_GETTER_SETTER(IndicatorSize, Dimension, "indicatorSize")
+        DEFINE_GETTER_SETTER(FillOnSelect, Boolean, "fillOnSelect")
+        DEFINE_GETTER_SETTER(SelectColor, Pixel, "selectColor")
+        DEFINE_CALLBACK(ValueChangedCallback, "valueChangedCallback")
+        DEFINE_CALLBACK(ArmCallback, "armCallback")
+        DEFINE_CALLBACK(DisarmCallback, "disarmCallback")
 };
 
-#define	NULLWXmToggleButton		WXmToggleButton((Widget)0)
+#define NULLWXmToggleButton WXmToggleButton((Widget)0)
 
 #endif

@@ -47,69 +47,69 @@
 #include "vista.h"
 #include "dbtype.h"
 
-
 /* Write data to a field in the current set owner
-*/
-int
-d_csowrite(set, field, data TASK_PARM DBN_PARM)
-int set;    /* Set constant */
-long field; /* Field constant */
+ */
+int d_csowrite(set, field, data TASK_PARM DBN_PARM) int set; /* Set constant */
+long field;           /* Field constant */
 CONST char FAR *data; /* Data area to contain field contents */
 TASK_DECL
-DBN_DECL    /* database number */
+DBN_DECL /* database number */
 {
-#ifndef	 NO_TIMESTAMP
-   ULONG timestamp;
+#ifndef NO_TIMESTAMP
+        ULONG timestamp;
 #endif
-   int stat, fld, rec;
-   char FAR *recp;
-   SET_ENTRY FAR *set_ptr;
-   RECORD_ENTRY FAR *rec_ptr;
-   FIELD_ENTRY FAR *fld_ptr;
-   DB_ADDR FAR *co_ptr;
+        int stat, fld, rec;
+        char FAR *recp;
+        SET_ENTRY FAR *set_ptr;
+        RECORD_ENTRY FAR *rec_ptr;
+        FIELD_ENTRY FAR *fld_ptr;
+        DB_ADDR FAR *co_ptr;
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_IO));
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_IO));
 
-   if ((nset_check(set, &set, (SET_ENTRY FAR * FAR *)&set_ptr) != S_OKAY) ||
-       (nfld_check(field, &rec, &fld, (RECORD_ENTRY FAR * FAR *)&rec_ptr, (FIELD_ENTRY FAR * FAR *)&fld_ptr) != S_OKAY))
-      RETURN( db_status );
+        if ((nset_check(set, &set, (SET_ENTRY FAR * FAR *)&set_ptr) !=
+             S_OKAY) ||
+            (nfld_check(field, &rec, &fld, (RECORD_ENTRY FAR * FAR *)&rec_ptr,
+                        (FIELD_ENTRY FAR * FAR *)&fld_ptr) != S_OKAY))
+                RETURN(db_status);
 
-   /* compound keys cannot be updated directly */
-   if ( fld_ptr->fd_type == COMKEY )
-      RETURN( dberr(S_ISCOMKEY) );
-   
-   /* field used in compound keys cannot be updated directly */
-   if ( fld_ptr->fd_flags & COMKEYED )
-      RETURN( dberr(S_COMKEY) );
+        /* compound keys cannot be updated directly */
+        if (fld_ptr->fd_type == COMKEY)
+                RETURN(dberr(S_ISCOMKEY));
 
-   /* Make sure we have a current owner */
-   if ( ! *(co_ptr = &curr_own[set]) )
-      RETURN( dberr(S_NOCO) );
+        /* field used in compound keys cannot be updated directly */
+        if (fld_ptr->fd_flags & COMKEYED)
+                RETURN(dberr(S_COMKEY));
 
-   /* Read current owner */
-   if ( dio_read( *co_ptr, (char FAR * FAR *)&recp , PGHOLD) != S_OKAY )
-      RETURN( db_status );
-  
-   /* check out the field */
-   if ( (stat = r_chkfld(fld, fld_ptr, recp, data)) != S_OKAY ) {
-      dio_release(*co_ptr);
-      RETURN( db_status = stat );
-   }
-   /* Put data into record */
-   if ( r_pfld(fld, fld_ptr, recp, data, co_ptr) != S_OKAY )
-      RETURN( db_status );
-#ifndef	 NO_TIMESTAMP
-   /* check for timestamp */
-   if ( rec_ptr->rt_flags & TIMESTAMPED ) {
-      timestamp = dio_pzgetts(rec_ptr->rt_file);
-      bytecpy( recp + RECUPTIME, &timestamp, sizeof(LONG));
-   }
+        /* Make sure we have a current owner */
+        if (!*(co_ptr = &curr_own[set]))
+                RETURN(dberr(S_NOCO));
+
+        /* Read current owner */
+        if (dio_read(*co_ptr, (char FAR *FAR *)&recp, PGHOLD) != S_OKAY)
+                RETURN(db_status);
+
+        /* check out the field */
+        if ((stat = r_chkfld(fld, fld_ptr, recp, data)) != S_OKAY) {
+                dio_release(*co_ptr);
+                RETURN(db_status = stat);
+        }
+        /* Put data into record */
+        if (r_pfld(fld, fld_ptr, recp, data, co_ptr) != S_OKAY)
+                RETURN(db_status);
+#ifndef NO_TIMESTAMP
+        /* check for timestamp */
+        if (rec_ptr->rt_flags & TIMESTAMPED) {
+                timestamp = dio_pzgetts(rec_ptr->rt_file);
+                bytecpy(recp + RECUPTIME, &timestamp, sizeof(LONG));
+        }
 #endif
-   dio_write(*co_ptr, (char FAR *)NULL, PGFREE);
-#ifndef	 NO_TIMESTAMP
-   if (( db_status == S_OKAY ) && ( rec_ptr->rt_flags & TIMESTAMPED ))
-      co_time[set] = timestamp;
+        dio_write(*co_ptr, (char FAR *)NULL, PGFREE);
+#ifndef NO_TIMESTAMP
+        if ((db_status == S_OKAY) && (rec_ptr->rt_flags & TIMESTAMPED))
+                co_time[set] = timestamp;
 #endif
-   RETURN( db_status );
+        RETURN(db_status);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin csowrite.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin csowrite.c */

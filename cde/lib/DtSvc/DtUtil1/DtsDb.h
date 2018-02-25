@@ -32,7 +32,7 @@
  *	$XConsortium: DtsDb.h /main/5 1996/08/28 14:32:17 rswiston $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement bertween
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -51,35 +51,34 @@
 #include <X11/Xresource.h>
 #include <Dt/DbReader.h>
 
-typedef int	OtBoolean;
+typedef int OtBoolean;
 
 /* typedefs for casting comparison functions if needed */
-typedef	int	(*_DtDtsDbFieldCompare)(DtDtsDbField **fld1, DtDtsDbField **fld2);
+typedef int (*_DtDtsDbFieldCompare)(DtDtsDbField **fld1, DtDtsDbField **fld2);
 
 /* entry of a list of attribute/pairs */
-typedef	struct
-{
-	XrmQuark		recordName;
-	_DtDtsDbFieldCompare	compare;
-	long			pathId;
-	int			seq;
-	int			fieldCount;
-	DtDtsDbField		**fieldList;
+typedef struct {
+        XrmQuark recordName;
+        _DtDtsDbFieldCompare compare;
+        long pathId;
+        int seq;
+        int fieldCount;
+        DtDtsDbField **fieldList;
 } DtDtsDbRecord;
 
 /* typedefs for casting record comparison functions if needed */
-typedef	int	(*_DtDtsDbRecordCompare)(DtDtsDbRecord **rec1, DtDtsDbRecord **rec2);
+typedef int (*_DtDtsDbRecordCompare)(DtDtsDbRecord **rec1,
+                                     DtDtsDbRecord **rec2);
 
-/* a "database" of a collection of entrys (i.e. OBJECT-TYPE, ACTION, FILE-TYPE 
-	This is a private Structure to the DtDtsDb component.
+/* a "database" of a collection of entrys (i.e. OBJECT-TYPE, ACTION, FILE-TYPE
+        This is a private Structure to the DtDtsDb component.
 */
-typedef	struct
-{
-	char			*databaseName;
-	_DtDtsDbRecordCompare	compare;
-	int			recordCount;
-	DtDtsDbRecord		**recordList;
-        unsigned long           ActionSequenceNumber;
+typedef struct {
+        char *databaseName;
+        _DtDtsDbRecordCompare compare;
+        int recordCount;
+        DtDtsDbRecord **recordList;
+        unsigned long ActionSequenceNumber;
 } DtDtsDbDatabase;
 
 /* for the mmaped database this the use_in_memory_db variable is used
@@ -87,68 +86,69 @@ typedef	struct
    false when the mmaped versions are being accessed.
 */
 
-extern	int	use_in_memory_db;
+extern int use_in_memory_db;
 
 /*
  *  adds a new database to the list of databases -- returns a pointer to the
  *  new database.  If a database of the given name already exists it returns
  *  a pointer to that database.
  */
-extern DtDtsDbDatabase		*_DtDtsDbAddDatabase( char *dbname );
+extern DtDtsDbDatabase *_DtDtsDbAddDatabase(char *dbname);
 
 /* returns the handle for the database where name is the Database name */
-extern	DtDtsDbDatabase		*_DtDtsDbGet(char *name);
-extern	char			**_DtDtsDbListDb(void);
+extern DtDtsDbDatabase *_DtDtsDbGet(char *name);
+extern char **_DtDtsDbListDb(void);
 
 /* Record Sort function:
  * sorts the specified database, usually obtained from _DtDtsDbGet(), in the
  * order specified by the comparison function. If (*compare) == 0 then
  * _DtDtsDbCompareRecordNames() is used as the (*compare) function.
  */
-extern	void		_DtDtsDbRecordSort(DtDtsDbDatabase *database, 
-					_DtDtsDbRecordCompare compare);
+extern void _DtDtsDbRecordSort(DtDtsDbDatabase *database,
+                               _DtDtsDbRecordCompare compare);
 /* Field Sort function:
  * sorts the specified Record in the order specified by the comparison function
  * If (*compare) == 0 then _DtDtsDbCompareFieldNames() is used as the
  * (*compare) function.
  */
-extern	void		_DtDtsDbFieldSort(DtDtsDbRecord *record,
-					_DtDtsDbFieldCompare compare);
+extern void _DtDtsDbFieldSort(DtDtsDbRecord *record,
+                              _DtDtsDbFieldCompare compare);
 
 /* Name Comparison functions:
  * These routines can be passed in to the corresponding sort function to
  * sort by name.
  *
  */
-extern int _DtDtsDbCompareRecordNames(DtDtsDbRecord **entry1, DtDtsDbRecord **entry2);
-extern int _DtDtsDbCompareFieldNames(DtDtsDbField **entry1, DtDtsDbField **entry2);
+extern int _DtDtsDbCompareRecordNames(DtDtsDbRecord **entry1,
+                                      DtDtsDbRecord **entry2);
+extern int _DtDtsDbCompareFieldNames(DtDtsDbField **entry1,
+                                     DtDtsDbField **entry2);
 
 /* retrieves the Record that matches the specified entry from the record */
-extern	DtDtsDbField	*_DtDtsDbGetField(DtDtsDbRecord *record,
-					char *value);
+extern DtDtsDbField *_DtDtsDbGetField(DtDtsDbRecord *record, char *value);
 
 /* retrieves the entry of the specified entry from the specified database */
-extern	DtDtsDbRecord	*_DtDtsDbGetRecord(DtDtsDbDatabase *database,
-					DtDtsDbRecord *value);
+extern DtDtsDbRecord *_DtDtsDbGetRecord(DtDtsDbDatabase *database,
+                                        DtDtsDbRecord *value);
 
 /* Get By Name functions:
  * retrieves the entry of the specified name from the specified database
  * ** IF ** the _DtDtsDb*Sort routine has been called with the corresponding
  * _DtDtsDbCompare*Name comparison function. Otherwise use the standard
- * _DtDtsDbGet* functions. 
-*/
-extern	char *_DtDtsDbGetFieldByName(DtDtsDbRecord *record, char *name);
-extern	DtDtsDbRecord *_DtDtsDbGetRecordByName(DtDtsDbDatabase *database, char *name);
+ * _DtDtsDbGet* functions.
+ */
+extern char *_DtDtsDbGetFieldByName(DtDtsDbRecord *record, char *name);
+extern DtDtsDbRecord *_DtDtsDbGetRecordByName(DtDtsDbDatabase *database,
+                                              char *name);
 
-extern	DtDtsDbRecord *_DtDtsDbAddRecord(DtDtsDbDatabase *db);
+extern DtDtsDbRecord *_DtDtsDbAddRecord(DtDtsDbDatabase *db);
 
-extern	DtDtsDbField *_DtDtsDbAddField(DtDtsDbRecord *rec);
+extern DtDtsDbField *_DtDtsDbAddField(DtDtsDbRecord *rec);
 
-extern	int	_DtDtsDbDeleteDb(DtDtsDbDatabase *db);
-extern	int	_DtDtsDbDeleteRecord(DtDtsDbRecord *rec, DtDtsDbDatabase *db);
-extern	int	_DtDtsDbDeleteRecords(DtDtsDbDatabase *db);
-extern	int	_DtDtsDbDeleteField(DtDtsDbField *fld, DtDtsDbRecord *rec);
-extern	int	_DtDtsDbDeleteFields(DtDtsDbRecord *rec);
+extern int _DtDtsDbDeleteDb(DtDtsDbDatabase *db);
+extern int _DtDtsDbDeleteRecord(DtDtsDbRecord *rec, DtDtsDbDatabase *db);
+extern int _DtDtsDbDeleteRecords(DtDtsDbDatabase *db);
+extern int _DtDtsDbDeleteField(DtDtsDbField *fld, DtDtsDbRecord *rec);
+extern int _DtDtsDbDeleteFields(DtDtsDbRecord *rec);
 
 #endif
-

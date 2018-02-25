@@ -47,26 +47,24 @@
 #include "vista.h"
 #include "dbtype.h"
 
-
 /* Get current set owner
-*/
-int
-d_csoget(set, dba TASK_PARM DBN_PARM)
-int set;      /* Set table entry */
+ */
+int d_csoget(set, dba TASK_PARM DBN_PARM) int set; /* Set table entry */
 DB_ADDR FAR *dba; /* db address of record to become current */
 TASK_DECL
-DBN_DECL      /* database number */
+DBN_DECL /* database number */
 {
-   SET_ENTRY FAR *set_ptr;
+        SET_ENTRY FAR *set_ptr;
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_NOIO));
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_NOIO));
 
-   if (nset_check(set, &set, (SET_ENTRY FAR * FAR *)&set_ptr) != S_OKAY)
-      RETURN( db_status );
+        if (nset_check(set, &set, (SET_ENTRY FAR * FAR *)&set_ptr) != S_OKAY)
+                RETURN(db_status);
 
-   if ( ! (*dba = curr_own[set]) )
-      db_status = S_NOCO;
+        if (!(*dba = curr_own[set]))
+                db_status = S_NOCO;
 
-   RETURN( db_status );
+        RETURN(db_status);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin csoget.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin csoget.c */

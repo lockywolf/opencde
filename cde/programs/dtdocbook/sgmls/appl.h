@@ -23,17 +23,15 @@
 /* $XConsortium: appl.h /main/3 1996/06/19 17:14:17 drk $ */
 /* appl.h */
 
-enum {
-     E_NOMEM = 1,
-     E_DOC,
-     E_EXEC,
-     E_FORK,
-     E_WAIT,
-     E_SIGNAL,
-     E_OPEN,
-     E_CAPBOTCH,
-     E_SUBDOC
-};
+enum { E_NOMEM = 1,
+       E_DOC,
+       E_EXEC,
+       E_FORK,
+       E_WAIT,
+       E_SIGNAL,
+       E_OPEN,
+       E_CAPBOTCH,
+       E_SUBDOC };
 
 VOID process_document P((int));
 VOID output_conforming P((void));

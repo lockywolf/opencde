@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,28 +44,23 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
 
 #ifndef _rw_lock_h
 #define _rw_lock_h 1
 
 #include "atomic_lock.h"
 
-Boolean read_lock(char* atomic_lock_path, char* writing_lock_path, 
-                  char* ai_path, char* reader_info, int& offset,
-                  char*& ai_info
-                 );
+Boolean read_lock(char *atomic_lock_path, char *writing_lock_path,
+                  char *ai_path, char *reader_info, int &offset,
+                  char *&ai_info);
 
-Boolean read_unlock(char* atomic_lock_path, char* ai_path, int offset);
+Boolean read_unlock(char *atomic_lock_path, char *ai_path, int offset);
 
-Boolean write_lock(char* atomic_lock_path, char* writing_lock_path, 
-                   char* ai_path, char* writer_info, 
-                   char*& ai_info
-                  );
+Boolean write_lock(char *atomic_lock_path, char *writing_lock_path,
+                   char *ai_path, char *writer_info, char *&ai_info);
 
-Boolean write_unlock(char* atomic_lock_path, char* writing_lock_path, 
-                     char* ai_path
-                    );
+Boolean write_unlock(char *atomic_lock_path, char *writing_lock_path,
+                     char *ai_path);
 #endif

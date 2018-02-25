@@ -46,67 +46,63 @@
 
 #define INVALID_TYPE 999
 
-typedef struct
-{
-   Widget shell;
-   Widget frame;
-   Widget drawA;
-   Widget iconGadget;
-   Widget text;
+typedef struct {
+        Widget shell;
+        Widget frame;
+        Widget drawA;
+        Widget iconGadget;
+        Widget text;
 
-   Position root_x, root_y;
-   Pixel background;
+        Position root_x, root_y;
+        Pixel background;
 
-   char *workspace_name;
-   int workspace_num;
+        char *workspace_name;
+        int workspace_num;
 
-   unsigned char view;
-   unsigned char order;
-   unsigned char direction;
-   unsigned char positionEnabled;
+        unsigned char view;
+        unsigned char order;
+        unsigned char direction;
+        unsigned char positionEnabled;
 
-   char * restricted_directory;
-   char * title;
-   char * helpVol;
-   Boolean toolbox;
-   Boolean registered;
+        char *restricted_directory;
+        char *title;
+        char *helpVol;
+        Boolean toolbox;
+        Boolean registered;
 
-   char *host;
-   char *dir_linked_to;
-   char *file_name;
-   FileViewData *file_view_data;
+        char *host;
+        char *dir_linked_to;
+        char *file_name;
+        FileViewData *file_view_data;
 } DesktopRec;
 
-typedef struct
-{
-   char *name;
-   int number;
-   int files_selected;
-   DesktopRec **selectedDTWindows;
-   DialogData * primaryHelpDialog;
-   int secondaryHelpDialogCount;
-   DialogData ** secondaryHelpDialogList;
+typedef struct {
+        char *name;
+        int number;
+        int files_selected;
+        DesktopRec **selectedDTWindows;
+        DialogData *primaryHelpDialog;
+        int secondaryHelpDialogCount;
+        DialogData **secondaryHelpDialogList;
 } WorkspaceRec;
 
-typedef struct
-{
-   Widget popup;
-   Widget removeDT;
-   Widget openFolder;
-   Widget rename;
-   char * action_pane_file_type;
+typedef struct {
+        Widget popup;
+        Widget removeDT;
+        Widget openFolder;
+        Widget rename;
+        char *action_pane_file_type;
 } PopupRec;
 
-typedef struct
-{
-   int numIconsUsed;
-   int numCachedIcons;
-   int popup_name_count;
-   PopupRec *popupMenu;
-   int numWorkspaces;
-   WorkspaceRec ** workspaceData;
-   DesktopRec ** desktopWindows;
-   XButtonEvent event;
+typedef struct {
+        int numIconsUsed;
+        int numCachedIcons;
+        int popup_name_count;
+        PopupRec *popupMenu;
+        int numWorkspaces;
+        WorkspaceRec **workspaceData;
+        DesktopRec **desktopWindows;
+        XButtonEvent event;
 } DesktopData, *DesktopDataPtr;
 
 extern DesktopData *desktop_data;

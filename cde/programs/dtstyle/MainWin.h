@@ -32,7 +32,7 @@
  **  file
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -43,20 +43,16 @@
 
 /* external variable definitions */
 
-extern char * _dt_version;
+extern char *_dt_version;
 
 /* External Interface */
 
-
-extern void init_mainWindow( Widget shell) ;
-extern void callCancels( void ) ;
-extern void activateCB_exitBtn( 
-                        Widget w,
-                        XtPointer client_data,
-                        XtPointer call_data) ;
-extern void restoreMain( Widget shell, XrmDatabase db) ;
-extern void saveMain( int fd) ;
-
+extern void init_mainWindow(Widget shell);
+extern void callCancels(void);
+extern void activateCB_exitBtn(Widget w, XtPointer client_data,
+                               XtPointer call_data);
+extern void restoreMain(Widget shell, XrmDatabase db);
+extern void saveMain(int fd);
 
 #endif /* _mainwin_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

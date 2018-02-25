@@ -47,43 +47,25 @@
 #ifndef _SharedProcs_h
 #define _SharedProcs_h
 
-
 /********    Public Function Declarations    ********/
 
-extern String _DtStripSpaces( 
-                        String string) ;
-extern void _DtMessage(
-                        Widget w,
-                        char *title,
-                        char *message_text,
-                        XtPointer helpIdStr,
-                        void (*helpCallback)()) ;
-extern Widget _DtMessageDialog(
-                        Widget w,
-                        char *title,
-                        char *message_text,
-                        XtPointer helpIdStr,
-                        Boolean cancel_btn,
-                        void (*cancel_callback)(),
-                        void (*ok_callback)(),
-                        void (*close_callback)(),
-                        void (*help_callback)(),
-                        Boolean deleteOnClose,
-                        int dialogType) ;
-extern void _DtMessageOK(
-                        Widget w,
-                        XtPointer client_data,
-                        XtPointer call_data) ;
-extern void _DtMessageClose(
-                        Widget w,
-                        XtPointer client_data,
-                        XEvent *event) ;
+extern String _DtStripSpaces(String string);
+extern void _DtMessage(Widget w, char *title, char *message_text,
+                       XtPointer helpIdStr, void (*helpCallback)());
+extern Widget _DtMessageDialog(Widget w, char *title, char *message_text,
+                               XtPointer helpIdStr, Boolean cancel_btn,
+                               void (*cancel_callback)(), void (*ok_callback)(),
+                               void (*close_callback)(),
+                               void (*help_callback)(), Boolean deleteOnClose,
+                               int dialogType);
+extern void _DtMessageOK(Widget w, XtPointer client_data, XtPointer call_data);
+extern void _DtMessageClose(Widget w, XtPointer client_data, XEvent *event);
 
 /********    End Public Function Declarations    ********/
 
 /* _DtMessage Dialog build defines */
-#define ERROR_DIALOG  1
-#define WARNING_DIALOG  2
+#define ERROR_DIALOG 1
+#define WARNING_DIALOG 2
 #define QUESTION_DIALOG 3
 
 /* Flag which can be used to prevent error dialogs from being posted */
@@ -93,9 +75,8 @@ extern Boolean messageDisplayEnabled;
 extern Boolean disableDialogAutoPlacement;
 
 /* Generic overlay for all dialog 'Rec' structures */
-typedef struct
-{
-   Widget shell;
+typedef struct {
+        Widget shell;
 } GenericRecord;
 
 #endif /* _SharedProcs_h */

@@ -60,32 +60,31 @@
  *  Authenticate return codes...
  */
 
-#define VF_OK			1
-#define VF_INVALID		2
-#define VF_HOME			3
-#define VF_MAX_USERS		4
-#define VF_PASSWD_AGED		5
-#define VF_BAD_UID		6
-#define VF_BAD_GID		7
-#define VF_BAD_AID		8
-#define VF_BAD_AFLAG		9
-#define VF_NO_LOGIN		10
-#define VF_BAD_HOSTNAME		11
-#define VF_CHALLENGE            12
-#define VF_MESSAGE              13
+#define VF_OK 1
+#define VF_INVALID 2
+#define VF_HOME 3
+#define VF_MAX_USERS 4
+#define VF_PASSWD_AGED 5
+#define VF_BAD_UID 6
+#define VF_BAD_GID 7
+#define VF_BAD_AID 8
+#define VF_BAD_AFLAG 9
+#define VF_NO_LOGIN 10
+#define VF_BAD_HOSTNAME 11
+#define VF_CHALLENGE 12
+#define VF_MESSAGE 13
 
 #ifdef BLS
-#define VF_BAD_SEN_LEVEL	14
+#define VF_BAD_SEN_LEVEL 14
 #endif
- 
+
 /****************************************************************************
  *
  *  External procedure declarations
  *
  ****************************************************************************/
 
-extern int  Authenticate(struct display *d, char *name, char *passwd,
-                         char **msg) ;
-
+extern int Authenticate(struct display *d, char *name, char *passwd,
+                        char **msg);
 
 #endif /* _SYSAUTH_H */

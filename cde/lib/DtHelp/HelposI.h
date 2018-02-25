@@ -26,7 +26,7 @@
  **
  **  File:   DtosI.h
  **
- **  Project:  Rivers Project, 
+ **  Project:  Rivers Project,
  **
  **  Description:  Internal header file for our Dtos.c module
  **  -----------
@@ -43,29 +43,25 @@
 #ifndef _DtosI_h
 #define _DtosI_h
 
-
 #ifndef NO_MESSAGE_CATALOG
-# define _DTGETMESSAGE(set, n, s) _DtHelpGetMessage(set, n, s)
+#define _DTGETMESSAGE(set, n, s) _DtHelpGetMessage(set, n, s)
 #else
-# define _DTGETMESSAGE(set, n, s) s
+#define _DTGETMESSAGE(set, n, s) s
 #endif
-
 
 /*****************************************************************************
  * Function:	   Boolean _DtHelpOSGetHomeDirName(
  *
  *
- * Parameters:    Output string, size of output string buffer 
+ * Parameters:    Output string, size of output string buffer
  *
  * Return Value:    String.
  *
  *
- * Description: 
+ * Description:
  *
  *****************************************************************************/
-extern void _DtHelpOSGetHomeDirName(
-    String outptr,
-    size_t len);
+extern void _DtHelpOSGetHomeDirName(String outptr, size_t len);
 
 /*****************************************************************************
  * Function:       _DtHelpGetUserSearchPath(
@@ -85,7 +81,6 @@ extern void _DtHelpOSGetHomeDirName(
  *****************************************************************************/
 String _DtHelpGetUserSearchPath(void);
 
-
 /*****************************************************************************
  * Function:       _DtHelpGetSystemSearchPath(
  *
@@ -104,13 +99,11 @@ String _DtHelpGetUserSearchPath(void);
  *****************************************************************************/
 String _DtHelpGetSystemSearchPath(void);
 
-
-
 /*****************************************************************************
  * Function:	   Boolean _DtHelpGetMessage(
  *
  *
- * Parameters:     
+ * Parameters:
  *
  * Return Value:   char *
  *
@@ -119,17 +112,13 @@ String _DtHelpGetSystemSearchPath(void);
  *                 cache proper cache creek message catalog file.
  *
  *****************************************************************************/
-extern char *_DtHelpGetMessage(
-        int set,
-        int n,
-        char *s);
-
+extern char *_DtHelpGetMessage(int set, int n, char *s);
 
 /*****************************************************************************
  * Function:	   char * _DtHelpGetLocale(
  *
  *
- * Parameters:     
+ * Parameters:
  *
  * Return Value:   char *
  *
@@ -141,19 +130,5 @@ extern char *_DtHelpGetMessage(
  *****************************************************************************/
 extern char *_DtHelpGetLocale(void);
 
-
 #endif /* _DtosI_h */
 /* Do not add anything after this endif. */
-
-
-
-
-
-
-
-
-
-
-
-
-

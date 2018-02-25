@@ -37,16 +37,13 @@ class Menu;
 
 class MenuBar : public MotifUI {
 
- public:
+      public:
+        MenuBar(MotifUI *parent, char *name = "MenuBar");
+        virtual ~MenuBar();
+        void SetHelpMenu(Menu *);
 
-   MenuBar(MotifUI *parent, 
-           char *name = "MenuBar");
-   virtual ~MenuBar();
-   void SetHelpMenu(Menu *); 
-
-   const UI_Class UIClass()        { return MENU_BAR; }
-   const char *const UIClassName() { return "MenuBar"; }
-
+        const UI_Class UIClass() { return MENU_BAR; }
+        const char *const UIClassName() { return "MenuBar"; }
 };
 
 #endif /* MENUBAR_H */

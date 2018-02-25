@@ -71,35 +71,35 @@
 /* ======================================================================
    set record type and database address to current
 */
-int d_recset( rec TASK_PARM DBN_PARM )
-int rec;			/* record type */
+int d_recset(rec TASK_PARM DBN_PARM) int rec; /* record type */
 TASK_DECL
-DBN_DECL
-{
-/*
-   RETURNS: db_status return code.
-   ASSUMES: nothing.
-*/
-   FILE_NO rfile;		/* file containing user specified rec */
-   FILE_NO fno;			/* file containing current record */
-   int rec_ndx;			/* Index into record table */
-   RECORD_ENTRY FAR *rec_ptr;	/* Pointer to record table */
+DBN_DECL {
+        /*
+           RETURNS: db_status return code.
+           ASSUMES: nothing.
+        */
+        FILE_NO rfile;             /* file containing user specified rec */
+        FILE_NO fno;               /* file containing current record */
+        int rec_ndx;               /* Index into record table */
+        RECORD_ENTRY FAR *rec_ptr; /* Pointer to record table */
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_NOIO));
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_NOIO));
 
-   /* Check rec parameter user passed */
-   if (nrec_check(rec, &rec_ndx, (RECORD_ENTRY FAR * FAR *)&rec_ptr) != S_OKAY)
-      RETURN( db_status );
-   
-   /* Check to make sure current record is in this file */
-   rfile = (FILE_NO)(NUM2EXT(rec_ptr->rt_file, ft_offset));
-   fno = (FILE_NO)((curr_rec >> FILESHIFT) & FILEMASK);
-   if (fno != rfile)
-      RETURN( dberr (S_INVREC) );
-   
-   /* Everything is okay - save the type and database address */
-   RN_REF(rn_type) = rec - RECMARK;
-   RN_REF(rn_dba)  = curr_rec;
-   RETURN( db_status = S_OKAY );
+        /* Check rec parameter user passed */
+        if (nrec_check(rec, &rec_ndx, (RECORD_ENTRY FAR * FAR *)&rec_ptr) !=
+            S_OKAY)
+                RETURN(db_status);
+
+        /* Check to make sure current record is in this file */
+        rfile = (FILE_NO)(NUM2EXT(rec_ptr->rt_file, ft_offset));
+        fno = (FILE_NO)((curr_rec >> FILESHIFT) & FILEMASK);
+        if (fno != rfile)
+                RETURN(dberr(S_INVREC));
+
+        /* Everything is okay - save the type and database address */
+        RN_REF(rn_type) = rec - RECMARK;
+        RN_REF(rn_dba) = curr_rec;
+        RETURN(db_status = S_OKAY);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin recset.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin recset.c */

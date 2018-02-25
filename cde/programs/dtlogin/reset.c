@@ -52,12 +52,11 @@
  * a client remains connected with no windows.
  */
 
-# include	<setjmp.h>
-# include	<sys/types.h>
-# include	<sys/signal.h>
-# include	"dm.h"
-# include	"vgmsg.h"
-
+#include <setjmp.h>
+#include <sys/types.h>
+#include <sys/signal.h>
+#include "dm.h"
+#include "vgmsg.h"
 
 /***************************************************************************
  *
@@ -65,24 +64,20 @@
  *
  ***************************************************************************/
 
-static SIGVAL abortReset( int arg ) ;
-static int ignoreErrors( Display *dpy, XErrorEvent *event) ;
-static void killWindows( Display *dpy, Window window) ;
-
-
+static SIGVAL abortReset(int arg);
+static int ignoreErrors(Display *dpy, XErrorEvent *event);
+static void killWindows(Display *dpy, Window window);
 
 /***************************************************************************
  *
- *  
+ *
  *
  ***************************************************************************/
 
 /*ARGSUSED*/
-static int 
-ignoreErrors( Display *dpy, XErrorEvent *event )
-{
-	Debug ("Ignoring error...\n");
-	return 1;
+static int ignoreErrors(Display *dpy, XErrorEvent *event) {
+        Debug("Ignoring error...\n");
+        return 1;
 }
 
 /*
@@ -91,60 +86,51 @@ ignoreErrors( Display *dpy, XErrorEvent *event )
  * this code wouldn't have to be this kludgy.
  */
 
-static void 
-killWindows( Display *dpy, Window window )
-{
-	Window	root, parent, *children;
-	int	child;
-	unsigned int nchildren = 0;
-	
-	while (XQueryTree (dpy, window, &root, &parent, &children, &nchildren)
-	       && nchildren > 0)
-	{
-		for (child = 0; child < nchildren; child++) {
-			Debug ("Calling XKillClient() for window 0x%x\n",
-				children[child]);
-			XKillClient (dpy, children[child]);
-		}
-		XFree ((char *)children);
-	}
+static void killWindows(Display *dpy, Window window) {
+        Window root, parent, *children;
+        int child;
+        unsigned int nchildren = 0;
+
+        while (XQueryTree(dpy, window, &root, &parent, &children, &nchildren) &&
+               nchildren > 0) {
+                for (child = 0; child < nchildren; child++) {
+                        Debug("Calling XKillClient() for window 0x%x\n",
+                              children[child]);
+                        XKillClient(dpy, children[child]);
+                }
+                XFree((char *)children);
+        }
 }
 
-static jmp_buf	resetJmp;
+static jmp_buf resetJmp;
 
-static SIGVAL
-abortReset( int arg )
-{
-	longjmp (resetJmp, 1);
-}
+static SIGVAL abortReset(int arg) { longjmp(resetJmp, 1); }
 
 /*
  * this display connection better not have any windows...
  */
- 
-void 
-pseudoReset( Display *dpy )
-{
-	Window	root;
-	int	screen;
 
-	if (setjmp (resetJmp)) {
-		LogError(
-		  ReadCatalog(MC_LOG_SET,MC_LOG_PSEUDO,MC_DEF_LOG_PSEUDO));
-	} else {
-		signal (SIGALRM, abortReset);
-		alarm (30);
-		XSetErrorHandler (ignoreErrors);
-		for (screen = 0; screen < ScreenCount (dpy); screen++) {
-			Debug ("Pseudo reset screen %d\n", screen);
-			root = RootWindow (dpy, screen);
-			killWindows (dpy, root);
-		}
-		Debug ("Before XSync\n");
-		XSync (dpy, False);
-		(void) alarm (0);
-	}
-	signal (SIGALRM, SIG_DFL);
-	XSetErrorHandler ((int (*)()) 0);
-	Debug ("pseudoReset() done\n");
+void pseudoReset(Display *dpy) {
+        Window root;
+        int screen;
+
+        if (setjmp(resetJmp)) {
+                LogError(
+                    ReadCatalog(MC_LOG_SET, MC_LOG_PSEUDO, MC_DEF_LOG_PSEUDO));
+        } else {
+                signal(SIGALRM, abortReset);
+                alarm(30);
+                XSetErrorHandler(ignoreErrors);
+                for (screen = 0; screen < ScreenCount(dpy); screen++) {
+                        Debug("Pseudo reset screen %d\n", screen);
+                        root = RootWindow(dpy, screen);
+                        killWindows(dpy, root);
+                }
+                Debug("Before XSync\n");
+                XSync(dpy, False);
+                (void)alarm(0);
+        }
+        signal(SIGALRM, SIG_DFL);
+        XSetErrorHandler((int (*)())0);
+        Debug("pseudoReset() done\n");
 }

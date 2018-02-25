@@ -29,7 +29,7 @@
  **   Project:     DtHelp Project
  **
  **   Description: File locating and handling utilities
- ** 
+ **
  **  (c) Copyright 1993, 1994 Hewlett-Packard Company
  **  (c) Copyright 1993, 1994 International Business Machines Corp.
  **  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
@@ -47,25 +47,22 @@
 /* collects all the dlg children together */
 /* sort of a pseudo widget rec */
 typedef struct _DtHelpFileDlgChildren {
-          Widget        shell;
-          Widget        form;
-          Widget        label;
-          Widget        list;
-          Widget        prompt;
-          Widget        separator;
-          Widget        closeBtn;
-          Widget        helpBtn;
+        Widget shell;
+        Widget form;
+        Widget label;
+        Widget list;
+        Widget prompt;
+        Widget separator;
+        Widget closeBtn;
+        Widget helpBtn;
 } _DtHelpFileDlgChildren;
 
-Widget _DtHelpFileListCreateSelectionDialog (
-        DtHelpDialogWidget hw,
-        Widget         parent,
-        Boolean        modalDialog,
-        char *         dlgTitle,
-        XmFontList *   io_titlesFontList,
-        _DtHelpFileList   in_out_list,
-        _DtHelpFileDlgChildren * out_struct);
+Widget _DtHelpFileListCreateSelectionDialog(DtHelpDialogWidget hw,
+                                            Widget parent, Boolean modalDialog,
+                                            char *dlgTitle,
+                                            XmFontList *io_titlesFontList,
+                                            _DtHelpFileList in_out_list,
+                                            _DtHelpFileDlgChildren *out_struct);
 
 #endif /* _DtHelp_VolSelectI_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */
-

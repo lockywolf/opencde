@@ -43,45 +43,51 @@ class ParserState;
 class Event;
 
 class Undo : public Link {
-public:
-  void *operator new(size_t sz, Allocator &alloc) { return alloc.alloc(sz); }
-  void *operator new(size_t sz) { return Allocator::allocSimple(sz); }
-  void operator delete(void *p) { Allocator::free(p); }
-  Undo();
-  virtual ~Undo();
-  virtual void undo(ParserState *) = 0;
-private:
-  Undo(const Undo &);		// undefined
-  void operator=(const Undo &);	// undefined
+      public:
+        void *operator new(size_t sz, Allocator &alloc) {
+                return alloc.alloc(sz);
+        }
+        void *operator new(size_t sz) { return Allocator::allocSimple(sz); }
+        void operator delete(void *p) { Allocator::free(p); }
+        Undo();
+        virtual ~Undo();
+        virtual void undo(ParserState *) = 0;
+
+      private:
+        Undo(const Undo &);           // undefined
+        void operator=(const Undo &); // undefined
 };
 
 class UndoTransition : public Undo {
-public:
-  UndoTransition(const MatchState &);
-  void undo(ParserState *);
-private:
-  UndoTransition(const UndoTransition &); // undefined
-  void operator=(const UndoTransition &); // undefined
-  MatchState state_;
+      public:
+        UndoTransition(const MatchState &);
+        void undo(ParserState *);
+
+      private:
+        UndoTransition(const UndoTransition &); // undefined
+        void operator=(const UndoTransition &); // undefined
+        MatchState state_;
 };
 
 class UndoStartTag : public Undo {
-public:
-  UndoStartTag();
-  void undo(ParserState *);
-private:
-  UndoStartTag(const UndoStartTag &); // undefined
-  void operator=(const UndoStartTag &);	// undefined
+      public:
+        UndoStartTag();
+        void undo(ParserState *);
+
+      private:
+        UndoStartTag(const UndoStartTag &);   // undefined
+        void operator=(const UndoStartTag &); // undefined
 };
 
 class UndoEndTag : public Undo {
-public:
-  UndoEndTag(OpenElement *);
-  void undo(ParserState *);
-private:
-  UndoEndTag(const UndoEndTag &); // undefined
-  void operator=(const UndoEndTag &); // undefined
-  Owner<OpenElement> element_;
+      public:
+        UndoEndTag(OpenElement *);
+        void undo(ParserState *);
+
+      private:
+        UndoEndTag(const UndoEndTag &);     // undefined
+        void operator=(const UndoEndTag &); // undefined
+        Owner<OpenElement> element_;
 };
 
 #ifdef SP_NAMESPACE

@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp_arg.h /main/3 1995/10/23 10:19:02 rswiston $ 			 				 */
+/*%%  $XConsortium: mp_arg.h /main/3 1995/10/23 10:19:02 rswiston $
+ */
 /* -*-C++-*-
  * Tool Talk Message Passer (MP) - mp_arg.h
  *
@@ -48,71 +49,59 @@
 class _Tt_message;
 class _Tt_arg : public _Tt_object {
       public:
-	enum stored_data_type {UNSET,INT,STRING};
-	_Tt_arg();
-	_Tt_arg(const _Tt_arg &a);
-	_Tt_arg(const _Tt_arg_ptr &p);
-	_Tt_arg(const _Tt_string &t);
-	_Tt_arg(Tt_mode m, _Tt_string &type);
-	_Tt_arg(const char *t);
-	_Tt_arg(Tt_mode m, const char *type);
-	virtual ~_Tt_arg();
-	Tt_status		set_data_int(int i);
-	Tt_status		set_data_string(const _Tt_string &s);
-	Tt_status		set_mode(Tt_mode m) {
-		_mode = m;
-		return TT_OK;
-	}
-	Tt_status		set_type(const _Tt_string &type) {
-		_type = type;
-		return TT_OK;
-	}
-	Tt_status		set_name(const _Tt_string &name) {
-		_name = name;
-		return TT_OK;
-	}
-	Tt_mode			mode() const {
-		return _mode;
-	}
-	const _Tt_string	&type() const {
-		return _type;
-	}
-	const _Tt_string	&name() const {
-		return _name;
-	}
-	stored_data_type	data_type() const {
-		return _data_type;
-	}
-	Tt_status		data_int(int &i) const;
-	int			data_int() const {
-		return _data_int;
-	}
-	Tt_status		data_string(_Tt_string &s) const;
-	const _Tt_string	&data_string() const {
-		return _data_string;
-	}
-	void			print(const _Tt_ostream &os) const;
-	bool_t			xdr(XDR *xdrs);
-	Tt_status		update_value(const _Tt_arg &x);
-        int			match_score(const _Tt_arg &arg,
-					    int &used_wildcard) const;
-	int			operator==(const _Tt_arg &arg) const;
+        enum stored_data_type { UNSET, INT, STRING };
+        _Tt_arg();
+        _Tt_arg(const _Tt_arg &a);
+        _Tt_arg(const _Tt_arg_ptr &p);
+        _Tt_arg(const _Tt_string &t);
+        _Tt_arg(Tt_mode m, _Tt_string &type);
+        _Tt_arg(const char *t);
+        _Tt_arg(Tt_mode m, const char *type);
+        virtual ~_Tt_arg();
+        Tt_status set_data_int(int i);
+        Tt_status set_data_string(const _Tt_string &s);
+        Tt_status set_mode(Tt_mode m) {
+                _mode = m;
+                return TT_OK;
+        }
+        Tt_status set_type(const _Tt_string &type) {
+                _type = type;
+                return TT_OK;
+        }
+        Tt_status set_name(const _Tt_string &name) {
+                _name = name;
+                return TT_OK;
+        }
+        Tt_mode mode() const { return _mode; }
+        const _Tt_string &type() const { return _type; }
+        const _Tt_string &name() const { return _name; }
+        stored_data_type data_type() const { return _data_type; }
+        Tt_status data_int(int &i) const;
+        int data_int() const { return _data_int; }
+        Tt_status data_string(_Tt_string &s) const;
+        const _Tt_string &data_string() const { return _data_string; }
+        void print(const _Tt_ostream &os) const;
+        bool_t xdr(XDR *xdrs);
+        Tt_status update_value(const _Tt_arg &x);
+        int match_score(const _Tt_arg &arg, int &used_wildcard) const;
+        int operator==(const _Tt_arg &arg) const;
 
       protected:
-	Tt_mode			_mode;
-	_Tt_string		_type;	
-	_Tt_string		_name;
-	
-	stored_data_type	_data_type;
-	// Only one of the following two values will be set. This could
-	// be a union, with _data_type as the discriminant, but it is
-	// not worth the trouble.
-	int			_data_int;
-	_Tt_string		_data_string;
+        Tt_mode _mode;
+        _Tt_string _type;
+        _Tt_string _name;
+
+        stored_data_type _data_type;
+        // Only one of the following two values will be set. This could
+        // be a union, with _data_type as the discriminant, but it is
+        // not worth the trouble.
+        int _data_int;
+        _Tt_string _data_string;
+
       private:
-	void			constructor_common();
+        void constructor_common();
 };
 void _tt_arg_print(const _Tt_ostream &os, const _Tt_object *obj);
 bool_t tt_xdr_arg(XDR *xdrs, _Tt_arg_ptr *ptr);
 bool_t tt_xdr_arg_list(XDR *xdrs, _Tt_arg_list_ptr *lptr);
-#endif				/* _MP_ARG_H */
+#endif /* _MP_ARG_H */

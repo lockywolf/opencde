@@ -40,7 +40,7 @@
  **   Session Save for the session manager
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -48,51 +48,42 @@
  ************************************<+>*************************************/
 #ifndef _smsave_h
 #define _smsave_h
- 
-/* 
- *  #include statements 
+
+/*
+ *  #include statements
  */
 #include "SmDB.h"
 
 #include <Dt/SessionP.h>
 #include <Dt/SessionM.h>
 
-
-/* 
- *  #define statements 
- */
-
-/* 
- * typedef statements 
+/*
+ *  #define statements
  */
 
 /*
- *  External variables  
- */
-extern SmScreenInfo        screenSaverVals;
-extern SmAudioInfo         audioVals;
-extern SmKeyboardInfo      keyboardVals;
-
-/*  
- *  External Interface  
+ * typedef statements
  */
 
-extern void SetupSaveState(
-        Boolean 	saveToHome,
-        int 		mode);
+/*
+ *  External variables
+ */
+extern SmScreenInfo screenSaverVals;
+extern SmAudioInfo audioVals;
+extern SmKeyboardInfo keyboardVals;
 
-extern void SaveState( 
-	Boolean			saveToHome, 
-	int 			mode,
-	int                     saveType,
-	Bool                    shutdown,
-	int                     interactStyle,
-	Bool                    fast,
-	Bool                    global) ;
+/*
+ *  External Interface
+ */
 
-extern int CompleteSave ( );
+extern void SetupSaveState(Boolean saveToHome, int mode);
 
-extern void NotifyProxyClients ( );
+extern void SaveState(Boolean saveToHome, int mode, int saveType, Bool shutdown,
+                      int interactStyle, Bool fast, Bool global);
+
+extern int CompleteSave();
+
+extern void NotifyProxyClients();
 
 #endif /*_smsave_h*/
 /* DON'T ADD ANYTHING AFTER THIS #endif */

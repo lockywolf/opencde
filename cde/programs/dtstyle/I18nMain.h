@@ -38,7 +38,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -46,13 +46,11 @@
 #ifndef _i18nMain_h
 #define _i18nMain_h
 
-
 /* External Interface */
 
-extern void popup_i18nBB( Widget shell) ;
-extern void restoreI18n( Widget shell, XrmDatabase db) ;
-extern void saveI18n( int fd) ;
-
+extern void popup_i18nBB(Widget shell);
+extern void restoreI18n(Widget shell, XrmDatabase db);
+extern void saveI18n(int fd);
 
 #endif /* _i18nMain_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

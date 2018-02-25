@@ -37,53 +37,44 @@
 #include <limits.h>
 #include "ds_widget.h"
 
-#ifndef  LINT_CAST
-#ifdef   lint
-#define  LINT_CAST(arg)    (arg ? 0 : 0)
+#ifndef LINT_CAST
+#ifdef lint
+#define LINT_CAST(arg) (arg ? 0 : 0)
 #else
-#define  LINT_CAST(arg)    (arg)
+#define LINT_CAST(arg) (arg)
 #endif /*lint*/
 #endif /*LINT_CAST*/
 
-struct tW_struct *
-make_textW(Widget owner, char *label)
-{
-  struct tW_struct *w ;
- 
-  w = (struct tW_struct *) LINT_CAST(calloc(1, sizeof(struct tW_struct))) ;
- 
-  w->manager = XtVaCreateManagedWidget("manager",
-                                       xmRowColumnWidgetClass,
-                                       owner,
-                                       XmNorientation,  XmHORIZONTAL,
-                                       XmNnumColumns,   1,
-                                       NULL) ;
-  w->label = XtVaCreateManagedWidget(label,
-                                     xmLabelWidgetClass,
-                                     w->manager,
-                                     XmNalignment, XmALIGNMENT_BEGINNING,
-                                     NULL) ;
-  w->textfield = XtVaCreateManagedWidget("textfield",
-                                         xmTextFieldWidgetClass,
-                                         w->manager,
-                                         XmNmaxLength, INT_MAX,
-                                         NULL) ;
-  return(w) ;
+struct tW_struct *make_textW(Widget owner, char *label) {
+        struct tW_struct *w;
+
+        w = (struct tW_struct *)LINT_CAST(calloc(1, sizeof(struct tW_struct)));
+
+        w->manager = XtVaCreateManagedWidget(
+            "manager", xmRowColumnWidgetClass, owner, XmNorientation,
+            XmHORIZONTAL, XmNnumColumns, 1, NULL);
+        w->label =
+            XtVaCreateManagedWidget(label, xmLabelWidgetClass, w->manager,
+                                    XmNalignment, XmALIGNMENT_BEGINNING, NULL);
+        w->textfield =
+            XtVaCreateManagedWidget("textfield", xmTextFieldWidgetClass,
+                                    w->manager, XmNmaxLength, INT_MAX, NULL);
+        return (w);
 }
 
-void
-set_text_str(struct tW_struct *w, enum text_type ttype, char *str)
-{
-  XmString cstr ;
+void set_text_str(struct tW_struct *w, enum text_type ttype, char *str) {
+        XmString cstr;
 
-  switch (ttype)
-    {
-      case T_LABEL : cstr = XmStringCreateLocalized(str) ;
-                     XtVaSetValues(w->label, XmNlabelString, cstr, NULL) ;
-                     XmStringFree(cstr) ;
-                     break ;
-      case T_VALUE : XmTextFieldSetString(w->textfield, str) ;
-                     break ;
-      default : break ;
-    }
+        switch (ttype) {
+        case T_LABEL:
+                cstr = XmStringCreateLocalized(str);
+                XtVaSetValues(w->label, XmNlabelString, cstr, NULL);
+                XmStringFree(cstr);
+                break;
+        case T_VALUE:
+                XmTextFieldSetString(w->textfield, str);
+                break;
+        default:
+                break;
+        }
 }

@@ -27,7 +27,7 @@
  *	$XConsortium: md5global.h /main/3 1995/11/06 16:39:48 rswiston $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement bertween
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this

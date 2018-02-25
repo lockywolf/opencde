@@ -27,7 +27,7 @@
  * %W% %G%	cde_app_builder/src/
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -47,12 +47,8 @@
 #ifndef _ab_dnd_h
 #define _ab_dnd_h
 
-extern void	ab_dnd_register_drop_file(
-		    Widget	dropFile
-		);
+extern void ab_dnd_register_drop_file(Widget dropFile);
 
-extern void	ab_dnd_unregister_drop(
-		    Widget	dropFile
-		);
+extern void ab_dnd_unregister_drop(Widget dropFile);
 
 #endif /* _ab_dnd_h */

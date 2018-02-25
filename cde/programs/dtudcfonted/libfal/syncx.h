@@ -34,45 +34,37 @@
 
 extern XrmQuark falrmStringToQuark(
 #if NeedFunctionPrototypes
-    _Xconst char* 	/* string */
+    _Xconst char * /* string */
 #endif
 );
 extern XrmString falrmQuarkToString(
 #if NeedFunctionPrototypes
-    XrmQuark 		/* quark */
+    XrmQuark /* quark */
 #endif
 );
 
 extern char *falGetAtomName(
 #if NeedFunctionPrototypes
-    Display*		/* display */,
-    Atom		/* atom */
+    Display * /* display */, Atom /* atom */
 #endif
 );
 
 extern char **falListFonts(
 #if NeedFunctionPrototypes
-    Display*		/* display */,
-    _Xconst char*	/* pattern */,
-    int			/* maxnames */,
-    int*		/* actual_count_return */
+    Display * /* display */, _Xconst char * /* pattern */, int /* maxnames */,
+    int * /* actual_count_return */
 #endif
 );
 
 extern char **falListFontsWithInfo(
 #if NeedFunctionPrototypes
-    Display*		/* display */,
-    _Xconst char*	/* pattern */,
-    int			/* maxnames */,
-    int*		/* count_return */,
-    XFontStruct**	/* info_return */
+    Display * /* display */, _Xconst char * /* pattern */, int /* maxnames */,
+    int * /* count_return */, XFontStruct ** /* info_return */
 #endif
 );
 
 extern XFontStruct *falLoadQueryFont(
 #if NeedFunctionPrototypes
-    Display*		/* display */,
-    _Xconst char*	/* name */
+    Display * /* display */, _Xconst char * /* name */
 #endif
 );
-

@@ -33,7 +33,7 @@
  *+SNOTICE
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement bertween
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -63,345 +63,300 @@
 #include "DndP.h"
 #include "DtSvcLock.h"
 
-/* 
+/*
  * Text Transfer Function Prototypes
  */
 
-static void	dndTextGetTargets(Atom**, Cardinal*);
-static void	dndTextGetAvailTargets(DtDragInfo*, Atom**, Cardinal*);
-static void	dndTextGetExportTargets(DtDragInfo*, Atom**, Cardinal*);
-static void	dndTextGetImportTargets(DtDropInfo*, Atom**, Cardinal*);
-static void	dndTextConvertInit(DtDragInfo*);
-static Boolean	dndTextConvert(Widget, DtDragInfo*, Atom*, Atom*,
-			Atom*, XtPointer*, unsigned long*, int*, 
-			XSelectionRequestEvent*);
-static void	dndTextConvertFinish(DtDragInfo*);
-static void	dndTextTransferTargets(DtDropInfo*,
-			Atom*, Cardinal, Atom**, Cardinal*);
-static void	dndTextTransfer(Widget, DtDropInfo*, Atom*, Atom*,
-			Atom*, XtPointer, unsigned long*, int*);
-static void	dndTextTransferFinish(DtDropInfo*);
+static void dndTextGetTargets(Atom **, Cardinal *);
+static void dndTextGetAvailTargets(DtDragInfo *, Atom **, Cardinal *);
+static void dndTextGetExportTargets(DtDragInfo *, Atom **, Cardinal *);
+static void dndTextGetImportTargets(DtDropInfo *, Atom **, Cardinal *);
+static void dndTextConvertInit(DtDragInfo *);
+static Boolean dndTextConvert(Widget, DtDragInfo *, Atom *, Atom *, Atom *,
+                              XtPointer *, unsigned long *, int *,
+                              XSelectionRequestEvent *);
+static void dndTextConvertFinish(DtDragInfo *);
+static void dndTextTransferTargets(DtDropInfo *, Atom *, Cardinal, Atom **,
+                                   Cardinal *);
+static void dndTextTransfer(Widget, DtDropInfo *, Atom *, Atom *, Atom *,
+                            XtPointer, unsigned long *, int *);
+static void dndTextTransferFinish(DtDropInfo *);
 
-/* 
+/*
  * Text Transfer Selection Target
  */
 
-static Atom 	XA_COMPOUND_TEXT;
-static Boolean	dndPreferString;
+static Atom XA_COMPOUND_TEXT;
+static Boolean dndPreferString;
 
-/* 
+/*
  * Text Transfer ProtocolInfo
  */
 
 static DtDndMethods dndTextTransferProtocol = {
-	"DtDndTextTransfer",			/* name */
-	(DtDndProtocol)DtDND_TEXT_TRANSFER,	/* protocol */
-	DtDND_DRAG_SOURCE_TEXT,			/* sourceType */
-	dndTextGetAvailTargets,			/* getAvailTargets */
-	dndTextGetExportTargets,		/* getExportTargets */
-	dndTextGetImportTargets,		/* getImportTargets */
-	dndTextConvertInit,			/* convertInit */
-	dndTextConvert,				/* convert */
-	dndTextConvertFinish,			/* convertFinish */
-	dndTextTransferTargets,			/* transferTargets */
-	dndTextTransfer,			/* transfer */
-	dndTextTransferFinish,			/* transferFinish */
+    "DtDndTextTransfer",                /* name */
+    (DtDndProtocol)DtDND_TEXT_TRANSFER, /* protocol */
+    DtDND_DRAG_SOURCE_TEXT,             /* sourceType */
+    dndTextGetAvailTargets,             /* getAvailTargets */
+    dndTextGetExportTargets,            /* getExportTargets */
+    dndTextGetImportTargets,            /* getImportTargets */
+    dndTextConvertInit,                 /* convertInit */
+    dndTextConvert,                     /* convert */
+    dndTextConvertFinish,               /* convertFinish */
+    dndTextTransferTargets,             /* transferTargets */
+    dndTextTransfer,                    /* transfer */
+    dndTextTransferFinish,              /* transferFinish */
 };
 
 /*
  * Text transfer protocol initialization
  */
-DtDndMethods *
-_DtDndTextTransferProtocolInitialize(
-	Display *	display)
-{
+DtDndMethods *_DtDndTextTransferProtocolInitialize(Display *display) {
         _DtSvcProcessLock();
-	if (XA_COMPOUND_TEXT == 0) {
-		XA_COMPOUND_TEXT = DtGetAtom(display, "COMPOUND_TEXT");
-		dndPreferString  = (strcmp(setlocale(LC_CTYPE,NULL),"C") == 0);
+        if (XA_COMPOUND_TEXT == 0) {
+                XA_COMPOUND_TEXT = DtGetAtom(display, "COMPOUND_TEXT");
+                dndPreferString = (strcmp(setlocale(LC_CTYPE, NULL), "C") == 0);
 #ifdef DEBUG
-	printf("locale = %s, dndPreferString = %d\n",
-			setlocale(LC_CTYPE,NULL), dndPreferString);
+                printf("locale = %s, dndPreferString = %d\n",
+                       setlocale(LC_CTYPE, NULL), dndPreferString);
 #endif
-	}
-	_DtSvcProcessUnlock();
+        }
+        _DtSvcProcessUnlock();
 
-	return &dndTextTransferProtocol;
+        return &dndTextTransferProtocol;
 }
 
 /*
  * Returns generic export/import targets for text transfers
  */
-static void
-dndTextGetTargets(
-	Atom **		targets,
-	Cardinal *	numTargets)
-{
-	int		ii = 0;
+static void dndTextGetTargets(Atom **targets, Cardinal *numTargets) {
+        int ii = 0;
 
-	*numTargets = 3;
+        *numTargets = 3;
 
-	*targets = (Atom *)XtMalloc(*numTargets * sizeof(Atom));
+        *targets = (Atom *)XtMalloc(*numTargets * sizeof(Atom));
 
-	(*targets)[ii++] = XA_COMPOUND_TEXT;
-	(*targets)[ii++] = XA_TEXT;
-	(*targets)[ii++] = XA_STRING;
+        (*targets)[ii++] = XA_COMPOUND_TEXT;
+        (*targets)[ii++] = XA_TEXT;
+        (*targets)[ii++] = XA_STRING;
 }
 
 /*
  * Returns available targets for text transfers
  */
-static void
-dndTextGetAvailTargets(
-	DtDragInfo *	dtDragInfo,
-	Atom **		availTargets,
-	Cardinal *	numAvailTargets)
-{
-	dndTextGetTargets(availTargets, numAvailTargets);
+static void dndTextGetAvailTargets(DtDragInfo *dtDragInfo, Atom **availTargets,
+                                   Cardinal *numAvailTargets) {
+        dndTextGetTargets(availTargets, numAvailTargets);
 }
 
 /*
  * Returns export targets for text transfers
  */
-static void
-dndTextGetExportTargets(
-	DtDragInfo *	dtDragInfo,
-	Atom **		exportTargets,
-	Cardinal *	numExportTargets)
-{
-	dndTextGetTargets(exportTargets, numExportTargets);
+static void dndTextGetExportTargets(DtDragInfo *dtDragInfo,
+                                    Atom **exportTargets,
+                                    Cardinal *numExportTargets) {
+        dndTextGetTargets(exportTargets, numExportTargets);
 }
 
 /*
  * Returns import targets for text transfers
  */
-static void
-dndTextGetImportTargets(
-	DtDropInfo *	dtDropInfo,
-	Atom **		importTargets,
-	Cardinal *	numImportTargets)
-{
-	dndTextGetTargets(importTargets, numImportTargets);
+static void dndTextGetImportTargets(DtDropInfo *dtDropInfo,
+                                    Atom **importTargets,
+                                    Cardinal *numImportTargets) {
+        dndTextGetTargets(importTargets, numImportTargets);
 }
 
 /*
  * Initialize protocol specific part of drag data
  */
-static void
-dndTextConvertInit(
-	DtDragInfo *	dtDragInfo)
-{
-	DtDndContext *	dragData = dtDragInfo->dragData;
+static void dndTextConvertInit(DtDragInfo *dtDragInfo) {
+        DtDndContext *dragData = dtDragInfo->dragData;
 
-	dragData->data.strings = (XmString *)
-		XtMalloc(dragData->numItems * sizeof(XmString));
+        dragData->data.strings =
+            (XmString *)XtMalloc(dragData->numItems * sizeof(XmString));
 }
 
 /*
  * Convert the motif strings into selection data
  */
-static Boolean
-dndTextConvert(
-        Widget          dragContext,
-        DtDragInfo *	dtDragInfo,
-        Atom *		selection,
-        Atom *		target,  
-        Atom *		returnType,
-        XtPointer *	returnValue,
-        unsigned long *	returnLength,
-        int *		returnFormat,
-        XSelectionRequestEvent * selectionRequestEvent)
-{
-	DtDndContext *	dragData = dtDragInfo->dragData;
-	Display *	dpy	 = XtDisplayOfObject(dragContext);
-	XmString *	stringList;
-	Cardinal	numStrings;
-	XTextProperty	textProp;
-	XmICCEncodingStyle encStyle;
-	int		status;
+static Boolean dndTextConvert(Widget dragContext, DtDragInfo *dtDragInfo,
+                              Atom *selection, Atom *target, Atom *returnType,
+                              XtPointer *returnValue,
+                              unsigned long *returnLength, int *returnFormat,
+                              XSelectionRequestEvent *selectionRequestEvent) {
+        DtDndContext *dragData = dtDragInfo->dragData;
+        Display *dpy = XtDisplayOfObject(dragContext);
+        XmString *stringList;
+        Cardinal numStrings;
+        XTextProperty textProp;
+        XmICCEncodingStyle encStyle;
+        int status;
 
-	/*
- 	 * Select the text encoding style; reject unknown targets
-	 */
+        /*
+         * Select the text encoding style; reject unknown targets
+         */
 
-	if (*target == XA_COMPOUND_TEXT) {
-		encStyle = XmSTYLE_COMPOUND_TEXT;
-	} else if (*target == XA_STRING) {
-		encStyle = XmSTYLE_STRING;
- 	} else if (*target == XA_TEXT) {
-		encStyle = XmSTYLE_TEXT;
-	} else {
-		return False;
-	}
+        if (*target == XA_COMPOUND_TEXT) {
+                encStyle = XmSTYLE_COMPOUND_TEXT;
+        } else if (*target == XA_STRING) {
+                encStyle = XmSTYLE_STRING;
+        } else if (*target == XA_TEXT) {
+                encStyle = XmSTYLE_TEXT;
+        } else {
+                return False;
+        }
 
-	/*
-	 * Convert the XmString list into a string list
-	 */
+        /*
+         * Convert the XmString list into a string list
+         */
 
-	numStrings	= dragData->numItems;
-	stringList	= dragData->data.strings;
+        numStrings = dragData->numItems;
+        stringList = dragData->data.strings;
 
-	status = XmCvtXmStringTableToTextProperty(dpy, stringList, numStrings,
-						  encStyle, &textProp);
-	if (status != Success)
-	    return False;
+        status = XmCvtXmStringTableToTextProperty(dpy, stringList, numStrings,
+                                                  encStyle, &textProp);
+        if (status != Success)
+                return False;
 
-	/*
-	 * Return the text property
-	 */
+        /*
+         * Return the text property
+         */
 
-	*returnType 	= textProp.encoding;
-	*returnValue	= (XtPointer)textProp.value;
-	*returnLength	= textProp.nitems;
-	*returnFormat	= textProp.format;
+        *returnType = textProp.encoding;
+        *returnValue = (XtPointer)textProp.value;
+        *returnLength = textProp.nitems;
+        *returnFormat = textProp.format;
 
-	return True;
+        return True;
 }
 
 /*
  * Clean up from the convert init proc
  */
-static void
-dndTextConvertFinish(
-	DtDragInfo *	dtDragInfo)
-{
-	DtDndContext *	dragData = dtDragInfo->dragData;
+static void dndTextConvertFinish(DtDragInfo *dtDragInfo) {
+        DtDndContext *dragData = dtDragInfo->dragData;
 
-	if (dragData->data.strings) {
-		XtFree((char *)dragData->data.strings);
-		dragData->data.strings = NULL;
-	}
+        if (dragData->data.strings) {
+                XtFree((char *)dragData->data.strings);
+                dragData->data.strings = NULL;
+        }
 }
 
 /*
  * Returns the transfer targets selected from the export targets
  */
-static void
-dndTextTransferTargets(
-	DtDropInfo *	dtDropInfo,
-	Atom *		exportTargets,
-	Cardinal	numExportTargets,
-	Atom **		transferTargets,
-	Cardinal *	numTransferTargets)
-{
-	Boolean		foundCT, foundText, foundString;
-	Atom		target;
-	int		ii;
+static void dndTextTransferTargets(DtDropInfo *dtDropInfo, Atom *exportTargets,
+                                   Cardinal numExportTargets,
+                                   Atom **transferTargets,
+                                   Cardinal *numTransferTargets) {
+        Boolean foundCT, foundText, foundString;
+        Atom target;
+        int ii;
 
-	foundCT = foundText = foundString = False;
+        foundCT = foundText = foundString = False;
 
-	for (ii = 0; ii < numExportTargets; ii++) {
-		if (exportTargets[ii] == XA_COMPOUND_TEXT) {
-			foundCT = True;
-		} else if (exportTargets[ii] == XA_TEXT) {
-			foundText = True;
-		} else if (exportTargets[ii] == XA_STRING) {
-			foundString = True;
-		}
-	}
+        for (ii = 0; ii < numExportTargets; ii++) {
+                if (exportTargets[ii] == XA_COMPOUND_TEXT) {
+                        foundCT = True;
+                } else if (exportTargets[ii] == XA_TEXT) {
+                        foundText = True;
+                } else if (exportTargets[ii] == XA_STRING) {
+                        foundString = True;
+                }
+        }
 
-	if (dndPreferString && foundString) {
-		target = XA_STRING;
-	} else if (foundCT) {
-		target = XA_COMPOUND_TEXT;
-	} else if (foundText) {
-		target = XA_TEXT;
-	} else if (foundString) {
-		target = XA_STRING;
-	} else {
-		*numTransferTargets	= 0;
-		*transferTargets	= NULL;
-		return;
-	}
- 
-	*numTransferTargets = 1;
+        if (dndPreferString && foundString) {
+                target = XA_STRING;
+        } else if (foundCT) {
+                target = XA_COMPOUND_TEXT;
+        } else if (foundText) {
+                target = XA_TEXT;
+        } else if (foundString) {
+                target = XA_STRING;
+        } else {
+                *numTransferTargets = 0;
+                *transferTargets = NULL;
+                return;
+        }
 
-	*transferTargets = (Atom *)XtMalloc(*numTransferTargets * sizeof(Atom));
+        *numTransferTargets = 1;
 
-	(*transferTargets)[0] = target;
+        *transferTargets = (Atom *)XtMalloc(*numTransferTargets * sizeof(Atom));
+
+        (*transferTargets)[0] = target;
 }
 
 /*
  * Transfer the selection data into motif strings
  */
-static void
-dndTextTransfer(
-        Widget          dropTransfer,
-        DtDropInfo *	dtDropInfo,
-        Atom *		selection,
-	Atom *		target,
-        Atom *		type,
-        XtPointer       value,
-        unsigned long *	length,
-        int *		format)
-{
-	Display *	display = XtDisplayOfObject(dropTransfer);
-	DtDndContext *	dropData = dtDropInfo->dropData;
-	XmString *	stringList;
-	XTextProperty	textProp;
-	char **		text;
-	int		ii, status, textCount;
+static void dndTextTransfer(Widget dropTransfer, DtDropInfo *dtDropInfo,
+                            Atom *selection, Atom *target, Atom *type,
+                            XtPointer value, unsigned long *length,
+                            int *format) {
+        Display *display = XtDisplayOfObject(dropTransfer);
+        DtDndContext *dropData = dtDropInfo->dropData;
+        XmString *stringList;
+        XTextProperty textProp;
+        char **text;
+        int ii, status, textCount;
 
-	/*
-	 * Ignore transfers we don't understand or if we've already transferred
-	 */
+        /*
+         * Ignore transfers we don't understand or if we've already transferred
+         */
 
-	if (value == NULL || dropData->data.strings || 
-	   (*target != XA_COMPOUND_TEXT && 
-	    *target != XA_TEXT && 
-	    *target != XA_STRING) ) {
-		if (value != NULL)
-			XtFree(value);
-		return;
-	}
+        if (value == NULL || dropData->data.strings ||
+            (*target != XA_COMPOUND_TEXT && *target != XA_TEXT &&
+             *target != XA_STRING)) {
+                if (value != NULL)
+                        XtFree(value);
+                return;
+        }
 
-	/*
-	 * Convert the text property to a text list
-	 */
+        /*
+         * Convert the text property to a text list
+         */
 
-	textProp.value 		= (unsigned char *)value;
-	textProp.encoding 	= *type;
-	textProp.format 	= *format;
-	textProp.nitems 	= *length;
+        textProp.value = (unsigned char *)value;
+        textProp.encoding = *type;
+        textProp.format = *format;
+        textProp.nitems = *length;
 
-	status = XmbTextPropertyToTextList(display, &textProp,
-			&text, &textCount);
+        status =
+            XmbTextPropertyToTextList(display, &textProp, &text, &textCount);
 
-	XtFree((char *)value);
+        XtFree((char *)value);
 
-	if (status != Success) {
-		dtDropInfo->status 	= DtDND_FAILURE;
-		return;
-	}
+        if (status != Success) {
+                dtDropInfo->status = DtDND_FAILURE;
+                return;
+        }
 
-	/*
-	 * Convert the text list into a XmString list
-	 */
+        /*
+         * Convert the text list into a XmString list
+         */
 
-	stringList = (XmString *)XtMalloc(textCount * sizeof(XmString));
+        stringList = (XmString *)XtMalloc(textCount * sizeof(XmString));
 
-	for (ii = 0; ii < textCount; ii++) {
-		stringList[ii] = XmStringCreateLocalized(text[ii]);
-	}
+        for (ii = 0; ii < textCount; ii++) {
+                stringList[ii] = XmStringCreateLocalized(text[ii]);
+        }
 
-	XFreeStringList(text);
+        XFreeStringList(text);
 
-	dropData->numItems	= textCount;
-	dropData->data.strings	= stringList;
+        dropData->numItems = textCount;
+        dropData->data.strings = stringList;
 }
 
 /*
  * Clean up from the transfer proc
  */
-static void
-dndTextTransferFinish(
-	DtDropInfo *	dtDropInfo)
-{
-	DtDndContext *	dropData = dtDropInfo->dropData;
-	int		ii;
+static void dndTextTransferFinish(DtDropInfo *dtDropInfo) {
+        DtDndContext *dropData = dtDropInfo->dropData;
+        int ii;
 
-	for (ii = 0; ii < dropData->numItems; ii++) {
-		XmStringFree(dropData->data.strings[ii]);
-	}
-	XtFree((char *)dropData->data.strings);
+        for (ii = 0; ii < dropData->numItems; ii++) {
+                XmStringFree(dropData->data.strings[ii]);
+        }
+        XtFree((char *)dropData->data.strings);
 }

@@ -37,15 +37,12 @@
 #define _DtHelpCleanUpI_h
 
 /********    Public Function Declarations    ********/
-extern	void	_DtHelpFreeSegments(
-				_DtCvSegment	*seg_list,
-				_DtCvStatus	 unresolved,
-				void		(*destroy_region)(),
-				_DtCvPointer	 client_data);
-extern	void	_DtHelpDestroyTopicData(
-				_DtCvTopicPtr	 topic,
-				void 		(*destroy_region)(),
-				_DtCvPointer	 client_data);
+extern void _DtHelpFreeSegments(_DtCvSegment *seg_list, _DtCvStatus unresolved,
+                                void (*destroy_region)(),
+                                _DtCvPointer client_data);
+extern void _DtHelpDestroyTopicData(_DtCvTopicPtr topic,
+                                    void (*destroy_region)(),
+                                    _DtCvPointer client_data);
 /********    End Public Function Declarations    ********/
 
 #endif /* _DtHelpCleanUpI_h */

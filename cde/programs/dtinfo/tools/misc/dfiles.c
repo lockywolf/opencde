@@ -24,53 +24,49 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(argc, argv)
-int argc ;
-char **argv; 
+int main(argc, argv) int argc;
+char **argv;
 {
-  /* first parameter d or h */
-  /* second parameter is library name, other params are classnames  */
-  int i ;
-  char *libname = argv[2] ;
-  char buffer[256];
+        /* first parameter d or h */
+        /* second parameter is library name, other params are classnames  */
+        int i;
+        char *libname = argv[2];
+        char buffer[256];
 
-  FILE *hfile, *dfile;
+        FILE *hfile, *dfile;
 
-  switch (argv[1][0])
-    {
-    case 'h':
-      {
-	snprintf(buffer, sizeof(buffer), "%s.h", libname);
+        switch (argv[1][0]) {
+        case 'h': {
+                snprintf(buffer, sizeof(buffer), "%s.h", libname);
 
-	hfile = fopen(buffer, "w");
-	if (!hfile)
-	  exit(-1);
-  
-	for (i = 3 ; i < argc ; i++ )
-	  fprintf(hfile, "#ifdef C_%s\n#include <%s/%s.hh>\n#endif\n",
-		  argv[i], libname, argv[i]);
+                hfile = fopen(buffer, "w");
+                if (!hfile)
+                        exit(-1);
 
-	fclose(hfile);
-      }
-      break;
-    case 'd':
-      {
-	snprintf(buffer, sizeof(buffer), "%s.d", libname);
+                for (i = 3; i < argc; i++)
+                        fprintf(hfile,
+                                "#ifdef C_%s\n#include <%s/%s.hh>\n#endif\n",
+                                argv[i], libname, argv[i]);
 
-	dfile = fopen(buffer, "w");
-	if (!dfile)
-	  exit (-1);
+                fclose(hfile);
+        } break;
+        case 'd': {
+                snprintf(buffer, sizeof(buffer), "%s.d", libname);
 
-	for (i = argc - 1 ; i > 2; i-- )
-	  fprintf(dfile, "#ifdef C_%s\n#include <%s/%s.d>\n#endif\n",
-		  argv[i], libname, argv[i]);
+                dfile = fopen(buffer, "w");
+                if (!dfile)
+                        exit(-1);
 
-	fclose(dfile);
-      }
-      break;
-    default:
-      exit (-1);
-      break;
-    }
-  exit(0);
+                for (i = argc - 1; i > 2; i--)
+                        fprintf(dfile,
+                                "#ifdef C_%s\n#include <%s/%s.d>\n#endif\n",
+                                argv[i], libname, argv[i]);
+
+                fclose(dfile);
+        } break;
+        default:
+                exit(-1);
+                break;
+        }
+        exit(0);
 }

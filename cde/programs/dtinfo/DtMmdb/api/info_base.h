@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,9 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
 
 #ifndef _info_base_h
 #define _info_base_h 1
@@ -59,87 +58,81 @@
 #include "object/cset.h"
 #include "object/dl_list.h"
 
-class Iterator
-{
-public:
-   Iterator( handler*, c_code_t );
-   ~Iterator();
+class Iterator {
+      public:
+        Iterator(handler *, c_code_t);
+        ~Iterator();
 
-   operator void*();
+        operator void *();
 
-protected:
-   handler* collection_hd;
-   c_code_t instance_c_code;
-   mmdb_pos_t ind;
+      protected:
+        handler *collection_hd;
+        c_code_t instance_c_code;
+        mmdb_pos_t ind;
 
-   friend class info_base;
+        friend class info_base;
 };
 
 /*************************************/
 // The info_base class
 /*************************************/
 
-class info_base : public base
-{
+class info_base : public base {
 
-public:
-   info_base( object_dict& dict, 
-	      char** set_nms, char** list_nms, 
-              const char* base_dir, const char* base_name,
-              const char* base_desc, const char* base_uid, 
-	      const char* base_locale,
-	      const mm_version& v
-            );
-   virtual ~info_base();
+      public:
+        info_base(object_dict &dict, char **set_nms, char **list_nms,
+                  const char *base_dir, const char *base_name,
+                  const char *base_desc, const char *base_uid,
+                  const char *base_locale, const mm_version &v);
+        virtual ~info_base();
 
-// export funcs
-   cset_handlerPtr get_set( const char* set_name );
-   cset_handlerPtr get_set( int set_position );
+        // export funcs
+        cset_handlerPtr get_set(const char *set_name);
+        cset_handlerPtr get_set(int set_position);
 
-   dl_list_handlerPtr get_list( const char* list_name );
-   dl_list_handlerPtr get_list( int list_position );
+        dl_list_handlerPtr get_list(const char *list_name);
+        dl_list_handlerPtr get_list(int list_position);
 
-   void add_composite(char* new_db_path, char* def_spec_path);
+        void add_composite(char *new_db_path, char *def_spec_path);
 
-// query functions
-   int num_of_docs();
-   mm_version& data_version() { return f_v; };
+        // query functions
+        int num_of_docs();
+        mm_version &data_version() { return f_v; };
 
-// iterate over all instances with 'c_code' in a set or a list
-   Iterator* first(char* col_nm, c_code_t c_code);
-   oid_t get_oid(const Iterator& ind);
-   void next(Iterator&);
+        // iterate over all instances with 'c_code' in a set or a list
+        Iterator *first(char *col_nm, c_code_t c_code);
+        oid_t get_oid(const Iterator &ind);
+        void next(Iterator &);
 
 #ifdef C_API
-// an integer id within the infolib
-   int index_id() { return f_index_id; };
-   void set_index_id(int x) { f_index_id = x; };
+        // an integer id within the infolib
+        int index_id() { return f_index_id; };
+        void set_index_id(int x) { f_index_id = x; };
 #endif
 
-// build compression dicts. data is from stdin
-   void build_dict(char* compress_agent_name);
+        // build compression dicts. data is from stdin
+        void build_dict(char *compress_agent_name);
 
-   const char* get_info_base_locale() const { return info_base_locale; }
+        const char *get_info_base_locale() const { return info_base_locale; }
 
-protected:
-
-   cset_handlerPtr* info_base_set_ptrs;
-   dl_list_handlerPtr* info_base_list_ptrs;
+      protected:
+        cset_handlerPtr *info_base_set_ptrs;
+        dl_list_handlerPtr *info_base_list_ptrs;
 
 #ifdef C_API
-   int f_index_id;
+        int f_index_id;
 #endif
 
-   mm_version f_v;
+        mm_version f_v;
 
-   int get_set_pos( const char* set_name );
-   int get_list_pos( const char* list_name );
+        int get_set_pos(const char *set_name);
+        int get_list_pos(const char *list_name);
 
-   friend class info_lib;
+        friend class info_lib;
 
-   char info_base_locale[PATHSIZ];
+        char info_base_locale[PATHSIZ];
 };
 
-typedef info_base* info_basePtr;
+typedef info_base *info_basePtr;
 
 #endif

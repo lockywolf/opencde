@@ -66,14 +66,15 @@
 #include <ab_private/obj_notify.h>
 #include <ab_private/util.h>
 
-#define public_entry_point() if (AB_cgen_win == NULL) { return 0; }
+#define public_entry_point()                                                   \
+        if (AB_cgen_win == NULL) {                                             \
+                return 0;                                                      \
+        }
 #include "dtb_utils.h"
 
 /*
  * End declarations of global widgets
  */
-
-
 
 /*** DTB_USER_CODE_END
  ***
@@ -172,7 +173,7 @@ cgenP_gen_codeCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    cgen_gen_code(CG_CMD_UNDEF);
+        cgen_gen_code(CG_CMD_UNDEF);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -190,7 +191,7 @@ cgenP_makeCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    cgen_make(CG_CMD_UNDEF);
+        cgen_make(CG_CMD_UNDEF);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -208,7 +209,7 @@ cgenP_runCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    cgen_run(CG_CMD_UNDEF);
+        cgen_run(CG_CMD_UNDEF);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -226,7 +227,7 @@ cgenP_make_runCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    cgen_make_run(CG_CMD_UNDEF);    
+        cgen_make_run(CG_CMD_UNDEF);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -244,7 +245,7 @@ cgenP_abortCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    cgen_abort();
+        cgen_abort();
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -267,9 +268,9 @@ connP_set_insensitive(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    /* widget is either the abort button or the abort menu item */
-    XtSetSensitive(widget, False);
-    
+        /* widget is either the abort button or the abort menu item */
+        XtSetSensitive(widget, False);
+
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
 
@@ -283,10 +284,10 @@ cgenP_close_cgen_winCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    DtbCgenWinMainwindowInfo cgen_win =
-                        (DtbCgenWinMainwindowInfo)clientData;
+        DtbCgenWinMainwindowInfo cgen_win =
+            (DtbCgenWinMainwindowInfo)clientData;
 
-    ui_win_show(cgen_win->mainwindow, False, XtGrabNone);
+        ui_win_show(cgen_win->mainwindow, False, XtGrabNone);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -309,11 +310,11 @@ connP_set_termp_inactive(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    /* widget is the output term pane */
-    XtSetSensitive(widget, False);
+        /* widget is the output term pane */
+        XtSetSensitive(widget, False);
 
-    /* Make the cursor stop blinking. */
-    XtVaSetValues(widget, DtNblinkRate, 0, NULL);
+        /* Make the cursor stop blinking. */
+        XtVaSetValues(widget, DtNblinkRate, 0, NULL);
 
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
@@ -330,21 +331,21 @@ connP_init_termp(
     
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    STRING                      shell = NULL;
+        STRING shell = NULL;
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    /* Make the cursor stop blinking. */
-    XtVaSetValues(widget, DtNblinkRate, 0, NULL);
+        /* Make the cursor stop blinking. */
+        XtVaSetValues(widget, DtNblinkRate, 0, NULL);
 
-    /* Set the input term pane shell to be the same as the
-     * user's $SHELL environment variable. 
-     */
-    shell = (STRING) getenv("SHELL");
-    XtVaSetValues(widget, DtNsubprocessCmd, shell, NULL);
-    
+        /* Set the input term pane shell to be the same as the
+         * user's $SHELL environment variable.
+         */
+        shell = (STRING)getenv("SHELL");
+        XtVaSetValues(widget, DtNsubprocessCmd, shell, NULL);
+
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
 
@@ -361,8 +362,8 @@ cgenP_cd_to_projCB(
     
     /*** DTB_USER_CODE_START vvv Add C code below vvv ***/
 
-    cgenP_sync_up_dir();
-    
+        cgenP_sync_up_dir();
+
     /*** DTB_USER_CODE_END   ^^^ Add C code above ^^^ ***/
 }
 
@@ -376,14 +377,14 @@ cgenP_generate_entire_projCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    /*
-     * generate code for the entire project this one time.
-     */
-    CG_GEN_FLAG orig_cmd_flag = CodeGenOptions.cmd_flag;
+        /*
+         * generate code for the entire project this one time.
+         */
+        CG_GEN_FLAG orig_cmd_flag = CodeGenOptions.cmd_flag;
 
-    CodeGenOptions.cmd_flag = CG_GEN_PROJ_FLAG;
-    cgen_gen_code(CG_CMD_UNDEF);
-    CodeGenOptions.cmd_flag = orig_cmd_flag;
+        CodeGenOptions.cmd_flag = CG_GEN_PROJ_FLAG;
+        cgen_gen_code(CG_CMD_UNDEF);
+        CodeGenOptions.cmd_flag = orig_cmd_flag;
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -401,35 +402,38 @@ cgenP_show_cgen_optionsCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    if (AB_cgen_prop_dialog == (Widget) NULL)
-    {
-	/*
-	 * Module initialization
-	 */
-	dtbCgenPropsCgenPropsDlgInfo_clear(&dtb_cgen_props_cgen_props_dlg);
-        dtb_cgen_props_cgen_props_dlg_initialize(&dtb_cgen_props_cgen_props_dlg,
-						 AB_cgen_win);
-	AB_cgen_prop_dialog = dtb_cgen_props_cgen_props_dlg.cgen_props_dlg_shellform;
-	
-	XtVaSetValues(AB_cgen_prop_dialog,
-		      XmNuserData, dtb_cgen_props_cgen_props_dlg.module_list,
-		      NULL);
+        if (AB_cgen_prop_dialog == (Widget)NULL) {
+                /*
+                 * Module initialization
+                 */
+                dtbCgenPropsCgenPropsDlgInfo_clear(
+                    &dtb_cgen_props_cgen_props_dlg);
+                dtb_cgen_props_cgen_props_dlg_initialize(
+                    &dtb_cgen_props_cgen_props_dlg, AB_cgen_win);
+                AB_cgen_prop_dialog =
+                    dtb_cgen_props_cgen_props_dlg.cgen_props_dlg_shellform;
 
-        ab_register_window(AB_cgen_prop_dialog, AB_WIN_DIALOG, WindowHidden, 
-                XtParent(AB_cgen_win), AB_WPOS_TILE_HORIZONTAL,
-		cgenP_cancel_propsCB, (XtPointer)&dtb_cgen_props_cgen_props_dlg);
+                XtVaSetValues(AB_cgen_prop_dialog, XmNuserData,
+                              dtb_cgen_props_cgen_props_dlg.module_list, NULL);
 
-	/* Update the project name for the prop sheet */
-	cgen_notify_props_new_proj(proj_get_project());
+                ab_register_window(AB_cgen_prop_dialog, AB_WIN_DIALOG,
+                                   WindowHidden, XtParent(AB_cgen_win),
+                                   AB_WPOS_TILE_HORIZONTAL,
+                                   cgenP_cancel_propsCB,
+                                   (XtPointer)&dtb_cgen_props_cgen_props_dlg);
 
-	/* Initialize module list */
-	cgenP_init_props_module_list(dtb_cgen_props_cgen_props_dlg.module_list);
+                /* Update the project name for the prop sheet */
+                cgen_notify_props_new_proj(proj_get_project());
 
-	/* Add Rename and Destroy object callbacks to update module_list */
-	cgenP_prop_init();
+                /* Initialize module list */
+                cgenP_init_props_module_list(
+                    dtb_cgen_props_cgen_props_dlg.module_list);
 
-    }
-    ab_show_window(AB_cgen_prop_dialog);
+                /* Add Rename and Destroy object callbacks to update module_list
+                 */
+                cgenP_prop_init();
+        }
+        ab_show_window(AB_cgen_prop_dialog);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     
@@ -447,18 +451,18 @@ cgenP_show_env_dlgCB(
 {
     /*** DTB_USER_CODE_START vvv Add C variables and code below vvv ***/
 
-    if (AB_cgen_env_dialog == (Widget) NULL)
-    {
-	dtbCgenEnvDialogInfo_clear(&dtb_cgen_env_dialog);
-        dtb_cgen_env_dialog_initialize(&dtb_cgen_env_dialog, AB_cgen_win);
-        AB_cgen_env_dialog = dtb_cgen_env_dialog.dialog_shellform;
+        if (AB_cgen_env_dialog == (Widget)NULL) {
+                dtbCgenEnvDialogInfo_clear(&dtb_cgen_env_dialog);
+                dtb_cgen_env_dialog_initialize(&dtb_cgen_env_dialog,
+                                               AB_cgen_win);
+                AB_cgen_env_dialog = dtb_cgen_env_dialog.dialog_shellform;
 
-	ab_register_window(AB_cgen_env_dialog, AB_WIN_DIALOG, WindowHidden,
-		XtParent(AB_cgen_win), AB_WPOS_TILE_HORIZONTAL,
-		cgenP_cancel_envCB, (XtPointer)&dtb_cgen_env_dialog);
-
-    }
-    ab_show_window(AB_cgen_env_dialog);
+                ab_register_window(AB_cgen_env_dialog, AB_WIN_DIALOG,
+                                   WindowHidden, XtParent(AB_cgen_win),
+                                   AB_WPOS_TILE_HORIZONTAL, cgenP_cancel_envCB,
+                                   (XtPointer)&dtb_cgen_env_dialog);
+        }
+        ab_show_window(AB_cgen_env_dialog);
 
     /*** DTB_USER_CODE_END   ^^^ Add C variables and code above ^^^ ***/
     

@@ -33,39 +33,34 @@
 #include "parser.h"
 
 /* Retrieve the interface data stored with the current element's nth parent */
-void *m_getdata(n, flag)
-  int n ;
-  LOGICAL *flag ;
-  {
-    M_PARSE *stackptr ;
+void *m_getdata(n, flag) int n;
+LOGICAL *flag;
+{
+        M_PARSE *stackptr;
 
-    for (stackptr = m_stacktop ;
-         stackptr->oldtop && n >= 0 ;
-         stackptr = stackptr->oldtop, n--) {
-      if (! n) {
-        *flag = TRUE ;
-        return(stackptr->ifdata) ;
+        for (stackptr = m_stacktop; stackptr->oldtop && n >= 0;
+             stackptr = stackptr->oldtop, n--) {
+                if (!n) {
+                        *flag = TRUE;
+                        return (stackptr->ifdata);
+                }
         }
-      }
-    *flag = FALSE ;
-    return(NULL) ;
-    }
+        *flag = FALSE;
+        return (NULL);
+}
 
 /* Store interface data for the current element's nth parent */
-LOGICAL m_putdata(data, n)
-  void *data ;
-  int n ;
-  {
-    M_PARSE *stackptr ;
+LOGICAL m_putdata(data, n) void *data;
+int n;
+{
+        M_PARSE *stackptr;
 
-    for (stackptr = m_stacktop ;
-         stackptr->oldtop && n >= 0 ;
-         stackptr = stackptr->oldtop, n--) {
-      if (! n) {
-        stackptr->ifdata = data ;
-        return(TRUE) ;
+        for (stackptr = m_stacktop; stackptr->oldtop && n >= 0;
+             stackptr = stackptr->oldtop, n--) {
+                if (!n) {
+                        stackptr->ifdata = data;
+                        return (TRUE);
+                }
         }
-      }
-    return(FALSE) ;
-    }
-
+        return (FALSE);
+}

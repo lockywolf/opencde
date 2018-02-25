@@ -34,13 +34,14 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API UnicodeCodingSystem : public CodingSystem {
-public:
-  UnicodeCodingSystem(const InputCodingSystem *sub = 0);
-  Decoder *makeDecoder() const;
-  Encoder *makeEncoder() const;
-  unsigned fixedBytesPerChar() const;
-private:
-  const InputCodingSystem *sub_;
+      public:
+        UnicodeCodingSystem(const InputCodingSystem *sub = 0);
+        Decoder *makeDecoder() const;
+        Encoder *makeEncoder() const;
+        unsigned fixedBytesPerChar() const;
+
+      private:
+        const InputCodingSystem *sub_;
 };
 
 #ifdef SP_NAMESPACE

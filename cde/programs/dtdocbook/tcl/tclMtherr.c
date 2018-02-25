@@ -21,7 +21,7 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $XConsortium: tclMtherr.c /main/2 1996/08/08 14:45:38 cde-hp $ */
-/* 
+/*
  * tclMatherr.c --
  *
  *	This function provides a default implementation of the
@@ -46,7 +46,7 @@
 #endif
 
 #ifdef NO_ERRNO_H
-extern int errno;			/* Use errno from tclExpr.c. */
+extern int errno; /* Use errno from tclExpr.c. */
 #define EDOM 33
 #define ERANGE 34
 #endif
@@ -68,12 +68,12 @@ extern int tcl_MathInProgress;
 
 #ifndef NEED_MATHERR
 struct exception {
-    int type;
+        int type;
 };
 #define DOMAIN 0
 #define SING 0
 #endif
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -93,17 +93,15 @@ struct exception {
  *----------------------------------------------------------------------
  */
 
-int
-matherr(xPtr)
-    struct exception *xPtr;	/* Describes error that occurred. */
+int matherr(xPtr) struct exception *xPtr; /* Describes error that occurred. */
 {
-    if (!tcl_MathInProgress) {
-	return 0;
-    }
-    if ((xPtr->type == DOMAIN) || (xPtr->type == SING)) {
-	errno = EDOM;
-    } else {
-	errno = ERANGE;
-    }
-    return 1;
+        if (!tcl_MathInProgress) {
+                return 0;
+        }
+        if ((xPtr->type == DOMAIN) || (xPtr->type == SING)) {
+                errno = EDOM;
+        } else {
+                errno = ERANGE;
+        }
+        return 1;
 }

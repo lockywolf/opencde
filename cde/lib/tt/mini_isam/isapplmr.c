@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: isapplmr.c /main/3 1995/10/23 11:35:25 rswiston $ 			 				 */
+/*%%  $XConsortium: isapplmr.c /main/3 1995/10/23 11:35:25 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)isapplmr.c 1.5 89/07/17 Copyr 1988 Sun Micro";
 #endif
@@ -38,7 +39,6 @@ static char sccsid[] = "@(#)isapplmr.c 1.5 89/07/17 Copyr 1988 Sun Micro";
  * Description:
  *	Read Application magic string
  */
-
 
 #include "isam_impl.h"
 #include <sys/file.h>
@@ -54,49 +54,47 @@ static char sccsid[] = "@(#)isapplmr.c 1.5 89/07/17 Copyr 1988 Sun Micro";
  *
  */
 
-int 
-_isapplmr(isfd, buffer)
-    int			isfd;
-    char		*buffer;
+int _isapplmr(isfd, buffer) int isfd;
+char *buffer;
 {
-    register Fab	*fab;
-    Fcb                 *fcb = NULL;
-    char                cntl_page[CP_NKEYS_OFF];
+        register Fab *fab;
+        Fcb *fcb = NULL;
+        char cntl_page[CP_NKEYS_OFF];
 
-    /*
-     * Get File Access Block.
-     */
-    if ((fab = _isfd_find(isfd)) == NULL) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Get File Access Block.
+         */
+        if ((fab = _isfd_find(isfd)) == NULL) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-    /*
-     * Check that the open mode was ISINPUT, or ISINOUT.
-     */
-    if (fab->openmode != OM_INPUT && fab->openmode != OM_INOUT) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Check that the open mode was ISINPUT, or ISINOUT.
+         */
+        if (fab->openmode != OM_INPUT && fab->openmode != OM_INOUT) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-    _isam_entryhook();
+        _isam_entryhook();
 
-    /*
-     * Get FCB corresponding to the isfhandle handle.
-     */
-    if ((fcb = _openfcb(&fab->isfhandle, &fab->errcode)) == NULL) {
-	_isam_exithook();
-	return (ISERROR);
-    }
+        /*
+         * Get FCB corresponding to the isfhandle handle.
+         */
+        if ((fcb = _openfcb(&fab->isfhandle, &fab->errcode)) == NULL) {
+                _isam_exithook();
+                return (ISERROR);
+        }
 
-    _isseekpg(fcb->datfd, ISCNTLPGOFF);
-    (void)read(fcb->datfd, cntl_page, sizeof(cntl_page));
-    strncpy(buffer, cntl_page + CP_APPLMAGIC_OFF, CP_APPLMAGIC_LEN);
+        _isseekpg(fcb->datfd, ISCNTLPGOFF);
+        (void)read(fcb->datfd, cntl_page, sizeof(cntl_page));
+        strncpy(buffer, cntl_page + CP_APPLMAGIC_OFF, CP_APPLMAGIC_LEN);
 
-    _amseterrcode(&fab->errcode, ISOK);
-    _isam_exithook();
+        _amseterrcode(&fab->errcode, ISOK);
+        _isam_exithook();
 
-    _seterr_errcode(&fab->errcode);
+        _seterr_errcode(&fab->errcode);
 
-    return (ISOK);			     /* Successful write */
+        return (ISOK); /* Successful write */
 }

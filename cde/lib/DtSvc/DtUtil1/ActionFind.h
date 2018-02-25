@@ -47,21 +47,16 @@
 #include <Dt/DtsDb.h>
 #include <Dt/DtsMM.h>
 
-
-#  ifdef __cplusplus
+#ifdef __cplusplus
 extern "C" {
-#  endif
+#endif
 
 extern void _DtSortActionDb(void);
-extern ActionPtr
-_DtActionFindDBEntry(	ActionRequest *reqp,
-			DtShmBoson actQuark );
+extern ActionPtr _DtActionFindDBEntry(ActionRequest *reqp, DtShmBoson actQuark);
 
-#  ifdef __cplusplus
+#ifdef __cplusplus
 }
-#  endif
-
+#endif
 
 #endif /* _Dt_ActionFind_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */
-

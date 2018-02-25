@@ -43,31 +43,30 @@
 #include <stdio.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <Dt/Wsm.h> 
-#include <Dt/WsmP.h> 
-#include <Xm/Xm.h> 
+#include <Dt/Wsm.h>
+#include <Dt/WsmP.h>
+#include <Xm/Xm.h>
 #include <Xm/AtomMgr.h>
 
-
 /*************************************<->*************************************
  *
- *  int _DtGetEmbeddedClients (display, root, ppEmbeddedClients, 
+ *  int _DtGetEmbeddedClients (display, root, ppEmbeddedClients,
  *					pNumEmbeddedClients)
  *
  *
  *  Description:
  *  -----------
- *  Get the contents of the _DT_WORKSPACE_EMBEDDED_CLIENTS property 
+ *  Get the contents of the _DT_WORKSPACE_EMBEDDED_CLIENTS property
  *  from a root window. This is a array of top-level windows that are
  *  embedded in the front panel of the window manager. They would
  *  not be picked up ordinarily by a session manager in a normal
- *  search for top-level windows because they are reparented to 
+ *  search for top-level windows because they are reparented to
  *  the front panel which itself is a top-level window.
  *
  *
  *  Inputs:
  *  ------
- *  display		- display 
+ *  display		- display
  *  root		- root window to get info from
  *  ppEmbeddedClients	- pointer to a pointer (to be returned)
  *  pNumEmbeddedClients	- pointer to a number (to be returned)
@@ -80,54 +79,39 @@
  *  *pNumEmbeddedClients- number of window IDs in array
  *  Return		- Success if property fetched ok.
  *		  	  Failure returns are from XGetWindowProperty
- * 
+ *
  *  Comments:
  *  --------
  *  Use XFree to free the returned data.
- * 
+ *
  *************************************<->***********************************/
-int 
-_DtGetEmbeddedClients(
-        Display *display,
-        Window root,
-        Atom **ppEmbeddedClients,
-        unsigned long *pNumEmbeddedClients )
-{
-    Atom actualType;
-    int actualFormat;
-    unsigned long leftover;
-    int rcode;
-    Atom property;
+int _DtGetEmbeddedClients(Display *display, Window root,
+                          Atom **ppEmbeddedClients,
+                          unsigned long *pNumEmbeddedClients) {
+        Atom actualType;
+        int actualFormat;
+        unsigned long leftover;
+        int rcode;
+        Atom property;
 
-    *ppEmbeddedClients = NULL;
-    property = XmInternAtom (display,
-			    _XA_DT_WORKSPACE_EMBEDDED_CLIENTS, False);
+        *ppEmbeddedClients = NULL;
+        property =
+            XmInternAtom(display, _XA_DT_WORKSPACE_EMBEDDED_CLIENTS, False);
 
-    if ((rcode=XGetWindowProperty(display,
-    			 root,
-			 property,
-			 0L, 
-			 (long)BUFSIZ,
-			 False,
-			 property,
-			 &actualType,
-			 &actualFormat,
-			 pNumEmbeddedClients,
-			 &leftover,
-			 (unsigned char **)ppEmbeddedClients))==Success)
-    {
+        if ((rcode = XGetWindowProperty(
+                 display, root, property, 0L, (long)BUFSIZ, False, property,
+                 &actualType, &actualFormat, pNumEmbeddedClients, &leftover,
+                 (unsigned char **)ppEmbeddedClients)) == Success) {
 
-        if (actualType != property)
-	{
-	    /* wrong type, force failure */
-	    *pNumEmbeddedClients = 0;
-	    rcode = BadValue;
-	    if (actualType != None)
-	    {
-		XFree ((char *) *ppEmbeddedClients);
-	    }
-	}
-    }
-	
-    return(rcode);
+                if (actualType != property) {
+                        /* wrong type, force failure */
+                        *pNumEmbeddedClients = 0;
+                        rcode = BadValue;
+                        if (actualType != None) {
+                                XFree((char *)*ppEmbeddedClients);
+                        }
+                }
+        }
+
+        return (rcode);
 }

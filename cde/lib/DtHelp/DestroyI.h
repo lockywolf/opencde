@@ -44,11 +44,8 @@
 #ifndef _DtHelpDestroyI_h
 #define _DtHelpDestroyI_h
 
-extern	void	_DtHelpDisplayAreaClean (
-			XtPointer  client_data);
-extern	void	_DtHelpDisplayAreaDestroyCB (
-                        Widget w,
-                        XtPointer client_data,
-                        XtPointer call_data);
+extern void _DtHelpDisplayAreaClean(XtPointer client_data);
+extern void _DtHelpDisplayAreaDestroyCB(Widget w, XtPointer client_data,
+                                        XtPointer call_data);
 
 #endif /* _DtHelpDestroyI_h */

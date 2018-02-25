@@ -42,32 +42,29 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API ParserApp : public EntityApp {
-public:
-  ParserApp();
-  void processOption(AppChar opt, const AppChar *arg);
-  int processSysid(const StringC &);
-  virtual ErrorCountEventHandler *makeEventHandler() = 0;
-  Boolean enableWarning(const AppChar *s);
-  void initParser(const StringC &sysid);
-  SgmlParser &parser();
-  // This calls the ArcEngine if the options have enabled that.
-  void parseAll(SgmlParser &, EventHandler &,
-		SP_CONST SP_VOLATILE sig_atomic_t *cancelPtr);
-  virtual void allLinkTypesActivated();
-protected:
-  virtual int generateEvents(ErrorCountEventHandler *);
-  ParserOptions options_;
-  SgmlParser parser_;
-  unsigned errorLimit_;
-  Vector<StringC> arcNames_;
-  Vector<const AppChar *> activeLinkTypes_;
+      public:
+        ParserApp();
+        void processOption(AppChar opt, const AppChar *arg);
+        int processSysid(const StringC &);
+        virtual ErrorCountEventHandler *makeEventHandler() = 0;
+        Boolean enableWarning(const AppChar *s);
+        void initParser(const StringC &sysid);
+        SgmlParser &parser();
+        // This calls the ArcEngine if the options have enabled that.
+        void parseAll(SgmlParser &, EventHandler &,
+                      SP_CONST SP_VOLATILE sig_atomic_t *cancelPtr);
+        virtual void allLinkTypesActivated();
+
+      protected:
+        virtual int generateEvents(ErrorCountEventHandler *);
+        ParserOptions options_;
+        SgmlParser parser_;
+        unsigned errorLimit_;
+        Vector<StringC> arcNames_;
+        Vector<const AppChar *> activeLinkTypes_;
 };
 
-inline
-SgmlParser &ParserApp::parser()
-{
-  return parser_;
-}
+inline SgmlParser &ParserApp::parser() { return parser_; }
 
 #ifdef SP_NAMESPACE
 }

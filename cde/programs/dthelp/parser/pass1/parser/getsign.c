@@ -34,9 +34,4 @@ Copyright 1988, 1989 Hewlett-Packard Co.
 #include "parser.h"
 #include "signonx.h"
 
-void m_getsignon(M_NOPAR)
-  {
-    m_errline(m_signon) ;
-    }
-
-
+void m_getsignon(M_NOPAR) { m_errline(m_signon); }

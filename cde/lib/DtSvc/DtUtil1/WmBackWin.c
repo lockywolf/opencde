@@ -44,25 +44,18 @@
 #include <stdlib.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <Dt/Wsm.h> 
+#include <Dt/Wsm.h>
 #include <Xm/Xm.h>
 #include <Xm/AtomMgr.h>
 
-
 /********    Public Function Declarations    ********/
 
-extern Window DtWsmGetCurrentBackdropWindow( 
-                        Display *display,
-                        Window root);
-extern Boolean _DtWsmIsBackdropWindow(
-        Display *display,
-        int screen_num,
-        Window window );
+extern Window DtWsmGetCurrentBackdropWindow(Display *display, Window root);
+extern Boolean _DtWsmIsBackdropWindow(Display *display, int screen_num,
+                                      Window window);
 
 /********    End Public Function Declarations    ********/
 
-
-
 /*************************************<->*************************************
  *
  *  Window DtWsmGetCurrentBackdropWindow (display, root)
@@ -75,7 +68,7 @@ extern Boolean _DtWsmIsBackdropWindow(
  *
  *  Inputs:
  *  ------
- *  display	- display 
+ *  display	- display
  *  root	- root window
  *
  *  Return	- window used for current workspace
@@ -83,41 +76,34 @@ extern Boolean _DtWsmIsBackdropWindow(
  *
  *  Comments:
  *  --------
- *  
- * 
+ *
+ *
  *************************************<->***********************************/
-Window
-DtWsmGetCurrentBackdropWindow(
-        Display *display ,
-        Window root )
-{
-    Window wReturn = None;
-    Atom aWS;
-    DtWsmWorkspaceInfo *pWsInfo;
-    Status status;
+Window DtWsmGetCurrentBackdropWindow(Display *display, Window root) {
+        Window wReturn = None;
+        Atom aWS;
+        DtWsmWorkspaceInfo *pWsInfo;
+        Status status;
 
-    status = DtWsmGetCurrentWorkspace (display, root, &aWS);
+        status = DtWsmGetCurrentWorkspace(display, root, &aWS);
 
-    if (status == Success)
-    {
-        status = DtWsmGetWorkspaceInfo(display, root, aWS, &pWsInfo);
-	if (status == Success)
-	{
-	    if (pWsInfo->numBackdropWindows > 0)
-	    {
-		/* copy backdrop window (there should be at most one) */
-		wReturn = pWsInfo->backdropWindows[0];
-	    }
+        if (status == Success) {
+                status = DtWsmGetWorkspaceInfo(display, root, aWS, &pWsInfo);
+                if (status == Success) {
+                        if (pWsInfo->numBackdropWindows > 0) {
+                                /* copy backdrop window (there should be at most
+                                 * one) */
+                                wReturn = pWsInfo->backdropWindows[0];
+                        }
 
-	    DtWsmFreeWorkspaceInfo (pWsInfo);
-	}
-    }
+                        DtWsmFreeWorkspaceInfo(pWsInfo);
+                }
+        }
 
-    return (wReturn);
+        return (wReturn);
 
-}  /* END OF FUNCTION DtWsmGetCurrentBackdropWindow */
+} /* END OF FUNCTION DtWsmGetCurrentBackdropWindow */
 
-
 /*************************************<->*************************************
  *
  *  Boolean _DtWsmIsBackdropWindow (display, screen_num, window)
@@ -130,7 +116,7 @@ DtWsmGetCurrentBackdropWindow(
  *
  *  Inputs:
  *  ------
- *  display	- display 
+ *  display	- display
  *  screen_num	- number of screen we're interested in
  *  window	- window we want to test
  *
@@ -141,54 +127,44 @@ DtWsmGetCurrentBackdropWindow(
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-Boolean 
-_DtWsmIsBackdropWindow(
-        Display *display,
-        int screen_num,
-        Window window )
-{
-    Boolean rval = False;
-    Status status;
-    Atom *pWorkspaceList;
-    int ix, iw, numWorkspaces;
-    DtWsmWorkspaceInfo *pWsInfo;
-    Window root;
+Boolean _DtWsmIsBackdropWindow(Display *display, int screen_num,
+                               Window window) {
+        Boolean rval = False;
+        Status status;
+        Atom *pWorkspaceList;
+        int ix, iw, numWorkspaces;
+        DtWsmWorkspaceInfo *pWsInfo;
+        Window root;
 
-    root = XRootWindow (display, screen_num);
+        root = XRootWindow(display, screen_num);
 
-    status = DtWsmGetWorkspaceList (display, root, 
-			    &pWorkspaceList, &numWorkspaces);
+        status = DtWsmGetWorkspaceList(display, root, &pWorkspaceList,
+                                       &numWorkspaces);
 
-    if ((status == Success) && 
-	(numWorkspaces > 0) &&
-	(pWsInfo = (DtWsmWorkspaceInfo *) 
-	    malloc (numWorkspaces * sizeof(DtWsmWorkspaceInfo))))
-    {
-	for (ix=0;
-		(!rval) && (ix < numWorkspaces) && (status == Success); 
-		    ix++)
-	{
-	    status = DtWsmGetWorkspaceInfo (display,
-					 root,
-					 pWorkspaceList[ix],
-					 &pWsInfo);
-	    if (status == Success)
-	    {
-		for (iw = 0; iw < pWsInfo->numBackdropWindows; iw++)
-		{
-		    if (pWsInfo->backdropWindows[iw] == window)
-		    {
-			rval = True;
-		    }
-		}
+        if ((status == Success) && (numWorkspaces > 0) &&
+            (pWsInfo = (DtWsmWorkspaceInfo *)malloc(
+                 numWorkspaces * sizeof(DtWsmWorkspaceInfo)))) {
+                for (ix = 0;
+                     (!rval) && (ix < numWorkspaces) && (status == Success);
+                     ix++) {
+                        status = DtWsmGetWorkspaceInfo(
+                            display, root, pWorkspaceList[ix], &pWsInfo);
+                        if (status == Success) {
+                                for (iw = 0; iw < pWsInfo->numBackdropWindows;
+                                     iw++) {
+                                        if (pWsInfo->backdropWindows[iw] ==
+                                            window) {
+                                                rval = True;
+                                        }
+                                }
 
-		DtWsmFreeWorkspaceInfo(pWsInfo);
-	    }
-	}
-	XFree ((char *)pWorkspaceList);
-    }
+                                DtWsmFreeWorkspaceInfo(pWsInfo);
+                        }
+                }
+                XFree((char *)pWorkspaceList);
+        }
 
-    return (rval);
-}  /* END OF FUNCTION _DtWsmIsBackdropWindow */
+        return (rval);
+} /* END OF FUNCTION _DtWsmIsBackdropWindow */

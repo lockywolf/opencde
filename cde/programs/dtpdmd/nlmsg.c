@@ -29,7 +29,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -40,7 +40,7 @@
 
 #if !defined(NL_CAT_LOCALE)
 #define NL_CAT_LOCALE 0
-#endif 
+#endif
 
 #define DTPDMD_CAT_NAME "dtpdmd"
 
@@ -52,7 +52,7 @@
  */
 
 /*** dtpdmd.c ***/
-const char DtPdmdMsg_0001[]  = "\
+const char DtPdmdMsg_0001[] = "\
 usage: %1$s [options]\n\
 \n\
 where [options] includes:\n\
@@ -64,17 +64,20 @@ where [options] includes:\n\
    -f <auth file>      an initial set of authorization cookies\n\
    -l <log file>       a file for the logging of errors, etc";
 
-const char DtPdmdMsg_0002[]  = "%1$s: error, cannot open display %2$s\n";
-const char DtPdmdMsg_0003[]  = "%1$s: error, cannot acquire selection %2$s\n";
-const char DtPdmdMsg_0004[]  = "%s: error, cannot create Xt Signal Pipe\n";
+const char DtPdmdMsg_0002[] = "%1$s: error, cannot open display %2$s\n";
+const char DtPdmdMsg_0003[] = "%1$s: error, cannot acquire selection %2$s\n";
+const char DtPdmdMsg_0004[] = "%s: error, cannot create Xt Signal Pipe\n";
 
 /*** manager.c ***/
 
-const char DtPdmdMsg_0005[]  = "%s: error, unable to get SelectionRequest property\n";
-const char DtPdmdMsg_0006[]  = "%s: error, invalid format for SelectionRequest property\n";
-const char DtPdmdMsg_0007[]  = "%s: error, XmbTextPropertyToTestList failed on SelectionRequest property\n";
-const char DtPdmdMsg_0008[]  = "%s: error, unable to create message pipe\n";
-const char DtPdmdMsg_0009[]  = "%s: error, unable to fork\n";
+const char DtPdmdMsg_0005[] =
+    "%s: error, unable to get SelectionRequest property\n";
+const char DtPdmdMsg_0006[] =
+    "%s: error, invalid format for SelectionRequest property\n";
+const char DtPdmdMsg_0007[] = "%s: error, XmbTextPropertyToTestList failed on "
+                              "SelectionRequest property\n";
+const char DtPdmdMsg_0008[] = "%s: error, unable to create message pipe\n";
+const char DtPdmdMsg_0009[] = "%s: error, unable to fork\n";
 const char DtPdmdMsg_0010[] = "%1$s: error, cannot execute \"%2$s\" \n";
 
 const char DtPdmdMsg_0011[] = "\
@@ -106,7 +109,8 @@ const char DtPdmdMsg_0014[] = "\
 const char DtPdmdMsg_0015[] = "\
    attached pdmd error= \n\"%s\" \n";
 
-const char DtPdmdMsg_0016[] = "%1$s: error, cannot open log file \"%2$s\". Turning off stderr message logging\n";
+const char DtPdmdMsg_0016[] = "%1$s: error, cannot open log file \"%2$s\". "
+                              "Turning off stderr message logging\n";
 
 #ifdef I18N_MSG
 
@@ -125,27 +129,21 @@ const char DtPdmdMsg_0016[] = "%1$s: error, cannot open log file \"%2$s\". Turni
  *
  * Returns: the string for set 'set' and number 'n'.
  */
-const char *
-DtPdmdGetMessage(
-		int set,
-		int n,
-		char * s)
-{
-    char *msg;
-    nl_catd catopen();
-    char *catgets();
-    static int first = 1;
-    static nl_catd nlmsg_fd;
-    
-    if(set == -1 || n == -1)
-	return s;
-    
-    if(first) 
-    {
-	first = 0;
-	nlmsg_fd = catopen(DTPDMD_CAT_NAME, NL_CAT_LOCALE);
-    }
-    msg=catgets(nlmsg_fd,set,n,s);
-    return (msg);
+const char *DtPdmdGetMessage(int set, int n, char *s) {
+        char *msg;
+        nl_catd catopen();
+        char *catgets();
+        static int first = 1;
+        static nl_catd nlmsg_fd;
+
+        if (set == -1 || n == -1)
+                return s;
+
+        if (first) {
+                first = 0;
+                nlmsg_fd = catopen(DTPDMD_CAT_NAME, NL_CAT_LOCALE);
+        }
+        msg = catgets(nlmsg_fd, set, n, s);
+        return (msg);
 }
 #endif /* I18N_MSG */

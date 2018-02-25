@@ -24,7 +24,8 @@
 **
 **  session.h
 **
-**  static char sccsid[] = "@(#)session.h 1.3 93/11/08 Copyr 1991 Sun Microsystems, Inc.";
+**  static char sccsid[] = "@(#)session.h 1.3 93/11/08 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $XConsortium: session.h /main/3 1995/11/03 10:33:56 rswiston $
 **
@@ -55,7 +56,7 @@
 #include "ansi_c.h"
 #include "calendar.h"
 
-extern void	CMSaveSessionCB		P((Widget,  XtPointer, XtPointer));
-extern void	GetSessionInfo		P(());
+extern void CMSaveSessionCB P((Widget, XtPointer, XtPointer));
+extern void GetSessionInfo P(());
 
 #endif

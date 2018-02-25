@@ -32,7 +32,7 @@
  **  file
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -43,11 +43,9 @@
 
 /* External Interface */
 
-
-extern Bool AllocatePaletteCells( Widget shell) ;
-extern int ReColorPalette( void ) ;
-extern void CheckMonitor( Widget shell) ;
-
+extern Bool AllocatePaletteCells(Widget shell);
+extern int ReColorPalette(void);
+extern void CheckMonitor(Widget shell);
 
 #endif /* _colorpalette_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

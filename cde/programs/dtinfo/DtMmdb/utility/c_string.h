@@ -29,18 +29,17 @@
 #include "utility/c_iostream.h"
 #include "utility/c_charbuf.h"
 
-class string
-{
-public:
-   string(char* str);
-   string(char* str, int size);
-   ~string() ;
+class string {
+      public:
+        string(char *str);
+        string(char *str, int size);
+        ~string();
 
-   char* c_str();
-   int size();
+        char *c_str();
+        int size();
 
-protected:
-   streambuf*	sbuf; // buffer that provides char sequence read/write
+      protected:
+        streambuf *sbuf; // buffer that provides char sequence read/write
 };
 
 #endif

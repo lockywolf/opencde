@@ -51,36 +51,34 @@
 static char VISTATAF[] = "vista.taf";
 
 /* Set database transaction activity file name/path
-*/
-d_dbtaf(taf TASK_PARM)
-CONST char FAR *taf;
-TASK_DECL
-{
-   char dbtaf[FILENMLEN];
-   int len;
+ */
+d_dbtaf(taf TASK_PARM) CONST char FAR *taf;
+TASK_DECL {
+        char dbtaf[FILENMLEN];
+        int len;
 
-   DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(LOCK_NONE));
-   if (dbopen)
-      dberr(S_DBOPEN);
-   else {
-      len = strlen(taf);
-      if (len > (FILENMLEN - 1)) {
-	 strncpy(dbtaf, taf, FILENMLEN - 1);
-	 dbtaf[FILENMLEN - 1] = '\0';
-      }
-      else if (taf[len - 1] == DIRCHAR) {
-	 if (len > (FILENMLEN - sizeof(VISTATAF))) {
-	    strncpy(dbtaf, taf, FILENMLEN - sizeof(VISTATAF) - 1);
-	    dbtaf[(len = (FILENMLEN - sizeof(VISTATAF))) - 1] = DIRCHAR;
-	 }
-	 else
-	    strcpy(dbtaf, taf);
-	 strcpy(&dbtaf[len], VISTATAF);
-      }
-      else
-	 strcpy(dbtaf, taf);
-      db_status = S_OKAY;
-   }
-   RETURN (db_status = S_OKAY);
+        DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(LOCK_NONE));
+        if (dbopen)
+                dberr(S_DBOPEN);
+        else {
+                len = strlen(taf);
+                if (len > (FILENMLEN - 1)) {
+                        strncpy(dbtaf, taf, FILENMLEN - 1);
+                        dbtaf[FILENMLEN - 1] = '\0';
+                } else if (taf[len - 1] == DIRCHAR) {
+                        if (len > (FILENMLEN - sizeof(VISTATAF))) {
+                                strncpy(dbtaf, taf,
+                                        FILENMLEN - sizeof(VISTATAF) - 1);
+                                dbtaf[(len = (FILENMLEN - sizeof(VISTATAF))) -
+                                      1] = DIRCHAR;
+                        } else
+                                strcpy(dbtaf, taf);
+                        strcpy(&dbtaf[len], VISTATAF);
+                } else
+                        strcpy(dbtaf, taf);
+                db_status = S_OKAY;
+        }
+        RETURN(db_status = S_OKAY);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin dbtaf.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin dbtaf.c */

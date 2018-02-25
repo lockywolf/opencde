@@ -62,25 +62,25 @@
  * can clean up after database errors.
  */
 #ifndef _XOPEN_SOURCE
-#define _XOPEN_SOURCE  1	/* for nl_catd */
+#define _XOPEN_SOURCE 1 /* for nl_catd */
 #endif
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-#include <nl_types.h>		/* for nl_catd */
+#include <nl_types.h> /* for nl_catd */
 #include "vista.h"
-#include "dberr.h"	/* retained for default vista msgs */
+#include "dberr.h" /* retained for default vista msgs */
 
-#define MS_vista	13	/* message set number */
+#define MS_vista 13 /* message set number */
 
 /*------------------- GLOBALS -------------------*/
-static int      vista_syserrno = 0;
-static char     vista_errmsg[1024];
-void            (*dberr_exit) (int) = exit;
+static int vista_syserrno = 0;
+static char vista_errmsg[1024];
+void (*dberr_exit)(int) = exit;
 
 /* non AusText user should #define to -1 */
-#define	dtsearch_catd -1
+#define dtsearch_catd -1
 /* non AusText user should #define to stderr */
 #define aa_stderr stderr
 
@@ -96,13 +96,11 @@ void            (*dberr_exit) (int) = exit;
  *    -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
  *    -f/usr/users/master/config/nonwin dberr.c".
  */
-int             dberr (int verrno)
-{
-    vista_syserrno = errno;
-    db_status = (verrno == S_DEBUG) ? S_OKAY : verrno;
-    return db_status;
+int dberr(int verrno) {
+        vista_syserrno = errno;
+        db_status = (verrno == S_DEBUG) ? S_OKAY : verrno;
+        return db_status;
 }
-
 
 /****************************************/
 /*					*/
@@ -117,15 +115,13 @@ int             dberr (int verrno)
  *   interaction code (such as an "auto-recovery in process" message)
  *   should be included here.
  */
-void            dbautorec (void)
-{
-    fputs (catgets (dtsearch_catd, MS_vista, 304,
-	"\n*** db_VISTA auto recovery in process...\n"),
-	aa_stderr);
-    db_status = S_RECOVERY;
-    return;
-}  /* dbautorec() */
-
+void dbautorec(void) {
+        fputs(catgets(dtsearch_catd, MS_vista, 304,
+                      "\n*** db_VISTA auto recovery in process...\n"),
+              aa_stderr);
+        db_status = S_RECOVERY;
+        return;
+} /* dbautorec() */
 
 /****************************************/
 /*					*/
@@ -141,60 +137,63 @@ void            dbautorec (void)
  * identify the location (module name, line number) of the error.
  * Returns a pointer to global buffer containing the msg string.
  */
-char           *vista_msg (char *location)
-{
-    int             i;
-    char           *defaultmsg;
-    char           *msgtarg;
+char *vista_msg(char *location) {
+        int i;
+        char *defaultmsg;
+        char *msgtarg;
 
-    /* Assemble standard Raima err msg */
-    if (location == NULL)
-	location = catgets (dtsearch_catd, MS_vista, 303,
-	    "(unspecified location)");
-    sprintf (vista_errmsg, catgets (dtsearch_catd, MS_vista, 311,
-	"*** DB Error at %s, db_status = %d: %n"),
-	location, db_status, &i);
-    msgtarg = vista_errmsg + i;
+        /* Assemble standard Raima err msg */
+        if (location == NULL)
+                location = catgets(dtsearch_catd, MS_vista, 303,
+                                   "(unspecified location)");
+        sprintf(vista_errmsg,
+                catgets(dtsearch_catd, MS_vista, 311,
+                        "*** DB Error at %s, db_status = %d: %n"),
+                location, db_status, &i);
+        msgtarg = vista_errmsg + i;
 
-    if (db_status == S_UNAVAIL) {	/* +5, usually at d_open() time */
-	strcpy (msgtarg, catgets (dtsearch_catd, MS_vista, 315,
-	    "Database in use by other users."));
-    }
-    else if (db_status >= 0)
-	strcpy (msgtarg, catgets (dtsearch_catd, MS_vista, 312,
-		"Programming Error."));
-    else {
-	if (db_status < 0 && db_status > -100)
-	    defaultmsg = user_error[-(db_status + 1)];
-	else if (db_status <= -900)
-	    defaultmsg = system_error[-(db_status + 900)];
-	else
-	    defaultmsg = catgets (dtsearch_catd, MS_vista, 313,
-		"Unknown Error.");
-	strcpy (msgtarg, catgets (dtsearch_catd, MS_vista, -db_status,
-	    defaultmsg));
-    }
-    msgtarg += strlen (msgtarg);
+        if (db_status == S_UNAVAIL) { /* +5, usually at d_open() time */
+                strcpy(msgtarg, catgets(dtsearch_catd, MS_vista, 315,
+                                        "Database in use by other users."));
+        } else if (db_status >= 0)
+                strcpy(msgtarg, catgets(dtsearch_catd, MS_vista, 312,
+                                        "Programming Error."));
+        else {
+                if (db_status < 0 && db_status > -100)
+                        defaultmsg = user_error[-(db_status + 1)];
+                else if (db_status <= -900)
+                        defaultmsg = system_error[-(db_status + 900)];
+                else
+                        defaultmsg = catgets(dtsearch_catd, MS_vista, 313,
+                                             "Unknown Error.");
+                strcpy(msgtarg, catgets(dtsearch_catd, MS_vista, -db_status,
+                                        defaultmsg));
+        }
+        msgtarg += strlen(msgtarg);
 
-    /* Append system errno msg */
-    sprintf (msgtarg, catgets (dtsearch_catd, MS_vista, 301,
-	    "\n*** System I/O errno %d = %s"),
-	vista_syserrno, strerror (vista_syserrno));
-    msgtarg += strlen (msgtarg);
+        /* Append system errno msg */
+        sprintf(msgtarg,
+                catgets(dtsearch_catd, MS_vista, 301,
+                        "\n*** System I/O errno %d = %s"),
+                vista_syserrno, strerror(vista_syserrno));
+        msgtarg += strlen(msgtarg);
 
-    /* Append additional information for common user error msgs */
-    if (db_status == S_NOFILE) {
-	strcpy (msgtarg, catgets (dtsearch_catd, MS_vista, 302,
-	    "\n"
-	    "*** The usual cause for this kind of error is a missing\n"
-	    "*** or read-only database file, or some system limit\n"
-	    "*** on the number of open files has been exceeded."));
-    }
-    msgtarg += strlen (msgtarg);
-    *msgtarg++ = '\n';
-    return vista_errmsg;
-}  /* vista_msg() */
-
+        /* Append additional information for common user error msgs */
+        if (db_status == S_NOFILE) {
+                strcpy(
+                    msgtarg,
+                    catgets(
+                        dtsearch_catd, MS_vista, 302,
+                        "\n"
+                        "*** The usual cause for this kind of error is a "
+                        "missing\n"
+                        "*** or read-only database file, or some system limit\n"
+                        "*** on the number of open files has been exceeded."));
+        }
+        msgtarg += strlen(msgtarg);
+        *msgtarg++ = '\n';
+        return vista_errmsg;
+} /* vista_msg() */
 
 /****************************************/
 /*					*/
@@ -213,11 +212,10 @@ char           *vista_msg (char *location)
  * Called by every vista function macro in dmacros.h,
  * so it exactly replaces former dboops() function.
  */
-void            vista_abort (char *location)
-{
-    fputs (vista_msg (location), aa_stderr);
-    fflush (aa_stderr);
-    dberr_exit (93);
+void vista_abort(char *location) {
+        fputs(vista_msg(location), aa_stderr);
+        fflush(aa_stderr);
+        dberr_exit(93);
 }
 
 /************************** DBERR.C *************************/

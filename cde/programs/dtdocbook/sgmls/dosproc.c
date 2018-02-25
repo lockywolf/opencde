@@ -38,16 +38,15 @@
 
 #include <process.h>
 
-int run_process(argv)
-char **argv;
+int run_process(argv) char **argv;
 {
-     int ret;
-     fflush(stdout);
-     fflush(stderr);
-     ret = spawnvp(P_WAIT, argv[0], argv);
-     if (ret < 0)
-	  appl_error(E_EXEC, argv[0], strerror(errno));
-     return ret;
+        int ret;
+        fflush(stdout);
+        fflush(stderr);
+        ret = spawnvp(P_WAIT, argv[0], argv);
+        if (ret < 0)
+                appl_error(E_EXEC, argv[0], strerror(errno));
+        return ret;
 }
 
 #endif /* SUPPORT_SUBDOC */

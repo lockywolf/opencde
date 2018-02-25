@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,10 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
-
 
 #ifndef _mphf_funcs_h
 #define _mphf_funcs_h 1
@@ -65,17 +63,15 @@
 #include "hmphf/mphf_hash_table.h"
 #include "hmphf/pattern.h"
 
-int compute_a_mphf(char** keys, params& params_ptr, buffer& mphf_spec_buffer);
+int compute_a_mphf(char **keys, params &params_ptr, buffer &mphf_spec_buffer);
 
-int search(buckets& bs, mphf_hash_table& ht, params& pms);
-int verify(buckets& bs, mphf_hash_table& ht, params& pms);
+int search(buckets &bs, mphf_hash_table &ht, params &pms);
+int verify(buckets &bs, mphf_hash_table &ht, params &pms);
 
-int write_spec(buckets& bs, params& pms, buffer& mphf_spec_buffer);
+int write_spec(buckets &bs, params &pms, buffer &mphf_spec_buffer);
 
-int compact(buckets& bs, unsigned s[], int t, Boolean swap);
+int compact(buckets &bs, unsigned s[], int t, Boolean swap);
 
-int wc(char* file_name, unsigned int& lines, unsigned int& max_length);
-
+int wc(char *file_name, unsigned int &lines, unsigned int &max_length);
 
 #endif
-

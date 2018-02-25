@@ -55,7 +55,7 @@ typedef unsigned short Char;
 
 #if INT_MAX > 65535L
 typedef int Xchar;
-#else /* INT_MAX <= 65535L */
+#else  /* INT_MAX <= 65535L */
 typedef long Xchar;
 #endif /* INT_MAX <= 65535L */
 

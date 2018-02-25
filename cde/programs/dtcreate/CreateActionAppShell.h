@@ -20,7 +20,8 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* $XConsortium: CreateActionAppShell.h /main/4 1995/11/01 16:06:24 rswiston $ */
+/* $XConsortium: CreateActionAppShell.h /main/4 1995/11/01 16:06:24 rswiston $
+ */
 /******************************************************************************
        CreateActionAppShell.h
 
@@ -68,99 +69,101 @@
        corresponding entry in the context structure.
 *******************************************************************************/
 
-typedef struct
-{
-        Widget  UxCreateActionMainWindow;
-        Widget  UxCA_MenuBar;
-        Widget  UxCA_MB_FileOption;
-        Widget  UxCA_MB_FileNew;
-        Widget  UxCA_MB_FileOpen;
-        Widget  UxCA_MB_FileSave;
-        Widget  UxCA_MB_Sep;
-        Widget  UxCA_MB_FileExit;
-        Widget  UxCA_MB_FileTop;
-        Widget  UxCA_MB_HelpOption;
-        Widget  UxCA_MB_HelpOverview;
-        Widget  UxCA_MB_HelpTOC;
-        Widget  UxCA_MB_HelpTasks;
-        Widget  UxCA_MB_HelpReference;
-        Widget  UxCA_MB_HelpUsing;
-        Widget  UxCA_MB_HelpAbout;
-        Widget  UxCA_MB_HelpTop;
-        Widget  UxCA_MB_OptionsOption;
-        Widget  UxCA_MB_OptionTop;
-        Widget  UxCA_Form;
-        Widget  UxCA_ActionNameLabel;
-        Widget  UxCA_ActionIconLabel;
-        Widget  UxCA_ActionIconForm;
-        Widget  UxCA_EditIcon_button;
-        Widget  UxCA_FindSet_button;
-        Widget  Uxseparator1;
-        Widget  UxCA_DblClkLabel;
-        Widget  UxCA_HlpTxtLabel;
-        Widget  UxCA_XprtOptionLabel;
-        Widget  UxCA_XprtSep2;
-        Widget  UxCA_ActionOpenLabel;
-        Widget  UxCA_XprtSep1;
-        Widget  UxCA_FiletypesLabel;
-        Widget  Uxform1;
-        Widget  UxCA_DroppableFiletypesLabel;
-        Widget  UxCA_DroppableFiletypesRowColumn;
-        Widget  UxrowColumn1;
-        Widget  UxCA_FiletypesAdd;
-        Widget  UxCA_FiletypesDelete;
-        Widget  UxCA_FiletypesEdit;
-        Widget  UxCA_FiletypesWindow;
-        Widget  UxCA_WindowTypeLabel;
+typedef struct {
+        Widget UxCreateActionMainWindow;
+        Widget UxCA_MenuBar;
+        Widget UxCA_MB_FileOption;
+        Widget UxCA_MB_FileNew;
+        Widget UxCA_MB_FileOpen;
+        Widget UxCA_MB_FileSave;
+        Widget UxCA_MB_Sep;
+        Widget UxCA_MB_FileExit;
+        Widget UxCA_MB_FileTop;
+        Widget UxCA_MB_HelpOption;
+        Widget UxCA_MB_HelpOverview;
+        Widget UxCA_MB_HelpTOC;
+        Widget UxCA_MB_HelpTasks;
+        Widget UxCA_MB_HelpReference;
+        Widget UxCA_MB_HelpUsing;
+        Widget UxCA_MB_HelpAbout;
+        Widget UxCA_MB_HelpTop;
+        Widget UxCA_MB_OptionsOption;
+        Widget UxCA_MB_OptionTop;
+        Widget UxCA_Form;
+        Widget UxCA_ActionNameLabel;
+        Widget UxCA_ActionIconLabel;
+        Widget UxCA_ActionIconForm;
+        Widget UxCA_EditIcon_button;
+        Widget UxCA_FindSet_button;
+        Widget Uxseparator1;
+        Widget UxCA_DblClkLabel;
+        Widget UxCA_HlpTxtLabel;
+        Widget UxCA_XprtOptionLabel;
+        Widget UxCA_XprtSep2;
+        Widget UxCA_ActionOpenLabel;
+        Widget UxCA_XprtSep1;
+        Widget UxCA_FiletypesLabel;
+        Widget Uxform1;
+        Widget UxCA_DroppableFiletypesLabel;
+        Widget UxCA_DroppableFiletypesRowColumn;
+        Widget UxrowColumn1;
+        Widget UxCA_FiletypesAdd;
+        Widget UxCA_FiletypesDelete;
+        Widget UxCA_FiletypesEdit;
+        Widget UxCA_FiletypesWindow;
+        Widget UxCA_WindowTypeLabel;
         swidget UxUxParent;
 } _UxCCreateActionAppShell;
 
 #ifdef CONTEXT_MACRO_ACCESS
 
 static _UxCCreateActionAppShell *UxCreateActionAppShellContext;
-#define CreateActionMainWindow  UxCreateActionAppShellContext->UxCreateActionMainWindow
-#define CA_MenuBar              UxCreateActionAppShellContext->UxCA_MenuBar
-#define CA_MB_FileOption        UxCreateActionAppShellContext->UxCA_MB_FileOption
-#define CA_MB_FileNew           UxCreateActionAppShellContext->UxCA_MB_FileNew
-#define CA_MB_FileOpen          UxCreateActionAppShellContext->UxCA_MB_FileOpen
-#define CA_MB_FileSave          UxCreateActionAppShellContext->UxCA_MB_FileSave
-#define CA_MB_Sep               UxCreateActionAppShellContext->UxCA_MB_Sep
-#define CA_MB_FileExit          UxCreateActionAppShellContext->UxCA_MB_FileExit
-#define CA_MB_FileTop           UxCreateActionAppShellContext->UxCA_MB_FileTop
-#define CA_MB_HelpOption        UxCreateActionAppShellContext->UxCA_MB_HelpOption
-#define CA_MB_HelpOverview      UxCreateActionAppShellContext->UxCA_MB_HelpOverview
-#define CA_MB_HelpTOC           UxCreateActionAppShellContext->UxCA_MB_HelpTOC
-#define CA_MB_HelpTasks         UxCreateActionAppShellContext->UxCA_MB_HelpTasks
-#define CA_MB_HelpReference     UxCreateActionAppShellContext->UxCA_MB_HelpReference
-#define CA_MB_HelpUsing         UxCreateActionAppShellContext->UxCA_MB_HelpUsing
-#define CA_MB_HelpAbout         UxCreateActionAppShellContext->UxCA_MB_HelpAbout
-#define CA_MB_HelpTop           UxCreateActionAppShellContext->UxCA_MB_HelpTop
-#define CA_MB_OptionsOption     UxCreateActionAppShellContext->UxCA_MB_OptionsOption
-#define CA_MB_OptionTop         UxCreateActionAppShellContext->UxCA_MB_OptionTop
-#define CA_Form                 UxCreateActionAppShellContext->UxCA_Form
-#define CA_ActionNameLabel      UxCreateActionAppShellContext->UxCA_ActionNameLabel
-#define CA_ActionIconLabel      UxCreateActionAppShellContext->UxCA_ActionIconLabel
-#define CA_ActionIconForm       UxCreateActionAppShellContext->UxCA_ActionIconForm
-#define CA_EditIcon_button      UxCreateActionAppShellContext->UxCA_EditIcon_button
-#define CA_FindSet_button       UxCreateActionAppShellContext->UxCA_FindSet_button
-#define separator1              UxCreateActionAppShellContext->Uxseparator1
-#define CA_DblClkLabel          UxCreateActionAppShellContext->UxCA_DblClkLabel
-#define CA_HlpTxtLabel          UxCreateActionAppShellContext->UxCA_HlpTxtLabel
-#define CA_XprtOptionLabel      UxCreateActionAppShellContext->UxCA_XprtOptionLabel
-#define CA_XprtSep2             UxCreateActionAppShellContext->UxCA_XprtSep2
-#define CA_ActionOpenLabel      UxCreateActionAppShellContext->UxCA_ActionOpenLabel
-#define CA_XprtSep1             UxCreateActionAppShellContext->UxCA_XprtSep1
-#define CA_FiletypesLabel       UxCreateActionAppShellContext->UxCA_FiletypesLabel
-#define form1                   UxCreateActionAppShellContext->Uxform1
-#define CA_DroppableFiletypesLabel UxCreateActionAppShellContext->UxCA_DroppableFiletypesLabel
-#define CA_DroppableFiletypesRowColumn UxCreateActionAppShellContext->UxCA_DroppableFiletypesRowColumn
-#define rowColumn1              UxCreateActionAppShellContext->UxrowColumn1
-#define CA_FiletypesAdd         UxCreateActionAppShellContext->UxCA_FiletypesAdd
-#define CA_FiletypesDelete      UxCreateActionAppShellContext->UxCA_FiletypesDelete
-#define CA_FiletypesEdit        UxCreateActionAppShellContext->UxCA_FiletypesEdit
-#define CA_FiletypesWindow      UxCreateActionAppShellContext->UxCA_FiletypesWindow
-#define CA_WindowTypeLabel      UxCreateActionAppShellContext->UxCA_WindowTypeLabel
-#define UxParent                UxCreateActionAppShellContext->UxUxParent
+#define CreateActionMainWindow                                                 \
+        UxCreateActionAppShellContext->UxCreateActionMainWindow
+#define CA_MenuBar UxCreateActionAppShellContext->UxCA_MenuBar
+#define CA_MB_FileOption UxCreateActionAppShellContext->UxCA_MB_FileOption
+#define CA_MB_FileNew UxCreateActionAppShellContext->UxCA_MB_FileNew
+#define CA_MB_FileOpen UxCreateActionAppShellContext->UxCA_MB_FileOpen
+#define CA_MB_FileSave UxCreateActionAppShellContext->UxCA_MB_FileSave
+#define CA_MB_Sep UxCreateActionAppShellContext->UxCA_MB_Sep
+#define CA_MB_FileExit UxCreateActionAppShellContext->UxCA_MB_FileExit
+#define CA_MB_FileTop UxCreateActionAppShellContext->UxCA_MB_FileTop
+#define CA_MB_HelpOption UxCreateActionAppShellContext->UxCA_MB_HelpOption
+#define CA_MB_HelpOverview UxCreateActionAppShellContext->UxCA_MB_HelpOverview
+#define CA_MB_HelpTOC UxCreateActionAppShellContext->UxCA_MB_HelpTOC
+#define CA_MB_HelpTasks UxCreateActionAppShellContext->UxCA_MB_HelpTasks
+#define CA_MB_HelpReference UxCreateActionAppShellContext->UxCA_MB_HelpReference
+#define CA_MB_HelpUsing UxCreateActionAppShellContext->UxCA_MB_HelpUsing
+#define CA_MB_HelpAbout UxCreateActionAppShellContext->UxCA_MB_HelpAbout
+#define CA_MB_HelpTop UxCreateActionAppShellContext->UxCA_MB_HelpTop
+#define CA_MB_OptionsOption UxCreateActionAppShellContext->UxCA_MB_OptionsOption
+#define CA_MB_OptionTop UxCreateActionAppShellContext->UxCA_MB_OptionTop
+#define CA_Form UxCreateActionAppShellContext->UxCA_Form
+#define CA_ActionNameLabel UxCreateActionAppShellContext->UxCA_ActionNameLabel
+#define CA_ActionIconLabel UxCreateActionAppShellContext->UxCA_ActionIconLabel
+#define CA_ActionIconForm UxCreateActionAppShellContext->UxCA_ActionIconForm
+#define CA_EditIcon_button UxCreateActionAppShellContext->UxCA_EditIcon_button
+#define CA_FindSet_button UxCreateActionAppShellContext->UxCA_FindSet_button
+#define separator1 UxCreateActionAppShellContext->Uxseparator1
+#define CA_DblClkLabel UxCreateActionAppShellContext->UxCA_DblClkLabel
+#define CA_HlpTxtLabel UxCreateActionAppShellContext->UxCA_HlpTxtLabel
+#define CA_XprtOptionLabel UxCreateActionAppShellContext->UxCA_XprtOptionLabel
+#define CA_XprtSep2 UxCreateActionAppShellContext->UxCA_XprtSep2
+#define CA_ActionOpenLabel UxCreateActionAppShellContext->UxCA_ActionOpenLabel
+#define CA_XprtSep1 UxCreateActionAppShellContext->UxCA_XprtSep1
+#define CA_FiletypesLabel UxCreateActionAppShellContext->UxCA_FiletypesLabel
+#define form1 UxCreateActionAppShellContext->Uxform1
+#define CA_DroppableFiletypesLabel                                             \
+        UxCreateActionAppShellContext->UxCA_DroppableFiletypesLabel
+#define CA_DroppableFiletypesRowColumn                                         \
+        UxCreateActionAppShellContext->UxCA_DroppableFiletypesRowColumn
+#define rowColumn1 UxCreateActionAppShellContext->UxrowColumn1
+#define CA_FiletypesAdd UxCreateActionAppShellContext->UxCA_FiletypesAdd
+#define CA_FiletypesDelete UxCreateActionAppShellContext->UxCA_FiletypesDelete
+#define CA_FiletypesEdit UxCreateActionAppShellContext->UxCA_FiletypesEdit
+#define CA_FiletypesWindow UxCreateActionAppShellContext->UxCA_FiletypesWindow
+#define CA_WindowTypeLabel UxCreateActionAppShellContext->UxCA_WindowTypeLabel
+#define UxParent UxCreateActionAppShellContext->UxUxParent
 
 #endif /* CONTEXT_MACRO_ACCESS */
 
@@ -195,7 +198,6 @@ static _UxCCreateActionAppShell *UxCreateActionAppShellContext;
 #define WINDOW_TYPE_SWID (CA_WindowType)
 #define COLOR_MONO_OPTION_SWID (ColorMonoOption)
 
-
 /***************************************************************************/
 /*                                                                         */
 /*  Widget Macro Definitions                                               */
@@ -215,12 +217,13 @@ static _UxCCreateActionAppShell *UxCreateActionAppShellContext;
 #define CA_LRG_ICON_BUTTON (UxGetWidget(LRG_ICON_BUTTON_SWID))
 #define CA_MED_ICON_BUTTON (UxGetWidget(MED_ICON_BUTTON_SWID))
 #define CA_SML_ICON_BUTTON (UxGetWidget(SML_ICON_BUTTON_SWID))
-#define CA_TINY_ICON_BUTTON (UxGetWidget(TINY_ICON_BUTTON_SWID ))
+#define CA_TINY_ICON_BUTTON (UxGetWidget(TINY_ICON_BUTTON_SWID))
 #define CA_LRG_ICON_GADGET (UxGetWidget(LRG_ICON_GADGET_SWID))
 #define CA_MED_ICON_GADGET (UxGetWidget(MED_ICON_GADGET_SWID))
 #define CA_SML_ICON_GADGET (UxGetWidget(SML_ICON_GADGET_SWID))
-#define CA_TINY_ICON_GADGET (UxGetWidget(TINY_ICON_GADGET_SWID ))
-#define EXPERT_OPTIONS_TOGGLE_BUTTON (UxGetWidget(EXPERT_OPTIONS_TOGGLE_BUTTON_SWID))
+#define CA_TINY_ICON_GADGET (UxGetWidget(TINY_ICON_GADGET_SWID))
+#define EXPERT_OPTIONS_TOGGLE_BUTTON                                           \
+        (UxGetWidget(EXPERT_OPTIONS_TOGGLE_BUTTON_SWID))
 #define XPRT_OPTION_FORM (UxGetWidget(XPRT_OPTION_FORM_SWID))
 #define CA_OPEN_FILE (UxGetWidget(OPEN_FILE_SWID))
 #define FILE_CHARACTERISTICS (UxGetWidget(FILE_CHARACTERISTICS_SWID))
@@ -238,7 +241,8 @@ static _UxCCreateActionAppShell *UxCreateActionAppShellContext;
 #define CA_ActionHelpText(ad_struct) (((ActionData *)(ad_struct))->pszHelp)
 #define CA_Filetypes(ad_struct) (((ActionData *)(ad_struct))->papFiletypes)
 #define CA_FiletypesCount(ad_struct) (((ActionData *)(ad_struct))->cFiletypes)
-#define CA_FiletypesForActionList(ad_struct,l) (((ActionData *)(ad_struct))[l]->pszName)
+#define CA_FiletypesForActionList(ad_struct, l)                                \
+        (((ActionData *)(ad_struct))[l]->pszName)
 #define CA_ActionOpensText(ad_struct) (((ActionData *)(ad_struct))->pszPrompt)
 #define CA_WindowTypeSetting(ad_struct) (((ActionData *)(ad_struct))->fsFlags)
 #define CA_Icon(ad_struct) (((ActionData *)(ad_struct))->pszIcon)
@@ -248,9 +252,7 @@ static _UxCCreateActionAppShell *UxCreateActionAppShellContext;
 /*     Function Declarations                                                 */
 /*****************************************************************************/
 
-
-Widget  create_applicationShell1(swidget);
-void    activateCB_CA_MB_FileSave(Widget, XtPointer, XtPointer);
-
+Widget create_applicationShell1(swidget);
+void activateCB_CA_MB_FileSave(Widget, XtPointer, XtPointer);
 
 #endif /* _CREATEACTIONAPPSHELL_H_INCLUDED */

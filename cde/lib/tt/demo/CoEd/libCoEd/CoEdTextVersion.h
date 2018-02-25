@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: CoEdTextVersion.h /main/3 1995/10/23 09:44:08 rswiston $ 			 				 */
+/*%%  $XConsortium: CoEdTextVersion.h /main/3 1995/10/23 09:44:08 rswiston $
+ */
 /* -*-C++-*-
  *
  * CoEdTextVersion.h
@@ -59,18 +60,15 @@
 #include "SiteChange.h"
 
 class CoEdTextVersion : public SiteChangeList {
-    public:
-	CoEdTextVersion();
-	CoEdTextVersion( unsigned char *data, int len, CoEdStatus &status );
+      public:
+        CoEdTextVersion();
+        CoEdTextVersion(unsigned char *data, int len, CoEdStatus &status);
 
-	void			update( const CoEdSiteID &site,
-				        int numChanges );
-	void			insert( SiteChange *change );
-	CoEdTextVersion	       *copy()					const;
-	int			knowsOfNewerChangesThan(
-					const CoEdTextVersion &version)	const;
-	int			knowsOf( const CoEdSiteID &site,
-					 int numChanges )		const;
+        void update(const CoEdSiteID &site, int numChanges);
+        void insert(SiteChange *change);
+        CoEdTextVersion *copy() const;
+        int knowsOfNewerChangesThan(const CoEdTextVersion &version) const;
+        int knowsOf(const CoEdSiteID &site, int numChanges) const;
 };
 
 #endif CoEdTextVersion_h

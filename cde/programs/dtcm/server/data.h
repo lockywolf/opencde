@@ -38,24 +38,25 @@
 #include "ansi_c.h"
 
 typedef enum {
-	rb_ok		= 0,
-	rb_duplicate	= 1,
-	rb_badtable	= 2,
-	rb_notable	= 3,
-	rb_failed	= 4,
-	rb_other	= 5
+        rb_ok = 0,
+        rb_duplicate = 1,
+        rb_badtable = 2,
+        rb_notable = 3,
+        rb_failed = 4,
+        rb_other = 5
 } Rb_Status;
 
 typedef enum {
-	_DtCmsIsLess,
-	_DtCmsIsEqual,
-	_DtCmsIsGreater
+        _DtCmsIsLess,
+        _DtCmsIsEqual,
+        _DtCmsIsGreater
 } _DtCmsComparisonResult;
 
-typedef caddr_t (*_DtCmsGetKeyProc) (/* caddr_t data */);
+typedef caddr_t (*_DtCmsGetKeyProc)(/* caddr_t data */);
 
-typedef _DtCmsComparisonResult (*_DtCmsCompareProc)(/* caddr_t key; caddr_t data */);
+typedef _DtCmsComparisonResult (*_DtCmsCompareProc)(
+    /* caddr_t key; caddr_t data */);
 
-typedef boolean_t (*_DtCmsEnumerateProc) (/* caddr_t data */);
+typedef boolean_t (*_DtCmsEnumerateProc)(/* caddr_t data */);
 
 #endif

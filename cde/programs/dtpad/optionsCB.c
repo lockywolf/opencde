@@ -54,7 +54,6 @@
 #include "dtpad.h"
 #include <Dt/HourGlass.h>
 
-
 /************************************************************************
  * OverstrikeCB - set Editor widget overstike and "Options" menu
  *	"Overstrike" radio button state based on value passed in
@@ -64,23 +63,17 @@
  *		session is also reset.
  ************************************************************************/
 /* ARGSUSED */
-void
-OverstrikeCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data)
-{
-    Arg al[1];
-    Editor *pPad = (Editor *)client_data;
-    XmToggleButtonCallbackStruct *cb = (XmToggleButtonCallbackStruct *)
-				       call_data;
+void OverstrikeCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Arg al[1];
+        Editor *pPad = (Editor *)client_data;
+        XmToggleButtonCallbackStruct *cb =
+            (XmToggleButtonCallbackStruct *)call_data;
 
-    XtSetArg(al[0], DtNoverstrike, (Boolean) cb->set);
-    XtSetValues(pPad->editor, al, 1);
-    pPad->xrdb.overstrike = (Boolean) cb->set;	/* reset edit session default */
-
+        XtSetArg(al[0], DtNoverstrike, (Boolean)cb->set);
+        XtSetValues(pPad->editor, al, 1);
+        pPad->xrdb.overstrike =
+            (Boolean)cb->set; /* reset edit session default */
 }
-
 
 /************************************************************************
  * WordWrapCB - set Editor widget word wrap state and the default state
@@ -91,46 +84,39 @@ OverstrikeCB(
  *		session is also reset.
  ************************************************************************/
 /* ARGSUSED */
-void
-WordWrapCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data)
-{
-    Arg al[1];
-    Editor *pPad = (Editor *)client_data;
-    XmToggleButtonCallbackStruct *cb = (XmToggleButtonCallbackStruct *)
-				       call_data;
-    SaveAs *pSaveAs = &pPad->fileStuff.fileWidgets.saveAs;
-    Select *pSelect = &pPad->fileStuff.fileWidgets.select;
+void WordWrapCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Arg al[1];
+        Editor *pPad = (Editor *)client_data;
+        XmToggleButtonCallbackStruct *cb =
+            (XmToggleButtonCallbackStruct *)call_data;
+        SaveAs *pSaveAs = &pPad->fileStuff.fileWidgets.saveAs;
+        Select *pSelect = &pPad->fileStuff.fileWidgets.select;
 
-    XtSetArg(al[0], DtNwordWrap, (int) cb->set);
-    XtSetValues(pPad->editor, al, 1);
+        XtSetArg(al[0], DtNwordWrap, (int)cb->set);
+        XtSetValues(pPad->editor, al, 1);
 
-    pPad->xrdb.wordWrap = (Boolean) cb->set;	/* reset edit session default */
+        pPad->xrdb.wordWrap = (Boolean)cb->set; /* reset edit session default */
 
-    /* -----> set the default state for the "add new lines?" radio boxes in the
-     *        "Save As" file selection box and the "Save" prompt dialog
-     *        (these radio boxes are included only if word wrap is on) */
-    if (pSaveAs->toggleWidgets.newl_radio != (Widget) 0) {
-	if (pPad->xrdb.wordWrap == True) {
-	    XtManageChild(pSaveAs->toggleWidgets.newl_radio);
-	} else {
-	    XtUnmanageChild(pSaveAs->toggleWidgets.newl_radio);
-	}
-    }
-    if (pSelect->toggleWidgets.newl_radio != (Widget) 0) {
-	if (pPad->xrdb.wordWrap == True) {
-	    XtManageChild(pSelect->separator);
-	    XtManageChild(pSelect->toggleWidgets.newl_radio);
-	} else {
-	    XtUnmanageChild(pSelect->separator);
-	    XtUnmanageChild(pSelect->toggleWidgets.newl_radio);
-	}
-    }
-
+        /* -----> set the default state for the "add new lines?" radio boxes in
+         * the "Save As" file selection box and the "Save" prompt dialog (these
+         * radio boxes are included only if word wrap is on) */
+        if (pSaveAs->toggleWidgets.newl_radio != (Widget)0) {
+                if (pPad->xrdb.wordWrap == True) {
+                        XtManageChild(pSaveAs->toggleWidgets.newl_radio);
+                } else {
+                        XtUnmanageChild(pSaveAs->toggleWidgets.newl_radio);
+                }
+        }
+        if (pSelect->toggleWidgets.newl_radio != (Widget)0) {
+                if (pPad->xrdb.wordWrap == True) {
+                        XtManageChild(pSelect->separator);
+                        XtManageChild(pSelect->toggleWidgets.newl_radio);
+                } else {
+                        XtUnmanageChild(pSelect->separator);
+                        XtUnmanageChild(pSelect->toggleWidgets.newl_radio);
+                }
+        }
 }
-
 
 /************************************************************************
  * StatusLineCB - set Editor widget statusLine based on value passed in
@@ -140,21 +126,17 @@ WordWrapCB(
  *		session is also reset.
  ************************************************************************/
 /* ARGSUSED */
-void
-StatusLineCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data)
-{
-    Arg al[1];
-    Editor *pPad = (Editor *)client_data;
-    XmToggleButtonCallbackStruct *cb = (XmToggleButtonCallbackStruct *)
-				       call_data;
+void StatusLineCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Arg al[1];
+        Editor *pPad = (Editor *)client_data;
+        XmToggleButtonCallbackStruct *cb =
+            (XmToggleButtonCallbackStruct *)call_data;
 
-    XtSetArg(al[0], DtNshowStatusLine, (Boolean) cb->set);
-    XtSetValues(pPad->editor, al, 1);
-    pPad->xrdb.statusLine = (Boolean) cb->set;	/* reset edit session default */
+        XtSetArg(al[0], DtNshowStatusLine, (Boolean)cb->set);
+        XtSetValues(pPad->editor, al, 1);
+        pPad->xrdb.statusLine =
+            (Boolean)cb->set; /* reset edit session default */
 
-    /* Reset the resize increment and minimum window size properties. */
-    SetAppShellResizeHints(pPad);
+        /* Reset the resize increment and minimum window size properties. */
+        SetAppShellResizeHints(pPad);
 }

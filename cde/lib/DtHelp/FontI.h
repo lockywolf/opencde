@@ -53,23 +53,23 @@ extern "C" {
 /*
  * resource database types
  */
-#define _DtHelpXrmInt      0
-#define _DtHelpXrmQuark    1
+#define _DtHelpXrmInt 0
+#define _DtHelpXrmQuark 1
 
 /*
  * font quarks
  */
-#define _DT_HELP_FONT_CHAR_SET       6
-#define _DT_HELP_FONT_LANG_TER       5
-#define _DT_HELP_FONT_TYPE           4
-#define _DT_HELP_FONT_WEIGHT         3
-#define _DT_HELP_FONT_ANGLE          2
-#define _DT_HELP_FONT_SIZE           1
-#define _DT_HELP_FONT_SPACING        0
+#define _DT_HELP_FONT_CHAR_SET 6
+#define _DT_HELP_FONT_LANG_TER 5
+#define _DT_HELP_FONT_TYPE 4
+#define _DT_HELP_FONT_WEIGHT 3
+#define _DT_HELP_FONT_ANGLE 2
+#define _DT_HELP_FONT_SIZE 1
+#define _DT_HELP_FONT_SPACING 0
 
-#define _DT_HELP_FONT_END            7
+#define _DT_HELP_FONT_END 7
 
-#define _DtHelpFontQuarkNumber     8
+#define _DtHelpFontQuarkNumber 8
 
 /****************************************************************************
  *			Semi Public Structures
@@ -77,47 +77,29 @@ extern "C" {
 /****************************************************************************
  *			Semi Public Routines
  ****************************************************************************/
-extern	void		 _DtHelpCopyDefaultList(XrmName *xrm_list);
-extern	long		 __DtHelpDefaultFontIndexGet (
-				DtHelpDispAreaStruct	*pDAS);
-extern	void		 _DtHelpGetStringQuarks(XrmName *xrm_list);
-extern	int		 __DtHelpFontCharSetQuarkGet(
-				DtHelpDispAreaStruct	*pDAS,
-				long			 font_index,
-				XrmQuark		*ret_quark);
-extern	void		 __DtHelpFontDatabaseInit (
-				DtHelpDispAreaStruct	*pDAS,
-				XtPointer		 default_font,
-				XmFontType		 entry_type,
-				XFontStruct		*user_font);
-extern	int		 __DtHelpFontIndexGet (
-				DtHelpDispAreaStruct	*pDAS,
-				XrmQuarkList		 xrm_list,
-				long			*ret_idx);
-extern	int		 __DtHelpFontLangQuarkGet(
-				DtHelpDispAreaStruct	*pDAS,
-				long			 font_index,
-				XrmQuark		*ret_quark);
-extern	void		 __DtHelpFontMetrics (
-				DtHelpDAFontInfo	 font_info,
-				long			 font_index,
-				_DtCvUnit		*ret_ascent,
-				_DtCvUnit		*ret_descent,
-				_DtCvUnit		*ret_char_width,
-				_DtCvUnit		*ret_super,
-				_DtCvUnit		*ret_sub);
-extern	XFontSet	 __DtHelpFontSetGet (
-				DtHelpDAFontInfo	 font_info,
-				long			 font_index );
-extern	XFontStruct	*__DtHelpFontStructGet (
-				DtHelpDAFontInfo	 font_info,
-				long			 font_index);
-extern	int		 _DtHelpGetExactFontIndex(
-				DtHelpDispAreaStruct	*pDAS,
-				const char		*lang,
-				const char		*char_set,
-				char			*xlfd_spec,
-				long			*ret_idx);
+extern void _DtHelpCopyDefaultList(XrmName *xrm_list);
+extern long __DtHelpDefaultFontIndexGet(DtHelpDispAreaStruct *pDAS);
+extern void _DtHelpGetStringQuarks(XrmName *xrm_list);
+extern int __DtHelpFontCharSetQuarkGet(DtHelpDispAreaStruct *pDAS,
+                                       long font_index, XrmQuark *ret_quark);
+extern void __DtHelpFontDatabaseInit(DtHelpDispAreaStruct *pDAS,
+                                     XtPointer default_font,
+                                     XmFontType entry_type,
+                                     XFontStruct *user_font);
+extern int __DtHelpFontIndexGet(DtHelpDispAreaStruct *pDAS,
+                                XrmQuarkList xrm_list, long *ret_idx);
+extern int __DtHelpFontLangQuarkGet(DtHelpDispAreaStruct *pDAS, long font_index,
+                                    XrmQuark *ret_quark);
+extern void __DtHelpFontMetrics(DtHelpDAFontInfo font_info, long font_index,
+                                _DtCvUnit *ret_ascent, _DtCvUnit *ret_descent,
+                                _DtCvUnit *ret_char_width, _DtCvUnit *ret_super,
+                                _DtCvUnit *ret_sub);
+extern XFontSet __DtHelpFontSetGet(DtHelpDAFontInfo font_info, long font_index);
+extern XFontStruct *__DtHelpFontStructGet(DtHelpDAFontInfo font_info,
+                                          long font_index);
+extern int _DtHelpGetExactFontIndex(DtHelpDispAreaStruct *pDAS,
+                                    const char *lang, const char *char_set,
+                                    char *xlfd_spec, long *ret_idx);
 
 #ifdef __cplusplus
 }

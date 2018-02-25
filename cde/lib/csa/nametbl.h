@@ -47,35 +47,22 @@
  *	 of names.
  */
 typedef struct {
-	void	*tbl;
-	int	size;
-	char	**names;
+        void *tbl;
+        int size;
+        char **names;
 } _DtCmNameTable;
 
-extern _DtCmNameTable *_DtCm_make_name_table P((
-				int	size,
-				char	**names));
+extern _DtCmNameTable *_DtCm_make_name_table P((int size, char **names));
 
-extern void _DtCm_free_name_table P((_DtCmNameTable *tbl));
+extern void _DtCm_free_name_table P((_DtCmNameTable * tbl));
 
-extern CSA_return_code _DtCm_add_name_to_table P((
-				_DtCmNameTable	*tbl,
-				int		index,
-				char		*newname));
+extern CSA_return_code _DtCm_add_name_to_table P((_DtCmNameTable * tbl,
+                                                  int index, char *newname));
 
-extern int _DtCm_get_index_from_table P((
-				_DtCmNameTable	*tbl,
-				char		*name));
+extern int _DtCm_get_index_from_table P((_DtCmNameTable * tbl, char *name));
 
-extern CSA_return_code _DtCmExtendNameTable P((
-				char		*name,
-				int		index,
-				int		type,
-				_DtCmNameTable	*base,
-				int		basesize,
-				char		**basenames,
-				_DtCmNameTable	**tbl,
-				int		**types));
+extern CSA_return_code _DtCmExtendNameTable
+    P((char *name, int index, int type, _DtCmNameTable *base, int basesize,
+       char **basenames, _DtCmNameTable **tbl, int **types));
 
 #endif /* _NAMETBL_H */
-

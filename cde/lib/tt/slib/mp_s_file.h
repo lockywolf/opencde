@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp_s_file.h /main/3 1995/10/23 11:54:56 rswiston $ 			 				 */
+/*%%  $XConsortium: mp_s_file.h /main/3 1995/10/23 11:54:56 rswiston $
+ */
 /*
  * Tool Talk Message Passer (MP) - mp_s_file.h
  *
@@ -41,20 +42,18 @@
 
 class _Tt_s_file : public _Tt_object {
       public:
-	_Tt_s_file();
-	_Tt_s_file(
-		const _Tt_string &path
-	);
-	virtual ~_Tt_s_file();
+        _Tt_s_file();
+        _Tt_s_file(const _Tt_string &path);
+        virtual ~_Tt_s_file();
 
-	Tt_status		s_join(_Tt_s_procid_ptr &p);
-	Tt_status		s_quit(_Tt_s_procid_ptr &p);
+        Tt_status s_join(_Tt_s_procid_ptr &p);
+        Tt_status s_quit(_Tt_s_procid_ptr &p);
 
       protected:
-	int			procs_joined();
+        int procs_joined();
 
       private:
-	_Tt_string		networkPath;
+        _Tt_string networkPath;
 };
 
-#endif				/* _MP_S_FILE_H */
+#endif /* _MP_S_FILE_H */

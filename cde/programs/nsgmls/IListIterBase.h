@@ -35,37 +35,23 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API IListIterBase {
-public:
-  IListIterBase(const IListBase &);
-  int done();
-  Link *cur();
-  void next();
-private:
-  Link *p_;
+      public:
+        IListIterBase(const IListBase &);
+        int done();
+        Link *cur();
+        void next();
+
+      private:
+        Link *p_;
 };
 
-inline
-IListIterBase::IListIterBase(const IListBase &list) : p_(list.head_)
-{
-}
+inline IListIterBase::IListIterBase(const IListBase &list) : p_(list.head_) {}
 
-inline
-int IListIterBase::done()
-{
-  return p_ == 0;
-}
+inline int IListIterBase::done() { return p_ == 0; }
 
-inline
-Link *IListIterBase::cur()
-{
-  return p_;
-}
+inline Link *IListIterBase::cur() { return p_; }
 
-inline
-void IListIterBase::next()
-{
-  p_ = p_->next_;
-}
+inline void IListIterBase::next() { p_ = p_->next_; }
 
 #ifdef SP_NAMESPACE
 }

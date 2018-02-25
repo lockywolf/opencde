@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: issync.c /main/3 1995/10/23 11:45:20 rswiston $ 			 				 */
+/*%%  $XConsortium: issync.c /main/3 1995/10/23 11:45:20 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)issync.c 1.7 89/07/17 Copyr 1988 Sun Micro";
 #endif
@@ -40,7 +41,7 @@ static char sccsid[] = "@(#)issync.c 1.7 89/07/17 Copyr 1988 Sun Micro";
  *
  * Note: issync() flushes changed kernel buffers that are local to
  * 	the application that issued the call.
- * 
+ *
  * See sync(2) UNIX manual for what actually happens if sync() is called.
  */
 
@@ -52,83 +53,71 @@ static char sccsid[] = "@(#)issync.c 1.7 89/07/17 Copyr 1988 Sun Micro";
  * int  issync()
  */
 
-int 
-issync()
-{
-    return iscntl(ALLISFD, ISCNTL_FSYNC);
-}
+int issync() { return iscntl(ALLISFD, ISCNTL_FSYNC); }
 
 /*
  * int  isfsync(fd)
  */
 
-int 
-isfsync(isfd)
-    int		isfd;
-{
-    return iscntl(isfd, ISCNTL_FSYNC);
+int isfsync(isfd) int isfd;
+{ return iscntl(isfd, ISCNTL_FSYNC); }
+
+_issync() {
+        int i;
+
+        for (i = 0; i < MAXISFD; i++)
+                (void)_isfsync(i);
+
+        return (ISOK);
 }
 
-
-_issync()
+_isfsync(isfd) int isfd;
 {
-    int		i;
+        register Fab *fab;
+        Fcb *fcb;
+        int ret;
 
-    for (i = 0; i < MAXISFD; i++)
-	(void)_isfsync(i);
+        /*
+         * Get File Access Block.
+         */
+        if ((fab = _isfd_find(isfd)) == NULL) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-    return (ISOK);
-}
+        /*
+         * Check that the open mode was ISINPUT, or ISINOUT.
+         */
+        if (fab->openmode != OM_INPUT && fab->openmode != OM_INOUT) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-_isfsync(isfd)
-    int		isfd;
-{
-    register Fab	*fab;
-    Fcb                 *fcb;
-    int			ret;
+        _isam_entryhook();
 
-    /*
-     * Get File Access Block.
-     */
-    if ((fab = _isfd_find(isfd)) == NULL) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Get FCB corresponding to the isfhandle handle.
+         */
+        if ((fcb = _openfcb(&fab->isfhandle, &fab->errcode)) == NULL) {
+                _isam_exithook();
+                ret = ISERROR;
+        } else {
 
-    /*
-     * Check that the open mode was ISINPUT, or ISINOUT.
-     */
-    if (fab->openmode != OM_INPUT && fab->openmode != OM_INOUT) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+                if (fcb->datfd != -1)
+                        (void)fsync(fcb->datfd);
 
-    _isam_entryhook();
+                if (fcb->indfd != -1)
+                        (void)fsync(fcb->indfd);
 
-    /*
-     * Get FCB corresponding to the isfhandle handle.
-     */
-    if ((fcb = _openfcb(&fab->isfhandle, &fab->errcode)) == NULL) {
-	_isam_exithook();
-	ret = ISERROR;
-    }
-    else {
+                if (fcb->varfd != -1)
+                        (void)fsync(fcb->varfd);
 
-        if (fcb->datfd != -1)
-	    (void)fsync(fcb->datfd);
+                _amseterrcode(&fab->errcode, ISOK);
+                _isam_exithook();
+                ret = ISOK;
+        }
 
-        if (fcb->indfd != -1)
-	    (void)fsync(fcb->indfd);
+        _seterr_errcode(&fab->errcode);
 
-        if (fcb->varfd != -1)
-	    (void)fsync(fcb->varfd);
-
-        _amseterrcode(&fab->errcode, ISOK);
-        _isam_exithook();
-        ret = ISOK;
-    }
-
-    _seterr_errcode(&fab->errcode);
-
-    return (ret);			     /* Successful write */
+        return (ret); /* Successful write */
 }

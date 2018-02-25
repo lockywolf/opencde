@@ -35,48 +35,44 @@ class ResolverStack;
 #include "ResolverStack.h"
 #include "Exceptions.hh"
 
-
 /* **************************************************************
 
    the Resolver is responsible for taking input from the NodeParser,
    getting a feature set from the Style Sheet and passing it on to a
-   Renderer 
+   Renderer
 
    - get Element input from NodeParser
    - consult Style Sheet PathTable to get raw FeatureSet
    - evaluate feature set to resolve variables and expressions
    - merge with parent complete feature set to get complete feature
-     set 
+     set
    - pass data to Renderer (Element, localFeatures, completeFeatures)
 
  * ************************************************************** */
 
+class Resolver : public Destructable {
+      public:
+        Resolver(PathTable &pTable, Renderer &r);
+        virtual ~Resolver();
 
+        // beginElement returns a non-zero value if element is to be ignored
+        unsigned int beginElement(Element *);
+        void data(const char *data, unsigned int data_length);
+        void endElement(const Symbol &);
 
-class Resolver : public Destructable
-{
-public:
-  Resolver(PathTable& pTable, Renderer& r);
-  virtual ~Resolver();
+        // called before any data
+        virtual void Begin();
+        // called after all data
+        virtual void End();
 
-  // beginElement returns a non-zero value if element is to be ignored
-  unsigned int beginElement(Element*);
-  void data(const char* data, unsigned int data_length);
-  void endElement(const Symbol&);
+      private:
+        SSPath f_path;
+        PathTable &f_pathTable;
 
-  // called before any data 
-  virtual void Begin();
-  // called after all data 
-  virtual void End();
+        // NOTE: this one could be a pointer so we can change them on the fly
+        Renderer &f_Renderer;
 
-private:
-  SSPath		f_path ;
-  PathTable	       &f_pathTable;
-
-   // NOTE: this one could be a pointer so we can change them on the fly
-  Renderer	       &f_Renderer;
-
-  ResolverStack	        f_resolverStack;
+        ResolverStack f_resolverStack;
 };
 
 #endif /* _Resolver_h */

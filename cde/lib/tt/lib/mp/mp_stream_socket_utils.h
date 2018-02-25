@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp_stream_socket_utils.h /main/3 1995/10/23 10:30:16 rswiston $ 			 				 */
+/*%%  $XConsortium: mp_stream_socket_utils.h /main/3 1995/10/23 10:30:16
+ * rswiston $ 			 				 */
 /*
  *
  * mp_stream_socket_utils.h
@@ -38,4 +39,4 @@
 class _Tt_stream_socket;
 declare_ptr_to(_Tt_stream_socket)
 
-#endif				/* MP_STREAM_SOCKET_UTILS_H */
+#endif /* MP_STREAM_SOCKET_UTILS_H */

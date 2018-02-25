@@ -31,16 +31,16 @@
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
 
-#ifndef	_DtTermMain_h
-#define	_DtTermMain_h
+#ifndef _DtTermMain_h
+#define _DtTermMain_h
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 extern "C" {
-#endif	/* __cplusplus */
+#endif /* __cplusplus */
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 } /* close scope of 'extern "C"'... */
-#endif	/* __cplusplus */
+#endif /* __cplusplus */
 
 /* DON'T ADD ANYTHING AFTER THIS #endif... */
-#endif	/* _DtTermMain_h */
+#endif /* _DtTermMain_h */

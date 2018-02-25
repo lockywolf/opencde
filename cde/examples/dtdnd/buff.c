@@ -52,12 +52,12 @@
 #include "demo.h"
 #include "buff.h"
 
-extern Widget	topLevel;
+extern Widget topLevel;
 
- /*************************************************************************
- * 
+/*************************************************************************
+ *
  *	Data Structures & Private Declarations For Appointment Buffers
- * 
+ *
  **************************************************************************/
 
 /*
@@ -65,44 +65,42 @@ extern Widget	topLevel;
  */
 
 typedef struct _Appointment {
-        char           *date;
-        char           *start;
-        char           *end;
-        char           *what;
+        char *date;
+        char *start;
+        char *end;
+        char *what;
 } Appointment;
 
 /*
  * List of appointments which always appear to be for the current date.
  */
 
-char    today[9];       /* initialized in apptCreateList() */
+char today[9]; /* initialized in apptCreateList() */
 
 Appointment todaysApptList[] = {
 #ifdef TEST_APPT_NAMES
-        { today, "", "", "Staff Meeting" },		  /* no name */
-        { today, " 9:30am", "10:00am", "Will's Party1" }, /* duplicate names */
-        { today, " 9:30am", "10:00am", "Will's Party2" },
+    {today, "", "", "Staff Meeting"},               /* no name */
+    {today, " 9:30am", "10:00am", "Will's Party1"}, /* duplicate names */
+    {today, " 9:30am", "10:00am", "Will's Party2"},
 #else
-        { today, " 9:00am", " 9:30am", "Staff Meeting" },
-        { today, " 9:30am", "10:00am", "Will's Party" },
+    {today, " 9:00am", " 9:30am", "Staff Meeting"},
+    {today, " 9:30am", "10:00am", "Will's Party"},
 #endif
-        { today, "10:00am", "10:30am", "Conference Call" },
-        { today, "10:30am", "11:30am", "Work on Mail" },
-        { today, "11:00am", "11:30pm", "B'fast w/ Robert" },
-        { today, " 1:30pm", " 2:30pm", "Design Meeting" },
-        { today, " 3:00pm", " 4:00pm", "Communications" },
-        { today, " 4:00pm", " 4:30pm", "Pick up Dogs" },
-        { today, " 5:00pm", " 6:30pm", "Beer Bust" },
-        { today, " 7:00pm", " 9:00pm", "Dinner - Stuart" },
-        { NULL, NULL, NULL, NULL }
-};
+    {today, "10:00am", "10:30am", "Conference Call"},
+    {today, "10:30am", "11:30am", "Work on Mail"},
+    {today, "11:00am", "11:30pm", "B'fast w/ Robert"},
+    {today, " 1:30pm", " 2:30pm", "Design Meeting"},
+    {today, " 3:00pm", " 4:00pm", "Communications"},
+    {today, " 4:00pm", " 4:30pm", "Pick up Dogs"},
+    {today, " 5:00pm", " 6:30pm", "Beer Bust"},
+    {today, " 7:00pm", " 9:00pm", "Dinner - Stuart"},
+    {NULL, NULL, NULL, NULL}};
 
 /*
  * CDE appointment format used to transfer the appointments via drag & drop.
  */
 
-char *apptFormat =
-"   ** Calendar Appointment **\n\
+char *apptFormat = "   ** Calendar Appointment **\n\
 \n\
         Date:    %s\n\
         Start:   %s\n\
@@ -113,16 +111,16 @@ char *apptFormat =
  * Private Appointment Buffer Function Declarations
  */
 
-static void		apptConvertCallback(Widget, XtPointer, XtPointer);
-static int		apptCreateList(XmString**);
-static void		apptDestroyList(XmString*,int);
-static Appointment*	apptFromListEntry(XmString);
-static char*		apptGetLabel(char*);
+static void apptConvertCallback(Widget, XtPointer, XtPointer);
+static int apptCreateList(XmString **);
+static void apptDestroyList(XmString *, int);
+static Appointment *apptFromListEntry(XmString);
+static char *apptGetLabel(char *);
 
- /*************************************************************************
- * 
+/*************************************************************************
+ *
  *	Appointment Drag & Drop
- * 
+ *
  **************************************************************************/
 
 /*
@@ -134,33 +132,28 @@ static char*		apptGetLabel(char*);
  * used. Supply a label for the calendar appointment based on the contents
  * of the appointment.
  */
-static void
-apptConvertCallback(
-        Widget          dragContext,
-        XtPointer       clientData,
-        XtPointer       callData)
-{
+static void apptConvertCallback(Widget dragContext, XtPointer clientData,
+                                XtPointer callData) {
         DtDndConvertCallbackStruct *convertInfo =
-                                  (DtDndConvertCallbackStruct *) callData;
-        DtDndBuffer     *buffers = convertInfo->dragData->data.buffers;
-        Widget          apptList = (Widget)clientData;
-        int             selectedPos, ii,
-                        selectedItemCount;
-        XmStringTable   selectedItems;
-        char            apptString[1024];
-        String          labelString;
-        Appointment     *appt;
+            (DtDndConvertCallbackStruct *)callData;
+        DtDndBuffer *buffers = convertInfo->dragData->data.buffers;
+        Widget apptList = (Widget)clientData;
+        int selectedPos, ii, selectedItemCount;
+        XmStringTable selectedItems;
+        char apptString[1024];
+        String labelString;
+        Appointment *appt;
 
-	if (convertInfo == NULL) {
-		return;
-	}
+        if (convertInfo == NULL) {
+                return;
+        }
 
         /*
          * Verify the validity of the callback reason
          */
 
         if (convertInfo->dragData->protocol != DtDND_BUFFER_TRANSFER ||
-	    (convertInfo->reason != DtCR_DND_CONVERT_DATA &&
+            (convertInfo->reason != DtCR_DND_CONVERT_DATA &&
              convertInfo->reason != DtCR_DND_CONVERT_DELETE)) {
                 return;
         }
@@ -169,11 +162,9 @@ apptConvertCallback(
          * Get selected items from the list
          */
 
-        XtVaGetValues(apptList,
-                XmNuserData,            &selectedPos,
-                XmNselectedItemCount,   &selectedItemCount,
-                XmNselectedItems,       &selectedItems,
-                NULL);
+        XtVaGetValues(apptList, XmNuserData, &selectedPos, XmNselectedItemCount,
+                      &selectedItemCount, XmNselectedItems, &selectedItems,
+                      NULL);
 
         for (ii = 0; ii < convertInfo->dragData->numItems; ii++) {
 
@@ -182,12 +173,12 @@ apptConvertCallback(
                  */
 
                 if (selectedItemCount == 0) {
-                        appt = &todaysApptList[selectedPos-1+ii];
+                        appt = &todaysApptList[selectedPos - 1 + ii];
                 } else {
                         appt = apptFromListEntry(selectedItems[ii]);
                 }
-                sprintf(apptString, apptFormat,
-			appt->date, appt->start, appt->end, appt->what);
+                sprintf(apptString, apptFormat, appt->date, appt->start,
+                        appt->end, appt->what);
 
                 /*
                  * Supply the appointment(s) for transfer
@@ -203,16 +194,16 @@ apptConvertCallback(
                         /* Supply the name for the appointment */
 
                         labelString = apptGetLabel(apptString);
-			if (labelString == NULL) {
-                        	buffers[ii].name = (char *)NULL;
-			} else {
-                        	buffers[ii].name = XtNewString(labelString);
-                        	XtFree(labelString);
-			}
+                        if (labelString == NULL) {
+                                buffers[ii].name = (char *)NULL;
+                        } else {
+                                buffers[ii].name = XtNewString(labelString);
+                                XtFree(labelString);
+                        }
 
-                /*
-                 * Delete the moved appointment(s)
-                 */
+                        /*
+                         * Delete the moved appointment(s)
+                         */
 
                 } else if (convertInfo->reason == DtCR_DND_CONVERT_DELETE) {
                         printf("Delete appointment for %s\n", appt->what);
@@ -225,22 +216,18 @@ apptConvertCallback(
  *
  * Free buffer data/names allocated in apptConvertCallback()
  */
-void
-apptDragFinishCallback(
-        Widget          widget,
-        XtPointer       clientData,
-        XtPointer       callData)
-{
-	DtDndDragFinishCallbackStruct *dropFinishInfo =
-				(DtDndDragFinishCallbackStruct *)callData;
-	DtDndContext	*dragData = dropFinishInfo->dragData;
-	int		ii;
+void apptDragFinishCallback(Widget widget, XtPointer clientData,
+                            XtPointer callData) {
+        DtDndDragFinishCallbackStruct *dropFinishInfo =
+            (DtDndDragFinishCallbackStruct *)callData;
+        DtDndContext *dragData = dropFinishInfo->dragData;
+        int ii;
 
-	for (ii = 0; ii < dragData->numItems; ii++) {
-		XtFree(dragData->data.buffers[ii].bp);
-		if (dragData->data.buffers[ii].name != NULL)
-			XtFree(dragData->data.buffers[ii].name);
-	}
+        for (ii = 0; ii < dragData->numItems; ii++) {
+                XtFree(dragData->data.buffers[ii].bp);
+                if (dragData->data.buffers[ii].name != NULL)
+                        XtFree(dragData->data.buffers[ii].name);
+        }
 }
 
 /*
@@ -249,88 +236,83 @@ apptDragFinishCallback(
  * Handles the transfer of an appointment to the draw area drop site.
  * Adds the appropriate icon to the list of icons on the draw area.
  */
-void
-apptTransferCallback(
-        Widget          widget,
-        XtPointer       clientData,
-        XtPointer       callData)
-{
+void apptTransferCallback(Widget widget, XtPointer clientData,
+                          XtPointer callData) {
         DtDndTransferCallbackStruct *transferInfo =
-                                (DtDndTransferCallbackStruct*) callData;
-        DtDndBuffer     *buffers;
-	IconInfo	*iconList, *iconPtr;
-	char		*name;
-	char		*filename;
-	int		ii;
+            (DtDndTransferCallbackStruct *)callData;
+        DtDndBuffer *buffers;
+        IconInfo *iconList, *iconPtr;
+        char *name;
+        char *filename;
+        int ii;
 
-	if (transferInfo == NULL) {
-		return;
-	}
+        if (transferInfo == NULL) {
+                return;
+        }
 
-	/*
-	 * Verify the validity of the callback reason.
-	 */
-	
-	if (transferInfo->dropData->protocol != DtDND_BUFFER_TRANSFER ||
-	    transferInfo->reason != DtCR_DND_TRANSFER_DATA) {
-		return;
-	}
+        /*
+         * Verify the validity of the callback reason.
+         */
 
-	/*
-	 * Use abbreviated method of refering to the data buffers.
-	 */
+        if (transferInfo->dropData->protocol != DtDND_BUFFER_TRANSFER ||
+            transferInfo->reason != DtCR_DND_TRANSFER_DATA) {
+                return;
+        }
 
-	if (transferInfo != NULL && transferInfo->dropData != NULL) {
-        	buffers = transferInfo->dropData->data.buffers;
-	} else {
-		return;
-	}
+        /*
+         * Use abbreviated method of refering to the data buffers.
+         */
 
-	/*
-	 * Process each item being transfered.
-	 */
+        if (transferInfo != NULL && transferInfo->dropData != NULL) {
+                buffers = transferInfo->dropData->data.buffers;
+        } else {
+                return;
+        }
+
+        /*
+         * Process each item being transfered.
+         */
 
         XtVaGetValues(widget, XmNuserData, &iconList, NULL);
         for (ii = 0; ii < transferInfo->dropData->numItems; ii++) {
 
-		/*
-		 * Check format of buffer
-		 */
+                /*
+                 * Check format of buffer
+                 */
 
-		/*
-		 * Transfer the buffer data. Here there is no actual transfer
-		 * taking place. Only the icons representing the appointments
-		 * are created to indicate the transfer.
-		 */
+                /*
+                 * Transfer the buffer data. Here there is no actual transfer
+                 * taking place. Only the icons representing the appointments
+                 * are created to indicate the transfer.
+                 */
 
                 name = buffers[ii].name;
-		if (name == NULL)
-			name = "unnamed";
+                if (name == NULL)
+                        name = "unnamed";
 
-		/* Create file from buffer */
+                /* Create file from buffer */
 
-		filename = fileStoreBuffer(buffers[ii].name,
-			buffers[ii].bp, buffers[ii].size);
-		printf("Stored buffer into '%s'\n", filename);
-		XtFree(filename);
+                filename = fileStoreBuffer(buffers[ii].name, buffers[ii].bp,
+                                           buffers[ii].size);
+                printf("Stored buffer into '%s'\n", filename);
+                XtFree(filename);
 
-		/* Create icon */
+                /* Create icon */
 
                 iconPtr = IconNew();
-                IconInitialize(widget, iconPtr,
-			transferInfo->x + ii * 10,
-                	transferInfo->y + ii * 10,
-                	buffers[ii].bp, buffers[ii].size, name, IconByData);
+                IconInitialize(widget, iconPtr, transferInfo->x + ii * 10,
+                               transferInfo->y + ii * 10, buffers[ii].bp,
+                               buffers[ii].size, name, IconByData);
 
-		/* Add to icon list on drop site */
+                /* Add to icon list on drop site */
 
                 iconPtr->next = iconList;
-		if (iconList != NULL) {
-			iconList->prev = iconPtr;
-		}
-		iconList = iconPtr;
+                if (iconList != NULL) {
+                        iconList->prev = iconPtr;
+                }
+                iconList = iconPtr;
                 XtVaSetValues(widget, XmNuserData, iconList, NULL);
-	}
+        }
 }
 
 /*
@@ -338,14 +320,13 @@ apptTransferCallback(
  *
  * Prepares the appointment list to source drags of appointments with button 1.
  */
-void apptDragSetup(Widget apptDragSource)
-{
-    static char	translations[] = "\
+void apptDragSetup(Widget apptDragSource) {
+        static char translations[] = "\
 	~c ~s ~m ~a <Btn1Down>:\
 	    demoProcessPress(ListBeginSelect,apptDragStart)\n\
 	c ~s ~m ~a <Btn1Down>:\
 	    demoProcessPress(ListBeginToggle,apptDragStart)";
-    static char	btn2_translations[] = "\
+        static char btn2_translations[] = "\
 	~c ~s ~m ~a <Btn2Down>:\
 	    demoProcessPress(ListBeginSelect,apptDragStart)\n\
 	c ~s ~m ~a <Btn2Down>:\
@@ -353,32 +334,25 @@ void apptDragSetup(Widget apptDragSource)
 	<Btn2Motion>:ListButtonMotion()\n\
 	~c ~s ~m ~a <Btn2Up>:ListEndSelect()\n\
 	c ~s ~m ~a <Btn2Up>:ListEndToggle()";
-    static XtActionsRec	actionTable[] =
-    {
-	{"apptDragStart", (XtActionProc) &apptDragStart},
-	{"demoProcessPress", (XtActionProc) &demoProcessPress}
-    };
+        static XtActionsRec actionTable[] = {
+            {"apptDragStart", (XtActionProc)&apptDragStart},
+            {"demoProcessPress", (XtActionProc)&demoProcessPress}};
 
-    int		btn1_transfer = 0;
-    XtTranslations	new_translations;
+        int btn1_transfer = 0;
+        XtTranslations new_translations;
 
-    XtAppAddActions(
-		demoAppContext,
-		actionTable,
-		sizeof(actionTable)/sizeof(actionTable[0]));
-    new_translations = XtParseTranslationTable(translations);
-    XtOverrideTranslations(apptDragSource, new_translations);
+        XtAppAddActions(demoAppContext, actionTable,
+                        sizeof(actionTable) / sizeof(actionTable[0]));
+        new_translations = XtParseTranslationTable(translations);
+        XtOverrideTranslations(apptDragSource, new_translations);
 
-    XtVaGetValues(
-	(Widget) XmGetXmDisplay(XtDisplayOfObject(apptDragSource)),
-	"enableBtn1Transfer", &btn1_transfer,
-	NULL);
-    
-    if (btn1_transfer != True)
-    {
-	new_translations = XtParseTranslationTable(btn2_translations);
-	XtOverrideTranslations(apptDragSource, new_translations);
-    }
+        XtVaGetValues((Widget)XmGetXmDisplay(XtDisplayOfObject(apptDragSource)),
+                      "enableBtn1Transfer", &btn1_transfer, NULL);
+
+        if (btn1_transfer != True) {
+                new_translations = XtParseTranslationTable(btn2_translations);
+                XtOverrideTranslations(apptDragSource, new_translations);
+        }
 
 #if 0
     XtAddEventHandler(apptDragSource, Button1MotionMask, False,
@@ -400,39 +374,31 @@ void apptDragSetup(Widget apptDragSource)
  * Initiates a drag of an appointment from the appointment list provided
  * the pointer is over an appointment in the list.
  */
-void
-apptDragStart(
-        Widget          widget,
-        XEvent          *event)
-{
-        static XtCallbackRec convertCBRec[] = { {apptConvertCallback, NULL},
-                                                {NULL, NULL} };
-        static XtCallbackRec dragFinishCBRec[] = 
-					      { {demoDragFinishCallback, NULL},
-					        {apptDragFinishCallback, NULL},
-                                                {NULL, NULL} };
+void apptDragStart(Widget widget, XEvent *event) {
+        static XtCallbackRec convertCBRec[] = {{apptConvertCallback, NULL},
+                                               {NULL, NULL}};
+        static XtCallbackRec dragFinishCBRec[] = {
+            {demoDragFinishCallback, NULL},
+            {apptDragFinishCallback, NULL},
+            {NULL, NULL}};
         static IconInfo *iconPtr = NULL;
-        Widget          dragIcon;
-        Display         *display = XtDisplay(widget);
-        int             itemCount,
-                        selectedPos,
-                        selectedItemCount;
-        char            apptString[1024];
+        Widget dragIcon;
+        Display *display = XtDisplay(widget);
+        int itemCount, selectedPos, selectedItemCount;
+        char apptString[1024];
 
         convertCBRec[0].closure = (XtPointer)widget;
 
-	/*
-	 * Get list of selected items from the scrolled list of appointments
-	 */
+        /*
+         * Get list of selected items from the scrolled list of appointments
+         */
 
-        XtVaGetValues(widget,
-                XmNitemCount, &itemCount,
-                XmNselectedItemCount, &selectedItemCount,
-                NULL);
+        XtVaGetValues(widget, XmNitemCount, &itemCount, XmNselectedItemCount,
+                      &selectedItemCount, NULL);
 
-	/*
-	 * Find out which item the pointer was over when the drag began
-	 */
+        /*
+         * Find out which item the pointer was over when the drag began
+         */
 
         selectedPos = XmListYToPos(widget, event->xmotion.y);
 
@@ -442,27 +408,27 @@ apptDragStart(
 
         XtVaSetValues(widget, XmNuserData, selectedPos, NULL);
 
-	/*
-	 * Copy the appointment information into an appointment string
-	 */
+        /*
+         * Copy the appointment information into an appointment string
+         */
 
-        sprintf(apptString, apptFormat,
-		todaysApptList[1].date, todaysApptList[1].start,
-		todaysApptList[1].end, todaysApptList[1].what);
+        sprintf(apptString, apptFormat, todaysApptList[1].date,
+                todaysApptList[1].start, todaysApptList[1].end,
+                todaysApptList[1].what);
 
-	/*
-	 * Create drag icon for appointment buffer drag
-	 */
+        /*
+         * Create drag icon for appointment buffer drag
+         */
 
         if (iconPtr == NULL) {
                 iconPtr = IconNew();
-                IconInitialize(widget, iconPtr, 0, 0,
-			apptString, strlen(apptString), NULL, IconByData);
+                IconInitialize(widget, iconPtr, 0, 0, apptString,
+                               strlen(apptString), NULL, IconByData);
         }
 
         if (iconPtr->dragIcon == NULL) {
-                iconPtr->dragIcon = DtDndCreateSourceIcon(widget,
-                        iconPtr->bitmap, iconPtr->mask);
+                iconPtr->dragIcon = DtDndCreateSourceIcon(
+                    widget, iconPtr->bitmap, iconPtr->mask);
         }
         if (selectedItemCount > 1) {
                 dragIcon = NULL;
@@ -472,23 +438,20 @@ apptDragStart(
                 itemCount = 1;
         }
 
-	/*
-	 * Start the drag
-	 */
+        /*
+         * Start the drag
+         */
 
         if (DtDndVaDragStart(widget, event, DtDND_BUFFER_TRANSFER, itemCount,
-                        XmDROP_COPY,
-                        convertCBRec, dragFinishCBRec,
-                        DtNsourceIcon, dragIcon,
-			DtNbufferIsText, True,
-                        NULL)
-            == NULL) {
+                             XmDROP_COPY, convertCBRec, dragFinishCBRec,
+                             DtNsourceIcon, dragIcon, DtNbufferIsText, True,
+                             NULL) == NULL) {
 
                 printf("DragStart returned NULL.\n");
         }
 }
 
- /*************************************************************************
+/*************************************************************************
  *
  *	Appointment Creation, Initialization & Destruction
  *
@@ -499,34 +462,29 @@ apptDragStart(
  *
  * Create a scrolling list filled with appointments.
  */
-Widget
-apptCreateDragSource(
-	Widget		parent)
-{
-	Widget		apptList;
-	XmString	*apptListItems;
-	int		apptCount;
+Widget apptCreateDragSource(Widget parent) {
+        Widget apptList;
+        XmString *apptListItems;
+        int apptCount;
 
-	apptCount = apptCreateList(&apptListItems);
+        apptCount = apptCreateList(&apptListItems);
 
-        apptList = XtVaCreateManagedWidget("apptList",
-                xmListWidgetClass, parent,
-		/*
-		 * Uncomment the line specifying the selection policy to
-		 * enable multiple buffer transfers from the scrolled list
-		 * of appointments. WARNING: There is a bug in the interaction
-		 * of the scrolled list and Drag and Drop which causes items
-		 * in the scrolled list which are selected to appear unselected
-		 * and vice versa.
-		 */
-                /* XmNselectionPolicy, XmMULTIPLE_SELECT, */
-                XmNitems, apptListItems,
-                XmNitemCount, apptCount,
-                NULL);
+        apptList = XtVaCreateManagedWidget(
+            "apptList", xmListWidgetClass, parent,
+            /*
+             * Uncomment the line specifying the selection policy to
+             * enable multiple buffer transfers from the scrolled list
+             * of appointments. WARNING: There is a bug in the interaction
+             * of the scrolled list and Drag and Drop which causes items
+             * in the scrolled list which are selected to appear unselected
+             * and vice versa.
+             */
+            /* XmNselectionPolicy, XmMULTIPLE_SELECT, */
+            XmNitems, apptListItems, XmNitemCount, apptCount, NULL);
 
-	apptDestroyList(apptListItems, apptCount);
-        
-	return apptList;
+        apptDestroyList(apptListItems, apptCount);
+
+        return apptList;
 }
 
 /*
@@ -541,33 +499,30 @@ apptCreateDragSource(
  *
  * Creates a list of XmStrings with appointment data in them.
  */
-static int
-apptCreateList(
-        XmString      **appts)
-{
-        int             ii, apptCount;
-        char            tmpStr[256];
-        time_t          now;
-        struct tm       *tm;
+static int apptCreateList(XmString **appts) {
+        int ii, apptCount;
+        char tmpStr[256];
+        time_t now;
+        struct tm *tm;
 
         now = time(&now);
         tm = localtime(&now);
 
-        sprintf(today, "%2d/%2d/%2d", tm->tm_mon+1, tm->tm_mday, tm->tm_year);
+        sprintf(today, "%2d/%2d/%2d", tm->tm_mon + 1, tm->tm_mday, tm->tm_year);
 
-        for (ii = 0; todaysApptList[ii].date; ii++);
+        for (ii = 0; todaysApptList[ii].date; ii++)
+                ;
 
         apptCount = ii;
 
-        *appts = (XmString *) XtMalloc(sizeof(XmString) * apptCount);
+        *appts = (XmString *)XtMalloc(sizeof(XmString) * apptCount);
 
         for (ii = 0; todaysApptList[ii].date; ii++) {
 
                 sprintf(tmpStr, "%s %s", todaysApptList[ii].start,
-                                         todaysApptList[ii].what);
+                        todaysApptList[ii].what);
 
                 (*appts)[ii] = XmStringCreate(tmpStr, XmFONTLIST_DEFAULT_TAG);
-
         }
         return apptCount;
 }
@@ -577,20 +532,16 @@ apptCreateList(
  *
  * Destroys a list of XmStrings with appointment data in them.
  */
-static void
-apptDestroyList(
-        XmString       *appts,
-	int		apptCount)
-{
-	int		ii;
+static void apptDestroyList(XmString *appts, int apptCount) {
+        int ii;
 
         for (ii = 0; ii < apptCount; ii++) {
                 XmStringFree(appts[ii]);
         }
-	XtFree((char *)appts);
+        XtFree((char *)appts);
 }
 
- /*************************************************************************
+/*************************************************************************
  *
  *	Appointment Utility Functions
  *
@@ -602,26 +553,22 @@ apptDestroyList(
  * Returns the full appointment based on the text of the appointment as
  * given in the text entry from the scrolled list of appointments.
  */
-static Appointment*
-apptFromListEntry(
-        XmString        listEntry)
-{
-        int             ii;
-        char            *entryText,
-                        *string;
+static Appointment *apptFromListEntry(XmString listEntry) {
+        int ii;
+        char *entryText, *string;
 
         /*
          * Get text string from XmString for use in comparisons
          */
 
-	entryText = XmStringUnparse(listEntry, NULL, XmCHARSET_TEXT,
-                        XmCHARSET_TEXT, NULL, 0, XmOUTPUT_ALL);
+        entryText = XmStringUnparse(listEntry, NULL, XmCHARSET_TEXT,
+                                    XmCHARSET_TEXT, NULL, 0, XmOUTPUT_ALL);
 
         for (ii = 0; todaysApptList[ii].what != NULL; ii++) {
                 string = strstr(entryText, todaysApptList[ii].what);
                 if (string != NULL) {
                         XtFree(entryText);
-                        return(&todaysApptList[ii]);
+                        return (&todaysApptList[ii]);
                 }
         }
         XtFree(entryText);
@@ -633,12 +580,9 @@ apptFromListEntry(
  *
  * Creates a label for an appointment icon given an appointment.
  */
-static char*
-apptGetLabel(
-        char            *appt)
-{
-        char            start[128];
-        int             count;
+static char *apptGetLabel(char *appt) {
+        char start[128];
+        int count;
 
         if (appt == NULL) {
                 return NULL;
@@ -652,4 +596,3 @@ apptGetLabel(
 
         return XtNewString(start);
 }
-

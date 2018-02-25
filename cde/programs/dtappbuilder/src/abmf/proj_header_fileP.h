@@ -27,7 +27,7 @@
  * @(#)proj_header_fileP.h	3.11 23 Feb 1994	cde_app_builder/src/abmf
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -40,9 +40,5 @@
  *
  */
 
-int	abmfP_write_project_header_file(
-		GenCodeInfo	genCodeInfo,
-		ABObj		project, 
-		STRING		codeFileName
-	);
-
+int abmfP_write_project_header_file(GenCodeInfo genCodeInfo, ABObj project,
+                                    STRING codeFileName);

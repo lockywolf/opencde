@@ -51,13 +51,11 @@
  */
 #include <ctype.h>
 
-char	*strupr (char *s)
-{
-    char	*t = s;
-    while (*t != 0) {
-	*t = toupper(*t);
-	t++;
-    }
-    return s;
+char *strupr(char *s) {
+        char *t = s;
+        while (*t != 0) {
+                *t = toupper(*t);
+                t++;
+        }
+        return s;
 }
-

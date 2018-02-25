@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: ispageio.c /main/3 1995/10/23 11:42:51 rswiston $ 			 				 */
+/*%%  $XConsortium: ispageio.c /main/3 1995/10/23 11:42:51 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)ispageio.c 1.3 89/07/17 Copyr 1988 Sun Micro";
 #endif
@@ -35,9 +36,9 @@ static char sccsid[] = "@(#)ispageio.c 1.3 89/07/17 Copyr 1988 Sun Micro";
 /*
  * ispageio.c
  *
- * Description: 
+ * Description:
  *	I/O functions for file pages.
- *	
+ *
  *
  */
 
@@ -49,15 +50,13 @@ static char sccsid[] = "@(#)ispageio.c 1.3 89/07/17 Copyr 1988 Sun Micro";
  * Set current file pointer to the page pgno.
  */
 
-void
-_isseekpg(fd, pgno)
-    int		fd;
-    Blkno	pgno;
+void _isseekpg(fd, pgno) int fd;
+Blkno pgno;
 {
-    long	offset = pgno * ISPAGESIZE;
+        long offset = pgno * ISPAGESIZE;
 
-    if (lseek(fd, offset, 0) != offset)
-	_isfatal_error("lseek failed");
+        if (lseek(fd, offset, 0) != offset)
+                _isfatal_error("lseek failed");
 }
 
 /*
@@ -66,13 +65,11 @@ _isseekpg(fd, pgno)
  * Read eon block from UNIX file into a buffer.
  */
 
-void
-_isreadpg(fd, buf)
-    int		fd;
-    char	*buf;
+void _isreadpg(fd, buf) int fd;
+char *buf;
 {
-    if (read(fd, buf, ISPAGESIZE) != ISPAGESIZE)
-	_isfatal_error("read failed");
+        if (read(fd, buf, ISPAGESIZE) != ISPAGESIZE)
+                _isfatal_error("read failed");
 }
 
 /*
@@ -81,11 +78,9 @@ _isreadpg(fd, buf)
  * Write one block to UNIX file.
  */
 
-void
-_iswritepg(fd, buf)
-    int		fd;
-    char	*buf;
+void _iswritepg(fd, buf) int fd;
+char *buf;
 {
-    if (write(fd, buf, ISPAGESIZE) != ISPAGESIZE)
-	_isfatal_error("write failed");
+        if (write(fd, buf, ISPAGESIZE) != ISPAGESIZE)
+                _isfatal_error("write failed");
 }

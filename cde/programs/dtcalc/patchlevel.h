@@ -28,4 +28,4 @@
  * (c) Copyright 1993, 1994 Novell, Inc. 				*
  */
 
-#define  PATCHLEVEL  1
+#define PATCHLEVEL 1

@@ -26,7 +26,7 @@
  *	$XConsortium: IconifyCmd.h /main/3 1995/11/06 16:31:17 rswiston $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -48,17 +48,16 @@
 //         by
 //           Douglas Young
 //           Prentice Hall, 1992
-//           ISBN 0-13-630252-1	
+//           ISBN 0-13-630252-1
 //
 //         Copyright 1991 by Prentice Hall
 //         All Rights Reserved
 //
-//  Permission to use, copy, modify, and distribute this software for 
-//  any purpose except publication and without fee is hereby granted, provided 
+//  Permission to use, copy, modify, and distribute this software for
+//  any purpose except publication and without fee is hereby granted, provided
 //  that the above copyright notice appear in all copies of the software.
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-
 
 ////////////////////////////////////////////////////////////////
 // IconifyCmd.h: Iconify all windows in a MotifApp application.
@@ -72,14 +71,12 @@
 #include "NoUndoCmd.h"
 
 class IconifyCmd : public NoUndoCmd {
-    
-  protected:
-    
-    virtual void doit();      // Iconify all windows
-    
-  public:
-    
-    IconifyCmd ( char *, char *, int );
-    virtual const char *const className () { return "IconifyCmd"; }
+
+      protected:
+        virtual void doit(); // Iconify all windows
+
+      public:
+        IconifyCmd(char *, char *, int);
+        virtual const char *const className() { return "IconifyCmd"; }
 };
 #endif

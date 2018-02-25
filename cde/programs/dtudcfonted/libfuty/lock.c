@@ -28,13 +28,12 @@
  *  This is unpublished proprietary source code of FUJITSU LIMITED
  */
 
-
-#include	<stdio.h>
-#include	<errno.h>
-#include	<sys/types.h>
-#include	<fcntl.h>
-#include	<unistd.h>
-#include 	"udcutil.h"
+#include <stdio.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include "udcutil.h"
 
 /*
  * FileLock( fd )
@@ -47,31 +46,28 @@
  *
  */
 
-int 
+int
 #if NeedFunctionPrototypes
 FileLock( int fd )
 #else
-FileLock( fd )
-int 	fd;		/* a file descripter */
+    FileLock(fd) int fd; /* a file descripter */
 #endif
 {
 
-	struct flock	flpar;
+        struct flock flpar;
 
+        flpar.l_type = F_RDLCK;
+        flpar.l_start = 0;
+        flpar.l_len = 0;
+        flpar.l_whence = 0;
 
-	flpar.l_type = F_RDLCK;
-	flpar.l_start = 0;
-	flpar.l_len = 0;
-	flpar.l_whence = 0;
+        if (fcntl(fd, F_SETLK, &flpar) == -1) {
+                USAGE("Write lock not success \n");
+                return -1;
+        }
 
-	if ( fcntl( fd, F_SETLK, &flpar ) == -1 ) {
-		USAGE("Write lock not success \n" );
-		return	-1; 
-	}
-
-	return	0;
+        return 0;
 }
-
 
 /*
  * FileUnLock( fd )
@@ -82,27 +78,25 @@ int 	fd;		/* a file descripter */
  * abnormal end : -1
  */
 
-int 
+int
 #if NeedFunctionPrototypes
 FileUnLock( int fd )
 #else
-FileUnLock( fd )
-int 	fd;	/* a file descripter */
+    FileUnLock(fd) int fd; /* a file descripter */
 #endif
 {
-	struct flock	flpar;
+        struct flock flpar;
 
+        flpar.l_type = F_UNLCK;
+        flpar.l_start = 0;
+        flpar.l_len = 0;
+        flpar.l_whence = 0;
 
-	flpar.l_type = F_UNLCK;
-	flpar.l_start = 0;
-	flpar.l_len = 0;
-	flpar.l_whence = 0;
-
-	if ( fcntl( fd, F_SETLK, &flpar ) == -1 ){
-		USAGE("File unlock not success \n" );
-		return	-1; 
-	}
-	return	0;
+        if (fcntl(fd, F_SETLK, &flpar) == -1) {
+                USAGE("File unlock not success \n");
+                return -1;
+        }
+        return 0;
 }
 
 /*
@@ -114,30 +108,28 @@ int 	fd;	/* a file descripter */
  * 0 : file isn't locked by a writing mode
  */
 
-int 
+int
 #if NeedFunctionPrototypes
 isLock( int fd )
 #else
-isLock( fd )
-int 	fd;	/* file descripter */
+    isLock(fd) int fd;     /* file descripter */
 #endif
 {
-	struct flock	flpar;
+        struct flock flpar;
 
+        flpar.l_type = F_WRLCK;
+        flpar.l_start = 0;
+        flpar.l_len = 0;
+        flpar.l_whence = 0;
 
-	flpar.l_type = F_WRLCK;
-	flpar.l_start = 0;
-	flpar.l_len = 0;
-	flpar.l_whence = 0;
+        if (fcntl(fd, F_GETLK, &flpar) == -1) {
+                USAGE("Inquiry of file lock not sucess \n");
+                return -1;
+        }
 
-	if ( fcntl( fd, F_GETLK, &flpar ) == -1 ) {
-		USAGE("Inquiry of file lock not sucess \n" );
-		return	-1; 
-	}
-
-	if ( flpar.l_type == F_UNLCK ){
-		return	0 ;
-	} else {
-		return	1 ;
-	}
+        if (flpar.l_type == F_UNLCK) {
+                return 0;
+        } else {
+                return 1;
+        }
 }

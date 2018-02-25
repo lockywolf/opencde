@@ -34,40 +34,39 @@
 
 class container_desc : public stored_object_desc {
 
-public:
-   container_desc(int class_code, const char* comment = "");
-   virtual ~container_desc();
+      public:
+        container_desc(int class_code, const char *comment = "");
+        virtual ~container_desc();
 
-   void set_index_nm(const char*);
-   virtual ostream& asciiOut(ostream& out, Boolean last = true);
+        void set_index_nm(const char *);
+        virtual ostream &asciiOut(ostream &out, Boolean last = true);
 
-   void init_index_array(object_dict&, c_index_handlerPtr*&, int& sz) ;
+        void init_index_array(object_dict &, c_index_handlerPtr *&, int &sz);
 
-protected:
-   void_ptr_array index_nms;
+      protected:
+        void_ptr_array index_nms;
 };
 
 class set_desc : public container_desc {
 
-public:
-   set_desc();
-   virtual ~set_desc() {};
+      public:
+        set_desc();
+        virtual ~set_desc(){};
 
-   handler* init_handler(object_dict&) ;
+        handler *init_handler(object_dict &);
 
-protected:
+      protected:
 };
 
 class list_desc : public container_desc {
 
-public:
-   list_desc();
-   virtual ~list_desc() {};
+      public:
+        list_desc();
+        virtual ~list_desc(){};
 
-   handler* init_handler(object_dict&) ;
+        handler *init_handler(object_dict &);
 
-protected:
+      protected:
 };
-
 
 #endif

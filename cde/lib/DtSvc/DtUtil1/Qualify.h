@@ -37,12 +37,12 @@
  * _DtQualifyWithFirst
  *
  * takes:   an unqualified filename like foo.txt, and
- *          a colon-separated list of pathnames, such as 
+ *          a colon-separated list of pathnames, such as
  *                /etc/dt:/usr/dt/config
  *
  * returns: a fully qualified filename.  Space for the filename
- *          has been allocated off the heap using malloc.  It is 
- *          the responsibility of the calling function to dispose 
+ *          has been allocated off the heap using malloc.  It is
+ *          the responsibility of the calling function to dispose
  *          of the space using free.
  *
  * example: ...
@@ -58,20 +58,18 @@
 #ifndef _Dt_Qualify_h
 #define _Dt_Qualify_h
 
-
-#  ifdef __cplusplus
+#ifdef __cplusplus
 extern "C" {
-#  endif
+#endif
 
-extern char * _DtQualifyWithFirst
-  (
-   char *,  /* file to locate */
-   char *   /* list of colon-separated paths in which to look */
-  );
+extern char *
+_DtQualifyWithFirst(char *, /* file to locate */
+                    char *  /* list of colon-separated paths in which to look */
+);
 
-#  ifdef __cplusplus
+#ifdef __cplusplus
 }
-#  endif
+#endif
 
 #endif /* _Dt_Qualify_h */
 

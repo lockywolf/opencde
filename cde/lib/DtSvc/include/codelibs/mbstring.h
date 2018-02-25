@@ -21,7 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:	mbstring.h $XConsortium: mbstring.h /main/3 1995/10/26 16:12:25 rswiston $
+ * File:	mbstring.h $XConsortium: mbstring.h /main/3 1995/10/26 16:12:25
+ * rswiston $
  *
  * (c) Copyright 1993, 1994 Hewlett-Packard Company
  * (c) Copyright 1993, 1994 International Business Machines Corp.
@@ -29,8 +30,8 @@
  * (c) Copyright 1993, 1994 Novell, Inc.
  */
 
-#ifndef	__MBSTRING_H_
-#define	__MBSTRING_H_
+#ifndef __MBSTRING_H_
+#define __MBSTRING_H_
 
 #if defined(USL) || defined(__uxp__)
 #include <stdlib.h>
@@ -44,24 +45,23 @@
 #endif
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif /* __cplusplus */
 
 #if defined __cplusplus || defined __STDC__
 
 #ifdef __cplusplus2_1
-    extern char *_mb_schr(char *str, wchar_t ch);
-    extern char *_mb_srchr(char *str, wchar_t ch);
-#else /* __cplusplus2_1 */
-    extern char *_mb_schr(const char *str, wchar_t ch);
-    extern char *_mb_srchr(const char *str, wchar_t ch);
+extern char *_mb_schr(char *str, wchar_t ch);
+extern char *_mb_srchr(char *str, wchar_t ch);
+#else  /* __cplusplus2_1 */
+extern char *_mb_schr(const char *str, wchar_t ch);
+extern char *_mb_srchr(const char *str, wchar_t ch);
 #endif /* __cplusplus2_1 */
 
 #else /* defined __cplusplus || defined __STDC__ */
 
-    extern char *_mb_schr();
-    extern char *_mb_srchr();
+extern char *_mb_schr();
+extern char *_mb_srchr();
 
 #endif /* defined __cplusplus || defined __STDC__ */
 
@@ -69,14 +69,12 @@ extern "C"
 }
 
 #ifdef __cplusplus2_1
-inline const char *_mb_schr(const char *str, wchar_t ch)
-{
-    return (const char *)_mb_schr((char *)str, ch);
+inline const char *_mb_schr(const char *str, wchar_t ch) {
+        return (const char *)_mb_schr((char *)str, ch);
 }
 
-inline const char *_mb_srchr(const char *str, wchar_t ch)
-{
-    return (const char *)_mb_srchr((char *)str, ch);
+inline const char *_mb_srchr(const char *str, wchar_t ch) {
+        return (const char *)_mb_srchr((char *)str, ch);
 }
 #endif /* __cplusplus2_1 */
 #endif /* __cplusplus */

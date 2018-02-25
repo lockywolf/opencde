@@ -35,31 +35,31 @@
 #include "cstring.h"
 
 class Options {
- public:
-  Options (unsigned int, char **);
- ~Options ();
+      public:
+        Options(unsigned int, char **);
+        ~Options();
 
-  int       Verbose () const             { return (flags & 1); }
-  int       CheckingUser () const        { return (flags & 2); }
-  int       doingTooltalk () const       { return !doingICCCM(); }
-  int       doingICCCM () const          { return (flags & 4); }
-  int       dontOptimize () const        { return (flags & 8); }
-  int       removeAutoMountPoint() const { return (flags & 16); }
-  int       useCshEnv() const            { return (flags & 32); }
-  int       useKshEnv() const            { return (flags & 64); }
+        int Verbose() const { return (flags & 1); }
+        int CheckingUser() const { return (flags & 2); }
+        int doingTooltalk() const { return !doingICCCM(); }
+        int doingICCCM() const { return (flags & 4); }
+        int dontOptimize() const { return (flags & 8); }
+        int removeAutoMountPoint() const { return (flags & 16); }
+        int useCshEnv() const { return (flags & 32); }
+        int useKshEnv() const { return (flags & 64); }
 
-  CString   getAutoMountPoint () const   { return *automountpoint; }
-  CString * getUserID () const           { return user_id; }
-  CString * getHomeDir () const          { return home_dir; }
+        CString getAutoMountPoint() const { return *automountpoint; }
+        CString *getUserID() const { return user_id; }
+        CString *getHomeDir() const { return home_dir; }
 
-  void      setUserID (const CString &);
-  void      setAutoMountPoint (const CString &);
+        void setUserID(const CString &);
+        void setAutoMountPoint(const CString &);
 
- private:
-  unsigned char flags;
-  CString *     user_id;
-  CString *     home_dir;
-  CString *     automountpoint;
+      private:
+        unsigned char flags;
+        CString *user_id;
+        CString *home_dir;
+        CString *automountpoint;
 };
 
 #endif

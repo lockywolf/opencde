@@ -27,7 +27,7 @@
  *	@(#)lib_func_stringsP.h	1.25 08 May 1995	cde_app_builder/src/abmf
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -49,13 +49,11 @@
 #include <ab_private/AB.h>
 #include <ab/util_types.h>
 
-typedef struct
-{
-    STRING	name;		/* name */
-    char	proto[512];	/* prototype */
-    char	def[4096];	/* actual code */
+typedef struct {
+        STRING name;     /* name */
+        char proto[512]; /* prototype */
+        char def[4096];  /* actual code */
 } LibFuncRec, *LibFunc;
-
 
 extern LibFunc abmfP_lib_cvt_file_to_pixmap;
 extern LibFunc abmfP_lib_create_greyed_pixmap;
@@ -156,4 +154,3 @@ extern LibFunc abmfP_lib_default_dropCB;
 extern LibFunc abmfP_lib_drop_animateCB;
 extern LibFunc abmfP_lib_drop_transferCB;
 #endif /* _ABMF_LIB_FUNC_STRINGSP_H_ */
-

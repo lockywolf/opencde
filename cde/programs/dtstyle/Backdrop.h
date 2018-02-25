@@ -32,7 +32,7 @@
  **  file
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -41,16 +41,12 @@
 #ifndef _backdrop_h
 #define _backdrop_h
 
-
 /* External Interface */
 
-
-extern void BackdropDialog( Widget parent) ;
-extern void CheckWorkspace( void ) ;
-extern void restoreBackdrop( Widget shell, XrmDatabase db) ;
-extern void saveBackdrop( int fd) ;
-
+extern void BackdropDialog(Widget parent);
+extern void CheckWorkspace(void);
+extern void restoreBackdrop(Widget shell, XrmDatabase db);
+extern void saveBackdrop(int fd);
 
 #endif /* _backdrop_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */
-

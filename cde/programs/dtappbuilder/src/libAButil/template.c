@@ -27,7 +27,7 @@
  * %W% %G%	cde_app_builder/src/libAButil
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -40,12 +40,11 @@
  *
  */
 
-
 /*
- * File: 
+ * File:
  */
 
-#define	FOO_DEFINES	"here"
+#define FOO_DEFINES "here"
 
 const char *foo_consts = "also here";
 
@@ -54,21 +53,16 @@ const char *foo_consts = "also here";
 **       Private Function Declarations                                  **
 **                                                                      **
 **************************************************************************/
-static int	foo(
-		    int	  foo_int,
-		    char *foo_char,
-		);
-
+static int foo(int foo_int, char *foo_char, );
 
 /*************************************************************************
 **                                                                      **
 **       Data     	                                                **
 **                                                                      **
 **************************************************************************/
-extern int	extern_foo;
+extern int extern_foo;
 
-static int	private_foo;
-
+static int private_foo;
 
 /*************************************************************************
 **                                                                      **
@@ -76,20 +70,6 @@ static int	private_foo;
 **                                                                      **
 **************************************************************************/
 
-int 
-ab_foo(
-    char	*foo_char
-)
-{
+int ab_foo(char *foo_char) {}
 
-}
-
-static int
-foo(
-    int		foo_int,
-    char	*foo_char
-)
-{
-
-}
-
+static int foo(int foo_int, char *foo_char) {}

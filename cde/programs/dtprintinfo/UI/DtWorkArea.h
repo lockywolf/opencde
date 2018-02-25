@@ -35,21 +35,17 @@
 
 class DtMainW;
 
-class DtWorkArea : public Container
-{
+class DtWorkArea : public Container {
 
- private:
+      private:
+        DtMainW *_mainW;
+        void NotifySelected(BaseUI *obj);
+        void NotifyOpen(BaseUI *obj);
 
-   DtMainW * _mainW;
-   void NotifySelected(BaseUI *obj);
-   void NotifyOpen(BaseUI *obj);
-
- public:
-
-   DtWorkArea(char *category, AnyUI *parent, char *name,
-	      ContainerType = SCROLLED_WORK_AREA, 
-	      SelectionType = SINGLE_SELECT);
-
+      public:
+        DtWorkArea(char *category, AnyUI *parent, char *name,
+                   ContainerType = SCROLLED_WORK_AREA,
+                   SelectionType = SINGLE_SELECT);
 };
 
 #endif // DTWORKAREA_H

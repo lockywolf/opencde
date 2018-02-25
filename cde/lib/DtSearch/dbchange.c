@@ -58,9 +58,9 @@
 #include <errno.h>
 #include <sys/stat.h>
 
-#define PROGNAME	"DBCHANGE"
+#define PROGNAME "DBCHANGE"
 
-void            oe_uninitialize (void);
+void oe_uninitialize(void);
 
 /************************************************/
 /*						*/
@@ -83,45 +83,48 @@ void            oe_uninitialize (void);
  * sets up usrblk.retncode, and returns TRUE.
  * Otherwise returns FALSE.
  */
-static int      file_has_changed (char *fname, time_t origtime)
-{
-    struct stat     statbuf;
-    char            sprintbuf[1024];
+static int file_has_changed(char *fname, time_t origtime) {
+        struct stat statbuf;
+        char sprintbuf[1024];
 
-    if (stat (fname, &statbuf) == -1) {
-	sprintf (sprintbuf, catgets (dtsearch_catd, 10, 1300,
-		"%s Unable to comply with request; cannot access status\n"
-		"  of database file '%s': %s"),
-	    PROGNAME "1300", fname, strerror (errno));
-	DtSearchAddMessage (sprintbuf);
-	usrblk.retncode = OE_NOOP;
-	return TRUE;
-    }
-    if (origtime != statbuf.st_mtime) {
-	strcpy (sprintbuf, nowstring (&origtime));
-	fprintf (aa_stderr,
-	    "%s %s reinitialized AusText engine:\n"
-	    "   changed file:       %s\n"
-	    "   old file time:      %s\n"
-	    "   current file time:  %s.\n",
-	    PROGNAME "1312", aa_argv0, fname,
-	    sprintbuf, nowstring (&statbuf.st_mtime));
-	if (!(usrblk.flags & USR_NO_INFOMSGS)) {
-	    sprintf (sprintbuf, catgets (dtsearch_catd, 10, 1313,
-		    "%s *** REQUEST CANCELED *** %s Engine reinitialized\n"
-		    "  due to modification of file %s, probably caused by\n"
-		    "  update to one or more databases."),
-		PROGNAME "1313", OE_prodname, fname);
-	    DtSearchAddMessage (sprintbuf);
-	}
-	oe_uninitialize ();
-	oe_initialize ();
-	usrblk.retncode = OE_REINIT;
-	return TRUE;
-    }
-    return FALSE;
-}  /* file_has_changed() */
-
+        if (stat(fname, &statbuf) == -1) {
+                sprintf(sprintbuf,
+                        catgets(dtsearch_catd, 10, 1300,
+                                "%s Unable to comply with request; cannot "
+                                "access status\n"
+                                "  of database file '%s': %s"),
+                        PROGNAME "1300", fname, strerror(errno));
+                DtSearchAddMessage(sprintbuf);
+                usrblk.retncode = OE_NOOP;
+                return TRUE;
+        }
+        if (origtime != statbuf.st_mtime) {
+                strcpy(sprintbuf, nowstring(&origtime));
+                fprintf(aa_stderr,
+                        "%s %s reinitialized AusText engine:\n"
+                        "   changed file:       %s\n"
+                        "   old file time:      %s\n"
+                        "   current file time:  %s.\n",
+                        PROGNAME "1312", aa_argv0, fname, sprintbuf,
+                        nowstring(&statbuf.st_mtime));
+                if (!(usrblk.flags & USR_NO_INFOMSGS)) {
+                        sprintf(sprintbuf,
+                                catgets(dtsearch_catd, 10, 1313,
+                                        "%s *** REQUEST CANCELED *** %s Engine "
+                                        "reinitialized\n"
+                                        "  due to modification of file %s, "
+                                        "probably caused by\n"
+                                        "  update to one or more databases."),
+                                PROGNAME "1313", OE_prodname, fname);
+                        DtSearchAddMessage(sprintbuf);
+                }
+                oe_uninitialize();
+                oe_initialize();
+                usrblk.retncode = OE_REINIT;
+                return TRUE;
+        }
+        return FALSE;
+} /* file_has_changed() */
 
 /************************************************/
 /*						*/
@@ -132,21 +135,20 @@ static int      file_has_changed (char *fname, time_t origtime)
  * Don't check until after first initialize.
  * Returns TRUE if any changes, else FALSE.
  */
-int             database_has_changed (void)
-{
-    char            fnamebuf[256];
-    DBLK           *db;
+int database_has_changed(void) {
+        char fnamebuf[256];
+        DBLK *db;
 
-    if (OE_sitecnfg_mtime == 0L)
-	return FALSE;
-    if (file_has_changed (OE_sitecnfg_fname, OE_sitecnfg_mtime))
-	return TRUE;
-    for (db = usrblk.dblist; db != NULL; db = db->link) {
-	sprintf (fnamebuf, "%s%s" EXT_DTBS, db->path, db->name);
-	if (file_has_changed (fnamebuf, db->iimtime))
-	    return TRUE;
-    }
-    return FALSE;
-}  /* database_has_changed() */
+        if (OE_sitecnfg_mtime == 0L)
+                return FALSE;
+        if (file_has_changed(OE_sitecnfg_fname, OE_sitecnfg_mtime))
+                return TRUE;
+        for (db = usrblk.dblist; db != NULL; db = db->link) {
+                sprintf(fnamebuf, "%s%s" EXT_DTBS, db->path, db->name);
+                if (file_has_changed(fnamebuf, db->iimtime))
+                        return TRUE;
+        }
+        return FALSE;
+} /* database_has_changed() */
 
 /******************************* DBCHANGE.C ********************************/

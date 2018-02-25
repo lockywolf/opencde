@@ -25,9 +25,8 @@
 #include <new.h>
 #include "stoorage/abs_storage.h"
 
-void* operator new ( size_t );
-void* operator new ( size_t, abs_storage* );
+void *operator new(size_t);
+void *operator new(size_t, abs_storage *);
 
-void operator delete( void* ); 
-void operator delete( void*, size_t );
-
+void operator delete(void *);
+void operator delete(void *, size_t);

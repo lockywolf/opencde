@@ -47,7 +47,7 @@
  * Does not use dmacros.h for vista calls so error msgs can be
  * constructed and added to global msglist (although hard vista
  * errors will still first send a msg to stdout via dberr.c).
- * 
+ *
  * Open_dblk() should be used to replace all OPEN() calls
  * in systems using DBLK structures.
  * (1) It does not open dictionary files because they are not
@@ -105,10 +105,10 @@
 #include <sys/stat.h>
 #include "vista.h"
 
-#define PROGNAME	"OPENDBLK"
-#define MS_misc		1
-#define MS_oeinit	9
-#define MS_vista	13
+#define PROGNAME "OPENDBLK"
+#define MS_misc 1
+#define MS_oeinit 9
+#define MS_vista 13
 
 /****************************************/
 /*					*/
@@ -116,190 +116,211 @@
 /*					*/
 /****************************************/
 /* dblk.path may be NULL */
-int             open_dblk (DBLK ** dblist, int numpages, int debugging)
-{
-    DBLK           *db, *bad_db, **lastlink;
-    int             i;
-    size_t          totlen = 0L;
-    char           *allnames;
-    int             vistano = 0;
-    char           *srcptr, *targptr;
-    char            temp_file_name[1024];
-    char            sprintbuf[1024];
-    struct stat     statbuf;
-    char	open_mode [8];
+int open_dblk(DBLK **dblist, int numpages, int debugging) {
+        DBLK *db, *bad_db, **lastlink;
+        int i;
+        size_t totlen = 0L;
+        char *allnames;
+        int vistano = 0;
+        char *srcptr, *targptr;
+        char temp_file_name[1024];
+        char sprintbuf[1024];
+        struct stat statbuf;
+        char open_mode[8];
 
-    if (debugging)
-	fprintf (aa_stderr, PROGNAME"76 "
-	    "Entering open_dblks().  db_oflag==%d.\n",
-	    db_oflag);
-    if (dblist == NULL || numpages < 8) {
-BAD_INPUT:
-	sprintf (sprintbuf, catgets (dtsearch_catd, MS_oeinit, 99,
-		"%s Programming Error: Invalid input to open_dblk()."),
-	    PROGNAME "99");
-	DtSearchAddMessage (sprintbuf);
-	return FALSE;
-    }
-    if (*dblist == NULL)	/* empty list of dblks */
-	goto BAD_INPUT;
+        if (debugging)
+                fprintf(aa_stderr,
+                        PROGNAME "76 "
+                                 "Entering open_dblks().  db_oflag==%d.\n",
+                        db_oflag);
+        if (dblist == NULL || numpages < 8) {
+        BAD_INPUT:
+                sprintf(
+                    sprintbuf,
+                    catgets(
+                        dtsearch_catd, MS_oeinit, 99,
+                        "%s Programming Error: Invalid input to open_dblk()."),
+                    PROGNAME "99");
+                DtSearchAddMessage(sprintbuf);
+                return FALSE;
+        }
+        if (*dblist == NULL) /* empty list of dblks */
+                goto BAD_INPUT;
 
-    if (debugging) {
-	fprintf (aa_stderr, PROGNAME "96 Current list of dblks:\n");
-	for (db = *dblist; db != NULL; db = db->link) {
-	    targptr = sprintbuf;
-	    for (i = 0; i < db->ktcount; i++) {
-		*targptr++ = db->keytypes[i].ktchar;
-	    }
-	    *targptr = 0;
-	    fprintf (aa_stderr, "--> DBLK at %p link=%p name='%s' maxhits=%d\n"
-		"    keytypes='%s', path='%s'\n",
-		(void *) db, (void *) db->link, db->name, db->maxhits,
-		sprintbuf, NULLORSTR (db->path));
-	}
-    }
+        if (debugging) {
+                fprintf(aa_stderr, PROGNAME "96 Current list of dblks:\n");
+                for (db = *dblist; db != NULL; db = db->link) {
+                        targptr = sprintbuf;
+                        for (i = 0; i < db->ktcount; i++) {
+                                *targptr++ = db->keytypes[i].ktchar;
+                        }
+                        *targptr = 0;
+                        fprintf(aa_stderr,
+                                "--> DBLK at %p link=%p name='%s' maxhits=%d\n"
+                                "    keytypes='%s', path='%s'\n",
+                                (void *)db, (void *)db->link, db->name,
+                                db->maxhits, sprintbuf, NULLORSTR(db->path));
+                }
+        }
 
-    /* By doing setpages first, we can trap previously opened databases.
-     * Overflow and transaction locking files are not required.
-     */
-    d_setpages (numpages, 0);
-    if (db_status != S_OKAY) {
-	DtSearchAddMessage (vista_msg (PROGNAME "389"));
-	return FALSE;
-    }
+        /* By doing setpages first, we can trap previously opened databases.
+         * Overflow and transaction locking files are not required.
+         */
+        d_setpages(numpages, 0);
+        if (db_status != S_OKAY) {
+                DtSearchAddMessage(vista_msg(PROGNAME "389"));
+                return FALSE;
+        }
 
-    /* ---- PASS #1 ------------------------------------------
-     * Open nonvista (d99) files.  If error, unlink dblk from dblist.
-     * Add up the total string length of surviving paths and database names.
-     * This giant path/file string will be used in the single d_open()
-     * below to find the .dbd files.
-     * While we're at it, set vistano in each dblk.
-     * The open mode depends on the current setting of db_oflag.
-     */
-    if (db_oflag == O_RDONLY)
-	strcpy (open_mode, "rb");
-    else
-	strcpy (open_mode, "r+b");
-    db = *dblist;
-    lastlink = dblist;
-    while (db != NULL) {
-	if (db->path == NULL)
-	    db->path = strdup ("");
-	strcpy (temp_file_name, db->path);
-	strcat (temp_file_name, db->name);
-	strcat (temp_file_name, EXT_DTBS);
-	if ((db->iifile = fopen (temp_file_name, open_mode)) == NULL) {
-	    if (debugging)
-		fprintf (aa_stderr, PROGNAME "129 UNLINK: cant open '%s'.\n",
-		    temp_file_name);
-	    sprintf (sprintbuf, catgets (dtsearch_catd, MS_oeinit, 317,
-		    "%s Cannot open database file '%s'.\n"
-		    "  Errno %d = %s\n"
-		    "  %s is removing '%s' from list of available databases."),
-		PROGNAME "317", temp_file_name, errno, strerror (errno),
-		OE_prodname, db->name);
-	    if (errno == ENOENT)
-		strcat (sprintbuf, catgets (dtsearch_catd, MS_oeinit, 318,
-		    "\n  This can usually be corrected by specifying a valid\n"
-		    "  database PATH in the site configuration file."));
-	    DtSearchAddMessage (sprintbuf);
-	    goto DELETE_DB;
-	}
+        /* ---- PASS #1 ------------------------------------------
+         * Open nonvista (d99) files.  If error, unlink dblk from dblist.
+         * Add up the total string length of surviving paths and database names.
+         * This giant path/file string will be used in the single d_open()
+         * below to find the .dbd files.
+         * While we're at it, set vistano in each dblk.
+         * The open mode depends on the current setting of db_oflag.
+         */
+        if (db_oflag == O_RDONLY)
+                strcpy(open_mode, "rb");
+        else
+                strcpy(open_mode, "r+b");
+        db = *dblist;
+        lastlink = dblist;
+        while (db != NULL) {
+                if (db->path == NULL)
+                        db->path = strdup("");
+                strcpy(temp_file_name, db->path);
+                strcat(temp_file_name, db->name);
+                strcat(temp_file_name, EXT_DTBS);
+                if ((db->iifile = fopen(temp_file_name, open_mode)) == NULL) {
+                        if (debugging)
+                                fprintf(aa_stderr,
+                                        PROGNAME
+                                        "129 UNLINK: cant open '%s'.\n",
+                                        temp_file_name);
+                        sprintf(sprintbuf,
+                                catgets(dtsearch_catd, MS_oeinit, 317,
+                                        "%s Cannot open database file '%s'.\n"
+                                        "  Errno %d = %s\n"
+                                        "  %s is removing '%s' from list of "
+                                        "available databases."),
+                                PROGNAME "317", temp_file_name, errno,
+                                strerror(errno), OE_prodname, db->name);
+                        if (errno == ENOENT)
+                                strcat(sprintbuf,
+                                       catgets(dtsearch_catd, MS_oeinit, 318,
+                                               "\n  This can usually be "
+                                               "corrected by specifying a "
+                                               "valid\n"
+                                               "  database PATH in the site "
+                                               "configuration file."));
+                        DtSearchAddMessage(sprintbuf);
+                        goto DELETE_DB;
+                }
 
-	/*
-	 * Find and save the timestamp for when the d99 file was
-	 * last modified. An engine reinit is forced if it changes
-	 * while the engine is running. 
-	 */
-	if (fstat (fileno (db->iifile), &statbuf) == -1) {
-	    if (debugging)
-		fprintf (aa_stderr,
-		    PROGNAME "149 UNLINK: cant get status '%s'.\n",
-		    temp_file_name);
-	    sprintf (sprintbuf, catgets (dtsearch_catd, MS_oeinit, 1404,
-		    "%s Removing database '%s' from list of "
-		    "available databases because status is "
-		    "unavailable for file %s: %s"),
-		PROGNAME "1404", db->name, temp_file_name, strerror (errno));
-	    DtSearchAddMessage (sprintbuf);
-	    goto DELETE_DB;
-	}
-	db->iimtime = statbuf.st_mtime;
+                /*
+                 * Find and save the timestamp for when the d99 file was
+                 * last modified. An engine reinit is forced if it changes
+                 * while the engine is running.
+                 */
+                if (fstat(fileno(db->iifile), &statbuf) == -1) {
+                        if (debugging)
+                                fprintf(aa_stderr,
+                                        PROGNAME
+                                        "149 UNLINK: cant get status '%s'.\n",
+                                        temp_file_name);
+                        sprintf(
+                            sprintbuf,
+                            catgets(dtsearch_catd, MS_oeinit, 1404,
+                                    "%s Removing database '%s' from list of "
+                                    "available databases because status is "
+                                    "unavailable for file %s: %s"),
+                            PROGNAME "1404", db->name, temp_file_name,
+                            strerror(errno));
+                        DtSearchAddMessage(sprintbuf);
+                        goto DELETE_DB;
+                }
+                db->iimtime = statbuf.st_mtime;
 
-	/*
-	 * This dblk is ok so far.  Increment pointers and
-	 * continue. 
-	 */
-	if (debugging)
-	    fprintf (aa_stderr, PROGNAME "163 opened '%s'.\n", temp_file_name);
-	db->vistano = vistano++;
-	totlen += strlen (db->path) + strlen (db->name) + 16;
-	lastlink = &db->link;
-	db = db->link;
-	continue;
+                /*
+                 * This dblk is ok so far.  Increment pointers and
+                 * continue.
+                 */
+                if (debugging)
+                        fprintf(aa_stderr, PROGNAME "163 opened '%s'.\n",
+                                temp_file_name);
+                db->vistano = vistano++;
+                totlen += strlen(db->path) + strlen(db->name) + 16;
+                lastlink = &db->link;
+                db = db->link;
+                continue;
 
-DELETE_DB:
-	/*
-	 * This dblk failed in one or more ways. Unlink it and
-	 * don't increment pointers. If all dblks unlinked, *dblist
-	 * will = NULL. 
-	 */
-	bad_db = db;	/* temp save */
-	*lastlink = db->link;
-	db = db->link;
-	free (bad_db);
-    }	/* end PASS #1 */
+        DELETE_DB:
+                /*
+                 * This dblk failed in one or more ways. Unlink it and
+                 * don't increment pointers. If all dblks unlinked, *dblist
+                 * will = NULL.
+                 */
+                bad_db = db; /* temp save */
+                *lastlink = db->link;
+                db = db->link;
+                free(bad_db);
+        } /* end PASS #1 */
 
-    /* quit if no dblks remain */
-    if (vistano <= 0) {
-	sprintf (sprintbuf, catgets (dtsearch_catd, MS_misc, 8,
-		"%s No valid databases remain."), PROGNAME "265");
-	DtSearchAddMessage (sprintbuf);
-	return FALSE;
-    }
+        /* quit if no dblks remain */
+        if (vistano <= 0) {
+                sprintf(sprintbuf,
+                        catgets(dtsearch_catd, MS_misc, 8,
+                                "%s No valid databases remain."),
+                        PROGNAME "265");
+                DtSearchAddMessage(sprintbuf);
+                return FALSE;
+        }
 
-    allnames = austext_malloc (totlen + 512, PROGNAME "66", NULL);
+        allnames = austext_malloc(totlen + 512, PROGNAME "66", NULL);
 
-    /* ---- PASS #2 ------------------------------------------
-     * Build string of accumulated path and database names.
-     */
-    targptr = allnames;
-    for (db = *dblist; db != NULL; db = db->link) {
-	srcptr = db->path;
-	while (*srcptr != 0)
-	    *targptr++ = *srcptr++;
+        /* ---- PASS #2 ------------------------------------------
+         * Build string of accumulated path and database names.
+         */
+        targptr = allnames;
+        for (db = *dblist; db != NULL; db = db->link) {
+                srcptr = db->path;
+                while (*srcptr != 0)
+                        *targptr++ = *srcptr++;
 
-	srcptr = db->name;
-	while (*srcptr != 0)
-	    *targptr++ = *srcptr++;
-	*targptr++ = ';';
-    }
-    *(--targptr) = 0;	/* terminate string */
+                srcptr = db->name;
+                while (*srcptr != 0)
+                        *targptr++ = *srcptr++;
+                *targptr++ = ';';
+        }
+        *(--targptr) = 0; /* terminate string */
 
-    if (debugging)
-	fprintf (aa_stderr,
-	    PROGNAME "150 vista opening databases '%s'\n", allnames);
-    d_open (allnames, "o");	/* replaces OPEN() call from dmacros.h */
+        if (debugging)
+                fprintf(aa_stderr,
+                        PROGNAME "150 vista opening databases '%s'\n",
+                        allnames);
+        d_open(allnames, "o"); /* replaces OPEN() call from dmacros.h */
 
-    if (db_status != S_OKAY) {
-	targptr = austext_malloc (totlen + 128, PROGNAME"239", NULL);
-	sprintf (targptr, catgets (dtsearch_catd, MS_vista, 378,
-	    "%s Could not open following database name string:\n  '%s'"),
-	    PROGNAME"378", allnames);
-	DtSearchAddMessage (targptr);
-	DtSearchAddMessage (vista_msg (PROGNAME"379"));
-	free (allnames);
-	free (targptr);
-	return FALSE;
-    }
-    else if (debugging)
-	fprintf (aa_stderr, " --> vista open successful!\n");
+        if (db_status != S_OKAY) {
+                targptr = austext_malloc(totlen + 128, PROGNAME "239", NULL);
+                sprintf(targptr,
+                        catgets(dtsearch_catd, MS_vista, 378,
+                                "%s Could not open following database name "
+                                "string:\n  '%s'"),
+                        PROGNAME "378", allnames);
+                DtSearchAddMessage(targptr);
+                DtSearchAddMessage(vista_msg(PROGNAME "379"));
+                free(allnames);
+                free(targptr);
+                return FALSE;
+        } else if (debugging)
+                fprintf(aa_stderr, " --> vista open successful!\n");
 
-    /* From here on, emergency exits MUST close the databases */
-    austext_exit_dbms = (void (*) (int)) d_close;
+        /* From here on, emergency exits MUST close the databases */
+        austext_exit_dbms = (void (*)(int))d_close;
 
-    free (allnames);
-    return TRUE;
-}  /* open_dblk() */
+        free(allnames);
+        return TRUE;
+} /* open_dblk() */
 
 /*********************** OPENDBLK.C ************************/

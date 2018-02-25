@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,9 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
 
 #ifndef _mmdb_exception_h
 #define _mmdb_exception_h 1
@@ -61,7 +60,7 @@
 using namespace std;
 #endif
 
-#define END_TRY end_try 
+#define END_TRY end_try
 
 #include <X11/Xosdefs.h>
 #include <errno.h>
@@ -69,157 +68,137 @@ using namespace std;
 extern int errno;
 #endif
 
-class mmdbException : public Exception
-{
-public:
-   DECLARE_EXCEPTION(mmdbException, Exception)
+class mmdbException : public Exception {
+      public:
+        DECLARE_EXCEPTION(mmdbException, Exception)
 
-   virtual ~mmdbException() {};
+        virtual ~mmdbException(){};
 
-   virtual ostream& asciiOut(ostream&);
+        virtual ostream &asciiOut(ostream &);
 
-   friend ostream& operator <<(ostream& out, mmdbException& e) {
-      return e.asciiOut(out);
-   }
+        friend ostream &operator<<(ostream &out, mmdbException &e) {
+                return e.asciiOut(out);
+        }
 };
 
+class stringException : public mmdbException {
+      protected:
+        char *msg;
 
-class stringException : public mmdbException
-{
-protected:
-   char* msg;
+      public:
+        DECLARE_EXCEPTION(stringException, mmdbException)
 
-public:
-   DECLARE_EXCEPTION(stringException, mmdbException)
+        stringException(char const *m) : msg((char *)m){};
+        ~stringException(){};
 
-   stringException(char const* m) : msg((char*)m) {};
-   ~stringException() {};
-
-   virtual ostream& asciiOut(ostream&);
+        virtual ostream &asciiOut(ostream &);
 };
 
-class formatException : public stringException
-{
+class formatException : public stringException {
 
-protected:
+      protected:
+      public:
+        DECLARE_EXCEPTION(formatException, stringException)
 
-public:
-   DECLARE_EXCEPTION(formatException, stringException)
-
-   formatException(char const* m) : stringException(m) {};
-   ~formatException() {};
+        formatException(char const *m) : stringException(m){};
+        ~formatException(){};
 };
 
+class intException : public mmdbException {
 
-class intException : public mmdbException
-{
+      protected:
+        int v_code;
 
-protected:
-   int v_code;
+      public:
+        DECLARE_EXCEPTION(intException, mmdbException)
 
-public:
-   DECLARE_EXCEPTION(intException, mmdbException)
+        intException(int c) : v_code(c){};
+        ~intException(){};
 
-   intException(int c) : v_code(c) {};
-   ~intException() {};
+        int code() { return v_code; };
 
-   int code() { return v_code; };
-
-   virtual ostream& asciiOut(ostream&);
-
+        virtual ostream &asciiOut(ostream &);
 };
 
-class systemException : public intException
-{
+class systemException : public intException {
 
-public:
-   DECLARE_EXCEPTION(systemException, intException)
+      public:
+        DECLARE_EXCEPTION(systemException, intException)
 
-   systemException(int c) : intException(c) {};
-   ~systemException() {};
+        systemException(int c) : intException(c){};
+        ~systemException(){};
 };
 
-class streamException : public intException
-{
+class streamException : public intException {
 
-protected:
+      protected:
+      public:
+        DECLARE_EXCEPTION(streamException, intException)
 
-public:
-   DECLARE_EXCEPTION(streamException, intException)
-
-   streamException(int c) : intException(c) {};
-   ~streamException() {};
+        streamException(int c) : intException(c){};
+        ~streamException(){};
 };
 
-class boundaryException : public mmdbException
-{
+class boundaryException : public mmdbException {
 
-protected:
-   long low;
-   long high;
-   long mindex;
+      protected:
+        long low;
+        long high;
+        long mindex;
 
-public:
-   DECLARE_EXCEPTION(boundaryException, mmdbException)
+      public:
+        DECLARE_EXCEPTION(boundaryException, mmdbException)
 
-   boundaryException(long l, long h, long i) : 
-     low(l), high(h), mindex(i) {};
-   ~boundaryException() {};
+        boundaryException(long l, long h, long i)
+            : low(l), high(h), mindex(i){};
+        ~boundaryException(){};
 
-   virtual ostream& asciiOut(ostream&);
+        virtual ostream &asciiOut(ostream &);
 };
 
-
-class beginTransException: public mmdbException
-{
-public:
-   DECLARE_EXCEPTION(beginTransException, mmdbException)
-   beginTransException() {};
-   ~beginTransException() {};
+class beginTransException : public mmdbException {
+      public:
+        DECLARE_EXCEPTION(beginTransException, mmdbException)
+        beginTransException(){};
+        ~beginTransException(){};
 };
 
-class commitTransException: public mmdbException
-{
-public:
-   DECLARE_EXCEPTION(commitTransException, mmdbException)
-   commitTransException() {};
-   ~commitTransException() {};
+class commitTransException : public mmdbException {
+      public:
+        DECLARE_EXCEPTION(commitTransException, mmdbException)
+        commitTransException(){};
+        ~commitTransException(){};
 };
 
-class rollbackTransException: public mmdbException
-{
-public:
-   DECLARE_EXCEPTION(rollbackTransException, mmdbException)
-   rollbackTransException() {};
-   ~rollbackTransException() {};
+class rollbackTransException : public mmdbException {
+      public:
+        DECLARE_EXCEPTION(rollbackTransException, mmdbException)
+        rollbackTransException(){};
+        ~rollbackTransException(){};
 };
 
+class demoException : public mmdbException {
+      protected:
+        const char *f_path;
+        const char *f_name;
 
-class demoException : public mmdbException
-{
-protected:
-   const char* f_path;
-   const char* f_name;
+      public:
+        DECLARE_EXCEPTION(demoException, mmdbException)
 
-public:
-   DECLARE_EXCEPTION(demoException, mmdbException)
+        demoException(const char *p, const char *n) : f_path(p), f_name(n){};
+        virtual ~demoException(){};
 
-   demoException(const char* p, const char* n) : f_path(p), f_name(n) {};
-   virtual ~demoException() {};
+        const char *path() { return f_path; };
+        const char *name() { return f_name; };
 
-   const char* path() { return f_path; };
-   const char* name() { return f_name; };
+        virtual ostream &asciiOut(ostream &out) {
+                out << f_path << "\t" << f_name << "\n";
+                return out;
+        }
 
-   virtual ostream& asciiOut(ostream& out) {
-      out << f_path << "\t" << f_name << "\n";
-      return out;
-   }
-
-   friend ostream& operator <<(ostream& out, demoException& e) {
-       return e.asciiOut(out);
-   }
+        friend ostream &operator<<(ostream &out, demoException &e) {
+                return e.asciiOut(out);
+        }
 };
 
-
-   
 #endif

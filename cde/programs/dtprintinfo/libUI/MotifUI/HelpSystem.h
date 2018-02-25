@@ -33,50 +33,37 @@
 
 #include "MotifUI.h"
 
-typedef enum
-{
-   HELP_DIALOG,
-   QUICK_HELP
-} HelpStyle;
+typedef enum { HELP_DIALOG, QUICK_HELP } HelpStyle;
 
 class HelpSystem : public MotifUI {
 
-   friend void HyperlinkCB(Widget, XtPointer, XtPointer);
-   friend void CloseCB(Widget, XtPointer, XtPointer);
+        friend void HyperlinkCB(Widget, XtPointer, XtPointer);
+        friend void CloseCB(Widget, XtPointer, XtPointer);
 
- private:
+      private:
+        static void HyperlinkCB(Widget, XtPointer, XtPointer);
+        static void CloseCB(Widget, XtPointer, XtPointer);
+        void CreateHelpDialog(MotifUI *, char *, char *, char *, HelpStyle);
+        boolean SetVisiblity(boolean flag);
 
-   static void HyperlinkCB(Widget, XtPointer, XtPointer);
-   static void CloseCB(Widget, XtPointer, XtPointer);
-   void CreateHelpDialog(MotifUI *, char *, char *, char *, HelpStyle);
-   boolean SetVisiblity(boolean flag);
+        HelpStyle _style;
 
-   HelpStyle _style;
+      public:
+        HelpSystem(MotifUI *parent, char *name, char *volume = NULL,
+                   char *location_id = "_hometopic",
+                   HelpStyle style = HELP_DIALOG);
+        HelpSystem(char *category, MotifUI *parent, char *name,
+                   char *volume = NULL, char *location_id = "_hometopic",
+                   HelpStyle style = HELP_DIALOG);
 
- public:
+        char *HelpVolume();
+        char *LocationID();
+        void HelpVolume(char *volume, char *location = "_hometopic");
+        void LocationID(char *location);
 
-   HelpSystem(MotifUI * parent,
-              char * name,
-              char * volume = NULL,
-              char * location_id = "_hometopic",
-              HelpStyle style = HELP_DIALOG);
-   HelpSystem(char *category,
-              MotifUI * parent,
-              char * name,
-              char * volume = NULL,
-              char * location_id = "_hometopic",
-              HelpStyle style = HELP_DIALOG);
-
-   char *HelpVolume();
-   char *LocationID();
-   void HelpVolume(char *volume,
-		   char *location = "_hometopic");
-   void LocationID(char *location);
-
-   const UI_Class UIClass()           { return HELP_SYSTEM; }
-   const int UISubClass()             { return _style; }
-   const char *const UIClassName()    { return "HelpSystem"; }
-
+        const UI_Class UIClass() { return HELP_SYSTEM; }
+        const int UISubClass() { return _style; }
+        const char *const UIClassName() { return "HelpSystem"; }
 };
 
 #endif // HELP_SYSTEM_H

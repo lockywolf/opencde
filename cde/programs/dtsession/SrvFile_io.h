@@ -40,7 +40,7 @@
  **   File I/O for the color server
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -48,40 +48,30 @@
  ************************************<+>*************************************/
 #ifndef _srvfile_h
 #define _srvfile_h
- 
-/* 
- *  #include statements 
+
+/*
+ *  #include statements
  */
 
-
-/* 
- *  #define statements 
+/*
+ *  #define statements
  */
 
-/* 
- * typedef statements 
+/*
+ * typedef statements
  */
 /*
- *  External variables  
+ *  External variables
  */
 
-
-/*  
- *  External Interface  
+/*
+ *  External Interface
  */
 
-
-
-extern void SwitchAItoPS( 
-                            struct _palette *) ;
-extern struct _palette * GetPaletteDefinition( 
-                            Display *dpy,
-                            int     screen_number,
-                            char    *palette) ;
-extern void SaveDefaultPalette(
-        Display *dpy,
-        char *dtPath,
-        int mode );
+extern void SwitchAItoPS(struct _palette *);
+extern struct _palette *GetPaletteDefinition(Display *dpy, int screen_number,
+                                             char *palette);
+extern void SaveDefaultPalette(Display *dpy, char *dtPath, int mode);
 
 #endif /*_srvfile_h*/
 /* DON'T ADD ANYTHING AFTER THIS #endif */

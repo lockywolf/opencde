@@ -40,7 +40,7 @@
  **   Error Handling for the session manager
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -48,64 +48,58 @@
  ************************************<+>*************************************/
 #ifndef _smerror_h
 #define _smerror_h
- 
-/* 
- *  #include statements 
+
+/*
+ *  #include statements
  */
 
-
-/* 
- *  #define statements 
+/*
+ *  #define statements
  */
-
 
 /*
  *  Error messages trapped by X window calls - These are never displayed
  */
-#define		BAD_ACCESS		"Attempt to access unavailable resource"
-#define		BAD_ATOM		"Atom for argument is not a defined atom"
-#define		BAD_DRAWABLE	"Drawable argument is invalid"
-#define		BAD_MATCH		"Drawable is a invalid match for operation"
-#define		BAD_VALUE		"Value in X call is invalid"
-#define		BAD_WINDOW		"Window does not exist"
-#define		DEFAULT_ERROR	"Non-fatal error from X server"
+#define BAD_ACCESS "Attempt to access unavailable resource"
+#define BAD_ATOM "Atom for argument is not a defined atom"
+#define BAD_DRAWABLE "Drawable argument is invalid"
+#define BAD_MATCH "Drawable is a invalid match for operation"
+#define BAD_VALUE "Value in X call is invalid"
+#define BAD_WINDOW "Window does not exist"
+#define DEFAULT_ERROR "Non-fatal error from X server"
 
-
-/* 
- * typedef statements 
+/*
+ * typedef statements
  */
 
 /*
  * All NLS error messages
  */
-typedef struct _NlsStrings
-{
-    char	*cantLockErrorString;
-    char	*trustedSystemErrorString;
-    char	*cantMallocErrorString;
-    char	*cantOpenFileString;
-    char	*cantForkClientString;
-    char	*cantExecClientString;
-    char	*cantCreateDirsString;
+typedef struct _NlsStrings {
+        char *cantLockErrorString;
+        char *trustedSystemErrorString;
+        char *cantMallocErrorString;
+        char *cantOpenFileString;
+        char *cantForkClientString;
+        char *cantExecClientString;
+        char *cantCreateDirsString;
 } NlsStrings;
 
 /*
- *  External variables  
+ *  External variables
  */
-extern NlsStrings	smNLS;
+extern NlsStrings smNLS;
 
-
-/*  
- *  External Interface  
+/*
+ *  External Interface
  */
 
-extern void InitErrorHandler( void ) ;
-extern void PrintError( DtSeverity , char *) ;
-extern void PrintErrnoError( DtSeverity , char *) ;
-#ifndef  NO_MESSAGE_CATALOG
-char * GetMessage( int, int, char * );
+extern void InitErrorHandler(void);
+extern void PrintError(DtSeverity, char *);
+extern void PrintErrnoError(DtSeverity, char *);
+#ifndef NO_MESSAGE_CATALOG
+char *GetMessage(int, int, char *);
 #endif
-
 
 #endif /*_smerror_h*/
 /* DON'T ADD ANYTHING AFTER THIS #endif */

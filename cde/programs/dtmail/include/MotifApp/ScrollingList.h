@@ -26,7 +26,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -34,7 +34,7 @@
  *+SNOTICE
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -56,15 +56,16 @@
 
 #include <stdlib.h>
 class ScrollingList : public UIComponent {
-private:
-  static void defaultActionCallback( Widget, XtPointer, XmListCallbackStruct * );
+      private:
+        static void defaultActionCallback(Widget, XtPointer,
+                                          XmListCallbackStruct *);
 
-public:
-
-  ScrollingList ( Widget, char * );
-  ~ScrollingList ();
-  virtual const char *const className() { return ( "ScrollingList" ); }
-  virtual void defaultAction( Widget, XtPointer, XmListCallbackStruct * ) = 0;
+      public:
+        ScrollingList(Widget, char *);
+        ~ScrollingList();
+        virtual const char *const className() { return ("ScrollingList"); }
+        virtual void defaultAction(Widget, XtPointer,
+                                   XmListCallbackStruct *) = 0;
 };
 
 #endif

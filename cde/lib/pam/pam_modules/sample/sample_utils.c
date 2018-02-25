@@ -27,7 +27,7 @@
  * All rights reserved.
  */
 
-#ident  "@(#)sample_utils.c 1.8     96/01/12 SMI"
+#ident "@(#)sample_utils.c 1.8     96/01/12 SMI"
 
 #include <security/pam_appl.h>
 #include <string.h>
@@ -47,22 +47,20 @@
  *	free storage for messages used in the call back "pam_conv" functions
  */
 
-void
-free_msg(num_msg, msg)
-	int num_msg;
-	struct pam_message *msg;
+void free_msg(num_msg, msg) int num_msg;
+struct pam_message *msg;
 {
-	int 			i;
-	struct pam_message 	*m;
+        int i;
+        struct pam_message *m;
 
-	if (msg) {
-		m = msg;
-		for (i = 0; i < num_msg; i++, m++) {
-			if (m->msg)
-				free(m->msg);
-		}
-		free(msg);
-	}
+        if (msg) {
+                m = msg;
+                for (i = 0; i < num_msg; i++, m++) {
+                        if (m->msg)
+                                free(m->msg);
+                }
+                free(msg);
+        }
 }
 
 /*
@@ -70,22 +68,20 @@ free_msg(num_msg, msg)
  *	free storage for responses used in the call back "pam_conv" functions
  */
 
-void
-free_resp(num_msg, resp)
-	int num_msg;
-	struct pam_response *resp;
+void free_resp(num_msg, resp) int num_msg;
+struct pam_response *resp;
 {
-	int			i;
-	struct pam_response	*r;
+        int i;
+        struct pam_response *r;
 
-	if (resp) {
-		r = resp;
-		for (i = 0; i < num_msg; i++, r++) {
-			if (r->resp)
-				free(r->resp);
-		}
-		free(resp);
-	}
+        if (resp) {
+                r = resp;
+                for (i = 0; i < num_msg; i++, r++) {
+                        if (r->resp)
+                                free(r->resp);
+                }
+                free(resp);
+        }
 }
 
 /*
@@ -94,52 +90,49 @@ free_resp(num_msg, resp)
  *	provided by the application through "pam_conv" structure
  */
 
-int
-display_errmsg(conv_funp, num_msg, messages, conv_apdp)
-	int (*conv_funp)();
-	int num_msg;
-	char messages[PAM_MAX_NUM_MSG][PAM_MAX_MSG_SIZE];
-	void *conv_apdp;
+int display_errmsg(conv_funp, num_msg, messages, conv_apdp) int (*conv_funp)();
+int num_msg;
+char messages[PAM_MAX_NUM_MSG][PAM_MAX_MSG_SIZE];
+void *conv_apdp;
 {
-	struct pam_message	*msg;
-	struct pam_message	*m;
-	struct pam_response	*resp;
-	int			i;
-	int			k;
-	int			retcode;
+        struct pam_message *msg;
+        struct pam_message *m;
+        struct pam_response *resp;
+        int i;
+        int k;
+        int retcode;
 
-	msg = (struct pam_message *)calloc(num_msg,
-					sizeof (struct pam_message));
-	if (msg == NULL) {
-		return (PAM_CONV_ERR);
-	}
-	m = msg;
+        msg = (struct pam_message *)calloc(num_msg, sizeof(struct pam_message));
+        if (msg == NULL) {
+                return (PAM_CONV_ERR);
+        }
+        m = msg;
 
-	i = 0;
-	k = num_msg;
-	resp = NULL;
-	while (k--) {
-		/*
-		 * fill out the pam_message structure to display error message
-		 */
-		m->msg_style = PAM_ERROR_MSG;
-		m->msg = (char *)malloc(PAM_MAX_MSG_SIZE);
-		if (m->msg != NULL)
-			(void) strcpy(m->msg, (const char *)messages[i]);
-		else
-			continue;
-		m++;
-		i++;
-	}
+        i = 0;
+        k = num_msg;
+        resp = NULL;
+        while (k--) {
+                /*
+                 * fill out the pam_message structure to display error message
+                 */
+                m->msg_style = PAM_ERROR_MSG;
+                m->msg = (char *)malloc(PAM_MAX_MSG_SIZE);
+                if (m->msg != NULL)
+                        (void)strcpy(m->msg, (const char *)messages[i]);
+                else
+                        continue;
+                m++;
+                i++;
+        }
 
-	/*
-	 * Call conv function to display the message,
-	 * ignoring return value for now
-	 */
-	retcode = conv_funp(num_msg, &msg, &resp, conv_apdp);
-	free_msg(num_msg, msg);
-	free_resp(num_msg, resp);
-	return (retcode);
+        /*
+         * Call conv function to display the message,
+         * ignoring return value for now
+         */
+        retcode = conv_funp(num_msg, &msg, &resp, conv_apdp);
+        free_msg(num_msg, msg);
+        free_resp(num_msg, resp);
+        return (retcode);
 }
 
 /*
@@ -148,49 +141,47 @@ display_errmsg(conv_funp, num_msg, messages, conv_apdp)
  *	provided by the application through "pam_conv" structure
  */
 
-int
-get_authtok(conv_funp, num_msg, messages, conv_apdp, ret_respp)
-	int (*conv_funp)();
-	int num_msg;
-	char messages[PAM_MAX_NUM_MSG][PAM_MAX_MSG_SIZE];
-	void *conv_apdp;
-	struct pam_response	**ret_respp;
+int get_authtok(conv_funp, num_msg, messages, conv_apdp,
+                ret_respp) int (*conv_funp)();
+int num_msg;
+char messages[PAM_MAX_NUM_MSG][PAM_MAX_MSG_SIZE];
+void *conv_apdp;
+struct pam_response **ret_respp;
 {
-	struct pam_message	*msg;
-	struct pam_message	*m;
-	int			i;
-	int			k;
-	int			retcode;
+        struct pam_message *msg;
+        struct pam_message *m;
+        int i;
+        int k;
+        int retcode;
 
-	i = 0;
-	k = num_msg;
+        i = 0;
+        k = num_msg;
 
-	msg = (struct pam_message *)calloc(num_msg,
-						sizeof (struct pam_message));
-	if (msg == NULL) {
-		return (PAM_CONV_ERR);
-	}
-	m = msg;
+        msg = (struct pam_message *)calloc(num_msg, sizeof(struct pam_message));
+        if (msg == NULL) {
+                return (PAM_CONV_ERR);
+        }
+        m = msg;
 
-	while (k--) {
-		/*
-		 * fill out the message structure to display error message
-		 */
-		m->msg_style = PAM_PROMPT_ECHO_OFF;
-		m->msg = (char *)malloc(PAM_MAX_MSG_SIZE);
-		if (m->msg != NULL)
-			(void) strcpy(m->msg, (char *)messages[i]);
-		else
-			continue;
-		m++;
-		i++;
-	}
+        while (k--) {
+                /*
+                 * fill out the message structure to display error message
+                 */
+                m->msg_style = PAM_PROMPT_ECHO_OFF;
+                m->msg = (char *)malloc(PAM_MAX_MSG_SIZE);
+                if (m->msg != NULL)
+                        (void)strcpy(m->msg, (char *)messages[i]);
+                else
+                        continue;
+                m++;
+                i++;
+        }
 
-	/*
-	 * Call conv function to display the prompt,
-	 * ignoring return value for now
-	 */
-	retcode = conv_funp(num_msg, &msg, ret_respp, conv_apdp);
-	free_msg(num_msg, msg);
-	return (retcode);
+        /*
+         * Call conv function to display the prompt,
+         * ignoring return value for now
+         */
+        retcode = conv_funp(num_msg, &msg, ret_respp, conv_apdp);
+        free_msg(num_msg, msg);
+        return (retcode);
 }

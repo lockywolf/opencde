@@ -85,64 +85,61 @@ from the X Consortium.
  * for MIT-MAGIC-COOKIE-1 type authorization
  */
 
-# include   <X11/Xos.h>
-# include   "dm.h"
+#include <X11/Xos.h>
+#include "dm.h"
 
-# define AUTH_DATA_LEN	16	/* bytes of authorization data */
-static char	auth_name[256];
-static int	auth_name_len;
+#define AUTH_DATA_LEN 16 /* bytes of authorization data */
+static char auth_name[256];
+static int auth_name_len;
 
-int MitInitAuth (name_len, name)
+int MitInitAuth(name_len, name)
 #if NeedWidePrototypes
     unsigned int name_len;
 #else
     unsigned short name_len;
 #endif /* NeedWidePrototypes */
-    char *name;
+char *name;
 {
-    if (name_len > 256)
-	name_len = 256;
-    auth_name_len = name_len;
-    memmove( auth_name, name, name_len);
-    return(0);
+        if (name_len > 256)
+                name_len = 256;
+        auth_name_len = name_len;
+        memmove(auth_name, name, name_len);
+        return (0);
 }
 
-Xauth *
-MitGetAuth (namelen, name)
+Xauth *MitGetAuth(namelen, name)
 #if NeedWidePrototypes
     unsigned int namelen;
 #else
     unsigned short namelen;
 #endif /* NeedWidePrototypes */
-    char *name;
+char *name;
 {
-    Xauth   *new;
-    new = (Xauth *) malloc (sizeof (Xauth));
+        Xauth *new;
+        new = (Xauth *)malloc(sizeof(Xauth));
 
-    if (!new)
-	return (Xauth *) 0;
-    new->family = FamilyWild;
-    new->address_length = 0;
-    new->address = 0;
-    new->number_length = 0;
-    new->number = 0;
+        if (!new)
+                return (Xauth *)0;
+        new->family = FamilyWild;
+        new->address_length = 0;
+        new->address = 0;
+        new->number_length = 0;
+        new->number = 0;
 
-    new->data = (char *) malloc (AUTH_DATA_LEN);
-    if (!new->data)
-    {
-	free ((char *) new);
-	return (Xauth *) 0;
-    }
-    new->name = (char *) malloc (namelen);
-    if (!new->name)
-    {
-	free ((char *) new->data);
-	free ((char *) new);
-	return (Xauth *) 0;
-    }
-    memmove( (char *)new->name, name, namelen);
-    new->name_length = namelen;
-    GenerateAuthData (new->data, AUTH_DATA_LEN);
-    new->data_length = AUTH_DATA_LEN;
-    return new;
+        new->data = (char *)malloc(AUTH_DATA_LEN);
+        if (!new->data) {
+                free((char *)new);
+                return (Xauth *)0;
+        }
+        new->name = (char *)malloc(namelen);
+        if (!new->name) {
+                free((char *)new->data);
+                free((char *)new);
+                return (Xauth *)0;
+        }
+        memmove((char *)new->name, name, namelen);
+        new->name_length = namelen;
+        GenerateAuthData(new->data, AUTH_DATA_LEN);
+        new->data_length = AUTH_DATA_LEN;
+        return new;
 }

@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $XConsortium: tclUnixPipe.c /main/3 1996/10/03 17:18:23 drk $ */
-/* 
- * tclUnixPipe.c -- This file implements the UNIX-specific exec pipeline 
+/*
+ * tclUnixPipe.c -- This file implements the UNIX-specific exec pipeline
  *                  functions.
  *
  * Copyright (c) 1991-1994 The Regents of the University of California.
@@ -41,9 +41,9 @@
  * Declarations for local procedures defined in this file:
  */
 
-static void             RestoreSignals _ANSI_ARGS_((void));
-static int		SetupStdFile _ANSI_ARGS_((Tcl_File file, int type));
-
+static void RestoreSignals _ANSI_ARGS_((void));
+static int SetupStdFile _ANSI_ARGS_((Tcl_File file, int type));
+
 /*
  *----------------------------------------------------------------------
  *
@@ -61,63 +61,61 @@ static int		SetupStdFile _ANSI_ARGS_((Tcl_File file, int type));
  *
  *----------------------------------------------------------------------
  */
- 
-static void
-RestoreSignals()
-{
+
+static void RestoreSignals() {
 #ifdef SIGABRT
-    signal(SIGABRT, SIG_DFL);
+        signal(SIGABRT, SIG_DFL);
 #endif
 #ifdef SIGALRM
-    signal(SIGALRM, SIG_DFL);
+        signal(SIGALRM, SIG_DFL);
 #endif
 #ifdef SIGFPE
-    signal(SIGFPE, SIG_DFL);
+        signal(SIGFPE, SIG_DFL);
 #endif
 #ifdef SIGHUP
-    signal(SIGHUP, SIG_DFL);
+        signal(SIGHUP, SIG_DFL);
 #endif
 #ifdef SIGILL
-    signal(SIGILL, SIG_DFL);
+        signal(SIGILL, SIG_DFL);
 #endif
 #ifdef SIGINT
-    signal(SIGINT, SIG_DFL);
+        signal(SIGINT, SIG_DFL);
 #endif
 #ifdef SIGPIPE
-    signal(SIGPIPE, SIG_DFL);
+        signal(SIGPIPE, SIG_DFL);
 #endif
 #ifdef SIGQUIT
-    signal(SIGQUIT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
 #endif
 #ifdef SIGSEGV
-    signal(SIGSEGV, SIG_DFL);
+        signal(SIGSEGV, SIG_DFL);
 #endif
 #ifdef SIGTERM
-    signal(SIGTERM, SIG_DFL);
+        signal(SIGTERM, SIG_DFL);
 #endif
 #ifdef SIGUSR1
-    signal(SIGUSR1, SIG_DFL);
+        signal(SIGUSR1, SIG_DFL);
 #endif
 #ifdef SIGUSR2
-    signal(SIGUSR2, SIG_DFL);
+        signal(SIGUSR2, SIG_DFL);
 #endif
 #ifdef SIGCHLD
-    signal(SIGCHLD, SIG_DFL);
+        signal(SIGCHLD, SIG_DFL);
 #endif
 #ifdef SIGCONT
-    signal(SIGCONT, SIG_DFL);
+        signal(SIGCONT, SIG_DFL);
 #endif
 #ifdef SIGTSTP
-    signal(SIGTSTP, SIG_DFL);
+        signal(SIGTSTP, SIG_DFL);
 #endif
 #ifdef SIGTTIN
-    signal(SIGTTIN, SIG_DFL);
+        signal(SIGTTIN, SIG_DFL);
 #endif
 #ifdef SIGTTOU
-    signal(SIGTTOU, SIG_DFL);
+        signal(SIGTTOU, SIG_DFL);
 #endif
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -137,68 +135,66 @@ RestoreSignals()
  *----------------------------------------------------------------------
  */
 
-static int
-SetupStdFile(file, type)
-    Tcl_File file;		/* File to dup, or NULL. */
-    int type;			/* One of TCL_STDIN, TCL_STDOUT, TCL_STDERR */
+static int SetupStdFile(file, type) Tcl_File file; /* File to dup, or NULL. */
+int type; /* One of TCL_STDIN, TCL_STDOUT, TCL_STDERR */
 {
-    Tcl_Channel channel;
-    int fd;
-    int targetFd = 0;		/* Initializations here needed only to */
-    int direction = 0;		/* prevent warnings about using uninitialized
-				 * variables. */
+        Tcl_Channel channel;
+        int fd;
+        int targetFd = 0;  /* Initializations here needed only to */
+        int direction = 0; /* prevent warnings about using uninitialized
+                            * variables. */
 
-    switch (type) {
-	case TCL_STDIN:
-	    targetFd = 0;
-	    direction = TCL_READABLE;
-	    break;
-	case TCL_STDOUT:
-	    targetFd = 1;
-	    direction = TCL_WRITABLE;
-	    break;
-	case TCL_STDERR:
-	    targetFd = 2;
-	    direction = TCL_WRITABLE;
-	    break;
-    }
+        switch (type) {
+        case TCL_STDIN:
+                targetFd = 0;
+                direction = TCL_READABLE;
+                break;
+        case TCL_STDOUT:
+                targetFd = 1;
+                direction = TCL_WRITABLE;
+                break;
+        case TCL_STDERR:
+                targetFd = 2;
+                direction = TCL_WRITABLE;
+                break;
+        }
 
-    if (!file) {
-	channel = Tcl_GetStdChannel(type);
-	if (channel) {
-	    file = Tcl_GetChannelFile(channel, direction);
-	}
-    }
-    if (file) {
-	fd = (int) (intptr_t) Tcl_GetFileInfo(file, NULL);
-	if (fd != targetFd) {
-	    if (dup2(fd, targetFd) == -1) {
-		return 0;
-	    }
+        if (!file) {
+                channel = Tcl_GetStdChannel(type);
+                if (channel) {
+                        file = Tcl_GetChannelFile(channel, direction);
+                }
+        }
+        if (file) {
+                fd = (int)(intptr_t)Tcl_GetFileInfo(file, NULL);
+                if (fd != targetFd) {
+                        if (dup2(fd, targetFd) == -1) {
+                                return 0;
+                        }
 
-            /*
-             * Must clear the close-on-exec flag for the target FD, since
-             * some systems (e.g. Ultrix) do not clear the CLOEXEC flag on
-             * the target FD.
-             */
-            
-            fcntl(targetFd, F_SETFD, 0);
-	} else {
-	    int result;
+                        /*
+                         * Must clear the close-on-exec flag for the target FD,
+                         * since some systems (e.g. Ultrix) do not clear the
+                         * CLOEXEC flag on the target FD.
+                         */
 
-	    /*
-	     * Since we aren't dup'ing the file, we need to explicitly clear
-	     * the close-on-exec flag.
-	     */
+                        fcntl(targetFd, F_SETFD, 0);
+                } else {
+                        int result;
 
-	    result = fcntl(fd, F_SETFD, 0);
-	}
-    } else {
-	close(targetFd);
-    }
-    return 1;
+                        /*
+                         * Since we aren't dup'ing the file, we need to
+                         * explicitly clear the close-on-exec flag.
+                         */
+
+                        result = fcntl(fd, F_SETFD, 0);
+                }
+        } else {
+                close(targetFd);
+        }
+        return 1;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -215,210 +211,217 @@ SetupStdFile(file, type)
  *
  *----------------------------------------------------------------------
  */
-int
-TclSpawnPipeline(interp, pidPtr, numPids, argc, argv, inputFile,
-	outputFile, errorFile, intIn, finalOut)
-    Tcl_Interp *interp;		/* Interpreter in which to process pipeline. */
-    pid_t *pidPtr;		/* Array of pids which are created. */
-    int *numPids;		/* Number of pids created. */
-    int argc;			/* Number of entries in argv. */
-    char **argv;		/* Array of strings describing commands in
-				 * pipeline plus I/O redirection with <,
-				 * <<, >, etc. argv[argc] must be NULL. */
-    Tcl_File inputFile;	/* If >=0, gives file id to use as input for
-				 * first process in pipeline (specified via <
-				 * or <@). */
-    Tcl_File outputFile;	/* Writable file id for output from last
-				 * command in pipeline (could be file or
-				 * pipe). NULL means use stdout. */
-    Tcl_File errorFile;	/* Writable file id for error output from all
-				 * commands in the pipeline. NULL means use
-				 * stderr */
-    char *intIn;		/* File name for initial input (for Win32s). */
-    char *finalOut;		/* File name for final output (for Win32s). */
+int TclSpawnPipeline(interp, pidPtr, numPids, argc, argv, inputFile, outputFile,
+                     errorFile, intIn, finalOut)
+    Tcl_Interp *interp; /* Interpreter in which to process pipeline. */
+pid_t *pidPtr;          /* Array of pids which are created. */
+int *numPids;           /* Number of pids created. */
+int argc;               /* Number of entries in argv. */
+char **argv;            /* Array of strings describing commands in
+                         * pipeline plus I/O redirection with <,
+                         * <<, >, etc. argv[argc] must be NULL. */
+Tcl_File inputFile;     /* If >=0, gives file id to use as input for
+                         * first process in pipeline (specified via <
+                         * or <@). */
+Tcl_File outputFile;    /* Writable file id for output from last
+                         * command in pipeline (could be file or
+                         * pipe). NULL means use stdout. */
+Tcl_File errorFile;     /* Writable file id for error output from all
+                         * commands in the pipeline. NULL means use
+                         * stderr */
+char *intIn;            /* File name for initial input (for Win32s). */
+char *finalOut;         /* File name for final output (for Win32s). */
 {
-    int firstArg, lastArg;
-    pid_t pid;
-    int count;
-    Tcl_DString buffer;
-    char *execName;
-    char errSpace[200];
-    Tcl_File pipeIn, errPipeIn, errPipeOut;
-    int joinThisError;
-    Tcl_File curOutFile = NULL, curInFile;
-    
-    Tcl_DStringInit(&buffer);
-    pipeIn = errPipeIn = errPipeOut = NULL;
+        int firstArg, lastArg;
+        pid_t pid;
+        int count;
+        Tcl_DString buffer;
+        char *execName;
+        char errSpace[200];
+        Tcl_File pipeIn, errPipeIn, errPipeOut;
+        int joinThisError;
+        Tcl_File curOutFile = NULL, curInFile;
 
-    curInFile = inputFile;
+        Tcl_DStringInit(&buffer);
+        pipeIn = errPipeIn = errPipeOut = NULL;
 
-    for (firstArg = 0; firstArg < argc; firstArg = lastArg+1) {
+        curInFile = inputFile;
 
-	/*
-	 * Convert the program name into native form.
-	 */
+        for (firstArg = 0; firstArg < argc; firstArg = lastArg + 1) {
 
-	Tcl_DStringFree(&buffer);
-	execName = Tcl_TranslateFileName(interp, argv[firstArg], &buffer);
-	if (execName == NULL) {
-	    goto error;
-	}
+                /*
+                 * Convert the program name into native form.
+                 */
 
-	/*
-	 * Find the end of the current segment of the pipeline.
-	 */
+                Tcl_DStringFree(&buffer);
+                execName =
+                    Tcl_TranslateFileName(interp, argv[firstArg], &buffer);
+                if (execName == NULL) {
+                        goto error;
+                }
 
-	joinThisError = 0;
-	for (lastArg = firstArg; lastArg < argc; lastArg++) {
-	    if (argv[lastArg][0] == '|') {
-		if (argv[lastArg][1] == 0) {
-		    break;
-		}
-		if ((argv[lastArg][1] == '&') && (argv[lastArg][2] == 0)) {
-		    joinThisError = 1;
-		    break;
-		}
-	    }
-	}
-	argv[lastArg] = NULL;
+                /*
+                 * Find the end of the current segment of the pipeline.
+                 */
 
-	/*
-	 * If this is the last segment, use the specified outputFile.
-	 * Otherwise create an intermediate pipe.
-	 */
+                joinThisError = 0;
+                for (lastArg = firstArg; lastArg < argc; lastArg++) {
+                        if (argv[lastArg][0] == '|') {
+                                if (argv[lastArg][1] == 0) {
+                                        break;
+                                }
+                                if ((argv[lastArg][1] == '&') &&
+                                    (argv[lastArg][2] == 0)) {
+                                        joinThisError = 1;
+                                        break;
+                                }
+                        }
+                }
+                argv[lastArg] = NULL;
 
-	if (lastArg == argc) {
-	    curOutFile = outputFile;
-	} else {
-	    if (TclCreatePipe(&pipeIn, &curOutFile) == 0) {
-		Tcl_AppendResult(interp, "couldn't create pipe: ",
-			Tcl_PosixError(interp), (char *) NULL);
-		goto error;
-	    }
-	}
+                /*
+                 * If this is the last segment, use the specified outputFile.
+                 * Otherwise create an intermediate pipe.
+                 */
 
-	/*
-	 * Create a pipe that the child can use to return error
-	 * information if anything goes wrong.
-	 */
+                if (lastArg == argc) {
+                        curOutFile = outputFile;
+                } else {
+                        if (TclCreatePipe(&pipeIn, &curOutFile) == 0) {
+                                Tcl_AppendResult(
+                                    interp, "couldn't create pipe: ",
+                                    Tcl_PosixError(interp), (char *)NULL);
+                                goto error;
+                        }
+                }
 
-	if (TclCreatePipe(&errPipeIn, &errPipeOut) == 0) {
-	    Tcl_AppendResult(interp, "couldn't create pipe: ",
-		    Tcl_PosixError(interp), (char *) NULL);
-	    goto error;
-	}
+                /*
+                 * Create a pipe that the child can use to return error
+                 * information if anything goes wrong.
+                 */
 
-	pid = vfork();
-	if (pid == 0) {
+                if (TclCreatePipe(&errPipeIn, &errPipeOut) == 0) {
+                        Tcl_AppendResult(interp, "couldn't create pipe: ",
+                                         Tcl_PosixError(interp), (char *)NULL);
+                        goto error;
+                }
 
-	    /*
-	     * Set up stdio file handles for the child process.
-	     */
+                pid = vfork();
+                if (pid == 0) {
 
-	    if (!SetupStdFile(curInFile, TCL_STDIN)
-		    || !SetupStdFile(curOutFile, TCL_STDOUT)
-		    || (!joinThisError && !SetupStdFile(errorFile, TCL_STDERR))
-		    || (joinThisError &&
-                            ((dup2(1,2) == -1) ||
-                             (fcntl(2, F_SETFD, 0) != 0)))) {
-		sprintf(errSpace,
-			"%dforked process couldn't set up input/output: ",
-			errno);
-		TclWriteFile(errPipeOut, 1, errSpace, (int) strlen(errSpace));
-		_exit(1);
-	    }
+                        /*
+                         * Set up stdio file handles for the child process.
+                         */
 
-            /*
-             * Close the input side of the error pipe.
-             */
+                        if (!SetupStdFile(curInFile, TCL_STDIN) ||
+                            !SetupStdFile(curOutFile, TCL_STDOUT) ||
+                            (!joinThisError &&
+                             !SetupStdFile(errorFile, TCL_STDERR)) ||
+                            (joinThisError && ((dup2(1, 2) == -1) ||
+                                               (fcntl(2, F_SETFD, 0) != 0)))) {
+                                sprintf(errSpace,
+                                        "%dforked process couldn't set up "
+                                        "input/output: ",
+                                        errno);
+                                TclWriteFile(errPipeOut, 1, errSpace,
+                                             (int)strlen(errSpace));
+                                _exit(1);
+                        }
 
-	    RestoreSignals();
-	    execvp(execName, &argv[firstArg]);
-	    sprintf(errSpace, "%dcouldn't execute \"%.150s\": ", errno,
-		    argv[firstArg]);
-	    TclWriteFile(errPipeOut, 1, errSpace, (int) strlen(errSpace));
-	    _exit(1);
-	}
-	Tcl_DStringFree(&buffer);
-	if (pid == (pid_t)-1) {
-	    Tcl_AppendResult(interp, "couldn't fork child process: ",
-		    Tcl_PosixError(interp), (char *) NULL);
-	    goto error;
-	}
+                        /*
+                         * Close the input side of the error pipe.
+                         */
 
-	/*
-	 * Add the child process to the list of those to be reaped.
-	 * Note: must do it now, so that the process will be reaped even if
-	 * an error occurs during its startup.
-	 */
-	
-	pidPtr[*numPids] = pid;
-	(*numPids)++;
-	
-	/*
-	 * Read back from the error pipe to see if the child startup
-	 * up OK.  The info in the pipe (if any) consists of a decimal
-	 * errno value followed by an error message.
-	 */
+                        RestoreSignals();
+                        execvp(execName, &argv[firstArg]);
+                        sprintf(errSpace,
+                                "%dcouldn't execute \"%.150s\": ", errno,
+                                argv[firstArg]);
+                        TclWriteFile(errPipeOut, 1, errSpace,
+                                     (int)strlen(errSpace));
+                        _exit(1);
+                }
+                Tcl_DStringFree(&buffer);
+                if (pid == (pid_t)-1) {
+                        Tcl_AppendResult(interp,
+                                         "couldn't fork child process: ",
+                                         Tcl_PosixError(interp), (char *)NULL);
+                        goto error;
+                }
 
-	TclCloseFile(errPipeOut);
-	errPipeOut = NULL;
+                /*
+                 * Add the child process to the list of those to be reaped.
+                 * Note: must do it now, so that the process will be reaped even
+                 * if an error occurs during its startup.
+                 */
 
-	count = TclReadFile(errPipeIn, 1, errSpace,
-		(size_t) (sizeof(errSpace) - 1));
-	if (count > 0) {
-	    char *end;
-	    errSpace[count] = 0;
-	    errno = strtol(errSpace, &end, 10);
-	    Tcl_AppendResult(interp, end, Tcl_PosixError(interp),
-		    (char *) NULL);
-	    goto error;
-	}
-	TclCloseFile(errPipeIn);
-	errPipeIn = NULL;
+                pidPtr[*numPids] = pid;
+                (*numPids)++;
 
-	/*
-	 * Close off our copies of file descriptors that were set up for
-	 * this child, then set up the input for the next child.
-	 */
+                /*
+                 * Read back from the error pipe to see if the child startup
+                 * up OK.  The info in the pipe (if any) consists of a decimal
+                 * errno value followed by an error message.
+                 */
 
-	if (curInFile && (curInFile != inputFile)) {
-	    TclCloseFile(curInFile);
-	}
-	curInFile = pipeIn;
-	pipeIn = NULL;
+                TclCloseFile(errPipeOut);
+                errPipeOut = NULL;
 
-	if (curOutFile && (curOutFile != outputFile)) {
-	    TclCloseFile(curOutFile);
-	}
-	curOutFile = NULL;
-    }
-    return 1;
+                count = TclReadFile(errPipeIn, 1, errSpace,
+                                    (size_t)(sizeof(errSpace) - 1));
+                if (count > 0) {
+                        char *end;
+                        errSpace[count] = 0;
+                        errno = strtol(errSpace, &end, 10);
+                        Tcl_AppendResult(interp, end, Tcl_PosixError(interp),
+                                         (char *)NULL);
+                        goto error;
+                }
+                TclCloseFile(errPipeIn);
+                errPipeIn = NULL;
 
-    /*
-     * An error occured, so we need to clean up any open pipes.
-     */
+                /*
+                 * Close off our copies of file descriptors that were set up for
+                 * this child, then set up the input for the next child.
+                 */
+
+                if (curInFile && (curInFile != inputFile)) {
+                        TclCloseFile(curInFile);
+                }
+                curInFile = pipeIn;
+                pipeIn = NULL;
+
+                if (curOutFile && (curOutFile != outputFile)) {
+                        TclCloseFile(curOutFile);
+                }
+                curOutFile = NULL;
+        }
+        return 1;
+
+        /*
+         * An error occured, so we need to clean up any open pipes.
+         */
 
 error:
-    Tcl_DStringFree(&buffer);
-    if (errPipeIn) {
-	TclCloseFile(errPipeIn);
-    }
-    if (errPipeOut) {
-	TclCloseFile(errPipeOut);
-    }
-    if (pipeIn) {
-	TclCloseFile(pipeIn);
-    }
-    if (curOutFile && (curOutFile != outputFile)) {
-	TclCloseFile(curOutFile);
-    }
-    if (curInFile && (curInFile != inputFile)) {
-	TclCloseFile(curInFile);
-    }
-    return 0;
+        Tcl_DStringFree(&buffer);
+        if (errPipeIn) {
+                TclCloseFile(errPipeIn);
+        }
+        if (errPipeOut) {
+                TclCloseFile(errPipeOut);
+        }
+        if (pipeIn) {
+                TclCloseFile(pipeIn);
+        }
+        if (curOutFile && (curOutFile != outputFile)) {
+                TclCloseFile(curOutFile);
+        }
+        if (curInFile && (curInFile != inputFile)) {
+                TclCloseFile(curInFile);
+        }
+        return 0;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -427,34 +430,33 @@ error:
  *      Creates a pipe - simply calls the pipe() function.
  *
  * Results:
- *      Returns 1 on success, 0 on failure. 
+ *      Returns 1 on success, 0 on failure.
  *
  * Side effects:
  *      Creates a pipe.
  *
  *----------------------------------------------------------------------
  */
-int
-TclCreatePipe(readPipe, writePipe)
-    Tcl_File *readPipe;	/* Location to store file handle for
-				 * read side of pipe. */
-    Tcl_File *writePipe;	/* Location to store file handle for
-				 * write side of pipe. */
+int TclCreatePipe(readPipe, writePipe)
+    Tcl_File *readPipe; /* Location to store file handle for
+                         * read side of pipe. */
+Tcl_File *writePipe;    /* Location to store file handle for
+                         * write side of pipe. */
 {
-    int pipeIds[2];
+        int pipeIds[2];
 
-    if (pipe(pipeIds) != 0) {
-	return 0;
-    }
+        if (pipe(pipeIds) != 0) {
+                return 0;
+        }
 
-    fcntl(pipeIds[0], F_SETFD, FD_CLOEXEC);
-    fcntl(pipeIds[1], F_SETFD, FD_CLOEXEC);
+        fcntl(pipeIds[0], F_SETFD, FD_CLOEXEC);
+        fcntl(pipeIds[1], F_SETFD, FD_CLOEXEC);
 
-    *readPipe = Tcl_GetFile((ClientData) (intptr_t) pipeIds[0], TCL_UNIX_FD);
-    *writePipe = Tcl_GetFile((ClientData) (intptr_t) pipeIds[1], TCL_UNIX_FD);
-    return 1;
+        *readPipe = Tcl_GetFile((ClientData)(intptr_t)pipeIds[0], TCL_UNIX_FD);
+        *writePipe = Tcl_GetFile((ClientData)(intptr_t)pipeIds[1], TCL_UNIX_FD);
+        return 1;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -473,48 +475,48 @@ TclCreatePipe(readPipe, writePipe)
  *----------------------------------------------------------------------
  */
 
-int
-Tcl_CreatePipeline(interp, argc, argv, pidArrayPtr, inPipePtr,
-	outPipePtr, errFilePtr)
-    Tcl_Interp *interp;
-    int argc;
-    char **argv;
-    pid_t **pidArrayPtr;
-    int *inPipePtr;
-    int *outPipePtr;
-    int *errFilePtr;
+int Tcl_CreatePipeline(interp, argc, argv, pidArrayPtr, inPipePtr, outPipePtr,
+                       errFilePtr) Tcl_Interp *interp;
+int argc;
+char **argv;
+pid_t **pidArrayPtr;
+int *inPipePtr;
+int *outPipePtr;
+int *errFilePtr;
 {
-    Tcl_File inFile, outFile, errFile;
-    int result;
+        Tcl_File inFile, outFile, errFile;
+        int result;
 
-    result = TclCreatePipeline(interp, argc, argv, pidArrayPtr,
-	    (inPipePtr ? &inFile : NULL),
-	    (outPipePtr ? &outFile : NULL),
-	    (errFilePtr ? &errFile : NULL));
+        result = TclCreatePipeline(
+            interp, argc, argv, pidArrayPtr, (inPipePtr ? &inFile : NULL),
+            (outPipePtr ? &outFile : NULL), (errFilePtr ? &errFile : NULL));
 
-    if (inPipePtr) {
-	if (inFile) {
-	    *inPipePtr = (int) (intptr_t) Tcl_GetFileInfo(inFile, NULL);
-	    Tcl_FreeFile(inFile);
-	} else {
-	    *inPipePtr = -1;
-	}
-    }
-    if (outPipePtr) {
-	if (outFile) {
-	    *outPipePtr = (int) (intptr_t) Tcl_GetFileInfo(outFile, NULL);
-	    Tcl_FreeFile(outFile);
-	} else {
-	    *outPipePtr = -1;
-	}
-    }
-    if (errFilePtr) {
-	if (errFile) {
-	    *errFilePtr = (int) (intptr_t) Tcl_GetFileInfo(errFile, NULL);
-	    Tcl_FreeFile(errFile);
-	} else {
-	    *errFilePtr = -1;
-	}
-    }
-    return result;
+        if (inPipePtr) {
+                if (inFile) {
+                        *inPipePtr =
+                            (int)(intptr_t)Tcl_GetFileInfo(inFile, NULL);
+                        Tcl_FreeFile(inFile);
+                } else {
+                        *inPipePtr = -1;
+                }
+        }
+        if (outPipePtr) {
+                if (outFile) {
+                        *outPipePtr =
+                            (int)(intptr_t)Tcl_GetFileInfo(outFile, NULL);
+                        Tcl_FreeFile(outFile);
+                } else {
+                        *outPipePtr = -1;
+                }
+        }
+        if (errFilePtr) {
+                if (errFile) {
+                        *errFilePtr =
+                            (int)(intptr_t)Tcl_GetFileInfo(errFile, NULL);
+                        Tcl_FreeFile(errFile);
+                } else {
+                        *errFilePtr = -1;
+                }
+        }
+        return result;
 }

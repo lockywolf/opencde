@@ -52,262 +52,259 @@
 /*
  * The following structure holds the sdl document specific information
  */
-typedef	struct	_sdlDocInfo {
-	char		*language;
-	char		*char_set;
-	char		*first_pg;
-	char		*doc_id;
-	char		*timestamp;
-	char		*sdldtd;
+typedef struct _sdlDocInfo {
+        char *language;
+        char *char_set;
+        char *first_pg;
+        char *doc_id;
+        char *timestamp;
+        char *sdldtd;
 } SDLDocInfo;
 
 /*
  * The following structure holds the id specific information
  */
-typedef	struct	_sdlIdInfo {
-	SdlOption	 type;
-	char		*rssi;
-	int		 rlevel;
-	int		 offset;
+typedef struct _sdlIdInfo {
+        SdlOption type;
+        char *rssi;
+        int rlevel;
+        int offset;
 } SDLIdInfo;
 
 /*
  * The following structure holds the toss style specific information
  */
-typedef	struct	_sdlTossInfo {
-	unsigned long    enum_values;
-	unsigned long    num_values;
-	unsigned long    str1_values;
-	unsigned long    str2_values;
+typedef struct _sdlTossInfo {
+        unsigned long enum_values;
+        unsigned long num_values;
+        unsigned long str1_values;
+        unsigned long str2_values;
 
-	enum SdlElement		 el_type;
-	SdlOption		 clan;
-	char			*ssi;
-	union
-	  {
-		char		*str;
-		char		*colj;
-		char		*enter;
-	  } str1;
-	union
-	  {
-		char		*str;
-		char		*colw;
-		char		*exit;
-	  } str2;
-	int			 rlevel;
-	_DtHelpFontHints	 font_specs;
+        enum SdlElement el_type;
+        SdlOption clan;
+        char *ssi;
+        union {
+                char *str;
+                char *colj;
+                char *enter;
+        } str1;
+        union {
+                char *str;
+                char *colw;
+                char *exit;
+        } str2;
+        int rlevel;
+        _DtHelpFontHints font_specs;
 } SDLTossInfo;
 
 /*
  * The following structure holds the entry or index specific strings
  */
-typedef	struct	_sdlEntryInfo {
-	char	*main;
-	char	*locs;
-	char	*syns;
-	char	*sort;
+typedef struct _sdlEntryInfo {
+        char *main;
+        char *locs;
+        char *syns;
+        char *sort;
 } SDLEntryInfo;
 
 /*
- * The following structure holds loaded volumes.  The fields of this 
+ * The following structure holds loaded volumes.  The fields of this
  * structure should not be accessed by any code outside of the volume
  * module.
  */
-typedef	struct _sdlVolume {
-    SDLDocInfo *sdl_info;	/* A pointer to the SDL doc info     */
-    _DtCvSegment *toss;		/* A pointer to the Table of Styles  */
-				/* and Semantics withing the volume  */
-    _DtCvSegment *loids;	/* A pointer to the List of Ids      */
-    _DtCvSegment *index;	/* A pointer to the List of Keywords */
-    _DtCvSegment *title;	/* A pointer to the document head    */
-    _DtCvSegment *snb;		/* A pointer to the document's snb   */
-    _DtCvPointer  client_data;	/* data that must be used to free the title
-				   and snb				*/
-    void	(*destroy_region)(); /* The destroy region routine specified
-				   when the title was read              */
-    short      minor_no;	/* The minor number of the sdl version */
-    short      title_processed;	/* If the title has already been searched for */
+typedef struct _sdlVolume {
+        SDLDocInfo *sdl_info; /* A pointer to the SDL doc info     */
+        _DtCvSegment *toss;   /* A pointer to the Table of Styles  */
+        /* and Semantics withing the volume  */
+        _DtCvSegment *loids;      /* A pointer to the List of Ids      */
+        _DtCvSegment *index;      /* A pointer to the List of Keywords */
+        _DtCvSegment *title;      /* A pointer to the document head    */
+        _DtCvSegment *snb;        /* A pointer to the document's snb   */
+        _DtCvPointer client_data; /* data that must be used to free the title
+                                     and snb				*/
+        void (*destroy_region)(); /* The destroy region routine specified
+                                when the title was read              */
+        short minor_no;           /* The minor number of the sdl version */
+        short title_processed; /* If the title has already been searched for */
 
 } CESDLVolume;
 
 /****************************************************************************
  *			Private Macros
  ****************************************************************************/
-	/*********************/
-	/* SDLDocInfo macros */
-	/*********************/
+/*********************/
+/* SDLDocInfo macros */
+/*********************/
 
-#ifndef	_SdlDocInfoPtrCharSet
-#define	_SdlDocInfoPtrCharSet(x)	((x)->char_set)
+#ifndef _SdlDocInfoPtrCharSet
+#define _SdlDocInfoPtrCharSet(x) ((x)->char_set)
 #endif
 
-#ifndef	_SdlDocInfoPtrDocId
-#define	_SdlDocInfoPtrDocId(x)		((x)->doc_id)
+#ifndef _SdlDocInfoPtrDocId
+#define _SdlDocInfoPtrDocId(x) ((x)->doc_id)
 #endif
 
-#ifndef	_SdlDocInfoPtrFirstPg
-#define	_SdlDocInfoPtrFirstPg(x)	((x)->first_pg)
+#ifndef _SdlDocInfoPtrFirstPg
+#define _SdlDocInfoPtrFirstPg(x) ((x)->first_pg)
 #endif
 
-#ifndef	_SdlDocInfoPtrLanguage
-#define	_SdlDocInfoPtrLanguage(x)	((x)->language)
+#ifndef _SdlDocInfoPtrLanguage
+#define _SdlDocInfoPtrLanguage(x) ((x)->language)
 #endif
 
-#ifndef	_SdlDocInfoPtrSdlDtd
-#define	_SdlDocInfoPtrSdlDtd(x)		((x)->sdldtd)
+#ifndef _SdlDocInfoPtrSdlDtd
+#define _SdlDocInfoPtrSdlDtd(x) ((x)->sdldtd)
 #endif
 
-#ifndef	_SdlDocInfoPtrStamp
-#define	_SdlDocInfoPtrStamp(x)		((x)->timestamp)
+#ifndef _SdlDocInfoPtrStamp
+#define _SdlDocInfoPtrStamp(x) ((x)->timestamp)
 #endif
 
-	/***********************/
-	/* SDLEntryInfo macros */
-	/***********************/
+/***********************/
+/* SDLEntryInfo macros */
+/***********************/
 
-#ifndef	_SdlSegEntryInfo
-#define	_SdlSegEntryInfo(x)		((FrmtPrivInfoPtr(x))->entry)
+#ifndef _SdlSegEntryInfo
+#define _SdlSegEntryInfo(x) ((FrmtPrivInfoPtr(x))->entry)
 #endif
 
-#ifndef	_SdlSegToSdlEntryInfo
-#define	_SdlSegToSdlEntryInfo(x)	((SDLEntryInfo *) _SdlSegEntryInfo(x))
+#ifndef _SdlSegToSdlEntryInfo
+#define _SdlSegToSdlEntryInfo(x) ((SDLEntryInfo *)_SdlSegEntryInfo(x))
 #endif
 
-	/********************/
-	/* SDLIdInfo macros */
-	/********************/
+/********************/
+/* SDLIdInfo macros */
+/********************/
 
-#ifndef	_SdlIdInfoPtrOffset
-#define	_SdlIdInfoPtrOffset(x)		((x)->offset)
+#ifndef _SdlIdInfoPtrOffset
+#define _SdlIdInfoPtrOffset(x) ((x)->offset)
 #endif
 
-#ifndef	_SdlIdInfoPtrRlevel
-#define	_SdlIdInfoPtrRlevel(x)		((x)->rlevel)
+#ifndef _SdlIdInfoPtrRlevel
+#define _SdlIdInfoPtrRlevel(x) ((x)->rlevel)
 #endif
 
-#ifndef	_SdlIdInfoPtrRssi
-#define	_SdlIdInfoPtrRssi(x)		((x)->rssi)
+#ifndef _SdlIdInfoPtrRssi
+#define _SdlIdInfoPtrRssi(x) ((x)->rssi)
 #endif
 
-#ifndef	_SdlIdInfoPtrType
-#define	_SdlIdInfoPtrType(x)		((x)->type)
+#ifndef _SdlIdInfoPtrType
+#define _SdlIdInfoPtrType(x) ((x)->type)
 #endif
 
-#ifndef	_SdlSegToSdlIdInfoPtr
-#define	_SdlSegToSdlIdInfoPtr(x) \
-		((SDLIdInfo *)((FrmtPrivInfoPtr(x))->id_info))
+#ifndef _SdlSegToSdlIdInfoPtr
+#define _SdlSegToSdlIdInfoPtr(x) ((SDLIdInfo *)((FrmtPrivInfoPtr(x))->id_info))
 #endif
 
-#ifndef	_SdlSegToSdlIdInfoRssi
-#define	_SdlSegToSdlIdInfoRssi(x) \
-		(((SDLIdInfo *)((FrmtPrivInfoPtr(x))->id_info))->rssi)
+#ifndef _SdlSegToSdlIdInfoRssi
+#define _SdlSegToSdlIdInfoRssi(x)                                              \
+        (((SDLIdInfo *)((FrmtPrivInfoPtr(x))->id_info))->rssi)
 #endif
 
-#ifndef	_SdlSegToSdlIdInfoType
-#define	_SdlSegToSdlIdInfoType(x) \
-		(((SDLIdInfo *)((FrmtPrivInfoPtr(x))->id_info))->type)
+#ifndef _SdlSegToSdlIdInfoType
+#define _SdlSegToSdlIdInfoType(x)                                              \
+        (((SDLIdInfo *)((FrmtPrivInfoPtr(x))->id_info))->type)
 #endif
 
-#ifndef	_SdlSegToSdlIdInfoLevel
-#define	_SdlSegToSdlIdInfoLevel(x) \
-		(((SDLIdInfo *)((FrmtPrivInfoPtr(x))->id_info))->rlevel)
+#ifndef _SdlSegToSdlIdInfoLevel
+#define _SdlSegToSdlIdInfoLevel(x)                                             \
+        (((SDLIdInfo *)((FrmtPrivInfoPtr(x))->id_info))->rlevel)
 #endif
 
-	/**********************/
-	/* SDLTossInfo macros */
-	/**********************/
+/**********************/
+/* SDLTossInfo macros */
+/**********************/
 
-#ifndef	_SdlTossInfoPtrFlag1
-#define	_SdlTossInfoPtrFlag1(x)		((x)->enum_values)
+#ifndef _SdlTossInfoPtrFlag1
+#define _SdlTossInfoPtrFlag1(x) ((x)->enum_values)
 #endif
 
-#ifndef	_SdlTossInfoPtrFlag2
-#define	_SdlTossInfoPtrFlag2(x)		((x)->num_values)
+#ifndef _SdlTossInfoPtrFlag2
+#define _SdlTossInfoPtrFlag2(x) ((x)->num_values)
 #endif
 
-#ifndef	_SdlTossInfoPtrFlag3
-#define	_SdlTossInfoPtrFlag3(x)		((x)->str1_values)
+#ifndef _SdlTossInfoPtrFlag3
+#define _SdlTossInfoPtrFlag3(x) ((x)->str1_values)
 #endif
 
-#ifndef	_SdlTossInfoPtrFlag4
-#define	_SdlTossInfoPtrFlag4(x)		((x)->str2_values)
+#ifndef _SdlTossInfoPtrFlag4
+#define _SdlTossInfoPtrFlag4(x) ((x)->str2_values)
 #endif
 
-#ifndef	_SdlTossInfoPtrEnter
-#define	_SdlTossInfoPtrEnter(x)		((x)->str1.enter)
+#ifndef _SdlTossInfoPtrEnter
+#define _SdlTossInfoPtrEnter(x) ((x)->str1.enter)
 #endif
 
-#ifndef	_SdlTossInfoPtrExit
-#define	_SdlTossInfoPtrExit(x)		((x)->str2.exit)
+#ifndef _SdlTossInfoPtrExit
+#define _SdlTossInfoPtrExit(x) ((x)->str2.exit)
 #endif
 
-#ifndef	_SdlTossInfoPtrColJ
-#define	_SdlTossInfoPtrColJ(x)		((x)->str1.colj)
+#ifndef _SdlTossInfoPtrColJ
+#define _SdlTossInfoPtrColJ(x) ((x)->str1.colj)
 #endif
 
-#ifndef	_SdlTossInfoPtrColW
-#define	_SdlTossInfoPtrColW(x)		((x)->str2.colw)
+#ifndef _SdlTossInfoPtrColW
+#define _SdlTossInfoPtrColW(x) ((x)->str2.colw)
 #endif
 
-#ifndef	_SdlTossInfoPtrRlevel
-#define	_SdlTossInfoPtrRlevel(x)	((x)->rlevel)
+#ifndef _SdlTossInfoPtrRlevel
+#define _SdlTossInfoPtrRlevel(x) ((x)->rlevel)
 #endif
 
-#ifndef	_SdlTossInfoPtrStr1
-#define	_SdlTossInfoPtrStr1(x)		((x)->str1.str)
+#ifndef _SdlTossInfoPtrStr1
+#define _SdlTossInfoPtrStr1(x) ((x)->str1.str)
 #endif
 
-#ifndef	_SdlTossInfoPtrStr2
-#define	_SdlTossInfoPtrStr2(x)		((x)->str2.str)
+#ifndef _SdlTossInfoPtrStr2
+#define _SdlTossInfoPtrStr2(x) ((x)->str2.str)
 #endif
 
-#ifndef	_SdlTossInfoPtrSsi
-#define	_SdlTossInfoPtrSsi(x)		((x)->ssi)
+#ifndef _SdlTossInfoPtrSsi
+#define _SdlTossInfoPtrSsi(x) ((x)->ssi)
 #endif
 
-#ifndef	_SdlTossInfoPtrFontSpecs
-#define	_SdlTossInfoPtrFontSpecs(x)	((x)->font_specs)
+#ifndef _SdlTossInfoPtrFontSpecs
+#define _SdlTossInfoPtrFontSpecs(x) ((x)->font_specs)
 #endif
 
-#ifndef	_SdlTossInfoPtrClan
-#define	_SdlTossInfoPtrClan(x)		((x)->clan)
+#ifndef _SdlTossInfoPtrClan
+#define _SdlTossInfoPtrClan(x) ((x)->clan)
 #endif
 
-#ifndef	_SdlTossInfoPtrType
-#define	_SdlTossInfoPtrType(x)		((x)->el_type)
+#ifndef _SdlTossInfoPtrType
+#define _SdlTossInfoPtrType(x) ((x)->el_type)
 #endif
 
-#ifndef	_SdlSegTossInfo
-#define	_SdlSegTossInfo(x)		((FrmtPrivInfoPtr(x))->toss)
+#ifndef _SdlSegTossInfo
+#define _SdlSegTossInfo(x) ((FrmtPrivInfoPtr(x))->toss)
 #endif
 
-#ifndef	_SdlSegPtrToTossInfo
-#define	_SdlSegPtrToTossInfo(x)		((SDLTossInfo *) _SdlSegTossInfo(x))
+#ifndef _SdlSegPtrToTossInfo
+#define _SdlSegPtrToTossInfo(x) ((SDLTossInfo *)_SdlSegTossInfo(x))
 #endif
 
-#ifndef	_SdlSegPtrToTossType
-#define	_SdlSegPtrToTossType(x)		((_SdlSegPtrToTossInfo(x))->el_type)
+#ifndef _SdlSegPtrToTossType
+#define _SdlSegPtrToTossType(x) ((_SdlSegPtrToTossInfo(x))->el_type)
 #endif
 
-	/*****************/
-	/* Volume macros */
-	/*****************/
+/*****************/
+/* Volume macros */
+/*****************/
 
-#ifndef	_SdlVolumeMinorNumber
-#define	_SdlVolumeMinorNumber(x)	((x)->minor_no)
+#ifndef _SdlVolumeMinorNumber
+#define _SdlVolumeMinorNumber(x) ((x)->minor_no)
 #endif
 
-	/*******************/
-	/* Language macros */
-	/*******************/
+/*******************/
+/* Language macros */
+/*******************/
 
-#ifndef	_SdlSegLangChar
-#define	_SdlSegLangChar(x)		((FrmtPrivInfoPtr(x))->lang_char)
+#ifndef _SdlSegLangChar
+#define _SdlSegLangChar(x) ((FrmtPrivInfoPtr(x))->lang_char)
 #endif
 
-#ifndef	_SdlSegPtrToLangChar
-#define	_SdlSegPtrToLangChar(x)		((char **)_SdlSegLangChar(x))
+#ifndef _SdlSegPtrToLangChar
+#define _SdlSegPtrToLangChar(x) ((char **)_SdlSegLangChar(x))
 #endif
 
 #endif /* _DtHelpAccessSDLP_h */

@@ -45,116 +45,113 @@
 #include <stdlib.h>
 #include <string.h>
 
-char * _DtCliSrvGetDtUserSession()
-{
-  char * envVar = getenv("DTUSERSESSION");
-  char * ret_envVar = NULL;
+char *_DtCliSrvGetDtUserSession() {
+        char *envVar = getenv("DTUSERSESSION");
+        char *ret_envVar = NULL;
 
-  /* See if the environment variable exists */
+        /* See if the environment variable exists */
 
-  if (envVar == NULL) {
+        if (envVar == NULL) {
 
-    /* It doesn't, so it needs to be constructed. Use LOGNAME, which
-     * always seems to be set, and DISPLAY, which may or may not be
-     * set.
-     */
+                /* It doesn't, so it needs to be constructed. Use LOGNAME, which
+                 * always seems to be set, and DISPLAY, which may or may not be
+                 * set.
+                 */
 
-    char pipedata[BUFSIZ];
-    char logname_local[8];
-    char * logname = getenv("LOGNAME");
+                char pipedata[BUFSIZ];
+                char logname_local[8];
+                char *logname = getenv("LOGNAME");
 
-    if (logname == NULL) {
-      strlcpy(logname_local, "generic", 8);
-      logname = logname_local;
-    }
+                if (logname == NULL) {
+                        strlcpy(logname_local, "generic", 8);
+                        logname = logname_local;
+                }
 
-    /* determine DISPLAY and screen number */
+                /* determine DISPLAY and screen number */
 
-    {
-      char   screen[BUFSIZ];
-      char * display = NULL;
-      char * localDisplayVar = getenv("DISPLAY");
+                {
+                        char screen[BUFSIZ];
+                        char *display = NULL;
+                        char *localDisplayVar = getenv("DISPLAY");
 
-      if (localDisplayVar == NULL) {
+                        if (localDisplayVar == NULL) {
 
-	/* run uname to get the display name */
+                                /* run uname to get the display name */
 
-	FILE *pp;
-	display = pipedata;
+                                FILE *pp;
+                                display = pipedata;
 
-	pp = popen("uname -n", "r");
-	if (NULL == pp) {
-	  perror("uname -n");
-	  return NULL;
-	}
-	*display = 0;
-	if(NULL == fgets(display, BUFSIZ, pp)) {
-	   perror("fgets() failed to read");
-	   return NULL;
-	}
-	while (isspace(display[strlen(display)-1]))
-	  display[strlen(display)-1] = 0;
-	pclose(pp);
-      }
-      else {
-	int display_size = strlen(localDisplayVar) + 1;
-	display = malloc(display_size);
-	strlcpy(display, localDisplayVar, display_size);
-      }
+                                pp = popen("uname -n", "r");
+                                if (NULL == pp) {
+                                        perror("uname -n");
+                                        return NULL;
+                                }
+                                *display = 0;
+                                if (NULL == fgets(display, BUFSIZ, pp)) {
+                                        perror("fgets() failed to read");
+                                        return NULL;
+                                }
+                                while (isspace(display[strlen(display) - 1]))
+                                        display[strlen(display) - 1] = 0;
+                                pclose(pp);
+                        } else {
+                                int display_size = strlen(localDisplayVar) + 1;
+                                display = malloc(display_size);
+                                strlcpy(display, localDisplayVar, display_size);
+                        }
 
+                        /* Now determine the screen number. Throw away .0 */
 
-      /* Now determine the screen number. Throw away .0 */
+                        {
+                                char *s = strchr(display, ':');
+                                if (s && strlen(s) < (size_t)BUFSIZ) {
+                                        strlcpy(screen, s + 1, BUFSIZ);
+                                        *s = 0;
+                                        if ((s = strchr(screen, '.')) &&
+                                            *(s + 1) == '0')
+                                                *s = 0;
+                                } else {
+                                        strlcpy(screen, "0", BUFSIZ);
+                                }
+                        }
+                        int envVar_size = strlen(logname) + strlen(display) +
+                                          strlen(screen) + 3;
+                        envVar = malloc(envVar_size);
+                        if (envVar)
+                                snprintf(envVar, envVar_size, "%s-%s-%s",
+                                         logname, display, screen);
 
-      {
-	char * s = strchr(display,':');
-	if (s && strlen(s) < (size_t)BUFSIZ) {
-	  strlcpy(screen, s+1, BUFSIZ);
-	  *s = 0;
-	  if ((s = strchr(screen,'.')) && *(s+1) == '0')
-	    *s = 0;
-	}
-	else {
-	  strlcpy(screen, "0", BUFSIZ);
-	}
-      }
-      int envVar_size = strlen(logname) + strlen(display) + strlen(screen) + 3;
-      envVar = malloc(envVar_size);
-      if (envVar)
-	snprintf(envVar, envVar_size, "%s-%s-%s", logname, display, screen);
+                        return envVar;
+                }
+        }
 
-      return envVar;
-    }
-  }
-
-  int ret_envVar_size = strlen(envVar) + 1;
-  ret_envVar = malloc(ret_envVar_size);
-  if (ret_envVar)
-    strlcpy(ret_envVar, envVar, ret_envVar_size);
-  return ret_envVar;
-
+        int ret_envVar_size = strlen(envVar) + 1;
+        ret_envVar = malloc(ret_envVar_size);
+        if (ret_envVar)
+                strlcpy(ret_envVar, envVar, ret_envVar_size);
+        return ret_envVar;
 }
 
 #ifdef TEST
-int main ()
-{
-  char * value;
+int main() {
+        char *value;
 
-  value = _DtCliSrvGetDtUserSession();
+        value = _DtCliSrvGetDtUserSession();
 
-  printf("DTUSERSESSION will be set to: %s\n", value);
+        printf("DTUSERSESSION will be set to: %s\n", value);
 
-  free(value);
+        free(value);
 
-  printf("value has been freed\n");
+        printf("value has been freed\n");
 }
 
 /*******************************************************
   Test cases:  DTUSERSESSION   LOGNAME    DISPLAY
   -------------------------------------------------
                     set           -          -
-		   unset       userfoo     unset
-		   unset       userfoo   hostname:0
-		   unset       userfoo   hostname:0.0
-		   unset       userfoo   hostname:0.1
+                   unset       userfoo     unset
+                   unset       userfoo   hostname:0
+                   unset       userfoo   hostname:0.0
+                   unset       userfoo   hostname:0.1
 ********************************************************/
 #endif

@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: iswrrec.c /main/3 1995/10/23 11:46:30 rswiston $ 			 				 */
+/*%%  $XConsortium: iswrrec.c /main/3 1995/10/23 11:46:30 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)iswrrec.c 1.7 89/06/07 Copyr 1988 Sun Micro";
 #endif
@@ -36,7 +37,7 @@ static char sccsid[] = "@(#)iswrrec.c 1.7 89/06/07 Copyr 1988 Sun Micro";
  * iswrrec.c
  *
  * Description:
- *	Write a record to ISAM file. 
+ *	Write a record to ISAM file.
  */
 
 #include "isam_impl.h"
@@ -47,7 +48,7 @@ static int _amwrrec();
 /*
  * isfd = iswrrec(isfd, recnum, record)
  *
- * Iswrrec() writes a record to ISAM file at specified recno position. 
+ * Iswrrec() writes a record to ISAM file at specified recno position.
  * All indexes of the ISAM file are updated.
  *
  * Current record position is not changed.
@@ -69,49 +70,47 @@ static int _amwrrec();
  *	EBADARG recnum is negative.
  */
 
-int 
-iswrrec(isfd, recnum, record)
-    int			isfd;
-    long		recnum;
-    char		*record;
+int iswrrec(isfd, recnum, record) int isfd;
+long recnum;
+char *record;
 {
-    register Fab	*fab;
-    int			reclen;
-    int			ret;
+        register Fab *fab;
+        int reclen;
+        int ret;
 
-    /*
-     * Get File Access Block.
-     */
-    if ((fab = _isfd_find(isfd)) == NULL) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Get File Access Block.
+         */
+        if ((fab = _isfd_find(isfd)) == NULL) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-    /*
-     * Check that the open mode was  ISINOUT.
-     */
-    if (fab->openmode != OM_INOUT) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Check that the open mode was  ISINOUT.
+         */
+        if (fab->openmode != OM_INOUT) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-    /*
-     * Determine record length. Check it against min and max record length.
-     */
-    reclen = (fab->varlength == TRUE) ? isreclen : fab->minreclen;
-    if (reclen < fab->minreclen || reclen > fab->maxreclen) {
-	_setiserrno2(EBADARG, '9' ,'0');
-	return (ISERROR);
-    }
-   
-    if ((ret = _amwrrec(&fab->isfhandle, record, reclen,
-			recnum, &fab->errcode)) == ISOK) {
-	isrecnum = recnum;		     /* Set isrecnum */
-    }
+        /*
+         * Determine record length. Check it against min and max record length.
+         */
+        reclen = (fab->varlength == TRUE) ? isreclen : fab->minreclen;
+        if (reclen < fab->minreclen || reclen > fab->maxreclen) {
+                _setiserrno2(EBADARG, '9', '0');
+                return (ISERROR);
+        }
 
-    _seterr_errcode(&fab->errcode);
+        if ((ret = _amwrrec(&fab->isfhandle, record, reclen, recnum,
+                            &fab->errcode)) == ISOK) {
+                isrecnum = recnum; /* Set isrecnum */
+        }
 
-    return (ret);			     /* Successful write */
+        _seterr_errcode(&fab->errcode);
+
+        return (ret); /* Successful write */
 }
 
 /*
@@ -130,77 +129,75 @@ iswrrec(isfd, recnum, record)
  *
  */
 
-static int
-_amwrrec(isfhandle, record, reclen, recnum, errcode)
-    Bytearray		*isfhandle;
-    char		*record;
-    int			reclen;
-    Recno		recnum;
-    struct errcode	*errcode;
+static int _amwrrec(isfhandle, record, reclen, recnum,
+                    errcode) Bytearray *isfhandle;
+char *record;
+int reclen;
+Recno recnum;
+struct errcode *errcode;
 {
-    Fcb			*fcb = NULL;
-    int			err;
-    int			(*rec_wrrec)();
+        Fcb *fcb = NULL;
+        int err;
+        int (*rec_wrrec)();
 
-    _isam_entryhook();
+        _isam_entryhook();
 
-    /*
-     * Get FCB corresponding to the isfhandle handle.
-     */
-    if ((fcb = _openfcb(isfhandle, errcode)) == NULL) {
-	_isam_exithook();
-	return (ISERROR);
-    }
+        /*
+         * Get FCB corresponding to the isfhandle handle.
+         */
+        if ((fcb = _openfcb(isfhandle, errcode)) == NULL) {
+                _isam_exithook();
+                return (ISERROR);
+        }
 
-    rec_wrrec = (fcb->varflag?_vlrec_wrrec:_flrec_wrrec);
+        rec_wrrec = (fcb->varflag ? _vlrec_wrrec : _flrec_wrrec);
 
-    /*
-     * Update information in FCB from CNTL page on the disk
-     */
-    (void)_isfcb_cntlpg_r2(fcb);
+        /*
+         * Update information in FCB from CNTL page on the disk
+         */
+        (void)_isfcb_cntlpg_r2(fcb);
 
-    if ((err = rec_wrrec(fcb, record, recnum, reclen)) != ISOK) {
-	_amseterrcode(errcode, err);
-	goto ERROR;
-    }
+        if ((err = rec_wrrec(fcb, record, recnum, reclen)) != ISOK) {
+                _amseterrcode(errcode, err);
+                goto ERROR;
+        }
 
-    /*
-     * Update all keys.
-     */
-    if ((err = _addkeys(fcb, record, recnum)) != ISOK) {
-	_amseterrcode(errcode, err);	
-	goto ERROR;
-    }
+        /*
+         * Update all keys.
+         */
+        if ((err = _addkeys(fcb, record, recnum)) != ISOK) {
+                _amseterrcode(errcode, err);
+                goto ERROR;
+        }
 
-    fcb->nrecords++;
+        fcb->nrecords++;
 
-    _amseterrcode(errcode, ISOK);
+        _amseterrcode(errcode, ISOK);
 
-    _issignals_mask();
-    _isdisk_commit();
-    _isdisk_sync();
-    _isdisk_inval();
+        _issignals_mask();
+        _isdisk_commit();
+        _isdisk_sync();
+        _isdisk_inval();
 
-    /*
-     * Update CNTL Page from the FCB.
-     */
-    (void)_isfcb_cntlpg_w2(fcb);
-    _issignals_unmask();
+        /*
+         * Update CNTL Page from the FCB.
+         */
+        (void)_isfcb_cntlpg_w2(fcb);
+        _issignals_unmask();
 
-    _isam_exithook();
-    return (ISOK);
+        _isam_exithook();
+        return (ISOK);
 
- ERROR:
-    _isdisk_rollback();
-    _isdisk_inval();
+ERROR:
+        _isdisk_rollback();
+        _isdisk_inval();
 
-    /*
-     * Restore FCB from CNTL page.
-     */
-    if (fcb) (void)_isfcb_cntlpg_r2(fcb);
+        /*
+         * Restore FCB from CNTL page.
+         */
+        if (fcb)
+                (void)_isfcb_cntlpg_r2(fcb);
 
-    _isam_exithook();
-    return (ISERROR);
+        _isam_exithook();
+        return (ISERROR);
 }
-
-

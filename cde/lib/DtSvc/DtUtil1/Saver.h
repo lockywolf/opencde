@@ -39,13 +39,10 @@ extern "C" {
  * Functions
  */
 
-extern Boolean DtSaverGetWindows(
-                 Display *display,
-                 Window **window,
-                 int *count);
+extern Boolean DtSaverGetWindows(Display *display, Window **window, int *count);
 
 #ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
 #endif /*_dtsaver_h*/

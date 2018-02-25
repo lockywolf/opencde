@@ -42,67 +42,58 @@
 #include "lutil.h"
 
 #if !defined(linux)
-extern char * strdup(const char *);
+extern char *strdup(const char *);
 #endif
 
 /*
  * calendar_name@host[.domain] -> calendar_name
  */
-extern char *
-_DtCmsTarget2Name(char *target)
-{
-        return(_DtCmGetPrefix(target, '@'));
+extern char *_DtCmsTarget2Name(char *target) {
+        return (_DtCmGetPrefix(target, '@'));
 }
 
 /*
  * calendar_name@host[.domain] -> host[.domain]
  */
-extern char *
-_DtCmsTarget2Location(char *target)
-{
-	char *ptr;
+extern char *_DtCmsTarget2Location(char *target) {
+        char *ptr;
 
-	if (target == NULL)
-		return (NULL);
+        if (target == NULL)
+                return (NULL);
 
-	if ( (ptr = strchr(target, '@')) ) {
-		return (strdup(++ptr));
-	} else
-		return (NULL);
+        if ((ptr = strchr(target, '@'))) {
+                return (strdup(++ptr));
+        } else
+                return (NULL);
 }
 
 /*
  * calendar_name@host[.domain] -> host
  */
-extern char *
-_DtCmsTarget2Host(char *target)
-{
+extern char *_DtCmsTarget2Host(char *target) {
         char *location, *host;
 
         if ((location = _DtCmsTarget2Location(target)) != NULL) {
                 host = _DtCmGetPrefix(location, '.');
                 free(location);
-                return(host);
+                return (host);
         } else
-                return(NULL);
+                return (NULL);
 }
 
 /*
  * calendar_name@host[.domain] -> domain
  */
-extern char *
-_DtCmsTarget2Domain(char *target)
-{
+extern char *_DtCmsTarget2Domain(char *target) {
         char *location, *domain, *ptr;
 
         if ((location = _DtCmsTarget2Location(target)) != NULL) {
-		if ( (ptr = strchr(location, '.')) )
-			domain = strdup(++ptr);
-		else
-			domain = NULL;
+                if ((ptr = strchr(location, '.')))
+                        domain = strdup(++ptr);
+                else
+                        domain = NULL;
                 free(location);
-                return(domain);
+                return (domain);
         } else
-                return(NULL);
+                return (NULL);
 }
-

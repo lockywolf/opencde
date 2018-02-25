@@ -39,62 +39,59 @@
 #include "oliasdb/dlp_hd.h"
 #include "oliasdb/mark.h"
 
-
 class OLIAS_DB {
 
-protected:
-   char** info_base_set_names;
-   char** info_base_list_names;
+      protected:
+        char **info_base_set_names;
+        char **info_base_list_names;
 
-   managers internal_managers; // this should be constructed before 
-			       // the following objects!!!
+        managers internal_managers; // this should be constructed before
+                                    // the following objects!!!
 
-   dlp                  dlp_template;
-   doc                  doc_template;
-   graphic              graphic_template;
-   olias_locator        locator_template;
-   olias_node           node_template;
-   toc                  toc_template;
-   umark                mark_template;
-   stylesheet           stylesheet_template;
+        dlp dlp_template;
+        doc doc_template;
+        graphic graphic_template;
+        olias_locator locator_template;
+        olias_node node_template;
+        toc toc_template;
+        umark mark_template;
+        stylesheet stylesheet_template;
 
-   void_ptr_array infolib_array;
+        void_ptr_array infolib_array;
 
-protected:
-   Boolean 
-   real_destroy_info_base(const char* infoLibPath, const char* base_name);
+      protected:
+        Boolean real_destroy_info_base(const char *infoLibPath,
+                                       const char *base_name);
 
-   Boolean real_destroy(const char* infoLibPath, const char* infoLibName);
-   info_lib* getInfoLib(const char* infoLibUid, int& i);
+        Boolean real_destroy(const char *infoLibPath, const char *infoLibName);
+        info_lib *getInfoLib(const char *infoLibUid, int &i);
 
-public:
-   OLIAS_DB();
-   virtual ~OLIAS_DB();
+      public:
+        OLIAS_DB();
+        virtual ~OLIAS_DB();
 
-   info_lib* openInfoLib(const char* path = getenv("MMDB_PATH"), 
-                         const char* selectedBookCaseName = 0,
-			 const char* infoLibName = "InfoLibrary"
-                        );
-   // NOTE: default argument ("InfoLibrary") needs to be abandoned.
-   void closeInfoLib(const char* infoLibUid = "InfoLibrary");
-   info_lib* getInfoLib(int descriptor);
+        info_lib *openInfoLib(const char *path = getenv("MMDB_PATH"),
+                              const char *selectedBookCaseName = 0,
+                              const char *infoLibName = "InfoLibrary");
+        // NOTE: default argument ("InfoLibrary") needs to be abandoned.
+        void closeInfoLib(const char *infoLibUid = "InfoLibrary");
+        info_lib *getInfoLib(int descriptor);
 
-// complete remove file dir structure for the infolib
-// The action will be taken when the infolib is in closed state
-   Boolean destroy(const char* infoLibPath, const char* infoLibName = "InfoLibrary");
+        // complete remove file dir structure for the infolib
+        // The action will be taken when the infolib is in closed state
+        Boolean destroy(const char *infoLibPath,
+                        const char *infoLibName = "InfoLibrary");
 
-// return 1 if path is a valid dir path and the directory contains
-// names.mmdb or bookcase.map file.
-   int validInfoLibPath(const char* path);
+        // return 1 if path is a valid dir path and the directory contains
+        // names.mmdb or bookcase.map file.
+        int validInfoLibPath(const char *path);
 
-   int major_code_version();
-   int minor_code_version();
-   mm_version code_version();
+        int major_code_version();
+        int minor_code_version();
+        mm_version code_version();
 
-   int numItems() { return infolib_array.no_elmts(); }
-   char* getInfoLibUid(char*);
-
+        int numItems() { return infolib_array.no_elmts(); }
+        char *getInfoLibUid(char *);
 };
 
 #endif
-

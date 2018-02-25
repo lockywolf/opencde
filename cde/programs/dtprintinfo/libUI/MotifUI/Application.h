@@ -36,49 +36,43 @@
 
 class Application : public MotifUI {
 
-   friend int main(int, char **);
-   friend void SaveSessionCB(Widget, XtPointer, XtPointer);
-   friend void CloseCB(Widget, XtPointer, XtPointer);
+        friend int main(int, char **);
+        friend void SaveSessionCB(Widget, XtPointer, XtPointer);
+        friend void CloseCB(Widget, XtPointer, XtPointer);
 
- protected:
+      protected:
+        static void SaveSessionCB(Widget, XtPointer, XtPointer);
+        static void CloseCB(Widget, XtPointer, XtPointer);
+        XFontStruct *fs;
+        FILE *fp;
+        char **attributes;
+        char **values;
+        int n_attrs;
+        char *session_info;
+        char *session_file;
+        char *session_path;
+        char *new_display;
+        virtual void Run();
 
-   static void SaveSessionCB(Widget, XtPointer, XtPointer);
-   static void CloseCB(Widget, XtPointer, XtPointer);
-   XFontStruct *fs;
-   FILE *fp;
-   char **attributes;
-   char **values;
-   int n_attrs;
-   char *session_info;
-   char *session_file;
-   char *session_path;
-   char *new_display;
-   virtual void Run();
+      public:
+        int argc;
+        char **argv;
 
- public:
+        Application(char *name, char *className, int *argc, char **argv);
+        virtual ~Application();
 
-   int argc;
-   char **argv;
+        boolean SetVisiblity(boolean);
+        boolean SetName(char *);
+        virtual void SaveYourSelf() {}
+        virtual char *SessionFile() { return NULL; }
+        virtual char *SessionPath() { return NULL; }
+        void Save(char *attribute, char *value);
+        char *Restore(char *attribute);
+        void SaveMe(boolean save_as_session = false);
 
-   Application(char *name,
-	       char *className,
-	       int *argc,
-	       char **argv);
-   virtual ~Application();
+        const UI_Class UIClass() { return APPLICATION; }
 
-   boolean SetVisiblity(boolean);
-   boolean SetName(char *);
-   virtual void SaveYourSelf() { }
-   virtual char *SessionFile() { return NULL; }
-   virtual char *SessionPath() { return NULL; }
-   void Save(char *attribute, char *value);
-   char *Restore(char *attribute);
-   void SaveMe(boolean save_as_session = false);
-
-   const UI_Class UIClass()        { return APPLICATION; }
-
-   const char *const UIClassName() { return "Application"; }
-
+        const char *const UIClassName() { return "Application"; }
 };
 
 #endif /* APPLICATION_H */

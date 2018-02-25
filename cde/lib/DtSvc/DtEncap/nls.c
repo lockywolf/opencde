@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         nls.c $XConsortium: nls.c /main/3 1995/10/26 15:36:38 rswiston $
- * Language:     C
+ * File:         nls.c $XConsortium: nls.c /main/3 1995/10/26 15:36:38 rswiston
+ * $ Language:     C
  *
  * (c) Copyright 1989, Hewlett-Packard Company, all rights reserved.
  *
@@ -42,21 +42,20 @@
 #endif
 
 /*------------------------------------------------------------------------+*/
-XeString
-XeSBTempPath(XeString suffix)
+XeString XeSBTempPath(XeString suffix)
 /*------------------------------------------------------------------------+*/
 {
-    XeString dir   = (XeString) CDE_LOGFILES_TOP;
-    XeString path;
+        XeString dir = (XeString)CDE_LOGFILES_TOP;
+        XeString path;
 
-    if (!suffix || !*suffix)
-	return strdup(dir);
+        if (!suffix || !*suffix)
+                return strdup(dir);
 
-    path = (XeString)XeMalloc(strlen(dir) + strlen(suffix) + 2 );
+        path = (XeString)XeMalloc(strlen(dir) + strlen(suffix) + 2);
 
-    strcpy(path, dir);
-    strcat(path, "/");
-    strcat(path, suffix);
+        strcpy(path, dir);
+        strcat(path, "/");
+        strcat(path, suffix);
 
-    return path;
+        return path;
 }

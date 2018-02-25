@@ -25,7 +25,6 @@
 #ifndef _lout_limit_
 #define _lout_limit_ 1
 
-
 #define LOUT_MAX_CHARS_PER_LINE 2000
 
 #endif

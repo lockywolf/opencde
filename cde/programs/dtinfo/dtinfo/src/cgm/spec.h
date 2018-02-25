@@ -30,23 +30,12 @@
 */
 #include <DtI/GraphicsP.h>
 
-extern enum _DtGrLoadStatus processCGM(
-    _DtGrStream           *stream,
-    Screen                *screen,
-    int                   depth,
-    Colormap              colormap,
-    Visual                *visual,
-    Pixel                 foreground,
-    Pixel                 background,
-    GC                    gc,
-    enum _DtGrColorModel  color_model,
-    Boolean               allow_reduced_colors,
-    Dimension             *in_out_width,
-    Dimension             *in_out_height,
-    unsigned short        media_resolution,
-    Pixmap                *ret_pixmap,
-    Pixmap                *ret_mask,
-    Pixel                 **ret_colors,
-    int                   *ret_num_colors,
-    _DtGrContext          *context);
+extern enum _DtGrLoadStatus
+processCGM(_DtGrStream *stream, Screen *screen, int depth, Colormap colormap,
+           Visual *visual, Pixel foreground, Pixel background, GC gc,
+           enum _DtGrColorModel color_model, Boolean allow_reduced_colors,
+           Dimension *in_out_width, Dimension *in_out_height,
+           unsigned short media_resolution, Pixmap *ret_pixmap,
+           Pixmap *ret_mask, Pixel **ret_colors, int *ret_num_colors,
+           _DtGrContext *context);
 #endif

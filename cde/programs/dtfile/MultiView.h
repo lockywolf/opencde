@@ -42,58 +42,43 @@
 #define _MultiView_h
 
 typedef struct {
-   char type;
-   Boolean isHelpBtn;
-   String name;
-   String label;
-   String mnemonic;
-   XtPointer helpData;
-   XtCallbackProc helpCallback;
-   XtPointer activateData;
-   XtCallbackProc activateCallback;
-   unsigned int maskBit;
-   Widget widget;
+        char type;
+        Boolean isHelpBtn;
+        String name;
+        String label;
+        String mnemonic;
+        XtPointer helpData;
+        XtCallbackProc helpCallback;
+        XtPointer activateData;
+        XtCallbackProc activateCallback;
+        unsigned int maskBit;
+        Widget widget;
 } MenuDesc;
-
 
 /********    Public Function Declarations    ********/
 
 extern Widget _DtCreateMenuSystem(
-                        Widget parent ,
-                        char * menuBarName,
-                        XtCallbackProc helpCallback,
-                        XtPointer helpData,
-                        Boolean createSharedComponents,
-                        MenuDesc * menuDesc,
-                        int numMenuComponents,
-                        void (*getMenuDataProc)(),
-                        void (*setMenuSensitivity)(),
-                        void (*restoreMenuSensitivity)()) ;
-extern void _DtGlobalUpdateMenuItemState(
-                        Widget btn,
-                        unsigned int mask,
-                        unsigned int on,
-                        unsigned int * globalMenuStates) ;
-extern void _DtGlobalSetMenuSensitivity(
-                        Widget w,
-                        XtPointer client_data,
-                        XtPointer call_data) ;
-extern void _DtGlobalRestoreMenuSensitivity(
-                        Widget w,
-                        XtPointer client_data,
-                        XtPointer call_data) ;
+    Widget parent, char *menuBarName, XtCallbackProc helpCallback,
+    XtPointer helpData, Boolean createSharedComponents, MenuDesc *menuDesc,
+    int numMenuComponents, void (*getMenuDataProc)(),
+    void (*setMenuSensitivity)(), void (*restoreMenuSensitivity)());
+extern void _DtGlobalUpdateMenuItemState(Widget btn, unsigned int mask,
+                                         unsigned int on,
+                                         unsigned int *globalMenuStates);
+extern void _DtGlobalSetMenuSensitivity(Widget w, XtPointer client_data,
+                                        XtPointer call_data);
+extern void _DtGlobalRestoreMenuSensitivity(Widget w, XtPointer client_data,
+                                            XtPointer call_data);
 
 /********    End Public Function Declarations    ********/
 
-
 /* Defines for menu components */
-#define MENU_PANE            0
+#define MENU_PANE 0
 #define MENU_PULLDOWN_BUTTON 1
-#define MENU_BUTTON          2
-#define MENU_SEPARATOR       3
-#define SHARED_MENU_PANE     4
-#define MENU_TOGGLE_BUTTON   5
-
+#define MENU_BUTTON 2
+#define MENU_SEPARATOR 3
+#define SHARED_MENU_PANE 4
+#define MENU_TOGGLE_BUTTON 5
 
 #endif /* _MultiView_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

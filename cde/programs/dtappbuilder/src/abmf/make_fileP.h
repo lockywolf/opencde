@@ -27,7 +27,7 @@
  * @(#)make_fileP.h	3.13 24 Mar 1994	cde_app_builder/src/abmf
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -42,10 +42,5 @@
 
 #include "write_codeP.h"
 
-int		abmfP_write_make_file(
-			GenCodeInfo	genCodeInfo,
-			ABObj		project,
-			AB_OS_TYPE	osType,
-			BOOL		useSourceBrowser
-			);
-
+int abmfP_write_make_file(GenCodeInfo genCodeInfo, ABObj project,
+                          AB_OS_TYPE osType, BOOL useSourceBrowser);

@@ -35,10 +35,6 @@
 #include "parser.h"
 
 /* Set a user-defined C variable to the corresponding parameter value */
-void m_setparam(cvar, par)
-  M_WCHAR **cvar ;
-  int par ;
-  {
-    *cvar = m_stackpar->param[par] ;
-    }
-
+void m_setparam(cvar, par) M_WCHAR **cvar;
+int par;
+{ *cvar = m_stackpar->param[par]; }

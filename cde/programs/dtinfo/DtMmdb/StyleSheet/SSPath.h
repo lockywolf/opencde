@@ -30,7 +30,6 @@
 
 #ifndef CDE_NEXT
 
-
 #else
 #include "dti_cc/CC_Dlist.h"
 #include "dti_cc/cc_vvect.h"
@@ -39,59 +38,58 @@
 // path term object class
 // each term is made up of a SGMLGI and an optional
 // expression.
-class PathTerm
-{
-public:
-   PathTerm(const Element&);
-   PathTerm(const Symbol&, PQExpr* = 0);
-   PathTerm(const char* symbol, PQExpr* = 0);
-   ~PathTerm();
+class PathTerm {
+      public:
+        PathTerm(const Element &);
+        PathTerm(const Symbol &, PQExpr * = 0);
+        PathTerm(const char *symbol, PQExpr * = 0);
+        ~PathTerm();
 
-   unsigned int operator ==(const PathTerm&);
+        unsigned int operator==(const PathTerm &);
 
-   const Element& element() { return f_element; };
-   const Symbol& symbol() { return f_element.gi(); };
-   PQExpr* pqexpr() { return f_PQExpr; };
+        const Element &element() { return f_element; };
+        const Symbol &symbol() { return f_element.gi(); };
+        PQExpr *pqexpr() { return f_PQExpr; };
 
-   friend ostream& operator <<(ostream&, PathTerm&);
+        friend ostream &operator<<(ostream &, PathTerm &);
 
-private:
-   const Element f_element;
-   PQExpr* f_PQExpr;
+      private:
+        const Element f_element;
+        PQExpr *f_PQExpr;
 };
 
-typedef PathTerm* PathTermPtr;
+typedef PathTerm *PathTermPtr;
 
 ////////////////////////////////////////////
 // path of path terms
 ////////////////////////////////////////////
-class SSPath : public CC_TPtrDlist<PathTerm>
-{
+class SSPath : public CC_TPtrDlist<PathTerm> {
 
-private:
-   unsigned int f_containPathQualifier;
-   value_vector<PathTermPtr>* f_fastGetIndex; 
+      private:
+        unsigned int f_containPathQualifier;
+        value_vector<PathTermPtr> *f_fastGetIndex;
 
-public:
-   SSPath(char*, unsigned int assignId); // for test purpose
-   SSPath();
-   virtual ~SSPath();
+      public:
+        SSPath(char *, unsigned int assignId); // for test purpose
+        SSPath();
+        virtual ~SSPath();
 
-// this call update f_containPathQualifier field
-   void appendPathTerm(PathTerm*);
+        // this call update f_containPathQualifier field
+        void appendPathTerm(PathTerm *);
 
-   unsigned int containSelector() { return f_containPathQualifier; };
+        unsigned int containSelector() { return f_containPathQualifier; };
 
-// prepend p to this. Elements in p are added to this.
-   void prependPath(SSPath& p); 
+        // prepend p to this. Elements in p are added to this.
+        void prependPath(SSPath &p);
 
-// Set up an index so that the random access to elements in the list can 
-// be O(1). No range checking is performed.
-// Set up the index by calling fastGetIndex() before any fastGetAt() call.
-   void fastGetIndex();
-   PathTerm* fastGetAt(unsigned int i) { return (*f_fastGetIndex)[i]; };
+        // Set up an index so that the random access to elements in the list can
+        // be O(1). No range checking is performed.
+        // Set up the index by calling fastGetIndex() before any fastGetAt()
+        // call.
+        void fastGetIndex();
+        PathTerm *fastGetAt(unsigned int i) { return (*f_fastGetIndex)[i]; };
 
-   friend ostream& operator<< (ostream&, SSPath&);
+        friend ostream &operator<<(ostream &, SSPath &);
 };
 
 typedef CC_TPtrDlist<char> charPtrDlist;

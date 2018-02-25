@@ -32,20 +32,20 @@
 #ifndef __NL_HACK_H_
 #define __NL_HACK_H_
 
-#include	<ctype.h>
+#include <ctype.h>
 
 #ifdef NO_NLS16
 
-# define ADVANCE(p)     (++(p))
-# define CHARAT(p)      (*(unsigned char *)(p))
-# define CHARADV(p)     (*(unsigned char *)(p)++)
-# define WCHAR(c, p)    (*(unsigned char *)(p) = c)
-# define WCHARADV(c, p) (*(unsigned char *)(p)++ = c)
+#define ADVANCE(p) (++(p))
+#define CHARAT(p) (*(unsigned char *)(p))
+#define CHARADV(p) (*(unsigned char *)(p)++)
+#define WCHAR(c, p) (*(unsigned char *)(p) = c)
+#define WCHARADV(c, p) (*(unsigned char *)(p)++ = c)
 
 #else
 
-# include <locale.h>
-# include <stdlib.h>
+#include <locale.h>
+#include <stdlib.h>
 
 /* These two globals are needed for the following macros to work.
  * The definitions are neither "extern" nor "static".  This keeps both
@@ -64,20 +64,19 @@
 
 /* wchar_t __nlh_char[1]; */
 
-# define __NLH_WIDTH(p)	(mblen(p, MB_CUR_MAX) > 1 ? mblen(p, MB_CUR_MAX) : 1)
-# define __NLH_CHAR(p)	\
-	(mbtowc(__nlh_char, p, MB_CUR_MAX) < 0 ? *p : __nlh_char[0])
+#define __NLH_WIDTH(p) (mblen(p, MB_CUR_MAX) > 1 ? mblen(p, MB_CUR_MAX) : 1)
+#define __NLH_CHAR(p)                                                          \
+        (mbtowc(__nlh_char, p, MB_CUR_MAX) < 0 ? *p : __nlh_char[0])
 
-# define ADVANCE(p)	((p) += __NLH_WIDTH(p))
+#define ADVANCE(p) ((p) += __NLH_WIDTH(p))
 
-# define CHARAT(p)	(__NLH_CHAR(p))
+#define CHARAT(p) (__NLH_CHAR(p))
 
-# define CHARADV(p)	(__NLH_CHAR(p),	\
-			 (p) += __NLH_WIDTH(p), __nlh_char[0])
+#define CHARADV(p) (__NLH_CHAR(p), (p) += __NLH_WIDTH(p), __nlh_char[0])
 
-# define WCHAR(c, p)	(wctomb(p, (wchar_t)c), c)
+#define WCHAR(c, p) (wctomb(p, (wchar_t)c), c)
 
-# define WCHARADV(c, p)	(WCHAR(c, p), ADVANCE(p))
+#define WCHARADV(c, p) (WCHAR(c, p), ADVANCE(p))
 
 #endif
 

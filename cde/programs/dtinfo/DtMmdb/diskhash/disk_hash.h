@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,10 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
-
 
 #ifndef _disk_hash_h
 #define _disk_hash_h
@@ -63,80 +61,75 @@
 extern int steps[];
 extern int no_steps;
 
-class disk_hash : public index_agent 
-{
+class disk_hash : public index_agent {
 
-public:
-   disk_hash(page_storage* key_oid_store, 
-             int prime = 32801, 
-             int expected_n = 100
-            ); 
-                               // prime and expected
-                               // key set size 
-   virtual ~disk_hash();
+      public:
+        disk_hash(page_storage *key_oid_store, int prime = 32801,
+                  int expected_n = 100);
+        // prime and expected
+        // key set size
+        virtual ~disk_hash();
 
-   Boolean insert(data_t& v);  // insert a key
-   Boolean remove(data_t& v);  // remove a key
-   Boolean member(data_t& v);  // member test
+        Boolean insert(data_t &v); // insert a key
+        Boolean remove(data_t &v); // remove a key
+        Boolean member(data_t &v); // member test
 
-   void clean();  // remove all keys
+        void clean(); // remove all keys
 
-   //int no_keys() const { return n; }; // return key set size
+        // int no_keys() const { return n; }; // return key set size
 
-// WARNING:  -1 is the terminate condition!!!
-   int first_bucket();
-   disk_bucket* get_bucket(int&);
-   void next_bucket(int&);
+        // WARNING:  -1 is the terminate condition!!!
+        int first_bucket();
+        disk_bucket *get_bucket(int &);
+        void next_bucket(int &);
 
-// output this with print_f handling the printing of whole data_t.
-// pointer to data_t as void* is passed to print_f
-   ostream& asciiOut(ostream& out, print_func_ptr_t print_f);
+        // output this with print_f handling the printing of whole data_t.
+        // pointer to data_t as void* is passed to print_f
+        ostream &asciiOut(ostream &out, print_func_ptr_t print_f);
 
-   ostream& asciiOut(ostream& out);
-   istream& asciiIn(istream& in);
+        ostream &asciiOut(ostream &out);
+        istream &asciiIn(istream &in);
 
+      protected:
+        void init_params(int prime, int expected_n);
+        void sync_params();
 
-protected:
-   void init_params(int prime, int expected_n);
-   void sync_params();
+        void set_M(unsigned int newM) { M = newM; };
+        void set_v(unsigned int newv) { v = newv; };
+        void set_k(unsigned int newk) { k = newk; };
+        void set_p(unsigned int newp) { p = newp; };
+        void set_n(unsigned int newn) { n = newn; };
 
-   void set_M(unsigned int newM) { M = newM; };
-   void set_v(unsigned int newv) { v = newv; };
-   void set_k(unsigned int newk) { k = newk; };
-   void set_p(unsigned int newp) { p = newp; };
-   void set_n(unsigned int newn) { n = newn; };
+        Boolean rehash(data_t &w);      // rehash all keys in buckets + w
+        Boolean _rehash(fstream &pool); // rehash keys from pool
 
-   Boolean rehash(data_t& w);   // rehash all keys in buckets + w
-   Boolean _rehash(fstream& pool);   // rehash keys from pool
+        Boolean _insert(data_t &v, Boolean rehash_if_fail);
+        Boolean member(data_t &v, disk_bucket *&b, int &slot_num) const;
 
-   Boolean _insert(data_t& v, Boolean rehash_if_fail);  
-   Boolean member(data_t& v, disk_bucket*& b, int& slot_num) const;  
+        void caching(disk_bucket &b, data_t &w, int slot_num);
 
-   void caching(disk_bucket& b, data_t& w, int slot_num);
+        void out_params();
 
-   void out_params();
+      protected:
+        unsigned int M; // number buckets
+        unsigned int v; // number of overflow buckets
 
-protected:
-   unsigned int M;        // number buckets 
-   unsigned int v;        // number of overflow buckets
+        unsigned int k; // parameter used in the 1st level hash function
+        unsigned int p; // prime number p
 
-   unsigned int k;        // parameter used in the 1st level hash function
-   unsigned int p;        // prime number p
+        unsigned int n; // current key set size
 
-   unsigned int n;        // current key set size
+        bucket_array *bucket_vector; // bucket array
 
-   bucket_array* bucket_vector;  // bucket array
+        void_ptr_array *hash_vector; // hash array
+        void_ptr_array *k_vector;    // k param array
+        void_ptr_array *r_vector;    // r param array
 
-   void_ptr_array* hash_vector;  // hash array
-   void_ptr_array* k_vector;     // k param array
-   void_ptr_array* r_vector;     // r param array
+        page_storage *key_store; // key_recordOID store
 
-   page_storage* key_store; // key_recordOID store
+        buffer &buf;
 
-   buffer& buf; 
-
-   pm_random rand_generator;   // rand generator
+        pm_random rand_generator; // rand generator
 };
 
 #endif
-

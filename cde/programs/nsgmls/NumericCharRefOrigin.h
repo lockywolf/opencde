@@ -37,18 +37,19 @@ namespace SP_NAMESPACE {
 #endif
 
 class NumericCharRefOrigin : public Origin {
-public:
-  NumericCharRefOrigin(const Location &start, Index endIndex,
-		       Owner<Markup> &markup);
-  const Location &parent() const;
-  Index refLength() const;
-  Boolean isNumericCharRef(const Markup *&) const;
-private:
-  NumericCharRefOrigin(const NumericCharRefOrigin &); // undefined
-  void operator=(const NumericCharRefOrigin &);	      // undefined
-  Location start_;
-  Index refLength_;
-  Owner<Markup> markup_;
+      public:
+        NumericCharRefOrigin(const Location &start, Index endIndex,
+                             Owner<Markup> &markup);
+        const Location &parent() const;
+        Index refLength() const;
+        Boolean isNumericCharRef(const Markup *&) const;
+
+      private:
+        NumericCharRefOrigin(const NumericCharRefOrigin &); // undefined
+        void operator=(const NumericCharRefOrigin &);       // undefined
+        Location start_;
+        Index refLength_;
+        Owner<Markup> markup_;
 };
 
 #ifdef SP_NAMESPACE

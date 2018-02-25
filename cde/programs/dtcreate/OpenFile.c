@@ -45,95 +45,88 @@
 #include "OpenFile.h"
 #undef CONTEXT_MACRO_ACCESS
 
-extern XtPointer
-_XmStringUngenerate(XmString, XmStringTag, XmTextType, XmTextType);
+extern XtPointer _XmStringUngenerate(XmString, XmStringTag, XmTextType,
+                                     XmTextType);
 
 /*******************************************************************************
        The following are callback functions.
 *******************************************************************************/
 
-static  void    cancelCB_OpenFile( Widget UxWidget,
-                                  XtPointer UxClientData,
-                                  XtPointer UxCallbackArg )
+static void cancelCB_OpenFile(Widget UxWidget, XtPointer UxClientData,
+                              XtPointer UxCallbackArg)
 
 {
-        _UxCOpenFile            *UxSaveCtx, *UxContext;
+        _UxCOpenFile *UxSaveCtx, *UxContext;
 
         UxSaveCtx = UxOpenFileContext;
-        UxOpenFileContext = UxContext =
-                        (_UxCOpenFile *) UxGetContext( UxWidget );
-        {
-
-        UxPopdownInterface(UxWidget);
-        }
+        UxOpenFileContext = UxContext = (_UxCOpenFile *)UxGetContext(UxWidget);
+        { UxPopdownInterface(UxWidget); }
         UxOpenFileContext = UxSaveCtx;
 }
 
-static  void    okCallback_OpenFile( Widget UxWidget,
-                                    XtPointer UxClientData,
-                                    XtPointer UxCallbackArg )
+static void okCallback_OpenFile(Widget UxWidget, XtPointer UxClientData,
+                                XtPointer UxCallbackArg)
 
 {
-        _UxCOpenFile                     *UxSaveCtx, *UxContext;
+        _UxCOpenFile *UxSaveCtx, *UxContext;
         XmFileSelectionBoxCallbackStruct *cbs;
         /*char        *text;*/
-        int         rc;
-        ActionData  ADTmp;
+        int rc;
+        ActionData ADTmp;
 
         UxSaveCtx = UxOpenFileContext;
-        UxOpenFileContext = UxContext =
-                        (_UxCOpenFile *) UxGetContext( UxWidget );
+        UxOpenFileContext = UxContext = (_UxCOpenFile *)UxGetContext(UxWidget);
         {
 
-        /********************************************************************/
-        /* Call file parsing code here!                                     */
-        /********************************************************************/
-        cbs = (XmFileSelectionBoxCallbackStruct *)UxCallbackArg;
-        if (pszFileToEdit) {
-           XtFree(pszFileToEdit);
-        }
-	pszFileToEdit =
-	    _XmStringUngenerate(cbs->value, NULL,
-				XmCHARSET_TEXT, XmCHARSET_TEXT);
-        if (pszFileToEdit != (char *)NULL) {
-           memset(&ADTmp, 0, sizeof(ActionData));
-           rc = OpenDefinitionFile(pszFileToEdit, &ADTmp);
-           /*XtFree(text);*/
-           /*****************************************************************/
-           /* If everything ok, then clear out data from action structure   */
-           /* and store new data.                                           */
-           /*****************************************************************/
-           if (!rc) {
-              FreeAndClearAD(&AD);
-              memcpy(&AD, &ADTmp, sizeof(ActionData));
-           }
-        }
-        UxPopdownInterface (UxWidget);
+                /********************************************************************/
+                /* Call file parsing code here! */
+                /********************************************************************/
+                cbs = (XmFileSelectionBoxCallbackStruct *)UxCallbackArg;
+                if (pszFileToEdit) {
+                        XtFree(pszFileToEdit);
+                }
+                pszFileToEdit = _XmStringUngenerate(
+                    cbs->value, NULL, XmCHARSET_TEXT, XmCHARSET_TEXT);
+                if (pszFileToEdit != (char *)NULL) {
+                        memset(&ADTmp, 0, sizeof(ActionData));
+                        rc = OpenDefinitionFile(pszFileToEdit, &ADTmp);
+                        /*XtFree(text);*/
+                        /*****************************************************************/
+                        /* If everything ok, then clear out data from action
+                         * structure   */
+                        /* and store new data. */
+                        /*****************************************************************/
+                        if (!rc) {
+                                FreeAndClearAD(&AD);
+                                memcpy(&AD, &ADTmp, sizeof(ActionData));
+                        }
+                }
+                UxPopdownInterface(UxWidget);
 
-        /********************************************************************/
-        /* If successfully opened and parsed file, then init the fields of  */
-        /* the main window.                                                 */
-        /********************************************************************/
-        if (!rc) {
-           clear_CreateActionAppShell_fields();
-           writeCAToGUI(&AD);
-        }
+                /********************************************************************/
+                /* If successfully opened and parsed file, then init the fields
+                 * of  */
+                /* the main window. */
+                /********************************************************************/
+                if (!rc) {
+                        clear_CreateActionAppShell_fields();
+                        writeCAToGUI(&AD);
+                }
         }
         UxOpenFileContext = UxSaveCtx;
 }
 
-static  void    helpCallback_OpenFile( Widget UxWidget,
-                                    XtPointer UxClientData,
-                                    XtPointer UxCallbackArg )
+static void helpCallback_OpenFile(Widget UxWidget, XtPointer UxClientData,
+                                  XtPointer UxCallbackArg)
 
 {
-        _UxCOpenFile            *UxSaveCtx, *UxContext;
+        _UxCOpenFile *UxSaveCtx, *UxContext;
 
         UxSaveCtx = UxOpenFileContext;
-        UxOpenFileContext = UxContext =
-                        (_UxCOpenFile *) UxGetContext( UxWidget );
+        UxOpenFileContext = UxContext = (_UxCOpenFile *)UxGetContext(UxWidget);
         {
-        DisplayHelpDialog(UxWidget, (XtPointer)HELP_OPENFILE, UxCallbackArg);
+                DisplayHelpDialog(UxWidget, (XtPointer)HELP_OPENFILE,
+                                  UxCallbackArg);
         }
         UxOpenFileContext = UxSaveCtx;
 }
@@ -143,60 +136,47 @@ static  void    helpCallback_OpenFile( Widget UxWidget,
        using the resource values specified in the Property Editor.
 *******************************************************************************/
 
-static Widget   _Uxbuild_OpenFile(void)
-{
-        Widget          _UxParent;
+static Widget _Uxbuild_OpenFile(void) {
+        Widget _UxParent;
 
         /* Creation of OpenFile */
-        _UxParent = XtVaCreatePopupShell( "OpenFile_shell",
-                        xmDialogShellWidgetClass, UxTopLevel,
-                        XmNx, 200,
-                        XmNy, 290,
-                        XmNwidth, 398,
-                        XmNheight, 500,
-                        XmNallowShellResize, TRUE,
-                        XmNshellUnitType, XmPIXELS,
-                        XmNtitle, GETMESSAGE(12, 25, "Create Action - Open"),
-                        NULL );
+        _UxParent = XtVaCreatePopupShell(
+            "OpenFile_shell", xmDialogShellWidgetClass, UxTopLevel, XmNx, 200,
+            XmNy, 290, XmNwidth, 398, XmNheight, 500, XmNallowShellResize, TRUE,
+            XmNshellUnitType, XmPIXELS, XmNtitle,
+            GETMESSAGE(12, 25, "Create Action - Open"), NULL);
 
-        OpenFile = XtVaCreateWidget( "OpenFile",
-                        xmFileSelectionBoxWidgetClass,
-                        _UxParent,
-                        XmNresizePolicy, XmRESIZE_GROW,
-                        XmNunitType, XmPIXELS,
-                        XmNwidth, 398,
-                        XmNheight, 500,
-                        RES_CONVERT( XmNdialogTitle, GETMESSAGE(12, 25, "Create Action - Open")),
-                        RES_CONVERT( XmNdirectory, "" ),
-                        RES_CONVERT( XmNtextString, "" ),
-                        RES_CONVERT( XmNdirSpec, "" ),
-                        XmNdialogType, XmDIALOG_FILE_SELECTION,
-                        XmNtextColumns, 20,
-                        XmNdialogStyle, XmDIALOG_FULL_APPLICATION_MODAL,
-                        XmNallowOverlap, FALSE,
-                        RES_CONVERT( XmNchildPlacement, "place_below_selection" ),
-                        XmNdefaultPosition, FALSE,
-                        RES_CONVERT( XmNdirMask, "" ),
-                        RES_CONVERT( XmNpattern, "" ),
-                        NULL );
-        XtAddCallback( OpenFile, XmNcancelCallback,
-                (XtCallbackProc) cancelCB_OpenFile,
-                (XtPointer) UxOpenFileContext );
-        XtAddCallback( OpenFile, XmNokCallback,
-                (XtCallbackProc) okCallback_OpenFile,
-                (XtPointer) UxOpenFileContext );
-        XtAddCallback( OpenFile, XmNhelpCallback,
-                (XtCallbackProc) helpCallback_OpenFile,
-                (XtPointer) UxOpenFileContext );
+        OpenFile = XtVaCreateWidget(
+            "OpenFile", xmFileSelectionBoxWidgetClass, _UxParent,
+            XmNresizePolicy, XmRESIZE_GROW, XmNunitType, XmPIXELS, XmNwidth,
+            398, XmNheight, 500,
+            RES_CONVERT(XmNdialogTitle,
+                        GETMESSAGE(12, 25, "Create Action - Open")),
+            RES_CONVERT(XmNdirectory, ""), RES_CONVERT(XmNtextString, ""),
+            RES_CONVERT(XmNdirSpec, ""), XmNdialogType, XmDIALOG_FILE_SELECTION,
+            XmNtextColumns, 20, XmNdialogStyle, XmDIALOG_FULL_APPLICATION_MODAL,
+            XmNallowOverlap, FALSE,
+            RES_CONVERT(XmNchildPlacement, "place_below_selection"),
+            XmNdefaultPosition, FALSE, RES_CONVERT(XmNdirMask, ""),
+            RES_CONVERT(XmNpattern, ""), NULL);
+        XtAddCallback(OpenFile, XmNcancelCallback,
+                      (XtCallbackProc)cancelCB_OpenFile,
+                      (XtPointer)UxOpenFileContext);
+        XtAddCallback(OpenFile, XmNokCallback,
+                      (XtCallbackProc)okCallback_OpenFile,
+                      (XtPointer)UxOpenFileContext);
+        XtAddCallback(OpenFile, XmNhelpCallback,
+                      (XtCallbackProc)helpCallback_OpenFile,
+                      (XtPointer)UxOpenFileContext);
         XtVaSetValues(OpenFile, XmNuserData, OpenFile, NULL);
 
-        UxPutContext( OpenFile, (char *) UxOpenFileContext );
+        UxPutContext(OpenFile, (char *)UxOpenFileContext);
 
-        XtAddCallback( OpenFile, XmNdestroyCallback,
-                (XtCallbackProc) UxDestroyContextCB,
-                (XtPointer) UxOpenFileContext);
+        XtAddCallback(OpenFile, XmNdestroyCallback,
+                      (XtCallbackProc)UxDestroyContextCB,
+                      (XtPointer)UxOpenFileContext);
 
-        return ( OpenFile );
+        return (OpenFile);
 }
 
 /*******************************************************************************
@@ -206,21 +186,18 @@ static Widget   _Uxbuild_OpenFile(void)
        a callback function.
 *******************************************************************************/
 
-Widget  create_OpenFile(void)
-{
-        Widget                  rtrn;
-        _UxCOpenFile            *UxContext;
+Widget create_OpenFile(void) {
+        Widget rtrn;
+        _UxCOpenFile *UxContext;
 
         UxOpenFileContext = UxContext =
-                (_UxCOpenFile *) UxNewContext( sizeof(_UxCOpenFile), False );
-
+            (_UxCOpenFile *)UxNewContext(sizeof(_UxCOpenFile), False);
 
         rtrn = _Uxbuild_OpenFile();
 
-        return(rtrn);
+        return (rtrn);
 }
 
 /*******************************************************************************
        END OF FILE
 *******************************************************************************/
-

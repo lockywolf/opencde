@@ -48,29 +48,28 @@
 #include "dbtype.h"
 
 /* Set current record to current owner
-*/
-int
-d_setro(set TASK_PARM DBN_PARM)
-int set;   /* set table entry number */
+ */
+int d_setro(set TASK_PARM DBN_PARM) int set; /* set table entry number */
 TASK_DECL
-DBN_DECL   /* database number */
+DBN_DECL /* database number */
 {
-   SET_ENTRY FAR *set_ptr;
+        SET_ENTRY FAR *set_ptr;
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_NOIO));
-   
-   if (nset_check(set, &set, (SET_ENTRY FAR * FAR *)&set_ptr) != S_OKAY)
-      RETURN( db_status );
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_NOIO));
 
-   if ( ! curr_own[set] ) 
-      RETURN( dberr( S_NOCO ) );
+        if (nset_check(set, &set, (SET_ENTRY FAR * FAR *)&set_ptr) != S_OKAY)
+                RETURN(db_status);
 
-   curr_rec = curr_own[set];
-#ifndef	 NO_TIMESTAMP
-   /* set timestamp */
-   if ( db_tsrecs )
-      cr_time = co_time[set];
+        if (!curr_own[set])
+                RETURN(dberr(S_NOCO));
+
+        curr_rec = curr_own[set];
+#ifndef NO_TIMESTAMP
+        /* set timestamp */
+        if (db_tsrecs)
+                cr_time = co_time[set];
 #endif
-   RETURN( db_status = S_OKAY );
+        RETURN(db_status = S_OKAY);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin setro.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin setro.c */

@@ -22,9 +22,9 @@
  */
 /* $XConsortium: iljpgint.h /main/4 1996/01/08 12:16:39 lehors $ */
 /**---------------------------------------------------------------------
-***	
+***
 ***    (c)Copyright 1992 Hewlett-Packard Co.
-***    
+***
 ***                             RESTRICTED RIGHTS LEGEND
 ***    Use, duplication, or disclosure by the U.S. Government is subject to
 ***    restrictions as set forth in sub-paragraph (c)(1)(ii) of the Rights in
@@ -62,30 +62,28 @@
 
 typedef int iljpgBool;
 
-    /* JPEG zigzag scanning order (64 entries) */
-    ILJPG_PRIVATE_EXTERN 
+/* JPEG zigzag scanning order (64 entries) */
+ILJPG_PRIVATE_EXTERN
 int _iljpgZigzagTable[];
 
-    /*  Allocate _nBytes from heap and return a ptr to it. */
+/*  Allocate _nBytes from heap and return a ptr to it. */
 #ifndef ILJPG_MALLOC
-#   define ILJPG_MALLOC(_nBytes)  (malloc (_nBytes))
+#define ILJPG_MALLOC(_nBytes) (malloc(_nBytes))
 #endif
 
-    /*  Allocate _nBytes from heap, zero it, and return a ptr to it. */
+/*  Allocate _nBytes from heap, zero it, and return a ptr to it. */
 #ifndef ILJPG_MALLOC_ZERO
-#   define ILJPG_MALLOC_ZERO(_nBytes)  (calloc ((_nBytes), 1))
+#define ILJPG_MALLOC_ZERO(_nBytes) (calloc((_nBytes), 1))
 #endif
 
-    /*  Free given block (*_ptr), allocated by ILJPG_MALLOC_ZERO(). */
+/*  Free given block (*_ptr), allocated by ILJPG_MALLOC_ZERO(). */
 #ifndef ILJPG_FREE
-#   define ILJPG_FREE(_ptr)       (free (_ptr))
+#define ILJPG_FREE(_ptr) (free(_ptr))
 #endif
 
-    /*  Validate the given parameter block and return true iff valid.
-    */
-    ILJPG_PRIVATE_EXTERN 
-iljpgBool _iljpgValidPars (
-    register iljpgDataPtr pData
-    );
+/*  Validate the given parameter block and return true iff valid.
+ */
+ILJPG_PRIVATE_EXTERN
+iljpgBool _iljpgValidPars(register iljpgDataPtr pData);
 
 #endif

@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         stringbuf.h $XConsortium: stringbuf.h /main/3 1995/10/26 15:49:00 rswiston $
- * Language:     C
+ * File:         stringbuf.h $XConsortium: stringbuf.h /main/3 1995/10/26
+ * 15:49:00 rswiston $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -36,33 +36,32 @@
 #define _stringbuf_h
 
 typedef struct _XeStringBuffer {
-   int last_char;  /* index of trailing NULL */
-   int size;
-   int increment;  /* how much to expand when more space is needed */
-   XeString buffer;
-} *XeStringBuffer;
+        int last_char; /* index of trailing NULL */
+        int size;
+        int increment; /* how much to expand when more space is needed */
+        XeString buffer;
+} * XeStringBuffer;
 
-
-int XeAppendToStringBuffer 
+int XeAppendToStringBuffer
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (XeStringBuffer buffer, XeString string);
+    (XeStringBuffer buffer, XeString string);
 #else
-   ();
+    ();
 #endif
 
-XeStringBuffer XeMakeStringBuffer 
+XeStringBuffer XeMakeStringBuffer
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (int increment_size);
+    (int increment_size);
 #else
-   ();
+    ();
 #endif
 
-	/* erase the contents (but don't deallocate any space). */
-void XeClearStringBuffer 
+/* erase the contents (but don't deallocate any space). */
+void XeClearStringBuffer
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (XeStringBuffer buffer);
+    (XeStringBuffer buffer);
 #else
-   ();
+    ();
 #endif
 
 /*** add nothing after the following endif ***/

@@ -34,17 +34,15 @@
 #include <sys/types.h>
 #include <stdio.h>
 
-class Invoke
-{
- 
- public:
+class Invoke {
 
-  int status;
+      public:
+        int status;
 
-  Invoke(const char *command,
-	 char **std_out = NULL,
-	 char **std_err = NULL,
-	 uid_t uid = (uid_t)-1); // To run the command as another, set uid >= 0
+        Invoke(const char *command, char **std_out = NULL,
+               char **std_err = NULL,
+               uid_t uid =
+                   (uid_t)-1); // To run the command as another, set uid >= 0
 };
 
 #endif // INVOKE_H

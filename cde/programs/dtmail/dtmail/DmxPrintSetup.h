@@ -31,7 +31,7 @@
  *	$:$
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -54,9 +54,9 @@
  *   (c) Copyright 1995 Digital Equipment Corp.
  *   (c) Copyright 1995 Fujitsu Limited
  *   (c) Copyright 1995 Hitachi, Ltd.
- *                                                                   
  *
- *                     RESTRICTED RIGHTS LEGEND                              
+ *
+ *                     RESTRICTED RIGHTS LEGEND
  *
  *Use, duplication, or disclosure by the U.S. Government is subject to
  *restrictions as set forth in subparagraph (c)(1)(ii) of the Rights in
@@ -65,14 +65,13 @@
  *FAR 52.227-19(c)(1,2).
 
  *Hewlett-Packard Company, 3000 Hanover Street, Palo Alto, CA 94304 U.S.A.
- *International Business Machines Corp., Route 100, Somers, NY 10589 U.S.A. 
+ *International Business Machines Corp., Route 100, Somers, NY 10589 U.S.A.
  *Sun Microsystems, Inc., 2550 Garcia Avenue, Mountain View, CA 94043 U.S.A.
  *Novell, Inc., 190 River Road, Summit, NJ 07901 U.S.A.
  *Digital Equipment Corp., 111 Powdermill Road, Maynard, MA 01754, U.S.A.
  *Fujitsu Limited, 1015, Kamikodanaka Nakahara-Ku, Kawasaki 211, Japan
  *Hitachi, Ltd., 6, Kanda Surugadai 4-Chome, Chiyoda-ku, Tokyo 101, Japan
  */
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -83,75 +82,70 @@
 #include <Dt/Print.h>
 #include "UIComponent.h"
 
-class DmxPrintSetup
-{
-private:
-typedef struct print_setup_widgets
-{
-    //
-    // Widgets from the dtmail-specific portion of the PrintSetup Dialog.
-    //
-    Widget		dtprint_setup;
-    Widget		form;
-    Widget		print_separately_tb;
-    Widget		use_word_wrap_tb;
-    Widget		more_options_pb;
+class DmxPrintSetup {
+      private:
+        typedef struct print_setup_widgets {
+                //
+                // Widgets from the dtmail-specific portion of the PrintSetup
+                // Dialog.
+                //
+                Widget dtprint_setup;
+                Widget form;
+                Widget print_separately_tb;
+                Widget use_word_wrap_tb;
+                Widget more_options_pb;
 
-    //
-    // Widgets from the generic portion of the PrintSetup Dialog.
-    //
-    Widget		printer_name_tf;
-    Widget		checkbox_rc;
-    Widget		checkbox_tb;
-    Widget		filename_tf;
-} PrintSetupWidgets;
+                //
+                // Widgets from the generic portion of the PrintSetup Dialog.
+                //
+                Widget printer_name_tf;
+                Widget checkbox_rc;
+                Widget checkbox_tb;
+                Widget filename_tf;
+        } PrintSetupWidgets;
 
-    Widget		_parent;
-    Widget		_dtprint_setup;
-    PrintSetupWidgets	*_widgets;
+        Widget _parent;
+        Widget _dtprint_setup;
+        PrintSetupWidgets *_widgets;
 
-    XtCallbackProc	_printCB;
-    XtCallbackProc	_cancelCB;
-    XtCallbackProc	_closeDisplayCB;
-    XtCallbackProc	_pdmSetupCB;
+        XtCallbackProc _printCB;
+        XtCallbackProc _cancelCB;
+        XtCallbackProc _closeDisplayCB;
+        XtCallbackProc _pdmSetupCB;
 
-    XtPointer		_printClosure;
-    XtPointer		_cancelClosure;
-    XtPointer		_closeDisplayClosure;
-    XtPointer		_pdmSetupClosure;
+        XtPointer _printClosure;
+        XtPointer _cancelClosure;
+        XtPointer _closeDisplayClosure;
+        XtPointer _pdmSetupClosure;
 
-    // Print options specific to this print job.
-    DtMailBoolean	_print_separately;
-    DtMailBoolean	_use_word_wrap;
-    DtMailBoolean	_print_to_file;
-    char		*_printer_name;
-    char		*_filename;
+        // Print options specific to this print job.
+        DtMailBoolean _print_separately;
+        DtMailBoolean _use_word_wrap;
+        DtMailBoolean _print_to_file;
+        char *_printer_name;
+        char *_filename;
 
-    void		attachPrintSetupDialog(void);
-    Widget		createPrintSetupDialog(Widget);
-    void		detachPrintSetupDialog(void);
-    void		savePrintSetupOptions(DtPrintSetupData*);
+        void attachPrintSetupDialog(void);
+        Widget createPrintSetupDialog(Widget);
+        void detachPrintSetupDialog(void);
+        void savePrintSetupOptions(DtPrintSetupData *);
 
-    static void		destinationChangedCB(Widget, XtPointer, XtPointer);
-    static void		destroyPrintSetupDialogCB(Widget, XtPointer, XtPointer);
-    static void		moreOptionsCB(Widget, XtPointer, XtPointer);
-    static void		printCB(Widget, XtPointer, XtPointer);
+        static void destinationChangedCB(Widget, XtPointer, XtPointer);
+        static void destroyPrintSetupDialogCB(Widget, XtPointer, XtPointer);
+        static void moreOptionsCB(Widget, XtPointer, XtPointer);
+        static void printCB(Widget, XtPointer, XtPointer);
 
-public:
-    DmxPrintSetup (
-			Widget,
-			XtCallbackProc, XtPointer,
-			XtCallbackProc, XtPointer,
-			XtCallbackProc, XtPointer,
-			XtCallbackProc, XtPointer
-	          );
-    ~DmxPrintSetup (void);
+      public:
+        DmxPrintSetup(Widget, XtCallbackProc, XtPointer, XtCallbackProc,
+                      XtPointer, XtCallbackProc, XtPointer, XtCallbackProc,
+                      XtPointer);
+        ~DmxPrintSetup(void);
 
-    void		setPrintToFileName (char*);
-    void		display(void);
-    DtMailBoolean	getDefaultPrintData(DtPrintSetupData*);
-    DtMailBoolean	printSeparately(void);
-    DtMailBoolean	useWordWrap(void);
+        void setPrintToFileName(char *);
+        void display(void);
+        DtMailBoolean getDefaultPrintData(DtPrintSetupData *);
+        DtMailBoolean printSeparately(void);
+        DtMailBoolean useWordWrap(void);
 };
 
 #endif // _DMX_PRINT_SETUP_H

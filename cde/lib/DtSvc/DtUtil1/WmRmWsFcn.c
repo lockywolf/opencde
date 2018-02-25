@@ -42,12 +42,11 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
-#include <Dt/Wsm.h> 
-#include <Dt/WsmP.h> 
+#include <Dt/Wsm.h>
+#include <Dt/WsmP.h>
 #include <Xm/AtomMgr.h>
 #include "DtSvcLock.h"
 
-
 /*************************************<->*************************************
  *
  *  DtWsmRemoveWorkspaceFunctions (display, client)
@@ -61,105 +60,91 @@
  *
  *  Inputs:
  *  ------
- *  display	- display 
- *  root	- root window of screen 
+ *  display	- display
+ *  root	- root window of screen
  *
  *  Returns:
  *  --------
  *  none
  *
- *  
+ *
  *  Comments:
  *  ---------
  *  Disables f.workspace_presence, f.remove, f.occupy_all for this
  *  client.
- * 
+ *
  *************************************<->***********************************/
-void
-DtWsmRemoveWorkspaceFunctions (Display *display, Window client)
-{
-    DtWmHints vHints, *pHints;
-    long functions;
-    Boolean bSetHints = False;
-    _DtSvcDisplayToAppContext(display);
+void DtWsmRemoveWorkspaceFunctions(Display *display, Window client) {
+        DtWmHints vHints, *pHints;
+        long functions;
+        Boolean bSetHints = False;
+        _DtSvcDisplayToAppContext(display);
 
-    _DtSvcAppLock(app);
+        _DtSvcAppLock(app);
 
-    if (_DtWsmGetDtWmHints (display, client, &pHints) != Success)
-    {
-	/*
-	 * There were no existing workspace hints, so we'll
-	 * just use our own variable
-	 */
-	pHints = &vHints;
-	pHints->flags = 0;
-    }
+        if (_DtWsmGetDtWmHints(display, client, &pHints) != Success) {
+                /*
+                 * There were no existing workspace hints, so we'll
+                 * just use our own variable
+                 */
+                pHints = &vHints;
+                pHints->flags = 0;
+        }
 
-    if (pHints->flags & DtWM_HINTS_FUNCTIONS)
-    {
-	functions = pHints->functions & 
-		(DtWM_FUNCTION_OCCUPY_WS | DtWM_FUNCTION_ALL);
-	
-	if (functions & DtWM_FUNCTION_ALL)
-	{
-	    /* 
-	     * The flags are a list of functions to remove. If 
-	     * the workspace functions aren't on this list, make 
-	     * sure that it's put there.
-	     */
-	    if (!(functions & DtWM_FUNCTION_OCCUPY_WS))
-	    {
-		/* remove workspace functions */
-		pHints->functions |=  DtWM_FUNCTION_OCCUPY_WS;
-		bSetHints = True;
-	    }
-	}
-	else
-	{
-	    /*
-	     * The flags are a list of functions to add. If
-	     * the workspace functions are on the list, make
-	     * sure they get removed.
-	     */
-	    if (functions & DtWM_FUNCTION_OCCUPY_WS)
-	    {
-		/* remove workspace functions */
-		pHints->functions &=  ~DtWM_FUNCTION_OCCUPY_WS;
-		bSetHints = True;
-	    }
-	}
-    }
-    else
-    {
-	/*
-	 * The hints didn't have workspace functions specified.
-	 * Set the flag and remove workspace functions.
-	 */
-	pHints->flags |= DtWM_HINTS_FUNCTIONS;
-	pHints->functions = DtWM_FUNCTION_OCCUPY_WS | DtWM_FUNCTION_ALL;
-	bSetHints = True;
-    }
+        if (pHints->flags & DtWM_HINTS_FUNCTIONS) {
+                functions = pHints->functions &
+                            (DtWM_FUNCTION_OCCUPY_WS | DtWM_FUNCTION_ALL);
 
-    /*
-     * If something needs to be changed, then change it.
-     */
-    if (bSetHints)
-	_DtWsmSetDtWmHints (display, client, pHints);
+                if (functions & DtWM_FUNCTION_ALL) {
+                        /*
+                         * The flags are a list of functions to remove. If
+                         * the workspace functions aren't on this list, make
+                         * sure that it's put there.
+                         */
+                        if (!(functions & DtWM_FUNCTION_OCCUPY_WS)) {
+                                /* remove workspace functions */
+                                pHints->functions |= DtWM_FUNCTION_OCCUPY_WS;
+                                bSetHints = True;
+                        }
+                } else {
+                        /*
+                         * The flags are a list of functions to add. If
+                         * the workspace functions are on the list, make
+                         * sure they get removed.
+                         */
+                        if (functions & DtWM_FUNCTION_OCCUPY_WS) {
+                                /* remove workspace functions */
+                                pHints->functions &= ~DtWM_FUNCTION_OCCUPY_WS;
+                                bSetHints = True;
+                        }
+                }
+        } else {
+                /*
+                 * The hints didn't have workspace functions specified.
+                 * Set the flag and remove workspace functions.
+                 */
+                pHints->flags |= DtWM_HINTS_FUNCTIONS;
+                pHints->functions = DtWM_FUNCTION_OCCUPY_WS | DtWM_FUNCTION_ALL;
+                bSetHints = True;
+        }
 
-    /*
-     * If we read these hints off the window, then be sure to free
-     * them.
-     */
-    if (pHints && (pHints != &vHints))
-    {
-	XFree ((char *)pHints);
-    }
+        /*
+         * If something needs to be changed, then change it.
+         */
+        if (bSetHints)
+                _DtWsmSetDtWmHints(display, client, pHints);
 
-    _DtSvcAppUnlock(app);
+        /*
+         * If we read these hints off the window, then be sure to free
+         * them.
+         */
+        if (pHints && (pHints != &vHints)) {
+                XFree((char *)pHints);
+        }
+
+        _DtSvcAppUnlock(app);
 } /* END OF FUNCTION DtWsmRemoveWorkspaceFunctions */
 
-
-
 /*************************************<->*************************************
  *
  *  DtWsmAddWorkspaceFunctions (display, client)
@@ -173,100 +158,87 @@ DtWsmRemoveWorkspaceFunctions (Display *display, Window client)
  *
  *  Inputs:
  *  ------
- *  display	- display 
- *  root	- root window of screen 
+ *  display	- display
+ *  root	- root window of screen
  *
  *  Returns:
  *  --------
  *  none
  *
- *  
+ *
  *  Comments:
  *  ---------
  *  Enables f.workspace_presence, f.remove, f.occupy_all for this
  *  client.
- * 
+ *
  *************************************<->***********************************/
-void
-DtWsmAddWorkspaceFunctions (Display *display, Window client)
-{
-    DtWmHints vHints, *pHints;
-    long functions;
-    Boolean bSetHints = False;
-    _DtSvcDisplayToAppContext(display);
+void DtWsmAddWorkspaceFunctions(Display *display, Window client) {
+        DtWmHints vHints, *pHints;
+        long functions;
+        Boolean bSetHints = False;
+        _DtSvcDisplayToAppContext(display);
 
-    _DtSvcAppLock(app);
+        _DtSvcAppLock(app);
 
-    if (_DtWsmGetDtWmHints (display, client, &pHints) != Success)
-    {
-	/*
-	 * There were no existing workspace hints, so we'll
-	 * just use our own variable
-	 */
-	pHints = &vHints;
-	pHints->flags = 0;
-    }
+        if (_DtWsmGetDtWmHints(display, client, &pHints) != Success) {
+                /*
+                 * There were no existing workspace hints, so we'll
+                 * just use our own variable
+                 */
+                pHints = &vHints;
+                pHints->flags = 0;
+        }
 
-    if (pHints->flags & DtWM_HINTS_FUNCTIONS)
-    {
-	functions = pHints->functions & 
-		(DtWM_FUNCTION_OCCUPY_WS | DtWM_FUNCTION_ALL);
-	
-	if (functions & DtWM_FUNCTION_ALL)
-	{
-	    /* 
-	     * The flags are a list of functions to remove. If 
-	     * the workspace functions are on this list, make 
-	     * sure that they're removed.
-	     */
-	    if (functions & DtWM_FUNCTION_OCCUPY_WS)
-	    {
-		/* add workspace functions */
-		pHints->functions &=  ~DtWM_FUNCTION_OCCUPY_WS;
-		bSetHints = True;
-	    }
-	}
-	else
-	{
-	    /*
-	     * The flags are a list of functions to add. If
-	     * the workspace functions aren't on the list, make
-	     * sure they get added.
-	     */
-	    if (!(functions & DtWM_FUNCTION_OCCUPY_WS))
-	    {
-		/* remove workspace functions */
-		pHints->functions |=  DtWM_FUNCTION_OCCUPY_WS;
-		bSetHints = True;
-	    }
-	}
-    }
-    else
-    {
-	/*
-	 * The hints didn't have workspace functions specified.
-	 * Set the flag and add workspace functions.
-	 */
-	pHints->flags |= DtWM_HINTS_FUNCTIONS;
-	pHints->functions = DtWM_FUNCTION_OCCUPY_WS;
-	bSetHints = True;
-    }
+        if (pHints->flags & DtWM_HINTS_FUNCTIONS) {
+                functions = pHints->functions &
+                            (DtWM_FUNCTION_OCCUPY_WS | DtWM_FUNCTION_ALL);
 
-    /*
-     * If something needs to be changed, then change it.
-     */
-    if (bSetHints)
-	_DtWsmSetDtWmHints (display, client, pHints);
+                if (functions & DtWM_FUNCTION_ALL) {
+                        /*
+                         * The flags are a list of functions to remove. If
+                         * the workspace functions are on this list, make
+                         * sure that they're removed.
+                         */
+                        if (functions & DtWM_FUNCTION_OCCUPY_WS) {
+                                /* add workspace functions */
+                                pHints->functions &= ~DtWM_FUNCTION_OCCUPY_WS;
+                                bSetHints = True;
+                        }
+                } else {
+                        /*
+                         * The flags are a list of functions to add. If
+                         * the workspace functions aren't on the list, make
+                         * sure they get added.
+                         */
+                        if (!(functions & DtWM_FUNCTION_OCCUPY_WS)) {
+                                /* remove workspace functions */
+                                pHints->functions |= DtWM_FUNCTION_OCCUPY_WS;
+                                bSetHints = True;
+                        }
+                }
+        } else {
+                /*
+                 * The hints didn't have workspace functions specified.
+                 * Set the flag and add workspace functions.
+                 */
+                pHints->flags |= DtWM_HINTS_FUNCTIONS;
+                pHints->functions = DtWM_FUNCTION_OCCUPY_WS;
+                bSetHints = True;
+        }
 
-    /*
-     * If we read these hints off the window, then be sure to free
-     * them.
-     */
-    if (pHints && (pHints != &vHints))
-    {
-	XFree ((char *)pHints);
-    }
-    _DtSvcAppUnlock(app);
+        /*
+         * If something needs to be changed, then change it.
+         */
+        if (bSetHints)
+                _DtWsmSetDtWmHints(display, client, pHints);
+
+        /*
+         * If we read these hints off the window, then be sure to free
+         * them.
+         */
+        if (pHints && (pHints != &vHints)) {
+                XFree((char *)pHints);
+        }
+        _DtSvcAppUnlock(app);
 
 } /* END OF FUNCTION DtWsmAddWorkspaceFunctions */
-

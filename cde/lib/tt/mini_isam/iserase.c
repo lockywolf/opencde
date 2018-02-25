@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: iserase.c /main/3 1995/10/23 11:38:08 rswiston $ 			 				 */
+/*%%  $XConsortium: iserase.c /main/3 1995/10/23 11:38:08 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)iserase.c 1.8 89/07/17 Copyr 1988 Sun Micro";
 #endif
@@ -36,9 +37,8 @@ static char sccsid[] = "@(#)iserase.c 1.8 89/07/17 Copyr 1988 Sun Micro";
  * iserase.c
  *
  * Description:
- *	Erase an ISAM file. 
+ *	Erase an ISAM file.
  */
-
 
 #include "isam_impl.h"
 #include <sys/time.h>
@@ -53,50 +53,48 @@ static int _amerase();
  * Errors:
  *	EBADFILE ISAM file is corrupted or it is not an NetISAM file
  *	EFLOCKED The file is exclusively locked by other process.
- *	EFNAME	Invalid ISAM file name 
+ *	EFNAME	Invalid ISAM file name
  *	EFNAME	ISAM file does not exist
  *	ETOOMANY Too many ISAM file descriptors are in use (128 is the limit)
  *
  * The following error code is "borrowed" from UNIX:
  *	EACCES	UNIX file system protection denies access to the file:
- *	         - mode is INOUT or OUTPUT and ISAM file is on 
+ *	         - mode is INOUT or OUTPUT and ISAM file is on
  *	           a Read-Only mounted file system
  *		 - UNIX file permissions don't allow access to the file
  */
 
-int 
-iserase(isfname)
-    char		*isfname;
+int iserase(isfname) char *isfname;
 {
-    Isfd		isfd, isfd_nfs;
-    Fab			*fab, *fab_nfs;
+        Isfd isfd, isfd_nfs;
+        Fab *fab, *fab_nfs;
 
-    /*
-     * Open the file
-     */
-    if ((isfd = isopen(isfname, ISINOUT)) == -1)
-	return (ISERROR);		     /* iserrno is set */
+        /*
+         * Open the file
+         */
+        if ((isfd = isopen(isfname, ISINOUT)) == -1)
+                return (ISERROR); /* iserrno is set */
 
-    /*
-     * Get File Access Block.
-     */
-    if ((fab = _isfd_find(isfd)) == NULL) {
-	_isfatal_error("iserase() cannot find FAB");
-	_setiserrno2(EFATAL, '9', '0');
-	return ISERROR;
-    }
+        /*
+         * Get File Access Block.
+         */
+        if ((fab = _isfd_find(isfd)) == NULL) {
+                _isfatal_error("iserase() cannot find FAB");
+                _setiserrno2(EFATAL, '9', '0');
+                return ISERROR;
+        }
 
-    if (_amerase(&fab->isfhandle, &fab->errcode)
-	        && fab->errcode.iserrno != ENOENT) {
-	_seterr_errcode(&fab->errcode); 
-	(void)isclose(isfd);
-	return (ISERROR);
-    }
+        if (_amerase(&fab->isfhandle, &fab->errcode) &&
+            fab->errcode.iserrno != ENOENT) {
+                _seterr_errcode(&fab->errcode);
+                (void)isclose(isfd);
+                return (ISERROR);
+        }
 
-    _fab_destroy(fab);			     /* Deallocate Fab object */
-    _isfd_delete(isfd);
-    
-    return (ISOK);			     /* Successful iserase() */
+        _fab_destroy(fab); /* Deallocate Fab object */
+        _isfd_delete(isfd);
+
+        return (ISOK); /* Successful iserase() */
 }
 
 /*
@@ -112,81 +110,70 @@ iserase(isfname)
  *
  */
 
-static int
-_amerase(isfhandle, errcode)
-    Bytearray		*isfhandle;
-    struct errcode	*errcode;
+static int _amerase(isfhandle, errcode) Bytearray *isfhandle;
+struct errcode *errcode;
 {
-    Fcb			*fcb;
-    char		*isfname = _getisfname(isfhandle);
+        Fcb *fcb;
+        char *isfname = _getisfname(isfhandle);
 
-    _isam_entryhook();
+        _isam_entryhook();
 
-    /*
-     * Get FCB corresponding to the isfhandle handle.
-     */
-    if ((fcb = _openfcb(isfhandle, errcode)) == NULL) {
-	goto ERROR;
-    }
+        /*
+         * Get FCB corresponding to the isfhandle handle.
+         */
+        if ((fcb = _openfcb(isfhandle, errcode)) == NULL) {
+                goto ERROR;
+        }
 
-    /*
-     * Delete FCB and remove it from FCB cache.
-     */
-    (void) _watchfd_decr(_isfcb_nfds(fcb));
-    _isfcb_close(fcb);
-    _mngfcb_delete(isfhandle);
+        /*
+         * Delete FCB and remove it from FCB cache.
+         */
+        (void)_watchfd_decr(_isfcb_nfds(fcb));
+        _isfcb_close(fcb);
+        _mngfcb_delete(isfhandle);
 
-    /*
-     * Unlink all UNIX files.
-     */
-    _unlink_datfile(isfname);
-    _unlink_indfile(isfname);
-    _unlink_varfile(isfname);
+        /*
+         * Unlink all UNIX files.
+         */
+        _unlink_datfile(isfname);
+        _unlink_indfile(isfname);
+        _unlink_varfile(isfname);
 
-    _isam_exithook();
-    return (ISOK);
+        _isam_exithook();
+        return (ISOK);
 
- ERROR:
+ERROR:
 
-    _isam_exithook();
-    return (ISERROR);
+        _isam_exithook();
+        return (ISERROR);
 }
 
-
-Static void
-_unlink_datfile(isfname)
-    char	*isfname;
+Static void _unlink_datfile(isfname) char *isfname;
 {
-    char	namebuf[MAXPATHLEN];
+        char namebuf[MAXPATHLEN];
 
-    (void) strcpy(namebuf, isfname);
-    _makedat_isfname(namebuf);
+        (void)strcpy(namebuf, isfname);
+        _makedat_isfname(namebuf);
 
-    (void)unlink(namebuf);
+        (void)unlink(namebuf);
 }
 
-
-Static void
-_unlink_indfile(isfname)
-    char	*isfname;
+Static void _unlink_indfile(isfname) char *isfname;
 {
-    char	namebuf[MAXPATHLEN];
+        char namebuf[MAXPATHLEN];
 
-    (void) strcpy(namebuf, isfname);
-    _makeind_isfname(namebuf);
+        (void)strcpy(namebuf, isfname);
+        _makeind_isfname(namebuf);
 
-    (void)unlink(namebuf);
+        (void)unlink(namebuf);
 }
 
-
-Static void
-_unlink_varfile(isfname)
-    char	*isfname;
+Static void _unlink_varfile(isfname) char *isfname;
 {
-    char	namebuf[MAXPATHLEN];
+        char namebuf[MAXPATHLEN];
 
-    (void) strcpy(namebuf, isfname);
-    _makevar_isfname(namebuf);
+        (void)strcpy(namebuf, isfname);
+        _makevar_isfname(namebuf);
 
-    (void)unlink(namebuf);
+        (void)unlink(namebuf);
 }

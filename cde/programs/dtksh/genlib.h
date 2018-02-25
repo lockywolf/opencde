@@ -46,30 +46,14 @@
 
 extern struct libstruct *All_libs;
 
-
-
-extern int xk_usage( 
-                        char *funcname) ;
-extern unsigned long fsym( 
-                        char *str,
-                        int lib) ;
-extern int do_findsym( 
-                        int argc,
-                        char **argv) ;
+extern int xk_usage(char *funcname);
+extern unsigned long fsym(char *str, int lib);
+extern int do_findsym(int argc, char **argv);
 #ifndef SPRINTF_RET_LEN
-extern int lsprintf( 
-                        char *buf,
-                        char *fmt,
-                        unsigned long arg1,
-                        unsigned long arg2,
-                        unsigned long arg3,
-                        unsigned long arg4,
-                        unsigned long arg5,
-                        unsigned long arg6,
-                        unsigned long arg7) ;
+extern int lsprintf(char *buf, char *fmt, unsigned long arg1,
+                    unsigned long arg2, unsigned long arg3, unsigned long arg4,
+                    unsigned long arg5, unsigned long arg6, unsigned long arg7);
 #endif
-
-
 
 #endif /* _Dtksh_genlib_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

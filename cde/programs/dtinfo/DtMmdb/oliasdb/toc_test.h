@@ -30,10 +30,9 @@
 #include "oliasdb/toc_hd.h"
 #include "object/random_gen.h"
 
-
-int compare_toc(toc_smart_ptr& pattern, info_base* base_ptr);
-void generate_toc_instance(random_gen&, ostream& out, int instance_num, int min_nodes = 1, int max_nodes = 20);
-
+int compare_toc(toc_smart_ptr &pattern, info_base *base_ptr);
+void generate_toc_instance(random_gen &, ostream &out, int instance_num,
+                           int min_nodes = 1, int max_nodes = 20);
 
 #endif
 #endif

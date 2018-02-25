@@ -48,54 +48,52 @@
 #include "dbtype.h"
 
 /* Find owner of current record
-*/
-int
-d_findco(nset TASK_PARM DBN_PARM)
-int nset;
+ */
+int d_findco(nset TASK_PARM DBN_PARM) int nset;
 TASK_DECL
-DBN_DECL
-{
-   int set;
-   char mem[MEMPSIZE];
-   DB_ADDR own;
-   SET_ENTRY FAR *set_ptr;
+DBN_DECL {
+        int set;
+        char mem[MEMPSIZE];
+        DB_ADDR own;
+        SET_ENTRY FAR *set_ptr;
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_IO));
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_IO));
 
-   if (nset_check(nset, &set, (SET_ENTRY FAR * FAR *)&set_ptr) != S_OKAY)
-      RETURN( db_status );
+        if (nset_check(nset, &set, (SET_ENTRY FAR * FAR *)&set_ptr) != S_OKAY)
+                RETURN(db_status);
 
-   /* Make sure we have a current record */
-   if ( ! curr_rec )
-      RETURN( dberr(S_NOCR) );
+        /* Make sure we have a current record */
+        if (!curr_rec)
+                RETURN(dberr(S_NOCR));
 
-   /* Read current record */
-   if ( dio_read(curr_rec, (char FAR * FAR *)&crloc, NOPGHOLD) != S_OKAY )
-      RETURN( db_status );
-   
-   /* Get the member ptr for this set */
-   if ( r_gmem(set, crloc, mem) != S_OKAY )
-      RETURN( db_status );
+        /* Read current record */
+        if (dio_read(curr_rec, (char FAR *FAR *)&crloc, NOPGHOLD) != S_OKAY)
+                RETURN(db_status);
 
-   /* Extract the owner ptr from the member ptr */
-   bytecpy(&own, mem+MP_OWNER, DB_ADDR_SIZE);
-   if ( ! own )  /* Record not connected to set */
-      RETURN( dberr( S_NOTCON ) );
+        /* Get the member ptr for this set */
+        if (r_gmem(set, crloc, mem) != S_OKAY)
+                RETURN(db_status);
 
-   /* set the new current owner and member */
-   curr_own[set] = own;
-   curr_mem[set] = curr_rec;
-   curr_rec      = own;
-#ifndef	 NO_TIMESTAMP
-   /* set any timestamps */
-   if ( db_tsrecs ) {
-      d_utscr( &cr_time TASK_PARM );
-      d_utscm(nset, &cm_time[set] TASK_PARM DBN_PARM);
-      co_time[set] = cr_time;
-   }
-   if ( db_tssets )
-      d_utscs(nset, &cs_time[set] TASK_PARM DBN_PARM);
+        /* Extract the owner ptr from the member ptr */
+        bytecpy(&own, mem + MP_OWNER, DB_ADDR_SIZE);
+        if (!own) /* Record not connected to set */
+                RETURN(dberr(S_NOTCON));
+
+        /* set the new current owner and member */
+        curr_own[set] = own;
+        curr_mem[set] = curr_rec;
+        curr_rec = own;
+#ifndef NO_TIMESTAMP
+        /* set any timestamps */
+        if (db_tsrecs) {
+                d_utscr(&cr_time TASK_PARM);
+                d_utscm(nset, &cm_time[set] TASK_PARM DBN_PARM);
+                co_time[set] = cr_time;
+        }
+        if (db_tssets)
+                d_utscs(nset, &cs_time[set] TASK_PARM DBN_PARM);
 #endif
-   RETURN( db_status = S_OKAY );
+        RETURN(db_status = S_OKAY);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin findco.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin findco.c */

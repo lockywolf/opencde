@@ -30,7 +30,7 @@
 using namespace std;
 #include "Exceptions.hh"
 
-#define END_TRY end_try 
+#define END_TRY end_try
 
 #include <X11/Xosdefs.h>
 #include <errno.h>
@@ -42,52 +42,46 @@ extern int errno;
 #define CASTCCSEXCEPT
 #define CASTCCBEXCEPT
 
-class ccException : public Exception
-{
-public:
-   DECLARE_EXCEPTION(ccException, Exception)
+class ccException : public Exception {
+      public:
+        DECLARE_EXCEPTION(ccException, Exception)
 
-   virtual ~ccException() {};
+        virtual ~ccException(){};
 
-   virtual ostream& asciiOut(ostream&);
+        virtual ostream &asciiOut(ostream &);
 
-   friend ostream& operator <<(ostream& out, ccException& e) {
-      return e.asciiOut(out);
-   }
+        friend ostream &operator<<(ostream &out, ccException &e) {
+                return e.asciiOut(out);
+        }
 };
 
+class ccStringException : public ccException {
+      protected:
+        char *msg;
 
-class ccStringException : public ccException
-{
-protected:
-   char* msg;
+      public:
+        DECLARE_EXCEPTION(ccStringException, ccException)
 
-public:
-   DECLARE_EXCEPTION(ccStringException, ccException)
+        ccStringException(char const *m) : msg((char *)m){};
+        ~ccStringException(){};
 
-   ccStringException(char const* m) : msg((char*)m) {};
-   ~ccStringException() {};
-
-   virtual ostream& asciiOut(ostream&);
+        virtual ostream &asciiOut(ostream &);
 };
 
-class ccBoundaryException : public ccException
-{
+class ccBoundaryException : public ccException {
 
-protected:
-   int low;
-   int high;
-   int mindex;
+      protected:
+        int low;
+        int high;
+        int mindex;
 
-public:
-   DECLARE_EXCEPTION(ccBoundaryException, ccException)
+      public:
+        DECLARE_EXCEPTION(ccBoundaryException, ccException)
 
-   ccBoundaryException(int l, int h, int i) : 
-     low(l), high(h), mindex(i) {};
-   ~ccBoundaryException() {};
+        ccBoundaryException(int l, int h, int i) : low(l), high(h), mindex(i){};
+        ~ccBoundaryException(){};
 
-   virtual ostream& asciiOut(ostream&);
+        virtual ostream &asciiOut(ostream &);
 };
-
 
 #endif

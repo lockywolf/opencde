@@ -24,7 +24,8 @@
 **
 **  select.h
 **
-**  static char sccsid[] = "@(#)select.h 1.6 94/11/07 Copyr 1991 Sun Microsystems, Inc.";
+**  static char sccsid[] = "@(#)select.h 1.6 94/11/07 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $XConsortium: select.h /main/3 1995/11/03 10:33:23 rswiston $
 **
@@ -57,38 +58,38 @@
 #include "calendar.h"
 
 typedef enum {
-	daySelect,
-	weekSelect,
-	monthSelect,
-	hourSelect,
-	weekdaySelect,
-	weekhotboxSelect 
+        daySelect,
+        weekSelect,
+        monthSelect,
+        hourSelect,
+        weekdaySelect,
+        weekhotboxSelect
 } Selection_unit;
 
 typedef struct {
-	int row;
-	int col;
-	int nunits;
-	int active;
-	int boxw;
-	int boxh;
+        int row;
+        int col;
+        int nunits;
+        int active;
+        int boxw;
+        int boxh;
 } Selection;
 
 typedef struct {
-	int	x;
-	int	y;
+        int x;
+        int y;
 } pr_pos;
 
-extern void	activate_selection	P((Selection*));
-extern void	browser_deselect	P((Calendar *, Browser*));	
-extern void	browser_select		P((Calendar *, Browser*, pr_pos*));	
-extern void	calendar_deselect	P((Calendar*));
-extern void	calendar_select		P((Calendar*, Selection_unit, caddr_t));
-extern void	deactivate_selection	P((Selection *));
-extern void	monthbox_deselect	P((Calendar*));	
-extern void	monthbox_select		P((Calendar*));
-extern void	paint_selection		P((Calendar*));
-extern int	selection_active	P((Selection*));
-extern void	weekchart_select	P((Calendar*));	
+extern void activate_selection P((Selection *));
+extern void browser_deselect P((Calendar *, Browser *));
+extern void browser_select P((Calendar *, Browser *, pr_pos *));
+extern void calendar_deselect P((Calendar *));
+extern void calendar_select P((Calendar *, Selection_unit, caddr_t));
+extern void deactivate_selection P((Selection *));
+extern void monthbox_deselect P((Calendar *));
+extern void monthbox_select P((Calendar *));
+extern void paint_selection P((Calendar *));
+extern int selection_active P((Selection *));
+extern void weekchart_select P((Calendar *));
 
 #endif

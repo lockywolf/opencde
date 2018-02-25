@@ -34,10 +34,10 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API Fixed2CodingSystem : public CodingSystem {
-public:
-  Decoder *makeDecoder() const;
-  Encoder *makeEncoder() const;
-  unsigned fixedBytesPerChar() const;
+      public:
+        Decoder *makeDecoder() const;
+        Encoder *makeEncoder() const;
+        unsigned fixedBytesPerChar() const;
 };
 
 #ifdef SP_NAMESPACE

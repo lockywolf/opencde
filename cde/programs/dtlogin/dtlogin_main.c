@@ -27,9 +27,6 @@
  * (c) Copyright 1993, 1994 Sun Microsystems, Inc.                      *
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
-dtlogin(argc,argv)
-int argc;
+dtlogin(argc, argv) int argc;
 char *argv[];
-{
-	main(argc,argv);
-}
+{ main(argc, argv); }

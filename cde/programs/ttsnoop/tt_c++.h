@@ -38,15 +38,15 @@ using namespace std;
 
 #include <Tt/tt_c.h>
 
-ostream &	operator<<( ostream &, Tt_status );
-ostream &	operator<<( ostream &, Tt_scope );
-ostream &	operator<<( ostream &, Tt_class );
-ostream &	operator<<( ostream &, Tt_mode );
-ostream &	operator<<( ostream &, Tt_address );
-ostream &	operator<<( ostream &, Tt_callback_action );
-char *		tt_status_string( Tt_status );
-Tt_message	tt_message_copy( Tt_message );
-Tt_message	tttk_message_create( const char * );
-int		tt_procid_fd( const char * );
+ostream &operator<<(ostream &, Tt_status);
+ostream &operator<<(ostream &, Tt_scope);
+ostream &operator<<(ostream &, Tt_class);
+ostream &operator<<(ostream &, Tt_mode);
+ostream &operator<<(ostream &, Tt_address);
+ostream &operator<<(ostream &, Tt_callback_action);
+char *tt_status_string(Tt_status);
+Tt_message tt_message_copy(Tt_message);
+Tt_message tttk_message_create(const char *);
+int tt_procid_fd(const char *);
 
 #endif

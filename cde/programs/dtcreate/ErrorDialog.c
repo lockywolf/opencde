@@ -41,12 +41,11 @@
 /******************************************************************************/
 /* activateCB_ErrorDialog_OkButton                                            */
 /******************************************************************************/
-void    activateCB_ErrorDialog_OkButton( Widget  UxWidget,
-                                        XtPointer UxClientData,
-                                        XtPointer UxCallbackArg)
+void activateCB_ErrorDialog_OkButton(Widget UxWidget, XtPointer UxClientData,
+                                     XtPointer UxCallbackArg)
 
 {
-  XtDestroyWidget(XtParent(UxWidget));
+        XtDestroyWidget(XtParent(UxWidget));
 }
 
 /******************************************************************************/
@@ -54,26 +53,26 @@ void    activateCB_ErrorDialog_OkButton( Widget  UxWidget,
 /* INPUT:  char *message - message to display in dialog box                   */
 /* OUTPIT: none                                                               */
 /******************************************************************************/
-void display_error_message (Widget parent, char *message)
-{
+void display_error_message(Widget parent, char *message) {
 
-  ErrorDialog = XmCreateErrorDialog(parent, "errorDialog", NULL, 0);
-  XtUnmanageChild (XmMessageBoxGetChild (ErrorDialog, XmDIALOG_CANCEL_BUTTON));
-  XtUnmanageChild (XmMessageBoxGetChild (ErrorDialog, XmDIALOG_HELP_BUTTON));
+        ErrorDialog = XmCreateErrorDialog(parent, "errorDialog", NULL, 0);
+        XtUnmanageChild(
+            XmMessageBoxGetChild(ErrorDialog, XmDIALOG_CANCEL_BUTTON));
+        XtUnmanageChild(
+            XmMessageBoxGetChild(ErrorDialog, XmDIALOG_HELP_BUTTON));
 
-  XtAddCallback( ErrorDialog, XmNokCallback,
-          (XtCallbackProc) activateCB_ErrorDialog_OkButton,
-          (XtPointer) NULL );
+        XtAddCallback(ErrorDialog, XmNokCallback,
+                      (XtCallbackProc)activateCB_ErrorDialog_OkButton,
+                      (XtPointer)NULL);
 
-  XtVaSetValues (ErrorDialog,
-                 RES_CONVERT(XmNdialogTitle, GETMESSAGE(6, 31, "Create Action - Error")),
-                 RES_CONVERT(XmNmessageString, message),
-                 NULL);
+        XtVaSetValues(ErrorDialog,
+                      RES_CONVERT(XmNdialogTitle,
+                                  GETMESSAGE(6, 31, "Create Action - Error")),
+                      RES_CONVERT(XmNmessageString, message), NULL);
 
-  XtManageChild (ErrorDialog);
-  return;
+        XtManageChild(ErrorDialog);
+        return;
 }
 /*******************************************************************************
        END OF FILE
 *******************************************************************************/
-

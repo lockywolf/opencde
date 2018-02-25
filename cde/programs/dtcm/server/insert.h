@@ -35,12 +35,10 @@
 #include "cm.h"
 #include "cmscalendar.h"
 
-extern CSA_return_code _DtCmsInsertEntry P((
-			_DtCmsCalendar	*cal,
-			cms_entry	*entry));
+extern CSA_return_code _DtCmsInsertEntry P((_DtCmsCalendar * cal,
+                                            cms_entry *entry));
 
-extern CSA_return_code _DtCmsInsertEntryAndLog P((
-			_DtCmsCalendar	*cal,
-			cms_entry	*entry));
+extern CSA_return_code _DtCmsInsertEntryAndLog P((_DtCmsCalendar * cal,
+                                                  cms_entry *entry));
 
 #endif

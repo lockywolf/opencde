@@ -41,137 +41,145 @@ static Widget fileText;
 
 static void CreateWidgets(Widget);
 static void InvokeActionCb(Widget, XtPointer, XtPointer);
-static void InvokeAction(char*, char*);
+static void InvokeAction(char *, char *);
 static void DbReloadProc(XtPointer);
 
-void main(int argc, char **argv) 
-{
-    Arg args[20];
-    int n=0;
-    int numArgs = 0;
+void main(int argc, char **argv) {
+        Arg args[20];
+        int n = 0;
+        int numArgs = 0;
 
-    shell = XtAppInitialize(&appContext , ApplicationClass, NULL, 0, 
-						&argc, argv, NULL, args, n);  
+        shell = XtAppInitialize(&appContext, ApplicationClass, NULL, 0, &argc,
+                                argv, NULL, args, n);
 
-    CreateWidgets(shell);
+        CreateWidgets(shell);
 
-    if (DtInitialize(XtDisplay(shell), shell, argv[0], ApplicationClass)==False) {
-	/* DtInitialize() has already logged an appropriate error msg */
-	exit(-1);
-    }
+        if (DtInitialize(XtDisplay(shell), shell, argv[0], ApplicationClass) ==
+            False) {
+                /* DtInitialize() has already logged an appropriate error msg */
+                exit(-1);
+        }
 
-    /* Load the filetype/action databases */
-    DtDbLoad();
+        /* Load the filetype/action databases */
+        DtDbLoad();
 
-    /* Notice changes to the database without needing to restart application */
-    DtDbReloadNotify(DbReloadProc, NULL);
+        /* Notice changes to the database without needing to restart application
+         */
+        DtDbReloadNotify(DbReloadProc, NULL);
 
-    XtRealizeWidget(shell);
-    XmProcessTraversal(actionText, XmTRAVERSE_CURRENT);
+        XtRealizeWidget(shell);
+        XmProcessTraversal(actionText, XmTRAVERSE_CURRENT);
 
-    XtAppMainLoop(appContext);
+        XtAppMainLoop(appContext);
 }
 
-static void CreateWidgets(Widget shell)
-{
-    Widget messageBox, workArea, w;
-    Arg args[20];
-    int n;
-    XmString labelString;
+static void CreateWidgets(Widget shell) {
+        Widget messageBox, workArea, w;
+        Arg args[20];
+        int n;
+        XmString labelString;
 
-    labelString = XmStringCreateLocalized("Invoke");
+        labelString = XmStringCreateLocalized("Invoke");
 
-    n = 0;
-    XtSetArg(args[n], XmNdialogType, XmDIALOG_TEMPLATE); n++;
-    XtSetArg(args[n], XmNokLabelString, labelString); n++;
-    messageBox = XmCreateMessageBox(shell, "messageBox", args, n);
-    XtManageChild(messageBox);
-    XmStringFree(labelString);
-    XtAddCallback(messageBox, XmNokCallback, InvokeActionCb, NULL);
+        n = 0;
+        XtSetArg(args[n], XmNdialogType, XmDIALOG_TEMPLATE);
+        n++;
+        XtSetArg(args[n], XmNokLabelString, labelString);
+        n++;
+        messageBox = XmCreateMessageBox(shell, "messageBox", args, n);
+        XtManageChild(messageBox);
+        XmStringFree(labelString);
+        XtAddCallback(messageBox, XmNokCallback, InvokeActionCb, NULL);
 
-    n = 0;
-    XtSetArg(args[n], XmNorientation, XmVERTICAL); n++;
-    XtSetArg(args[n], XmNpacking, XmPACK_COLUMN); n++;
-    XtSetArg(args[n], XmNnumColumns, 2); n++;
-    XtSetArg(args[n], XmNentryAlignment, XmALIGNMENT_END); n++;
-    workArea = XmCreateWorkArea(messageBox, "workArea", args, n);
-    XtManageChild(workArea);
+        n = 0;
+        XtSetArg(args[n], XmNorientation, XmVERTICAL);
+        n++;
+        XtSetArg(args[n], XmNpacking, XmPACK_COLUMN);
+        n++;
+        XtSetArg(args[n], XmNnumColumns, 2);
+        n++;
+        XtSetArg(args[n], XmNentryAlignment, XmALIGNMENT_END);
+        n++;
+        workArea = XmCreateWorkArea(messageBox, "workArea", args, n);
+        XtManageChild(workArea);
 
-    labelString = XmStringCreateLocalized("Invoke Action:");
-    n = 0;
-    XtSetArg(args[n], XmNlabelString, labelString); n++;
-    w = XmCreateLabel(workArea, "actionLabel", args, n);
-    XtManageChild(w);
-    XmStringFree(labelString);
+        labelString = XmStringCreateLocalized("Invoke Action:");
+        n = 0;
+        XtSetArg(args[n], XmNlabelString, labelString);
+        n++;
+        w = XmCreateLabel(workArea, "actionLabel", args, n);
+        XtManageChild(w);
+        XmStringFree(labelString);
 
-    labelString = XmStringCreateLocalized("On File:");
-    n = 0;
-    XtSetArg(args[n], XmNlabelString, labelString); n++;
-    w = XmCreateLabel(workArea, "fileLabel", args, n);
-    XtManageChild(w);
-    XmStringFree(labelString);
+        labelString = XmStringCreateLocalized("On File:");
+        n = 0;
+        XtSetArg(args[n], XmNlabelString, labelString);
+        n++;
+        w = XmCreateLabel(workArea, "fileLabel", args, n);
+        XtManageChild(w);
+        XmStringFree(labelString);
 
-    n = 0;
-    XtSetArg(args[n], XmNcolumns, 12); n++;
-    actionText = XmCreateTextField(workArea, "actionText", args, n);
-    XtManageChild(actionText);
+        n = 0;
+        XtSetArg(args[n], XmNcolumns, 12);
+        n++;
+        actionText = XmCreateTextField(workArea, "actionText", args, n);
+        XtManageChild(actionText);
 
-    n = 0;
-    XtSetArg(args[n], XmNcolumns, 12); n++;
-    fileText = XmCreateTextField(workArea, "fileText", args, n);
-    XtManageChild(fileText);
+        n = 0;
+        XtSetArg(args[n], XmNcolumns, 12);
+        n++;
+        fileText = XmCreateTextField(workArea, "fileText", args, n);
+        XtManageChild(fileText);
 }
 
-static void DbReloadProc(XtPointer cd)
-{
-    /* Pick up any dynamic changes to the database files */
-    DtDbLoad();
+static void DbReloadProc(XtPointer cd) {
+        /* Pick up any dynamic changes to the database files */
+        DtDbLoad();
 }
 
-static void InvokeActionCb(Widget w, XtPointer cd, XtPointer cb)
-{
-    char *action;
-    char *file;
+static void InvokeActionCb(Widget w, XtPointer cd, XtPointer cb) {
+        char *action;
+        char *file;
 
-    action = XmTextFieldGetString(actionText);
+        action = XmTextFieldGetString(actionText);
 
-    if (action == NULL) return;
-    if (strlen(action) == 0) {
-	XtFree(action);
-	return;
-    }
+        if (action == NULL)
+                return;
+        if (strlen(action) == 0) {
+                XtFree(action);
+                return;
+        }
 
-    file = XmTextFieldGetString(fileText);
+        file = XmTextFieldGetString(fileText);
 
-    InvokeAction(action, file);
+        InvokeAction(action, file);
 
-    XtFree(action);
-    XtFree(file);
+        XtFree(action);
+        XtFree(file);
 
-    XmTextFieldSetString(actionText, "");
-    XmTextFieldSetString(fileText, "");
+        XmTextFieldSetString(actionText, "");
+        XmTextFieldSetString(fileText, "");
 
-    XmProcessTraversal(actionText, XmTRAVERSE_CURRENT);
+        XmProcessTraversal(actionText, XmTRAVERSE_CURRENT);
 }
 
-static void InvokeAction(char *action, char *file)
-{
-    DtActionArg *ap = NULL;
-    int nap = 0;
-    DtActionInvocationID actionId;
-  
-    /* If a file was specified, build the file argument list */
+static void InvokeAction(char *action, char *file) {
+        DtActionArg *ap = NULL;
+        int nap = 0;
+        DtActionInvocationID actionId;
 
-printf("%s(%s)\n",action,file);
-    if (file != NULL && strlen(file) != 0) {
-	ap = (DtActionArg*) XtCalloc(1, sizeof(DtActionArg));
-	ap[0].argClass = DtACTION_FILE;
-	ap[0].u.file.name = file;
-	nap = 1;
-    }
+        /* If a file was specified, build the file argument list */
 
-    /* Invoke the specified action */
+        printf("%s(%s)\n", action, file);
+        if (file != NULL && strlen(file) != 0) {
+                ap = (DtActionArg *)XtCalloc(1, sizeof(DtActionArg));
+                ap[0].argClass = DtACTION_FILE;
+                ap[0].u.file.name = file;
+                nap = 1;
+        }
 
-    actionId = DtActionInvoke(shell,action,ap,nap,NULL,NULL,NULL,True,NULL,NULL);
+        /* Invoke the specified action */
+
+        actionId = DtActionInvoke(shell, action, ap, nap, NULL, NULL, NULL,
+                                  True, NULL, NULL);
 }
-

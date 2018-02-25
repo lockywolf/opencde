@@ -26,7 +26,7 @@
  * (c) Copyright 1992-1994,1996 Hewlett-Packard Company.
  * (c) Copyright 1993,1994,1996 International Business Machines Corp.
  * (c) Copyright 1993,1994,1996 Sun Microsystems, Inc.
- * (c) Copyright 1993,1994,1996 Novell, Inc. 
+ * (c) Copyright 1993,1994,1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -45,8 +45,8 @@
 #include <stdio.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <Dt/Wsm.h> 
-#include <Dt/WsmP.h> 
+#include <Dt/Wsm.h>
+#include <Dt/WsmP.h>
 #include <Xm/Xm.h>
 #include <Xm/AtomMgr.h>
 #include <X11/Xatom.h>
@@ -60,12 +60,12 @@
  *
  *  Description:
  *  -----------
- *  Get the contents of the _DT_WORKSPACE_LIST property 
+ *  Get the contents of the _DT_WORKSPACE_LIST property
  *
  *
  *  Inputs:
  *  ------
- *  display	- display 
+ *  display	- display
  *  root	- root window of screen of interest
  *  pNumWorkspaces - the number of workspaces returned
  *  ppWorkspaceList - pointer to a pointer to return
@@ -77,66 +77,50 @@
  *
  *  Comments:
  *  ---------
- * 
+ *
  *************************************<->***********************************/
-int
-DtWsmGetWorkspaceList(
-        Display *display,
-        Window root,
-        Atom **ppWorkspaceList,
-	int *pNumWorkspaces)
-{
-    Atom actualType;
-    int actualFormat;
-    unsigned long leftover, items, length, oldlength;
-    int rcode;
-    Atom property;
-    Window wmWindow;
-    _DtSvcDisplayToAppContext(display);
+int DtWsmGetWorkspaceList(Display *display, Window root, Atom **ppWorkspaceList,
+                          int *pNumWorkspaces) {
+        Atom actualType;
+        int actualFormat;
+        unsigned long leftover, items, length, oldlength;
+        int rcode;
+        Atom property;
+        Window wmWindow;
+        _DtSvcDisplayToAppContext(display);
 
-    _DtSvcAppLock(app);
+        _DtSvcAppLock(app);
 
-    if ((rcode=_DtGetMwmWindow (display, root, &wmWindow)) == Success)
-    {
+        if ((rcode = _DtGetMwmWindow(display, root, &wmWindow)) == Success) {
 
-	property = XmInternAtom(display, _XA_DT_WORKSPACE_LIST, False); 
-	length = BUFSIZ;
+                property = XmInternAtom(display, _XA_DT_WORKSPACE_LIST, False);
+                length = BUFSIZ;
 
-	*ppWorkspaceList = NULL;
-	if ((rcode=XGetWindowProperty(
-			display,
-			wmWindow,
-			property,
-			0L, 				/* offset */
-			length,
-			False,				/* delete */
-			XA_ATOM,			/* req_type */
-			&actualType,
-			&actualFormat,
-			&items,				/* items returned */
-			&leftover,
-			(unsigned char **)ppWorkspaceList))==Success)
-	{
+                *ppWorkspaceList = NULL;
+                if ((rcode = XGetWindowProperty(
+                         display, wmWindow, property, 0L, /* offset */
+                         length, False,                   /* delete */
+                         XA_ATOM,                         /* req_type */
+                         &actualType, &actualFormat,
+                         &items, /* items returned */
+                         &leftover, (unsigned char **)ppWorkspaceList)) ==
+                    Success) {
 
-	    if (actualType != XA_ATOM)
-	    {
-		/* wrong type, force failure */
-		rcode = BadValue;
-		if (actualType != None)
-		{
-		    XFree ((char *)*ppWorkspaceList);
-		}
-		*ppWorkspaceList = NULL;
-	    }
-	    else
-	    {
-		*pNumWorkspaces = (int) items;
-	    }
-	}
-    }
-	
-    _DtSvcAppUnlock(app);
-    return(rcode);
+                        if (actualType != XA_ATOM) {
+                                /* wrong type, force failure */
+                                rcode = BadValue;
+                                if (actualType != None) {
+                                        XFree((char *)*ppWorkspaceList);
+                                }
+                                *ppWorkspaceList = NULL;
+                        } else {
+                                *pNumWorkspaces = (int)items;
+                        }
+                }
+        }
+
+        _DtSvcAppUnlock(app);
+        return (rcode);
 
 } /* END OF FUNCTION DtWsmGetWorkspaceList */
 
@@ -147,82 +131,65 @@ DtWsmGetWorkspaceList(
  *
  *  Description:
  *  -----------
- *  Get the contents of the _DT_WORKSPACE_CURRENT property 
+ *  Get the contents of the _DT_WORKSPACE_CURRENT property
  *
  *
  *  Inputs:
  *  ------
- *  display	- display 
+ *  display	- display
  *  root	- root window of screen of interest
  *  paWorkspace  - pointer to a Atom of current workspace (returned)
  *
  *  Outputs:
  *  --------
  *  *paWorkspace - atom for current workspace (represents "name"
- *                 of workspace). 
+ *                 of workspace).
  *
  *  Comments:
  *  ---------
  *  The Atom is copied to the caller's space. Nothing needs to be
  *  freed.
- * 
+ *
  *************************************<->***********************************/
-int
-DtWsmGetCurrentWorkspace (
-        Display *display,
-        Window root,
-        Atom *paWorkspace)
-{
-    Atom actualType;
-    int actualFormat;
-    unsigned long leftover, items, length;
-    int rcode;
-    Atom property;
-    Window wmWindow;
-    Atom *paTemp;
-    _DtSvcDisplayToAppContext(display);
+int DtWsmGetCurrentWorkspace(Display *display, Window root, Atom *paWorkspace) {
+        Atom actualType;
+        int actualFormat;
+        unsigned long leftover, items, length;
+        int rcode;
+        Atom property;
+        Window wmWindow;
+        Atom *paTemp;
+        _DtSvcDisplayToAppContext(display);
 
-    _DtSvcAppLock(app);
-    if ((rcode=_DtGetMwmWindow (display, root, &wmWindow)) == Success)
-    {
+        _DtSvcAppLock(app);
+        if ((rcode = _DtGetMwmWindow(display, root, &wmWindow)) == Success) {
 
-	property = XmInternAtom(display, _XA_DT_WORKSPACE_CURRENT, False); 
-	length = 1;
+                property =
+                    XmInternAtom(display, _XA_DT_WORKSPACE_CURRENT, False);
+                length = 1;
 
-	if ((rcode=XGetWindowProperty(
-			display,
-			wmWindow,
-			property,
-			0L, 				/* offset */
-			length,
-			False,				/* delete */
-			XA_ATOM,			/* req_type */
-			&actualType,
-			&actualFormat,
-			&items,				/* items returned */
-			&leftover,
-			(unsigned char **)&paTemp))==Success)
-	{
+                if ((rcode = XGetWindowProperty(
+                         display, wmWindow, property, 0L, /* offset */
+                         length, False,                   /* delete */
+                         XA_ATOM,                         /* req_type */
+                         &actualType, &actualFormat,
+                         &items, /* items returned */
+                         &leftover, (unsigned char **)&paTemp)) == Success) {
 
-	    if (actualType != XA_ATOM)
-	    {
-		/* wrong type, force failure */
-		rcode = BadValue;
-		if (actualType != None)
-		{
-		    XFree ((char *)paTemp);
-		}
-	    }
-	    else
-	    {
-		*paWorkspace = *paTemp;
-		XFree((char *) paTemp);
-	    }
-	}
-    }
-	
-    _DtSvcAppUnlock(app);
-    return(rcode);
+                        if (actualType != XA_ATOM) {
+                                /* wrong type, force failure */
+                                rcode = BadValue;
+                                if (actualType != None) {
+                                        XFree((char *)paTemp);
+                                }
+                        } else {
+                                *paWorkspace = *paTemp;
+                                XFree((char *)paTemp);
+                        }
+                }
+        }
+
+        _DtSvcAppUnlock(app);
+        return (rcode);
 
 } /* END OF FUNCTION DtWsmGetCurrentWorkspace */
-

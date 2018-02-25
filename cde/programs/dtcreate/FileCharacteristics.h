@@ -31,7 +31,6 @@
 #ifndef _FILECHARACTERISTICS_H_INCLUDED
 #define _FILECHARACTERISTICS_H_INCLUDED
 
-
 #include <stdio.h>
 #include <Xm/Xm.h>
 #include <Xm/MwmUtil.h>
@@ -84,24 +83,25 @@ typedef struct
 
 #ifdef CONTEXT_MACRO_ACCESS
 static _UxCFileCharacteristics *UxFileCharacteristicsContext;
-#define FC_OkButton             UxFileCharacteristicsContext->UxFC_OkButton
-#define FC_ClearButton          UxFileCharacteristicsContext->UxFC_ClearButton
-#define FC_CancelButton         UxFileCharacteristicsContext->UxFC_CancelButton
-#define FC_HelpButton           UxFileCharacteristicsContext->UxFC_HelpButton
-#define FC_MainLabel            UxFileCharacteristicsContext->UxFC_MainLabel
-#define FC_NamePatternLabel     UxFileCharacteristicsContext->UxFC_NamePatternLabel
-#define FC_PermissionLabel      UxFileCharacteristicsContext->UxFC_PermissionLabel
-#define FC_PermissionToggle     UxFileCharacteristicsContext->UxFC_PermissionToggle
-#define FC_ContentsLabel        UxFileCharacteristicsContext->UxFC_ContentsLabel
-#define FC_ContentsBox          UxFileCharacteristicsContext->UxFC_ContentsBox
-#define FC_TypeRowColumn        UxFileCharacteristicsContext->UxFC_TypeRowColumn
-#define FC_StartByteLabel       UxFileCharacteristicsContext->UxFC_StartByteLabel
-#define FC_TypeLabel            UxFileCharacteristicsContext->UxFC_TypeLabel
-#define FC_ContentsPatternLabel UxFileCharacteristicsContext->UxFC_ContentsPatternLabel
-#define FC_EndByteLabel         UxFileCharacteristicsContext->UxFC_EndByteLabel
-#define FC_ContentsToggle       UxFileCharacteristicsContext->UxFC_ContentsToggle
-#define FC_NameOrPathToggle     UxFileCharacteristicsContext->UxFC_NameOrPathToggle
-#define UxParent                UxFileCharacteristicsContext->UxUxParent
+#define FC_OkButton UxFileCharacteristicsContext->UxFC_OkButton
+#define FC_ClearButton UxFileCharacteristicsContext->UxFC_ClearButton
+#define FC_CancelButton UxFileCharacteristicsContext->UxFC_CancelButton
+#define FC_HelpButton UxFileCharacteristicsContext->UxFC_HelpButton
+#define FC_MainLabel UxFileCharacteristicsContext->UxFC_MainLabel
+#define FC_NamePatternLabel UxFileCharacteristicsContext->UxFC_NamePatternLabel
+#define FC_PermissionLabel UxFileCharacteristicsContext->UxFC_PermissionLabel
+#define FC_PermissionToggle UxFileCharacteristicsContext->UxFC_PermissionToggle
+#define FC_ContentsLabel UxFileCharacteristicsContext->UxFC_ContentsLabel
+#define FC_ContentsBox UxFileCharacteristicsContext->UxFC_ContentsBox
+#define FC_TypeRowColumn UxFileCharacteristicsContext->UxFC_TypeRowColumn
+#define FC_StartByteLabel UxFileCharacteristicsContext->UxFC_StartByteLabel
+#define FC_TypeLabel UxFileCharacteristicsContext->UxFC_TypeLabel
+#define FC_ContentsPatternLabel                                                \
+        UxFileCharacteristicsContext->UxFC_ContentsPatternLabel
+#define FC_EndByteLabel UxFileCharacteristicsContext->UxFC_EndByteLabel
+#define FC_ContentsToggle UxFileCharacteristicsContext->UxFC_ContentsToggle
+#define FC_NameOrPathToggle UxFileCharacteristicsContext->UxFC_NameOrPathToggle
+#define UxParent UxFileCharacteristicsContext->UxUxParent
 
 #endif /* CONTEXT_MACRO_ACCESS */
 
@@ -123,14 +123,11 @@ extern Widget   FC_AndLabel1;
        Declarations of global functions.
 *******************************************************************************/
 
-
-
-Widget  create_FileCharacteristics(swidget _UxUxParent);
-void    GetPermissionsPattern(char **ppszPermPattern);
-void    init_FileCharacteristics_dialog_fields(FiletypeData *pFtD);
-void    clear_FileCharacteristics_dialog_fields(void);
-void    ParseAndUpdateID(FiletypeData *pFtD);
+Widget create_FileCharacteristics(swidget _UxUxParent);
+void GetPermissionsPattern(char **ppszPermPattern);
+void init_FileCharacteristics_dialog_fields(FiletypeData *pFtD);
+void clear_FileCharacteristics_dialog_fields(void);
+void ParseAndUpdateID(FiletypeData *pFtD);
 Boolean FileCharCheckFields(void);
 
-
-#endif  /* _FILECHARACTERISTICS_H_INCLUDED */
+#endif /* _FILECHARACTERISTICS_H_INCLUDED */

@@ -42,163 +42,150 @@
 #include <stdio.h>
 
 class SearchPath {
- public:
-  SearchPath() {}
-  SearchPath (CDEEnvironment *, const char *, const char *);
-  virtual ~SearchPath();
+      public:
+        SearchPath() {}
+        SearchPath(CDEEnvironment *, const char *, const char *);
+        virtual ~SearchPath();
 
-  virtual void ExportPath();
-  virtual void Print();
-  virtual void AddPredefinedPath();
+        virtual void ExportPath();
+        virtual void Print();
+        virtual void AddPredefinedPath();
 
 #if defined(linux) || defined(CSRG_BASED) || defined(sun)
-  virtual void PrettyPrint (std::ostream &) const;
+        virtual void PrettyPrint(std::ostream &) const;
 
-  friend std::ostream & operator<< (std::ostream &, const SearchPath &);
+        friend std::ostream &operator<<(std::ostream &, const SearchPath &);
 #else
-  virtual void PrettyPrint (ostream &) const;
+        virtual void PrettyPrint(ostream &) const;
 
-  friend ostream & operator<< (ostream &, const SearchPath &);
+        friend ostream &operator<<(ostream &, const SearchPath &);
 #endif
 
-  const char *  GetEnvVar() const    { return environment_var; }
-  CString       GetSearchPath() const { return final_search_path; }
+        const char *GetEnvVar() const { return environment_var; }
+        CString GetSearchPath() const { return final_search_path; }
 
- protected:
-  void  AssembleString (const CString &);
-  void  NormalizePath();
-  void  AddToPath (const CString &);
-  void  TraversePath();
+      protected:
+        void AssembleString(const CString &);
+        void NormalizePath();
+        void AddToPath(const CString &);
+        void TraversePath();
 
-  virtual void    MakePath (const CString &) {}
-  virtual CString ConstructPath (const CString &, const CString *,
-				 unsigned char useTT = 1);
+        virtual void MakePath(const CString &) {}
+        virtual CString ConstructPath(const CString &, const CString *,
+                                      unsigned char useTT = 1);
 
-  int     ParseState() const   { return parse_state; }
-  CString Separator() const    { return separator; }
+        int ParseState() const { return parse_state; }
+        CString Separator() const { return separator; }
 
-  virtual int validSearchPath (const CString &) const;
-  virtual int useSystemPath();
+        virtual int validSearchPath(const CString &) const;
+        virtual int useSystemPath();
 
-  void    setSeparator (const char * sep) { separator = sep; }
+        void setSeparator(const char *sep) { separator = sep; }
 
-  CString          search_path;
-  CString          norm_search_path;
-  CString          final_search_path;
-  CDEEnvironment * user;
+        CString search_path;
+        CString norm_search_path;
+        CString final_search_path;
+        CDEEnvironment *user;
 
- private:
-  const char *     environment_var;
-  int              parse_state;
-  CString          save_host;
-  CString          separator;
+      private:
+        const char *environment_var;
+        int parse_state;
+        CString save_host;
+        CString separator;
 };
-
 
 class AppSearchPath : public SearchPath {
- public:
-  AppSearchPath (CDEEnvironment *, 
-		 const char * = "DTAPP",
-		 const char * = ",");
-  virtual ~AppSearchPath() {}
+      public:
+        AppSearchPath(CDEEnvironment *, const char * = "DTAPP",
+                      const char * = ",");
+        virtual ~AppSearchPath() {}
 
-  void FixUp();
+        void FixUp();
 
- protected:
-  virtual void    MakePath (const CString &);
+      protected:
+        virtual void MakePath(const CString &);
 
- private:
+      private:
 };
-
 
 class IconSearchPath : public SearchPath {
- public:
-  IconSearchPath (CDEEnvironment *,
-		  const char * = "XMICON",
-		  const char * = ".pm",
-		  const char * = ".bm",
-		  const char * = ":");
-  virtual ~IconSearchPath() {}
+      public:
+        IconSearchPath(CDEEnvironment *, const char * = "XMICON",
+                       const char * = ".pm", const char * = ".bm",
+                       const char * = ":");
+        virtual ~IconSearchPath() {}
 
- protected:
-  virtual void    MakePath (const CString &);
-  virtual int     validSearchPath (const CString &) const;
+      protected:
+        virtual void MakePath(const CString &);
+        virtual int validSearchPath(const CString &) const;
 
- private:
-  CString first;
-  CString second;
+      private:
+        CString first;
+        CString second;
 };
-
 
 class DatabaseSearchPath : public SearchPath {
- public:
-  DatabaseSearchPath (CDEEnvironment *,
-		      const char * = "DTDATABASE",
-		      const char * = ",");
-  virtual ~DatabaseSearchPath() {}
+      public:
+        DatabaseSearchPath(CDEEnvironment *, const char * = "DTDATABASE",
+                           const char * = ",");
+        virtual ~DatabaseSearchPath() {}
 
- protected:
-  virtual void    MakePath (const CString &);
-  virtual CString ConstructPath (const CString &, const CString *,
-				 unsigned char useTT = 0);
+      protected:
+        virtual void MakePath(const CString &);
+        virtual CString ConstructPath(const CString &, const CString *,
+                                      unsigned char useTT = 0);
 
- private:
+      private:
 };
-
 
 class HelpSearchPath : public SearchPath {
- public:
-  HelpSearchPath (CDEEnvironment *, 
-		  const char * = "DTHELP",
-		  const char * = ":");
-  virtual ~HelpSearchPath() {}
+      public:
+        HelpSearchPath(CDEEnvironment *, const char * = "DTHELP",
+                       const char * = ":");
+        virtual ~HelpSearchPath() {}
 
- protected:
-  virtual void    MakePath (const CString &);
-  virtual int     validSearchPath (const CString &) const;
+      protected:
+        virtual void MakePath(const CString &);
+        virtual int validSearchPath(const CString &) const;
 
- private:
+      private:
 };
-
 
 class InfoLibSearchPath : public SearchPath {
- public:
-  InfoLibSearchPath (CDEEnvironment *, 
-		  const char * = "DTINFOLIB",
-		  const char * = ":");
-  virtual ~InfoLibSearchPath() {}
+      public:
+        InfoLibSearchPath(CDEEnvironment *, const char * = "DTINFOLIB",
+                          const char * = ":");
+        virtual ~InfoLibSearchPath() {}
 
- protected:
-  virtual void    MakePath (const CString &);
-  virtual int     validSearchPath (const CString &) const;
+      protected:
+        virtual void MakePath(const CString &);
+        virtual int validSearchPath(const CString &) const;
 
- private:
+      private:
 };
 
-
 class ManSearchPath : public SearchPath {
- public:
-  ManSearchPath (CDEEnvironment *, 
-		 const char * = "MANPATH",
-		 const char * = ":");
-  virtual ~ManSearchPath() {}
+      public:
+        ManSearchPath(CDEEnvironment *, const char * = "MANPATH",
+                      const char * = ":");
+        virtual ~ManSearchPath() {}
 
-  virtual void    ExportPath ();
-  virtual void    Print();
+        virtual void ExportPath();
+        virtual void Print();
 
 #if defined(linux) || defined(CSRG_BASED) || defined(sun)
-  friend std::ostream & operator<< (std::ostream &, const ManSearchPath &);
+        friend std::ostream &operator<<(std::ostream &, const ManSearchPath &);
 #else
-  friend ostream & operator<< (ostream &, const ManSearchPath &);
+        friend ostream &operator<<(ostream &, const ManSearchPath &);
 #endif
 
- protected:
-  virtual void    MakePath (const CString &);
+      protected:
+        virtual void MakePath(const CString &);
 #if defined(__FreeBSD__)
-  virtual int     useSystemPath();
+        virtual int useSystemPath();
 #endif
 
- private:
+      private:
 };
 
 #endif

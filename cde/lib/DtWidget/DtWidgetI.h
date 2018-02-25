@@ -26,7 +26,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -38,16 +38,16 @@
 /********    Conditionally defined macros for thread safe DtWidget ******/
 #ifdef XTHREADS
 
-#define _DtWidgetToAppContext(w) \
+#define _DtWidgetToAppContext(w)                                               \
         XtAppContext app = XtWidgetToApplicationContext(w)
 
-#define _DtDisplayToAppContext(d) \
+#define _DtDisplayToAppContext(d)                                              \
         XtAppContext app = XtDisplayToApplicationContext(d)
 
-#define _DtAppLock(app)		XtAppLock(app)
-#define _DtAppUnlock(app)	XtAppUnlock(app)
-#define _DtProcessLock()	XtProcessLock()
-#define _DtProcessUnlock()	XtProcessUnlock()
+#define _DtAppLock(app) XtAppLock(app)
+#define _DtAppUnlock(app) XtAppUnlock(app)
+#define _DtProcessLock() XtProcessLock()
+#define _DtProcessUnlock() XtProcessUnlock()
 
 #else /* XTHREADS */
 
@@ -61,7 +61,7 @@
 #endif /* XTHREADS */
 
 #ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
 #endif /* _DtWidgetI_h */

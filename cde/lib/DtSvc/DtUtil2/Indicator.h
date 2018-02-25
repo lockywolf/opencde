@@ -41,18 +41,18 @@
 #ifndef _Indicator_h
 #define _Indicator_h
 
-extern void _DtSendActivityNotification( int ) ;
-   /* int duration;        Maximum activation time for the indicator */
+extern void _DtSendActivityNotification(int);
+/* int duration;        Maximum activation time for the indicator */
 
 /*
  * _DtSendActivityNotification() provides the application with the means for
  * notifying the world that an activity has been started, and may take upto
  * 'duration' seconds.  For now, the workspace manager will enable the
- * activity indicator for upto the indicated duration of time; the time is 
+ * activity indicator for upto the indicated duration of time; the time is
  * in units of seconds.
  */
 
-extern void _DtSendActivityDoneNotification( void ) ;
+extern void _DtSendActivityDoneNotification(void);
 
 /*
  * _DtSendActivityDoneNotification() provides the application with the means for

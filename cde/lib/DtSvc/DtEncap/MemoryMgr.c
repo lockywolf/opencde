@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         MemoryMgr.c $XConsortium: MemoryMgr.c /main/3 1995/10/26 15:34:54 rswiston $
- * Language:     C
+ * File:         MemoryMgr.c $XConsortium: MemoryMgr.c /main/3 1995/10/26
+ * 15:34:54 rswiston $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -51,28 +51,29 @@
 #endif
 
 /*-----------------------------------------------------------------------+*/
-void * XeMalloc( size_t size )
+void *XeMalloc(size_t size)
 /*-----------------------------------------------------------------------+*/
 {
-    XeString  ptr;
-    
-    if (!size) return 0;
-    if ((ptr = malloc(size))) {
-	*ptr = (XeChar)0;   /* Force first byte to NULL for bozos who */
-	                       /* think malloc zeros memory!             */
-	return ptr;
-    }
-    
-    _DtSimpleError(XeProgName, XeError,  XeString_NULL,
-		   "><DtEncap: cannot malloc memory");
-    exit(1);
-    return (void*)NULL;
+        XeString ptr;
+
+        if (!size)
+                return 0;
+        if ((ptr = malloc(size))) {
+                *ptr = (XeChar)0; /* Force first byte to NULL for bozos who */
+                                  /* think malloc zeros memory!             */
+                return ptr;
+        }
+
+        _DtSimpleError(XeProgName, XeError, XeString_NULL,
+                       "><DtEncap: cannot malloc memory");
+        exit(1);
+        return (void *)NULL;
 }
 
 /*-----------------------------------------------------------------------+*/
-void XeFree( void * ptr )
+void XeFree(void *ptr)
 /*-----------------------------------------------------------------------+*/
 {
-    if (ptr) 
-	free((char *)ptr); 
+        if (ptr)
+                free((char *)ptr);
 }

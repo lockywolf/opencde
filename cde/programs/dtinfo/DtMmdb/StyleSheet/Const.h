@@ -21,7 +21,7 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef _name_consts_h 
+#ifndef _name_consts_h
 #define _name_consts_h 1
 
 #define BREAK "BREAK"
@@ -31,7 +31,6 @@
 #define LINE_AFTER_BREAK "LINEAFTER"
 #define COLUMN_AFTER_BREAK "COLUMNAFTER"
 #define PAGE_AFTER_BREAK "PAGEAFTER"
-
 
 #define FONT "FONT"
 #define FONT_FAMILY "FAMILY"
@@ -47,7 +46,6 @@
 #define FONT_SLANT_ROMAN "ROMAN"
 #define FONT_SLANT_ITALIC "ITALIC"
 #define FONT_FAMILY_HELVETICA "HELVETICA"
-
 
 #define FOOTNOTES "FOOTNOTE"
 
@@ -69,7 +67,6 @@
 #define FOOTERS "FOOTER"
 #define HEADER "CONTENT"
 #define FOOTER "CONTENT"
-
 
 #define HIGHLIGHT "HIGHLIGHT"
 #define HIGHLIGHT_BOXED "BOXED"
@@ -125,7 +122,6 @@
 #define MEDIA_ORIENTATION_PORTRAIT "PORTRAIT"
 #define MEDIA_ORIENTATION_LANDSCAPE "LANDSCAPE"
 
-
 #define PREFIX "PREFIX"
 #define PREFIX_CONTENT "CONTENT"
 #define PREFIX_POSITION "POSITION"
@@ -152,5 +148,3 @@
 #define AUTO_NUMBER_ROMAN_LOWERCASE "LCROMAN"
 
 #endif
-
-

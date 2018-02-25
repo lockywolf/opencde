@@ -62,82 +62,86 @@
        corresponding entry in the context structure.
 *******************************************************************************/
 
-typedef struct
-{
-        Widget  UxAddFiletype;
-        Widget  UxAF_FiletypeFamilyNameLabel;
-        Widget  UxAF_OkButton;
-        Widget  UxAF_ApplyButton;
-        Widget  UxAF_CancelButton;
-        Widget  UxAF_HelpButton;
-        Widget  UxAF_IdCharacteristicsText;
-        Widget  UxAF_FiletypeIconHelpLabel;
-        Widget  UxAF_IdCharacteristicsEdit;
-        Widget  UxAF_FiletypePrintCmdLabel;
-        Widget  UxAF_OpenFiletypeCmdLabel;
-        Widget  UxAF_CommandsLabel;
-        Widget  UxAF_FiletypeIconForm;
-        Widget  UxAF_MED_IconGadget;
-        Widget  UxAF_TINY_IconGadget;
-        Widget  UxAF_FiletypeIconsEditButton;
-        Widget  UxAF_FiletypeIconFindSetButton;
-        Widget  UxAF_FiletypeIconsBoxLabel;
-        Widget  UxAF_FiletypeHelpScrolledWindow;
-        Widget  UxAF_separator2;
-        Widget  UxAF_separator1;
-        Widget  UxAF_IdCharacteristicsLabel;
+typedef struct {
+        Widget UxAddFiletype;
+        Widget UxAF_FiletypeFamilyNameLabel;
+        Widget UxAF_OkButton;
+        Widget UxAF_ApplyButton;
+        Widget UxAF_CancelButton;
+        Widget UxAF_HelpButton;
+        Widget UxAF_IdCharacteristicsText;
+        Widget UxAF_FiletypeIconHelpLabel;
+        Widget UxAF_IdCharacteristicsEdit;
+        Widget UxAF_FiletypePrintCmdLabel;
+        Widget UxAF_OpenFiletypeCmdLabel;
+        Widget UxAF_CommandsLabel;
+        Widget UxAF_FiletypeIconForm;
+        Widget UxAF_MED_IconGadget;
+        Widget UxAF_TINY_IconGadget;
+        Widget UxAF_FiletypeIconsEditButton;
+        Widget UxAF_FiletypeIconFindSetButton;
+        Widget UxAF_FiletypeIconsBoxLabel;
+        Widget UxAF_FiletypeHelpScrolledWindow;
+        Widget UxAF_separator2;
+        Widget UxAF_separator1;
+        Widget UxAF_IdCharacteristicsLabel;
         swidget UxUxParent;
 } _UxCAddFiletype;
 
 #ifdef CONTEXT_MACRO_ACCESS
-static _UxCAddFiletype         *UxAddFiletypeContext;
-#define AddFiletype             UxAddFiletypeContext->UxAddFiletype
-#define AF_FiletypeFamilyNameLabel UxAddFiletypeContext->UxAF_FiletypeFamilyNameLabel
-#define AF_OkButton             UxAddFiletypeContext->UxAF_OkButton
-#define AF_ApplyButton          UxAddFiletypeContext->UxAF_ApplyButton
-#define AF_CancelButton         UxAddFiletypeContext->UxAF_CancelButton
-#define AF_HelpButton           UxAddFiletypeContext->UxAF_HelpButton
-/*#define AF_IdCharacteristicsText UxAddFiletypeContext->UxAF_IdCharacteristicsText*/
-#define AF_FiletypeIconHelpLabel UxAddFiletypeContext->UxAF_FiletypeIconHelpLabel
-/*#define AF_IdCharacteristicsEdit UxAddFiletypeContext->UxAF_IdCharacteristicsEdit*/
-#define AF_FiletypePrintCmdLabel UxAddFiletypeContext->UxAF_FiletypePrintCmdLabel
+static _UxCAddFiletype *UxAddFiletypeContext;
+#define AddFiletype UxAddFiletypeContext->UxAddFiletype
+#define AF_FiletypeFamilyNameLabel                                             \
+        UxAddFiletypeContext->UxAF_FiletypeFamilyNameLabel
+#define AF_OkButton UxAddFiletypeContext->UxAF_OkButton
+#define AF_ApplyButton UxAddFiletypeContext->UxAF_ApplyButton
+#define AF_CancelButton UxAddFiletypeContext->UxAF_CancelButton
+#define AF_HelpButton UxAddFiletypeContext->UxAF_HelpButton
+/*#define AF_IdCharacteristicsText
+ * UxAddFiletypeContext->UxAF_IdCharacteristicsText*/
+#define AF_FiletypeIconHelpLabel                                               \
+        UxAddFiletypeContext->UxAF_FiletypeIconHelpLabel
+/*#define AF_IdCharacteristicsEdit
+ * UxAddFiletypeContext->UxAF_IdCharacteristicsEdit*/
+#define AF_FiletypePrintCmdLabel                                               \
+        UxAddFiletypeContext->UxAF_FiletypePrintCmdLabel
 #define AF_OpenFiletypeCmdLabel UxAddFiletypeContext->UxAF_OpenFiletypeCmdLabel
-#define AF_CommandsLabel        UxAddFiletypeContext->UxAF_CommandsLabel
-#define AF_FiletypeIconForm     UxAddFiletypeContext->UxAF_FiletypeIconForm
+#define AF_CommandsLabel UxAddFiletypeContext->UxAF_CommandsLabel
+#define AF_FiletypeIconForm UxAddFiletypeContext->UxAF_FiletypeIconForm
 /*
 #define AF_MED_IconGadget       UxAddFiletypeContext->UxAF_MED_IconGadget
 #define AF_TINY_IconGadget      UxAddFiletypeContext->UxAF_TINY_IconGadget
 */
-#define AF_FiletypeIconsEditButton UxAddFiletypeContext->UxAF_FiletypeIconsEditButton
-#define AF_FiletypeIconFindSetButton UxAddFiletypeContext->UxAF_FiletypeIconFindSetButton
-#define AF_FiletypeIconsBoxLabel UxAddFiletypeContext->UxAF_FiletypeIconsBoxLabel
-#define AF_FiletypeHelpScrolledWindow UxAddFiletypeContext->UxAF_FiletypeHelpScrolledWindow
-#define AF_separator2           UxAddFiletypeContext->UxAF_separator2
-#define AF_separator1           UxAddFiletypeContext->UxAF_separator1
-#define AF_IdCharacteristicsLabel UxAddFiletypeContext->UxAF_IdCharacteristicsLabel
-#define UxParent                UxAddFiletypeContext->UxUxParent
+#define AF_FiletypeIconsEditButton                                             \
+        UxAddFiletypeContext->UxAF_FiletypeIconsEditButton
+#define AF_FiletypeIconFindSetButton                                           \
+        UxAddFiletypeContext->UxAF_FiletypeIconFindSetButton
+#define AF_FiletypeIconsBoxLabel                                               \
+        UxAddFiletypeContext->UxAF_FiletypeIconsBoxLabel
+#define AF_FiletypeHelpScrolledWindow                                          \
+        UxAddFiletypeContext->UxAF_FiletypeHelpScrolledWindow
+#define AF_separator2 UxAddFiletypeContext->UxAF_separator2
+#define AF_separator1 UxAddFiletypeContext->UxAF_separator1
+#define AF_IdCharacteristicsLabel                                              \
+        UxAddFiletypeContext->UxAF_IdCharacteristicsLabel
+#define UxParent UxAddFiletypeContext->UxUxParent
 
 #endif /* CONTEXT_MACRO_ACCESS */
 
-extern Widget   AF_FileTypeNameTextField;
-extern Widget   AF_FiletypePrintCmdTextField;
-extern Widget   AF_OpenCmdText;
-extern Widget   AF_FiletypeHelpText;
-extern Widget   AF_MED_IconGadget;
-extern Widget   AF_TINY_IconGadget;
+extern Widget AF_FileTypeNameTextField;
+extern Widget AF_FiletypePrintCmdTextField;
+extern Widget AF_OpenCmdText;
+extern Widget AF_FiletypeHelpText;
+extern Widget AF_MED_IconGadget;
+extern Widget AF_TINY_IconGadget;
 
 /*******************************************************************************
        Declarations of global functions.
 *******************************************************************************/
 
+void activateCB_edit_id_characteristics(
+    Widget filesel, XtPointer cdata,
+    XmFileSelectionBoxCallbackStruct *cbstruct);
+Widget create_AddFiletype(swidget _UxUxParent);
 
-void    activateCB_edit_id_characteristics (
-			   Widget filesel, 
-			   XtPointer cdata,
-			   XmFileSelectionBoxCallbackStruct *cbstruct);
-Widget  create_AddFiletype(swidget _UxUxParent);
-
-
-
-#endif  /* _ADDFILETYPE_H_INCLUDED */
-
+#endif /* _ADDFILETYPE_H_INCLUDED */

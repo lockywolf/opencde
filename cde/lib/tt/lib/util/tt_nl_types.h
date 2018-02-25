@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: tt_nl_types.h /main/3 1995/10/23 10:42:17 rswiston $ 			 				 */
+/*%%  $XConsortium: tt_nl_types.h /main/3 1995/10/23 10:42:17 rswiston $
+ */
 /*
  *
  * tt_nl_types.h
@@ -40,6 +41,6 @@
  * NLS data types
  */
 
-typedef int tt_nl_catd;		/* used by message catalogue */
-typedef int tt_nl_item;		/* identify langinfo data */
+typedef int tt_nl_catd; /* used by message catalogue */
+typedef int tt_nl_item; /* identify langinfo data */
 #endif

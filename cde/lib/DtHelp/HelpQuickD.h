@@ -37,7 +37,6 @@
 extern "C" {
 #endif
 
-
 /*
  * Constants
  */
@@ -45,41 +44,40 @@ extern "C" {
 /* Quick help dialog-specific Resources */
 
 #ifndef DtNbackLabelString
-#define DtNbackLabelString		"backLabelString"
+#define DtNbackLabelString "backLabelString"
 #endif
 #ifndef DtNhelpLabelString
-#define DtNhelpLabelString		XmNhelpLabelString
+#define DtNhelpLabelString XmNhelpLabelString
 #endif
 #ifndef DtNmoreLabelString
-#define DtNmoreLabelString		"moreLabelString"
+#define DtNmoreLabelString "moreLabelString"
 #endif
 #ifndef DtNcloseLabelString
-#define DtNcloseLabelString		"closeLabelString"
+#define DtNcloseLabelString "closeLabelString"
 #endif
 #ifndef DtNprintLabelString
-#define DtNprintLabelString		"printLabelString"
+#define DtNprintLabelString "printLabelString"
 #endif
 
 #ifndef DtCCallback
-#define DtCCallback                     XmCCallback
+#define DtCCallback XmCCallback
 #endif
 
 #ifndef DtCBackLabelString
-#define DtCBackLabelString		"BackLabelString"
+#define DtCBackLabelString "BackLabelString"
 #endif
 #ifndef DtCHelpLabelString
-#define DtCHelpLabelString		XmCHelpLabelString
+#define DtCHelpLabelString XmCHelpLabelString
 #endif
 #ifndef DtCMoreLabelString
-#define DtCMoreLabelString		"MoreLabelString"
+#define DtCMoreLabelString "MoreLabelString"
 #endif
 #ifndef DtCCloseLabelString
-#define DtCCloseLabelString		"CloseLabelString"
+#define DtCCloseLabelString "CloseLabelString"
 #endif
 #ifndef DtCPrintLabelString
-#define DtCPrintLabelString		"PrintLabelString"
+#define DtCPrintLabelString "PrintLabelString"
 #endif
-
 
 /*
  * Types
@@ -87,9 +85,8 @@ extern "C" {
 
 /* Widget class and instance */
 
-typedef struct _DtHelpQuickDialogWidgetClassRec * DtHelpQuickDialogWidgetClass;
-typedef struct _DtHelpQuickDialogWidgetRec   * DtHelpQuickDialogWidget;
-
+typedef struct _DtHelpQuickDialogWidgetClassRec *DtHelpQuickDialogWidgetClass;
+typedef struct _DtHelpQuickDialogWidgetRec *DtHelpQuickDialogWidget;
 
 /*
  * Data
@@ -99,23 +96,17 @@ typedef struct _DtHelpQuickDialogWidgetRec   * DtHelpQuickDialogWidget;
 
 externalref WidgetClass dtHelpQuickDialogWidgetClass;
 
-
 /*
  * Functions
  */
 
 /* tmp backwards compat */
-#define DtCreateQuickHelpDialog  DtCreateHelpQuickDialog
+#define DtCreateQuickHelpDialog DtCreateHelpQuickDialog
 
-extern Widget DtCreateHelpQuickDialog(
-		Widget		parent,
-		char		*name,
-		ArgList		arglist,
-		Cardinal	argcount);
+extern Widget DtCreateHelpQuickDialog(Widget parent, char *name,
+                                      ArgList arglist, Cardinal argcount);
 
-extern Widget DtHelpQuickDialogGetChild(
-		Widget		widget,
-		unsigned char	child);
+extern Widget DtHelpQuickDialogGetChild(Widget widget, unsigned char child);
 
 #ifdef __cplusplus
 }

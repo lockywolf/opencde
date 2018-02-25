@@ -33,17 +33,16 @@ class ExprList;
 
 class FirstOf : public BaseData {
 
-friend class OL_Data;
-friend class Concat;  
-  
-private:
-  OL_Expression *elist;
+        friend class OL_Data;
+        friend class Concat;
 
-protected:
-  FirstOf( const Token &t, ExprList *el,ActionType mode );
-  void markup( const Token &t );
-  void data( const char *str, size_t sz ) { ComplexTask::data( str, sz ); }
+      private:
+        OL_Expression *elist;
+
+      protected:
+        FirstOf(const Token &t, ExprList *el, ActionType mode);
+        void markup(const Token &t);
+        void data(const char *str, size_t sz) { ComplexTask::data(str, sz); }
 };
-
 
 #endif

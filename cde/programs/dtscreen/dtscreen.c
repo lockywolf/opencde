@@ -106,7 +106,7 @@
 
 #include <nl_types.h>
 #include <locale.h>
-nl_catd  scmc_catd;   /* Cat descriptor for scmc conversion */
+nl_catd scmc_catd; /* Cat descriptor for scmc conversion */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -119,7 +119,7 @@ nl_catd  scmc_catd;   /* Cat descriptor for scmc conversion */
 #include "dtscreen.h"
 #ifdef NEVER
 /* We'd like to include DtP.h, but it interferes with dtscreen.h */
-# include <Dt/DtP.h>
+#include <Dt/DtP.h>
 #endif /* NEVER */
 #include <Dt/EnvControlP.h>
 #include <Dt/Saver.h>
@@ -128,255 +128,235 @@ nl_catd  scmc_catd;   /* Cat descriptor for scmc conversion */
 #define NL_CAT_LOCALE 0
 #endif
 
-char       *ProgramName;        /* argv[0] */
-Display    *dsp = NULL;         /* server display connection */
-void        (*callback) () = NULL;
-void        (*init) () = NULL;
+char *ProgramName;   /* argv[0] */
+Display *dsp = NULL; /* server display connection */
+void (*callback)() = NULL;
+void (*init)() = NULL;
 
-static perwindow *Win; /* perwindow information */
-static int  windows;            /* number of windows */
-static Window *winprop = NULL;  /* dtsession cover windows */
+static perwindow *Win;         /* perwindow information */
+static int windows;            /* number of windows */
+static Window *winprop = NULL; /* dtsession cover windows */
 
 /* VARARGS1 */
-void
-error(s1, s2)
-    char       *s1, *s2;
+void error(s1, s2) char *s1, *s2;
 {
-    fprintf(stderr, s1, ProgramName, s2);
-    exit(1);
+        fprintf(stderr, s1, ProgramName, s2);
+        exit(1);
 }
 
 /*
  * Restore all grabs, reset screensaver, restore colormap, close connection.
  */
-static void
-finish(void)
-{
-    XSync(dsp, False);
-    if (winprop) 
-      XFree((char *)winprop);
-    XFlush(dsp);
-    XCloseDisplay(dsp);
+static void finish(void) {
+        XSync(dsp, False);
+        if (winprop)
+                XFree((char *)winprop);
+        XFlush(dsp);
+        XCloseDisplay(dsp);
 }
 
+static void justDisplay(void) {
+        XEvent event;
+        int window;
 
-static void
-justDisplay(void)
-{
-    XEvent      event;
-    int window;
-
-    for (window = 0; window < windows; window++)
-        init(Win+window);
-    do {
-        while (!XPending(dsp)) {
-            for (window = 0; window < windows; window++)
-                callback(Win+window);
-            XSync(dsp, False);
-            usleep(delay);
-        }
-        XNextEvent(dsp, &event);
+        for (window = 0; window < windows; window++)
+                init(Win + window);
+        do {
+                while (!XPending(dsp)) {
+                        for (window = 0; window < windows; window++)
+                                callback(Win + window);
+                        XSync(dsp, False);
+                        usleep(delay);
+                }
+                XNextEvent(dsp, &event);
 
 #ifndef DEBUG
-        if (event.type == VisibilityNotify)
-            XRaiseWindow(dsp, event.xany.window);
+                if (event.type == VisibilityNotify)
+                        XRaiseWindow(dsp, event.xany.window);
 #endif
-    } while (1);
+        } while (1);
 }
 
-
-long
-allocpixel(Colormap cmap, char *name, char *def)
-{
-    XColor      col;
-    XColor      tmp;
-    XParseColor(dsp, cmap, name, &col);
-    if (!XAllocColor(dsp, cmap, &col)) {
+long allocpixel(Colormap cmap, char *name, char *def) {
+        XColor col;
+        XColor tmp;
+        XParseColor(dsp, cmap, name, &col);
+        if (!XAllocColor(dsp, cmap, &col)) {
 #ifdef MIT_R5
 
-        fprintf(stderr, 
-             "couldn't allocate: %s, using %s instead\n",
-                name, def);
+                fprintf(stderr, "couldn't allocate: %s, using %s instead\n",
+                        name, def);
 
 #else
-        fprintf(stderr, catgets(scmc_catd, 2, 35, 
-             "couldn't allocate: %s, using %s instead\n"),
-                name, def);
+                fprintf(stderr,
+                        catgets(scmc_catd, 2, 35,
+                                "couldn't allocate: %s, using %s instead\n"),
+                        name, def);
 #endif
 
-        XAllocNamedColor(dsp, cmap, def, &col, &tmp);
-    }
-    return col.pixel;
+                XAllocNamedColor(dsp, cmap, def, &col, &tmp);
+        }
+        return col.pixel;
 }
 
+int main(int argc, char *argv[]) {
+        XSetWindowAttributes xswa;
+        XGCValues xgcv;
+        int nitems = 0;
+        int window;
+        int i;
 
-int
-main(int argc, char *argv[])
-{
-    XSetWindowAttributes xswa;
-    XGCValues   xgcv;
-    int         nitems = 0;
-    int         window;
-    int i;
+        /*
+         * So we can find the app-defaults file.
+         */
+        _DtEnvControl(DT_ENV_SET);
 
-   /*
-    * So we can find the app-defaults file.
-    */
-    _DtEnvControl(DT_ENV_SET);
+        /* set locale to what is defined by local environment */
+        setlocale(LC_ALL, "");
+        scmc_catd = catopen(MF_DTSCREEN, NL_CAT_LOCALE);
 
-    /* set locale to what is defined by local environment */
-    setlocale(LC_ALL,"");
-    scmc_catd = catopen(MF_DTSCREEN, NL_CAT_LOCALE);
-
-    ProgramName = strrchr(argv[0], '/');
-    if (ProgramName)
-        ProgramName++;
-    else
-        ProgramName = argv[0];
-
-    srandom(time((time_t *) 0));  /* random mode needs the seed set. */
-
-    GetResources(argc, argv);
-
-    CheckResources();
-
-   if (!create)
-   {
-     /* Make sure DtSvc is initialized properly. */
-     XtAppContext appContext;
-     Widget shellWidget;
-     int dummyArgc = 1;
-     char *dummyArgv[1];
-
-     dummyArgv[0] = ProgramName;
-     XtToolkitInitialize();
-     appContext = XtCreateApplicationContext();
-     XtDisplayInitialize(appContext, dsp, ProgramName, ProgramName,
-			 NULL, 0, &dummyArgc, dummyArgv);
-     shellWidget = XtAppCreateShell(ProgramName, ProgramName,
-				    applicationShellWidgetClass,
-				    dsp, NULL, 0);
-     DtAppInitialize(appContext, dsp, shellWidget,
-		     ProgramName, ProgramName);
-
-     /*
-      * Try to get array of window ids from desktop. Also returned is
-      * a property identifier whose change will tell us when to terminate.
-      */
-      if (!DtSaverGetWindows(dsp, &winprop, &nitems))
-      {
-        fprintf(stderr, catgets(scmc_catd, 2, 40,
-             "%s: Cannot locate window in which to draw. Using the -create\n"
-             "option will cause %s to create its own window.\n"),
-             ProgramName, ProgramName);
-
-        exit(1);
-      }
-
-      Win = (perwindow *)malloc(nitems * sizeof(perwindow));
-      windows = nitems;
-      for (window = 0; window < windows; window++)
-      {
-        Win[window].w = winprop[window];
-        Win[window].perscreen = NULL;
-        Win[window].data = NULL;
-      }
-    }
-    else
-    {
-      Screen     *scr = ScreenOfDisplay(dsp, 0);
-
-      Win = (perwindow *)malloc(sizeof(perwindow));
-      windows = 1;
-      xswa.override_redirect = True;
-      xswa.background_pixel = BlackPixelOfScreen(scr);
-      xswa.event_mask = VisibilityChangeMask;
-
-      Win[0].w = XCreateWindow(
-                      dsp,
-                      RootWindowOfScreen(scr),
-                      0, 0,
-                      WidthOfScreen(scr) - 100, HeightOfScreen(scr) - 100,
-                      0, CopyFromParent, InputOutput, CopyFromParent,
-                      CWBackPixel | CWEventMask, &xswa);
-      Win[0].perscreen = NULL;
-      Win[0].data = NULL;
-      XMapWindow(dsp, Win[0].w);
-      XRaiseWindow(dsp, Win[0].w);
-    }
-
-    for (window = 0; window < windows; window++)
-    {
-      XWindowAttributes attr;
-
-      XGetWindowAttributes(dsp, Win[window].w, &attr);
-
-      for (i = 0; i < window; i++)
-      {
-        if (Win[i].perscreen && Win[i].perscreen->screen == attr.screen)
-        {
-          Win[window].perscreen = Win[i].perscreen;
-          break;
-        }
-      }
-
-      if (Win[window].perscreen == NULL)
-      {
-        Colormap cmap;
-        perscreen *pscreen;
-
-        pscreen = (perscreen *)malloc(sizeof(perscreen));
-        Win[window].perscreen = pscreen;
-
-        pscreen->screen = attr.screen;
-        cmap = DefaultColormapOfScreen(pscreen->screen);
-        
-        pscreen->pixels[0] = allocpixel(cmap, "White", "White");
-        pscreen->pixels[1] = allocpixel(cmap, "Black", "Black");
-        if (mono || CellsOfScreen(pscreen->screen) == 2)
-        {
-          pscreen->npixels = 2;
-        }
+        ProgramName = strrchr(argv[0], '/');
+        if (ProgramName)
+                ProgramName++;
         else
-        {
-          int         colorcount = NUMCOLORS;
-          u_char      red[NUMCOLORS];
-          u_char      green[NUMCOLORS];
-          u_char      blue[NUMCOLORS];
-  
-          hsbramp(0.0, saturation, 1.0, 1.0, saturation, 1.0, colorcount,
-                      red, green, blue);
-          pscreen->npixels = 0;
-          for (i = 0; i < colorcount; i++)
-          {
-            XColor      xcolor;
+                ProgramName = argv[0];
 
-            xcolor.red = red[i] << 8;
-            xcolor.green = green[i] << 8;
-            xcolor.blue = blue[i] << 8;
-            xcolor.flags = DoRed | DoGreen | DoBlue;
+        srandom(time((time_t *)0)); /* random mode needs the seed set. */
 
-            if (!XAllocColor(dsp, cmap, &xcolor))
-                break;
+        GetResources(argc, argv);
 
-            pscreen->pixels[i] = xcolor.pixel;
-            pscreen->npixels++;
-          }
+        CheckResources();
+
+        if (!create) {
+                /* Make sure DtSvc is initialized properly. */
+                XtAppContext appContext;
+                Widget shellWidget;
+                int dummyArgc = 1;
+                char *dummyArgv[1];
+
+                dummyArgv[0] = ProgramName;
+                XtToolkitInitialize();
+                appContext = XtCreateApplicationContext();
+                XtDisplayInitialize(appContext, dsp, ProgramName, ProgramName,
+                                    NULL, 0, &dummyArgc, dummyArgv);
+                shellWidget =
+                    XtAppCreateShell(ProgramName, ProgramName,
+                                     applicationShellWidgetClass, dsp, NULL, 0);
+                DtAppInitialize(appContext, dsp, shellWidget, ProgramName,
+                                ProgramName);
+
+                /*
+                 * Try to get array of window ids from desktop. Also returned is
+                 * a property identifier whose change will tell us when to
+                 * terminate.
+                 */
+                if (!DtSaverGetWindows(dsp, &winprop, &nitems)) {
+                        fprintf(stderr,
+                                catgets(scmc_catd, 2, 40,
+                                        "%s: Cannot locate window in which to "
+                                        "draw. Using the -create\n"
+                                        "option will cause %s to create its "
+                                        "own window.\n"),
+                                ProgramName, ProgramName);
+
+                        exit(1);
+                }
+
+                Win = (perwindow *)malloc(nitems * sizeof(perwindow));
+                windows = nitems;
+                for (window = 0; window < windows; window++) {
+                        Win[window].w = winprop[window];
+                        Win[window].perscreen = NULL;
+                        Win[window].data = NULL;
+                }
+        } else {
+                Screen *scr = ScreenOfDisplay(dsp, 0);
+
+                Win = (perwindow *)malloc(sizeof(perwindow));
+                windows = 1;
+                xswa.override_redirect = True;
+                xswa.background_pixel = BlackPixelOfScreen(scr);
+                xswa.event_mask = VisibilityChangeMask;
+
+                Win[0].w = XCreateWindow(
+                    dsp, RootWindowOfScreen(scr), 0, 0,
+                    WidthOfScreen(scr) - 100, HeightOfScreen(scr) - 100, 0,
+                    CopyFromParent, InputOutput, CopyFromParent,
+                    CWBackPixel | CWEventMask, &xswa);
+                Win[0].perscreen = NULL;
+                Win[0].data = NULL;
+                XMapWindow(dsp, Win[0].w);
+                XRaiseWindow(dsp, Win[0].w);
         }
-      }
 
-      xgcv.foreground = WhitePixelOfScreen(Win[window].perscreen->screen);
-      xgcv.background = BlackPixelOfScreen(Win[window].perscreen->screen);
-      Win[window].gc = XCreateGC(dsp, Win[window].w,
-                         GCForeground | GCBackground, &xgcv);
-    }
-    if(-1 == nice(nicelevel)) {
-      fprintf(stderr, "dtscreen: failed to set nice() level '%s'\n", strerror(errno));
-    }
+        for (window = 0; window < windows; window++) {
+                XWindowAttributes attr;
 
-    justDisplay();
+                XGetWindowAttributes(dsp, Win[window].w, &attr);
 
-    finish();
+                for (i = 0; i < window; i++) {
+                        if (Win[i].perscreen &&
+                            Win[i].perscreen->screen == attr.screen) {
+                                Win[window].perscreen = Win[i].perscreen;
+                                break;
+                        }
+                }
 
-    return 0;
+                if (Win[window].perscreen == NULL) {
+                        Colormap cmap;
+                        perscreen *pscreen;
+
+                        pscreen = (perscreen *)malloc(sizeof(perscreen));
+                        Win[window].perscreen = pscreen;
+
+                        pscreen->screen = attr.screen;
+                        cmap = DefaultColormapOfScreen(pscreen->screen);
+
+                        pscreen->pixels[0] = allocpixel(cmap, "White", "White");
+                        pscreen->pixels[1] = allocpixel(cmap, "Black", "Black");
+                        if (mono || CellsOfScreen(pscreen->screen) == 2) {
+                                pscreen->npixels = 2;
+                        } else {
+                                int colorcount = NUMCOLORS;
+                                u_char red[NUMCOLORS];
+                                u_char green[NUMCOLORS];
+                                u_char blue[NUMCOLORS];
+
+                                hsbramp(0.0, saturation, 1.0, 1.0, saturation,
+                                        1.0, colorcount, red, green, blue);
+                                pscreen->npixels = 0;
+                                for (i = 0; i < colorcount; i++) {
+                                        XColor xcolor;
+
+                                        xcolor.red = red[i] << 8;
+                                        xcolor.green = green[i] << 8;
+                                        xcolor.blue = blue[i] << 8;
+                                        xcolor.flags = DoRed | DoGreen | DoBlue;
+
+                                        if (!XAllocColor(dsp, cmap, &xcolor))
+                                                break;
+
+                                        pscreen->pixels[i] = xcolor.pixel;
+                                        pscreen->npixels++;
+                                }
+                        }
+                }
+
+                xgcv.foreground =
+                    WhitePixelOfScreen(Win[window].perscreen->screen);
+                xgcv.background =
+                    BlackPixelOfScreen(Win[window].perscreen->screen);
+                Win[window].gc = XCreateGC(dsp, Win[window].w,
+                                           GCForeground | GCBackground, &xgcv);
+        }
+        if (-1 == nice(nicelevel)) {
+                fprintf(stderr, "dtscreen: failed to set nice() level '%s'\n",
+                        strerror(errno));
+        }
+
+        justDisplay();
+
+        finish();
+
+        return 0;
 }

@@ -26,7 +26,7 @@
  * %W% %G%	cose/unity1/cde_app_builder/src/libABil
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -46,13 +46,8 @@
  */
 #include <ab_private/obj.h>
 
-extern ABObjPtr		abuil_get_uil_file(
-			    STRING	uil_file_path,
-			    ABObjPtr	ab_project
-			);
+extern ABObjPtr abuil_get_uil_file(STRING uil_file_path, ABObjPtr ab_project);
 
-extern void		abuil_trav_uil_tree(
-			    void	*uil_root
-			);
+extern void abuil_trav_uil_tree(void *uil_root);
 
-#endif	/* _ABIL_LOAD_UIL_H */
+#endif /* _ABIL_LOAD_UIL_H */

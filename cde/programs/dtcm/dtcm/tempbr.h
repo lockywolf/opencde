@@ -24,7 +24,8 @@
 **
 **  tempbr.h
 **
-**  static char sccsid[] = "@(#)tempbr.h 1.10 94/11/07 Copyr 1991 Sun Microsystems, Inc.";
+**  static char sccsid[] = "@(#)tempbr.h 1.10 94/11/07 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $XConsortium: tempbr.h /main/3 1995/11/03 10:34:36 rswiston $
 **
@@ -59,23 +60,23 @@
 #endif
 
 typedef struct {
-	Calendar	*cal;
-	Widget		frame;
-	Widget		form;
-	Widget         	name_label;
-	Widget		name_text;
-	Widget         	show_button;
-	Widget		cancel_button;
-	Widget		help_button;
-	Widget         	show_message;
+        Calendar *cal;
+        Widget frame;
+        Widget form;
+        Widget name_label;
+        Widget name_text;
+        Widget show_button;
+        Widget cancel_button;
+        Widget help_button;
+        Widget show_message;
 #ifdef FNS
-	Widget		close_button;
+        Widget close_button;
 #endif
 #ifdef FNS_DEMO
-	Widget		sundex_button;
+        Widget sundex_button;
 #endif
 } Tempbr;
 
-extern caddr_t	make_tempbr	P(());
+extern caddr_t make_tempbr P(());
 
 #endif /* _TEMPBR_H */

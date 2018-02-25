@@ -28,7 +28,7 @@
 #ifndef _DtP_h
 #define _DtP_h
 
-#include <X11/Xmd.h>    /* for protocol typedefs */
+#include <X11/Xmd.h> /* for protocol typedefs */
 #include <X11/Intrinsic.h>
 
 #include <Dt/DtPStrings.h>
@@ -47,8 +47,8 @@ extern "C" {
  *
  *********************************/
 
-#define DtChar		XeChar
-#define DtString	XeString
+#define DtChar XeChar
+#define DtString XeString
 
 /*********************************
  *
@@ -56,39 +56,38 @@ extern "C" {
  *
  *********************************/
 
-#define DtToolClass			XeToolClass
+#define DtToolClass XeToolClass
 
 /*********************************
  *
  * Global variables (defined in DtUtil.c)
  *
  *********************************/
-extern Display 		* _DtDisplay;
-extern char 		* _DtApplicationName;
-extern char 		* _DtApplicationClass;
-extern char 		* _DtToolClass;
+extern Display *_DtDisplay;
+extern char *_DtApplicationName;
+extern char *_DtApplicationClass;
+extern char *_DtToolClass;
 
-extern XtAppContext 	_DtAppContext;
-extern XrmDatabase 	_DtResourceDatabase;
-extern Widget   	_DtInitTtContextWidget;
-extern XtAppContext 	* _DtInitAppContextp;
+extern XtAppContext _DtAppContext;
+extern XrmDatabase _DtResourceDatabase;
+extern Widget _DtInitTtContextWidget;
+extern XtAppContext *_DtInitAppContextp;
 
-extern void   _DtAddToResource( Display *, const char * );
-extern void   _DtAddResString( Display *, const char *, unsigned int);
-extern char * _DtGetResString( Display *dpy, unsigned int);
+extern void _DtAddToResource(Display *, const char *);
+extern void _DtAddResString(Display *, const char *, unsigned int);
+extern char *_DtGetResString(Display *dpy, unsigned int);
 
-
-#define _DT_ATR_RESMGR   (1 << 0)
-#define _DT_ATR_PREFS    (1 << 1)
+#define _DT_ATR_RESMGR (1 << 0)
+#define _DT_ATR_PREFS (1 << 1)
 
 /*
     DESCRIPTION:
 
-	Add strings to XA_RESOURCE_MANAGER property on the default root
-	window.  Correctly merges resource specifications with the same
-	name and different values.  The new value overwrites the old.
+        Add strings to XA_RESOURCE_MANAGER property on the default root
+        window.  Correctly merges resource specifications with the same
+        name and different values.  The new value overwrites the old.
 
-        _DtAddToResource() may be used where you would have used xrdb to 
+        _DtAddToResource() may be used where you would have used xrdb to
         add a resource.
 
     SYNOPSIS:
@@ -102,11 +101,11 @@ extern char * _DtGetResString( Display *dpy, unsigned int);
 
 */
 
-extern char *_DtCreateDtDirs( Display * );
+extern char *_DtCreateDtDirs(Display *);
 /*
     DESCRIPTION:
 
-	Creates the directories needed for dt to operate in.  When an
+        Creates the directories needed for dt to operate in.  When an
         application saves its state inside a file, it should call this
         routine to set up the directories before saving any files.  The
         routine constructs the path to which all save files should be saved
@@ -119,11 +118,11 @@ extern char *_DtCreateDtDirs( Display * );
 
     SYNOPSIS:
 
-	dirName = _DtCreateDtDirs (display);
+        dirName = _DtCreateDtDirs (display);
 
-	char *dirName;		The path to save to.
+        char *dirName;		The path to save to.
 
-	Display *display;	The application's display structure.
+        Display *display;	The application's display structure.
 */
 
 /*
@@ -131,11 +130,11 @@ extern char *_DtCreateDtDirs( Display * );
  * component.  They represent the button labels in most dialogs,
  * and will be automatically localized by DtInitialize().
  */
-extern const char * _DtOkString;
-extern const char * _DtCancelString;
-extern const char * _DtHelpString;
-extern const char * _DtApplyString;
-extern const char * _DtCloseString;
+extern const char *_DtOkString;
+extern const char *_DtCancelString;
+extern const char *_DtHelpString;
+extern const char *_DtApplyString;
+extern const char *_DtCloseString;
 
 #ifdef __cplusplus
 }

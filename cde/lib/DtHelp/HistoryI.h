@@ -28,7 +28,7 @@
  **
  **  Project:  Cache Creek (Rivers) Project:
  **
- **  Description:  Internal header file for HistoryI.c 
+ **  Description:  Internal header file for HistoryI.c
  **  -----------
  **
  **  (c) Copyright 1987, 1988, 1989, 1990, 1991, 1992 Hewlett-Packard Company
@@ -43,17 +43,13 @@
 #ifndef _HistoryI_h
 #define _HistoryI_h
 
-
-#define DtHISTORY_LIST_MAX     999   /* ??? This should be a resource ??? */
-
-
-
+#define DtHISTORY_LIST_MAX 999 /* ??? This should be a resource ??? */
 
 /*****************************************************************************
  * Function:	    void _DtHelpDisplayHistoryInfo(Widget nw);
- *                             
- * 
- * Parameters:      nw        Specifies the name of the current help dialog 
+ *
+ *
+ * Parameters:      nw        Specifies the name of the current help dialog
  *                            widget.
  *
  * Return Value:
@@ -61,14 +57,11 @@
  * Purpose: 	    Displays the pre-created history dialog.
  *
  *****************************************************************************/
-extern void _DtHelpDisplayHistoryInfo(
-    Widget nw);
-
-
+extern void _DtHelpDisplayHistoryInfo(Widget nw);
 
 /*****************************************************************************
  * Function:	    void _DtHelpUpdateHistoryList(char *locationId,
- *                                 Widget nw);  
+ *                                 Widget nw);
  *
  *
  * Parameters:      parent      Specifies the ID string for the new topic we
@@ -82,25 +75,8 @@ extern void _DtHelpDisplayHistoryInfo(
  *                  dialog.
  *
  *****************************************************************************/
-extern void _DtHelpUpdateHistoryList(
-    char *locationId,
-    int topicType,
-    Boolean vol_changed,
-    Widget nw);
-
-
-
+extern void _DtHelpUpdateHistoryList(char *locationId, int topicType,
+                                     Boolean vol_changed, Widget nw);
 
 #endif /* _HistoryI_h */
 /* Do not add anything after this endif. */
-
-
-
-
-
-
-
-
-
-
-

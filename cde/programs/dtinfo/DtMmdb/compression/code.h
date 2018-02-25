@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,9 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
 
 #ifndef _code_h
 #define _code_h 1
@@ -58,23 +57,21 @@
 
 class htr_node;
 
-class encoding_unit
-{
-public:
-   ostring* word;
-   int bits;
-   unsigned int freq;
-   unsigned int code;
-   htr_node* leaf_htr_node;
+class encoding_unit {
+      public:
+        ostring *word;
+        int bits;
+        unsigned int freq;
+        unsigned int code;
+        htr_node *leaf_htr_node;
 
-public:
-   encoding_unit(ostring* w, unsigned int freq);
-   ~encoding_unit();
+      public:
+        encoding_unit(ostring *w, unsigned int freq);
+        ~encoding_unit();
 
-   friend ostream& operator <<(ostream&, encoding_unit&);
-   
+        friend ostream &operator<<(ostream &, encoding_unit &);
 };
 
-typedef encoding_unit* encoding_unitPtr;
+typedef encoding_unit *encoding_unitPtr;
 
 #endif

@@ -24,7 +24,8 @@
 **
 **  print.h
 **
-**  static char sccsid[] = "@(#)print.h 1.2 94/06/01 Copyr 1991 Sun Microsystems, Inc.";
+**  static char sccsid[] = "@(#)print.h 1.2 94/06/01 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $XConsortium: print.h /main/8 1996/11/25 10:28:34 rswiston $
 **
@@ -63,27 +64,27 @@
  * and stored in print data structure to record the
  * option that's selected.
  */
-#define	PR_DAY_VIEW	0
-#define	PR_WEEK_VIEW	1
-#define	PR_MONTH_VIEW	2
-#define	PR_YEAR_VIEW	3
-#define	PR_APPT_LIST	4
-#define	PR_TODO_LIST	5
+#define PR_DAY_VIEW 0
+#define PR_WEEK_VIEW 1
+#define PR_MONTH_VIEW 2
+#define PR_YEAR_VIEW 3
+#define PR_APPT_LIST 4
+#define PR_TODO_LIST 5
 
 /*
  *  Moved from ps_graphics.h 04/10/96
  */
-#define PUBLIC          0 
-#define SEMIPRIVATE     1 
-#define PRIVATE         2 
+#define PUBLIC 0
+#define SEMIPRIVATE 1
+#define PRIVATE 2
 
-#define PORTRAIT	TRUE
-#define LANDSCAPE	FALSE
+#define PORTRAIT TRUE
+#define LANDSCAPE FALSE
 
 /* bit masks for checking privacy for printing */
-#define PRINT_PUBLIC		0x1
-#define PRINT_SEMIPRIVATE 	0x2
-#define PRINT_PRIVATE		0x4
+#define PRINT_PUBLIC 0x1
+#define PRINT_SEMIPRIVATE 0x2
+#define PRINT_PRIVATE 0x4
 
 extern void post_print_dialog(Calendar *c);
 extern void create_print_dialog(Calendar *c);
@@ -101,8 +102,8 @@ extern Display *pd_get_print_display(Calendar *c);
 extern void pd_set_bad_alloc_error(Calendar *c, Boolean errorOn);
 extern Boolean pd_get_bad_alloc_error(Calendar *c);
 
-# ifdef GR_DEBUG
+#ifdef GR_DEBUG
 extern Boolean inDebugMode(Calendar *c);
-# endif
+#endif
 
 #endif

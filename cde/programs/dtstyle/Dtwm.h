@@ -32,7 +32,7 @@
  **  file
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -43,11 +43,9 @@
 
 /* External Interface */
 
-
-extern void popup_dtwmBB( Widget shell) ;
-extern void restoreDtwm( Widget shell, XrmDatabase db) ;
-extern void saveDtwm( int fd) ;
-
+extern void popup_dtwmBB(Widget shell);
+extern void restoreDtwm(Widget shell, XrmDatabase db);
+extern void saveDtwm(int fd);
 
 #endif /* _screen_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

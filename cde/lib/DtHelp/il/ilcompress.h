@@ -22,9 +22,9 @@
  */
 /* $XConsortium: ilcompress.h /main/3 1995/10/23 15:42:59 rswiston $ */
 /**---------------------------------------------------------------------
-***	
+***
 ***    (c)Copyright 1991 Hewlett-Packard Co.
-***    
+***
 ***                             RESTRICTED RIGHTS LEGEND
 ***    Use, duplication, or disclosure by the U.S. Government is subject to
 ***    restrictions as set forth in sub-paragraph (c)(1)(ii) of the Rights in
@@ -48,47 +48,25 @@
 #include "ilint.h"
 #endif
 
-IL_EXTERN ilBool _ilCompressG3 (
-    ilPipe              pipe,
-    ilPipeInfo         *pinfo,                              
-    ilImageDes         *pimdes,
-    ilImageFormat      *pimformat,
-    ilSrcElementData   *pSrcData,
-    ilPtr               pCompData
-    );
+IL_EXTERN ilBool _ilCompressG3(ilPipe pipe, ilPipeInfo *pinfo,
+                               ilImageDes *pimdes, ilImageFormat *pimformat,
+                               ilSrcElementData *pSrcData, ilPtr pCompData);
 
-IL_EXTERN ilBool _ilCompressG4 (
-    ilPipe              pipe,
-    ilPipeInfo         *pinfo,                              
-    ilImageDes         *pimdes,
-    ilImageFormat      *pimformat,
-    ilSrcElementData   *pSrcData,
-    ilPtr               pCompData 
-    );
+IL_EXTERN ilBool _ilCompressG4(ilPipe pipe, ilPipeInfo *pinfo,
+                               ilImageDes *pimdes, ilImageFormat *pimformat,
+                               ilSrcElementData *pSrcData, ilPtr pCompData);
 
-IL_EXTERN ilBool _ilCompressLZW (
-    ilPipe              pipe,
-    ilPipeInfo         *pinfo,                              
-    ilImageDes         *pimdes,
-    ilImageFormat      *pimformat,
-    ilSrcElementData   *pSrcData
-    );
+IL_EXTERN ilBool _ilCompressLZW(ilPipe pipe, ilPipeInfo *pinfo,
+                                ilImageDes *pimdes, ilImageFormat *pimformat,
+                                ilSrcElementData *pSrcData);
 
-IL_EXTERN ilBool _ilCompressPackbits (
-    ilPipe              pipe,
-    ilPipeInfo         *pinfo,                              
-    ilImageDes         *pimdes,
-    ilImageFormat      *pimformat,
-    ilSrcElementData   *pSrcData
-    );
+IL_EXTERN ilBool _ilCompressPackbits(ilPipe pipe, ilPipeInfo *pinfo,
+                                     ilImageDes *pimdes,
+                                     ilImageFormat *pimformat,
+                                     ilSrcElementData *pSrcData);
 
-IL_EXTERN ilBool _ilCompressJPEG (
-    ilPipe              pipe,
-    ilPipeInfo         *pinfo,                              
-    ilImageDes         *pimdes,
-    ilImageFormat      *pimformat,
-    ilSrcElementData   *pSrcData,
-    ilPtr              pCompData
-    );
+IL_EXTERN ilBool _ilCompressJPEG(ilPipe pipe, ilPipeInfo *pinfo,
+                                 ilImageDes *pimdes, ilImageFormat *pimformat,
+                                 ilSrcElementData *pSrcData, ilPtr pCompData);
 
 #endif

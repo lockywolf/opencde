@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp_s_file_utils.h /main/3 1995/10/23 11:55:21 rswiston $ 			 				 */
+/*%%  $XConsortium: mp_s_file_utils.h /main/3 1995/10/23 11:55:21 rswiston $
+ */
 /*
  *
  * mp_s_file_utils.h
@@ -39,4 +40,4 @@
 
 class _Tt_s_file;
 declare_ptr_to(_Tt_s_file)
-#endif				/* MP_S_FILE_UTILS_H */
+#endif /* MP_S_FILE_UTILS_H */

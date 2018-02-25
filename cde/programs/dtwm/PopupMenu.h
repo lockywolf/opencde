@@ -38,12 +38,10 @@
 
 #include "DataBaseLoad.h"
 
-
-extern void CreatePopupMenu ( Widget );
-extern void PostPopupMenu ( Widget, XtPointer, XEvent * );
-extern void CreateWorkspacePopupMenu ( Widget , SwitchData *);
-extern void PostWorkspacePopupMenu ( Widget, XtPointer, XEvent * );
-
+extern void CreatePopupMenu(Widget);
+extern void PostPopupMenu(Widget, XtPointer, XEvent *);
+extern void CreateWorkspacePopupMenu(Widget, SwitchData *);
+extern void PostWorkspacePopupMenu(Widget, XtPointer, XEvent *);
 
 #endif /* _popup_menu_h */
 /*  DON"T ADD ANYTHING AFTER THIS #endif  */

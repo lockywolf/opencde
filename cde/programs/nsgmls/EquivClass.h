@@ -36,9 +36,9 @@ namespace SP_NAMESPACE {
 #endif
 
 struct EquivClass : public Link {
-  EquivClass(unsigned in = 0) : inSets(in) { }
-  ISet<Char> set;
-  unsigned inSets;
+        EquivClass(unsigned in = 0) : inSets(in) {}
+        ISet<Char> set;
+        unsigned inSets;
 };
 
 #ifdef SP_NAMESPACE

@@ -57,7 +57,7 @@
 /********    Static Function Declarations    ********/
 
 static char *getSessionName(Display *, Atom);
-static Boolean getSessionPath( Widget, char *, char **, char **);
+static Boolean getSessionPath(Widget, char *, char **, char **);
 
 /********    End Static Function Declarations    ********/
 
@@ -68,7 +68,7 @@ static Boolean getSessionPath( Widget, char *, char **, char **);
  *
  *  Description:
  *  -----------
- *  Returns the session name. 
+ *  Returns the session name.
  *
  *  Inputs:
  *  ------
@@ -77,49 +77,38 @@ static Boolean getSessionPath( Widget, char *, char **, char **);
  *
  *  Outputs:
  *  -------
- *  
+ *
  *  Return:
  *  ------
- *  Returns the session name string or NULL if it could not be obtained. 
+ *  Returns the session name string or NULL if it could not be obtained.
  *  This value should be freed with XFree().
- *  
+ *
  *
  *************************************<->***********************************/
 
-static char *
-getSessionName(
-        Display *display,
-        Atom prop)
-{
-  int                 propStatus;
-  Atom                actualType;
-  int                 actualFormat;
-  unsigned long       nitems;
-  unsigned long       leftover;
-  char               *property = NULL;
+static char *getSessionName(Display *display, Atom prop) {
+        int propStatus;
+        Atom actualType;
+        int actualFormat;
+        unsigned long nitems;
+        unsigned long leftover;
+        char *property = NULL;
 
-  propStatus = XGetWindowProperty (display, RootWindow(display, 0), 
-                                   prop, 0L,
-                                   1000000L, False,
-                                   AnyPropertyType, &actualType,
-                                   &actualFormat, &nitems, &leftover, 
-                                   (unsigned char **)&property);
+        propStatus = XGetWindowProperty(display, RootWindow(display, 0), prop,
+                                        0L, 1000000L, False, AnyPropertyType,
+                                        &actualType, &actualFormat, &nitems,
+                                        &leftover, (unsigned char **)&property);
 
- 
-  if(propStatus == Success &&
-     actualType != None &&
-     actualFormat == 8 &&
-     nitems != 0)
-  {
-    return(property);
-  }
- 
-  if (property)
-  {
-    XFree(property);
-  }
+        if (propStatus == Success && actualType != None && actualFormat == 8 &&
+            nitems != 0) {
+                return (property);
+        }
 
-  return(NULL);
+        if (property) {
+                XFree(property);
+        }
+
+        return (NULL);
 }
 
 /*************************************<->*************************************
@@ -151,95 +140,92 @@ getSessionName(
  *
  *************************************<->***********************************/
 
-static Boolean
-getSessionPath(
-        Widget widget,
-        char *propstring,
-        char **savePath,
-        char **saveFile )
-{
-    Display 		*display;
-    char 		*tmpPath = NULL;
-    char        	*property = NULL;
-    char                *fileName;
-    struct stat  	buf;
-    int 		status;
-    
-    display = XtDisplay(widget); 
-    
-    tmpPath = _DtCreateDtDirs(display);
-    if (tmpPath == NULL) goto abort;
-    
-    property = getSessionName(display, 
-                  XInternAtom(display, propstring, False));
-    if (property == NULL) goto abort;
+static Boolean getSessionPath(Widget widget, char *propstring, char **savePath,
+                              char **saveFile) {
+        Display *display;
+        char *tmpPath = NULL;
+        char *property = NULL;
+        char *fileName;
+        struct stat buf;
+        int status;
 
-   /*
-    * NOTE: it is assumed that _DtCreateDtDirs() returns a buffer of 
-    *       size MAXPATHLEN+1. This allows us to avoid a extra alloc
-    *       and copy -- at the expense of code maintainability.
-    */
-    if ((strlen(tmpPath) + 1 + strlen(property)) > MAXPATHLEN) goto abort;
+        display = XtDisplay(widget);
 
-   /* 
-    * parse the property string and create directory if needed 
-    */
-    (void)strcat(tmpPath, "/");
-    (void)strcat(tmpPath, property);
-    status = stat(tmpPath, &buf);
+        tmpPath = _DtCreateDtDirs(display);
+        if (tmpPath == NULL)
+                goto abort;
 
-   /*
-    * directory does not exist.
-    */
-    if(status == -1)
-    {
-        status = mkdir(tmpPath, 0000);
-        if(status == -1) goto abort;
+        property =
+            getSessionName(display, XInternAtom(display, propstring, False));
+        if (property == NULL)
+                goto abort;
 
-        (void)chmod(tmpPath, 0755);
-    }
+        /*
+         * NOTE: it is assumed that _DtCreateDtDirs() returns a buffer of
+         *       size MAXPATHLEN+1. This allows us to avoid a extra alloc
+         *       and copy -- at the expense of code maintainability.
+         */
+        if ((strlen(tmpPath) + 1 + strlen(property)) > MAXPATHLEN)
+                goto abort;
 
-    (void)strcat(tmpPath, "/");
+        /*
+         * parse the property string and create directory if needed
+         */
+        (void)strcat(tmpPath, "/");
+        (void)strcat(tmpPath, property);
+        status = stat(tmpPath, &buf);
 
-    if (*saveFile == NULL)
-    {
-     /*
-      * No saveFile name was provided, so generate a new one.
-      */
-      int len = strlen(tmpPath);
+        /*
+         * directory does not exist.
+         */
+        if (status == -1) {
+                status = mkdir(tmpPath, 0000);
+                if (status == -1)
+                        goto abort;
 
-      (void)strcat(tmpPath, "dtXXXXXX");
-      (void)mktemp(tmpPath);
+                (void)chmod(tmpPath, 0755);
+        }
 
-      *saveFile = (char *) XtMalloc(15 * sizeof(char));
-      if(*saveFile == NULL) goto abort;
+        (void)strcat(tmpPath, "/");
 
-      (void)strcpy(*saveFile, tmpPath+len);
-    }
-    else
-    {
-     /*
-      * A saveFile name was provided, so use it.
-      */
-      (void)strcat(tmpPath, *saveFile);
-    }
+        if (*saveFile == NULL) {
+                /*
+                 * No saveFile name was provided, so generate a new one.
+                 */
+                int len = strlen(tmpPath);
 
-    *savePath = tmpPath;
+                (void)strcat(tmpPath, "dtXXXXXX");
+                (void)mktemp(tmpPath);
 
-    XFree ((char *)property);
-    return(True);
+                *saveFile = (char *)XtMalloc(15 * sizeof(char));
+                if (*saveFile == NULL)
+                        goto abort;
 
-  abort:
-   /*
-    * ObGoto: if it clarifies the logic and reduces code, 
-    *         goto's are ok by me.
-    */
-    *savePath = NULL;
-    if (tmpPath) XtFree ((char *)tmpPath);
-    if (property) XFree ((char *)property);
-    return(False);
+                (void)strcpy(*saveFile, tmpPath + len);
+        } else {
+                /*
+                 * A saveFile name was provided, so use it.
+                 */
+                (void)strcat(tmpPath, *saveFile);
+        }
+
+        *savePath = tmpPath;
+
+        XFree((char *)property);
+        return (True);
+
+abort:
+        /*
+         * ObGoto: if it clarifies the logic and reduces code,
+         *         goto's are ok by me.
+         */
+        *savePath = NULL;
+        if (tmpPath)
+                XtFree((char *)tmpPath);
+        if (property)
+                XFree((char *)property);
+        return (False);
 }
-
 
 /*************************************<->*************************************
  *
@@ -264,23 +250,17 @@ getSessionPath(
  *
  *************************************<->***********************************/
 
-Boolean 
-DtSessionSavePath(
-        Widget widget,
-        char **savePath,
-        char **saveFile )
-{
-    Boolean             result;
-    _DtSvcWidgetToAppContext(widget);
+Boolean DtSessionSavePath(Widget widget, char **savePath, char **saveFile) {
+        Boolean result;
+        _DtSvcWidgetToAppContext(widget);
 
-    _DtSvcAppLock(app);
-    *saveFile = NULL;
-    result = getSessionPath(widget, _XA_DT_SAVE_MODE, savePath, saveFile);
-    _DtSvcAppUnlock(app);
-    
-    return(result);
+        _DtSvcAppLock(app);
+        *saveFile = NULL;
+        result = getSessionPath(widget, _XA_DT_SAVE_MODE, savePath, saveFile);
+        _DtSvcAppUnlock(app);
+
+        return (result);
 } /* END OF FUNCTION DtSessionSavePath */
-
 
 /*************************************<->*************************************
  *
@@ -305,18 +285,14 @@ DtSessionSavePath(
  *
  *************************************<->***********************************/
 
-Boolean 
-DtSessionRestorePath(
-        Widget widget,
-        char **savePath,
-        char *saveFile )
-{
-    Boolean             result;
-    _DtSvcWidgetToAppContext(widget);
+Boolean DtSessionRestorePath(Widget widget, char **savePath, char *saveFile) {
+        Boolean result;
+        _DtSvcWidgetToAppContext(widget);
 
-    _DtSvcAppLock(app);
-    result = getSessionPath(widget, _XA_DT_RESTORE_MODE, savePath, &saveFile);
-    _DtSvcAppUnlock(app);
-    
-    return(result);
+        _DtSvcAppLock(app);
+        result =
+            getSessionPath(widget, _XA_DT_RESTORE_MODE, savePath, &saveFile);
+        _DtSvcAppUnlock(app);
+
+        return (result);
 } /* END OF FUNCTION DtSessionRestorePath */

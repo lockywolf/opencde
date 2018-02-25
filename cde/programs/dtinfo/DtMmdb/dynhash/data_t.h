@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,9 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
 
 #ifndef _record_h
 #define _record_h
@@ -62,66 +61,64 @@
 /****************************/
 // record class. A record
 // contains a key and a void*
-// pointer         
+// pointer
 /****************************/
 
-class data_t : public dlist_cell
-{
+class data_t : public dlist_cell {
 
-protected:
-
+      protected:
 #ifdef C_API
-   static atoi_pearson* pearson_convertor_ptr;
-   static atoi_larson* larson_convertor_ptr;
+        static atoi_pearson *pearson_convertor_ptr;
+        static atoi_larson *larson_convertor_ptr;
 #define pearson_convertor (*pearson_convertor_ptr)
 #define larson_convertor (*larson_convertor_ptr)
 #else
-   static atoi_pearson pearson_convertor;
-   static atoi_larson larson_convertor;
+        static atoi_pearson pearson_convertor;
+        static atoi_larson larson_convertor;
 #endif
 
-public:
-   enum flag_type { INT=0, STRING=1, VOID=2 };
+      public:
+        enum flag_type { INT = 0, STRING = 1, VOID = 2 };
 
-   voidPtr dt;     // rest of information in the record
-   flag_type flag;
-   union {
-      int int_key;
-      char* str_key;
-   } key;
+        voidPtr dt; // rest of information in the record
+        flag_type flag;
+        union {
+                int int_key;
+                char *str_key;
+        } key;
 
-   data_t(): dt(0), flag(data_t::VOID) {} ;
-   data_t(data_t&) ;
-   data_t(int int_key, voidPtr d = 0) : dt(d), flag(data_t::INT)
-   { key.int_key = int_key; };
+        data_t() : dt(0), flag(data_t::VOID){};
+        data_t(data_t &);
+        data_t(int int_key, voidPtr d = 0) : dt(d), flag(data_t::INT) {
+                key.int_key = int_key;
+        };
 
-   data_t(const char* char_ptr_key, int char_ptr_key_sz, voidPtr d = 0) ;
-   virtual ~data_t() ;
+        data_t(const char *char_ptr_key, int char_ptr_key_sz, voidPtr d = 0);
+        virtual ~data_t();
 
-   data_t& operator=(data_t&);
-   int operator==(data_t&);
+        data_t &operator=(data_t &);
+        int operator==(data_t &);
 
-   virtual int bucket_num(int k, int p, int M ) ;
-   virtual int slot_num(int k, int rotate, int prime, int M ) ;
+        virtual int bucket_num(int k, int p, int M);
+        virtual int slot_num(int k, int rotate, int prime, int M);
 
-   ostream& asciiOut(ostream& out, print_func_ptr_t print_f);
+        ostream &asciiOut(ostream &out, print_func_ptr_t print_f);
 
-   Boolean binaryIn(buffer&);
-   Boolean binaryOut(buffer&);
+        Boolean binaryIn(buffer &);
+        Boolean binaryOut(buffer &);
 
-   void* operator new( size_t );
-   void operator delete( void* );
+        void *operator new(size_t);
+        void operator delete(void *);
 
-   friend ostream& operator <<(ostream& o, data_t& d);
-   friend istream& operator >>(istream& i, data_t& d);
+        friend ostream &operator<<(ostream &o, data_t &d);
+        friend istream &operator>>(istream &i, data_t &d);
 
 #ifdef C_API
-   friend void initialize_MMDB();
-   friend void quit_MMDB();
+        friend void initialize_MMDB();
+        friend void quit_MMDB();
 #endif
-
 };
 
-typedef data_t* data_tPtr;
+typedef data_t *data_tPtr;
 
 #endif

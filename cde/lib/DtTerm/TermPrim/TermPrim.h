@@ -28,16 +28,15 @@
  *  (c) Copyright 1993, 1994 Novell, Inc.
  */
 
-#ifndef	_Dt_TermPrim_h
-#define	_Dt_TermPrim_h
+#ifndef _Dt_TermPrim_h
+#define _Dt_TermPrim_h
 
 #include <sys/wait.h>
 #include <Xm/Xm.h>
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
-
 
 /*
  * Constants
@@ -46,394 +45,393 @@ extern "C" {
 /* Resources */
 
 #ifndef DtNbackgroundIsSelect
-#define	DtNbackgroundIsSelect	"backgroundIsSelect"
+#define DtNbackgroundIsSelect "backgroundIsSelect"
 #endif
 #ifndef DtNblinkRate
-#define DtNblinkRate		"blinkRate"
+#define DtNblinkRate "blinkRate"
 #endif
 #ifndef DtNcharCursorStyle
-#define	DtNcharCursorStyle	"charCursorStyle"
+#define DtNcharCursorStyle "charCursorStyle"
 #endif
 #ifndef DtNconsoleMode
-#define	DtNconsoleMode		"consoleMode"
+#define DtNconsoleMode "consoleMode"
 #endif
 #ifndef DtNcsWidth
-#define	DtNcsWidth		"csWidth"
+#define DtNcsWidth "csWidth"
 #endif
 #ifndef DtNemulationId
-#define	DtNemulationId		"emulationId"
+#define DtNemulationId "emulationId"
 #endif
-#ifndef	DtNinputVerifyCallback
-#define	DtNinputVerifyCallback	"inputVerifyCallback"
+#ifndef DtNinputVerifyCallback
+#define DtNinputVerifyCallback "inputVerifyCallback"
 #endif
 #ifndef DtNjumpScroll
-#define	DtNjumpScroll		"jumpScroll"
+#define DtNjumpScroll "jumpScroll"
 #endif
 #ifndef DtNkshMode
-#define	DtNkshMode              "kshMode"       
+#define DtNkshMode "kshMode"
 #endif
 #ifndef DtNlogFile
-#define	DtNlogFile              "logFile"    
+#define DtNlogFile "logFile"
 #endif
 #ifndef DtNlogInhibit
-#define	DtNlogInhibit		"logInhibit"
+#define DtNlogInhibit "logInhibit"
 #endif
 #ifndef DtNlogging
-#define	DtNlogging              "logging"    
+#define DtNlogging "logging"
 #endif
 #ifndef DtNloginShell
-#define	DtNloginShell		"loginShell"
+#define DtNloginShell "loginShell"
 #endif
 #ifndef DtNmapOnOutput
-#define	DtNmapOnOutput       	"mapOnOutput"
+#define DtNmapOnOutput "mapOnOutput"
 #endif
 #ifndef DtNmapOnOutputDelay
-#define	DtNmapOnOutputDelay     "mapOnOutputDelay"
+#define DtNmapOnOutputDelay "mapOnOutputDelay"
 #endif
 #ifndef DtNmarginBell
-#define	DtNmarginBell		"marginBell"
+#define DtNmarginBell "marginBell"
 #endif
 #ifndef DtNnMarginBell
-#define	DtNnMarginBell		"nMarginBell"
+#define DtNnMarginBell "nMarginBell"
 #endif
-#ifndef	DtNoutputLogCallback
-#define	DtNoutputLogCallback	"outputLogCallback"
+#ifndef DtNoutputLogCallback
+#define DtNoutputLogCallback "outputLogCallback"
 #endif
 #ifndef DtNpointerBlank
-#define	DtNpointerBlank         "pointerBlank"
+#define DtNpointerBlank "pointerBlank"
 #endif
 #ifndef DtNpointerBlankDelay
-#define	DtNpointerBlankDelay    "pointerBlankDelay"
+#define DtNpointerBlankDelay "pointerBlankDelay"
 #endif
 #ifndef DtNpointerColor
-#define	DtNpointerColor         "pointerColor"
+#define DtNpointerColor "pointerColor"
 #endif
 #ifndef DtNpointerColorBackground
-#define	DtNpointerColorBackground "pointerColorBackground"
+#define DtNpointerColorBackground "pointerColorBackground"
 #endif
 #ifndef DtNpointerShape
-#define	DtNpointerShape         "pointerShape"
+#define DtNpointerShape "pointerShape"
 #endif
 #ifndef DtNreverseVideo
-#define	DtNreverseVideo         "reverseVideo"
+#define DtNreverseVideo "reverseVideo"
 #endif
 #ifndef DtNsaveLines
-#define	DtNsaveLines		"saveLines"
+#define DtNsaveLines "saveLines"
 #endif
 #ifndef DtNsizeList
-#define	DtNsizeList		"sizeList"
+#define DtNsizeList "sizeList"
 #endif
 #ifndef DtNstatusChangeCallback
-#define	DtNstatusChangeCallback	"statusChangeCallback"
+#define DtNstatusChangeCallback "statusChangeCallback"
 #endif
 #ifndef DtNstickyNextCursor
-#define	DtNstickyNextCursor	"stickyNextCursor"
+#define DtNstickyNextCursor "stickyNextCursor"
 #endif
 #ifndef DtNstickyPrevCursor
-#define	DtNstickyPrevCursor	"stickyPrevCursor"
+#define DtNstickyPrevCursor "stickyPrevCursor"
 #endif
 #ifndef DtNsubprocessLoginShell
-#define	DtNsubprocessLoginShell	"subprocessLoginShell"
+#define DtNsubprocessLoginShell "subprocessLoginShell"
 #endif
 #ifndef DtNsubprocessPid
-#define	DtNsubprocessPid	"subprocessPid"
+#define DtNsubprocessPid "subprocessPid"
 #endif
 #ifndef DtNsubprocessExec
-#define	DtNsubprocessExec	"subprocessExec"
+#define DtNsubprocessExec "subprocessExec"
 #endif
 #ifndef DtNsubprocessTerminationCatch
-#define	DtNsubprocessTerminationCatch "subprocessTerminationCatch"
+#define DtNsubprocessTerminationCatch "subprocessTerminationCatch"
 #endif
 #ifndef DtNsubprocessCmd
-#define	DtNsubprocessCmd	"subprocessCmd"
+#define DtNsubprocessCmd "subprocessCmd"
 #endif
 #ifndef DtNsubprocessArgv
-#define	DtNsubprocessArgv	"subprocessArgv"
+#define DtNsubprocessArgv "subprocessArgv"
 #endif
 #ifndef DtNsubprocessTerminationCallback
-#define	DtNsubprocessTerminationCallback "subprocessTerminationCallback"
+#define DtNsubprocessTerminationCallback "subprocessTerminationCallback"
 #endif
 #ifndef DtNtermEmulationMode
-#define	DtNtermEmulationMode	"termEmulationMode"
+#define DtNtermEmulationMode "termEmulationMode"
 #endif
 #ifndef DtNtermDevice
-#define	DtNtermDevice		"termDevice"
+#define DtNtermDevice "termDevice"
 #endif
 #ifndef DtNtermDeviceAllocate
-#define	DtNtermDeviceAllocate	"termDeviceAllocate"
+#define DtNtermDeviceAllocate "termDeviceAllocate"
 #endif
 #ifndef DtNtermId
-#define	DtNtermId		"termId"
+#define DtNtermId "termId"
 #endif
 #ifndef DtNtermName
-#define	DtNtermName		"termName"
+#define DtNtermName "termName"
 #endif
 #ifndef DtNtermSlaveName
-#define	DtNtermSlaveName	"termSlaveName"
+#define DtNtermSlaveName "termSlaveName"
 #endif
 #ifndef DtNttyModes
-#define	DtNttyModes		"ttyModes"
+#define DtNttyModes "ttyModes"
 #endif
 #ifndef DtNuseFontSets
-#define	DtNuseFontSets		"useFontSets"
+#define DtNuseFontSets "useFontSets"
 #endif
 #ifndef DtNuseLineDraw
-#define	DtNuseLineDraw		"useLineDraw"
+#define DtNuseLineDraw "useLineDraw"
 #endif
 #ifndef DtNuserFont
-#define	DtNuserFont		"userFont"
+#define DtNuserFont "userFont"
 #endif
 #ifndef DtNuserBoldFont
-#define	DtNuserBoldFont		"userBoldFont"
+#define DtNuserBoldFont "userBoldFont"
 #endif
 #ifndef DtNvisualBell
-#define	DtNvisualBell		"visualBell"
+#define DtNvisualBell "visualBell"
 #endif
 #ifndef DtNallowSendEvents
-#define	DtNallowSendEvents      "allowSendEvents"
+#define DtNallowSendEvents "allowSendEvents"
 #endif
 #ifndef DtNbaseHeight
-#define DtNbaseHeight		XmNbaseHeight
+#define DtNbaseHeight XmNbaseHeight
 #endif
 #ifndef DtNbaseWidth
-#define DtNbaseWidth		XmNbaseWidth
+#define DtNbaseWidth XmNbaseWidth
 #endif
 #ifndef DtNcolumns
-#define DtNcolumns		XmNcolumns
+#define DtNcolumns XmNcolumns
 #endif
 #ifndef DtNheightInc
-#define DtNheightInc		XmNheightInc
+#define DtNheightInc XmNheightInc
 #endif
 #ifndef DtNmarginHeight
-#define DtNmarginHeight		XmNmarginHeight
+#define DtNmarginHeight XmNmarginHeight
 #endif
 #ifndef DtNmarginWidth
-#define DtNmarginWidth		XmNmarginWidth
+#define DtNmarginWidth XmNmarginWidth
 #endif
 #ifndef DtNrows
-#define DtNrows			XmNrows
+#define DtNrows XmNrows
 #endif
 #ifndef DtNshadowType
-#define DtNshadowType		XmNshadowType
+#define DtNshadowType XmNshadowType
 #endif
 #ifndef DtNverticalScrollBar
-#define DtNverticalScrollBar	XmNverticalScrollBar
+#define DtNverticalScrollBar XmNverticalScrollBar
 #endif
 #ifndef DtNwidthInc
-#define DtNwidthInc		XmNwidthInc
+#define DtNwidthInc XmNwidthInc
 #endif
 
 #ifndef DtCBackground
-#define	DtCBackground		XmCBackground
+#define DtCBackground XmCBackground
 #endif
 #ifndef DtCBackgroundIsSelect
-#define	DtCBackgroundIsSelect	"BackgroundIsSelect"
+#define DtCBackgroundIsSelect "BackgroundIsSelect"
 #endif
 #ifndef DtCBlinkRate
-#define DtCBlinkRate		"BlinkRate"
+#define DtCBlinkRate "BlinkRate"
 #endif
 #ifndef DtCCallback
-#define DtCCallback		XmCCallback
+#define DtCCallback XmCCallback
 #endif
 #ifndef DtCCursor
-#define	DtCCursor		XmCCursor
+#define DtCCursor XmCCursor
 #endif
 #ifndef DtCConsoleMode
-#define	DtCConsoleMode		"ConsoleMode"
+#define DtCConsoleMode "ConsoleMode"
 #endif
 #ifndef DtCCsWidth
-#define	DtCCsWidth		"CsWidth"
+#define DtCCsWidth "CsWidth"
 #endif
 #ifndef DtCCharCursorStyle
-#define	DtCCharCursorStyle	"CharCursorStyle"
+#define DtCCharCursorStyle "CharCursorStyle"
 #endif
 #ifndef DtCEmulationId
-#define	DtCEmulationId		"EmulationId"
+#define DtCEmulationId "EmulationId"
 #endif
 #ifndef DtCForeground
-#define	DtCForeground		XmCForeground
+#define DtCForeground XmCForeground
 #endif
 #ifndef DtCJumpScroll
-#define	DtCJumpScroll		"JumpScroll"
+#define DtCJumpScroll "JumpScroll"
 #endif
 #ifndef DtCKshMode
-#define	DtCKshMode              "KshMode"       
+#define DtCKshMode "KshMode"
 #endif
 #ifndef DtCLogFile
-#define	DtCLogFile              "LogFile"    
+#define DtCLogFile "LogFile"
 #endif
 #ifndef DtCLogInhibit
-#define	DtCLogInhibit		"LogInhibit"
+#define DtCLogInhibit "LogInhibit"
 #endif
 #ifndef DtCLogging
-#define	DtCLogging              "Logging"    
+#define DtCLogging "Logging"
 #endif
 #ifndef DtCLoginShell
-#define	DtCLoginShell		"LoginShell"
+#define DtCLoginShell "LoginShell"
 #endif
 #ifndef DtCMapOnOutput
-#define	DtCMapOnOutput       	"MapOnOutput"
+#define DtCMapOnOutput "MapOnOutput"
 #endif
 #ifndef DtCMapOnOutputDelay
-#define	DtCMapOnOutputDelay     "MapOnOutputDelay"
+#define DtCMapOnOutputDelay "MapOnOutputDelay"
 #endif
 #ifndef DtCMarginBell
-#define	DtCMarginBell		"MarginBell"
+#define DtCMarginBell "MarginBell"
 #endif
 #ifndef DtCNMarginBell
-#define	DtCNMarginBell		"NMarginBell"
+#define DtCNMarginBell "NMarginBell"
 #endif
 #ifndef DtCPointerBlank
-#define	DtCPointerBlank         "PointerBlank"
+#define DtCPointerBlank "PointerBlank"
 #endif
 #ifndef DtCPointerBlankDelay
-#define	DtCPointerBlankDelay    "PointerBlankDelay"
+#define DtCPointerBlankDelay "PointerBlankDelay"
 #endif
 #ifndef DtCPointerColor
-#define	DtCPointerColor         "PointerColor"
+#define DtCPointerColor "PointerColor"
 #endif
 #ifndef DtCPointerColorBackground
-#define	DtCPointerColorBackground "PointerColorBackground"
+#define DtCPointerColorBackground "PointerColorBackground"
 #endif
 #ifndef DtCPointerShape
-#define	DtCPointerShape         "PointerShape"
+#define DtCPointerShape "PointerShape"
 #endif
 #ifndef DtCReverseVideo
-#define	DtCReverseVideo		"ReverseVideo"
+#define DtCReverseVideo "ReverseVideo"
 #endif
 #ifndef DtCSaveLines
-#define	DtCSaveLines		"SaveLines"
+#define DtCSaveLines "SaveLines"
 #endif
 #ifndef DtCSizeList
-#define	DtCSizeList		"SizeList"
+#define DtCSizeList "SizeList"
 #endif
 #ifndef DtCStickyCursor
-#define	DtCStickyCursor		"StickyCursor"
+#define DtCStickyCursor "StickyCursor"
 #endif
 #ifndef DtCSubprocessLoginShell
-#define	DtCSubprocessLoginShell	"SubprocessLoginShell"
+#define DtCSubprocessLoginShell "SubprocessLoginShell"
 #endif
 #ifndef DtCSubprocessPid
-#define	DtCSubprocessPid	"SubprocessPid"
+#define DtCSubprocessPid "SubprocessPid"
 #endif
 #ifndef DtCSubprocessExec
-#define	DtCSubprocessExec	"SubprocessExec"
+#define DtCSubprocessExec "SubprocessExec"
 #endif
 #ifndef DtCSubprocessTerminationCatch
-#define	DtCSubprocessTerminationCatch "SubprocessTerminationCatch"
+#define DtCSubprocessTerminationCatch "SubprocessTerminationCatch"
 #endif
 #ifndef DtCSubprocessCmd
-#define	DtCSubprocessCmd	"SubprocessCmd"
+#define DtCSubprocessCmd "SubprocessCmd"
 #endif
 #ifndef DtCSubprocessArgv
-#define	DtCSubprocessArgv	"SubprocessArgv"
+#define DtCSubprocessArgv "SubprocessArgv"
 #endif
 #ifndef DtCTermEmulationMode
-#define	DtCTermEmulationMode	"TermEmulationMode"
+#define DtCTermEmulationMode "TermEmulationMode"
 #endif
 #ifndef DtCTermDevice
-#define	DtCTermDevice		"TermDevice"
+#define DtCTermDevice "TermDevice"
 #endif
 #ifndef DtCTermDeviceAllocate
-#define	DtCTermDeviceAllocate	"TermDeviceAllocate"
+#define DtCTermDeviceAllocate "TermDeviceAllocate"
 #endif
 #ifndef DtCTermId
-#define	DtCTermId		"TermId"
+#define DtCTermId "TermId"
 #endif
 #ifndef DtCTermName
-#define	DtCTermName		"TermName"
+#define DtCTermName "TermName"
 #endif
 #ifndef DtCTermSlaveName
-#define	DtCTermSlaveName	"TermSlaveName"
+#define DtCTermSlaveName "TermSlaveName"
 #endif
 #ifndef DtCTtyModes
-#define	DtCTtyModes		"TtyModes"
+#define DtCTtyModes "TtyModes"
 #endif
 #ifndef DtCUseFontSets
-#define	DtCUseFontSets		"UseFontSets"
+#define DtCUseFontSets "UseFontSets"
 #endif
 #ifndef DtCUseLineDraw
-#define	DtCUseLineDraw		"UseLineDraw"
+#define DtCUseLineDraw "UseLineDraw"
 #endif
 #ifndef DtCUserFont
-#define	DtCUserFont		"UserFont"
+#define DtCUserFont "UserFont"
 #endif
 #ifndef DtCUserBoldFont
-#define	DtCUserBoldFont		"UserBoldFont"
+#define DtCUserBoldFont "UserBoldFont"
 #endif
 #ifndef DtCVisualBell
-#define	DtCVisualBell		"VisualBell"
+#define DtCVisualBell "VisualBell"
 #endif
 #ifndef DtCAllowSendEvents
-#define	DtCAllowSendEvents      "AllowSendEvents"
+#define DtCAllowSendEvents "AllowSendEvents"
 #endif
 #ifndef DtCBaseHeight
-#define DtCBaseHeight		XmCBaseHeight
+#define DtCBaseHeight XmCBaseHeight
 #endif
 #ifndef DtCBaseWidth
-#define DtCBaseWidth		XmCBaseWidth
+#define DtCBaseWidth XmCBaseWidth
 #endif
 #ifndef DtCColumns
-#define DtCColumns		XmCColumns
+#define DtCColumns XmCColumns
 #endif
 #ifndef DtCHeightInc
-#define DtCHeightInc		XmCHeightInc
+#define DtCHeightInc XmCHeightInc
 #endif
 #ifndef DtCMarginHeight
-#define DtCMarginHeight		XmCMarginHeight
+#define DtCMarginHeight XmCMarginHeight
 #endif
 #ifndef DtCMarginWidth
-#define DtCMarginWidth		XmCMarginWidth
+#define DtCMarginWidth XmCMarginWidth
 #endif
 #ifndef DtCRows
-#define DtCRows			XmCRows
+#define DtCRows XmCRows
 #endif
 #ifndef DtCShadowType
-#define DtCShadowType		XmCShadowType
+#define DtCShadowType XmCShadowType
 #endif
 #ifndef DtCVerticalScrollBar
-#define DtCVerticalScrollBar	XmCVerticalScrollBar
+#define DtCVerticalScrollBar XmCVerticalScrollBar
 #endif
 #ifndef DtCWidthInc
-#define DtCWidthInc		XmCWidthInc
+#define DtCWidthInc XmCWidthInc
 #endif
 
 /* Representation types */
 
-#define DtRDtTermCharCursorStyle	"DtTermCharCursorStyle"
-#define DtRDtTermEmulationMode    	"DtTermEmulationMode"
-#define	DtRDtTermTerminalSize		"DtTermTerminalSize"
-#define	DtRDtTermTerminalSizeList	"DtTermTerminalSizeList"
+#define DtRDtTermCharCursorStyle "DtTermCharCursorStyle"
+#define DtRDtTermEmulationMode "DtTermEmulationMode"
+#define DtRDtTermTerminalSize "DtTermTerminalSize"
+#define DtRDtTermTerminalSizeList "DtTermTerminalSizeList"
 
 /* DtNshadowType values */
 
 #ifndef DtSHADOW_IN
-#define DtSHADOW_IN		XmSHADOW_IN
+#define DtSHADOW_IN XmSHADOW_IN
 #endif
 #ifndef DtSHADOW_OUT
-#define DtSHADOW_OUT		XmSHADOW_OUT
+#define DtSHADOW_OUT XmSHADOW_OUT
 #endif
 #ifndef DtSHADOW_ETCHED_IN
-#define DtSHADOW_ETCHED_IN	XmSHADOW_ETCHED_IN
+#define DtSHADOW_ETCHED_IN XmSHADOW_ETCHED_IN
 #endif
 #ifndef DtSHADOW_ETCHED_OUT
-#define DtSHADOW_ETCHED_OUT	XmSHADOW_ETCHED_OUT
+#define DtSHADOW_ETCHED_OUT XmSHADOW_ETCHED_OUT
 #endif
 
-#define	DtTERM_CHAR_CURSOR_BOX		0
-#define	DtTERM_CHAR_CURSOR_BAR		1
-#define	DtTERM_CHAR_CURSOR_INVISIBLE	2
+#define DtTERM_CHAR_CURSOR_BOX 0
+#define DtTERM_CHAR_CURSOR_BAR 1
+#define DtTERM_CHAR_CURSOR_INVISIBLE 2
 
-#define	DtTermEMULATIONHP	0
-#define	DtTermEMULATIONANSI	1
+#define DtTermEMULATIONHP 0
+#define DtTermEMULATIONANSI 1
 
 /* Callback reasons */
 
-#define	DtCR_TERM_SUBPROCESS_TERMINATION	1
-#define DtCR_TERM_STATUS_CHANGE		2
-#define	DtCR_TERM_INPUT_VERIFY		7
-#define	DtCR_TERM_OUTPUT_LOG		8
-
+#define DtCR_TERM_SUBPROCESS_TERMINATION 1
+#define DtCR_TERM_STATUS_CHANGE 2
+#define DtCR_TERM_INPUT_VERIFY 7
+#define DtCR_TERM_OUTPUT_LOG 8
 
 /*
  * Types
@@ -442,59 +440,58 @@ extern "C" {
 /* insert char mode */
 
 typedef enum {
-	DtTERM_INSERT_CHAR_OFF = 0,
-	DtTERM_INSERT_CHAR_ON,
-	DtTERM_INSERT_CHAR_ON_WRAP
+        DtTERM_INSERT_CHAR_OFF = 0,
+        DtTERM_INSERT_CHAR_ON,
+        DtTERM_INSERT_CHAR_ON_WRAP
 } DtTermInsertCharMode;
 
 typedef struct {
-	int		reason;
-	XEvent		*event;
-	int		cursorX;
-	int		cursorY;
-	Boolean		capsLock;
-	Boolean		stop;
-	DtTermInsertCharMode insertCharMode;
-	Boolean		locked;
+        int reason;
+        XEvent *event;
+        int cursorX;
+        int cursorY;
+        Boolean capsLock;
+        Boolean stop;
+        DtTermInsertCharMode insertCharMode;
+        Boolean locked;
 } DtTermStatusChangeCallbackStruct;
 
 typedef struct {
-	int		reason;
-	XEvent		*event;
-	pid_t		pid;
-	int		status;
+        int reason;
+        XEvent *event;
+        pid_t pid;
+        int status;
 } DtTermSubprocessTerminationCallbackStruct;
 
 typedef struct {
-	int		reason;
-	XEvent		*event;
-	Boolean		doit;
-	unsigned char	*text;
-	int		length;
+        int reason;
+        XEvent *event;
+        Boolean doit;
+        unsigned char *text;
+        int length;
 } DtTermInputVerifyCallbackStruct;
 
 typedef struct {
-	int		reason;
-	XEvent		*event;
-	unsigned char	*text;
-	int		length;
+        int reason;
+        XEvent *event;
+        unsigned char *text;
+        int length;
 } DtTermOutputLogCallbackStruct;
 
 typedef struct _DtTermTerminalSize {
-	short		rows;
-	short		columns;
+        short rows;
+        short columns;
 } DtTermTerminalSize;
 
 typedef struct _DtTermTerminalSizeList {
-	int		numSizes;
-	DtTermTerminalSize *sizes;
+        int numSizes;
+        DtTermTerminalSize *sizes;
 } DtTermTerminalSizeList;
 
 /* Widget class and instance */
 
 typedef struct _DtTermPrimitiveClassRec *DtTermPrimitiveWidgetClass;
-typedef struct _DtTermPrimitiveRec      *DtTermPrimitiveWidget;
-
+typedef struct _DtTermPrimitiveRec *DtTermPrimitiveWidget;
 
 /*
  * Data
@@ -504,35 +501,23 @@ typedef struct _DtTermPrimitiveRec      *DtTermPrimitiveWidget;
 
 externalref WidgetClass dtTermPrimitiveWidgetClass;
 
-
 /*
  * Functions
  */
 
-extern Widget DtCreateTermPrimitive(
-		Widget		parent,
-		char		*name,
-		ArgList		arglist,
-		Cardinal	argcount);
+extern Widget DtCreateTermPrimitive(Widget parent, char *name, ArgList arglist,
+                                    Cardinal argcount);
 
 extern void DtTermInitialize(void);
 
-extern void DtTermDisplaySend(
-		Widget		widget,
-		unsigned char	*buffer,
-		int		length);
+extern void DtTermDisplaySend(Widget widget, unsigned char *buffer, int length);
 
-extern void DtTermSubprocSend(
-		Widget		widget,
-		unsigned char	*buffer,
-		int		length);
+extern void DtTermSubprocSend(Widget widget, unsigned char *buffer, int length);
 
-extern void DtTermSubprocReap(
-		pid_t		pid,
-		int		*stat_loc);
+extern void DtTermSubprocReap(pid_t pid, int *stat_loc);
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 }
 #endif
 
-#endif	/* _Dt_TermPrim_h */
+#endif /* _Dt_TermPrim_h */

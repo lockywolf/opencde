@@ -60,18 +60,18 @@ Author: Ralph Mor, X Consortium
  */
 
 typedef struct _tt_AuthFileEntry {
-    char    	    *protocol_name;
-    unsigned short  protocol_data_length;
-    char   	    *protocol_data;
-    char    	    *network_id;
-    char    	    *auth_name;
-    unsigned short  auth_data_length;
-    char   	    *auth_data;
+        char *protocol_name;
+        unsigned short protocol_data_length;
+        char *protocol_data;
+        char *network_id;
+        char *auth_name;
+        unsigned short auth_data_length;
+        char *auth_data;
 } _tt_AuthFileEntry;
 
 typedef struct _tt_AuthFileEntryList {
-    struct _tt_AuthFileEntryList	*next;
-    _tt_AuthFileEntry			*entry;
+        struct _tt_AuthFileEntryList *next;
+        _tt_AuthFileEntry *entry;
 } _tt_AuthFileEntryList;
 
 /*
@@ -79,61 +79,50 @@ typedef struct _tt_AuthFileEntryList {
  */
 
 typedef struct {
-    char    	    *protocol_name;
-    char	    *network_id;
-    char    	    *auth_name;
-    unsigned short  auth_data_length;
-    char   	    *auth_data;
+        char *protocol_name;
+        char *network_id;
+        char *auth_name;
+        unsigned short auth_data_length;
+        char *auth_data;
 } _tt_AuthDataEntry;
 
 /*
  * Return values from tt_LockAuthFile
  */
 
-#define _tt_AuthLockSuccess	0   /* lock succeeded */
-#define _tt_AuthLockError	1   /* lock unexpectely failed, check errno */
-#define _tt_AuthLockTimeout	2   /* lock failed, timeouts expired */
-
+#define _tt_AuthLockSuccess 0 /* lock succeeded */
+#define _tt_AuthLockError 1   /* lock unexpectely failed, check errno */
+#define _tt_AuthLockTimeout 2 /* lock failed, timeouts expired */
 
 /*
  * Function Prototypes
  */
 
-extern char *_tt_AuthFileName (void);
+extern char *_tt_AuthFileName(void);
 
-extern int _tt_LockAuthFile (
-    char *		/* file_name */,
-    int			/* retries */,
-    int			/* timeout */,
-    long		/* dead */
+extern int _tt_LockAuthFile(char * /* file_name */, int /* retries */,
+                            int /* timeout */, long /* dead */
 );
 
-extern void _tt_UnlockAuthFile (
-    char *		/* file_name */
+extern void _tt_UnlockAuthFile(char * /* file_name */
 );
 
-extern _tt_AuthFileEntry *_tt_ReadAuthFileEntry (
-    FILE *		/* auth_file */
+extern _tt_AuthFileEntry *_tt_ReadAuthFileEntry(FILE * /* auth_file */
 );
 
-extern void _tt_FreeAuthFileEntry (
-    _tt_AuthFileEntry *	/* auth */
+extern void _tt_FreeAuthFileEntry(_tt_AuthFileEntry * /* auth */
 );
 
-extern int _tt_WriteAuthFileEntry (
-    FILE *		/* auth_file */,
-    _tt_AuthFileEntry *	/* auth */
+extern int _tt_WriteAuthFileEntry(FILE * /* auth_file */,
+                                  _tt_AuthFileEntry * /* auth */
 );
 
-extern _tt_AuthFileEntry *_tt_GetAuthFileEntry (
-    const char *		/* protocol_name */,
-    const char *		/* network_id */,
-    const char *		/* auth_name */
+extern _tt_AuthFileEntry *_tt_GetAuthFileEntry(const char * /* protocol_name */,
+                                               const char * /* network_id */,
+                                               const char * /* auth_name */
 );
 
-extern char *_tt_GenerateMagicCookie (
-    int			/* len */
+extern char *_tt_GenerateMagicCookie(int /* len */
 );
-
 
 #endif /* MP_AUTH_FUNCTIONS_H */

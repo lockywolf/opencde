@@ -44,21 +44,17 @@
 #ifndef _HelpCacheI_h
 #define _HelpCacheI_h
 
-
-
 /****************************************************************
  *
  *  Cache List Info Structure Definition.
  *
  ****************************************************************/
 typedef struct _CacheListStruct {
-    Widget                    helpDialog;
-    Boolean                   inUseFlag;
-    struct _CacheListStruct   *pNext;
-    struct _CacheListStruct   *pPrevious;
+        Widget helpDialog;
+        Boolean inUseFlag;
+        struct _CacheListStruct *pNext;
+        struct _CacheListStruct *pPrevious;
 } CacheListStruct;
-
-
 
 /****************************************************************************
  * Function:	    void DisplayTopic(
@@ -73,13 +69,7 @@ typedef struct _CacheListStruct {
  *                  volume and topic.
  *
  ****************************************************************************/
-extern void DisplayTopic(
-    Widget  parent,
-    char    *helpVolume,
-    char    *locationId);
-
-
-
+extern void DisplayTopic(Widget parent, char *helpVolume, char *locationId);
 
 /****************************************************************************
  * Function:	    void DisplayMain(
@@ -90,16 +80,11 @@ extern void DisplayTopic(
  *
  * Return Value:    Void.
  *
- * Purpose: 	    Displays help for helpdemo in the one helpDialog window 
+ * Purpose: 	    Displays help for helpdemo in the one helpDialog window
  *                  created for the applicaiton.
  *
  ****************************************************************************/
-extern void DisplayMain( 
-    Widget  parent,
-    char    *helpVolume,
-    char    *locationId);
-
-
+extern void DisplayMain(Widget parent, char *helpVolume, char *locationId);
 
 /****************************************************************************
  * Function:	    void DisplayVersion(
@@ -112,17 +97,12 @@ extern void DisplayMain(
  * Purpose: 	    Displays the version dialog for the helpdemo program.
  *
  ****************************************************************************/
-extern void DisplayVersion( 
-    Widget  parent,
-    char    *helpVolume,
-    char    *locationId);
-
-
+extern void DisplayVersion(Widget parent, char *helpVolume, char *locationId);
 
 /*****************************************************************************
  * Function:	    void HelpMapCB()
- *                   
- *                            
+ *
+ *
  *
  * Parameters:      client_data is the widget in reference to
  *                  which widget w is placed
@@ -138,67 +118,39 @@ extern void DisplayVersion(
  *                     amount of overlap, and places there.
  *
  *****************************************************************************/
-extern XtCallbackProc HelpMapCB(
-    Widget w,
-    XtPointer clientData,
-    XtPointer callData);
-
-
+extern XtCallbackProc HelpMapCB(Widget w, XtPointer clientData,
+                                XtPointer callData);
 
 /****************************************************************************
  * Function:	    void DisplayMan()
  *
- * Parameters:      
+ * Parameters:
  *
  * Return Value:    Void.
  *
  * Purpose: 	    Displays a UNIX man page in a quick help dialog.
  *
  ****************************************************************************/
-extern void DisplayMan(
-    Widget  parent,
-    char    *man);
-
-
+extern void DisplayMan(Widget parent, char *man);
 
 /****************************************************************************
  * Function:	    void ProcessLinkCB(
  *                              Widget w,
- *                              XtPointer  clientData, 
+ *                              XtPointer  clientData,
  *                      	XtPointer callData
  *
- * Parameters:      
+ * Parameters:
  *
  * Return Value:    Void.
  *
- * Purpose: 	    Process JUMP-NEW and APP-LINK hypertext requests in a 
+ * Purpose: 	    Process JUMP-NEW and APP-LINK hypertext requests in a
  *                  given Help Dialog Window.
- *                 
+ *
  *                  This is the callback used for the DtNhyperLinkCallback
  *                  on each of the help dialog widges created.
  *
  ****************************************************************************/
-extern void ProcessLinkCB (
-    Widget w,
-    XtPointer clientData,
-    XtPointer callData);
-
+extern void ProcessLinkCB(Widget w, XtPointer clientData, XtPointer callData);
 
 #endif /* _HelpCacheI_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

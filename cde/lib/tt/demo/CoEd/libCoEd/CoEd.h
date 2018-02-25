@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: CoEd.h /main/3 1995/10/20 17:06:02 rswiston $ 			 				 */
+/*%%  $XConsortium: CoEd.h /main/3 1995/10/20 17:06:02 rswiston $
+ */
 /* -*-C++-*-
  *
  * CoEd.h
@@ -59,14 +60,14 @@
 #include <desktop/tt_c.h>
 
 typedef enum {
-	CoEdOK			= TT_OK,
-	CoEdWarnTimeout		= TT_WRN_APPFIRST, // 512
-	CoEdErrFile		= TT_ERR_APPFIRST, // 1536
-	CoEdErrNoMem,
-	CoEdErrBadPointer,
-	CoEdErrXDR,
-	CoEdErrBadMsg,
-	CoEdErrFailure
+        CoEdOK = TT_OK,
+        CoEdWarnTimeout = TT_WRN_APPFIRST, // 512
+        CoEdErrFile = TT_ERR_APPFIRST,     // 1536
+        CoEdErrNoMem,
+        CoEdErrBadPointer,
+        CoEdErrXDR,
+        CoEdErrBadMsg,
+        CoEdErrFailure
 } CoEdStatus;
 
 #ifdef InLibCoEd
@@ -77,11 +78,11 @@ typedef enum {
 // operations on the CoEdTextBuffer's associated text file.
 //
 class CoEdTextBuffer {
-    public:
-	CoEdStatus	insertText( long start, long end, const char *text );
-	CoEdStatus	save();
-	CoEdStatus	revert();
-	CoEdStatus	rename( const char *newPath );
+      public:
+        CoEdStatus insertText(long start, long end, const char *text);
+        CoEdStatus save();
+        CoEdStatus revert();
+        CoEdStatus rename(const char *newPath);
 };
 
 #else
@@ -102,44 +103,45 @@ class CoEdSiteIDList;
 // performed the corresponding user operation on the file.
 //
 class CoEdFile {
-	friend class CoEdFileList;
-    public:
-	CoEdFile( const char *path, CoEdTextBuffer *textBuf,
-		  CoEdStatus &status, int timeOutSec = 0 );
-	~CoEdFile();
+        friend class CoEdFileList;
 
-	CoEdStatus	insertText( long start, long end, const char *text );
-	CoEdStatus	save();
-	CoEdStatus	revert();
-	CoEdStatus	rename( const char *newPath );
+      public:
+        CoEdFile(const char *path, CoEdTextBuffer *textBuf, CoEdStatus &status,
+                 int timeOutSec = 0);
+        ~CoEdFile();
 
-    private:
-	char		       *_path;
-	CoEdTextBuffer	       *_textBuf;
-	CoEdTextVersion	       *_version;
-	CoEdTextVersion	       *_versionInQ;
-	CoEdSiteIDList	       *_coEditors;
-	CoEdChangeHistory      *_appliedChanges;
-	CoEdChangeQueue        *_unAppliedChanges;
-	int			_numLocalChanges;
-	int			_joining;
-	CoEdFile	       *_next;
-	CoEdFile	       *_prev;
+        CoEdStatus insertText(long start, long end, const char *text);
+        CoEdStatus save();
+        CoEdStatus revert();
+        CoEdStatus rename(const char *newPath);
 
-	CoEdStatus		_handleMsg( Tt_message msg );
-	CoEdStatus		_handleRequest( Tt_message msg );
-	CoEdStatus		_handleJoin( Tt_message msg );
-	CoEdStatus		_handleVersionVote( Tt_message msg );
-	CoEdStatus		_handleNotice( Tt_message msg );
-	CoEdStatus		_handleChanged( Tt_message msg );
-	CoEdStatus		_handlePollVersion( Tt_message msg );
-	CoEdStatus		_handleChange( CoEdTextChange *change,
-					       int changeIsFromQueue = 0 );
+      private:
+        char *_path;
+        CoEdTextBuffer *_textBuf;
+        CoEdTextVersion *_version;
+        CoEdTextVersion *_versionInQ;
+        CoEdSiteIDList *_coEditors;
+        CoEdChangeHistory *_appliedChanges;
+        CoEdChangeQueue *_unAppliedChanges;
+        int _numLocalChanges;
+        int _joining;
+        CoEdFile *_next;
+        CoEdFile *_prev;
+
+        CoEdStatus _handleMsg(Tt_message msg);
+        CoEdStatus _handleRequest(Tt_message msg);
+        CoEdStatus _handleJoin(Tt_message msg);
+        CoEdStatus _handleVersionVote(Tt_message msg);
+        CoEdStatus _handleNotice(Tt_message msg);
+        CoEdStatus _handleChanged(Tt_message msg);
+        CoEdStatus _handlePollVersion(Tt_message msg);
+        CoEdStatus _handleChange(CoEdTextChange *change,
+                                 int changeIsFromQueue = 0);
 };
 
-CoEdStatus	coEdInit( char* &returnProcID, int &pFd2Watch );
-CoEdStatus	coEdFini();
-CoEdStatus	coEdHandleActiveFD( int fd );
-const char     *coEdStatusMessage( CoEdStatus status );
+CoEdStatus coEdInit(char *&returnProcID, int &pFd2Watch);
+CoEdStatus coEdFini();
+CoEdStatus coEdHandleActiveFD(int fd);
+const char *coEdStatusMessage(CoEdStatus status);
 
 #endif CoEd_h

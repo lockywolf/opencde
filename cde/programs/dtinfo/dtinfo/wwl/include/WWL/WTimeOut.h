@@ -42,7 +42,7 @@
 class WWL;
 class WTimeOut;
 
-typedef void (WWL::* WTimeOutFunc) (WTimeOut *);
+typedef void (WWL::*WTimeOutFunc)(WTimeOut *);
 
 // WARNING: Do not create temporary WTimeOut objects or you'll be sorry.
 //          This means that WTimeOut objects MUST be created with new!!
@@ -53,24 +53,24 @@ typedef void (WWL::* WTimeOutFunc) (WTimeOut *);
 // -- DJB 10/06/92
 
 class WTimeOut {
-protected:
-	WWL            *object;
-	WTimeOutFunc    func;
-	XtIntervalId    interval_id;
-	XtPointer	client_data;
-	
-public:
-	WTimeOut (XtAppContext, unsigned long interval,
-		  WWL *, WTimeOutFunc, XtPointer client = NULL);
-	~WTimeOut();
+      protected:
+        WWL *object;
+        WTimeOutFunc func;
+        XtIntervalId interval_id;
+        XtPointer client_data;
 
-	void	Call();
-	
-inline	WTimeOutFunc    Fun()			{ return func; }
-inline	void		Fun (WTimeOutFunc f)	{ func = f; }
-inline	WWL*		Obj()			{ return object; }
-inline	void		Obj (WWL *o)		{ object = o; }
-inline	XtPointer	ClientData()		{ return client_data; }
+      public:
+        WTimeOut(XtAppContext, unsigned long interval, WWL *, WTimeOutFunc,
+                 XtPointer client = NULL);
+        ~WTimeOut();
+
+        void Call();
+
+        inline WTimeOutFunc Fun() { return func; }
+        inline void Fun(WTimeOutFunc f) { func = f; }
+        inline WWL *Obj() { return object; }
+        inline void Obj(WWL *o) { object = o; }
+        inline XtPointer ClientData() { return client_data; }
 };
 
 #endif

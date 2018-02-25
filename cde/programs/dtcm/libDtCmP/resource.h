@@ -24,7 +24,8 @@
 **
 **  resource.h
 **
-**  static char sccsid[] = "@(#)resource.h 1.5 94/11/07 Copyr 1991 Sun Microsystems, Inc.";
+**  static char sccsid[] = "@(#)resource.h 1.5 94/11/07 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $XConsortium: resource.h /main/3 1995/11/03 10:38:43 rswiston $
 **
@@ -51,7 +52,7 @@
 
 #ifndef _RESOURCE_H
 #define _RESOURCE_H
- 
+
 #include "ansi_c.h"
 #include <sys/types.h>
 
@@ -59,23 +60,21 @@
 **  Resource structure
 */
 struct Resource {
-	char		*resource_name;
-	char		*resource_value;
-	struct Resource	*next;
+        char *resource_name;
+        char *resource_value;
+        struct Resource *next;
 };
 typedef struct Resource Resource;
 
 /*
 **  Function declarations
 */
-extern void		free_resources		P((Resource*));
-extern char	    	*get_resource		P((Resource*, char *, char*,
-							char*, char*));
-extern char		*get_resource_by_val	P((Resource*, char*, char*));
-extern boolean_t	load_resources		P((Resource**, char*));
-extern boolean_t	save_resources		P((Resource*, char*));
-extern boolean_t	set_resource		P((Resource**, char*, char*,
-							char*, char*));
-extern boolean_t	set_resource_by_val	P((Resource**, char*, char*));
+extern void free_resources P((Resource *));
+extern char *get_resource P((Resource *, char *, char *, char *, char *));
+extern char *get_resource_by_val P((Resource *, char *, char *));
+extern boolean_t load_resources P((Resource **, char *));
+extern boolean_t save_resources P((Resource *, char *));
+extern boolean_t set_resource P((Resource **, char *, char *, char *, char *));
+extern boolean_t set_resource_by_val P((Resource **, char *, char *));
 
 #endif

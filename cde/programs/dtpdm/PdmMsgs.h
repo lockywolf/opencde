@@ -29,7 +29,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -38,8 +38,8 @@
 
 #ifdef I18N_MSG
 #include <nl_types.h>
-#define DTPDM_GETMESSAGE(set, number, string) \
-    DtPdmGetMessage(set, number, string)
+#define DTPDM_GETMESSAGE(set, number, string)                                  \
+        DtPdmGetMessage(set, number, string)
 
 #else /* I18N_MSG */
 #define DTPDM_GETMESSAGE(set, number, string) (string)
@@ -66,20 +66,17 @@ extern CONST char DtPdmMsg_0004[];
 extern CONST char DtPdmMsg_0005[];
 extern CONST char DtPdmMsg_0006[];
 
-/* 
+/*
  * Message sets
  */
-#define	MS_DtPdmOid		1
-#define	MS_DtPdmMsg		2
+#define MS_DtPdmOid 1
+#define MS_DtPdmMsg 2
 
 #ifdef I18N_MSG
 
 /* Message IDs */
 
-extern const char * DtPdmGetMessage(
-				    int set,
-				    int n,
-				    const char * s);
+extern const char *DtPdmGetMessage(int set, int n, const char *s);
 
 #endif /* I18N_MSG */
 

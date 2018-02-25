@@ -48,7 +48,6 @@
  * (c) Copyright 1993, 1994 Novell, Inc. 				*
  */
 
-
 /*	@(#)cmtt.h 1.6 94/11/07 SMI	*/
 
 /*
@@ -58,7 +57,7 @@
 #ifndef _CM_TT_H
 #define _CM_TT_H
 
-extern Tt_status cmtt_init(char *, Calendar *,  XtAppContext, Widget);
-extern void DieFromToolTalkError(Widget, char*, Tt_status);
+extern Tt_status cmtt_init(char *, Calendar *, XtAppContext, Widget);
+extern void DieFromToolTalkError(Widget, char *, Tt_status);
 
 #endif /* _CM_TT_H */

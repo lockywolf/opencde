@@ -45,9 +45,7 @@
 #ifndef _DtFormatManI_h
 #define _DtFormatManI_h
 
-extern	int	_DtHelpFormatManPage (
-			XtPointer	 client_data,
-			char          *man_spec,
-			XtPointer	*ret_handle );
+extern int _DtHelpFormatManPage(XtPointer client_data, char *man_spec,
+                                XtPointer *ret_handle);
 
 #endif /* _DtFormatManI_h */

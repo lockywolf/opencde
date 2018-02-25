@@ -30,26 +30,25 @@
 #include "PathTable.h"
 #include "ResolverStack.h"
 
-class StyleSheet 
-{
+class StyleSheet {
 
-private:
-   SymbolTable 		f_SymTab;
-   VariableTable 	f_VarTab;
-   PathTable 		f_PathTab;
-   SymbolTable  	f_ElemSymTab;
-   unsigned int		f_GI_CASE_SENSITIVE;
-   ResolverStackElement f_TopOfStack;
+      private:
+        SymbolTable f_SymTab;
+        VariableTable f_VarTab;
+        PathTable f_PathTab;
+        SymbolTable f_ElemSymTab;
+        unsigned int f_GI_CASE_SENSITIVE;
+        ResolverStackElement f_TopOfStack;
 
-   char* f_name;
+        char *f_name;
 
-public:
-   StyleSheet(const char* name = 0); 
-   ~StyleSheet();
+      public:
+        StyleSheet(const char *name = 0);
+        ~StyleSheet();
 
-   const char* name() { return f_name; };
+        const char *name() { return f_name; };
 
-   void use();
+        void use();
 };
 
 #endif /* _StyleSheet_h */

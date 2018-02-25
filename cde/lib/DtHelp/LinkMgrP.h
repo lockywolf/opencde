@@ -42,39 +42,27 @@
 #ifndef _DtCvLinkMgrP_h
 #define _DtCvLinkMgrP_h
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /********    Typedef Structures Declarations    ********/
 #if !defined(_DtCanvasI_h) && !defined(_DtCvLinkMgrI_h)
-typedef	struct _dtCvLinkDb*	_DtCvLinkDb;
+typedef struct _dtCvLinkDb *_DtCvLinkDb;
 #endif
 
 /********    Public Function Declarations    ********/
 
-extern	int		_DtLinkDbAddLink (
-				_DtCvLinkDb	 link_db,
-				char		*id,
-				char		*spec,
-				int		 type,
-				int		 hint,
-				char		*description);
-extern	int		_DtLinkDbAddSwitch (
-				_DtCvLinkDb	 link_db,
-				char		*id,
-				char		*interp,
-				char		*cmd,
-				char		*branches);
-extern	_DtCvLinkDb	_DtLinkDbCreate (void);
-extern	void		_DtLinkDbDestroy (_DtCvLinkDb link_db);
-extern  void		_DtLinkDbRemoveLink(
-				_DtCvLinkDb      link_data,
-				int	      link_index);
+extern int _DtLinkDbAddLink(_DtCvLinkDb link_db, char *id, char *spec, int type,
+                            int hint, char *description);
+extern int _DtLinkDbAddSwitch(_DtCvLinkDb link_db, char *id, char *interp,
+                              char *cmd, char *branches);
+extern _DtCvLinkDb _DtLinkDbCreate(void);
+extern void _DtLinkDbDestroy(_DtCvLinkDb link_db);
+extern void _DtLinkDbRemoveLink(_DtCvLinkDb link_data, int link_index);
 
 #ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
 #endif /* _DtCvLinkMgrP_h */

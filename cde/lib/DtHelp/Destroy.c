@@ -80,51 +80,53 @@
  *    graphic information associated with it.
  *
  *********************************************************************/
-void
-_DtHelpDisplayAreaClean (XtPointer  client_data)
-{
-    int   n;
-    Arg   args[5];
-    Atom  xa_primary = XA_PRIMARY;
-    DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *) client_data;
+void _DtHelpDisplayAreaClean(XtPointer client_data) {
+        int n;
+        Arg args[5];
+        Atom xa_primary = XA_PRIMARY;
+        DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *)client_data;
 
-    /*
-     * remove the selection if necessary
-     */
-    _DtHelpLoseSelectionCB (pDAS->dispWid, &xa_primary);
+        /*
+         * remove the selection if necessary
+         */
+        _DtHelpLoseSelectionCB(pDAS->dispWid, &xa_primary);
 
-    /*
-     * clean the canvas
-     */
-    if (NULL != pDAS->canvas)
-    	_DtCanvasClean (pDAS->canvas);
+        /*
+         * clean the canvas
+         */
+        if (NULL != pDAS->canvas)
+                _DtCanvasClean(pDAS->canvas);
 
-    /*
-     * clean the slate
-     */
-    if (XtIsRealized (pDAS->dispWid))
-        XClearArea(XtDisplay(pDAS->dispWid), XtWindow(pDAS->dispWid),
-			pDAS->decorThickness, pDAS->decorThickness,
-			pDAS->dispUseWidth, pDAS->dispUseHeight, False);
+        /*
+         * clean the slate
+         */
+        if (XtIsRealized(pDAS->dispWid))
+                XClearArea(XtDisplay(pDAS->dispWid), XtWindow(pDAS->dispWid),
+                           pDAS->decorThickness, pDAS->decorThickness,
+                           pDAS->dispUseWidth, pDAS->dispUseHeight, False);
 
-    pDAS->toc_flag &= ~(_DT_HELP_TOC_ON);
+        pDAS->toc_flag &= ~(_DT_HELP_TOC_ON);
 
-    /*
-     * reset any scrollbars that are managed.
-     */
-    n = 0;
-    XtSetArg (args[n], XmNvalue        , 0);	++n;
-    XtSetArg (args[n], XmNsliderSize   , 1);	++n;
-    XtSetArg (args[n], XmNmaximum      , 1);	++n;
-    XtSetArg (args[n], XmNpageIncrement, 1);	++n;
+        /*
+         * reset any scrollbars that are managed.
+         */
+        n = 0;
+        XtSetArg(args[n], XmNvalue, 0);
+        ++n;
+        XtSetArg(args[n], XmNsliderSize, 1);
+        ++n;
+        XtSetArg(args[n], XmNmaximum, 1);
+        ++n;
+        XtSetArg(args[n], XmNpageIncrement, 1);
+        ++n;
 
-    if (pDAS->vertScrollWid && XtIsManaged (pDAS->vertScrollWid))
-	XtSetValues (pDAS->vertScrollWid, args, n);
+        if (pDAS->vertScrollWid && XtIsManaged(pDAS->vertScrollWid))
+                XtSetValues(pDAS->vertScrollWid, args, n);
 
-    if (pDAS->horzScrollWid && XtIsManaged (pDAS->horzScrollWid))
-	XtSetValues (pDAS->horzScrollWid, args, n);
+        if (pDAS->horzScrollWid && XtIsManaged(pDAS->horzScrollWid))
+                XtSetValues(pDAS->horzScrollWid, args, n);
 
-}  /* End _DtHelpDisplayAreaClean */
+} /* End _DtHelpDisplayAreaClean */
 
 /*********************************************************************
  * Function: _DtHelpDisplayAreaDestroyCB
@@ -133,121 +135,111 @@ _DtHelpDisplayAreaClean (XtPointer  client_data)
  *    associated with it.
  *
  *********************************************************************/
-void
-_DtHelpDisplayAreaDestroyCB (
-    Widget w,
-    XtPointer client_data,
-    XtPointer call_data)
-{
-    int      i;
-    long     strIdx;
-    XrmName		  xrmList[_DtHelpFontQuarkNumber];
-    Display		 *dpy;
-    DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *) client_data;
-    Boolean  usedDef = False;
+void _DtHelpDisplayAreaDestroyCB(Widget w, XtPointer client_data,
+                                 XtPointer call_data) {
+        int i;
+        long strIdx;
+        XrmName xrmList[_DtHelpFontQuarkNumber];
+        Display *dpy;
+        DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *)client_data;
+        Boolean usedDef = False;
 
-    /*
-     * do the gross cleaning
-     */
-    _DtHelpDisplayAreaClean(client_data);
+        /*
+         * do the gross cleaning
+         */
+        _DtHelpDisplayAreaClean(client_data);
 
-    if (NULL != pDAS->canvas)
-	_DtCanvasDestroy (pDAS->canvas);
+        if (NULL != pDAS->canvas)
+                _DtCanvasDestroy(pDAS->canvas);
 
-    dpy = XtDisplay(pDAS->dispWid);
-    /*
-     * Free the gc's
-     */
-    XFreeGC (dpy, pDAS->normalGC);
-    XFreeGC (dpy, pDAS->pixmapGC);
-    XFreeGC (dpy, pDAS->invertGC);
-    if (pDAS->def_pix != 0 &&
-	XmDestroyPixmap(XDefaultScreenOfDisplay(dpy), pDAS->def_pix) == False)
-	    XFreePixmap(dpy, pDAS->def_pix);
-    if (pDAS->context != NULL)
-    {
-        _DtGrDestroyContext(pDAS->context);
-        XtFree((char *) pDAS->context);
-    }
+        dpy = XtDisplay(pDAS->dispWid);
+        /*
+         * Free the gc's
+         */
+        XFreeGC(dpy, pDAS->normalGC);
+        XFreeGC(dpy, pDAS->pixmapGC);
+        XFreeGC(dpy, pDAS->invertGC);
+        if (pDAS->def_pix != 0 && XmDestroyPixmap(XDefaultScreenOfDisplay(dpy),
+                                                  pDAS->def_pix) == False)
+                XFreePixmap(dpy, pDAS->def_pix);
+        if (pDAS->context != NULL) {
+                _DtGrDestroyContext(pDAS->context);
+                XtFree((char *)pDAS->context);
+        }
 
-    /*
-     * destroy the widgets.
-     */
-    XtDestroyWidget(pDAS->dispWid);
+        /*
+         * destroy the widgets.
+         */
+        XtDestroyWidget(pDAS->dispWid);
 
-    if (pDAS->horzScrollWid != NULL)
-        XtDestroyWidget(pDAS->horzScrollWid);
-    if (pDAS->vertScrollWid != NULL)
-        XtDestroyWidget(pDAS->vertScrollWid);
+        if (pDAS->horzScrollWid != NULL)
+                XtDestroyWidget(pDAS->horzScrollWid);
+        if (pDAS->vertScrollWid != NULL)
+                XtDestroyWidget(pDAS->vertScrollWid);
 
-    /*
-     * free the special characters
-     */
-    if (pDAS->spc_chars != NULL)
-        free ((char *) pDAS->spc_chars);
+        /*
+         * free the special characters
+         */
+        if (pDAS->spc_chars != NULL)
+                free((char *)pDAS->spc_chars);
 
-    /*
-     * free the font info.
-     */
-    _DtHelpGetStringQuarks(xrmList);
-    if (__DtHelpFontIndexGet(pDAS, xrmList, &strIdx) != 0)
-	usedDef = True;
+        /*
+         * free the font info.
+         */
+        _DtHelpGetStringQuarks(xrmList);
+        if (__DtHelpFontIndexGet(pDAS, xrmList, &strIdx) != 0)
+                usedDef = True;
 
-    if (pDAS->font_info.def_font_db != NULL)
-        XrmDestroyDatabase(pDAS->font_info.def_font_db);
-    if (pDAS->font_info.font_idx_db != NULL)
-        XrmDestroyDatabase(pDAS->font_info.font_idx_db);
-    if (pDAS->font_info.exact_fonts != NULL)
-      {
-	_DtHelpCeFreeStringArray(pDAS->font_info.exact_fonts);
-	free(pDAS->font_info.exact_idx);
-      }
-    if (pDAS->font_info.font_structs != NULL)
-      {
-	/*
-	 * if the string index is a positive number, this
-	 * indicates that the string font is a font not
-	 * a font set and it wouldn't be freed in this
-	 * routine.
-	 */
-	for (i = 0; i < pDAS->font_info.struct_cnt; i++)
-	  {
-	    if (usedDef == True || i != strIdx)
-	        XFreeFont(dpy, pDAS->font_info.font_structs[i]);
-	  }
-        free(pDAS->font_info.font_structs);
-      }
-    if (pDAS->font_info.font_sets != NULL)
-      {
-	/*
-	 * if the string index is a negative number, this turns
-	 * it to positive and the tests will succeed.
-	 *
-	 * if the string index was a font not a fontset, then
-	 * this will turn the value negative and the test
-	 * will never succeed.
-	 */
-	strIdx = (-strIdx) - 1;
-	for (i = 0; i < pDAS->font_info.set_cnt; i++)
-	  {
-	    if (usedDef == True || i != strIdx)
-	        XFreeFontSet(dpy, pDAS->font_info.font_sets[i]);
-	  }
-        free(pDAS->font_info.font_sets);
-        free(pDAS->font_info.fs_metrics);
-      }
+        if (pDAS->font_info.def_font_db != NULL)
+                XrmDestroyDatabase(pDAS->font_info.def_font_db);
+        if (pDAS->font_info.font_idx_db != NULL)
+                XrmDestroyDatabase(pDAS->font_info.font_idx_db);
+        if (pDAS->font_info.exact_fonts != NULL) {
+                _DtHelpCeFreeStringArray(pDAS->font_info.exact_fonts);
+                free(pDAS->font_info.exact_idx);
+        }
+        if (pDAS->font_info.font_structs != NULL) {
+                /*
+                 * if the string index is a positive number, this
+                 * indicates that the string font is a font not
+                 * a font set and it wouldn't be freed in this
+                 * routine.
+                 */
+                for (i = 0; i < pDAS->font_info.struct_cnt; i++) {
+                        if (usedDef == True || i != strIdx)
+                                XFreeFont(dpy, pDAS->font_info.font_structs[i]);
+                }
+                free(pDAS->font_info.font_structs);
+        }
+        if (pDAS->font_info.font_sets != NULL) {
+                /*
+                 * if the string index is a negative number, this turns
+                 * it to positive and the tests will succeed.
+                 *
+                 * if the string index was a font not a fontset, then
+                 * this will turn the value negative and the test
+                 * will never succeed.
+                 */
+                strIdx = (-strIdx) - 1;
+                for (i = 0; i < pDAS->font_info.set_cnt; i++) {
+                        if (usedDef == True || i != strIdx)
+                                XFreeFontSet(dpy, pDAS->font_info.font_sets[i]);
+                }
+                free(pDAS->font_info.font_sets);
+                free(pDAS->font_info.fs_metrics);
+        }
 
-    /*
-     * free the locale dependant information
-     */
-    if (NULL != pDAS->cant_begin_chars)
-        free (pDAS->cant_begin_chars);
-    if (NULL != pDAS->cant_end_chars)
-        free (pDAS->cant_end_chars);
+        /*
+         * free the locale dependant information
+         */
+        if (NULL != pDAS->cant_begin_chars)
+                free(pDAS->cant_begin_chars);
+        if (NULL != pDAS->cant_end_chars)
+                free(pDAS->cant_end_chars);
 
-    /*
-     * destroy the display area pointer
-     */
-    XtFree ((char *) pDAS);
+        /*
+         * destroy the display area pointer
+         */
+        XtFree((char *)pDAS);
 
-}  /* End DtHelpDisplayAreaDestroy */
+} /* End DtHelpDisplayAreaDestroy */

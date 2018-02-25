@@ -46,18 +46,17 @@
 #define _DtHelpStringFuncsI_h
 
 /* opaque handle of the iconv context */
-typedef struct _DtHelpCeIconvContextRec * _DtHelpCeIconvContext;
+typedef struct _DtHelpCeIconvContextRec *_DtHelpCeIconvContext;
 
 /****************************************************************************
  *			Semi Public Macros
  ****************************************************************************/
-#define _DtHelpCeToLower(c) \
-		(('A' <= (c) && (c) <= 'Z') ? (c) + 'a' - 'A' : (c))
+#define _DtHelpCeToLower(c) (('A' <= (c) && (c) <= 'Z') ? (c) + 'a' - 'A' : (c))
 /****************************************************************************
  *			Semi Public Re-defines
  ****************************************************************************/
 #if !defined(_AIX) && !defined(USL) && !defined(__uxp__)
-#define	_DtHelpCeStrCaseCmp(s1,s2)	strcasecmp(s1,s2)
+#define _DtHelpCeStrCaseCmp(s1, s2) strcasecmp(s1, s2)
 #endif /* _AIX  or USL */
 
 /****************************************************************************
@@ -76,7 +75,8 @@ typedef struct _DtHelpCeIconvContextRec * _DtHelpCeIconvContext;
  *****************************************************************************/
 
 /******************************************************************************
- * Function: _DtHelpCeStrcspn (const char *s1, const char *s2, max_len, &ret_len)
+ * Function: _DtHelpCeStrcspn (const char *s1, const char *s2, max_len,
+ *&ret_len)
  *
  *      Returns in 'ret_len' the length of the initial segment of string
  *      s1 which consists entirely of characters not found in string s2.
@@ -213,84 +213,47 @@ typedef struct _DtHelpCeIconvContextRec * _DtHelpCeIconvContext;
  *
  *****************************************************************************/
 
-typedef int (*_CEStrcollProc)(const char *,const char *);
+typedef int (*_CEStrcollProc)(const char *, const char *);
 
-extern  void  **_DtHelpCeAddPtrToArray (
-                        void		**array,
-                        void		 *ptr );
-extern	int	_DtHelpCeCountChars (
-			char		*s1,
-			int		 max_len,
-			int		*ret_len );
-extern  int	_DtHelpCeFreeStringArray ( char **array);
-#if	defined(_AIX) || defined(USL) || defined(__uxp__)
-extern	int	_DtHelpCeStrCaseCmp(
-			const char	*s1,
-			const char	*s2);
+extern void **_DtHelpCeAddPtrToArray(void **array, void *ptr);
+extern int _DtHelpCeCountChars(char *s1, int max_len, int *ret_len);
+extern int _DtHelpCeFreeStringArray(char **array);
+#if defined(_AIX) || defined(USL) || defined(__uxp__)
+extern int _DtHelpCeStrCaseCmp(const char *s1, const char *s2);
 #endif /* _AIX or USL or __uxp__ */
-extern	int	_DtHelpCeStrCaseCmpLatin1(
-			const char	*s1,
-			const char	*s2);
-extern	int	_DtHelpCeStrNCaseCmpLatin1(
-			const char	*s1,
-			const char	*s2,
-			size_t		 n);
-extern	int	_DtHelpCeStrchr (
-			const char	*s1,
-			const char	*value,
-			int		 max_len,
-			char		**ret_ptr);
-extern	int	_DtHelpCeStrrchr (
-			const char	*s1,
-			const char	*value,
-			int		 max_len,
-			char		**ret_ptr);
-extern	int	_DtHelpCeStrcspn (
-			const char	*s1,
-			const char	*s2,
-			int		 max_len,
-			int		*ret_len );
-extern	int	_DtHelpCeStrspn (
-			char		*s1,
-			char		*s2,
-			int		 max_len,
-			int		*ret_len );
-extern	void	_DtHelpCeUpperCase (char *string);
-extern  int     _DtHelpCeStrHashToKey(
-                        const char *    str);
-extern  _CEStrcollProc _DtHelpCeGetStrcollProc(void);
-extern  char *  _DtHelpCeStripSpaces (
-                        char * string);
-extern  void    _DtHelpCeCompressSpace (
-                        char * string);
-extern  int _DtHelpCeIconvStr1Step(
-			const char * fromCode,
-			const char * fromStr,
-			const char * toCode,
-			char * *     ret_toStr,
-			int          dflt1,
-			int          dflt2);
-extern int _DtHelpCeIconvOpen(
-                        _DtHelpCeIconvContext * ret_iconvContext,  /* iconv */
-                        const char * fromCode,   /* codeset name */
-                        const char * toCode,     /* codeset name */
-                        int          dflt1,      /* 1-byte default char */
-                        int          dflt2);      /* 2-byte default char */
-extern  int _DtHelpCeIconvStr(
-                        _DtHelpCeIconvContext iconvContext, /* iconv */
-                        const char * fromStr,      /* string to convert */
-                        char * *     ret_toStr,    /* converted str */
-                        size_t *     ret_toStrLen, /* converted str */
-                        char *       toStrBuf,     /* can pass in a buf */
-                        size_t       toStrBufLen); /* length of buf */
+extern int _DtHelpCeStrCaseCmpLatin1(const char *s1, const char *s2);
+extern int _DtHelpCeStrNCaseCmpLatin1(const char *s1, const char *s2, size_t n);
+extern int _DtHelpCeStrchr(const char *s1, const char *value, int max_len,
+                           char **ret_ptr);
+extern int _DtHelpCeStrrchr(const char *s1, const char *value, int max_len,
+                            char **ret_ptr);
+extern int _DtHelpCeStrcspn(const char *s1, const char *s2, int max_len,
+                            int *ret_len);
+extern int _DtHelpCeStrspn(char *s1, char *s2, int max_len, int *ret_len);
+extern void _DtHelpCeUpperCase(char *string);
+extern int _DtHelpCeStrHashToKey(const char *str);
+extern _CEStrcollProc _DtHelpCeGetStrcollProc(void);
+extern char *_DtHelpCeStripSpaces(char *string);
+extern void _DtHelpCeCompressSpace(char *string);
+extern int _DtHelpCeIconvStr1Step(const char *fromCode, const char *fromStr,
+                                  const char *toCode, char **ret_toStr,
+                                  int dflt1, int dflt2);
+extern int
+_DtHelpCeIconvOpen(_DtHelpCeIconvContext *ret_iconvContext, /* iconv */
+                   const char *fromCode,                    /* codeset name */
+                   const char *toCode,                      /* codeset name */
+                   int dflt1,  /* 1-byte default char */
+                   int dflt2); /* 2-byte default char */
+extern int _DtHelpCeIconvStr(_DtHelpCeIconvContext iconvContext, /* iconv */
+                             const char *fromStr,  /* string to convert */
+                             char **ret_toStr,     /* converted str */
+                             size_t *ret_toStrLen, /* converted str */
+                             char *toStrBuf,       /* can pass in a buf */
+                             size_t toStrBufLen);  /* length of buf */
 
-extern void _DtHelpCeIconvClose(
-                        _DtHelpCeIconvContext * io_iconvContext);
-extern int _DtHelpCeIconvContextSuitable(
-                        _DtHelpCeIconvContext iconvContext,
-                        const char *          fromCode,
-                        const char *          toCode);
-
-
+extern void _DtHelpCeIconvClose(_DtHelpCeIconvContext *io_iconvContext);
+extern int _DtHelpCeIconvContextSuitable(_DtHelpCeIconvContext iconvContext,
+                                         const char *fromCode,
+                                         const char *toCode);
 
 #endif /* _DtHelpStringFuncsI_h */

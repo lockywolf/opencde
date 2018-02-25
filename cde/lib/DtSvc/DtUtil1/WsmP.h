@@ -29,16 +29,16 @@
  **
  **   Project:  DT Workspace Manager
  **
- **   Description: Defines PRIVATE properties, structures, and 
- **		   parameters used for communication with the 
- **		   workspace manager. This also includes some 
+ **   Description: Defines PRIVATE properties, structures, and
+ **		   parameters used for communication with the
+ **		   workspace manager. This also includes some
  **		   backward compatibility stuff for HP_VUE.
  **
  ** (c) Copyright 1996 Digital Equipment Corporation.
  ** (c) Copyright 1993,1994,1996 Hewlett-Packard Company.
  ** (c) Copyright 1993,1994,1996 International Business Machines Corp.
  ** (c) Copyright 1993,1994,1996 Sun Microsystems, Inc.
- ** (c) Copyright 1993,1994,1996 Novell, Inc. 
+ ** (c) Copyright 1993,1994,1996 Novell, Inc.
  ** (c) Copyright 1996 FUJITSU LIMITED.
  ** (c) Copyright 1996 Hitachi.
  **
@@ -52,38 +52,35 @@
 #include <Tt/tt_c.h>
 
 /**********************************************************************
- * Workspace atom names 
+ * Workspace atom names
  **********************************************************************/
-#define _XA_DT_MARQUEE_SELECTION	"_DT_MARQUEE_SELECTION"
-#define _XA_DT_WORKSPACE_EMBEDDED_CLIENTS	\
-					"_DT_WORKSPACE_EMBEDDED_CLIENTS"
-#define _XA_DT_WM_REQUEST		"_DT_WM_REQUEST"
-#define _XA_DT_WORKSPACE_HINTS		"_DT_WORKSPACE_HINTS"
-#define _XA_DT_WORKSPACE_PRESENCE	"_DT_WORKSPACE_PRESENCE"
-#define _XA_DT_WORKSPACE_INFO		"_DT_WORKSPACE_INFO"
-#define _XA_DT_WM_HINTS			"_DT_WM_HINTS"
-#define _XA_DT_WORKSPACE_LIST		"_DT_WORKSPACE_LIST"
-#define _XA_DT_WORKSPACE_CURRENT	"_DT_WORKSPACE_CURRENT"
-
+#define _XA_DT_MARQUEE_SELECTION "_DT_MARQUEE_SELECTION"
+#define _XA_DT_WORKSPACE_EMBEDDED_CLIENTS "_DT_WORKSPACE_EMBEDDED_CLIENTS"
+#define _XA_DT_WM_REQUEST "_DT_WM_REQUEST"
+#define _XA_DT_WORKSPACE_HINTS "_DT_WORKSPACE_HINTS"
+#define _XA_DT_WORKSPACE_PRESENCE "_DT_WORKSPACE_PRESENCE"
+#define _XA_DT_WORKSPACE_INFO "_DT_WORKSPACE_INFO"
+#define _XA_DT_WM_HINTS "_DT_WM_HINTS"
+#define _XA_DT_WORKSPACE_LIST "_DT_WORKSPACE_LIST"
+#define _XA_DT_WORKSPACE_CURRENT "_DT_WORKSPACE_CURRENT"
 
 /**********************************************************************
  * Name to request ``all'' workspaces (for a persistent window)
  **********************************************************************/
 
-#define _XA_DT_WORKSPACE_ALL		"all"
-
+#define _XA_DT_WORKSPACE_ALL "all"
 
 /**********************************************************************
- * Workspace function definitions 
+ * Workspace function definitions
  **********************************************************************/
-#define DtWM_FUNC_OCCUPY_WS       	DtWM_FUNCTION_OCCUPY_WS
-#define DtWM_FUNC_ALL			DtWM_FUNC_OCCUPY_WS
+#define DtWM_FUNC_OCCUPY_WS DtWM_FUNCTION_OCCUPY_WS
+#define DtWM_FUNC_ALL DtWM_FUNC_OCCUPY_WS
 
 /**********************************************************************
  * Workspace property information
  **********************************************************************/
 
-/* 
+/*
  *
  *  NOTE: The "(client -> dtwm)" indication calls out the direction
  *        of information flow. In this case, the client writes the
@@ -92,7 +89,7 @@
  *
  *  _DT_WORKSPACE_HINTS		(client -> dtwm)
  *
- *  This property is a list of atoms placed by a client on its 
+ *  This property is a list of atoms placed by a client on its
  *  top level window(s). Each atom is an "interned" string name
  *  for a workspace. The workspace manager looks at this property
  *  when it manages the window (e.g. when the window is mapped)
@@ -101,19 +98,19 @@
  *  _DT_WORKSPACE_PRESENCE	(dtwm -> client)
  *
  *  This property is a list of atoms placed on a client by dtwm.
- *  Each atom is an "interned" string name for a workspace. This 
+ *  Each atom is an "interned" string name for a workspace. This
  *  property lists the workspaces that this client lives in.
  *
  *  _DT_WORKSPACE_LIST		(dtwm -> clients)
  *
- *  This property is a list of atoms. Each atom represents a 
+ *  This property is a list of atoms. Each atom represents a
  *  name of a workspace.  The list is in "order" such that
  *  the first element is for the first workspace and so on.
  *  This proeprty is placed on the mwm ("wmWindow") window.
  *
  *  _DT_WORKSPACE_CURRENT	(dtwm -> clients)
  *
- *  This property is a single atom, representing the current 
+ *  This property is a single atom, representing the current
  *  workspace. It is updated each time the workspace changes.
  *  This proeprty is placed on the mwm window.
  *
@@ -135,70 +132,66 @@
  *
  */
 
-
 /**********************************************************************
  * Property structures
  **********************************************************************/
 
-typedef struct _DtWmHints
-{
-    long	flags;			/* marks valid fields */
-    long	functions;		/* special dtwm functions */
-    long	behaviors;		/* special dtwm behaviors */
-    Window	attachWindow;		/* (reserved) */
+typedef struct _DtWmHints {
+        long flags;          /* marks valid fields */
+        long functions;      /* special dtwm functions */
+        long behaviors;      /* special dtwm behaviors */
+        Window attachWindow; /* (reserved) */
 } DtWmHints;
 
 /* DtWmHints "flags" definitions */
-#define DtWM_HINTS_FUNCTIONS		(1L << 0)
-#define DtWM_HINTS_BEHAVIORS		(1L << 1)
-#define DtWM_HINTS_ATTACH_WINDOW	(1L << 2)	/* (reserved) */
+#define DtWM_HINTS_FUNCTIONS (1L << 0)
+#define DtWM_HINTS_BEHAVIORS (1L << 1)
+#define DtWM_HINTS_ATTACH_WINDOW (1L << 2) /* (reserved) */
 
 /* DtWmHints "functions" definitions */
-#define DtWM_FUNCTION_ALL		(1L << 0)
-#define DtWM_FUNCTION_OCCUPY_WS		(1L << 16)
+#define DtWM_FUNCTION_ALL (1L << 0)
+#define DtWM_FUNCTION_OCCUPY_WS (1L << 16)
 
 /* DtWmHints "behaviors" definitions */
-#define DtWM_BEHAVIOR_PANEL		(1L << 1)
-#define DtWM_BEHAVIOR_SUBPANEL		(1L << 2)
-#define DtWM_BEHAVIOR_SUB_RESTORED	(1L << 3)
+#define DtWM_BEHAVIOR_PANEL (1L << 1)
+#define DtWM_BEHAVIOR_SUBPANEL (1L << 2)
+#define DtWM_BEHAVIOR_SUB_RESTORED (1L << 3)
 
 #ifdef HP_VUE
 /*
  * For Compatibility with some old HP VUE clients
  */
-#define _XA_VUE_WORKSPACE_INFO		"_VUE_WORKSPACE_INFO"
-#define _XA_VUE_WORKSPACE_HINTS		"_VUE_WORKSPACE_HINTS"
-#define _XA_VUE_WORKSPACE_PRESENCE	"_VUE_WORKSPACE_PRESENCE"
-#define _XA_VUE_WM_REQUEST		"_VUE_WM_REQUEST"
-#define _XA_VUE_WM_HINTS		"_VUE_WM_HINTS"
+#define _XA_VUE_WORKSPACE_INFO "_VUE_WORKSPACE_INFO"
+#define _XA_VUE_WORKSPACE_HINTS "_VUE_WORKSPACE_HINTS"
+#define _XA_VUE_WORKSPACE_PRESENCE "_VUE_WORKSPACE_PRESENCE"
+#define _XA_VUE_WM_REQUEST "_VUE_WM_REQUEST"
+#define _XA_VUE_WM_HINTS "_VUE_WM_HINTS"
 #endif /* HP_VUE */
 
-
+/**********************************************************************
+ * Session atom names
+ **********************************************************************/
+#define _XA_DT_SESSION_HINTS "_DT_SESSION_HINTS"
+#define _XA_DT_SAVE_MODE "_DT_SAVE_MODE"
+#define _XA_DT_RESTORE_MODE "_DT_RESTORE_MODE"
+#define _XA_DT_RESTORE_DIR "_DT_RESTORE_DIR"
+#define _XA_DT_SM_WM_PROTOCOL "_DT_SM_WM_PROTOCOL"
+#define _XA_DT_SM_START_ACK_WINDOWS "_DT_SM_START_ACK_WINDOWS"
+#define _XA_DT_SM_STOP_ACK_WINDOWS "_DT_SM_STOP_ACK_WINDOWS"
+#define _XA_DT_WM_WINDOW_ACK "_DT_WM_WINDOW_ACK"
+#define _XA_DT_WM_EXIT_SESSION "_DT_WM_EXIT_SESSION"
+#define _XA_DT_WM_LOCK_DISPLAY "_DT_WM_LOCK_DISPLAY"
+#define _XA_DT_WM_READY "_DT_WM_READY"
 
 /**********************************************************************
- * Session atom names 
+ * Workspace special character definitions
  **********************************************************************/
-#define _XA_DT_SESSION_HINTS		"_DT_SESSION_HINTS"
-#define _XA_DT_SAVE_MODE		"_DT_SAVE_MODE"
-#define _XA_DT_RESTORE_MODE		"_DT_RESTORE_MODE"
-#define _XA_DT_RESTORE_DIR		"_DT_RESTORE_DIR"
-#define _XA_DT_SM_WM_PROTOCOL		"_DT_SM_WM_PROTOCOL"
-#define _XA_DT_SM_START_ACK_WINDOWS	"_DT_SM_START_ACK_WINDOWS"
-#define _XA_DT_SM_STOP_ACK_WINDOWS	"_DT_SM_STOP_ACK_WINDOWS"
-#define _XA_DT_WM_WINDOW_ACK		"_DT_WM_WINDOW_ACK"
-#define _XA_DT_WM_EXIT_SESSION		"_DT_WM_EXIT_SESSION"
-#define _XA_DT_WM_LOCK_DISPLAY		"_DT_WM_LOCK_DISPLAY"
-#define _XA_DT_WM_READY		"_DT_WM_READY"
-
-/**********************************************************************
- * Workspace special character definitions 
- **********************************************************************/
-#define DTWM_CH_ESC_NEXT		"\\"
+#define DTWM_CH_ESC_NEXT "\\"
 
 /**********************************************************************
  * Marquee selection callback prototype
  **********************************************************************/
-typedef void (*DtWsmMarqueeSelectionProc) ();
+typedef void (*DtWsmMarqueeSelectionProc)();
 /*
     Widget		widget;
     int			type;
@@ -211,52 +204,52 @@ typedef void (*DtWsmMarqueeSelectionProc) ();
  * Marquee Select
  **********************************************************************/
 
-#define DT_WSM_MARQUEE_SELECTION_TYPE_BEGIN	1
-#define DT_WSM_MARQUEE_SELECTION_TYPE_CONTINUE	2
-#define DT_WSM_MARQUEE_SELECTION_TYPE_END	3
-#define DT_WSM_MARQUEE_SELECTION_TYPE_CANCEL	4
+#define DT_WSM_MARQUEE_SELECTION_TYPE_BEGIN 1
+#define DT_WSM_MARQUEE_SELECTION_TYPE_CONTINUE 2
+#define DT_WSM_MARQUEE_SELECTION_TYPE_END 3
+#define DT_WSM_MARQUEE_SELECTION_TYPE_CANCEL 4
 
 /**********************************************************************
- * Workspace request definitions 
+ * Workspace request definitions
  *
  * NOTE: These functions do not necessarily match the other
  *       window manager f.* functions!
  **********************************************************************/
-#define DTWM_REQ_CHANGE_BACKDROP	"f.change_backdrop"
-#define DTWM_REQ_RESTART		"f.restart"
+#define DTWM_REQ_CHANGE_BACKDROP "f.change_backdrop"
+#define DTWM_REQ_RESTART "f.restart"
 
 /**********************************************************************
- * Workspace request parameter definitions 
+ * Workspace request parameter definitions
  **********************************************************************/
-#define DTWM_REQP_BACKDROP_NONE	"NoBackdrop"
-#define DTWM_REQP_NO_CONFIRM	"-noconfirm"
+#define DTWM_REQP_BACKDROP_NONE "NoBackdrop"
+#define DTWM_REQP_NO_CONFIRM "-noconfirm"
 
 /**********************************************************************
  * Resource converter definitions
  *
- * NOTE: This has been lifted from mwm. 
+ * NOTE: This has been lifted from mwm.
  * Please keep syncronized with the current version of mwm/dtwm.
  * (See WmGlobal.h)
  **********************************************************************/
 
 /* icon placement values (iconPlacement, ...): */
-#define ICON_PLACE_LEFT_PRIMARY		(1L << 0)
-#define ICON_PLACE_RIGHT_PRIMARY	(1L << 1)
-#define ICON_PLACE_TOP_PRIMARY		(1L << 2)
-#define ICON_PLACE_BOTTOM_PRIMARY	(1L << 3)
-#define ICON_PLACE_LEFT_SECONDARY	(1L << 4)
-#define ICON_PLACE_RIGHT_SECONDARY	(1L << 5)
-#define ICON_PLACE_TOP_SECONDARY	(1L << 6)
-#define ICON_PLACE_BOTTOM_SECONDARY	(1L << 7)
-#define ICON_PLACE_EDGE			(1L << 8)
-#define ICON_PLACE_TIGHT		(1L << 9)
-#define ICON_PLACE_RESERVE		(1L << 10)
+#define ICON_PLACE_LEFT_PRIMARY (1L << 0)
+#define ICON_PLACE_RIGHT_PRIMARY (1L << 1)
+#define ICON_PLACE_TOP_PRIMARY (1L << 2)
+#define ICON_PLACE_BOTTOM_PRIMARY (1L << 3)
+#define ICON_PLACE_LEFT_SECONDARY (1L << 4)
+#define ICON_PLACE_RIGHT_SECONDARY (1L << 5)
+#define ICON_PLACE_TOP_SECONDARY (1L << 6)
+#define ICON_PLACE_BOTTOM_SECONDARY (1L << 7)
+#define ICON_PLACE_EDGE (1L << 8)
+#define ICON_PLACE_TIGHT (1L << 9)
+#define ICON_PLACE_RESERVE (1L << 10)
 
 /**********************************************************************
  * Workspace property information
  **********************************************************************/
 
-/* 
+/*
  *
  *  NOTE: The "(client -> dtwm)" indication calls out the direction
  *        of information flow. In this case, the client writes the
@@ -274,12 +267,12 @@ typedef void (*DtWsmMarqueeSelectionProc) ();
  *  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  *  _VUE_WORKSPACE_INFO		(dtwm -> client)
  *
- *  This property is a list of structures that contain information 
+ *  This property is a list of structures that contain information
  *  on each workspace. Each structure contains the atom representing
  *  the workspace string name and the window id of the background
- *  window for the workspace (if any). The first workspace in the 
+ *  window for the workspace (if any). The first workspace in the
  *  list is the "active" workspace for the screen. This property is
- *  placed on the window identified by the "wmWindow" member of 
+ *  placed on the window identified by the "wmWindow" member of
  *  the _MOTIF_WM_INFO property.
  */
 #endif /* HP_VUE */
@@ -287,103 +280,96 @@ typedef void (*DtWsmMarqueeSelectionProc) ();
  *
  *  _DT_WM_REQUEST	(client -> dtwm)
  *
- *  This property of type string that is used to communication 
- *  function requests to dtwm. This property is placed on the mwm 
- *  window. Dtwm listens for changes to this property and dequeues 
+ *  This property of type string that is used to communication
+ *  function requests to dtwm. This property is placed on the mwm
+ *  window. Dtwm listens for changes to this property and dequeues
  *  requests off the top of the list. Requests are NULL-terminated
  *  strings in the format:
  *
- *    <req_type> <req_parms> 
+ *    <req_type> <req_parms>
  *
  *  Each request ends with a literal '\0' character to insure
- *  separation from the next request. 
+ *  separation from the next request.
  *
- *  Clients must always add requests to the end of the property 
- *  (mode=PropModeAppend). Use of convenience routines is 
- *  recommended since they take care of proper formatting of the 
+ *  Clients must always add requests to the end of the property
+ *  (mode=PropModeAppend). Use of convenience routines is
+ *  recommended since they take care of proper formatting of the
  *  requests.
  *
  */
-
 
 /**********************************************************************
  * Property structures
  **********************************************************************/
 
 /* Internal form of this property */
-typedef struct _DtWorkspaceHints
-{
-    long	version;	/* indicates structure changes */
-    long	flags;		/* marks valid fields */
-    long	wsflags;	/* special workspace information */
-    long	numWorkspaces;	/* number of workspaces */
-    Atom *	pWorkspaces;	/* list of atoms for workspaces */
+typedef struct _DtWorkspaceHints {
+        long version;       /* indicates structure changes */
+        long flags;         /* marks valid fields */
+        long wsflags;       /* special workspace information */
+        long numWorkspaces; /* number of workspaces */
+        Atom *pWorkspaces;  /* list of atoms for workspaces */
 } DtWorkspaceHints;
 
 /* DtWorkspaceHints "flags" definitions */
-#define DT_WORKSPACE_HINTS_WSFLAGS		(1L << 0)
-	/* The following definitions enables both the numWorkspaces
-	   and pWorkspaces fields */
-#define DT_WORKSPACE_HINTS_WORKSPACES		(1L << 1)
+#define DT_WORKSPACE_HINTS_WSFLAGS (1L << 0)
+/* The following definitions enables both the numWorkspaces
+   and pWorkspaces fields */
+#define DT_WORKSPACE_HINTS_WORKSPACES (1L << 1)
 
 /* DtWorkspaceHints "wsflags" definitions */
-#define DT_WORKSPACE_FLAGS_OCCUPY_ALL		(1L << 0)
-
+#define DT_WORKSPACE_FLAGS_OCCUPY_ALL (1L << 0)
 
 #ifdef HP_VUE
 /*
  * Obsolete WorkspaceInfo structure
  */
-typedef struct _WorkspaceInfo
-{
-    Atom	   workspace;		/* workspace "name" */
-    Window	   backgroundWindow;	/* backdrop window ID (if any) */
-    unsigned long  bg;			/* backdrop background pixel */
-    unsigned long  fg;			/* backdrop foreground pixel */
-    Atom	   backdropName;	/* atomized name for backdrop */
+typedef struct _WorkspaceInfo {
+        Atom workspace;          /* workspace "name" */
+        Window backgroundWindow; /* backdrop window ID (if any) */
+        unsigned long bg;        /* backdrop background pixel */
+        unsigned long fg;        /* backdrop foreground pixel */
+        Atom backdropName;       /* atomized name for backdrop */
 } WorkspaceInfo;
 #endif /* HP_VUE */
 
 /**********************************************************************
  * Marquee Selection Structures
  **********************************************************************/
-typedef struct _DtMarqueeSelectData
-{
-    long	state;			/* current property state */
-    Position	x;			/* NW corner of select area */
-    Position	y;			/* NW corner of select area */
-    Dimension	width;			/* size of select area */
-    Dimension	height;			/* size of select area */
+typedef struct _DtMarqueeSelectData {
+        long state;       /* current property state */
+        Position x;       /* NW corner of select area */
+        Position y;       /* NW corner of select area */
+        Dimension width;  /* size of select area */
+        Dimension height; /* size of select area */
 } DtMarqueeSelectData;
 
-typedef struct _DtMarqueeSelectProp
-{
-    long	state;			/* current property state */
-    long	x;			/* NW corner of select area */
-    long	y;			/* NW corner of select area */
-    long	width;			/* size of select area */
-    long	height;			/* size of select area */
+typedef struct _DtMarqueeSelectProp {
+        long state;  /* current property state */
+        long x;      /* NW corner of select area */
+        long y;      /* NW corner of select area */
+        long width;  /* size of select area */
+        long height; /* size of select area */
 } DtMarqueeSelectProperty;
 
 /**********************************************************************
  * Marquee Selection Definitions
  **********************************************************************/
-#define DT_MARQUEE_SELECT_BEGIN	1
-#define DT_MARQUEE_SELECT_CONTINUE	2
-#define DT_MARQUEE_SELECT_END		3
-#define DT_MARQUEE_SELECT_CANCEL	4
+#define DT_MARQUEE_SELECT_BEGIN 1
+#define DT_MARQUEE_SELECT_CONTINUE 2
+#define DT_MARQUEE_SELECT_END 3
+#define DT_MARQUEE_SELECT_CANCEL 4
 
 /**********************************************************************
  * Workspace change callback context (opaque)
  **********************************************************************/
-typedef void (*DtWsmCBProc) ();
-struct _DtWsmCBContext
-{
-    Tt_pattern		pattern;
-    Widget		widget;
-    DtWsmCBProc		ws_cb;
-    XtPointer		client_data;
-    XtPointer		nested_context;
+typedef void (*DtWsmCBProc)();
+struct _DtWsmCBContext {
+        Tt_pattern pattern;
+        Widget widget;
+        DtWsmCBProc ws_cb;
+        XtPointer client_data;
+        XtPointer nested_context;
 };
 
 /**********************************************************************
@@ -403,7 +389,7 @@ struct _DtWsmCBContext
  *
  *  Inputs:
  *  ------
- *  display	- display 
+ *  display	- display
  *  root	- root window of screen being managed
  *  ppWsInfo	- pointer to a pointer (to be returned)
  *  pNumInfo	- pointer to a number (to be returned)
@@ -414,16 +400,12 @@ struct _DtWsmCBContext
  *  *pNumInfo	- number of workspace info structures in list
  *  Return	- Success if property fetched ok.
  *		  Failure returns are from XGetWindowProperty
- * 
+ *
  *************************************<->***********************************/
-extern Status 
-DtGetWorkspaceInfo( 
-                        Display *display,
-                        Window root,
-                        WorkspaceInfo **ppWsInfo,
-                        unsigned long *pNumInfo) ;
+extern Status DtGetWorkspaceInfo(Display *display, Window root,
+                                 WorkspaceInfo **ppWsInfo,
+                                 unsigned long *pNumInfo);
 #endif /* HP_VUE */
-
 
 /*************************************<->*************************************
  *
@@ -437,7 +419,7 @@ DtGetWorkspaceInfo(
  *
  *  Inputs:
  *  ------
- *  display		- display 
+ *  display		- display
  *  root		- root window of screen
  *  pMwmWindow		- pointer to a window (to be returned)
  *
@@ -450,34 +432,29 @@ DtGetWorkspaceInfo(
  *  --------
  *  This can fail if mwm is not managing the screen for the root window
  *  passed in.
- * 
+ *
  *************************************<->***********************************/
-extern int 
-_DtGetMwmWindow( 
-                        Display *display,
-                        Window root,
-                        Window *pMwmWindow) ;
-
+extern int _DtGetMwmWindow(Display *display, Window root, Window *pMwmWindow);
 
 /*************************************<->*************************************
  *
- *  int _DtGetEmbeddedClients (display, root, ppEmbeddedClients, 
+ *  int _DtGetEmbeddedClients (display, root, ppEmbeddedClients,
  *					pNumEmbeddedClients)
  *
  *
  *  Description:
  *  -----------
- *  Get the contents of the _DT_WORKSPACE_EMBEDDED_CLIENTS property 
- *  from a root window. This is a list (array) of top-level windows that 
+ *  Get the contents of the _DT_WORKSPACE_EMBEDDED_CLIENTS property
+ *  from a root window. This is a list (array) of top-level windows that
  *  are embedded in the front panel of the window manager. They would
  *  not be picked up ordinarily by a session manager in a normal
- *  search for top-level windows because they are reparented to 
+ *  search for top-level windows because they are reparented to
  *  the front panel which itself is a top-level window.
  *
  *
  *  Inputs:
  *  ------
- *  display		- display 
+ *  display		- display
  *  root		- root window to get info from
  *  ppEmbeddedClients	- pointer to a pointer (to be returned)
  *  pNumEmbeddedClients	- pointer to a number (to be returned)
@@ -490,19 +467,15 @@ _DtGetMwmWindow(
  *  *pNumEmbeddedClients- number of window IDs in array
  *  Return		- Success if property fetched ok.
  *		  	  Failure returns are from XGetWindowProperty
- * 
+ *
  *  Comments:
  *  --------
  *  Use XFree to free the returned data.
- * 
+ *
  *************************************<->***********************************/
-extern int 
-_DtGetEmbeddedClients(
-        Display *display,
-        Window root,
-        Atom **ppEmbeddedClients,
-        unsigned long *pNumEmbeddedClients );
-
+extern int _DtGetEmbeddedClients(Display *display, Window root,
+                                 Atom **ppEmbeddedClients,
+                                 unsigned long *pNumEmbeddedClients);
 
 /*************************************<->*************************************
  *
@@ -516,8 +489,8 @@ _DtGetEmbeddedClients(
  *
  *  Inputs:
  *  ------
- *  display	- display 
- *  root	- root window for screen 
+ *  display	- display
+ *  root	- root window for screen
  *
  *  Returns:
  *  --------
@@ -525,12 +498,9 @@ _DtGetEmbeddedClients(
  *
  *  Comments:
  *  ---------
- * 
+ *
  *************************************<->***********************************/
-extern int 
-_DtWmRestart( 
-	Display *display,
-	Window root) ;
+extern int _DtWmRestart(Display *display, Window root);
 
 /*************************************<->*************************************
  *
@@ -544,22 +514,18 @@ _DtWmRestart(
  *
  *  Inputs:
  *  ------
- *  display	- display 
+ *  display	- display
  *  root	- root window of screen
  *  path	- file path to bitmap file
  *  pixmap	- pixmap id of backdrop pixmap
  *
  *  Returns:
  *  --------
- *  Success if request sent 
- * 
+ *  Success if request sent
+ *
  *************************************<->***********************************/
-extern int 
-_DtWsmChangeBackdrop (
-	Display *display, 
-	Window root, 
-	char *path, 
-	Pixmap pixmap);
+extern int _DtWsmChangeBackdrop(Display *display, Window root, char *path,
+                                Pixmap pixmap);
 
 /*************************************<->*************************************
  *
@@ -579,20 +545,15 @@ _DtWsmChangeBackdrop (
  *
  *  fromVal = resource value to convert
  *
- * 
+ *
  *  Outputs:
  *  -------
  *  toVal = descriptor to use to return converted value
  *
  *************************************<->***********************************/
 
-extern void
-_DtWmCvtStringToIPlace (
-	XrmValue *args, 
-	Cardinal numArgs, 
-	XrmValue *fromVal, 
-	XrmValue *toVal);
-
+extern void _DtWmCvtStringToIPlace(XrmValue *args, Cardinal numArgs,
+                                   XrmValue *fromVal, XrmValue *toVal);
 
 /*************************************<->*************************************
  *
@@ -606,7 +567,7 @@ _DtWmCvtStringToIPlace (
  *
  *  Inputs:
  *  ------
- *  display	- display 
+ *  display	- display
  *  screen_num	- number of screen we're interested in
  *  window	- window we want to test
  *
@@ -617,13 +578,9 @@ _DtWmCvtStringToIPlace (
  *
  *  Comments:
  *  --------
- * 
+ *
  *************************************<->***********************************/
-Boolean 
-_DtWsmIsBackdropWindow(
-        Display *display,
-        int screen_num,
-        Window window );
+Boolean _DtWsmIsBackdropWindow(Display *display, int screen_num, Window window);
 
 /*************************************<->*************************************
  *
@@ -638,7 +595,7 @@ _DtWsmIsBackdropWindow(
  *  Inputs:
  *  ------
  *  widget	- a widget
- *  aWs  	- atom of workspace 
+ *  aWs  	- atom of workspace
  *  pchNewName	- new name for the workspace
  *
  *  Outputs:
@@ -650,13 +607,9 @@ _DtWsmIsBackdropWindow(
  *  ---------
  *  The odd-ball successful return value is a CDE 1.0 bug being
  *  preserved for backward compatibility.
- * 
+ *
  *************************************<->***********************************/
-int
-_DtWsmSetWorkspaceTitle (
-	Widget widget,
-        Atom aWs,
-	char * pchNewName);
+int _DtWsmSetWorkspaceTitle(Widget widget, Atom aWs, char *pchNewName);
 
 /*************************************<->*************************************
  *
@@ -682,13 +635,9 @@ _DtWsmSetWorkspaceTitle (
  *  ---------
  *  The odd-ball successful return value is a CDE 1.0 bug being
  *  preserved for backward compatibility.
- * 
+ *
  *************************************<->***********************************/
-int
-_DtWsmDeleteWorkspace (
-	Widget widget,
-        Atom aWs);
-
+int _DtWsmDeleteWorkspace(Widget widget, Atom aWs);
 
 /*************************************<->*************************************
  *
@@ -714,10 +663,9 @@ _DtWsmDeleteWorkspace (
  *  ---------
  *  The odd-ball successful return value is a CDE 1.0 bug being
  *  preserved for backward compatibility.
- * 
+ *
  *************************************<->***********************************/
-int
-_DtWsmCreateWorkspace (Widget widget, char * pchTitle);
+int _DtWsmCreateWorkspace(Widget widget, char *pchTitle);
 
 /*************************************<->*************************************
  *
@@ -731,7 +679,7 @@ _DtWsmCreateWorkspace (Widget widget, char * pchTitle);
  *
  *  Inputs:
  *  ------
- *  display	- display 
+ *  display	- display
  *  window	- window to get hints from
  *  pWsHints	- pointer to workspace hints
  *
@@ -743,14 +691,10 @@ _DtWsmCreateWorkspace (Widget widget, char * pchTitle);
  *
  *  This function currently only deals with version 1 of the property
  *  structure. The passed in pWsHints->version is ignored.
- * 
+ *
  *************************************<->***********************************/
-extern void 
-_DtWsmSetWorkspaceHints(
-        Display *display,
-        Window window,
-        DtWorkspaceHints *pWsHints);
-
+extern void _DtWsmSetWorkspaceHints(Display *display, Window window,
+                                    DtWorkspaceHints *pWsHints);
 
 /*************************************<->*************************************
  *
@@ -764,7 +708,7 @@ _DtWsmSetWorkspaceHints(
  *
  *  Inputs:
  *  ------
- *  display	- display 
+ *  display	- display
  *  window	- window to get hints from
  *  ppWsHints	- pointer to pointer to workspace hints
  *
@@ -778,14 +722,11 @@ _DtWsmSetWorkspaceHints(
  *  Free the workspace hints by calling _DtWsmFreeWorkspaceHints.
  *
  *  This function currently only deals with version 1 of the property
- *  structure. 
- * 
+ *  structure.
+ *
  *************************************<->***********************************/
-extern int 
-_DtWsmGetWorkspaceHints(
-        Display *display,
-        Window window,
-        DtWorkspaceHints **ppWsHints);
+extern int _DtWsmGetWorkspaceHints(Display *display, Window window,
+                                   DtWorkspaceHints **ppWsHints);
 
 /*************************************<->*************************************
  *
@@ -805,14 +746,12 @@ _DtWsmGetWorkspaceHints(
  *  Comments:
  *  ---------
  *************************************<->***********************************/
-extern void 
-_DtWsmFreeWorkspaceHints(
-        DtWorkspaceHints *pWsHints);
+extern void _DtWsmFreeWorkspaceHints(DtWorkspaceHints *pWsHints);
 
 /*************************************<->*************************************
  *
- *  DtWsmCBContext * _DtWsmAddMarqueeSelectionCallback (widget, 
- *						 	marquee_select, 
+ *  DtWsmCBContext * _DtWsmAddMarqueeSelectionCallback (widget,
+ *						 	marquee_select,
  *							client_data)
  *
  *
@@ -829,19 +768,18 @@ _DtWsmFreeWorkspaceHints(
  *
  *  Outputs:
  *  --------
- *  Return	- ptr to callback context data (opaque) 
+ *  Return	- ptr to callback context data (opaque)
  *
  *  Comments:
  *  ---------
  *  The callback context data ptr should be saved if you intend to
- *  removed this callback at some point in the future. 
- * 
+ *  removed this callback at some point in the future.
+ *
  *************************************<->***********************************/
-DtWsmCBContext 
-_DtWsmAddMarqueeSelectionCallback (
-	Widget				widget,
-	DtWsmMarqueeSelectionProc	marquee_select,
-	XtPointer			client_data);
+DtWsmCBContext
+_DtWsmAddMarqueeSelectionCallback(Widget widget,
+                                  DtWsmMarqueeSelectionProc marquee_select,
+                                  XtPointer client_data);
 
 /*************************************<->*************************************
  *
@@ -855,19 +793,17 @@ _DtWsmAddMarqueeSelectionCallback (
  *
  *  Inputs:
  *  ------
- *  display	- display 
+ *  display	- display
  *  window	- window to set hints on
  *  pHints	- pointer the hints to set
  *
  *  Comments:
  *  ---------
  *  No error checking
- * 
+ *
  *************************************<->***********************************/
-extern void 
-_DtWsmSetDtWmHints( Display *display, 
-		Window window, 
-		DtWmHints *pHints);
+extern void _DtWsmSetDtWmHints(Display *display, Window window,
+                               DtWmHints *pHints);
 
 /*************************************<->*************************************
  *
@@ -881,7 +817,7 @@ _DtWsmSetDtWmHints( Display *display,
  *
  *  Inputs:
  *  ------
- *  display	- display 
+ *  display	- display
  *  window	- window to get hints from
  *  ppDtWmHints	- pointer to a pointer to return
  *
@@ -892,13 +828,10 @@ _DtWsmSetDtWmHints( Display *display,
  *
  *  Comments:
  *  ---------
- * 
+ *
  *************************************<->***********************************/
-extern int
-_DtWsmGetDtWmHints(
-        Display *display,
-        Window window,
-        DtWmHints **ppDtWmHints);
+extern int _DtWsmGetDtWmHints(Display *display, Window window,
+                              DtWmHints **ppDtWmHints);
 
 /*************************************<->*************************************
  *
@@ -921,15 +854,11 @@ _DtWsmGetDtWmHints(
  *  Comments:
  *  ---------
  *  Assumes the screen number is < 1000.
- * 
+ *
  *************************************<->***********************************/
-extern String
-_DtWsmSelectionNameForScreen (int scr);
+extern String _DtWsmSelectionNameForScreen(int scr);
 
-extern Tt_callback_action
-_DtWsmConsumeReply (
-        Tt_message msg,
-        Tt_pattern pat );
+extern Tt_callback_action _DtWsmConsumeReply(Tt_message msg, Tt_pattern pat);
 
 #endif /* _Dt_WsmP_h */
 /* Do not add anything after this endif. */

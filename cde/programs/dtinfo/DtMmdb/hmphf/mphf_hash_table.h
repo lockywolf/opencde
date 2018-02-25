@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,9 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
 
 #ifndef _mphf_hash_table_h
 #define _mphf_hash_table_h 1
@@ -58,24 +57,23 @@
 
 class mphf_hash_table {
 
-public:
-   mphf_hash_table(params& params_ptr);
-   ~mphf_hash_table();
+      public:
+        mphf_hash_table(params &params_ptr);
+        ~mphf_hash_table();
 
-   void clear();
-   int fast_fit(int_pattern& pat);
-   int fit_hash_table(int_pattern& pat);
+        void clear();
+        int fast_fit(int_pattern &pat);
+        int fit_hash_table(int_pattern &pat);
 
-   int num_filled_slots() { return v_num_filled_slots; };
-   int no_slots() { return v_no_slots; };
+        int num_filled_slots() { return v_num_filled_slots; };
+        int no_slots() { return v_no_slots; };
 
-protected:
-   int* v_map_table;
-   int* v_random_table;
-   char* v_rep;
-   int v_no_slots;
-   int v_num_filled_slots;
-
+      protected:
+        int *v_map_table;
+        int *v_random_table;
+        char *v_rep;
+        int v_no_slots;
+        int v_num_filled_slots;
 };
 
 #endif

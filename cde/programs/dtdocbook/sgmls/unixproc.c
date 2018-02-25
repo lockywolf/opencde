@@ -46,11 +46,11 @@
 
 #ifndef POSIX
 
-#define WIFSTOPPED(s) (((s) & 0377) == 0177)
-#define WIFSIGNALED(s) (((s) & 0377) != 0 && ((s) & 0377 != 0177))
-#define WIFEXITED(s) (((s) & 0377) == 0)
+#define WIFSTOPPED(s) (((s)&0377) == 0177)
+#define WIFSIGNALED(s) (((s)&0377) != 0 && ((s)&0377 != 0177))
+#define WIFEXITED(s) (((s)&0377) == 0)
 #define WEXITSTATUS(s) (((s) >> 8) & 0377)
-#define WTERMSIG(s) ((s) & 0177)
+#define WTERMSIG(s) ((s)&0177)
 #define WSTOPSIG(s) (((s) >> 8) & 0377)
 #define _SC_OPEN_MAX 0
 #define sysconf(name) (20)
@@ -66,46 +66,45 @@ typedef int pid_t;
 #include <vfork.h>
 #endif /* HAVE_VFORK_H */
 
-int run_process(argv)
-char **argv;
+int run_process(argv) char **argv;
 {
-     pid_t pid;
-     int status;
-     int ret;
+        pid_t pid;
+        int status;
+        int ret;
 
-     /* Can't trust Unix implementations to support fflush(NULL). */
-     fflush(stderr);
-     fflush(stdout);
+        /* Can't trust Unix implementations to support fflush(NULL). */
+        fflush(stderr);
+        fflush(stdout);
 
-     pid = vfork();
-     if (pid == 0) {
-	  /* child */
-	  int i;
-	  int open_max = (int)sysconf(_SC_OPEN_MAX);
+        pid = vfork();
+        if (pid == 0) {
+                /* child */
+                int i;
+                int open_max = (int)sysconf(_SC_OPEN_MAX);
 
-	  for (i = 3; i < open_max; i++)
-	       (void)close(i);
-	  execvp(argv[0], argv);
-	  appl_error(E_EXEC, argv[0], strerror(errno));
-	  fflush(stderr);
-	  _exit(127);
-     }
-     if (pid < 0) {
-	  appl_error(E_FORK, strerror(errno));
-	  return -1;
-     }
-     /* parent */
-     while ((ret = wait(&status)) != pid)
-	  if (ret < 0) {
-	       appl_error(E_WAIT, strerror(errno));
-	       return -1;
-	  }
-     if (WIFSIGNALED(status)) {
-	  appl_error(E_SIGNAL, argv[0], WTERMSIG(status));
-	  return -1;
-     }
-     /* Must have exited normally. */
-     return WEXITSTATUS(status);
+                for (i = 3; i < open_max; i++)
+                        (void)close(i);
+                execvp(argv[0], argv);
+                appl_error(E_EXEC, argv[0], strerror(errno));
+                fflush(stderr);
+                _exit(127);
+        }
+        if (pid < 0) {
+                appl_error(E_FORK, strerror(errno));
+                return -1;
+        }
+        /* parent */
+        while ((ret = wait(&status)) != pid)
+                if (ret < 0) {
+                        appl_error(E_WAIT, strerror(errno));
+                        return -1;
+                }
+        if (WIFSIGNALED(status)) {
+                appl_error(E_SIGNAL, argv[0], WTERMSIG(status));
+                return -1;
+        }
+        /* Must have exited normally. */
+        return WEXITSTATUS(status);
 }
 
 #endif /* SUPPORT_SUBDOC */

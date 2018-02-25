@@ -38,15 +38,16 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API Named {
-public:
-  Named(const StringC &name) : name_(name) { }
-  virtual ~Named() { }
-  const StringC &name() const { return name_; }
-  const StringC *namePointer() const { return &name_; }
-  void setName(const StringC &name) { name_ = name; }
-  void swap(Named &to) { name_.swap(to.name_); }
-private:
-  StringC name_;
+      public:
+        Named(const StringC &name) : name_(name) {}
+        virtual ~Named() {}
+        const StringC &name() const { return name_; }
+        const StringC *namePointer() const { return &name_; }
+        void setName(const StringC &name) { name_ = name; }
+        void swap(Named &to) { name_.swap(to.name_); }
+
+      private:
+        StringC name_;
 };
 
 #ifdef SP_NAMESPACE

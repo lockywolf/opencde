@@ -30,7 +30,7 @@
 #include "oliasdb/mark.h"
 #include "oliasdb/mark_base.h"
 
-int mark_test(int argc, char** argv);
+int mark_test(int argc, char **argv);
 
 #endif
 #endif

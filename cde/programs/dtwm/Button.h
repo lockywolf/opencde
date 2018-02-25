@@ -31,7 +31,7 @@ static char SCCSID[] = "OSF/Motif: %W% %E%";
 *
 *  (c) Copyright 1992 HEWLETT-PACKARD COMPANY
 *  ALL RIGHTS RESERVED
-*  
+*
 *******************************************************************************
 ******************************************************************************/
 #ifndef _DtButtonG_h
@@ -49,29 +49,24 @@ extern "C" {
 
 /* ArrowButton externs for application accessible functions */
 
-extern Widget DtCreateButtonGadget( 
-                        Widget parent,
-                        char *name,
-                        ArgList arglist,
-                        Cardinal argcount) ;
+extern Widget DtCreateButtonGadget(Widget parent, char *name, ArgList arglist,
+                                   Cardinal argcount);
 
 /* Button Gadget */
 
 externalref WidgetClass dtButtonGadgetClass;
 
-typedef struct _DtButtonGadgetClassRec * DtButtonGadgetClass;
-typedef struct _DtButtonGadgetRec      * DtButtonGadget;
+typedef struct _DtButtonGadgetClassRec *DtButtonGadgetClass;
+typedef struct _DtButtonGadgetRec *DtButtonGadget;
 
-typedef struct
-{
-    int     reason;
-    XEvent  *event;
-    int	    click_count;
+typedef struct {
+        int reason;
+        XEvent *event;
+        int click_count;
 } DtButtonCallbackStruct;
 
-
 #if defined(__cplusplus) || defined(c_plusplus)
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
 #endif /* _DtButtonG_h */

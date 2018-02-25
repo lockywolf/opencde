@@ -26,7 +26,7 @@
  * (c) Copyright 1993, 1994, 1995 Hewlett-Packard Company
  * (c) Copyright 1993, 1994, 1995 International Business Machines Corp.
  * (c) Copyright 1993, 1994, 1995 Sun Microsystems, Inc.
- * (c) Copyright 1993, 1994, 1995 Novell, Inc. 
+ * (c) Copyright 1993, 1994, 1995 Novell, Inc.
  * (c) Copyright 1995 FUJITSU LIMITED.
  * (c) Copyright 1995 Hitachi.
  */
@@ -64,31 +64,23 @@
  *
  *****************************************************************************/
 
-char *
-Dt11GetMessage(
-	char *filename,
-	int set,
-	int n,
-	char *s)
-{
+char *Dt11GetMessage(char *filename, int set, int n, char *s) {
         char *msg;
         static int first = 1;
         static nl_catd nlmsg_fd;
-	static char *nlmsg_filename = NULL;
+        static char *nlmsg_filename = NULL;
 
-	_DtSvcProcessLock();
-        if ( NULL == nlmsg_filename || 0 != strcmp(nlmsg_filename, filename) )
-        {
-		nlmsg_fd = catopen(filename, NL_CAT_LOCALE);
-		if (nlmsg_filename)
-		{
-		    free(nlmsg_filename);
-		    nlmsg_filename = NULL;
-		}
-		nlmsg_filename = strdup(filename);
+        _DtSvcProcessLock();
+        if (NULL == nlmsg_filename || 0 != strcmp(nlmsg_filename, filename)) {
+                nlmsg_fd = catopen(filename, NL_CAT_LOCALE);
+                if (nlmsg_filename) {
+                        free(nlmsg_filename);
+                        nlmsg_filename = NULL;
+                }
+                nlmsg_filename = strdup(filename);
         }
-        msg=catgets(nlmsg_fd,set,n,s);
-	_DtSvcProcessUnlock();
+        msg = catgets(nlmsg_fd, set, n, s);
+        _DtSvcProcessUnlock();
         return (msg);
 }
 #endif

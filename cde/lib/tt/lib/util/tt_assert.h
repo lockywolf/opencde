@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: tt_assert.h /main/3 1995/10/23 10:36:45 rswiston $ 			 				 */
+/*%%  $XConsortium: tt_assert.h /main/3 1995/10/23 10:36:45 rswiston $
+ */
 /*
  * Tool Talk Utility - tt_assert.h
  *
@@ -34,15 +35,22 @@
  *
  */
 
-#ifndef  _TT_ASSERT_H
-#define  _TT_ASSERT_H
+#ifndef _TT_ASSERT_H
+#define _TT_ASSERT_H
 
 #ifdef TT_DEBUG
 
 #include <stdlib.h>
 
-#define ASSERT(exp, warning) { if (!(exp)) { printf("ERROR: !(exp), "); printf(warning); printf("\n"); \
-abort(); } }
+#define ASSERT(exp, warning)                                                   \
+        {                                                                      \
+                if (!(exp)) {                                                  \
+                        printf("ERROR: !(exp), ");                             \
+                        printf(warning);                                       \
+                        printf("\n");                                          \
+                        abort();                                               \
+                }                                                              \
+        }
 
 #else /* !TT_DEBUG */
 
@@ -50,4 +58,4 @@ abort(); } }
 
 #endif /* TT_DEBUG */
 
-#endif  /* _TT_ASSERT_H */
+#endif /* _TT_ASSERT_H */

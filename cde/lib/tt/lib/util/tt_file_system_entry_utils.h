@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: tt_file_system_entry_utils.h /main/3 1995/10/23 10:38:46 rswiston $ 			 				 */
+/*%%  $XConsortium: tt_file_system_entry_utils.h /main/3 1995/10/23 10:38:46
+ * rswiston $ 			 				 */
 /*
  * Tool Talk Utility - tt_file_system_entry_utils.h
  *
@@ -34,8 +35,8 @@
  *
  */
 
-#ifndef  _TT_FILE_SYSTEM_ENTRY_UTILS_H
-#define  _TT_FILE_SYSTEM_ENTRY_UTILS_H
+#ifndef _TT_FILE_SYSTEM_ENTRY_UTILS_H
+#define _TT_FILE_SYSTEM_ENTRY_UTILS_H
 
 #include "util/tt_list.h"
 

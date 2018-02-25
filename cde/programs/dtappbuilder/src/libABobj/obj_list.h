@@ -27,7 +27,7 @@
  * @(#)template.h	1.6 11 Feb 1994	cde_app_builder/src/libAButil
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -47,22 +47,21 @@
  * obj_list.h - define ABObjList data type
  */
 #ifndef _POSIX_SOURCE
-#define _POSIX_SOURCE 1		/* we want to be POSIX-compliant */
+#define _POSIX_SOURCE 1 /* we want to be POSIX-compliant */
 #endif
 
-#include <ab_private/AB.h>	/* everybody must include this first! */
+#include <ab_private/AB.h> /* everybody must include this first! */
 #include <ab/util_types.h>
 
 struct _AB_OBJ;
 #define ABObj struct _AB_OBJ *
 
-typedef enum
-{
-    OBJLIST_SORT_UNDEF = 0,
-    OBJLIST_SORT_ALPHANUMERIC,
-    OBJLIST_SORT_BEST,
-    OBJLIST_SORT_CLIENT_DEF,
-    OBJLIST_SORT_ORDER_NUM_VALUES	/* must be last */
+typedef enum {
+        OBJLIST_SORT_UNDEF = 0,
+        OBJLIST_SORT_ALPHANUMERIC,
+        OBJLIST_SORT_BEST,
+        OBJLIST_SORT_CLIENT_DEF,
+        OBJLIST_SORT_ORDER_NUM_VALUES /* must be last */
 } OBJLIST_SORT_ORDER;
 
 typedef void (*ABObjListIterFn)(ABObj obj);
@@ -70,15 +69,14 @@ typedef void (*ABObjListIterFn)(ABObj obj);
 /*
  * obj list structure.
  */
-typedef struct
-{
-    int                 num_objs;
-    int			objs_size;
-    ABObj		*objs;
-    void		**user_datas;
-    BOOL		unique;
-    OBJLIST_SORT_ORDER	sort_order;
-    BOOL		indexes_dirty;
+typedef struct {
+        int num_objs;
+        int objs_size;
+        ABObj *objs;
+        void **user_datas;
+        BOOL unique;
+        OBJLIST_SORT_ORDER sort_order;
+        BOOL indexes_dirty;
 } ABObjListRec, *ABObjList;
 
 #undef ABObj
@@ -87,49 +85,47 @@ typedef struct
 /*
  * ABObjList - lifecycle methods
  */
-ABObjList	objlist_create(void);
-int		objlist_destroy(ABObjList);
-int		objlist_construct(ABObjList);
-int		objlist_destruct(ABObjList);
-ABObjList	objlist_dup(ABObjList);
+ABObjList objlist_create(void);
+int objlist_destroy(ABObjList);
+int objlist_construct(ABObjList);
+int objlist_destruct(ABObjList);
+ABObjList objlist_dup(ABObjList);
 
 /*
  * ABObjList - methods dealing with entire list
  */
-int		objlist_set_sort_order(ABObjList, OBJLIST_SORT_ORDER);
-OBJLIST_SORT_ORDER	objlist_get_sort_order(ABObjList);
-int		objlist_set_is_unique(ABObjList, BOOL unique);
-BOOL		objlist_is_unique(ABObjList);
-int		objlist_make_empty(ABObjList);
-int		objlist_is_empty(ABObjList);
-int		objlist_set_num_objs(ABObjList, int numABObjs);
-int		objlist_get_num_objs(ABObjList);
-int		objlist_set_max_size_soft(ABObjList, int maxNumObjs);
-int		objlist_get_max_size(ABObjList);
-BOOL		objlist_max_size_is_soft(ABObjList);
-int		objlist_shrink_mem_to_fit(ABObjList);
-int             objlist_iterate(ABObjList, ABObjListIterFn);
+int objlist_set_sort_order(ABObjList, OBJLIST_SORT_ORDER);
+OBJLIST_SORT_ORDER objlist_get_sort_order(ABObjList);
+int objlist_set_is_unique(ABObjList, BOOL unique);
+BOOL objlist_is_unique(ABObjList);
+int objlist_make_empty(ABObjList);
+int objlist_is_empty(ABObjList);
+int objlist_set_num_objs(ABObjList, int numABObjs);
+int objlist_get_num_objs(ABObjList);
+int objlist_set_max_size_soft(ABObjList, int maxNumObjs);
+int objlist_get_max_size(ABObjList);
+BOOL objlist_max_size_is_soft(ABObjList);
+int objlist_shrink_mem_to_fit(ABObjList);
+int objlist_iterate(ABObjList, ABObjListIterFn);
 
 /*
  * Methods dealing with individual objects
  */
-int		objlist_remove_obj(ABObjList, ABObj obj);
-int		objlist_remove_index(ABObjList, int index);
-int		objlist_add_obj(ABObjList, ABObj obj, void *userData);
-int		objlist_add_index(ABObjList, 
-				int index, ABObj obj, void *userData);
-BOOL		objlist_obj_exists(ABObjList list, ABObj obj);
-int		objlist_get_obj_index(ABObjList list, ABObj obj);
-ABObj		objlist_get_obj(ABObjList, int whichObj, void **userDataOut);
-void		*objlist_get_obj_data(ABObjList, ABObj obj);
+int objlist_remove_obj(ABObjList, ABObj obj);
+int objlist_remove_index(ABObjList, int index);
+int objlist_add_obj(ABObjList, ABObj obj, void *userData);
+int objlist_add_index(ABObjList, int index, ABObj obj, void *userData);
+BOOL objlist_obj_exists(ABObjList list, ABObj obj);
+int objlist_get_obj_index(ABObjList list, ABObj obj);
+ABObj objlist_get_obj(ABObjList, int whichObj, void **userDataOut);
+void *objlist_get_obj_data(ABObjList, ABObj obj);
 
 /*
  * Debugging methods
  */
 #ifdef DEBUG
-int		objlist_dump(ABObjList list);
+int objlist_dump(ABObjList list);
 #endif
-
 
 /*************************************************************************
 **************************************************************************
@@ -138,7 +134,7 @@ int		objlist_dump(ABObjList list);
 **									**
 **************************************************************************
 *************************************************************************/
-int	objlist_destroy_impl(ABObjList *listInOut);
+int objlist_destroy_impl(ABObjList *listInOut);
 #define objlist_destroy(list) (objlist_destroy_impl(&(list)))
 
 #endif /* _ABOBJ_OBJ_LIST_H_ */

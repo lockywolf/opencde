@@ -37,50 +37,50 @@
 namespace SP_NAMESPACE {
 #endif
 
-template<class From, class To>
-struct RangeMapRange {
-  RangeMapRange() { }
-  ~RangeMapRange() { }
-  From fromMin;
-  From fromMax;
-  To toMin;
+template <class From, class To> struct RangeMapRange {
+        RangeMapRange() {}
+        ~RangeMapRange() {}
+        From fromMin;
+        From fromMax;
+        To toMin;
 };
 
-template<class From, class To> class RangeMapIter;
+template <class From, class To> class RangeMapIter;
 
-template<class From, class To>
-class RangeMap {
-public:
-  RangeMap();
-  Boolean map(From, To &, From &alsoMax) const;
-  // Return 0 for no matches, 1 for 1, 2 for more than 1.
-  unsigned inverseMap(To, From &, ISet<WideChar> &, WideChar &count) const;
-  void addRange(From, From, To);
-private:
-  Vector<RangeMapRange<From,To> > ranges_;
-  friend class RangeMapIter<From,To>;
+template <class From, class To> class RangeMap {
+      public:
+        RangeMap();
+        Boolean map(From, To &, From &alsoMax) const;
+        // Return 0 for no matches, 1 for 1, 2 for more than 1.
+        unsigned inverseMap(To, From &, ISet<WideChar> &,
+                            WideChar &count) const;
+        void addRange(From, From, To);
+
+      private:
+        Vector<RangeMapRange<From, To> > ranges_;
+        friend class RangeMapIter<From, To>;
 };
 
-template<class From, class To>
-class RangeMapIter {
-public:
-  RangeMapIter(const RangeMap<From,To> &map);
-  Boolean next(From &fromMin, From &fromMax, To &toMin) {
-    if (!count_)
-      return 0;
-    else {
-      fromMin = ptr_->fromMin;
-      fromMax = ptr_->fromMax;
-      toMin = ptr_->toMin;
-      ptr_++;
-      count_--;
-      return 1;
-    }
-  }
-private:
-  size_t count_;
-  const RangeMapRange<From,To> *ptr_;
-//  Vector<RangeMapRange<From,To> >::const_iterator ptr_;
+template <class From, class To> class RangeMapIter {
+      public:
+        RangeMapIter(const RangeMap<From, To> &map);
+        Boolean next(From &fromMin, From &fromMax, To &toMin) {
+                if (!count_)
+                        return 0;
+                else {
+                        fromMin = ptr_->fromMin;
+                        fromMax = ptr_->fromMax;
+                        toMin = ptr_->toMin;
+                        ptr_++;
+                        count_--;
+                        return 1;
+                }
+        }
+
+      private:
+        size_t count_;
+        const RangeMapRange<From, To> *ptr_;
+        //  Vector<RangeMapRange<From,To> >::const_iterator ptr_;
 };
 
 #ifdef SP_NAMESPACE

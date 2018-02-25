@@ -20,7 +20,7 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* lcPubWrap.c 1.1 - Fujitsu source for CDEnext    95/11/06 20:32:39 	*/ 
+/* lcPubWrap.c 1.1 - Fujitsu source for CDEnext    95/11/06 20:32:39 	*/
 /* $XConsortium: _fallcPubWrap.c /main/1 1996/04/08 15:18:09 cde-fuj $ */
 /*
  * Copyright 1992, 1993 by TOSHIBA Corp.
@@ -51,77 +51,70 @@
 #include "_fallcPubI.h"
 
 #if NeedVarargsPrototypes
-char *
-_falGetLCValues(XLCd lcd, ...)
+char *_falGetLCValues(XLCd lcd, ...)
 #else
-char *
-_falGetLCValues(lcd, va_alist)
-    XLCd lcd;
-    va_dcl
+char *_falGetLCValues(lcd, va_alist) XLCd lcd;
+va_dcl
 #endif
 {
-    va_list var;
-    XlcArgList args;
-    char *ret;
-    int num_args;
-    XLCdPublicMethodsPart *methods = XLC_PUBLIC_METHODS(lcd);
+        va_list var;
+        XlcArgList args;
+        char *ret;
+        int num_args;
+        XLCdPublicMethodsPart *methods = XLC_PUBLIC_METHODS(lcd);
 
-    Va_start(var, lcd);
-    _fallcCountVaList(var, &num_args);
-    va_end(var);
+        Va_start(var, lcd);
+        _fallcCountVaList(var, &num_args);
+        va_end(var);
 
-    Va_start(var, lcd);
-    _fallcVaToArgList(var, num_args, &args);
-    va_end(var);
+        Va_start(var, lcd);
+        _fallcVaToArgList(var, num_args, &args);
+        va_end(var);
 
-    if (args == (XlcArgList) NULL)
-	return (char *) NULL;
-    
-    ret = (*methods->get_values)(lcd, args, num_args);
+        if (args == (XlcArgList)NULL)
+                return (char *)NULL;
 
-    Xfree(args);
+        ret = (*methods->get_values)(lcd, args, num_args);
 
-    return ret;
+        Xfree(args);
+
+        return ret;
 }
 
-void
-_fallcDestroyLC(lcd)
-    XLCd lcd;
+void _fallcDestroyLC(lcd) XLCd lcd;
 {
-    XLCdPublicMethods methods = (XLCdPublicMethods) lcd->methods;
+        XLCdPublicMethods methods = (XLCdPublicMethods)lcd->methods;
 
-    (*methods->pub.destroy)(lcd);
+        (*methods->pub.destroy)(lcd);
 }
 
-XLCd
-_fallcCreateLC(name, methods)
-    char *name;
-    XLCdMethods methods;
+XLCd _fallcCreateLC(name, methods) char *name;
+XLCdMethods methods;
 {
-    XLCdPublicMethods pub_methods = (XLCdPublicMethods) methods;
-    XLCd lcd;
+        XLCdPublicMethods pub_methods = (XLCdPublicMethods)methods;
+        XLCd lcd;
 
-    lcd = (*pub_methods->pub.create)(name, methods);
-    if (lcd == NULL)
-	return (XLCd) NULL;
+        lcd = (*pub_methods->pub.create)(name, methods);
+        if (lcd == NULL)
+                return (XLCd)NULL;
 
-    if (lcd->core->name == NULL) {
-	lcd->core->name = (char*) Xmalloc(strlen(name) + 1);
-	if (lcd->core->name == NULL) 
-	    goto err;
-	strcpy(lcd->core->name, name);
-    }
-    
-    if (lcd->methods == NULL)
-	lcd->methods = methods;
+        if (lcd->core->name == NULL) {
+                lcd->core->name = (char *)Xmalloc(strlen(name) + 1);
+                if (lcd->core->name == NULL)
+                        goto err;
+                strcpy(lcd->core->name, name);
+        }
 
-    if ((*pub_methods->pub.initialize)(lcd) == False)
-	goto err;
-    
-    return lcd;
+        if (lcd->methods == NULL)
+                lcd->methods = methods;
+
+        if ((*pub_methods->pub.initialize)(lcd) == False)
+                goto err;
+
+        return lcd;
 
 err:
-    _fallcDestroyLC(lcd);
+        _fallcDestroyLC(lcd);
 
-    return (XLCd) NULL;
+        return (XLCd)NULL;
 }

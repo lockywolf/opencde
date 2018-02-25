@@ -20,13 +20,13 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* 
- * (c) Copyright 1989, 1990, 1991, 1992 OPEN SOFTWARE FOUNDATION, INC. 
- * ALL RIGHTS RESERVED 
-*/ 
-/* 
+/*
+ * (c) Copyright 1989, 1990, 1991, 1992 OPEN SOFTWARE FOUNDATION, INC.
+ * ALL RIGHTS RESERVED
+ */
+/*
  * Motif Release 1.2.1
-*/ 
+ */
 #ifdef REV_INFO
 #ifndef lint
 static char rcsid[] = "$TOG: WmMain.c /main/8 1998/04/20 13:01:09 mgreess $"
@@ -61,18 +61,21 @@ static char rcsid[] = "$TOG: WmMain.c /main/8 1998/04/20 13:01:09 mgreess $"
 #include "WmBackdrop.h"
 #endif /* WSM */
 
-
 /*
  * Function Declarations:
  */
 #ifdef WSM
-int WmReturnIdentity (int argc, char *argv[], char *environ[]);
-#define ManagedRoot(w) (!XFindContext (DISPLAY, (w), wmGD.screenContextType, \
-(caddr_t *)&pSD) ? (SetActiveScreen (pSD), True) : \
-(IsBackdropWindow (ACTIVE_PSD, (w))))
+    int
+    WmReturnIdentity(int argc, char *argv[], char *environ[]);
+#define ManagedRoot(w)                                                         \
+        (!XFindContext(DISPLAY, (w), wmGD.screenContextType, (caddr_t *)&pSD)  \
+             ? (SetActiveScreen(pSD), True)                                    \
+             : (IsBackdropWindow(ACTIVE_PSD, (w))))
 #else /* WSM */
-#define ManagedRoot(w) (!XFindContext (DISPLAY, (w), wmGD.screenContextType, \
-(caddr_t *)&pSD) ? (SetActiveScreen (pSD), True) : False)
+#define ManagedRoot(w)                                                         \
+        (!XFindContext(DISPLAY, (w), wmGD.screenContextType, (caddr_t *)&pSD)  \
+             ? (SetActiveScreen(pSD), True)                                    \
+             : False)
 #endif /* WSM */
 
 WmScreenData *pSD;
@@ -89,8 +92,6 @@ NlsStrings wmNLS;
 int WmIdentity;
 #endif /* WSM */
 
-
-
 /*************************************<->*************************************
  *
  *  main (argc, argv, environ)
@@ -112,127 +113,112 @@ int WmIdentity;
  *
  *************************************<->***********************************/
 
-int
-main (int argc, char *argv [], char *environ [])
-{
-    XEvent	event;
-    Boolean	dispatchEvent;
+int main(int argc, char *argv[], char *environ[]) {
+        XEvent event;
+        Boolean dispatchEvent;
 
-    setlocale(LC_ALL, "");
+        setlocale(LC_ALL, "");
 
 #ifndef NO_MULTIBYTE
 #ifdef WSM
-    /*
-     * Set up environment variables for this HP DT client
-     */
-    _DtEnvControl(DT_ENV_SET);
-
-    /*
-     * Force LANG lookup early. 
-     * (Front end may change $LANG to 'C' as part
-     *  of string space reduction optimization.)
-     */
-     {
-	 char * foo = ((char *)GETMESSAGE(44, 1, ""));
-     }
-#endif /* WSM */
-    XtSetLanguageProc (NULL, (XtLanguageProc)NULL, NULL);
-#endif
-#ifdef WSM
-    /*  
-     * Get Identity
-     */
-    WmIdentity = WmReturnIdentity(argc, argv, environ);
-#endif /* WSM */
-
-    /*
-     * Initialize the workspace:
-     */
-
-    InitWmGlobal (argc, argv, environ);
-#ifdef WSM
-
-    /*
-     * Set up PATH variable if it must run as standalone command
-     * invoker
-     */
-    if (wmGD.dtLite)
-    {
-	_DtEnvControl(DT_ENV_SET_BIN);
-    }
-#endif /* WSM */
-    
-    /*
-     * MAIN EVENT HANDLING LOOP:
-     */
-
-    for (;;)
-    {
-        XtAppNextEvent (wmGD.mwmAppContext, &event);
-
+        /*
+         * Set up environment variables for this HP DT client
+         */
+        _DtEnvControl(DT_ENV_SET);
 
         /*
-	 * Check for, and process non-widget events.  The events may be
-	 * reported to the root window, to some client frame window,
-	 * to an icon window, or to a "special" window management window.
-	 * The lock modifier is "filtered" out for window manager processing.
-	 */
-
-	wmGD.attributesWindow = 0L;
-
-#ifdef WSM
-	if ((event.type == ButtonPress) || 
-	    (event.type == ButtonRelease))
-	{
-	    if ((wmGD.evLastButton.button != 0) &&
-		ReplayedButtonEvent (&(wmGD.evLastButton), 
-				     &(event.xbutton)))
-	    {
-		wmGD.bReplayedButton = True;
-	    }
-	    else
-	    {
-		/* save this button for next comparison */
-		memcpy (&wmGD.evLastButton, &event, sizeof (XButtonEvent));
-		wmGD.bReplayedButton = False;
-	    }
-	}
+         * Force LANG lookup early.
+         * (Front end may change $LANG to 'C' as part
+         *  of string space reduction optimization.)
+         */
+        { char *foo = ((char *)GETMESSAGE(44, 1, "")); }
 #endif /* WSM */
-	dispatchEvent = True;
-	if (wmGD.menuActive)
-	{
-	    /*
-	     * Do special menu event preprocessing.
-	     */
+        XtSetLanguageProc(NULL, (XtLanguageProc)NULL, NULL);
+#endif
+#ifdef WSM
+        /*
+         * Get Identity
+         */
+        WmIdentity = WmReturnIdentity(argc, argv, environ);
+#endif /* WSM */
 
-	    if (wmGD.checkHotspot || wmGD.menuUnpostKeySpec ||
-		wmGD.menuActive->accelKeySpecs)
-	    {
-	        dispatchEvent = WmDispatchMenuEvent ((XButtonEvent *) &event);
-	    }
-	}
+        /*
+         * Initialize the workspace:
+         */
 
-	if (dispatchEvent)
-	{
-	    if (ManagedRoot(event.xany.window))
-	    {
-	        dispatchEvent = WmDispatchWsEvent (&event);
-	    }
-	    else
-	    {
-	        dispatchEvent = WmDispatchClientEvent (&event);
-	    }
+        InitWmGlobal(argc, argv, environ);
+#ifdef WSM
 
-	    if (dispatchEvent)
-	    {
+        /*
+         * Set up PATH variable if it must run as standalone command
+         * invoker
+         */
+        if (wmGD.dtLite) {
+                _DtEnvControl(DT_ENV_SET_BIN);
+        }
+#endif /* WSM */
+
+        /*
+         * MAIN EVENT HANDLING LOOP:
+         */
+
+        for (;;) {
+                XtAppNextEvent(wmGD.mwmAppContext, &event);
+
                 /*
-                 * Dispatch widget related event:
+                 * Check for, and process non-widget events.  The events may be
+                 * reported to the root window, to some client frame window,
+                 * to an icon window, or to a "special" window management
+                 * window. The lock modifier is "filtered" out for window
+                 * manager processing.
                  */
 
-                XtDispatchEvent (&event);
-	    }
-	}
-    }
+                wmGD.attributesWindow = 0L;
+
+#ifdef WSM
+                if ((event.type == ButtonPress) ||
+                    (event.type == ButtonRelease)) {
+                        if ((wmGD.evLastButton.button != 0) &&
+                            ReplayedButtonEvent(&(wmGD.evLastButton),
+                                                &(event.xbutton))) {
+                                wmGD.bReplayedButton = True;
+                        } else {
+                                /* save this button for next comparison */
+                                memcpy(&wmGD.evLastButton, &event,
+                                       sizeof(XButtonEvent));
+                                wmGD.bReplayedButton = False;
+                        }
+                }
+#endif /* WSM */
+                dispatchEvent = True;
+                if (wmGD.menuActive) {
+                        /*
+                         * Do special menu event preprocessing.
+                         */
+
+                        if (wmGD.checkHotspot || wmGD.menuUnpostKeySpec ||
+                            wmGD.menuActive->accelKeySpecs) {
+                                dispatchEvent =
+                                    WmDispatchMenuEvent((XButtonEvent *)&event);
+                        }
+                }
+
+                if (dispatchEvent) {
+                        if (ManagedRoot(event.xany.window)) {
+                                dispatchEvent = WmDispatchWsEvent(&event);
+                        } else {
+                                dispatchEvent = WmDispatchClientEvent(&event);
+                        }
+
+                        if (dispatchEvent) {
+                                /*
+                                 * Dispatch widget related event:
+                                 */
+
+                                XtDispatchEvent(&event);
+                        }
+                }
+        }
 
 } /* END OF FUNCTION main */
 
@@ -258,47 +244,44 @@ main (int argc, char *argv [], char *environ [])
  *
  ******************************<->***********************************/
 
-int WmReturnIdentity ( int argc, char *argv[], char *environ[]) 
-{
-	char *tempString;
-	char *origPtr;
+int WmReturnIdentity(int argc, char *argv[], char *environ[]) {
+        char *tempString;
+        char *origPtr;
 
-	/* assume it's dtwm until proven differently */
+        /* assume it's dtwm until proven differently */
 
- 	int retVal = DT_MWM;
+        int retVal = DT_MWM;
 
-	if (!(tempString = 
-	      (char *)(XtMalloc ((unsigned int)(strlen (argv[0]) + 1)))))
-	{
-		Warning(((char *)GETMESSAGE(44, 2, "Insufficient memory for name of window manager")));
-		exit(WM_ERROR_EXIT_VALUE);
-	}
+        if (!(tempString =
+                  (char *)(XtMalloc((unsigned int)(strlen(argv[0]) + 1))))) {
+                Warning(((char *)GETMESSAGE(
+                    44, 2, "Insufficient memory for name of window manager")));
+                exit(WM_ERROR_EXIT_VALUE);
+        }
 
-	origPtr = tempString;
+        origPtr = tempString;
 
-	if (strrchr(argv[0], '/'))
-	{
-		
-		strcpy(tempString, (strrchr(argv[0], '/')));
+        if (strrchr(argv[0], '/')) {
 
-		tempString++;
-	}
-	else
-		strcpy(tempString, argv[0]);
+                strcpy(tempString, (strrchr(argv[0], '/')));
 
-	if (!(strcmp(tempString, WM_RESOURCE_NAME)))
-	/*
-	 *
-	 *   If it's explicity "mwm", then set our identity anew.
-	 *
-	 */
-	{
-		retVal = MWM;
-	}
+                tempString++;
+        } else
+                strcpy(tempString, argv[0]);
 
-	XtFree((char *)origPtr);
+        if (!(strcmp(tempString, WM_RESOURCE_NAME)))
+        /*
+         *
+         *   If it's explicity "mwm", then set our identity anew.
+         *
+         */
+        {
+                retVal = MWM;
+        }
 
-	return(retVal);
+        XtFree((char *)origPtr);
+
+        return (retVal);
 
 } /* END OF FUNCTION WmReturnIdentity */
 #endif /* WSM */

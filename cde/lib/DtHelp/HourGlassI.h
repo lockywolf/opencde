@@ -51,8 +51,7 @@
  *   Builds and returns the appropriate HourGlass cursor.
  */
 
-extern Cursor DtHelpGetHourGlassCursor( 
-                        Display *dpy) ;
+extern Cursor DtHelpGetHourGlassCursor(Display *dpy);
 
 /* DtHelpTurnOnHourGlass -
  *
@@ -60,15 +59,13 @@ extern Cursor DtHelpGetHourGlassCursor(
  *   which is passed in to the funciton.
  */
 
-extern void _DtHelpTurnOnHourGlass( 
-                        Widget w) ;
- 
- /*  Widget widget;
-  *
-  * widget is the toplevel shell of the window you want
-  * the hourglass cursor to appear in.
-  */
+extern void _DtHelpTurnOnHourGlass(Widget w);
 
+/*  Widget widget;
+ *
+ * widget is the toplevel shell of the window you want
+ * the hourglass cursor to appear in.
+ */
 
 /* DtHelpTurnOffHourGlass -
  *
@@ -76,14 +73,13 @@ extern void _DtHelpTurnOnHourGlass(
  *   which is passed in to the funciton.
  */
 
-extern void _DtHelpTurnOffHourGlass( 
-                        Widget w) ;
-  
- /* Widget widget;
-  *
-  *  widget is the toplevel shell of the window you want
-  *  to remove hourglass cursor from.
-  */
+extern void _DtHelpTurnOffHourGlass(Widget w);
+
+/* Widget widget;
+ *
+ *  widget is the toplevel shell of the window you want
+ *  to remove hourglass cursor from.
+ */
 
 /* DtHelpTurnOnNoEnter -
  *
@@ -91,14 +87,13 @@ extern void _DtHelpTurnOffHourGlass(
  *   which is passed in to the funciton.
  */
 
-extern void _DtHelpTurnOnNoEnter( 
-                        Widget w) ;
+extern void _DtHelpTurnOnNoEnter(Widget w);
 
- /* Widget widget;
-  *
-  *  widget is the toplevel shell of the window you want
-  *  to remove hourglass cursor from.
-  */
+/* Widget widget;
+ *
+ *  widget is the toplevel shell of the window you want
+ *  to remove hourglass cursor from.
+ */
 
 /* DtHelpTurnOffNoEnter -
  *
@@ -106,15 +101,13 @@ extern void _DtHelpTurnOnNoEnter(
  *   which is passed in to the funciton.
  */
 
-extern void _DtHelpTurnOffNoEnter( 
-                        Widget w) ;
+extern void _DtHelpTurnOffNoEnter(Widget w);
 
- /* Widget widget;
-  *
-  *  widget is the toplevel shell of the window you want
-  *  to remove hourglass cursor from.
-  */
-
+/* Widget widget;
+ *
+ *  widget is the toplevel shell of the window you want
+ *  to remove hourglass cursor from.
+ */
 
 #endif /* _hourglassI_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

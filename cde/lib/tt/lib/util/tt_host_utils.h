@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: tt_host_utils.h /main/3 1995/10/23 10:40:14 rswiston $ 			 				 */
+/*%%  $XConsortium: tt_host_utils.h /main/3 1995/10/23 10:40:14 rswiston $
+ */
 /*
  *
  * tt_host_utils.h
@@ -41,6 +42,5 @@
 
 class _Tt_host;
 
-declare_list_of(_Tt_host)
-declare_table_of(_Tt_host)
-#endif				/* TT_HOST_UTILS_H */
+declare_list_of(_Tt_host) declare_table_of(_Tt_host)
+#endif /* TT_HOST_UTILS_H */

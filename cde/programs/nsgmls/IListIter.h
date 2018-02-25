@@ -34,14 +34,13 @@
 namespace SP_NAMESPACE {
 #endif
 
-template<class T>
-class IListIter : private IListIterBase {
-public:
-  IListIter(const IList<T> &list) : IListIterBase(list) { }
-  T *cur() { return (T *)IListIterBase::cur(); }
-  
-  using IListIterBase::next;
-  using IListIterBase::done;
+template <class T> class IListIter : private IListIterBase {
+      public:
+        IListIter(const IList<T> &list) : IListIterBase(list) {}
+        T *cur() { return (T *)IListIterBase::cur(); }
+
+        using IListIterBase::done;
+        using IListIterBase::next;
 };
 
 #ifdef SP_NAMESPACE

@@ -24,9 +24,9 @@
 /*************************************<+>*************************************
  *****************************************************************************
  **
- **  File:   HelpUtilI.h    
+ **  File:   HelpUtilI.h
  **
- **  Project:  Rivers Project, 
+ **  Project:  Rivers Project,
  **
  **  Description:  Internal header file for our HelpUtil module.
  **  -----------
@@ -40,10 +40,8 @@
  *******************************************************************
  *************************************<+>*************************************/
 
-
 #ifndef _HelpUtilI_h
 #define _HelpUtilI_h
-
 
 #include "HelpDialogP.h"
 
@@ -57,7 +55,7 @@ extern char _DtHelpDefaultLocationId[];
  * Function:    void _DtHelpErrorDialog(parent, message, helpLocationId)
  *
  * Parameters:      widget      Specifies the application's top level widget
- *                  message     Specifies the desired error message to 
+ *                  message     Specifies the desired error message to
  *                              display.
  *
  * Return Value:    None
@@ -66,9 +64,7 @@ extern char _DtHelpDefaultLocationId[];
  *
  *****************************************************************************
  */
-void _DtHelpErrorDialog(
-    Widget                   parent,
-    char *                   message);
+void _DtHelpErrorDialog(Widget parent, char *message);
 
 /*****************************************************************************
  * Function: _DtHelpFilterExecCmdStr
@@ -108,17 +104,14 @@ void _DtHelpErrorDialog(
  *    unchanged when the function exits.
  *
  *****************************************************************************/
-Boolean _DtHelpFilterExecCmdStr(
-    Widget                   helpWidget,
-    unsigned char            executionPolicy,
-    const char *             commandStr,
-    char * *                 ret_cmdStr,
-    Boolean *                ret_cmdWasAlias,
-    Boolean *                ret_execPermitted,
-    Boolean *                ret_queryNeeded,
-    char    *                hv_path);
+Boolean _DtHelpFilterExecCmdStr(Widget helpWidget,
+                                unsigned char executionPolicy,
+                                const char *commandStr, char **ret_cmdStr,
+                                Boolean *ret_cmdWasAlias,
+                                Boolean *ret_execPermitted,
+                                Boolean *ret_queryNeeded, char *hv_path);
 
-typedef Boolean (*_DtHelpCeWaitProc)(Widget w,void * clientData);
+typedef Boolean (*_DtHelpCeWaitProc)(Widget w, void *clientData);
 
 /*********************************************************************
  * _DtHelpCeWaitAndProcessEvents
@@ -134,11 +127,8 @@ typedef Boolean (*_DtHelpCeWaitProc)(Widget w,void * clientData);
  *
  *********************************************************************/
 
-void
-_DtHelpCeWaitAndProcessEvents (
-    Widget             w,
-    _DtHelpCeWaitProc  waitProc,
-    void *             clientData);
+void _DtHelpCeWaitAndProcessEvents(Widget w, _DtHelpCeWaitProc waitProc,
+                                   void *clientData);
 
 /*****************************************************************************
  * Function: _DtHelpFilterExecCmd
@@ -150,14 +140,10 @@ _DtHelpCeWaitAndProcessEvents (
  *    execPolicy:       current policy setting
  *    ret_filteredCmdStr: filtered command string
  *****************************************************************************/
-int _DtHelpFilterExecCmd(
-    Widget        helpWidget,
-    const char *  commandStr,
-    unsigned char executionPolicy,
-    Boolean       useQueryDialog,
-    _DtHelpCommonHelpStuff * pHelpStuff,
-    char * *      ret_filteredCmdStr,
-    char *        hv_path);
+int _DtHelpFilterExecCmd(Widget helpWidget, const char *commandStr,
+                         unsigned char executionPolicy, Boolean useQueryDialog,
+                         _DtHelpCommonHelpStuff *pHelpStuff,
+                         char **ret_filteredCmdStr, char *hv_path);
 
 /*****************************************************************************
  * Function: _DtHelpExecFilteredCmd
@@ -180,12 +166,10 @@ int _DtHelpFilterExecCmd(
  *
  * Called by:
  *****************************************************************************/
-void _DtHelpExecFilteredCmd(
-    Widget                   helpWidget,
-    char *                   commandStr,
-    char *                   helpLocationId,
-    _DtHelpDisplayWidgetStuff * pDisplayStuff,
-    _DtHelpCommonHelpStuff * pHelpStuff);
+void _DtHelpExecFilteredCmd(Widget helpWidget, char *commandStr,
+                            char *helpLocationId,
+                            _DtHelpDisplayWidgetStuff *pDisplayStuff,
+                            _DtHelpCommonHelpStuff *pHelpStuff);
 
 /*****************************************************************************
  * Function:       Boolean _DtHelpExpandHelpVolume(DtHelpDialogWidget nw);
@@ -201,11 +185,10 @@ void _DtHelpExecFilteredCmd(
  *              current lang variable.
  *
  *****************************************************************************/
-Boolean _DtHelpExpandHelpVolume(
-   Widget			widget,
-   _DtHelpDisplayWidgetStuff * display,
-   _DtHelpCommonHelpStuff *    help,
-   _DtHelpPrintStuff *         print);
+Boolean _DtHelpExpandHelpVolume(Widget widget,
+                                _DtHelpDisplayWidgetStuff *display,
+                                _DtHelpCommonHelpStuff *help,
+                                _DtHelpPrintStuff *print);
 
 /*****************************************************************************
  * Function:	   char *_DtHelpParseIdString(char * specification);
@@ -215,12 +198,11 @@ Boolean _DtHelpExpandHelpVolume(
  *
  * Return Value:    Void.
  *
- * Description:   This function copies the locationId portion of the 
+ * Description:   This function copies the locationId portion of the
  *                specification and retruns it to the calling routine.
  *
  *****************************************************************************/
-extern char *_DtHelpParseIdString(
-   char *specification);
+extern char *_DtHelpParseIdString(char *specification);
 
 /*****************************************************************************
  * Function:	   char *_DtHelpParseAccessFile(char * specification);
@@ -230,12 +212,11 @@ extern char *_DtHelpParseIdString(
  *
  * Return Value:    Void.
  *
- * Description:   This function copies the helpAccessFile portion of the 
+ * Description:   This function copies the helpAccessFile portion of the
  *                specification and retruns it to the calling routine.
  *
  *****************************************************************************/
-extern char *_DtHelpParseAccessFile(
-   char *specification);
+extern char *_DtHelpParseAccessFile(char *specification);
 
 /*****************************************************************************
  * Function:	    void _DtHelpTopicListAddToHead(
@@ -246,52 +227,47 @@ extern char *_DtHelpParseAccessFile(
  *                                       char *accessPath,
  *                                       DtTopicListStruct **pHead,
  *                                       DtTopicListStruct **pTale,
- *                                       int *totalNodes) 
- *                            
+ *                                       int *totalNodes)
  *
- * Parameters:  
+ *
+ * Parameters:
  *
  * Return Value:    Void.
  *
  * Purpose: 	    Adds an element to the top of the given topicList.
  *
  *****************************************************************************/
-extern void _DtHelpTopicListAddToHead(
-    char *locationId,
-    XmString topicTitle,
-    int topicType,
-    int maxNodes,
-    char *accessPath,
-    DtTopicListStruct **pHead,
-    DtTopicListStruct **pTale,
-    int *totalNodes,
-    int scrollPosition);
+extern void _DtHelpTopicListAddToHead(char *locationId, XmString topicTitle,
+                                      int topicType, int maxNodes,
+                                      char *accessPath,
+                                      DtTopicListStruct **pHead,
+                                      DtTopicListStruct **pTale,
+                                      int *totalNodes, int scrollPosition);
 
 /*****************************************************************************
  * Function:	    void _DtTopicListDelUeteHead(
  *                                       DtTopicListStruct *pHead,
  *                                       DtTopicListStruct *pTale,
- *                                       totalNodes) 
- *                            
+ *                                       totalNodes)
  *
- * Parameters:  
+ *
+ * Parameters:
  *
  * Return Value:    Void.
  *
  * Purpose: 	    Delets an element from the top of the given topicList.
  *
  *****************************************************************************/
-extern void _DtHelpTopicListDeleteHead(
-    DtTopicListStruct **pHead,
-    DtTopicListStruct **pTale,
-    int *totalNodes);
+extern void _DtHelpTopicListDeleteHead(DtTopicListStruct **pHead,
+                                       DtTopicListStruct **pTale,
+                                       int *totalNodes);
 
 /*****************************************************************************
  * Function:	    void _DtHelpMapCB(
- *                   
- *                            
  *
- * Parameters:  
+ *
+ *
+ * Parameters:
  *
  * Return Value:    Void.
  *
@@ -299,35 +275,31 @@ extern void _DtHelpTopicListDeleteHead(
  *                  relation to its parent.
  *
  *****************************************************************************/
-extern XtCallbackProc _DtHelpMapCB(
-    Widget w,
-    XtPointer client_data,
-    XtPointer call_data );
+extern XtCallbackProc _DtHelpMapCB(Widget w, XtPointer client_data,
+                                   XtPointer call_data);
 
-
 /*****************************************************************************
  * Function:	    void _DtHelpMapCenteredCB(
- *                   
- *                            
  *
- * Parameters:  
+ *
+ *
+ * Parameters:
  *
  * Return Value:    Void.
  *
- * Purpose: 	    Determins where the center of our help dialog is and sets 
- *                  where new child dialog should be mapped such that its centered.
+ * Purpose: 	    Determins where the center of our help dialog is and sets
+ *                  where new child dialog should be mapped such that its
+ *centered.
  *
  *****************************************************************************/
-extern XtCallbackProc _DtHelpMapCenteredCB(
-    Widget w,
-    XtPointer client_data,
-    XtPointer call_data);
+extern XtCallbackProc _DtHelpMapCenteredCB(Widget w, XtPointer client_data,
+                                           XtPointer call_data);
 
 /*****************************************************************************
  * Function:	   Boolean _DtHelpResolvePathname(
  *
  *
- * Parameters:     
+ * Parameters:
  *
  * Return Value:    Boolean.
  *
@@ -336,56 +308,47 @@ extern XtCallbackProc _DtHelpMapCenteredCB(
  *              to a Cache Creek help access file.
  *
  *****************************************************************************/
-extern Boolean _DtHelpResolvePathname(
-   Widget widget,
-   char **fileName,
-   _DtHelpVolumeHdl *volumeHandle,
-   char *sysVolumeSearchPath,
-   char *userVolumeSearchPath);
-
+extern Boolean _DtHelpResolvePathname(Widget widget, char **fileName,
+                                      _DtHelpVolumeHdl *volumeHandle,
+                                      char *sysVolumeSearchPath,
+                                      char *userVolumeSearchPath);
 
 /*****************************************************************************
  * Function:	   void _DtHelpDisplayDefinitionBox(
- *                            Widget parent,  
- *                            Widget definitionBox, 
+ *                            Widget parent,
+ *                            Widget definitionBox,
  *                            char * path,
  *                            char * locationId);
- *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
+ *
+ * Return Value:
  *
  * Purpose: 	   This routine will create and post the definition box.
  *                 (e.g. the Quick Help Dialog widget)
  *
  ****************************************************************************/
-extern void _DtHelpDisplayDefinitionBox(
-    Widget parent,   
-    Widget **definitionBox,
-    char * path,
-    char * locationId);
+extern void _DtHelpDisplayDefinitionBox(Widget parent, Widget **definitionBox,
+                                        char *path, char *locationId);
 
 /*****************************************************************************
  * Function:	   void _DtHelpDisplayFormatError()
-  *       
- * Parameters:   
  *
- * Return Value:    
+ * Parameters:
  *
- * Purpose: 	   This routine generate and display the proper errror 
- *                 message to the display area as well as send the proper 
+ * Return Value:
+ *
+ * Purpose: 	   This routine generate and display the proper errror
+ *                 message to the display area as well as send the proper
  *                 error to XmWarning() function.
  *
  ****************************************************************************/
-void _DtHelpDisplayFormatError(
-    XtPointer displayArea,
-    Widget widget,   
-    char *userError,
-    char *systemError);
+void _DtHelpDisplayFormatError(XtPointer displayArea, Widget widget,
+                               char *userError, char *systemError);
 
 /*****************************************************************************
  * Function:       void _DtHelpCommonHelpInit()
-  *
+ *
  * Parameters:
  *
  * Return Value:
@@ -393,12 +356,11 @@ void _DtHelpDisplayFormatError(
  * Purpose:        This routine inits common help stuff
  *
  ****************************************************************************/
-void _DtHelpCommonHelpInit(
-    _DtHelpCommonHelpStuff * help);
+void _DtHelpCommonHelpInit(_DtHelpCommonHelpStuff *help);
 
 /*****************************************************************************
  * Function:       void _DtHelpCommonHelpClean()
-  *
+ *
  * Parameters:
  *
  * Return Value:
@@ -406,9 +368,7 @@ void _DtHelpCommonHelpInit(
  * Purpose:        This routine cleans up common help stuff
  *
  ****************************************************************************/
-void _DtHelpCommonHelpClean(
-    _DtHelpCommonHelpStuff * help,
-    Boolean                 destroy);
+void _DtHelpCommonHelpClean(_DtHelpCommonHelpStuff *help, Boolean destroy);
 
 /*****************************************************************************
  * Function:       void _DtHelpSetDlgButtonsWidth
@@ -420,12 +380,9 @@ void _DtHelpCommonHelpClean(
  * Purpose:        This routine cleans up common help stuff
  *
  ****************************************************************************/
-void _DtHelpSetButtonPositions(
-    Widget     btnList[],
-    int        numBtns,
-    Dimension  minFormWidth,
-    Dimension  btnMargins,
-    Dimension  minBetweenBtnSpace);
+void _DtHelpSetButtonPositions(Widget btnList[], int numBtns,
+                               Dimension minFormWidth, Dimension btnMargins,
+                               Dimension minBetweenBtnSpace);
 
 /*****************************************************************************
  * Function:       _DtHelpXmFontListGetPropertyMax
@@ -444,12 +401,8 @@ void _DtHelpSetButtonPositions(
  *    for each font in the XmFontList
  *
  ****************************************************************************/
-Boolean _DtHelpXmFontListGetPropertyMax(
-        XmFontList fontList,
-        Atom atom,
-        unsigned long *ret_propertyValue);
+Boolean _DtHelpXmFontListGetPropertyMax(XmFontList fontList, Atom atom,
+                                        unsigned long *ret_propertyValue);
 
 #endif /* _HelpUtilI_h */
 /* Do not add anything after this endif. */
-
-

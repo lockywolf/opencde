@@ -21,7 +21,7 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $TOG: tclUnixTime.c /main/3 1998/04/06 13:37:56 mgreess $ */
-/* 
+/*
  * tclUnixTime.c --
  *
  *	Contains Unix specific versions of Tcl functions that
@@ -38,7 +38,7 @@
 #include <sys/time.h>
 #include "tclInt.h"
 #include "tclPort.h"
-
+
 /*
  *-----------------------------------------------------------------------------
  *
@@ -56,12 +56,8 @@
  *-----------------------------------------------------------------------------
  */
 
-unsigned long
-TclGetSeconds()
-{
-    return time((time_t *) NULL);
-}
-
+unsigned long TclGetSeconds() { return time((time_t *)NULL); }
+
 /*
  *-----------------------------------------------------------------------------
  *
@@ -81,27 +77,25 @@ TclGetSeconds()
  *-----------------------------------------------------------------------------
  */
 
-unsigned long
-TclGetClicks()
-{
-    unsigned long now;
+unsigned long TclGetClicks() {
+        unsigned long now;
 #ifdef NO_GETTOD
-    struct tms dummy;
+        struct tms dummy;
 #else
-    struct timeval date;
-    struct timezone tz;
+        struct timeval date;
+        struct timezone tz;
 #endif
 
 #ifdef NO_GETTOD
-    now = (unsigned long) times(&dummy);
+        now = (unsigned long)times(&dummy);
 #else
-    gettimeofday(&date, &tz);
-    now = date.tv_sec*1000000 + date.tv_usec;
+        gettimeofday(&date, &tz);
+        now = date.tv_sec * 1000000 + date.tv_usec;
 #endif
 
-    return now;
+        return now;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -120,97 +114,95 @@ TclGetClicks()
  *----------------------------------------------------------------------
  */
 
-int
-TclGetTimeZone (currentTime)
-    unsigned long  currentTime;
+int TclGetTimeZone(currentTime) unsigned long currentTime;
 {
-    /*
-     * Determine how a timezone is obtained from "struct tm".  If there is no
-     * time zone in this struct (very lame) then use the timezone variable.
-     * This is done in a way to make the timezone variable the method of last
-     * resort, as some systems have it in addition to a field in "struct tm".
-     * The gettimeofday system call can also be used to determine the time
-     * zone.
-     */
-    
+/*
+ * Determine how a timezone is obtained from "struct tm".  If there is no
+ * time zone in this struct (very lame) then use the timezone variable.
+ * This is done in a way to make the timezone variable the method of last
+ * resort, as some systems have it in addition to a field in "struct tm".
+ * The gettimeofday system call can also be used to determine the time
+ * zone.
+ */
+
 #if defined(HAVE_TM_TZADJ)
-#   define TCL_GOT_TIMEZONE
-    time_t      curTime = (time_t) currentTime;
-    struct tm  *timeDataPtr = localtime(&curTime);
-    int         timeZone;
+#define TCL_GOT_TIMEZONE
+        time_t curTime = (time_t)currentTime;
+        struct tm *timeDataPtr = localtime(&curTime);
+        int timeZone;
 
-    timeZone = timeDataPtr->tm_tzadj  / 60;
-    if (timeDataPtr->tm_isdst) {
-        timeZone += 60;
-    }
-    
-    return timeZone;
+        timeZone = timeDataPtr->tm_tzadj / 60;
+        if (timeDataPtr->tm_isdst) {
+                timeZone += 60;
+        }
+
+        return timeZone;
 #endif
 
-#if defined(HAVE_TM_GMTOFF) && !defined (TCL_GOT_TIMEZONE)
-#   define TCL_GOT_TIMEZONE
-    time_t     curTime = (time_t) currentTime;
-    struct tm *timeDataPtr = localtime(&currentTime);
-    int        timeZone;
+#if defined(HAVE_TM_GMTOFF) && !defined(TCL_GOT_TIMEZONE)
+#define TCL_GOT_TIMEZONE
+        time_t curTime = (time_t)currentTime;
+        struct tm *timeDataPtr = localtime(&currentTime);
+        int timeZone;
 
-    timeZone = -(timeDataPtr->tm_gmtoff / 60);
-    if (timeDataPtr->tm_isdst) {
-        timeZone += 60;
-    }
-    
-    return timeZone;
+        timeZone = -(timeDataPtr->tm_gmtoff / 60);
+        if (timeDataPtr->tm_isdst) {
+                timeZone += 60;
+        }
+
+        return timeZone;
 #endif
 
-    /*
-     * Must prefer timezone variable over gettimeofday, as gettimeofday does
-     * not return timezone information on many systems that have moved this
-     * information outside of the kernel.
-     */
-    
-#if defined(HAVE_TIMEZONE_VAR) && !defined (TCL_GOT_TIMEZONE)
-#   define TCL_GOT_TIMEZONE
-    static int setTZ = 0;
-    int        timeZone;
+        /*
+         * Must prefer timezone variable over gettimeofday, as gettimeofday does
+         * not return timezone information on many systems that have moved this
+         * information outside of the kernel.
+         */
 
-    if (!setTZ) {
-        tzset();
-        setTZ = 1;
-    }
+#if defined(HAVE_TIMEZONE_VAR) && !defined(TCL_GOT_TIMEZONE)
+#define TCL_GOT_TIMEZONE
+        static int setTZ = 0;
+        int timeZone;
 
-    /*
-     * Note: this is not a typo in "timezone" below!  See tzset
-     * documentation for details.
-     */
+        if (!setTZ) {
+                tzset();
+                setTZ = 1;
+        }
 
-    timeZone = timezone / 60;
+        /*
+         * Note: this is not a typo in "timezone" below!  See tzset
+         * documentation for details.
+         */
 
-    return timeZone;
+        timeZone = timezone / 60;
+
+        return timeZone;
 #endif
 
-#if defined(HAVE_GETTIMEOFDAY) && !defined (TCL_GOT_TIMEZONE)
-#   define TCL_GOT_TIMEZONE
-    struct timeval  tv;
-    struct timezone tz;
-    int timeZone;
+#if defined(HAVE_GETTIMEOFDAY) && !defined(TCL_GOT_TIMEZONE)
+#define TCL_GOT_TIMEZONE
+        struct timeval tv;
+        struct timezone tz;
+        int timeZone;
 
-    gettimeofday(&tv, &tz);
-    timeZone = tz.tz_minuteswest;
-    if (tz.tz_dsttime) {
-        timeZone += 60;
-    }
-    
-    return timeZone;
+        gettimeofday(&tv, &tz);
+        timeZone = tz.tz_minuteswest;
+        if (tz.tz_dsttime) {
+                timeZone += 60;
+        }
+
+        return timeZone;
 #endif
 
 #ifndef TCL_GOT_TIMEZONE
-    /*
-     * Cause compile error, we don't know how to get timezone.
-     */
-    error: autoconf did not figure out how to determine the timezone. 
+/*
+ * Cause compile error, we don't know how to get timezone.
+ */
+error:
+        autoconf did not figure out how to determine the timezone.
 #endif
-
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -228,14 +220,13 @@ TclGetTimeZone (currentTime)
  *----------------------------------------------------------------------
  */
 
-void
-TclGetTime(timePtr)
-    Tcl_Time *timePtr;		/* Location to store time information. */
+void TclGetTime(
+    timePtr) Tcl_Time *timePtr; /* Location to store time information. */
 {
-    struct timeval tv;
-    struct timezone tz;
-    
-    (void) gettimeofday(&tv, &tz);
-    timePtr->sec = tv.tv_sec;
-    timePtr->usec = tv.tv_usec;
+        struct timeval tv;
+        struct timezone tz;
+
+        (void)gettimeofday(&tv, &tz);
+        timePtr->sec = tv.tv_sec;
+        timePtr->usec = tv.tv_usec;
 }

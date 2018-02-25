@@ -41,7 +41,7 @@
  * (c) Copyright 1996 Digital Equipment Corporation.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -68,15 +68,14 @@
  *
  * Standard exit() codes for any PDM which is a child of dtpdmd.
  */
-#define PDM_EXIT_NONE           None
-#define PDM_EXIT_OK             191     /* "OK" */
-#define PDM_EXIT_CANCEL         192     /* "CANCEL" */
-#define PDM_EXIT_VXAUTH         193     /* no print display authorization */
-#define PDM_EXIT_PXAUTH         194     /* no video display authorization */
-#define PDM_EXIT_ERROR          195     /* all other error reasons */
+#define PDM_EXIT_NONE None
+#define PDM_EXIT_OK 191     /* "OK" */
+#define PDM_EXIT_CANCEL 192 /* "CANCEL" */
+#define PDM_EXIT_VXAUTH 193 /* no print display authorization */
+#define PDM_EXIT_PXAUTH 194 /* no video display authorization */
+#define PDM_EXIT_ERROR 195  /* all other error reasons */
 
 /*
  * Misc information.
  */
-#define DEFAULT_PDM_EXECUTABLE  "dtpdm"
-
+#define DEFAULT_PDM_EXECUTABLE "dtpdm"

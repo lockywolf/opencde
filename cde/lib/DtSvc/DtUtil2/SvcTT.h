@@ -39,8 +39,6 @@
 
 #include <Tt/tttk.h>
 
-extern Tt_status	_DtSvcInitToolTalk(
-				Widget widget
-			);
+extern Tt_status _DtSvcInitToolTalk(Widget widget);
 
 #endif

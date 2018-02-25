@@ -38,18 +38,17 @@ using namespace std;
 
 #define WORD_SIZE 32
 
-class posRecord
-{
-public:
-   posRecord(unsigned int x = 0, unsigned int y = 0) : 
-	pathTermPos(x), bitPos(y) {};
-   ~posRecord() {};
+class posRecord {
+      public:
+        posRecord(unsigned int x = 0, unsigned int y = 0)
+            : pathTermPos(x), bitPos(y){};
+        ~posRecord(){};
 
-   unsigned int operator ==(const posRecord&);
+        unsigned int operator==(const posRecord &);
 
-public:
-   unsigned int pathTermPos;
-   unsigned int bitPos;
+      public:
+        unsigned int pathTermPos;
+        unsigned int bitPos;
 };
 
 typedef CC_TValSlist<posRecord> positionArrayT;
@@ -58,39 +57,38 @@ typedef CC_TValSlistIterator<posRecord> positionArrayIteratorT;
 ///////////////////////////////////////////////////////
 // A storage/manipulation efficient bit vector class
 ///////////////////////////////////////////////////////
-class BitVector 
-{
-   unsigned int *f_array;
-   unsigned int f_bits;
-   unsigned int f_words;
-   positionArrayT *f_positionArray;
+class BitVector {
+        unsigned int *f_array;
+        unsigned int f_bits;
+        unsigned int f_words;
+        positionArrayT *f_positionArray;
 
-public:
-   BitVector(int bits, unsigned int initValue);
-   ~BitVector();
+      public:
+        BitVector(int bits, unsigned int initValue);
+        ~BitVector();
 
-//
-// bits range: 0 .. bits-1
-// the 0th bit is LSB, the (bits-1)th bit is MSB
-//
-   void setAllBitsTo(unsigned int);
-   void setTo(BitVector&);
+        //
+        // bits range: 0 .. bits-1
+        // the 0th bit is LSB, the (bits-1)th bit is MSB
+        //
+        void setAllBitsTo(unsigned int);
+        void setTo(BitVector &);
 
-   void recordPositions(unsigned int pathTermPos, unsigned int BitPos);
-   positionArrayT* positionArray() { return f_positionArray; };
+        void recordPositions(unsigned int pathTermPos, unsigned int BitPos);
+        positionArrayT *positionArray() { return f_positionArray; };
 
-   void setBitTo(int i, unsigned int);
-   unsigned int getBit(int i);
+        void setBitTo(int i, unsigned int);
+        unsigned int getBit(int i);
 
-   BitVector& operator &=(BitVector&);
-   BitVector& operator ^=(BitVector&);
-   BitVector& operator |=(BitVector&);
+        BitVector &operator&=(BitVector &);
+        BitVector &operator^=(BitVector &);
+        BitVector &operator|=(BitVector &);
 
-// Note: the MSB is set to 1 after each shiftRightOneBit() call.
-   BitVector& shiftRightOneBit();
-   BitVector& shiftLeftOneBit();
+        // Note: the MSB is set to 1 after each shiftRightOneBit() call.
+        BitVector &shiftRightOneBit();
+        BitVector &shiftLeftOneBit();
 
-   friend ostream& operator<<(ostream&, BitVector&);
+        friend ostream &operator<<(ostream &, BitVector &);
 };
 
 #endif

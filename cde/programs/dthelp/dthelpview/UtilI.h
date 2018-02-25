@@ -46,13 +46,8 @@
 #ifndef _UtilI_h
 #define _UtilI_h
 
-
-
-#define DEFAULT_ROWS         20
-#define DEFAULT_COLUMNS      20
-
-
-
+#define DEFAULT_ROWS 20
+#define DEFAULT_COLUMNS 20
 
 /****************************************************************
  *
@@ -60,16 +55,11 @@
  *
  ****************************************************************/
 typedef struct _CacheListStruct {
-    Widget                    helpDialog;
-    Boolean                   inUseFlag;
-    struct _CacheListStruct   *pNext;
-    struct _CacheListStruct   *pPrevious;
+        Widget helpDialog;
+        Boolean inUseFlag;
+        struct _CacheListStruct *pNext;
+        struct _CacheListStruct *pPrevious;
 } CacheListStruct;
-
-
-
-
-
 
 /****************************************************************************
  * Function:	    void DisplayTopic(
@@ -77,7 +67,7 @@ typedef struct _CacheListStruct {
  *                              char *accessPath,
  *                              char *idString)
  *
- * Parameters:      
+ * Parameters:
  *
  * Return Value:    Void.
  *
@@ -85,55 +75,40 @@ typedef struct _CacheListStruct {
  *                  widget.
  *
  ****************************************************************************/
-extern void DisplayTopic (
-    Widget  parent,
-    char    *accessPath,
-    char    *idString,
-    int     argc,
-    char    **argv);
-
-
+extern void DisplayTopic(Widget parent, char *accessPath, char *idString,
+                         int argc, char **argv);
 
 /****************************************************************************
  * Function:	    void DisplayFile(
  *
- * Parameters:      
+ * Parameters:
  *
  * Return Value:    Void.
  *
  * Purpose: 	    Displays a ascii file in a quick help dialog.
  *
  ****************************************************************************/
-extern void DisplayFile (
-    Widget  parent,
-    char    *file);
-
-
-
+extern void DisplayFile(Widget parent, char *file);
 
 /****************************************************************************
  * Function:	    void DisplayMan();
  *
- * Parameters:      
+ * Parameters:
  *
  * Return Value:    Void.
  *
  * Purpose: 	    Displays a UNIX man page in a quick help dialog.
  *
  ****************************************************************************/
-extern void DisplayMan (
-    Widget  parent,
-    char    *man,
-    int     closeOption);
-
+extern void DisplayMan(Widget parent, char *man, int closeOption);
 
 /****************************************************************************
  * Function:         CloseAndExitCB(
  *                              Widget w,
- *                              XtPointer clientData, 
+ *                              XtPointer clientData,
  *                      	XtPointer callData
  *
- * Parameters:      
+ * Parameters:
  *
  * Return Value:    Void.
  *
@@ -142,63 +117,48 @@ extern void DisplayMan (
  *                  text file view.
  *
  ***************************************************************************/
-extern void CloseAndExitCB(
-    Widget w,
-    XtPointer clientData,
-    XtPointer callData);
-
-
+extern void CloseAndExitCB(Widget w, XtPointer clientData, XtPointer callData);
 
 /****************************************************************************
  * Function:         CloseHelpCB(
  *                              Widget w,
- *                              XtPointer clientData, 
+ *                              XtPointer clientData,
  *                      	XtPointer callData
  *
- * Parameters:      
+ * Parameters:
  *
  * Return Value:    Void.
  *
- * Purpose: 	    Process close requests on all Help Dialog widgets 
+ * Purpose: 	    Process close requests on all Help Dialog widgets
  *                  created and managed by this application.
  *
  ***************************************************************************/
-extern void CloseHelpCB (
-    Widget w,
-    XtPointer clientData,
-    XtPointer callData);
-
-
-
+extern void CloseHelpCB(Widget w, XtPointer clientData, XtPointer callData);
 
 /****************************************************************************
  * Function:	    void ProcessLinkCB(
  *                              Widget w,
- *                              XtPointer  clientData, 
+ *                              XtPointer  clientData,
  *                      	XtPointer callData
  *
- * Parameters:      
+ * Parameters:
  *
  * Return Value:    Void.
  *
- * Purpose: 	    Process JUMP-NEW and APP-LINK hypertext requests in a 
+ * Purpose: 	    Process JUMP-NEW and APP-LINK hypertext requests in a
  *                  given Help Dialog Window.
- *                 
+ *
  *                  This is the callback used for the DtNhyperLinkCallback
  *                  on each of the help dialog widges created.
  *
  ****************************************************************************/
-extern void ProcessLinkCB (
-    Widget w,
-    XtPointer clientData,
-    XtPointer callData);
-
+extern void ProcessLinkCB(Widget w, XtPointer clientData, XtPointer callData);
 
 /****************************************************************************
  * Function:	    CacheListStruct GetFromCache(
  *                                  Widget parent);
  *
- * Parameters:      
+ * Parameters:
  *
  * Return Value:    Void.
  *
@@ -207,21 +167,7 @@ extern void ProcessLinkCB (
  *                  create a new help dialog widget.
  *
  ****************************************************************************/
-Boolean GetFromCache(
-    Widget parent,
-    CacheListStruct **pCurrentNode);
-
-
-
-
+Boolean GetFromCache(Widget parent, CacheListStruct **pCurrentNode);
 
 #endif /* _UtilI_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */
-
-
-
-
-
-
-
-

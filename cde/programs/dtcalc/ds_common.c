@@ -36,24 +36,17 @@
 #include <stdlib.h>
 #include "ds_common.h"
 
-#define  FREE    (void) free
+#define FREE (void)free
 
-void
-read_str(char **str, char *value)
-{
-  if (*str != NULL) FREE(*str) ;
-  if (value != NULL && strlen(value))
-    {
-      int str_size = strlen(value) + 1;
-      *str = (char *) malloc((unsigned) str_size) ;
-      strlcpy(*str, value, str_size) ;
-    }
-  else *str = NULL ;
+void read_str(char **str, char *value) {
+        if (*str != NULL)
+                FREE(*str);
+        if (value != NULL && strlen(value)) {
+                int str_size = strlen(value) + 1;
+                *str = (char *)malloc((unsigned)str_size);
+                strlcpy(*str, value, str_size);
+        } else
+                *str = NULL;
 }
 
-
-char *
-set_bool(int value)
-{
-  return((value) ? "true" : "false") ;
-}
+char *set_bool(int value) { return ((value) ? "true" : "false"); }

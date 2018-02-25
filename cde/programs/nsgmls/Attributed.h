@@ -38,39 +38,32 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API Attributed {
-public:
-  Attributed() { }
-  ConstPtr<AttributeDefinitionList> attributeDef() const;
-  const AttributeDefinitionList *attributeDefTemp() const;
-  Ptr<AttributeDefinitionList> attributeDef();
-  void setAttributeDef(const Ptr<AttributeDefinitionList> &);
-private:
-  Ptr<AttributeDefinitionList> attributeDef_;
+      public:
+        Attributed() {}
+        ConstPtr<AttributeDefinitionList> attributeDef() const;
+        const AttributeDefinitionList *attributeDefTemp() const;
+        Ptr<AttributeDefinitionList> attributeDef();
+        void setAttributeDef(const Ptr<AttributeDefinitionList> &);
 
+      private:
+        Ptr<AttributeDefinitionList> attributeDef_;
 };
 
-inline
-ConstPtr<AttributeDefinitionList> Attributed::attributeDef() const
-{
-  return attributeDef_;
+inline ConstPtr<AttributeDefinitionList> Attributed::attributeDef() const {
+        return attributeDef_;
 }
 
-inline
-const AttributeDefinitionList *Attributed::attributeDefTemp() const
-{
-  return attributeDef_.pointer();
+inline const AttributeDefinitionList *Attributed::attributeDefTemp() const {
+        return attributeDef_.pointer();
 }
 
-inline
-Ptr<AttributeDefinitionList> Attributed::attributeDef()
-{
-  return attributeDef_;
+inline Ptr<AttributeDefinitionList> Attributed::attributeDef() {
+        return attributeDef_;
 }
 
-inline
-void Attributed::setAttributeDef(const Ptr<AttributeDefinitionList> &def)
-{
-  attributeDef_ = def;
+inline void
+Attributed::setAttributeDef(const Ptr<AttributeDefinitionList> &def) {
+        attributeDef_ = def;
 }
 
 #ifdef SP_NAMESPACE

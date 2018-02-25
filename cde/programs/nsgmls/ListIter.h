@@ -34,15 +34,15 @@
 namespace SP_NAMESPACE {
 #endif
 
-template<class T>
-class ListIter {
-public:
-  ListIter(const List<T> &list) : iter_(list.list_) { }
-  const T &cur() { return iter_.cur()->value; }
-  int done() { return iter_.done(); }
-  void next() { iter_.next(); }
-private:
-  IListIter<ListItem<T> > iter_;
+template <class T> class ListIter {
+      public:
+        ListIter(const List<T> &list) : iter_(list.list_) {}
+        const T &cur() { return iter_.cur()->value; }
+        int done() { return iter_.done(); }
+        void next() { iter_.next(); }
+
+      private:
+        IListIter<ListItem<T> > iter_;
 };
 
 #ifdef SP_NAMESPACE

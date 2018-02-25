@@ -41,7 +41,6 @@
 #ifndef _DtHelpAsciiSpc_h
 #define _DtHelpAsciiSpc_h
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -55,13 +54,11 @@ extern "C" {
 /********    Public Macro Declarations    ********/
 
 /********    Semi-Private Function Declarations    ********/
-extern	const char	*_DtHelpCeResolveSpcToAscii(
-				const char	*spc_symbol);
+extern const char *_DtHelpCeResolveSpcToAscii(const char *spc_symbol);
 
 #ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
-
 
 #endif /* _DtHelpAsciiSpc_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

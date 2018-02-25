@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: isstart.c /main/3 1995/10/23 11:45:08 rswiston $ 			 				 */
+/*%%  $XConsortium: isstart.c /main/3 1995/10/23 11:45:08 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)isstart.c 1.9 89/07/17 Copyr 1988 Sun Micro";
 #endif
@@ -38,7 +39,6 @@ static char sccsid[] = "@(#)isstart.c 1.9 89/07/17 Copyr 1988 Sun Micro";
  * Description:
  *	Select index and set record position.
  */
-
 
 #include "isam_impl.h"
 #include <sys/time.h>
@@ -66,71 +66,69 @@ static int _amstart();
  *	EBADKEY Error in the key descriptor.
  */
 
-int 
-isstart(isfd, keydesc, length, record, mode)
-    int			isfd;
-    struct keydesc	*keydesc;
-    int			length;
-    char		*record;
-    int			mode;
+int isstart(isfd, keydesc, length, record, mode) int isfd;
+struct keydesc *keydesc;
+int length;
+char *record;
+int mode;
 {
-    register Fab	*fab;
-    int			reclen;
-    Recno		recnum;
-    int			ret;
-    enum readmode	readmode;
-    char		dummy_record [1];    /* used for ISFIRST and ISLAST */
-    char		*precord;
+        register Fab *fab;
+        int reclen;
+        Recno recnum;
+        int ret;
+        enum readmode readmode;
+        char dummy_record[1]; /* used for ISFIRST and ISLAST */
+        char *precord;
 
-    /*
-     * Get File Access Block.
-     */
-    if ((fab = _isfd_find(isfd)) == NULL) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Get File Access Block.
+         */
+        if ((fab = _isfd_find(isfd)) == NULL) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-    /*
-     * Check that the open mode was ISINPUT, or ISINOUT.
-     */
-    if (fab->openmode != OM_INPUT && fab->openmode != OM_INOUT) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Check that the open mode was ISINPUT, or ISINOUT.
+         */
+        if (fab->openmode != OM_INPUT && fab->openmode != OM_INOUT) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-    /*
-     * Extract read mode.
-     */
-    if ((readmode = _getreadmode(mode)) == RM_BADMODE) {
-	_setiserrno2(EBADARG, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Extract read mode.
+         */
+        if ((readmode = _getreadmode(mode)) == RM_BADMODE) {
+                _setiserrno2(EBADARG, '9', '0');
+                return (ISERROR);
+        }
 
-    /*
-     * Some arguments are used only when a particular mode is specified.
-     */
-    if (readmode == RM_FIRST || readmode == RM_LAST || USE_PHYS_ORDER(keydesc)) {
-	precord = dummy_record;
-	reclen = 0;
-    }
-    else {
-	precord = record;
-	reclen = fab->minreclen;
-    }
-    
-    reclen = fab->minreclen;
-	
-    recnum = isrecnum;
+        /*
+         * Some arguments are used only when a particular mode is specified.
+         */
+        if (readmode == RM_FIRST || readmode == RM_LAST ||
+            USE_PHYS_ORDER(keydesc)) {
+                precord = dummy_record;
+                reclen = 0;
+        } else {
+                precord = record;
+                reclen = fab->minreclen;
+        }
 
-    if ((ret = _amstart(&fab->isfhandle, precord, reclen,
-			readmode, keydesc, length, &fab->curpos,
-			&recnum, &fab->errcode)) == ISOK) {
-	isrecnum = recnum;		     /* Set isrecnum */
-    }
+        reclen = fab->minreclen;
 
-    _seterr_errcode(&fab->errcode);
+        recnum = isrecnum;
 
-    return (ret);			     /* Successful start */
+        if ((ret = _amstart(&fab->isfhandle, precord, reclen, readmode, keydesc,
+                            length, &fab->curpos, &recnum, &fab->errcode)) ==
+            ISOK) {
+                isrecnum = recnum; /* Set isrecnum */
+        }
+
+        _seterr_errcode(&fab->errcode);
+
+        return (ret); /* Successful start */
 }
 
 /*
@@ -159,477 +157,492 @@ isstart(isfd, keydesc, length, record, mode)
  */
 
 /* ARGSUSED */
-static int
-_amstart(isfhandle, record, reclen, readmode,
-	 keydesc, keylen, curpos, recnum, errcode)
-    Bytearray		*isfhandle;
-    enum readmode      	readmode;
-    char		*record;
-    int			*reclen;
-    Bytearray		*curpos;
-    Recno		*recnum;
-    struct errcode	*errcode;
-    struct keydesc	*keydesc;
-    int			keylen;
+static int _amstart(isfhandle, record, reclen, readmode, keydesc, keylen,
+                    curpos, recnum, errcode) Bytearray *isfhandle;
+enum readmode readmode;
+char *record;
+int *reclen;
+Bytearray *curpos;
+Recno *recnum;
+struct errcode *errcode;
+struct keydesc *keydesc;
+int keylen;
 {
-    Fcb			*fcb;
-    Recno		recnum2;
-    int			err;
-    Crp			*newcrp = NULL;
-    char		recbuf [ISMAXRECLEN];
-    Keydesc2		keydesc2;
-    Keydesc2		*pkeydesc2;
-    int			newcrpsize = 0;
-    char		keybuf1 [MAXKEYSIZE], keybuf2 [MAXKEYSIZE];
-    int			matchkeylen;
-    int			skipbytes;
-    char		*pkey;
-    Btree		*btree = NULL;
-    int			reclen2;
-    int			(*rec_read)();
+        Fcb *fcb;
+        Recno recnum2;
+        int err;
+        Crp *newcrp = NULL;
+        char recbuf[ISMAXRECLEN];
+        Keydesc2 keydesc2;
+        Keydesc2 *pkeydesc2;
+        int newcrpsize = 0;
+        char keybuf1[MAXKEYSIZE], keybuf2[MAXKEYSIZE];
+        int matchkeylen;
+        int skipbytes;
+        char *pkey;
+        Btree *btree = NULL;
+        int reclen2;
+        int (*rec_read)();
 
-    _isam_entryhook();
+        _isam_entryhook();
 
-    /*
-     * Get FCB corresponding to the isfhandle handle.
-     */
-    if ((fcb = _openfcb(isfhandle, errcode)) == NULL) {
-	_isam_exithook();
-	return (ISERROR);
-    }
+        /*
+         * Get FCB corresponding to the isfhandle handle.
+         */
+        if ((fcb = _openfcb(isfhandle, errcode)) == NULL) {
+                _isam_exithook();
+                return (ISERROR);
+        }
 
-    rec_read = (fcb->varflag?_vlrec_read:_flrec_read);
+        rec_read = (fcb->varflag ? _vlrec_read : _flrec_read);
 
-    /*
-     * Update information in FCB from CNTL page on the disk
-     */
-    (void)_isfcb_cntlpg_r2(fcb);
+        /*
+         * Update information in FCB from CNTL page on the disk
+         */
+        (void)_isfcb_cntlpg_r2(fcb);
 
-    if (USE_PHYS_ORDER(keydesc)) {
-	/*
-	 * Physical order in use.
-	 */
+        if (USE_PHYS_ORDER(keydesc)) {
+                /*
+                 * Physical order in use.
+                 */
 
-	/*
-	 * Allocate new current position structure.
-	 */
-	newcrpsize = sizeof(*newcrp);
-	newcrp = (Crp *) _ismalloc(sizeof(*newcrp));
-	memset ((char *)newcrp, 0, sizeof(*newcrp));
-	newcrp->keyid = PHYS_ORDER;
-	
-	switch (readmode) {
-	case RM_EQUAL:
-	    recnum2 = *recnum;		     /* passed from isrecnum */
-	    if ((err = rec_read(fcb, recbuf, recnum2, &reclen2)) != ISOK) {
-		_amseterrcode(errcode, ENOREC);
-		goto ERROR;
-	    }
-	    newcrp->flag = CRP_BEFORE;
-	    newcrp->recno = recnum2;
-	    break;
+                /*
+                 * Allocate new current position structure.
+                 */
+                newcrpsize = sizeof(*newcrp);
+                newcrp = (Crp *)_ismalloc(sizeof(*newcrp));
+                memset((char *)newcrp, 0, sizeof(*newcrp));
+                newcrp->keyid = PHYS_ORDER;
 
-	case RM_GREAT:
-	    recnum2 = *recnum + 1;
-	    if (recnum2 < 1) recnum2 = 1;
-	    /*
-	     * Skip deleted records.
-	     */
-	    while ((err = rec_read(fcb, recbuf, recnum2, &reclen2)) != ISOK &&
-		   err == ENOREC) 
-		recnum2++;
- 
-	    if (err != ISOK) {
-		_amseterrcode(errcode, ENOREC);
-		goto ERROR;
-	    }
-	    newcrp->flag = CRP_BEFORE;
-	    newcrp->recno = recnum2;
-	    break;
+                switch (readmode) {
+                case RM_EQUAL:
+                        recnum2 = *recnum; /* passed from isrecnum */
+                        if ((err = rec_read(fcb, recbuf, recnum2, &reclen2)) !=
+                            ISOK) {
+                                _amseterrcode(errcode, ENOREC);
+                                goto ERROR;
+                        }
+                        newcrp->flag = CRP_BEFORE;
+                        newcrp->recno = recnum2;
+                        break;
 
-	case RM_GTEQ:
-	    recnum2 = *recnum;
-	    if (recnum2 < 1) recnum2 = 1;
-	    /*
-	     * Skip deleted records.
-	     */
-	    while ((err = rec_read(fcb, recbuf, recnum2, &reclen2)) != ISOK &&
-		   err == ENOREC) 
-		recnum2++;
- 
-	    if (err != ISOK) {
-		_amseterrcode(errcode, ENOREC);
-		goto ERROR;
-	    }
-	    newcrp->flag = CRP_BEFORE;
-	    newcrp->recno = recnum2;
-	    break;
+                case RM_GREAT:
+                        recnum2 = *recnum + 1;
+                        if (recnum2 < 1)
+                                recnum2 = 1;
+                        /*
+                         * Skip deleted records.
+                         */
+                        while ((err = rec_read(fcb, recbuf, recnum2,
+                                               &reclen2)) != ISOK &&
+                               err == ENOREC)
+                                recnum2++;
 
-	case RM_LESS:
-	    recnum2 = *recnum - 1;
-	    if (recnum2 > fcb->lastrecno) recnum2 = fcb->lastrecno;
-	    /*
-	     * Skip deleted records.
-	     */
-	    while ((err = rec_read(fcb, recbuf, recnum2, &reclen2)) != ISOK &&
-		   err == ENOREC) 
-		recnum2--;
- 
-	    if (err != ISOK) {
-		_amseterrcode(errcode, ENOREC);
-		goto ERROR;
-	    }
-	    newcrp->flag = CRP_AFTER;
-	    newcrp->recno = recnum2;
-	    break;
+                        if (err != ISOK) {
+                                _amseterrcode(errcode, ENOREC);
+                                goto ERROR;
+                        }
+                        newcrp->flag = CRP_BEFORE;
+                        newcrp->recno = recnum2;
+                        break;
 
-	case RM_LTEQ:
-	    recnum2 = *recnum;
-	    if (recnum2 > fcb->lastrecno) recnum2 = fcb->lastrecno;
-	    /*
-	     * Skip deleted records.
-	     */
-	    while ((err = rec_read(fcb, recbuf, recnum2, &reclen2)) != ISOK &&
-		   err == ENOREC) 
-		recnum2--;
- 
-	    if (err != ISOK) {
-		_amseterrcode(errcode, ENOREC);
-		goto ERROR;
-	    }
-	    newcrp->flag = CRP_AFTER;
-	    newcrp->recno = recnum2;
-	    break;
+                case RM_GTEQ:
+                        recnum2 = *recnum;
+                        if (recnum2 < 1)
+                                recnum2 = 1;
+                        /*
+                         * Skip deleted records.
+                         */
+                        while ((err = rec_read(fcb, recbuf, recnum2,
+                                               &reclen2)) != ISOK &&
+                               err == ENOREC)
+                                recnum2++;
 
-	case RM_FIRST:
-	    recnum2 = 1;
-	    /*
-	     * Skip deleted records.
-	     */
-	    while ((err = rec_read(fcb, recbuf, recnum2, &reclen2)) != ISOK &&
-		   err == ENOREC) 
-		recnum2++;
- 
-	    if (err == ISOK) {
-		newcrp->flag = CRP_BEFORE;
-		newcrp->recno = recnum2;
-	    }
-	    else {
-		newcrp->flag = CRP_AFTERANY;
-	    }
-	    break;
-	case RM_LAST:
-	    recnum2 = fcb->lastrecno;
-	    /*
-	     * Skip deleted records.
-	     */
-	    while ((err = rec_read(fcb, recbuf, recnum2, &reclen2)) != ISOK &&
-		   err == ENOREC) 
-		recnum2--;
+                        if (err != ISOK) {
+                                _amseterrcode(errcode, ENOREC);
+                                goto ERROR;
+                        }
+                        newcrp->flag = CRP_BEFORE;
+                        newcrp->recno = recnum2;
+                        break;
 
-	    if (err == ISOK) {
-		newcrp->flag = CRP_AFTER;
-		newcrp->recno = recnum2;
-	    }
-	    else {
-		newcrp->flag = CRP_BEFOREANY;
-	    }
-	    break;
-	default:
-	    _isfatal_error("Invalid readmode");
-	}
+                case RM_LESS:
+                        recnum2 = *recnum - 1;
+                        if (recnum2 > fcb->lastrecno)
+                                recnum2 = fcb->lastrecno;
+                        /*
+                         * Skip deleted records.
+                         */
+                        while ((err = rec_read(fcb, recbuf, recnum2,
+                                               &reclen2)) != ISOK &&
+                               err == ENOREC)
+                                recnum2--;
 
-	*recnum = recnum2;
+                        if (err != ISOK) {
+                                _amseterrcode(errcode, ENOREC);
+                                goto ERROR;
+                        }
+                        newcrp->flag = CRP_AFTER;
+                        newcrp->recno = recnum2;
+                        break;
 
-	/*
-	 * Build new curpos, deallocate old curpos.
-	 */
-	_bytearr_free(curpos);
-	*curpos = _bytearr_new(sizeof(*newcrp), (char *)newcrp);
+                case RM_LTEQ:
+                        recnum2 = *recnum;
+                        if (recnum2 > fcb->lastrecno)
+                                recnum2 = fcb->lastrecno;
+                        /*
+                         * Skip deleted records.
+                         */
+                        while ((err = rec_read(fcb, recbuf, recnum2,
+                                               &reclen2)) != ISOK &&
+                               err == ENOREC)
+                                recnum2--;
 
-    } /* physical order */
-    else {
+                        if (err != ISOK) {
+                                _amseterrcode(errcode, ENOREC);
+                                goto ERROR;
+                        }
+                        newcrp->flag = CRP_AFTER;
+                        newcrp->recno = recnum2;
+                        break;
 
-	/*
-	 * Use order defined by some key.
-	 */
-	
-	/*
-	 * Check key descriptor for validity.
-	 */
-	if (_validate_keydesc(keydesc, fcb->minreclen) != ISOK) {
-	    _amseterrcode(errcode, EBADKEY);
-	    goto ERROR;
-	}
-	
-	/*
-	 * Convert key descriptor to internal form.
-	 */
-	_iskey_xtoi (&keydesc2, keydesc);
-	
-	/* Find key decriptor in the FCB. */
-	if ((pkeydesc2 = _isfcb_findkey(fcb ,&keydesc2)) == NULL) {
-	    _amseterrcode(errcode, EBADKEY);
-	    goto ERROR;
-	}
+                case RM_FIRST:
+                        recnum2 = 1;
+                        /*
+                         * Skip deleted records.
+                         */
+                        while ((err = rec_read(fcb, recbuf, recnum2,
+                                               &reclen2)) != ISOK &&
+                               err == ENOREC)
+                                recnum2++;
 
-	/*
-	 * skipkeybytes is set to the number of bytes in the beginning
-	 * of the key:
-	 *  RECNOSIZE for ISNODUPS keys to skip recno part
-	 *  RECNOSIZE + DUPIDSIZE to skip recno and duplicate serial number
-	 */
-	skipbytes = RECNOSIZE;
-	if (ALLOWS_DUPS2(pkeydesc2))
-	    skipbytes += DUPIDSIZE;
+                        if (err == ISOK) {
+                                newcrp->flag = CRP_BEFORE;
+                                newcrp->recno = recnum2;
+                        } else {
+                                newcrp->flag = CRP_AFTERANY;
+                        }
+                        break;
+                case RM_LAST:
+                        recnum2 = fcb->lastrecno;
+                        /*
+                         * Skip deleted records.
+                         */
+                        while ((err = rec_read(fcb, recbuf, recnum2,
+                                               &reclen2)) != ISOK &&
+                               err == ENOREC)
+                                recnum2--;
 
-	/*
-	 * Validate keylen.
-	 */
-	if (keylen < 0 || keylen > pkeydesc2->k2_len - skipbytes) {
-	    _amseterrcode(errcode, EBADARG);
-	    goto ERROR;
-	}
+                        if (err == ISOK) {
+                                newcrp->flag = CRP_AFTER;
+                                newcrp->recno = recnum2;
+                        } else {
+                                newcrp->flag = CRP_BEFOREANY;
+                        }
+                        break;
+                default:
+                        _isfatal_error("Invalid readmode");
+                }
 
-	/*
-	 * Special case if keylen == 0: use the entire key.
-	 */
-	if (keylen == 0)
-	    matchkeylen = pkeydesc2->k2_len - skipbytes;
-	else
-	    matchkeylen = keylen;
+                *recnum = recnum2;
 
-	/*
-	 * Allocate new current record position.
-	 */
-	newcrpsize = sizeof(Crp) + pkeydesc2->k2_len;
-	newcrp = (Crp *) _ismalloc((unsigned)newcrpsize);
-	memset((char *)newcrp, 0, newcrpsize);
+                /*
+                 * Build new curpos, deallocate old curpos.
+                 */
+                _bytearr_free(curpos);
+                *curpos = _bytearr_new(sizeof(*newcrp), (char *)newcrp);
 
-	newcrp->keyid = pkeydesc2->k2_keyid; /* Key identifier in FCB */
-	newcrp->matchkeylen = matchkeylen;   /* number of bytes to match */
+        } /* physical order */
+        else {
 
-	/*
-	 * Create B tree object.
-	 */
-	btree = _isbtree_create(fcb, pkeydesc2);
+                /*
+                 * Use order defined by some key.
+                 */
 
-	switch (readmode) {
-	case RM_EQUAL:
-	case RM_GTEQ:
-            /* 
-	     * Make sure that you will read the first duplicate. 
-	     */
-            _iskey_fillmin(pkeydesc2, keybuf1);
- 
-            /* 
-	     * Extract key fields from record. 
-	     */
-            _iskey_extract(pkeydesc2, record, keybuf2);
-            memcpy( keybuf1 + skipbytes,keybuf2 + skipbytes, matchkeylen);
+                /*
+                 * Check key descriptor for validity.
+                 */
+                if (_validate_keydesc(keydesc, fcb->minreclen) != ISOK) {
+                        _amseterrcode(errcode, EBADKEY);
+                        goto ERROR;
+                }
 
-            /*
-	     * Position pointer in the B-tree in before the searched value. 
-	     */
-            _isbtree_search(btree, keybuf1);
-        
-            if ((pkey = _isbtree_next(btree)) == NULL) {
-		_amseterrcode(errcode, ENOREC);
-		goto ERROR;
-	    }
-            
-            if (readmode == RM_EQUAL &&
-                memcmp(keybuf1 + skipbytes, pkey + skipbytes, 
-		       matchkeylen) != 0) {
-		_amseterrcode(errcode, ENOREC);
-		goto ERROR;
-	    }
+                /*
+                 * Convert key descriptor to internal form.
+                 */
+                _iskey_xtoi(&keydesc2, keydesc);
 
-	    newcrp->flag = CRP_BEFORE;
-	    newcrp->recno = ldrecno(pkey + KEY_RECNO_OFF);
-	    memcpy( newcrp->key,pkey, pkeydesc2->k2_len);
-	    break;
+                /* Find key decriptor in the FCB. */
+                if ((pkeydesc2 = _isfcb_findkey(fcb, &keydesc2)) == NULL) {
+                        _amseterrcode(errcode, EBADKEY);
+                        goto ERROR;
+                }
 
-	case RM_GREAT:
-            /* 
-	     * Make sure that you will read past all matching records.
-	     */
-            _iskey_fillmax(pkeydesc2, keybuf1);
- 
-            /* 
-	     * Extract key fields from record. 
-	     */
-            _iskey_extract(pkeydesc2, record, keybuf2);
-            memcpy( keybuf1 + skipbytes,keybuf2 + skipbytes, matchkeylen);
+                /*
+                 * skipkeybytes is set to the number of bytes in the beginning
+                 * of the key:
+                 *  RECNOSIZE for ISNODUPS keys to skip recno part
+                 *  RECNOSIZE + DUPIDSIZE to skip recno and duplicate serial
+                 * number
+                 */
+                skipbytes = RECNOSIZE;
+                if (ALLOWS_DUPS2(pkeydesc2))
+                        skipbytes += DUPIDSIZE;
 
-            /*
-	     * Position pointer in the B-tree after the searched value. 
-	     */
-            _isbtree_search(btree, keybuf1);
-        
-            if ((pkey = _isbtree_next(btree)) == NULL) {
-		_amseterrcode(errcode, ENOREC);
-		goto ERROR;
-	    }
-            
-	    newcrp->flag = CRP_BEFORE;
-	    newcrp->recno = ldrecno(pkey + KEY_RECNO_OFF);
-	    memcpy( newcrp->key,pkey, pkeydesc2->k2_len);
-	    break;
-	    
-	case RM_LESS:
-            /* 
-	     * Make sure that you will read before all matching records.
-	     */
-            _iskey_fillmin(pkeydesc2, keybuf1);
- 
-            /* 
-	     * Extract key fields from record. 
-	     */
-            _iskey_extract(pkeydesc2, record, keybuf2);
-            memcpy( keybuf1 + skipbytes,keybuf2 + skipbytes, matchkeylen);
+                /*
+                 * Validate keylen.
+                 */
+                if (keylen < 0 || keylen > pkeydesc2->k2_len - skipbytes) {
+                        _amseterrcode(errcode, EBADARG);
+                        goto ERROR;
+                }
 
-            /*
-	     * Position pointer in the B-tree after the searched value. 
-	     */
-            _isbtree_search(btree, keybuf1);
-        
-            if ((pkey = _isbtree_current(btree)) == NULL) {
-		_amseterrcode(errcode, ENOREC);
-		goto ERROR;
-	    }
-            
-	    newcrp->flag = CRP_AFTER;
-	    newcrp->recno = ldrecno(pkey + KEY_RECNO_OFF);
-	    memcpy( newcrp->key,pkey, pkeydesc2->k2_len);
-	    break;
+                /*
+                 * Special case if keylen == 0: use the entire key.
+                 */
+                if (keylen == 0)
+                        matchkeylen = pkeydesc2->k2_len - skipbytes;
+                else
+                        matchkeylen = keylen;
 
-	case RM_LTEQ:
-            /* 
-	     * Make sure that you will the last duplicate.
-	     */
-            _iskey_fillmax(pkeydesc2, keybuf1);
- 
-            /* 
-	     * Extract key fields from record. 
-	     */
-            _iskey_extract(pkeydesc2, record, keybuf2);
-            memcpy( keybuf1 + skipbytes,keybuf2 + skipbytes, matchkeylen);
+                /*
+                 * Allocate new current record position.
+                 */
+                newcrpsize = sizeof(Crp) + pkeydesc2->k2_len;
+                newcrp = (Crp *)_ismalloc((unsigned)newcrpsize);
+                memset((char *)newcrp, 0, newcrpsize);
 
-            /*
-	     * Position pointer in the B-tree in before the searched value. 
-	     */
-            _isbtree_search(btree, keybuf1);
-        
-            if ((pkey = _isbtree_current(btree)) == NULL) {
-		_amseterrcode(errcode, ENOREC);
-		goto ERROR;
-	    }
-            
-	    newcrp->flag = CRP_AFTER;
-	    newcrp->recno = ldrecno(pkey + KEY_RECNO_OFF);
-	    memcpy( newcrp->key,pkey, pkeydesc2->k2_len);
-	    break;
+                newcrp->keyid = pkeydesc2->k2_keyid; /* Key identifier in FCB */
+                newcrp->matchkeylen =
+                    matchkeylen; /* number of bytes to match */
 
-	case RM_FIRST:
-            /* 
-	     * Fill key buffer with -infinity.
-	     */
-            _iskey_fillmin(pkeydesc2, keybuf1);
- 
-            /*
-	     * Position pointer in the B-tree before any key entry.
-	     */
-            _isbtree_search(btree, keybuf1);
-        
-            if ((pkey = _isbtree_next(btree)) == NULL) {
-		newcrp->flag = CRP_AFTERANY;
-	    }
-            else {
-		newcrp->flag = CRP_BEFORE;
-		newcrp->recno = ldrecno(pkey + KEY_RECNO_OFF);
-		memcpy( newcrp->key,pkey, pkeydesc2->k2_len);
-	    }
-	    break;
+                /*
+                 * Create B tree object.
+                 */
+                btree = _isbtree_create(fcb, pkeydesc2);
 
-	case RM_LAST:
-            /* 
-	     * Fill key buffer with +infinity.
-	     */
-            _iskey_fillmax(pkeydesc2, keybuf1);
- 
-            /*
-	     * Position pointer in the B-tree after all entries.
-	     */
-            _isbtree_search(btree, keybuf1);
-        
-            if ((pkey = _isbtree_current(btree)) == NULL) {
-		newcrp->flag = CRP_BEFOREANY;
-	    }
-	    else {
-		newcrp->flag = CRP_AFTER;
-		newcrp->recno = ldrecno(pkey + KEY_RECNO_OFF);
-		memcpy( newcrp->key,pkey, pkeydesc2->k2_len);
-	    }
-	    break;
+                switch (readmode) {
+                case RM_EQUAL:
+                case RM_GTEQ:
+                        /*
+                         * Make sure that you will read the first duplicate.
+                         */
+                        _iskey_fillmin(pkeydesc2, keybuf1);
 
-	default:
-	    _isfatal_error("Invalid readmode");
-	}
+                        /*
+                         * Extract key fields from record.
+                         */
+                        _iskey_extract(pkeydesc2, record, keybuf2);
+                        memcpy(keybuf1 + skipbytes, keybuf2 + skipbytes,
+                               matchkeylen);
 
-	*recnum = newcrp->recno;
+                        /*
+                         * Position pointer in the B-tree in before the searched
+                         * value.
+                         */
+                        _isbtree_search(btree, keybuf1);
 
-	/*
-	 * Build new curpos, deallocate old curpos data.
-	 */
-	_bytearr_free(curpos);
-	*curpos = _bytearr_new((u_short)newcrpsize, (char *)newcrp);
+                        if ((pkey = _isbtree_next(btree)) == NULL) {
+                                _amseterrcode(errcode, ENOREC);
+                                goto ERROR;
+                        }
 
-	_isbtree_destroy(btree);
-    }
+                        if (readmode == RM_EQUAL &&
+                            memcmp(keybuf1 + skipbytes, pkey + skipbytes,
+                                   matchkeylen) != 0) {
+                                _amseterrcode(errcode, ENOREC);
+                                goto ERROR;
+                        }
 
-    _amseterrcode(errcode, ISOK);
+                        newcrp->flag = CRP_BEFORE;
+                        newcrp->recno = ldrecno(pkey + KEY_RECNO_OFF);
+                        memcpy(newcrp->key, pkey, pkeydesc2->k2_len);
+                        break;
 
-    /* Clean-up work. */
-    if (newcrp != NULL)
-	free(newcrp);
+                case RM_GREAT:
+                        /*
+                         * Make sure that you will read past all matching
+                         * records.
+                         */
+                        _iskey_fillmax(pkeydesc2, keybuf1);
 
-    _isdisk_commit();			     /* This will only check
-					      * that we unfixed all fixed
-					      * buffers */
-    _isdisk_inval();
+                        /*
+                         * Extract key fields from record.
+                         */
+                        _iskey_extract(pkeydesc2, record, keybuf2);
+                        memcpy(keybuf1 + skipbytes, keybuf2 + skipbytes,
+                               matchkeylen);
 
-    _isam_exithook();
-    return (ISOK);
+                        /*
+                         * Position pointer in the B-tree after the searched
+                         * value.
+                         */
+                        _isbtree_search(btree, keybuf1);
 
- ERROR:
+                        if ((pkey = _isbtree_next(btree)) == NULL) {
+                                _amseterrcode(errcode, ENOREC);
+                                goto ERROR;
+                        }
 
-    if (btree != NULL)
-	_isbtree_destroy(btree);
+                        newcrp->flag = CRP_BEFORE;
+                        newcrp->recno = ldrecno(pkey + KEY_RECNO_OFF);
+                        memcpy(newcrp->key, pkey, pkeydesc2->k2_len);
+                        break;
 
-    /*
-     * If error is EBADKEY, make the current position undefined.
-     */
-    if (errcode->iserrno == EBADKEY) {
-	((Crp *)curpos->data)->flag = CRP_UNDEF;
-    }
+                case RM_LESS:
+                        /*
+                         * Make sure that you will read before all matching
+                         * records.
+                         */
+                        _iskey_fillmin(pkeydesc2, keybuf1);
 
-    /*
-     * If error is ENOREC, switch to the new key, but set the current
-     * record position undefined.
-     */
-    if (errcode->iserrno == ENOREC && newcrp != NULL) {
-	_bytearr_free(curpos);
-	*curpos = _bytearr_new((u_short)newcrpsize, (char *)newcrp);
-	((Crp *)curpos->data)->flag = CRP_UNDEF;
-    }
+                        /*
+                         * Extract key fields from record.
+                         */
+                        _iskey_extract(pkeydesc2, record, keybuf2);
+                        memcpy(keybuf1 + skipbytes, keybuf2 + skipbytes,
+                               matchkeylen);
 
-    if (newcrp != NULL)
-	free((char *)newcrp);
-    _isdisk_inval();
+                        /*
+                         * Position pointer in the B-tree after the searched
+                         * value.
+                         */
+                        _isbtree_search(btree, keybuf1);
 
-    _isam_exithook();
-    return (ISERROR);
+                        if ((pkey = _isbtree_current(btree)) == NULL) {
+                                _amseterrcode(errcode, ENOREC);
+                                goto ERROR;
+                        }
+
+                        newcrp->flag = CRP_AFTER;
+                        newcrp->recno = ldrecno(pkey + KEY_RECNO_OFF);
+                        memcpy(newcrp->key, pkey, pkeydesc2->k2_len);
+                        break;
+
+                case RM_LTEQ:
+                        /*
+                         * Make sure that you will the last duplicate.
+                         */
+                        _iskey_fillmax(pkeydesc2, keybuf1);
+
+                        /*
+                         * Extract key fields from record.
+                         */
+                        _iskey_extract(pkeydesc2, record, keybuf2);
+                        memcpy(keybuf1 + skipbytes, keybuf2 + skipbytes,
+                               matchkeylen);
+
+                        /*
+                         * Position pointer in the B-tree in before the searched
+                         * value.
+                         */
+                        _isbtree_search(btree, keybuf1);
+
+                        if ((pkey = _isbtree_current(btree)) == NULL) {
+                                _amseterrcode(errcode, ENOREC);
+                                goto ERROR;
+                        }
+
+                        newcrp->flag = CRP_AFTER;
+                        newcrp->recno = ldrecno(pkey + KEY_RECNO_OFF);
+                        memcpy(newcrp->key, pkey, pkeydesc2->k2_len);
+                        break;
+
+                case RM_FIRST:
+                        /*
+                         * Fill key buffer with -infinity.
+                         */
+                        _iskey_fillmin(pkeydesc2, keybuf1);
+
+                        /*
+                         * Position pointer in the B-tree before any key entry.
+                         */
+                        _isbtree_search(btree, keybuf1);
+
+                        if ((pkey = _isbtree_next(btree)) == NULL) {
+                                newcrp->flag = CRP_AFTERANY;
+                        } else {
+                                newcrp->flag = CRP_BEFORE;
+                                newcrp->recno = ldrecno(pkey + KEY_RECNO_OFF);
+                                memcpy(newcrp->key, pkey, pkeydesc2->k2_len);
+                        }
+                        break;
+
+                case RM_LAST:
+                        /*
+                         * Fill key buffer with +infinity.
+                         */
+                        _iskey_fillmax(pkeydesc2, keybuf1);
+
+                        /*
+                         * Position pointer in the B-tree after all entries.
+                         */
+                        _isbtree_search(btree, keybuf1);
+
+                        if ((pkey = _isbtree_current(btree)) == NULL) {
+                                newcrp->flag = CRP_BEFOREANY;
+                        } else {
+                                newcrp->flag = CRP_AFTER;
+                                newcrp->recno = ldrecno(pkey + KEY_RECNO_OFF);
+                                memcpy(newcrp->key, pkey, pkeydesc2->k2_len);
+                        }
+                        break;
+
+                default:
+                        _isfatal_error("Invalid readmode");
+                }
+
+                *recnum = newcrp->recno;
+
+                /*
+                 * Build new curpos, deallocate old curpos data.
+                 */
+                _bytearr_free(curpos);
+                *curpos = _bytearr_new((u_short)newcrpsize, (char *)newcrp);
+
+                _isbtree_destroy(btree);
+        }
+
+        _amseterrcode(errcode, ISOK);
+
+        /* Clean-up work. */
+        if (newcrp != NULL)
+                free(newcrp);
+
+        _isdisk_commit(); /* This will only check
+                           * that we unfixed all fixed
+                           * buffers */
+        _isdisk_inval();
+
+        _isam_exithook();
+        return (ISOK);
+
+ERROR:
+
+        if (btree != NULL)
+                _isbtree_destroy(btree);
+
+        /*
+         * If error is EBADKEY, make the current position undefined.
+         */
+        if (errcode->iserrno == EBADKEY) {
+                ((Crp *)curpos->data)->flag = CRP_UNDEF;
+        }
+
+        /*
+         * If error is ENOREC, switch to the new key, but set the current
+         * record position undefined.
+         */
+        if (errcode->iserrno == ENOREC && newcrp != NULL) {
+                _bytearr_free(curpos);
+                *curpos = _bytearr_new((u_short)newcrpsize, (char *)newcrp);
+                ((Crp *)curpos->data)->flag = CRP_UNDEF;
+        }
+
+        if (newcrp != NULL)
+                free((char *)newcrp);
+        _isdisk_inval();
+
+        _isam_exithook();
+        return (ISERROR);
 }
-
-

@@ -28,17 +28,16 @@ class OL_Expression;
 
 class ExprList {
 
-private:
-  OL_Expression *head;
+      private:
+        OL_Expression *head;
 
-public:
-  ExprList();
-  ExprList( OL_Expression *elist);
-  ~ExprList();
+      public:
+        ExprList();
+        ExprList(OL_Expression *elist);
+        ~ExprList();
 
-  OL_Expression *first();
-  OL_Expression *next( OL_Expression *elem );
-
+        OL_Expression *first();
+        OL_Expression *next(OL_Expression *elem);
 };
 
 #endif

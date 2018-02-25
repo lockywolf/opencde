@@ -22,12 +22,12 @@
  */
 /* $XConsortium: image.c /main/4 1995/11/02 14:05:39 rswiston $ */
 /*********************************************************************
-*  (c) Copyright 1993, 1994 Hewlett-Packard Company	
-*  (c) Copyright 1993, 1994 International Business Machines Corp.
-*  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
-*  (c) Copyright 1993, 1994 Unix System Labs, Inc., a subsidiary of
-*      Novell, Inc.
-**********************************************************************/
+ *  (c) Copyright 1993, 1994 Hewlett-Packard Company
+ *  (c) Copyright 1993, 1994 International Business Machines Corp.
+ *  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+ *  (c) Copyright 1993, 1994 Unix System Labs, Inc., a subsidiary of
+ *      Novell, Inc.
+ **********************************************************************/
 /******************************************************************************
  **  Program:		dticon
  **
@@ -57,7 +57,6 @@
 
 int flood_min_x, flood_min_y, flood_max_x, flood_max_y;
 
-
 /***************************************************************************
  *                                                                         *
  * Routine:   Mirror_Image                                                 *
@@ -69,104 +68,104 @@ int flood_min_x, flood_min_y, flood_max_x, flood_max_y;
  *                                                                         *
  *X11***********************************************************************/
 
-int
-Mirror_Image(
-        int orientation )
-{
-  XRectangle tmp_box;
-  XImage *new_image, *old_image, *new_mono, *old_mono;
-  unsigned long n;
-  int i, j;
+int Mirror_Image(int orientation) {
+        XRectangle tmp_box;
+        XImage *new_image, *old_image, *new_mono, *old_mono;
+        unsigned long n;
+        int i, j;
 
 #ifdef DEBUG
-  if (debug)
-    stat_out("Entering Mirror_Image\n");
+        if (debug)
+                stat_out("Entering Mirror_Image\n");
 #endif
 
-  if (!Selected)
-    return (False);
-/*--- get src. & dst. images from both color and monochrome icons ---*/
+        if (!Selected)
+                return (False);
+        /*--- get src. & dst. images from both color and monochrome icons ---*/
 
-  old_image = XGetImage(dpy, color_icon, select_box.x, select_box.y,
-		select_box.width, select_box.height, AllPlanes, format);
-  if (old_image == NULL)
-    return (False);
-  new_image  = XGetImage(dpy, color_icon, select_box.x, select_box.y,
-		select_box.width, select_box.height, AllPlanes, format);
-  if (new_image == NULL) {
-    XDestroyImage(old_image);
-    return (False);
-   }
+        old_image =
+            XGetImage(dpy, color_icon, select_box.x, select_box.y,
+                      select_box.width, select_box.height, AllPlanes, format);
+        if (old_image == NULL)
+                return (False);
+        new_image =
+            XGetImage(dpy, color_icon, select_box.x, select_box.y,
+                      select_box.width, select_box.height, AllPlanes, format);
+        if (new_image == NULL) {
+                XDestroyImage(old_image);
+                return (False);
+        }
 
-  old_mono = XGetImage(dpy, mono_icon, select_box.x, select_box.y,
-		select_box.width, select_box.height, AllPlanes, format);
-  if (old_mono == NULL) {
-    XDestroyImage(old_image);
-    XDestroyImage(new_image);
-    return (False);
-   }
-  new_mono  = XGetImage(dpy, mono_icon, select_box.x, select_box.y,
-		select_box.width, select_box.height, AllPlanes, format);
-  if (new_mono == NULL) {
-    XDestroyImage(old_image);
-    XDestroyImage(new_image);
-    XDestroyImage(old_mono);
-    return (False);
-   }
+        old_mono =
+            XGetImage(dpy, mono_icon, select_box.x, select_box.y,
+                      select_box.width, select_box.height, AllPlanes, format);
+        if (old_mono == NULL) {
+                XDestroyImage(old_image);
+                XDestroyImage(new_image);
+                return (False);
+        }
+        new_mono =
+            XGetImage(dpy, mono_icon, select_box.x, select_box.y,
+                      select_box.width, select_box.height, AllPlanes, format);
+        if (new_mono == NULL) {
+                XDestroyImage(old_image);
+                XDestroyImage(new_image);
+                XDestroyImage(old_mono);
+                return (False);
+        }
 
 #ifdef DEBUG
-  if (debug)
-    stat_out("  - got the images\n");
+        if (debug)
+                stat_out("  - got the images\n");
 #endif
 
-  for (i=0; i<(int)select_box.width; i++)
-    for (j=0; j<(int)select_box.height; j++) {
-      if (orientation == VERTICAL) {
-	n = XGetPixel(old_image, i, j);
-	XPutPixel(new_image, i, (select_box.height-1)-j, n);
-	n = XGetPixel(old_mono, i, j);
-	XPutPixel(new_mono, i, (select_box.height-1)-j, n);
-       }
-      else {
-	n = XGetPixel(old_image, i, j);
-	XPutPixel(new_image, (select_box.width-1)-i, j, n);
-	n = XGetPixel(old_mono, i, j);
-	XPutPixel(new_mono, (select_box.width-1)-i, j, n);
-       }
-     } /* for(j...) */
-  XFlush(dpy);
+        for (i = 0; i < (int)select_box.width; i++)
+                for (j = 0; j < (int)select_box.height; j++) {
+                        if (orientation == VERTICAL) {
+                                n = XGetPixel(old_image, i, j);
+                                XPutPixel(new_image, i,
+                                          (select_box.height - 1) - j, n);
+                                n = XGetPixel(old_mono, i, j);
+                                XPutPixel(new_mono, i,
+                                          (select_box.height - 1) - j, n);
+                        } else {
+                                n = XGetPixel(old_image, i, j);
+                                XPutPixel(new_image, (select_box.width - 1) - i,
+                                          j, n);
+                                n = XGetPixel(old_mono, i, j);
+                                XPutPixel(new_mono, (select_box.width - 1) - i,
+                                          j, n);
+                        }
+                } /* for(j...) */
+        XFlush(dpy);
 
-  XPutImage(dpy, color_icon, Color_gc, new_image, 0, 0,
-		select_box.x, select_box.y,
-		select_box.width, select_box.height);
-  XPutImage(dpy, XtWindow(iconImage), Color_gc, new_image, 0, 0,
-		select_box.x, select_box.y,
-		select_box.width, select_box.height);
+        XPutImage(dpy, color_icon, Color_gc, new_image, 0, 0, select_box.x,
+                  select_box.y, select_box.width, select_box.height);
+        XPutImage(dpy, XtWindow(iconImage), Color_gc, new_image, 0, 0,
+                  select_box.x, select_box.y, select_box.width,
+                  select_box.height);
 
-  XPutImage(dpy, mono_icon, Mono_gc, new_mono, 0, 0,
-		select_box.x, select_box.y,
-		select_box.width, select_box.height);
-  XPutImage(dpy, XtWindow(monoImage), Mono_gc, new_mono, 0, 0,
-		select_box.x, select_box.y,
-		select_box.width, select_box.height);
-  Transfer_Back_Image(select_box.x, select_box.y,
-			(select_box.x+select_box.width-1),
-			(select_box.y+select_box.height-1),
-			FILL);
+        XPutImage(dpy, mono_icon, Mono_gc, new_mono, 0, 0, select_box.x,
+                  select_box.y, select_box.width, select_box.height);
+        XPutImage(dpy, XtWindow(monoImage), Mono_gc, new_mono, 0, 0,
+                  select_box.x, select_box.y, select_box.width,
+                  select_box.height);
+        Transfer_Back_Image(select_box.x, select_box.y,
+                            (select_box.x + select_box.width - 1),
+                            (select_box.y + select_box.height - 1), FILL);
 
-  XDestroyImage(new_image);
-  XDestroyImage(old_image);
-  XDestroyImage(new_mono);
-  XDestroyImage(old_mono);
+        XDestroyImage(new_image);
+        XDestroyImage(old_image);
+        XDestroyImage(new_mono);
+        XDestroyImage(old_mono);
 
 #ifdef DEBUG
-  if (debug)
-    stat_out("Leaving Mirror_Image\n");
+        if (debug)
+                stat_out("Leaving Mirror_Image\n");
 #endif
 
-  return (True);
+        return (True);
 }
-
 
 /***************************************************************************
  *                                                                         *
@@ -179,47 +178,43 @@ Mirror_Image(
  *                                                                         *
  *X11***********************************************************************/
 
-int
-Block_Rotate(
-        XImage *src_image,
-        XImage *dst_image,
-        int rtype )
-{
-  int i, j, width, height;
-  unsigned long n;
+int Block_Rotate(XImage *src_image, XImage *dst_image, int rtype) {
+        int i, j, width, height;
+        unsigned long n;
 
 #ifdef DEBUG
-  if (debug)
-    stat_out("Entering Block_Rotate\n");
+        if (debug)
+                stat_out("Entering Block_Rotate\n");
 #endif
 
-  width  = src_image->width;
-  height = src_image->height;
+        width = src_image->width;
+        height = src_image->height;
 
-  switch (rtype) {
-    case ROTATE_L   : for (i=0; i<width; i++)
-			for (j=0; j<height; j++) {
-			  n = XGetPixel(src_image, i, j);
-			  XPutPixel(dst_image, j, (width-1)-i, n);
-			 }
-		      break;
-    case ROTATE_R   : for (i=0; i<width; i++)
-			for (j=0; j<height; j++) {
-			  n = XGetPixel(src_image, i, j);
-			  XPutPixel(dst_image, (height-1)-j, i, n);
-			 }
-		      break;
-   } /* switch */
-  XFlush(dpy);
+        switch (rtype) {
+        case ROTATE_L:
+                for (i = 0; i < width; i++)
+                        for (j = 0; j < height; j++) {
+                                n = XGetPixel(src_image, i, j);
+                                XPutPixel(dst_image, j, (width - 1) - i, n);
+                        }
+                break;
+        case ROTATE_R:
+                for (i = 0; i < width; i++)
+                        for (j = 0; j < height; j++) {
+                                n = XGetPixel(src_image, i, j);
+                                XPutPixel(dst_image, (height - 1) - j, i, n);
+                        }
+                break;
+        } /* switch */
+        XFlush(dpy);
 
 #ifdef DEBUG
-  if (debug)
-    stat_out("Leaving Block_Rotate\n");
+        if (debug)
+                stat_out("Leaving Block_Rotate\n");
 #endif
 
-  return (True);
+        return (True);
 }
-
 
 /***************************************************************************
  *                                                                         *
@@ -230,70 +225,69 @@ Block_Rotate(
  *                                                                         *
  *X11***********************************************************************/
 
-void
-Scale_Image( void )
-{
-  XImage *old_img, *old_mono;
-  int  old_x, old_y, new_x, new_y;
-  int  old_width, old_height, new_width, new_height;
-  int min_x, min_y, max_x, max_y;
-   
-#ifdef DEBUG
-  if (debug)
-    stat_out("Entering Scale_Image\n");
-#endif
-
-  min_x = min(ix, last_ix);
-  min_y = min(iy, last_iy);
-  max_x = max(ix, last_ix);
-  max_y = max(iy, last_iy);
-
-/*** make sure all four points are on the tablet ***/
-
-  if (min_x < 0)
-    min_x = 0;
-  if (min_y < 0)
-    min_y = 0;
-  if ((max_x) >= icon_width)
-    max_x = icon_width-1;
-  if ((max_y) >= icon_height)
-    max_y = icon_height-1;
-
-  old_img = XGetImage(dpy, color_icon, select_box.x, select_box.y,
-			select_box.width, select_box.height,
-			AllPlanes, format);
-  old_mono = XGetImage(dpy, mono_icon, select_box.x, select_box.y,
-			select_box.width, select_box.height,
-			AllPlanes, format);
-
-  Scale = XGetImage(dpy, color_icon, min_x, min_y,
-			(max_x-min_x+1), (max_y-min_y+1), AllPlanes, format);
-  Scale_mono = XGetImage(dpy, mono_icon, min_x, min_y,
-			(max_x-min_x+1), (max_y-min_y+1), AllPlanes, format);
-
-  old_width  = old_img->width;
-  old_height = old_img->height;
-  new_width  = Scale->width;
-  new_height = Scale->height;
-  for (new_y=0;  new_y<new_height;  new_y++) {
-    old_y = (old_height * new_y) / new_height;
-    for (new_x=0;  new_x<new_width;  new_x++) {
-      old_x = (old_width * new_x) / new_width;
-      XPutPixel(Scale, new_x, new_y, XGetPixel(old_img, old_x, old_y));
-      XPutPixel(Scale_mono, new_x, new_y, XGetPixel(old_mono, old_x, old_y));
-    }
-  }
-
-  XDestroyImage(old_img);
-  XDestroyImage(old_mono);
+void Scale_Image(void) {
+        XImage *old_img, *old_mono;
+        int old_x, old_y, new_x, new_y;
+        int old_width, old_height, new_width, new_height;
+        int min_x, min_y, max_x, max_y;
 
 #ifdef DEBUG
-  if (debug)
-    stat_out("Leaving Scale_Image\n");
+        if (debug)
+                stat_out("Entering Scale_Image\n");
 #endif
 
+        min_x = min(ix, last_ix);
+        min_y = min(iy, last_iy);
+        max_x = max(ix, last_ix);
+        max_y = max(iy, last_iy);
+
+        /*** make sure all four points are on the tablet ***/
+
+        if (min_x < 0)
+                min_x = 0;
+        if (min_y < 0)
+                min_y = 0;
+        if ((max_x) >= icon_width)
+                max_x = icon_width - 1;
+        if ((max_y) >= icon_height)
+                max_y = icon_height - 1;
+
+        old_img =
+            XGetImage(dpy, color_icon, select_box.x, select_box.y,
+                      select_box.width, select_box.height, AllPlanes, format);
+        old_mono =
+            XGetImage(dpy, mono_icon, select_box.x, select_box.y,
+                      select_box.width, select_box.height, AllPlanes, format);
+
+        Scale = XGetImage(dpy, color_icon, min_x, min_y, (max_x - min_x + 1),
+                          (max_y - min_y + 1), AllPlanes, format);
+        Scale_mono =
+            XGetImage(dpy, mono_icon, min_x, min_y, (max_x - min_x + 1),
+                      (max_y - min_y + 1), AllPlanes, format);
+
+        old_width = old_img->width;
+        old_height = old_img->height;
+        new_width = Scale->width;
+        new_height = Scale->height;
+        for (new_y = 0; new_y < new_height; new_y++) {
+                old_y = (old_height * new_y) / new_height;
+                for (new_x = 0; new_x < new_width; new_x++) {
+                        old_x = (old_width * new_x) / new_width;
+                        XPutPixel(Scale, new_x, new_y,
+                                  XGetPixel(old_img, old_x, old_y));
+                        XPutPixel(Scale_mono, new_x, new_y,
+                                  XGetPixel(old_mono, old_x, old_y));
+                }
+        }
+
+        XDestroyImage(old_img);
+        XDestroyImage(old_mono);
+
+#ifdef DEBUG
+        if (debug)
+                stat_out("Leaving Scale_Image\n");
+#endif
 }
-
 
 /***************************************************************************
  *                                                                         *
@@ -306,91 +300,86 @@ Scale_Image( void )
  *                                                                         *
  *X11***********************************************************************/
 
-int
-Flood_Region(
-        int flood_x,
-        int flood_y )
-{
-  XImage *ImagePix, *MonoPix;
-  unsigned long new_pixel, new_mono;
+int Flood_Region(int flood_x, int flood_y) {
+        XImage *ImagePix, *MonoPix;
+        unsigned long new_pixel, new_mono;
 
 #ifdef DEBUG
-  int i, j;
-  unsigned long old_pixel;
+        int i, j;
+        unsigned long old_pixel;
 
-  if (debug)
-    stat_out("Entering Flood_Region\n");
+        if (debug)
+                stat_out("Entering Flood_Region\n");
 #endif
 
-/*--- get the image from the (adjusted) box ---*/
+        /*--- get the image from the (adjusted) box ---*/
 
-  ImagePix = XGetImage(dpy, color_icon, 0, 0, icon_width, icon_height,
-		AllPlanes, format);
-  if (ImagePix == NULL)
-    return (False);
-  MonoPix = XGetImage(dpy, mono_icon, 0, 0, icon_width, icon_height,
-		AllPlanes, format);
-  if (MonoPix == NULL)
-    return (False);
+        ImagePix = XGetImage(dpy, color_icon, 0, 0, icon_width, icon_height,
+                             AllPlanes, format);
+        if (ImagePix == NULL)
+                return (False);
+        MonoPix = XGetImage(dpy, mono_icon, 0, 0, icon_width, icon_height,
+                            AllPlanes, format);
+        if (MonoPix == NULL)
+                return (False);
 
 #ifdef DEBUG
-  if (debug)
-    stat_out("  - got the image\n");
+        if (debug)
+                stat_out("  - got the image\n");
 #endif
 
-  if (ColorBlock == STATIC_COLOR) {
-    new_pixel = StaticPen[CurrentColor];
-    new_mono  = StaticMono[CurrentColor];
-   }
-  else {
-    new_pixel = DynamicPen[CurrentColor];
-    new_mono  = DynamicMono[CurrentColor];
-   }
+        if (ColorBlock == STATIC_COLOR) {
+                new_pixel = StaticPen[CurrentColor];
+                new_mono = StaticMono[CurrentColor];
+        } else {
+                new_pixel = DynamicPen[CurrentColor];
+                new_mono = DynamicMono[CurrentColor];
+        }
 
 #ifdef DEBUG
-  if (debug) {
-    for (i=0; i<icon_width; i++)
-      for (j=0; j<icon_height; j++) {
-	old_pixel = XGetPixel(ImagePix, i, j);
-	if ((old_pixel < 0) || (old_pixel > 255))
-	  stat_out("      BAD PIXEL VALUE (%d) AT [%d,%d]\n", old_pixel, i, j);
-       }
-    stat_out("  SUCCESSFULLY accessed each pixel in the image\n");
-   }
+        if (debug) {
+                for (i = 0; i < icon_width; i++)
+                        for (j = 0; j < icon_height; j++) {
+                                old_pixel = XGetPixel(ImagePix, i, j);
+                                if ((old_pixel < 0) || (old_pixel > 255))
+                                        stat_out("      BAD PIXEL VALUE (%d) "
+                                                 "AT [%d,%d]\n",
+                                                 old_pixel, i, j);
+                        }
+                stat_out("  SUCCESSFULLY accessed each pixel in the image\n");
+        }
 #endif
 
-  flood_min_x = icon_width;
-  flood_min_y = icon_height;
-  flood_max_x = 0;
-  flood_max_y = 0;
+        flood_min_x = icon_width;
+        flood_min_y = icon_height;
+        flood_max_x = 0;
+        flood_max_y = 0;
 
-  Flood_Fill(ImagePix, MonoPix, flood_x, flood_y, ImagePix->width,
-	ImagePix->height, new_pixel, new_mono);
-  XFlush(dpy);
+        Flood_Fill(ImagePix, MonoPix, flood_x, flood_y, ImagePix->width,
+                   ImagePix->height, new_pixel, new_mono);
+        XFlush(dpy);
 
-  Backup_Icons();
-  XPutImage(dpy, color_icon, Color_gc, ImagePix, 0, 0, 0, 0,
-		icon_width, icon_height);
-  XPutImage(dpy, XtWindow(iconImage), Color_gc, ImagePix,
-		0, 0, 0, 0, icon_width, icon_height);
-  XPutImage(dpy, mono_icon, Mono_gc, MonoPix, 0, 0, 0, 0,
-		icon_width, icon_height);
-  XPutImage(dpy, XtWindow(monoImage), Mono_gc, MonoPix,
-		0, 0, 0, 0, icon_width, icon_height);
-  Transfer_Back_Image(flood_min_x, flood_min_y,
-			flood_max_x, flood_max_y, FILL);
-  XDestroyImage(ImagePix);
-  XDestroyImage(MonoPix);
+        Backup_Icons();
+        XPutImage(dpy, color_icon, Color_gc, ImagePix, 0, 0, 0, 0, icon_width,
+                  icon_height);
+        XPutImage(dpy, XtWindow(iconImage), Color_gc, ImagePix, 0, 0, 0, 0,
+                  icon_width, icon_height);
+        XPutImage(dpy, mono_icon, Mono_gc, MonoPix, 0, 0, 0, 0, icon_width,
+                  icon_height);
+        XPutImage(dpy, XtWindow(monoImage), Mono_gc, MonoPix, 0, 0, 0, 0,
+                  icon_width, icon_height);
+        Transfer_Back_Image(flood_min_x, flood_min_y, flood_max_x, flood_max_y,
+                            FILL);
+        XDestroyImage(ImagePix);
+        XDestroyImage(MonoPix);
 
 #ifdef DEBUG
-  if (debug)
-    stat_out("Leaving Flood_Region\n");
+        if (debug)
+                stat_out("Leaving Flood_Region\n");
 #endif
 
-  return (True);
-
+        return (True);
 }
-
 
 /***************************************************************************
  *                                                                         *
@@ -413,21 +402,16 @@ Flood_Region(
  *                                                                         *
  *X11***********************************************************************/
 
-void
-Set_FloodLimits(
-        int x,
-        int y )
-{
-  if (x < flood_min_x)
-    flood_min_x = x;
-  if (x > flood_max_x)
-    flood_max_x = x;
-  if (y < flood_min_y)
-    flood_min_y = y;
-  if (y > flood_max_y)
-    flood_max_y = y;
+void Set_FloodLimits(int x, int y) {
+        if (x < flood_min_x)
+                flood_min_x = x;
+        if (x > flood_max_x)
+                flood_max_x = x;
+        if (y < flood_min_y)
+                flood_min_y = y;
+        if (y > flood_max_y)
+                flood_max_y = y;
 }
-
 
 /***************************************************************************
  *                                                                         *
@@ -453,103 +437,115 @@ Set_FloodLimits(
  * segment of scan line y for xl<=x<=xr was filled,
  * now explore adjacent pixels in scan line y+dy
  */
-struct seg {short y, xl, xr, dy;};
+struct seg {
+        short y, xl, xr, dy;
+};
 /*********************************************************
 #define MAX 10000
 *********************************************************/
-#define MAX 20000		/* max depth of stack */
+#define MAX 20000 /* max depth of stack */
 
-#define PUSH(Y, XL, XR, DY) \
-    if (sp<stack+MAX && Y+(DY)>=0 && Y+(DY)<height) \
-    {sp->y = Y; sp->xl = XL; sp->xr = XR; sp->dy = DY; sp++;}
+#define PUSH(Y, XL, XR, DY)                                                    \
+        if (sp < stack + MAX && Y + (DY) >= 0 && Y + (DY) < height) {          \
+                sp->y = Y;                                                     \
+                sp->xl = XL;                                                   \
+                sp->xr = XR;                                                   \
+                sp->dy = DY;                                                   \
+                sp++;                                                          \
+        }
 
-#define POP(Y, XL, XR, DY) \
-    {sp--; Y = sp->y+(DY = sp->dy); XL = sp->xl; XR = sp->xr;}
-
-#ifdef DEBUG
-  int local_debug=False, p_cnt;
-#endif
-
-int
-Flood_Fill(
-        XImage *color_image,
-        XImage *mono_image,
-        int x,
-        int y,
-        int width,
-        int height,
-        unsigned long new_pixel,
-        unsigned long new_mono )
-{
-  int l, x1, x2, dy;
-  unsigned long old_pixel;
-  struct seg stack[MAX], *sp = stack;
-
-  old_pixel = XGetPixel(color_image, x, y);	/* read pv at seed point */
-  if (old_pixel==new_pixel || x<0 || x>width || y<0 || y>height) return 0;
-  PUSH(y, x, x, 1);			/* needed in some cases */
-  PUSH(y+1, x, x, -1);		/* seed segment (popped 1st) */
+#define POP(Y, XL, XR, DY)                                                     \
+        {                                                                      \
+                sp--;                                                          \
+                Y = sp->y + (DY = sp->dy);                                     \
+                XL = sp->xl;                                                   \
+                XR = sp->xr;                                                   \
+        }
 
 #ifdef DEBUG
-  if (local_debug)
-    p_cnt = 0;
+int local_debug = False, p_cnt;
 #endif
-  while (sp>stack) {
-    /* pop segment off stack and fill a neighboring scan line */
-    POP(y, x1, x2, dy);
-    for (x=x1; x>=0 && XGetPixel(color_image, x, y)==old_pixel; x--)
-	{
+
+int Flood_Fill(XImage *color_image, XImage *mono_image, int x, int y, int width,
+               int height, unsigned long new_pixel, unsigned long new_mono) {
+        int l, x1, x2, dy;
+        unsigned long old_pixel;
+        struct seg stack[MAX], *sp = stack;
+
+        old_pixel = XGetPixel(color_image, x, y); /* read pv at seed point */
+        if (old_pixel == new_pixel || x < 0 || x > width || y < 0 || y > height)
+                return 0;
+        PUSH(y, x, x, 1);      /* needed in some cases */
+        PUSH(y + 1, x, x, -1); /* seed segment (popped 1st) */
+
 #ifdef DEBUG
-  if (local_debug) {
-    stat_out("+[%d,%d] ", x, y);
-    p_cnt++;
-    if (p_cnt == 8) {
-      stat_out("\n");
-      p_cnt = 0;
-     }
-   }
+        if (local_debug)
+                p_cnt = 0;
 #endif
-	Set_FloodLimits(x, y);
-        XPutPixel(color_image, x, y, new_pixel);
-        XPutPixel(mono_image, x, y, new_mono);
-	}
-    if (x>=x1) goto skip;
-    l = x+1;
-    if (l<x1) PUSH(y, l, x1-1, -dy);		/* leak on left? */
-    x = x1+1;
-    do {
-        for (; x<width && XGetPixel(color_image, x, y)==old_pixel; x++)/**TAG**/
-	{
+        while (sp > stack) {
+                /* pop segment off stack and fill a neighboring scan line */
+                POP(y, x1, x2, dy);
+                for (x = x1;
+                     x >= 0 && XGetPixel(color_image, x, y) == old_pixel; x--) {
 #ifdef DEBUG
-  if (local_debug) {
-    stat_out("-[%d,%d] ", x, y);
-    p_cnt++;
-    if (p_cnt == 8) {
-      stat_out("\n");
-      p_cnt = 0;
-     }
-   }
+                        if (local_debug) {
+                                stat_out("+[%d,%d] ", x, y);
+                                p_cnt++;
+                                if (p_cnt == 8) {
+                                        stat_out("\n");
+                                        p_cnt = 0;
+                                }
+                        }
 #endif
-	Set_FloodLimits(x, y);
-    	XPutPixel(color_image, x, y, new_pixel);
-    	XPutPixel(mono_image, x, y, new_mono);
-	}
-        PUSH(y, l, x-1, dy);
-        if (x>x2+1) PUSH(y, x2+1, x-1, -dy);	/* leak on right? */
-skip:   for (x++; x<=x2 && XGetPixel(color_image, x, y)!=old_pixel; x++)
-	{
+                        Set_FloodLimits(x, y);
+                        XPutPixel(color_image, x, y, new_pixel);
+                        XPutPixel(mono_image, x, y, new_mono);
+                }
+                if (x >= x1)
+                        goto skip;
+                l = x + 1;
+                if (l < x1)
+                        PUSH(y, l, x1 - 1, -dy); /* leak on left? */
+                x = x1 + 1;
+                do {
+                        for (; x < width &&
+                               XGetPixel(color_image, x, y) == old_pixel;
+                             x++) /**TAG**/
+                        {
 #ifdef DEBUG
-  if (local_debug) {
-    stat_out(" [%d,%d] ", x, y);
-    p_cnt++;
-    if (p_cnt == 8) {
-      stat_out("\n");
-      p_cnt = 0;
-     }
-   }
+                                if (local_debug) {
+                                        stat_out("-[%d,%d] ", x, y);
+                                        p_cnt++;
+                                        if (p_cnt == 8) {
+                                                stat_out("\n");
+                                                p_cnt = 0;
+                                        }
+                                }
 #endif
-	}
-        l = x;
-    } while (x<=x2);
-  }
+                                Set_FloodLimits(x, y);
+                                XPutPixel(color_image, x, y, new_pixel);
+                                XPutPixel(mono_image, x, y, new_mono);
+                        }
+                        PUSH(y, l, x - 1, dy);
+                        if (x > x2 + 1)
+                                PUSH(y, x2 + 1, x - 1,
+                                     -dy); /* leak on right? */
+                skip:
+                        for (x++; x <= x2 &&
+                                  XGetPixel(color_image, x, y) != old_pixel;
+                             x++) {
+#ifdef DEBUG
+                                if (local_debug) {
+                                        stat_out(" [%d,%d] ", x, y);
+                                        p_cnt++;
+                                        if (p_cnt == 8) {
+                                                stat_out("\n");
+                                                p_cnt = 0;
+                                        }
+                                }
+#endif
+                        }
+                        l = x;
+                } while (x <= x2);
+        }
 }

@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         DbUtil.h $XConsortium: DbUtil.h /main/4 1995/10/26 15:04:04 rswiston $
- * Language:     C
+ * File:         DbUtil.h $XConsortium: DbUtil.h /main/4 1995/10/26 15:04:04
+ * rswiston $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -35,9 +35,9 @@
 #ifndef _Dt_DbUtil_h
 #define _Dt_DbUtil_h
 
-#include <X11/Intrinsic.h>		/* Boolean */
+#include <X11/Intrinsic.h> /* Boolean */
 
-/* 
+/*
  * This structure is used by many of the database functions.  It is used to
  * specify a collection of filenames or directory names.  Each file/directory
  * name is returned in two forms:
@@ -52,20 +52,17 @@
  *  Both of the arrays are NULL-terminated.
  */
 typedef struct {
-   char ** dirs;
-   char ** paths;
+        char **dirs;
+        char **paths;
 } DtDirPaths;
-
-
 
 /*****************************************************************************
  *
  *
  *
  ****************************************************************************/
-extern DtDirPaths * _DtFindMatchingFiles( DtDirPaths * dirs, 
-                                           char * suffix, 
-                                           Boolean sortFiles );
+extern DtDirPaths *_DtFindMatchingFiles(DtDirPaths *dirs, char *suffix,
+                                        Boolean sortFiles);
 
 /*****************************************************************************
  *
@@ -82,7 +79,7 @@ extern DtDirPaths * _DtFindMatchingFiles( DtDirPaths * dirs,
  *     2) Internal format; i.e. "/nfs/host/path"
  *
  ****************************************************************************/
-extern DtDirPaths * _DtGetDatabaseDirPaths( void );
+extern DtDirPaths *_DtGetDatabaseDirPaths(void);
 
 /*****************************************************************************
  *
@@ -96,7 +93,7 @@ extern DtDirPaths * _DtGetDatabaseDirPaths( void );
  *      dirs       The structure which is to be freed up.
  *
  ****************************************************************************/
-extern void _DtFreeDatabaseDirPaths( DtDirPaths * dirs );
+extern void _DtFreeDatabaseDirPaths(DtDirPaths *dirs);
 
 #endif /* _Dt_DbUtil_h */
 

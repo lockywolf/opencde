@@ -35,27 +35,16 @@
 #include "cm.h"
 #include "cmscalendar.h"
 
-extern CSA_return_code _DtCmsDeleteEntry P((
-			_DtCmsCalendar	*cal,
-			char		*sender,
-			uint		access,
-			cms_key		*key,
-			cms_entry	**entry_r));
+extern CSA_return_code _DtCmsDeleteEntry P((_DtCmsCalendar * cal, char *sender,
+                                            uint access, cms_key *key,
+                                            cms_entry **entry_r));
 
-extern CSA_return_code _DtCmsDeleteEntryAndLog P((
-			_DtCmsCalendar	*cal,
-			char		*sender,
-			uint		access,
-			cms_key		*key,
-			cms_entry	**entry_r));
+extern CSA_return_code
+    _DtCmsDeleteEntryAndLog P((_DtCmsCalendar * cal, char *sender, uint access,
+                               cms_key *key, cms_entry **entry_r));
 
-extern CSA_return_code _DtCmsDeleteInstancesAndLog P((
-			_DtCmsCalendar	*cal,
-			char		*sender,
-			uint		access,
-			cms_key		*key,
-			int		scope,
-			cms_entry	**newe,
-			cms_entry	**olde));
+extern CSA_return_code _DtCmsDeleteInstancesAndLog
+    P((_DtCmsCalendar * cal, char *sender, uint access, cms_key *key, int scope,
+       cms_entry **newe, cms_entry **olde));
 
 #endif

@@ -49,28 +49,26 @@
 #include "vista.h"
 #include "dbtype.h"
 
-#ifndef	 ONE_DB
+#ifndef ONE_DB
 /* Set current database
-*/
-int
-d_setdb(dbn TASK_PARM)
-int dbn;   /* database number */
-TASK_DECL
-{
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_NOIO));
+ */
+int d_setdb(dbn TASK_PARM) int dbn; /* database number */
+TASK_DECL {
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_NOIO));
 
-/* For WINDOWS, all that needs to happen here is the dbn_check() which
-   DB_ENTER results in */
-   if ( dbn < 0 || dbn >= no_of_dbs )
-      RETURN( dberr( S_INVDB ) );
-   
-   setdb_on = TRUE;
-   curr_db_table->curr_dbt_rec = curr_rec;
-   curr_db_table = &db_table[curr_db = dbn];
-   curr_rn_table = &rn_table[dbn];            /*[419]*/
-   curr_rec = curr_db_table->curr_dbt_rec;
+        /* For WINDOWS, all that needs to happen here is the dbn_check() which
+           DB_ENTER results in */
+        if (dbn < 0 || dbn >= no_of_dbs)
+                RETURN(dberr(S_INVDB));
 
-   RETURN( db_status = S_OKAY );
+        setdb_on = TRUE;
+        curr_db_table->curr_dbt_rec = curr_rec;
+        curr_db_table = &db_table[curr_db = dbn];
+        curr_rn_table = &rn_table[dbn]; /*[419]*/
+        curr_rec = curr_db_table->curr_dbt_rec;
+
+        RETURN(db_status = S_OKAY);
 }
 #endif
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin setdb.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin setdb.c */

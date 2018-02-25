@@ -29,7 +29,7 @@
 extern "C" {
 #endif
 
-#if defined( __STDC__ ) || defined( _HPUX_SOURCE )
+#if defined(__STDC__) || defined(_HPUX_SOURCE)
 const char *unique_id(void);
 #else
 char *unique_id();

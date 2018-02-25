@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,9 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
 
 #ifndef _mphf_index_h
 #define _mphf_index_h 1
@@ -57,65 +56,61 @@
 #include "index/inv_lists.h"
 
 /**********************************************************/
-// An index class consisted of a MPHF object and an 
+// An index class consisted of a MPHF object and an
 // inverted list.
 /**********************************************************/
-class mphf_index : public c_index
-{
+class mphf_index : public c_index {
 
-public:
-   mphf_index() ;
-   virtual ~mphf_index() ;
+      public:
+        mphf_index();
+        virtual ~mphf_index();
 
-   void init_data_member(fast_mphf_handler*, inv_lists_handler*);
+        void init_data_member(fast_mphf_handler *, inv_lists_handler *);
 
-   MMDB_SIGNATURES(mphf_index);
+        MMDB_SIGNATURES(mphf_index);
 
-// insert index functions
-   virtual Boolean batch_index_begin() ;
-   virtual Boolean batch_index_end() ;
-   virtual Boolean insert_key_loc(const handler&, const oid_t&) ;
-   virtual Boolean insert_key_loc(const oid_t&, const oid_t&) ;
-   virtual Boolean load(const char* key_set) ;
-  
-// remove index functions
-   virtual Boolean remove_loc(handler&, const oid_t& ) ;
-   virtual Boolean remove_loc(const oid_t&, const oid_t& );
+        // insert index functions
+        virtual Boolean batch_index_begin();
+        virtual Boolean batch_index_end();
+        virtual Boolean insert_key_loc(const handler &, const oid_t &);
+        virtual Boolean insert_key_loc(const oid_t &, const oid_t &);
+        virtual Boolean load(const char *key_set);
 
-// update index function
-   virtual Boolean update_streampos(handler& old_obj,     
-                                    handler& new_obj,
-                                    mmdb_pos_t pos
-                                   ) ;
+        // remove index functions
+        virtual Boolean remove_loc(handler &, const oid_t &);
+        virtual Boolean remove_loc(const oid_t &, const oid_t &);
 
-// retrieval functions
-   virtual oid_list_handler* get_loc_list(const oid_t&);
-   virtual oid_list_handler* get_loc_list(const handler&);
-   virtual int invlist_length(handler&) ;
+        // update index function
+        virtual Boolean update_streampos(handler &old_obj, handler &new_obj,
+                                         mmdb_pos_t pos);
 
-   virtual oid_t first_of_invlist(int ind);
-   virtual oid_t first_of_invlist(const handler&);
+        // retrieval functions
+        virtual oid_list_handler *get_loc_list(const oid_t &);
+        virtual oid_list_handler *get_loc_list(const handler &);
+        virtual int invlist_length(handler &);
 
-//
-   size_t handler_to_inv_idx(const handler& query);
+        virtual oid_t first_of_invlist(int ind);
+        virtual oid_t first_of_invlist(const handler &);
 
-// status inquiry functions
-   virtual Boolean sorted() const { return false; };  
+        //
+        size_t handler_to_inv_idx(const handler &query);
 
-// io function
-   friend ostream& operator <<(ostream&, mphf_index&);
+        // status inquiry functions
+        virtual Boolean sorted() const { return false; };
 
-protected:
+        // io function
+        friend ostream &operator<<(ostream &, mphf_index &);
 
-protected:
-   fstream* v_key_loc_pair_out;
+      protected:
+      protected:
+        fstream *v_key_loc_pair_out;
 
-private:
-   fast_mphf_handler *v_mphf;     // hash func
+      private:
+        fast_mphf_handler *v_mphf; // hash func
 
-   char* f_key_file_name; 
+        char *f_key_file_name;
 };
-   
+
 HANDLER_SIGNATURES(mphf_index)
 
 #endif

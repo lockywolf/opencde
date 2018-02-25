@@ -28,12 +28,12 @@
 #include "Pixmap.h"
 
 class WPixmap : public WCore {
-public :
-	DEFINE_INIT (WPixmap, WCore, pixmapWidgetClass)
-	DEFINE_GETTER_SETTER(Picture, Pixmap, XtNpixmap)
+      public:
+        DEFINE_INIT(WPixmap, WCore, pixmapWidgetClass)
+        DEFINE_GETTER_SETTER(Picture, Pixmap, XtNpixmap)
 };
 
-#define	NULLWVWrapper		WVWrapper((Widget)0)
+#define NULLWVWrapper WVWrapper((Widget)0)
 
 #endif /* _WVWrapper_h */
 /* DO NOT ADD ANY LINES AFTER THIS #endif */

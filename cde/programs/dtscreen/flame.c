@@ -46,146 +46,148 @@
 #include <math.h>
 #include <stdlib.h>
 
-#define MAXTOTAL	10000
-#define MAXBATCH	10
-#define MAXLEV		4
+#define MAXTOTAL 10000
+#define MAXBATCH 10
+#define MAXLEV 4
 
 typedef struct {
-    double      f[2][3][MAXLEV];/* three non-homogeneous transforms */
-    int         max_levels;
-    int         cur_level;
-    int         snum;
-    int         anum;
-    int         width, height;
-    int         num_points;
-    int         total_points;
-    int         pixcol;
-    perwindow  *pwin;
-    XPoint      pts[MAXBATCH];
-}           flamestruct;
+        double f[2][3][MAXLEV]; /* three non-homogeneous transforms */
+        int max_levels;
+        int cur_level;
+        int snum;
+        int anum;
+        int width, height;
+        int num_points;
+        int total_points;
+        int pixcol;
+        perwindow *pwin;
+        XPoint pts[MAXBATCH];
+} flamestruct;
 
-static short
-halfrandom(int mv)
-{
-    static short lasthalf = 0;
-    unsigned long r;
+static short halfrandom(int mv) {
+        static short lasthalf = 0;
+        unsigned long r;
 
-    if (lasthalf) {
-	r = lasthalf;
-	lasthalf = 0;
-    } else {
-	r = random();
-	lasthalf = r >> 16;
-    }
-    return r % mv;
+        if (lasthalf) {
+                r = lasthalf;
+                lasthalf = 0;
+        } else {
+                r = random();
+                lasthalf = r >> 16;
+        }
+        return r % mv;
 }
 
-void
-initflame(perwindow *pwin)
-{
-    XWindowAttributes xwa;
-    flamestruct *fs;
+void initflame(perwindow *pwin) {
+        XWindowAttributes xwa;
+        flamestruct *fs;
 
-    if (pwin->data) free(pwin->data);
-    pwin->data = (void *)malloc(sizeof(flamestruct));
-    memset(pwin->data, '\0', sizeof(flamestruct));
-    fs = (flamestruct *)pwin->data;
+        if (pwin->data)
+                free(pwin->data);
+        pwin->data = (void *)malloc(sizeof(flamestruct));
+        memset(pwin->data, '\0', sizeof(flamestruct));
+        fs = (flamestruct *)pwin->data;
 
-    srandom(time((time_t *) 0));
+        srandom(time((time_t *)0));
 
-    XGetWindowAttributes(dsp, pwin->w, &xwa);
-    fs->width = xwa.width;
-    fs->height = xwa.height;
+        XGetWindowAttributes(dsp, pwin->w, &xwa);
+        fs->width = xwa.width;
+        fs->height = xwa.height;
 
-    fs->max_levels = batchcount;
-    fs->pwin = pwin;
+        fs->max_levels = batchcount;
+        fs->pwin = pwin;
 
-    XSetForeground(dsp, pwin->gc, BlackPixelOfScreen(pwin->perscreen->screen));
-    XFillRectangle(dsp, pwin->w, pwin->gc, 0, 0, fs->width, fs->height);
+        XSetForeground(dsp, pwin->gc,
+                       BlackPixelOfScreen(pwin->perscreen->screen));
+        XFillRectangle(dsp, pwin->w, pwin->gc, 0, 0, fs->width, fs->height);
 
-    if (pwin->perscreen->npixels > 2) {
-      fs->pixcol = halfrandom(pwin->perscreen->npixels);
-      XSetForeground(dsp, pwin->gc, pwin->perscreen->pixels[fs->pixcol]);
-    } else {
-      XSetForeground(dsp, pwin->gc, WhitePixelOfScreen(pwin->perscreen->screen));
-    }
+        if (pwin->perscreen->npixels > 2) {
+                fs->pixcol = halfrandom(pwin->perscreen->npixels);
+                XSetForeground(dsp, pwin->gc,
+                               pwin->perscreen->pixels[fs->pixcol]);
+        } else {
+                XSetForeground(dsp, pwin->gc,
+                               WhitePixelOfScreen(pwin->perscreen->screen));
+        }
 }
 
-static Bool
-recurse(flamestruct *fs, double x, double y, int l)
-{
-    int         i;
-    double      nx, ny;
+static Bool recurse(flamestruct *fs, double x, double y, int l) {
+        int i;
+        double nx, ny;
 
-    if (l == fs->max_levels) {
-	fs->total_points++;
-	if (fs->total_points > MAXTOTAL)	/* how long each fractal runs */
-	    return False;
+        if (l == fs->max_levels) {
+                fs->total_points++;
+                if (fs->total_points >
+                    MAXTOTAL) /* how long each fractal runs */
+                        return False;
 
-	if (x > -1.0 && x < 1.0 && y > -1.0 && y < 1.0) {
-	    fs->pts[fs->num_points].x = (int) ((fs->width / 2) * (x + 1.0));
-	    fs->pts[fs->num_points].y = (int) ((fs->height / 2) * (y + 1.0));
-	    fs->num_points++;
-	    if (fs->num_points > MAXBATCH) {	/* point buffer size */
-		XDrawPoints(dsp, fs->pwin->w, fs->pwin->gc, fs->pts,
-			    fs->num_points, CoordModeOrigin);
-		fs->num_points = 0;
-	    }
-	}
-    } else {
-	for (i = 0; i < fs->snum; i++) {
-	    nx = fs->f[0][0][i] * x + fs->f[0][1][i] * y + fs->f[0][2][i];
-	    ny = fs->f[1][0][i] * x + fs->f[1][1][i] * y + fs->f[1][2][i];
-	    if (i < fs->anum) {
-		nx = sin(nx);
-		ny = sin(ny);
-	    }
-	    if (!recurse(fs, nx, ny, l + 1))
-		return False;
-	}
-    }
-    return True;
+                if (x > -1.0 && x < 1.0 && y > -1.0 && y < 1.0) {
+                        fs->pts[fs->num_points].x =
+                            (int)((fs->width / 2) * (x + 1.0));
+                        fs->pts[fs->num_points].y =
+                            (int)((fs->height / 2) * (y + 1.0));
+                        fs->num_points++;
+                        if (fs->num_points > MAXBATCH) { /* point buffer size */
+                                XDrawPoints(dsp, fs->pwin->w, fs->pwin->gc,
+                                            fs->pts, fs->num_points,
+                                            CoordModeOrigin);
+                                fs->num_points = 0;
+                        }
+                }
+        } else {
+                for (i = 0; i < fs->snum; i++) {
+                        nx = fs->f[0][0][i] * x + fs->f[0][1][i] * y +
+                             fs->f[0][2][i];
+                        ny = fs->f[1][0][i] * x + fs->f[1][1][i] * y +
+                             fs->f[1][2][i];
+                        if (i < fs->anum) {
+                                nx = sin(nx);
+                                ny = sin(ny);
+                        }
+                        if (!recurse(fs, nx, ny, l + 1))
+                                return False;
+                }
+        }
+        return True;
 }
 
+void drawflame(perwindow *pwin) {
+        flamestruct *fs = (flamestruct *)pwin->data;
 
-void
-drawflame(perwindow *pwin)
-{
-    flamestruct *fs = (flamestruct *)pwin->data;
+        int i, j, k;
+        static int alt = 0;
 
-    int         i, j, k;
-    static int  alt = 0;
+        if (!(fs->cur_level++ % fs->max_levels)) {
+                XClearWindow(dsp, fs->pwin->w);
+                alt = !alt;
+        } else {
+                if (pwin->perscreen->npixels > 2) {
+                        XSetForeground(dsp, pwin->gc,
+                                       pwin->perscreen->pixels[fs->pixcol]);
+                        if (--fs->pixcol < 0)
+                                fs->pixcol = pwin->perscreen->npixels - 1;
+                }
+        }
 
-    if (!(fs->cur_level++ % fs->max_levels)) {
-	XClearWindow(dsp, fs->pwin->w);
-	alt = !alt;
-    } else {
-	if (pwin->perscreen->npixels > 2) {
-	    XSetForeground(dsp, pwin->gc,
-			   pwin->perscreen->pixels[fs->pixcol]);
-	    if (--fs->pixcol < 0)
-		fs->pixcol = pwin->perscreen->npixels - 1;
-	}
-    }
+        /* number of functions */
+        fs->snum = 2 + (fs->cur_level % (MAXLEV - 1));
 
-    /* number of functions */
-    fs->snum = 2 + (fs->cur_level % (MAXLEV - 1));
+        /* how many of them are of alternate form */
+        if (alt)
+                fs->anum = 0;
+        else
+                fs->anum = halfrandom(fs->snum) + 2;
 
-    /* how many of them are of alternate form */
-    if (alt)
-	fs->anum = 0;
-    else
-	fs->anum = halfrandom(fs->snum) + 2;
-
-    /* 6 dtfs per function */
-    for (k = 0; k < fs->snum; k++) {
-	for (i = 0; i < 2; i++)
-	    for (j = 0; j < 3; j++)
-		fs->f[i][j][k] = ((double) (random() & 1023) / 512.0 - 1.0);
-    }
-    fs->num_points = 0;
-    fs->total_points = 0;
-    (void) recurse(fs, 0.0, 0.0, 0);
-    XDrawPoints(dsp, pwin->w, pwin->gc,
-		fs->pts, fs->num_points, CoordModeOrigin);
+        /* 6 dtfs per function */
+        for (k = 0; k < fs->snum; k++) {
+                for (i = 0; i < 2; i++)
+                        for (j = 0; j < 3; j++)
+                                fs->f[i][j][k] =
+                                    ((double)(random() & 1023) / 512.0 - 1.0);
+        }
+        fs->num_points = 0;
+        fs->total_points = 0;
+        (void)recurse(fs, 0.0, 0.0, 0);
+        XDrawPoints(dsp, pwin->w, pwin->gc, fs->pts, fs->num_points,
+                    CoordModeOrigin);
 }

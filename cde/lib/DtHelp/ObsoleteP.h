@@ -47,40 +47,33 @@
 /****************************************************************************
  *			Public Defines
  ****************************************************************************/
-#ifndef	True
-#define	True	1
+#ifndef True
+#define True 1
 #endif
-#ifndef	TRUE
-#define	TRUE	1
+#ifndef TRUE
+#define TRUE 1
 #endif
-#ifndef	False
-#define	False	0
+#ifndef False
+#define False 0
 #endif
-#ifndef	FALSE
-#define	FALSE	0
+#ifndef FALSE
+#define FALSE 0
 #endif
 
 #ifndef _DtHelpGenUtilsP_h
-typedef void*   CanvasHandle;
-typedef void*   VolumeHandle;
+typedef void *CanvasHandle;
+typedef void *VolumeHandle;
 #endif
 
 /****************************************************************************
  *			Semi-Public Externals
  ****************************************************************************/
-extern	int	 _DtHelpCeCloseVolume (
-				CanvasHandle	 canvas_handle,
-				VolumeHandle	 retVol );
-extern	void	 _DtHelpCeDestroyCanvas (CanvasHandle canvas);
-extern	int	 _DtHelpCeGetTopicTitle (
-				CanvasHandle          canvas,
-				VolumeHandle          volume,
-				char                 *id,
-				char                **ret_title);
-extern	char	*_DtHelpCeGetVolumeLocale (
-				VolumeHandle	 volume);
-extern	int	 _DtHelpCeOpenVolume (
-				CanvasHandle	 canvas_handle,
-				char		*volFile,
-				VolumeHandle	*retVol);
+extern int _DtHelpCeCloseVolume(CanvasHandle canvas_handle,
+                                VolumeHandle retVol);
+extern void _DtHelpCeDestroyCanvas(CanvasHandle canvas);
+extern int _DtHelpCeGetTopicTitle(CanvasHandle canvas, VolumeHandle volume,
+                                  char *id, char **ret_title);
+extern char *_DtHelpCeGetVolumeLocale(VolumeHandle volume);
+extern int _DtHelpCeOpenVolume(CanvasHandle canvas_handle, char *volFile,
+                               VolumeHandle *retVol);
 #endif /* _DtHelpObsoleteP_h */

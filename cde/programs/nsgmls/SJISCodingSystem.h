@@ -34,9 +34,9 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API SJISCodingSystem : public CodingSystem {
-public:
-  Decoder *makeDecoder() const;
-  Encoder *makeEncoder() const;
+      public:
+        Decoder *makeDecoder() const;
+        Encoder *makeEncoder() const;
 };
 
 #ifdef SP_NAMESPACE

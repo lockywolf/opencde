@@ -20,24 +20,25 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* 
+/*
  *  @OSF_COPYRIGHT@
  *  COPYRIGHT NOTICE
  *  Copyright (c) 1990, 1991, 1992, 1993 Open Software Foundation, Inc.
  *  ALL RIGHTS RESERVED (MOTIF). See the file named COPYRIGHT.MOTIF for
  *  the full copyright text.
-*/ 
-/* 
+ */
+/*
  * HISTORY
-*/ 
+ */
 #ifdef REV_INFO
 #ifndef lint
-static char rcsid[] = "$XConsortium: UilKeyTab.c /main/11 1995/07/14 09:34:29 drk $"
+static char rcsid[] =
+    "$XConsortium: UilKeyTab.c /main/11 1995/07/14 09:34:29 drk $"
 #endif
 #endif
 
 /*
-*  (c) Copyright 1989, 1990, DIGITAL EQUIPMENT CORPORATION, MAYNARD, MASS. */
+ *  (c) Copyright 1989, 1990, DIGITAL EQUIPMENT CORPORATION, MAYNARD, MASS. */
 
 /*
 **++
@@ -53,7 +54,6 @@ static char rcsid[] = "$XConsortium: UilKeyTab.c /main/11 1995/07/14 09:34:29 dr
 **--
 **/
 
-
 /*
 **
 **  INCLUDE FILES
@@ -62,39 +62,35 @@ static char rcsid[] = "$XConsortium: UilKeyTab.c /main/11 1995/07/14 09:34:29 dr
 
 #include "UilDefI.h"
 
+    /*
+    **
+    **  DEFINE and MACRO DEFINITIONS
+    **
+    **/
 
-/*
-**
-**  DEFINE and MACRO DEFINITIONS
-**
-**/
+    /*
+    **
+    **  EXTERNAL VARIABLE DECLARATIONS
+    **
+    **/
 
+    /*
+    **
+    **  GLOBAL VARIABLE DECLARATIONS
+    **
+    **/
 
-/*
-**
-**  EXTERNAL VARIABLE DECLARATIONS
-**
-**/
+    /*
+    **
+    **  OWN VARIABLE DECLARATIONS
+    **
+    **/
 
+    /*    Keyword table pointer.    */
 
-/*
-**
-**  GLOBAL VARIABLE DECLARATIONS
-**
-**/
+    static key_keytable_entry_type *
+    key_keytable_ptr;
 
-
-/*
-**
-**  OWN VARIABLE DECLARATIONS
-**
-**/
-
-/*    Keyword table pointer.    */
-
-static key_keytable_entry_type * key_keytable_ptr;
-
-
 /*
 **++
 **  FUNCTIONAL DESCRIPTION:
@@ -137,57 +133,53 @@ static key_keytable_entry_type * key_keytable_ptr;
 **
 **--
 **/
-key_keytable_entry_type *
-	key_find_keyword (symbol_length, symbol_ptr)
+key_keytable_entry_type *key_find_keyword(symbol_length, symbol_ptr)
 
-unsigned int	symbol_length;
-char		* symbol_ptr;
+    unsigned int symbol_length;
+char *symbol_ptr;
 
 {
-    
-    int
-	lower_limit,
-	upper_limit;
-    
-/*    Check the arguments.    */
 
-    if (symbol_length > key_k_keyword_max_length)
-	return NULL;
+        int lower_limit, upper_limit;
 
-/*    Initialize region to search.    */
-    
-    lower_limit = 0;
-    upper_limit = key_k_keyword_count-1;
-    
-/*    Perform binary search on keyword index.    */
-    
-    do {
-	int		mid_point, result;
+        /*    Check the arguments.    */
 
-	key_keytable_entry_type * keyword_entry_ptr;
+        if (symbol_length > key_k_keyword_max_length)
+                return NULL;
 
-	mid_point = (lower_limit + upper_limit) >> 1;	/* divide by 2 */
+        /*    Initialize region to search.    */
 
-	keyword_entry_ptr = & key_keytable_ptr [mid_point];
+        lower_limit = 0;
+        upper_limit = key_k_keyword_count - 1;
 
-	result = strcmp (symbol_ptr, keyword_entry_ptr -> at_name);
+        /*    Perform binary search on keyword index.    */
 
-	if (result == 0) {
-	    return keyword_entry_ptr;		/*    Found keyword.    */
-	} else if (result < 0) {
-	    upper_limit = mid_point - 1;	/*    Search lower half.    */
-	} else {
-	    lower_limit = mid_point + 1;	/*    Search upper half.    */
-	}
+        do {
+                int mid_point, result;
 
-    } while (lower_limit <= upper_limit);
+                key_keytable_entry_type *keyword_entry_ptr;
 
-/*    If we fall out of the bottom of the loop, symbol was not found.    */
+                mid_point = (lower_limit + upper_limit) >> 1; /* divide by 2 */
 
-    return NULL;
+                keyword_entry_ptr = &key_keytable_ptr[mid_point];
 
+                result = strcmp(symbol_ptr, keyword_entry_ptr->at_name);
+
+                if (result == 0) {
+                        return keyword_entry_ptr; /*    Found keyword.    */
+                } else if (result < 0) {
+                        upper_limit = mid_point - 1; /*    Search lower half. */
+                } else {
+                        lower_limit = mid_point + 1; /*    Search upper half. */
+                }
+
+        } while (lower_limit <= upper_limit);
+
+        /*    If we fall out of the bottom of the loop, symbol was not found. */
+
+        return NULL;
 }
-
+
 /*
 **++
 **  FUNCTIONAL DESCRIPTION:
@@ -220,19 +212,16 @@ char		* symbol_ptr;
 **
 **--
 **/
-void
-	key_initialize ()
+void key_initialize()
 
 {
 
-/*    Use the correct keyword table based on the global case
-      sensitivity.   */
+        /*    Use the correct keyword table based on the global case
+              sensitivity.   */
 
-    if (uil_v_case_sensitive) {
-	key_keytable_ptr = key_table;
-    } else {
-	key_keytable_ptr = key_table_case_ins;
-    }
-
-}    
-
+        if (uil_v_case_sensitive) {
+                key_keytable_ptr = key_table;
+        } else {
+                key_keytable_ptr = key_table_case_ins;
+        }
+}

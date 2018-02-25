@@ -21,7 +21,7 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $XConsortium: tclLoadNone.c /main/2 1996/08/08 14:45:21 cde-hp $ */
-/* 
+/*
  * tclLoadNone.c --
  *
  *	This procedure provides a version of the TclLoadFile for use
@@ -37,7 +37,7 @@
  */
 
 #include "tclInt.h"
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -57,22 +57,21 @@
  *----------------------------------------------------------------------
  */
 
-int
-TclLoadFile(interp, fileName, sym1, sym2, proc1Ptr, proc2Ptr)
-    Tcl_Interp *interp;		/* Used for error reporting. */
-    char *fileName;		/* Name of the file containing the desired
-				 * code. */
-    char *sym1, *sym2;		/* Names of two procedures to look up in
-				 * the file's symbol table. */
-    Tcl_PackageInitProc **proc1Ptr, **proc2Ptr;
-				/* Where to return the addresses corresponding
-				 * to sym1 and sym2. */
+int TclLoadFile(interp, fileName, sym1, sym2, proc1Ptr,
+                proc2Ptr) Tcl_Interp *interp; /* Used for error reporting. */
+char *fileName;    /* Name of the file containing the desired
+                    * code. */
+char *sym1, *sym2; /* Names of two procedures to look up in
+                    * the file's symbol table. */
+Tcl_PackageInitProc **proc1Ptr, **proc2Ptr;
+/* Where to return the addresses corresponding
+ * to sym1 and sym2. */
 {
-    interp->result =
-	    "dynamic loading is not currently available on this system";
-    return TCL_ERROR;
+        interp->result =
+            "dynamic loading is not currently available on this system";
+        return TCL_ERROR;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -93,12 +92,10 @@ TclLoadFile(interp, fileName, sym1, sym2, proc1Ptr, proc2Ptr)
  *----------------------------------------------------------------------
  */
 
-int
-TclGuessPackageName(fileName, bufPtr)
-    char *fileName;		/* Name of file containing package (already
-				 * translated to local form if needed). */
-    Tcl_DString *bufPtr;	/* Initialized empty dstring.  Append
-				 * package name to this if possible. */
-{
-    return 0;
-}
+int TclGuessPackageName(
+    fileName,
+    bufPtr) char *fileName; /* Name of file containing package (already
+                             * translated to local form if needed). */
+Tcl_DString *bufPtr;        /* Initialized empty dstring.  Append
+                             * package name to this if possible. */
+{ return 0; }

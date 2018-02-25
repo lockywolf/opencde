@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,9 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
 
 #ifndef _stored_object_desc_h
 #define _stored_object_desc_h 1
@@ -58,27 +57,26 @@ class object_dict;
 
 class stored_object_desc : public desc {
 
-public:
-   stored_object_desc(const char* name);
-   stored_object_desc(int class_code, const char* type);
+      public:
+        stored_object_desc(const char *name);
+        stored_object_desc(int class_code, const char *type);
 
-   virtual ~stored_object_desc();
+        virtual ~stored_object_desc();
 
-   handler* get_handler() { return v_handler_ptr; };
+        handler *get_handler() { return v_handler_ptr; };
 
-   void quit_handler();
+        void quit_handler();
 
-   void set_store_nm(const char* str) ;
-   char* get_store_nm() { return store_nm; };
+        void set_store_nm(const char *str);
+        char *get_store_nm() { return store_nm; };
 
-   virtual ostream& asciiOut(ostream& out, Boolean last = true);
+        virtual ostream &asciiOut(ostream &out, Boolean last = true);
 
-protected:
-   handler* v_handler_ptr;
+      protected:
+        handler *v_handler_ptr;
 
-private:
-   char* store_nm;
+      private:
+        char *store_nm;
 };
-
 
 #endif

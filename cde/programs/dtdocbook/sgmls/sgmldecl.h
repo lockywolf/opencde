@@ -23,34 +23,34 @@
 /* $XConsortium: sgmldecl.h /main/3 1996/06/19 17:17:34 drk $ */
 /* sgmldecl.h: SGML declaration parsing. */
 
-#define QATTCNT 0 
-#define QATTSPLEN 1 
-#define QBSEQLEN 2 
-#define QDTAGLEN 3 
-#define QDTEMPLEN 4 
-#define QENTLVL 5 
-#define QGRPCNT 6 
-#define QGRPGTCNT 7 
-#define QGRPLVL 8 
-#define QLITLEN 9 
+#define QATTCNT 0
+#define QATTSPLEN 1
+#define QBSEQLEN 2
+#define QDTAGLEN 3
+#define QDTEMPLEN 4
+#define QENTLVL 5
+#define QGRPCNT 6
+#define QGRPGTCNT 7
+#define QGRPLVL 8
+#define QLITLEN 9
 #define QNAMELEN 10
 #define QNORMSEP 11
 #define QPILEN 12
 #define QTAGLEN 13
 #define QTAGLVL 14
 
-#define NQUANTITY (QTAGLVL+1)
+#define NQUANTITY (QTAGLVL + 1)
 
-#define TOTALCAP 0 
-#define ENTCAP 1 
-#define ENTCHCAP 2 
-#define ELEMCAP 3 
-#define GRPCAP 4 
-#define EXGRPCAP 5 
-#define EXNMCAP 6 
-#define ATTCAP 7 
-#define ATTCHCAP 8 
-#define AVGRPCAP 9 
+#define TOTALCAP 0
+#define ENTCAP 1
+#define ENTCHCAP 2
+#define ELEMCAP 3
+#define GRPCAP 4
+#define EXGRPCAP 5
+#define EXNMCAP 6
+#define ATTCAP 7
+#define ATTCHCAP 8
+#define AVGRPCAP 9
 #define NOTCAP 10
 #define NOTCHCAP 11
 #define IDCAP 12
@@ -62,14 +62,14 @@
 extern char *captab[];
 
 struct sgmldecl {
-     long capacity[NCAPACITY];
-     long subdoc;
-     UNCH formal;
-     UNCH omittag;
-     UNCH shorttag;
-     UNCH shortref;
-     UNCH namecase[2];		/* case translation of general/entity names */
-     int quantity[NQUANTITY];
+        long capacity[NCAPACITY];
+        long subdoc;
+        UNCH formal;
+        UNCH omittag;
+        UNCH shorttag;
+        UNCH shortref;
+        UNCH namecase[2]; /* case translation of general/entity names */
+        int quantity[NQUANTITY];
 };
 
 extern struct sgmldecl sd;

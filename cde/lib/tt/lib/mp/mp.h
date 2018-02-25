@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp.h /main/3 1995/10/23 10:18:24 rswiston $ 			 				 */
+/*%%  $XConsortium: mp.h /main/3 1995/10/23 10:18:24 rswiston $
+ */
 /*
  * mp.h -- public interface classes to the Message Passer
  *
@@ -42,4 +43,4 @@
 #include <mp/mp_pattern.h>
 #include <mp/mp_session.h>
 
-#endif				/* _MP_H */
+#endif /* _MP_H */

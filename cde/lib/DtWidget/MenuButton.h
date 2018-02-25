@@ -44,29 +44,28 @@ extern "C" {
 /* Resources */
 
 #ifndef DtNcascadingCallback
-#define DtNcascadingCallback	XmNcascadingCallback
+#define DtNcascadingCallback XmNcascadingCallback
 #endif
 #ifndef DtNsubMenuId
-#define DtNsubMenuId		XmNsubMenuId
+#define DtNsubMenuId XmNsubMenuId
 #endif
 #ifndef DtNcascadePixmap
-#define DtNcascadePixmap	XmNcascadePixmap
+#define DtNcascadePixmap XmNcascadePixmap
 #endif
 
 #ifndef DtCCallback
-#define DtCCallback		XmCCallback
+#define DtCCallback XmCCallback
 #endif
 #ifndef DtCPixmap
-#define DtCPixmap		XmCPixmap
+#define DtCPixmap XmCPixmap
 #endif
 #ifndef DtCMenuWidget
-#define DtCMenuWidget		XmCMenuWidget
+#define DtCMenuWidget XmCMenuWidget
 #endif
 
 #ifndef DtCR_CASCADING
-#define DtCR_CASCADING		XmCR_CASCADING
+#define DtCR_CASCADING XmCR_CASCADING
 #endif
-
 
 /*
  * Types
@@ -74,9 +73,8 @@ extern "C" {
 
 /* Widget class and instance */
 
-typedef struct _DtMenuButtonRec      * DtMenuButtonWidget;
-typedef struct _DtMenuButtonClassRec * DtMenuButtonWidgetClass;
-
+typedef struct _DtMenuButtonRec *DtMenuButtonWidget;
+typedef struct _DtMenuButtonClassRec *DtMenuButtonWidgetClass;
 
 /*
  * Data
@@ -86,16 +84,12 @@ typedef struct _DtMenuButtonClassRec * DtMenuButtonWidgetClass;
 
 externalref WidgetClass dtMenuButtonWidgetClass;
 
-
 /*
  * Functions
  */
 
-extern Widget DtCreateMenuButton( 
-		Widget		parent,
-		char		*name,
-		ArgList		arglist,
-		Cardinal	argcount);
+extern Widget DtCreateMenuButton(Widget parent, char *name, ArgList arglist,
+                                 Cardinal argcount);
 
 #ifdef __cplusplus
 }

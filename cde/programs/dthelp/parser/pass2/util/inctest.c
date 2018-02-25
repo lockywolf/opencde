@@ -32,29 +32,29 @@
 
 void m_err1(
 #if defined(M_PROTO)
-  const char *text, const char *arg
+    const char *text, const char *arg
 #endif
-  ) ;
+);
 
 void m_exit(
 #if defined(M_PROTO)
-  int status
+    int status
 #endif
-  ) ;
+);
 
 void m_inctest(
 #if defined(M_PROTO)
-  int *count, int limit, char *message
+    int *count, int limit, char *message
 #endif
-  ) ;
+);
 
 /* Increment a count and test against a limit */
-void m_inctest(count, limit, message)
-  int *count ;
-  int limit ;
-  char *message ;
-  {
-    if (++*count <= limit) return ;
-    m_err1("Internal error: %s exceeded", message) ;
-    m_exit(TRUE) ;
-    }
+void m_inctest(count, limit, message) int *count;
+int limit;
+char *message;
+{
+        if (++*count <= limit)
+                return;
+        m_err1("Internal error: %s exceeded", message);
+        m_exit(TRUE);
+}

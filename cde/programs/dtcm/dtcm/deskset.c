@@ -48,7 +48,8 @@
  */
 
 #ifndef lint
-static  char sccsid[] = "@(#)deskset.c 1.11 94/12/22 Copyr 1993 Sun Microsystems, Inc.";
+static char sccsid[] =
+    "@(#)deskset.c 1.11 94/12/22 Copyr 1993 Sun Microsystems, Inc.";
 #endif
 
 #include <EUSCompat.h>
@@ -71,7 +72,7 @@ static  char sccsid[] = "@(#)deskset.c 1.11 94/12/22 Copyr 1993 Sun Microsystems
 #include "deskset.h"
 #include "revision.h"
 
-#define DS_TITLE_LINE_HEIGHT	25
+#define DS_TITLE_LINE_HEIGHT 25
 
 /******************************************************************************
 **
@@ -84,15 +85,12 @@ static  char sccsid[] = "@(#)deskset.c 1.11 94/12/22 Copyr 1993 Sun Microsystems
 **  Returns:		Revision name (char *)
 **
 ******************************************************************************/
-extern char *
-ds_relname()
-{
-	static char	buf[MAXNAMELEN];
+extern char *ds_relname() {
+        static char buf[MAXNAMELEN];
 
-	snprintf(buf, MAXNAMELEN, "Version %d.%d.%d Revision %d",
-		DtVERSION, DtREVISION, DtUPDATE_LEVEL,
-		DTCM_INTERNAL_REV);
-	return buf;
+        snprintf(buf, MAXNAMELEN, "Version %d.%d.%d Revision %d", DtVERSION,
+                 DtREVISION, DtUPDATE_LEVEL, DTCM_INTERNAL_REV);
+        return buf;
 }
 
 /*
@@ -120,71 +118,67 @@ ds_relname()
  * Returns:        0       Could not get screen size
  *                 1       All is well
  */
-extern int
-ds_position_popup(Widget base, Widget popup, ds_location_op location_op) {
-  int bh, bw, bx, by, ph, pw, px, py ;
-  int screen_width, screen_height ;
-  Position base_x, base_y, popup_x, popup_y ;
-  Dimension base_width, base_height, popup_width, popup_height ;
+extern int ds_position_popup(Widget base, Widget popup,
+                             ds_location_op location_op) {
+        int bh, bw, bx, by, ph, pw, px, py;
+        int screen_width, screen_height;
+        Position base_x, base_y, popup_x, popup_y;
+        Dimension base_width, base_height, popup_width, popup_height;
 
-  XtVaGetValues(base,
-                XmNx,      &base_x,
-                XmNy,      &base_y,
-                XmNwidth,  &base_width,
-                XmNheight, &base_height,
-                NULL) ;
-  bx = (int) base_x ;
-  by = (int) base_y ;
-  bw = (int) base_width ;
-  bh = (int) base_height ;
+        XtVaGetValues(base, XmNx, &base_x, XmNy, &base_y, XmNwidth, &base_width,
+                      XmNheight, &base_height, NULL);
+        bx = (int)base_x;
+        by = (int)base_y;
+        bw = (int)base_width;
+        bh = (int)base_height;
 
-  XtVaGetValues(popup,
-                XmNx,      &popup_x,
-                XmNy,      &popup_y,
-                XmNwidth,  &popup_width,
-                XmNheight, &popup_height,
-                NULL) ;
+        XtVaGetValues(popup, XmNx, &popup_x, XmNy, &popup_y, XmNwidth,
+                      &popup_width, XmNheight, &popup_height, NULL);
 
-  px = (int) popup_x ;
-  py = (int) popup_y ;
-  pw = (int) popup_width ;
-  ph = (int) popup_height ;
+        px = (int)popup_x;
+        py = (int)popup_y;
+        pw = (int)popup_width;
+        ph = (int)popup_height;
 
-  ds_get_screen_size(popup, &screen_width, &screen_height) ;
+        ds_get_screen_size(popup, &screen_width, &screen_height);
 
-  if (location_op == DS_POPUP_LOR)
-    {
-      if (bx >= screen_width - bw - bx) location_op = DS_POPUP_LEFT ;
-      else                              location_op = DS_POPUP_RIGHT ;
-    }
-  else if (location_op == DS_POPUP_AOB)
-    {
-      if (by > screen_height - bh - by) location_op = DS_POPUP_ABOVE ;
-      else                              location_op = DS_POPUP_BELOW ;
-    }
+        if (location_op == DS_POPUP_LOR) {
+                if (bx >= screen_width - bw - bx)
+                        location_op = DS_POPUP_LEFT;
+                else
+                        location_op = DS_POPUP_RIGHT;
+        } else if (location_op == DS_POPUP_AOB) {
+                if (by > screen_height - bh - by)
+                        location_op = DS_POPUP_ABOVE;
+                else
+                        location_op = DS_POPUP_BELOW;
+        }
 
-  switch (location_op)
-    {
-      case DS_POPUP_RIGHT    : px = bx + bw + 5 ;
-                               py = by - DS_TITLE_LINE_HEIGHT ;
-                               break ;
-      case DS_POPUP_LEFT     : px = bx - pw - 5 ;
-                               py = by - DS_TITLE_LINE_HEIGHT ;
-                               break ;
-      case DS_POPUP_ABOVE    : px = bx - 5 ;
-                               py = by - ph - 10 ;
-                               break ;
-      case DS_POPUP_BELOW    : px = bx - 5 ;
-                               py = by + bh + 5 ;
-                               break ;
-      case DS_POPUP_CENTERED :
-      default                : px = bx + (bw - pw) / 2 ;
-                               py = by + (bh - ph) / 2 ;
-    }
-  ds_force_popup_on_screen(popup, &px, &py) ;
-  return 1;
+        switch (location_op) {
+        case DS_POPUP_RIGHT:
+                px = bx + bw + 5;
+                py = by - DS_TITLE_LINE_HEIGHT;
+                break;
+        case DS_POPUP_LEFT:
+                px = bx - pw - 5;
+                py = by - DS_TITLE_LINE_HEIGHT;
+                break;
+        case DS_POPUP_ABOVE:
+                px = bx - 5;
+                py = by - ph - 10;
+                break;
+        case DS_POPUP_BELOW:
+                px = bx - 5;
+                py = by + bh + 5;
+                break;
+        case DS_POPUP_CENTERED:
+        default:
+                px = bx + (bw - pw) / 2;
+                py = by + (bh - ph) / 2;
+        }
+        ds_force_popup_on_screen(popup, &px, &py);
+        return 1;
 }
-
 
 /*  Function:       ds_force_popup_on_screen
  *
@@ -215,53 +209,53 @@ ds_position_popup(Widget base, Widget popup, ds_location_op location_op) {
  *  Returns:        TRUE    The popup was moved
  *                  FALSE   The popup was not moved
  */
-extern int
-ds_force_popup_on_screen(Widget popup, int *popup_x_p, int *popup_y_p) {
-  Dimension popup_width, popup_height ;
-  Position left, top ;
-  int popup_x, popup_y ;
-  int n, rcode, screen_width, screen_height ;
+extern int ds_force_popup_on_screen(Widget popup, int *popup_x_p,
+                                    int *popup_y_p) {
+        Dimension popup_width, popup_height;
+        Position left, top;
+        int popup_x, popup_y;
+        int n, rcode, screen_width, screen_height;
 
-  popup_x = *popup_x_p ;
-  popup_y = *popup_y_p ;
+        popup_x = *popup_x_p;
+        popup_y = *popup_y_p;
 
-/* Get the screen size */
+        /* Get the screen size */
 
-  ds_get_screen_size(popup, &screen_width, &screen_height) ;
+        ds_get_screen_size(popup, &screen_width, &screen_height);
 
-  XtVaGetValues(popup,
-                XmNwidth,  &popup_width,
-                XmNheight, &popup_height,
-                NULL) ;
+        XtVaGetValues(popup, XmNwidth, &popup_width, XmNheight, &popup_height,
+                      NULL);
 
-/* Make sure frame does not go off side of screen */
+        /* Make sure frame does not go off side of screen */
 
-  n = popup_x + (int) popup_width ;
-  if (n > screen_width) popup_x -= (n - screen_width) ;
-  else if (popup_x < 0) popup_x = 0 ;
+        n = popup_x + (int)popup_width;
+        if (n > screen_width)
+                popup_x -= (n - screen_width);
+        else if (popup_x < 0)
+                popup_x = 0;
 
-/* Make sure frame doen't go off top or bottom */
+        /* Make sure frame doen't go off top or bottom */
 
-  n = popup_y + (int) popup_height ;
-  if (n > screen_height) popup_y -= n - screen_height ;
-  else if (popup_y < 0) popup_y = 0 ;
+        n = popup_y + (int)popup_height;
+        if (n > screen_height)
+                popup_y -= n - screen_height;
+        else if (popup_y < 0)
+                popup_y = 0;
 
-/* Set location and return */
+        /* Set location and return */
 
-  left = (Position) popup_x ;
-  top  = (Position) popup_y ;
-  XtVaSetValues(popup,
-                XmNx, left,
-                XmNy, top,
-                NULL) ;
+        left = (Position)popup_x;
+        top = (Position)popup_y;
+        XtVaSetValues(popup, XmNx, left, XmNy, top, NULL);
 
-  if (popup_x != *popup_x_p || popup_y != *popup_y_p) rcode = TRUE ;
-  else                                                rcode = FALSE ;
-  *popup_x_p = popup_x ;
-  *popup_y_p = popup_y ;
-  return(rcode) ;
+        if (popup_x != *popup_x_p || popup_y != *popup_y_p)
+                rcode = TRUE;
+        else
+                rcode = FALSE;
+        *popup_x_p = popup_x;
+        *popup_y_p = popup_y;
+        return (rcode);
 }
-
 
 /*  Function:       ds_get_screen_size
  *
@@ -272,11 +266,10 @@ ds_force_popup_on_screen(Widget popup, int *popup_x_p, int *popup_y_p) {
  *
  *  Returns:        None.
  */
-extern void
-ds_get_screen_size(Widget widget, int *width_p, int *height_p) {
-  Display *dpy  = XtDisplay(widget) ;
-  int screen    = DefaultScreen(dpy) ;
+extern void ds_get_screen_size(Widget widget, int *width_p, int *height_p) {
+        Display *dpy = XtDisplay(widget);
+        int screen = DefaultScreen(dpy);
 
-  *width_p  = DisplayWidth(dpy, screen) ;
-  *height_p = DisplayHeight(dpy, screen) ;
+        *width_p = DisplayWidth(dpy, screen);
+        *height_p = DisplayHeight(dpy, screen);
 }

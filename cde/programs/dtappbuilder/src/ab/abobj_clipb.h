@@ -24,10 +24,10 @@
 /*
  *	$XConsortium: abobj_clipb.h /main/3 1995/11/06 17:15:17 rswiston $
  *
- *	@(#)abobj_clipb.h	1.4 15 Feb 1994	
+ *	@(#)abobj_clipb.h	1.4 15 Feb 1994
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -44,4 +44,3 @@
  * abobj_clipb.h
  * Definitions for clipboard
  */
-

@@ -21,23 +21,20 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $XConsortium: msgfac_msg.h /main/3 1995/11/02 15:48:04 rswiston $ */
-/*        
- * (c) Copyright 1993, 1994 Hewlett-Packard Company  
- * (c) Copyright 1993, 1994 International Business Machines Corp. 
- * (c) Copyright 1993, 1994 Sun Microsystems, Inc.   
- * (c) Copyright 1993, 1994 Novell, Inc.  
+/*
+ * (c) Copyright 1993, 1994 Hewlett-Packard Company
+ * (c) Copyright 1993, 1994 International Business Machines Corp.
+ * (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+ * (c) Copyright 1993, 1994 Novell, Inc.
  */
 
-#ifndef _H_MSGFAC_MSG 
-#define _H_MSGFAC_MSG 
+#ifndef _H_MSGFAC_MSG
+#define _H_MSGFAC_MSG
 #include <limits.h>
 #include <nl_types.h>
 #define MF_MSGFAC "msgfac.cat"
 
-
-
 /* The following was generated from msgfac.msg. */
-
 
 /* definitions for set MS_DSPCAT */
 #define MS_DSPCAT 1
@@ -101,4 +98,4 @@
 #define MS_RUNCAT 5
 
 #define M_RUNCAT 1
-#endif 
+#endif

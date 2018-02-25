@@ -30,33 +30,31 @@
 #ifndef _CMNUTILS_H_INCLUDED
 #define _CMNUTILS_H_INCLUDED
 
-
 #include <Xm/Xm.h>
 
 /********************************************************************************/
 /*                                                                              */
-/*  Function Declarations                                                       */
+/*  Function Declarations */
 /*                                                                              */
 /********************************************************************************/
 
-
-XmStringTable TextStringsToXmStrings (char **);
-char *XmStringToText (XmString);
-char **XmStringsToTextStrings (void);
-int countItems (char **);
-void ffree_string_array (void);
-Widget findOptionMenuButtonID (void);
-void free_string_array (void);
-char *getLabelString (void);
-Widget getOptionMenuHistory (void);
-void setOptionMenuHistoryByText (void);
-void setOptionMenuHistoryByWidget (void);
-void show_warning_dialog (void);
-Widget show_working_dialog (void);
-void show_info_dialog (void);
-void free_XmStringTable (XmStringTable table);
-void clear_text (Widget textfield);
-void clear_text_field (Widget textfield);
-void delete_all_list_items (Widget list);
+XmStringTable TextStringsToXmStrings(char **);
+char *XmStringToText(XmString);
+char **XmStringsToTextStrings(void);
+int countItems(char **);
+void ffree_string_array(void);
+Widget findOptionMenuButtonID(void);
+void free_string_array(void);
+char *getLabelString(void);
+Widget getOptionMenuHistory(void);
+void setOptionMenuHistoryByText(void);
+void setOptionMenuHistoryByWidget(void);
+void show_warning_dialog(void);
+Widget show_working_dialog(void);
+void show_info_dialog(void);
+void free_XmStringTable(XmStringTable table);
+void clear_text(Widget textfield);
+void clear_text_field(Widget textfield);
+void delete_all_list_items(Widget list);
 
 #endif /* _CMNUTILS_H_INCLUDED */

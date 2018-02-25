@@ -36,46 +36,51 @@
 #include "Tt/tt_c.h"
 
 #ifdef HAS_EXCEPTIONS
-#define Throw(ex)  throw ex
+#define Throw(ex) throw ex
 #define Try try
-#define Catch(type,file) catch(type ex)
+#define Catch(type, file) catch (type ex)
 #else
-#define Throw(ex)  { ex; return; }
+#define Throw(ex)                                                              \
+        {                                                                      \
+                ex;                                                            \
+                return;                                                        \
+        }
 #define Try
-#define Catch(type,file)  if (file->ttFileOpFailed())
+#define Catch(type, file) if (file->ttFileOpFailed())
 #endif
- 
-class TTFile : public CString {
- public:
-  TTFile () : status(TT_OK) {}
-  TTFile (const CString &, const CString &);
-  TTFile (const TTFile &);
-  ~TTFile();
 
-  TTFile & operator=(const TTFile &);
+class TTFile : public CString {
+      public:
+        TTFile() : status(TT_OK) {}
+        TTFile(const CString &, const CString &);
+        TTFile(const TTFile &);
+        ~TTFile();
+
+        TTFile &operator=(const TTFile &);
 
 #ifdef HAS_EXCEPTIONS
-  class TT_Exception {
-   public:
-    TT_Exception (char * str) 
-      { cerr << tt_status_message(tt_pointer_error(str)); }
-    ~TT_Exception() {}
-    
-    friend ostream & operator<< (ostream &, TTFile &);
-  };
+        class TT_Exception {
+              public:
+                TT_Exception(char *str) {
+                        cerr << tt_status_message(tt_pointer_error(str));
+                }
+                ~TT_Exception() {}
+
+                friend ostream &operator<<(ostream &, TTFile &);
+        };
 #else
-  void TT_Exception (char *);
+        void TT_Exception(char *);
 #if defined(linux) || defined(CSRG_BASED) || defined(sun)
-  friend std::ostream & operator<< (std::ostream &, TTFile &);
+        friend std::ostream &operator<<(std::ostream &, TTFile &);
 #else
-  friend ostream & operator<< (ostream &, TTFile &);
+        friend ostream &operator<<(ostream &, TTFile &);
 #endif
 #endif
 
-  int  ttFileOpFailed () { return status != TT_OK; }
-  Tt_status getStatus()  { return status; }
+        int ttFileOpFailed() { return status != TT_OK; }
+        Tt_status getStatus() { return status; }
 
- private:
-  Tt_status status;
+      private:
+        Tt_status status;
 };
 #endif

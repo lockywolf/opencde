@@ -47,43 +47,41 @@
 #include "vista.h"
 #include "dbtype.h"
 
-
 /* Set current set owner
-*/
-int
-d_csoset(set, dba TASK_PARM DBN_PARM)
-int set;      /* Set table entry */
+ */
+int d_csoset(set, dba TASK_PARM DBN_PARM) int set; /* Set table entry */
 DB_ADDR FAR *dba; /* db address of record to become current */
 TASK_DECL
-DBN_DECL      /* database number */
+DBN_DECL /* database number */
 {
-   INT type;
-   char FAR *ptr;
-   SET_ENTRY FAR *set_ptr;
+        INT type;
+        char FAR *ptr;
+        SET_ENTRY FAR *set_ptr;
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_IO));
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_IO));
 
-   if (nset_check(set, &set, (SET_ENTRY FAR * FAR *)&set_ptr) != S_OKAY)
-      RETURN( db_status );
+        if (nset_check(set, &set, (SET_ENTRY FAR * FAR *)&set_ptr) != S_OKAY)
+                RETURN(db_status);
 
-   if ( dba == NULL ) {
-      curr_own[set] = curr_mem[set] = NULL_DBA;
-   }
-   else if ( check_dba(*dba) == S_OKAY ) {
-      /* get the record type */
-      if ( dio_read( *dba, (char FAR * FAR *)&ptr , NOPGHOLD) ) RETURN( db_status );
-      bytecpy( &type, ptr, sizeof(INT) );
-      type &= ~RLBMASK;
-#ifndef	 ONE_DB
-      type += curr_db_table->rt_offset;
+        if (dba == NULL) {
+                curr_own[set] = curr_mem[set] = NULL_DBA;
+        } else if (check_dba(*dba) == S_OKAY) {
+                /* get the record type */
+                if (dio_read(*dba, (char FAR *FAR *)&ptr, NOPGHOLD))
+                        RETURN(db_status);
+                bytecpy(&type, ptr, sizeof(INT));
+                type &= ~RLBMASK;
+#ifndef ONE_DB
+                type += curr_db_table->rt_offset;
 #endif
 
-      if (set_ptr->st_own_rt != type)
-	 RETURN( dberr( S_INVOWN ) );
+                if (set_ptr->st_own_rt != type)
+                        RETURN(dberr(S_INVOWN));
 
-      curr_own[set] = *dba;
-      curr_mem[set] = NULL_DBA;
-   }
-   RETURN( db_status );
+                curr_own[set] = *dba;
+                curr_mem[set] = NULL_DBA;
+        }
+        RETURN(db_status);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin csoset.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin csoset.c */

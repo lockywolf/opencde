@@ -32,7 +32,7 @@
  **  file
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -43,13 +43,11 @@
 
 /* External Interface */
 
-
 extern void GetUserFontResource(int);
 extern void GetSysFontResource(int);
 
-extern void GetApplicationResources( void ) ;
-extern void AddResourceConverters( void ) ;
-
+extern void GetApplicationResources(void);
+extern void AddResourceConverters(void);
 
 #endif /* _resource_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

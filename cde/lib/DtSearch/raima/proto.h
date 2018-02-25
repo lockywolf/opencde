@@ -148,9 +148,9 @@ void dbautorec(P0);
 int taskinit(P1(TASK FAR *));
 int initdbt(P1(CONST char FAR *));
 int alloc_table(P1(CHAR_P FAR *) Pi(unsigned) Pi(unsigned));
-#define ALLOC_TABLE(t, n, o, v)	alloc_table((CHAR_P FAR *)(t), n, o)
+#define ALLOC_TABLE(t, n, o, v) alloc_table((CHAR_P FAR *)(t), n, o)
 #ifndef SINGLE_USER
-int  termses(P0);
+int termses(P0);
 #endif
 void termfree(P0);
 #ifndef SINGLE_USER
@@ -166,23 +166,21 @@ int dio_clrfile(P1(FILE_NO));
 int dio_clear(P0);
 int dio_flush(P0);
 void dio_setdef(P1(FILE_NO));
-int dio_get(P1(F_ADDR) Pi(char FAR * FAR *) Pi(int));
+int dio_get(P1(F_ADDR) Pi(char FAR *FAR *) Pi(int));
 int dio_touch(P1(F_ADDR));
-int dio_read(P1(DB_ADDR) Pi(char FAR * FAR *) Pi(int));
+int dio_read(P1(DB_ADDR) Pi(char FAR *FAR *) Pi(int));
 int dio_write(P1(DB_ADDR) Pi(CONST char FAR *) Pi(int));
 int dio_release(P1(DB_ADDR));
 int dio_rrlb(P1(DB_ADDR) Pi(INT *));
 int dio_wrlb(P1(DB_ADDR) Pi(INT));
 int dio_findpg(P1(FILE_NO) Pi(F_ADDR) Pi(PAGE_ENTRY FAR *)
-			      Pi(PAGE_ENTRY FAR * FAR *) 
-			      Pi(LOOKUP_ENTRY FAR * FAR *));
+                   Pi(PAGE_ENTRY FAR *FAR *) Pi(LOOKUP_ENTRY FAR *FAR *));
 #ifdef NO_TRANS
 int dio_out(P1(PAGE_ENTRY FAR *) Pi(LOOKUP_ENTRY FAR *));
 #else
-int dio_out(P1(PAGE_ENTRY FAR *) Pi(LOOKUP_ENTRY FAR *) 
-			   Pi(BOOLEAN));
+int dio_out(P1(PAGE_ENTRY FAR *) Pi(LOOKUP_ENTRY FAR *) Pi(BOOLEAN));
 #endif
-#ifndef  NO_TIMESTAMP
+#ifndef NO_TIMESTAMP
 ULONG dio_pzsetts(P1(FILE_NO));
 ULONG dio_pzgetts(P1(FILE_NO));
 #endif
@@ -220,13 +218,11 @@ void key_cmpcpy(P1(char FAR *) Pi(char FAR *) Pi(INT));
 #ifndef ONE_DB
 int dbn_check(P1(int));
 #endif
-int nset_check(P1(int) Pi(int *) Pi(SET_ENTRY FAR * FAR *));
-int nfld_check(P1(long) Pi(int *) Pi(int *) 
-			      Pi(RECORD_ENTRY FAR * FAR *) 
-			      Pi(FIELD_ENTRY FAR * FAR *));
-int nrec_check(P1(int) Pi(int *) Pi(RECORD_ENTRY FAR * FAR *));
-int fldcmp(P1(FIELD_ENTRY FAR *) Pi(CONST char FAR *) 
-			     Pi(CONST char FAR *));
+int nset_check(P1(int) Pi(int *) Pi(SET_ENTRY FAR *FAR *));
+int nfld_check(P1(long) Pi(int *) Pi(int *) Pi(RECORD_ENTRY FAR *FAR *)
+                   Pi(FIELD_ENTRY FAR *FAR *));
+int nrec_check(P1(int) Pi(int *) Pi(RECORD_ENTRY FAR *FAR *));
+int fldcmp(P1(FIELD_ENTRY FAR *) Pi(CONST char FAR *) Pi(CONST char FAR *));
 int INTcmp(P1(CONST char FAR *) Pi(CONST char FAR *));
 int ADDRcmp(P1(CONST DB_ADDR FAR *) Pi(CONST DB_ADDR FAR *));
 int null_dba(P1(CONST char FAR *));
@@ -263,14 +259,13 @@ long o_pages(P1(FILE_NO));
 void o_free(P0);
 
 /* From recfcns.c: */
-int r_chkfld(P1(INT) Pi(FIELD_ENTRY FAR *) Pi(char FAR *)
-	     Pi(CONST char FAR *));
+int r_chkfld(P1(INT) Pi(FIELD_ENTRY FAR *) Pi(char FAR *) Pi(CONST char FAR *));
 int r_delrec(P1(INT) Pi(DB_ADDR));
 int r_gfld(P1(FIELD_ENTRY FAR *) Pi(char FAR *) Pi(char FAR *));
 int r_gmem(P1(int) Pi(char FAR *) Pi(char FAR *));
 int r_gset(P1(int) Pi(char FAR *) Pi(char FAR *));
-int r_pfld(P1(INT) Pi(FIELD_ENTRY FAR *) Pi(char FAR *) 
-			     Pi(CONST char FAR *) Pi(DB_ADDR FAR *));
+int r_pfld(P1(INT) Pi(FIELD_ENTRY FAR *) Pi(char FAR *) Pi(CONST char FAR *)
+               Pi(DB_ADDR FAR *));
 int r_pmem(P1(int) Pi(char FAR *) Pi(char FAR *));
 int r_pset(P1(int) Pi(char FAR *) Pi(char FAR *));
 int r_smem(P1(DB_ADDR FAR *) Pi(INT));
@@ -280,9 +275,8 @@ int r_tstopt(P1(FIELD_ENTRY FAR *) Pi(char FAR *));
 
 /* From pathfcns.c */
 int con_dbd(P1(char FAR *) Pi(char FAR *) Pi(char FAR *));
-int con_dbf(P1(char FAR *) Pi(char FAR *) Pi(char FAR *) 
-			   Pi(char FAR *));
-char FAR * get_element(P1(char FAR *) Pi(int));
+int con_dbf(P1(char FAR *) Pi(char FAR *) Pi(char FAR *) Pi(char FAR *));
+char FAR *get_element(P1(char FAR *) Pi(int));
 
 /* From renfile.c: */
 int renfiles(P0);
@@ -304,7 +298,7 @@ int taf_close(P0);
 int taf_access(P0);
 int taf_release(P0);
 int taf_add(P1(CONST char FAR *));
-int taf_del(P1(CONST char FAR *) );
+int taf_del(P1(CONST char FAR *));
 
 /* From task.c */
 #ifdef MULTI_TASK
@@ -312,36 +306,37 @@ void task_switch(P1(DB_TASK FAR *));
 #endif
 
 /* From mapchar.c */
-int  ctb_init(P0);
-int  ctbl_alloc(P0);
+int ctb_init(P0);
+int ctbl_alloc(P0);
 void ctbl_free(P0);
 
 /* System functions */
 #ifndef _STRING_H
 #ifndef linux
-  void CDECL memcpy(P1(char *) Pi(char *) Pi(int));
+void CDECL memcpy(P1(char *) Pi(char *) Pi(int));
 #endif
-  int  CDECL memcmp(P1(char *) Pi(char *) Pi(int));
-  void CDECL memset(P1(char *) Pi(char) Pi(int));
+int CDECL memcmp(P1(char *) Pi(char *) Pi(int));
+void CDECL memset(P1(char *) Pi(char) Pi(int));
 
-  int CDECL strcmp(P1(CONST char *) Pi(CONST char *));
-  char * CDECL strcpy(P1(char *) Pi(CONST char *));
-  char * CDECL strcat(P1(char *) Pi(CONST char *));
-  int CDECL strlen(P1(CONST char *));
-  int CDECL strncmp(P1(CONST char *) Pi(CONST char *) Pi(int));
-  char * CDECL strncpy(P1(char *) Pi(CONST char *) Pi(int));
-  char * CDECL strchr(P1(CONST char *) Pi(int));
-  char * CDECL strrchr(P1(CONST char *) Pi(int));
+int CDECL strcmp(P1(CONST char *) Pi(CONST char *));
+char *CDECL strcpy(P1(char *) Pi(CONST char *));
+char *CDECL strcat(P1(char *) Pi(CONST char *));
+int CDECL strlen(P1(CONST char *));
+int CDECL strncmp(P1(CONST char *) Pi(CONST char *) Pi(int));
+char *CDECL strncpy(P1(char *) Pi(CONST char *) Pi(int));
+char *CDECL strchr(P1(CONST char *) Pi(int));
+char *CDECL strrchr(P1(CONST char *) Pi(int));
 #endif
 
-void CDECL free(P1(void FAR *));  /* AIXV3 - DPG 07/05/90 */
+void CDECL free(P1(void FAR *)); /* AIXV3 - DPG 07/05/90 */
 time_t CDECL time(P1(long *));
 int CDECL write(P1(int) Pi(char *) Pi(unsigned int));
 int CDECL read(P1(int) Pi(char *) Pi(unsigned int));
 long CDECL lseek(P1(int) Pi(long) Pi(int));
 int CDECL close(P1(int));
 void CDECL exit(P1(int));
-char * CDECL getenv(P1(CONST char *));
+char *CDECL getenv(P1(CONST char *));
 int CDECL locking(P1(int) Pi(int) Pi(long));
 int CDECL unlink(P1(CONST char *));
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin proto.h */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin proto.h */

@@ -35,24 +35,23 @@ class DataRepository;
 
 class AusText : public SearchEngine {
 
-private:
-  DataRepository *store;
-  AusTextStore   *f_search_store;
+      private:
+        DataRepository *store;
+        AusTextStore *f_search_store;
 
-protected:
-  void write_start_tag ( const Token &);
-  void write_end_tag ( const Token & );
-  void write_terms ( FlexBuffer *termsbuf );
-  void write_buffer();
+      protected:
+        void write_start_tag(const Token &);
+        void write_end_tag(const Token &);
+        void write_terms(FlexBuffer *termsbuf);
+        void write_buffer();
 
-public:
-  void markup( const Token & );
-  void data( const char *, size_t );
+      public:
+        void markup(const Token &);
+        void data(const char *, size_t);
 
-public:
-  AusText(NodeData *, const Token &);
-  ~AusText();
-
+      public:
+        AusText(NodeData *, const Token &);
+        ~AusText();
 };
 
 #endif

@@ -48,68 +48,61 @@
 extern "C" {
 #endif
 
-
 /*  New fields for the IconicPath widget class record  */
 
-typedef struct
-{
-   int mumble;   /* No new procedures */
+typedef struct {
+        int mumble; /* No new procedures */
 } DtIconicPathClassPart;
-
 
 /* Full class record declaration */
 
-typedef struct _DtIconicPathClassRec
-{
-	CoreClassPart		core_class;
-	CompositeClassPart	composite_class;
-	ConstraintClassPart	constraint_class;
-	XmManagerClassPart	manager_class;
-	DtIconicPathClassPart	iconic_path_class;
+typedef struct _DtIconicPathClassRec {
+        CoreClassPart core_class;
+        CompositeClassPart composite_class;
+        ConstraintClassPart constraint_class;
+        XmManagerClassPart manager_class;
+        DtIconicPathClassPart iconic_path_class;
 } DtIconicPathClassRec;
 
 externalref DtIconicPathClassRec dtIconicPathClassRec;
 
-
 /* New fields for the IconicPath widget record */
 
-typedef struct
-{
-	Dimension		margin_width;
-	Dimension		margin_height;
-	Dimension		spacing;
-	Dimension		small_min_width;
-	Dimension		large_min_width;
-	Boolean			force_small_icons;
-	Boolean			buttons;
-	Boolean			dropzone;
-	Boolean			status_msg;
-	Boolean			force_large_icons;
-	Boolean			icons_changed;
+typedef struct {
+        Dimension margin_width;
+        Dimension margin_height;
+        Dimension spacing;
+        Dimension small_min_width;
+        Dimension large_min_width;
+        Boolean force_small_icons;
+        Boolean buttons;
+        Boolean dropzone;
+        Boolean status_msg;
+        Boolean force_large_icons;
+        Boolean icons_changed;
 
-	char * file_mgr_rec;
-	char * current_directory;
-	Boolean large_icons;
-	char *msg_text;
-	
-	char * directory_shown;
-	Boolean large_shown;
-	Widget dotdot_button;
-	Widget dropzone_icon;
-	Widget status_label;
-	int num_components;
-	struct _IconicPathComponent {
-		char *path;
-		char *icon_name;
-		Widget icon;
-		Widget button;
-		int width;
-	} *components;
-	int left_component;
-	GC gc;
+        char *file_mgr_rec;
+        char *current_directory;
+        Boolean large_icons;
+        char *msg_text;
+
+        char *directory_shown;
+        Boolean large_shown;
+        Widget dotdot_button;
+        Widget dropzone_icon;
+        Widget status_label;
+        int num_components;
+        struct _IconicPathComponent {
+                char *path;
+                char *icon_name;
+                Widget icon;
+                Widget button;
+                int width;
+        } * components;
+        int left_component;
+        GC gc;
 
 } DtIconicPathPart;
-
 
 /****************************************************************
  *
@@ -117,30 +110,23 @@ typedef struct
  *
  ****************************************************************/
 
-typedef struct _DtIconicPathRec
-{
-	CorePart		core;
-	CompositePart		composite;
-	ConstraintPart		constraint;
-	XmManagerPart		manager;
-	DtIconicPathPart	iconic_path;
+typedef struct _DtIconicPathRec {
+        CorePart core;
+        CompositePart composite;
+        ConstraintPart constraint;
+        XmManagerPart manager;
+        DtIconicPathPart iconic_path;
 } DtIconicPathRec;
-
-
 
 /********    Private Function Declarations    ********/
 
-extern void _DtIconicPathInput(
-                        Widget wid,
-                        XEvent *event,
-                        String *params,
-                        Cardinal *num_params) ;
+extern void _DtIconicPathInput(Widget wid, XEvent *event, String *params,
+                               Cardinal *num_params);
 
 /********    End Private Function Declarations    ********/
 
-
 #ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
 #endif /* _DtIconicPathP_h */

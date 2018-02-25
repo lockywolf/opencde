@@ -38,63 +38,54 @@ class Button;
 
 class MainWindow : public MotifUI {
 
-   friend void KeyboardPopupMenu(Widget, XEvent *, String *, Cardinal *);
-   friend void PopupMenu(Widget, XtPointer, XEvent *, Boolean *);
+        friend void KeyboardPopupMenu(Widget, XEvent *, String *, Cardinal *);
+        friend void PopupMenu(Widget, XtPointer, XEvent *, Boolean *);
 
- protected:
+      protected:
+        static XtActionsRec actions[];
+        static void KeyboardPopupMenu(Widget, XEvent *, String *, Cardinal *);
+        static void PopupMenu(Widget, XtPointer, XEvent *, Boolean *);
 
-   static XtActionsRec actions[];
-   static void KeyboardPopupMenu(Widget, XEvent *, String *, Cardinal *);
-   static void PopupMenu(Widget, XtPointer, XEvent *, Boolean *);
+        void PostMenu(MotifUI *, XEvent *);
+        PopupMenuContainer *popups;
+        Widget LastPopupMenu;
+        XtTranslations trans;
+        char *icon;
+        char *icon_name;
 
-   void PostMenu(MotifUI *, XEvent *);
-   PopupMenuContainer *popups;
-   Widget LastPopupMenu;
-   XtTranslations trans;
-   char *icon;
-   char *icon_name;
+        // Derived classes must define Initialize
+        virtual void Initialize() = 0;
 
-   // Derived classes must define Initialize
-   virtual void Initialize() = 0;
+        void CreateMainWindow(MotifUI *parent, char *name, char *widgetName,
+                              char *icon, char *icon_name);
 
-   void CreateMainWindow(MotifUI *parent, char *name, char *widgetName,
-			 char *icon, char *icon_name);
+      public:
+        MainWindow(MotifUI *parent, char *name, char *widgetName,
+                   char *icon = NULL, char *icon_name = NULL);
 
- public:
+        MainWindow(char *category, MotifUI *parent, char *name,
+                   char *widgetName, char *icon = NULL, char *icon_name = NULL);
+        virtual ~MainWindow();
 
-   MainWindow(MotifUI *parent,
-	      char *name,
-	      char *widgetName,
-	      char *icon = NULL,
-	      char *icon_name = NULL);
+        void IconFile(char *icon);
+        void IconName(char *icon_name);
+        char *IconFile() { return icon; }
+        char *IconName() { return icon_name; }
 
-   MainWindow(char *category,
-	      MotifUI *parent,
-	      char *name,
-	      char *widgetName,
-	      char *icon = NULL,
-	      char *icon_name = NULL);
-   virtual ~MainWindow();
+        Button *AddAction(char *name, char *category, ButtonCallback callback,
+                          void *callback_data, char *mnemonic = NULL,
+                          char *acceleratorText = NULL,
+                          char *accelerator = NULL);
+        void RegisterPopup(MotifUI *object);
+        void AddSep(char *category);
 
-   void IconFile(char *icon);
-   void IconName(char *icon_name);
-   char *IconFile() { return icon; }
-   char *IconName() { return icon_name; }
+        void SetWorkWindow(MotifUI *obj);
 
-   Button *AddAction(char *name, char *category, ButtonCallback callback,
-		     void *callback_data, char *mnemonic = NULL,
-		     char *acceleratorText = NULL, char *accelerator = NULL);
-   void RegisterPopup(MotifUI *object);
-   void AddSep(char *category);
+        BaseUI *PopupObject;
+        int PopupObjectUniqueID;
 
-   void SetWorkWindow(MotifUI *obj);
-
-   BaseUI *PopupObject;
-   int PopupObjectUniqueID;
-
-   const UI_Class UIClass()            { return MAIN_WINDOW; }
-   const char *const UIClassName()     { return "MainWindow"; }
-
+        const UI_Class UIClass() { return MAIN_WINDOW; }
+        const char *const UIClassName() { return "MainWindow"; }
 };
 
 #endif /* MAINWINDOW_H */

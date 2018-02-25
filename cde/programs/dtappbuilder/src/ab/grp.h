@@ -27,7 +27,7 @@
  * @(#)grp.h	1.1 18 Jan 1994
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -42,7 +42,7 @@
 
 /*
  * grp.h
- * Declarations for the App Builder Group editor 
+ * Declarations for the App Builder Group editor
  */
 
 #ifndef _grp_h
@@ -51,7 +51,6 @@
 /*
  * API for manipulating App Builder Groups
  */
-extern void	grp_selected_objects(
-		);
+extern void grp_selected_objects();
 
 #endif /* _grp_h */

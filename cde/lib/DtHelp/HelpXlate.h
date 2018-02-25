@@ -33,7 +33,8 @@
  **   (c) Copyright 1993, 1994 Hewlett-Packard Company
  **   (c) Copyright 1993, 1994 International Business Machines Corp.
  **   (c) Copyright 1993, 1994 Sun Microsystems, Inc.
- **   (c) Copyright 1993, 1994 Unix System Labs, Inc., a subsidiary of Novell, Inc.
+ **   (c) Copyright 1993, 1994 Unix System Labs, Inc., a subsidiary of Novell,
+ *Inc.
  **
  ****************************************************************************
  ************************************<+>*************************************/
@@ -49,17 +50,11 @@ extern "C" {
 #endif
 
 /* Functions */
-void _DtHelpCeXlateOpToStdLocale(
-	char       *operation,
-	char       *opLocale,
-	char       **ret_locale,
-	char       **ret_lang,
-	char       **ret_set);
-void _DtHelpCeXlateStdToOpLocale(
-	char       *operation,
-	char       *stdLocale,
-	char       *dflt_opLocale,
-	char       **ret_opLocale);
+void _DtHelpCeXlateOpToStdLocale(char *operation, char *opLocale,
+                                 char **ret_locale, char **ret_lang,
+                                 char **ret_set);
+void _DtHelpCeXlateStdToOpLocale(char *operation, char *stdLocale,
+                                 char *dflt_opLocale, char **ret_opLocale);
 
 #ifdef __cplusplus
 }

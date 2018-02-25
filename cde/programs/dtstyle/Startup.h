@@ -32,7 +32,7 @@
  **  file
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -43,11 +43,9 @@
 
 /* External Interface */
 
-
-extern void popup_startupBB( Widget shell) ;
-extern void restoreStartup( Widget shell, XrmDatabase db) ;
-extern void saveStartup( int fd) ;
-
+extern void popup_startupBB(Widget shell);
+extern void restoreStartup(Widget shell, XrmDatabase db);
+extern void saveStartup(int fd);
 
 #endif /* _startup_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

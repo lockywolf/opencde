@@ -44,47 +44,29 @@
 #ifndef _DtHelpFormatCCDFI_h
 #define _DtHelpFormatCCDFI_h
 
-typedef	void*	VarHandle;
+typedef void *VarHandle;
 
-extern	int		_DtHelpCeGetCcdfTitleChunks(
-				_DtHelpVolumeHdl	volume,
-				char		*loc_id,
-				_FrmtUiInfo		*ui_info,
-				void		***ret_chunks);
-extern	int		_DtHelpCeFrmtCcdfPathAndChildren(
-				_DtHelpVolumeHdl         volume,
-				char                 *loc_id,
-				_FrmtUiInfo		*ui_info,
-				_DtCvTopicPtr          *ret_handle );
-extern	int		_DtHelpCeGetCcdfVolTitleChunks(
-				_DtHelpVolumeHdl	 volume,
-				_FrmtUiInfo		*ui_info,
-				void		***ret_chunks);
-extern	int		_DtHelpCeFrmtCcdfTopic (
-				_DtHelpVolumeHdl volume,
-				char          *filename,
-				int            offset,
-				char          *id_string,
-				_FrmtUiInfo	*ui_info,
-				_DtCvTopicPtr	*ret_topic);
-extern	int		__DtHelpCeGetParagraphList (
-				VarHandle	 var_handle,
-				int		 make_cont,
-				_DtCvFrmtOption	 type,
-				_DtCvTopicPtr	*ret_handle);
-extern	int		__DtHelpCeProcessString(
-				VarHandle	  var_handle,
-				BufFilePtr	  my_file,
-				_DtCvFrmtOption	  frmt_type,
-				char		 *scan_string,
-				char		 *in_string,
-				int		  in_size,
-				int		  fnt_flags,
-				int		  ret_on_nl,
-				_DtHelpFontHints *font_attr);
-extern	VarHandle	__DtHelpCeSetUpVars (
-				char		*lang,
-				char		*code_set,
-				_FrmtUiInfo	*ui_info);
+extern int _DtHelpCeGetCcdfTitleChunks(_DtHelpVolumeHdl volume, char *loc_id,
+                                       _FrmtUiInfo *ui_info,
+                                       void ***ret_chunks);
+extern int _DtHelpCeFrmtCcdfPathAndChildren(_DtHelpVolumeHdl volume,
+                                            char *loc_id, _FrmtUiInfo *ui_info,
+                                            _DtCvTopicPtr *ret_handle);
+extern int _DtHelpCeGetCcdfVolTitleChunks(_DtHelpVolumeHdl volume,
+                                          _FrmtUiInfo *ui_info,
+                                          void ***ret_chunks);
+extern int _DtHelpCeFrmtCcdfTopic(_DtHelpVolumeHdl volume, char *filename,
+                                  int offset, char *id_string,
+                                  _FrmtUiInfo *ui_info,
+                                  _DtCvTopicPtr *ret_topic);
+extern int __DtHelpCeGetParagraphList(VarHandle var_handle, int make_cont,
+                                      _DtCvFrmtOption type,
+                                      _DtCvTopicPtr *ret_handle);
+extern int __DtHelpCeProcessString(VarHandle var_handle, BufFilePtr my_file,
+                                   _DtCvFrmtOption frmt_type, char *scan_string,
+                                   char *in_string, int in_size, int fnt_flags,
+                                   int ret_on_nl, _DtHelpFontHints *font_attr);
+extern VarHandle __DtHelpCeSetUpVars(char *lang, char *code_set,
+                                     _FrmtUiInfo *ui_info);
 
 #endif /* _DtHelpFormatCCDFI_h */

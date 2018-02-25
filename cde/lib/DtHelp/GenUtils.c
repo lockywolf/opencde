@@ -62,7 +62,7 @@
 /*
  * private includes
  */
-#include "bufioI.h"	/* for FormatUtilI.h */
+#include "bufioI.h" /* for FormatUtilI.h */
 #include "GenUtilsP.h"
 #include "FontAttrI.h"
 #include "Access.h"
@@ -82,27 +82,24 @@
 
 /********    Private Defines      ********/
 /********    Private Function Declarations    ********/
-static	void		DefCvsMetrics(
-				_DtCvPointer		 client_data,
-				_DtCvElemType	elem_type,
-				_DtCvPointer	ret_metrics);
+static void DefCvsMetrics(_DtCvPointer client_data, _DtCvElemType elem_type,
+                          _DtCvPointer ret_metrics);
 /********    Private Macro Declarations        ********/
 
 /******************************************************************************
-*
-* Private variables used within this file.
-*
-*******************************************************************************/
-static _DtCvVirtualInfo	MyVirtInfo =
-  {
-	DefCvsMetrics,	/* void            (*_CEGet_DtCvMetrics)(); */
-	NULL,		/* void            (*_DtCvRenderElem)(); */
-	NULL, /* DefCvsStrWidth, _DtCvUnit (*_DtCvGetElemWidth)(); */
-	NULL, /* DefCvsFontMetrics, void   (*_DtCvGetFontMetrics)(); */
-	NULL,		/* VStatus         (*_DtCvBuildSelection)(); */
-  };
+ *
+ * Private variables used within this file.
+ *
+ *******************************************************************************/
+static _DtCvVirtualInfo MyVirtInfo = {
+    DefCvsMetrics, /* void            (*_CEGet_DtCvMetrics)(); */
+    NULL,          /* void            (*_DtCvRenderElem)(); */
+    NULL,          /* DefCvsStrWidth, _DtCvUnit (*_DtCvGetElemWidth)(); */
+    NULL,          /* DefCvsFontMetrics, void   (*_DtCvGetFontMetrics)(); */
+    NULL,          /* VStatus         (*_DtCvBuildSelection)(); */
+};
 
-static	const _DtCvSpaceMetrics	defLinkMetrics = { 0, 0, 0, 0 };
+static const _DtCvSpaceMetrics defLinkMetrics = {0, 0, 0, 0};
 
 /******************************************************************************
  *
@@ -119,27 +116,22 @@ static	const _DtCvSpaceMetrics	defLinkMetrics = { 0, 0, 0, 0 };
  * Purpose:
  *
  *****************************************************************************/
-static	void
-DefCvsMetrics (
-    _DtCvPointer		 client_data,
-    _DtCvElemType	elem_type,
-    _DtCvPointer	ret_metrics)
-{
-    _DtCvSpaceMetrics *retLink = (_DtCvSpaceMetrics *) ret_metrics;
+static void DefCvsMetrics(_DtCvPointer client_data, _DtCvElemType elem_type,
+                          _DtCvPointer ret_metrics) {
+        _DtCvSpaceMetrics *retLink = (_DtCvSpaceMetrics *)ret_metrics;
 
-    if (_DtCvCANVAS_TYPE == elem_type)
-      {
-	_DtCvMetrics *retCanvas = (_DtCvMetrics *) ret_metrics;
+        if (_DtCvCANVAS_TYPE == elem_type) {
+                _DtCvMetrics *retCanvas = (_DtCvMetrics *)ret_metrics;
 
-        retCanvas->width          = 1;
-        retCanvas->height         = 1;
-	retCanvas->top_margin     = 0;
-	retCanvas->side_margin    = 0;
-	retCanvas->line_height    = 1;
-	retCanvas->horiz_pad_hint = 1;
-      }
-    else if (_DtCvLINK_TYPE == elem_type || _DtCvTRAVERSAL_TYPE == elem_type)
-	*retLink = defLinkMetrics;
+                retCanvas->width = 1;
+                retCanvas->height = 1;
+                retCanvas->top_margin = 0;
+                retCanvas->side_margin = 0;
+                retCanvas->line_height = 1;
+                retCanvas->horiz_pad_hint = 1;
+        } else if (_DtCvLINK_TYPE == elem_type ||
+                   _DtCvTRAVERSAL_TYPE == elem_type)
+                *retLink = defLinkMetrics;
 }
 
 /******************************************************************************
@@ -159,46 +151,40 @@ DefCvsMetrics (
  * Used by:	dthelpgen 1.0
  *
  ******************************************************************************/
-int 
-_DtHelpCeGetVolumeTitle (
-    CanvasHandle	  canvas,
-    VolumeHandle	  volume,
-    char		**ret_title)
-{
-    _FrmtUiInfo	myUiInfo;
-    _DtHelpVolume vol = (_DtHelpVolume)volume;
-    int result;
+int _DtHelpCeGetVolumeTitle(CanvasHandle canvas, VolumeHandle volume,
+                            char **ret_title) {
+        _FrmtUiInfo myUiInfo;
+        _DtHelpVolume vol = (_DtHelpVolume)volume;
+        int result;
 
-    /*
-     * set up my UI information
-     */
-    myUiInfo.load_graphic = NULL;
-    myUiInfo.resolve_spc  = NULL;
-    myUiInfo.load_font    = NULL;
-    myUiInfo.destroy_region = NULL;
-    myUiInfo.exec_filter  = NULL;
-    myUiInfo.client_data  = NULL;
-    /* since we're going for a string, set avg_char width to 1 */
-    myUiInfo.line_width   = 0;
-    myUiInfo.line_height  = 0;
-    myUiInfo.leading      = 0;
-    myUiInfo.avg_char     = 1;
-    myUiInfo.nl_to_space  = 0;
+        /*
+         * set up my UI information
+         */
+        myUiInfo.load_graphic = NULL;
+        myUiInfo.resolve_spc = NULL;
+        myUiInfo.load_font = NULL;
+        myUiInfo.destroy_region = NULL;
+        myUiInfo.exec_filter = NULL;
+        myUiInfo.client_data = NULL;
+        /* since we're going for a string, set avg_char width to 1 */
+        myUiInfo.line_width = 0;
+        myUiInfo.line_height = 0;
+        myUiInfo.leading = 0;
+        myUiInfo.avg_char = 1;
+        myUiInfo.nl_to_space = 0;
 
-    /*
-     * What type of volume is it?
-     */
-    _DtHelpProcessLock();
-    if (0 == _DtHelpCeGetVolumeFlag(volume))
-      {
-        result = _DtHelpCeGetCcdfVolumeTitle(vol, ret_title);
-      }
-    else
-      {
-	result = _DtHelpCeFrmtSDLVolTitleToAscii(volume, &myUiInfo, ret_title);
-      }
-    _DtHelpProcessUnlock();
-    return result;
+        /*
+         * What type of volume is it?
+         */
+        _DtHelpProcessLock();
+        if (0 == _DtHelpCeGetVolumeFlag(volume)) {
+                result = _DtHelpCeGetCcdfVolumeTitle(vol, ret_title);
+        } else {
+                result = _DtHelpCeFrmtSDLVolTitleToAscii(volume, &myUiInfo,
+                                                         ret_title);
+        }
+        _DtHelpProcessUnlock();
+        return result;
 }
 /******************************************************************************
  * Function:    int _DtHelpCeGetAsciiVolumeAbstract (_DtHelpVolume vol, char **a
@@ -215,35 +201,29 @@ bstract);
  * Used by:	dthelpgen 1.0
  *
  ******************************************************************************/
-int
-_DtHelpCeGetAsciiVolumeAbstract (
-    CanvasHandle          canvas,
-    VolumeHandle          volume,
-    char                **retAbs)
-{
-    _DtHelpVolume vol = (_DtHelpVolume)volume;
-    int result;
+int _DtHelpCeGetAsciiVolumeAbstract(CanvasHandle canvas, VolumeHandle volume,
+                                    char **retAbs) {
+        _DtHelpVolume vol = (_DtHelpVolume)volume;
+        int result;
 
-    /*
-     * What type of volume is it?
-     */
-    _DtHelpProcessLock();
-    if (0 == _DtHelpCeGetVolumeFlag(volume))
-      {
-        result = _DtHelpCeGetCcdfVolumeAbstract(vol, retAbs);
-	_DtHelpProcessUnlock();
-	return result;
-      }
+        /*
+         * What type of volume is it?
+         */
+        _DtHelpProcessLock();
+        if (0 == _DtHelpCeGetVolumeFlag(volume)) {
+                result = _DtHelpCeGetCcdfVolumeAbstract(vol, retAbs);
+                _DtHelpProcessUnlock();
+                return result;
+        }
 
-    *retAbs = _DtHelpCeGetSdlVolumeAsciiAbstract(volume);
-    if (*retAbs == NULL)
-      {
-	_DtHelpProcessUnlock();
-        return (-1);
-      }
+        *retAbs = _DtHelpCeGetSdlVolumeAsciiAbstract(volume);
+        if (*retAbs == NULL) {
+                _DtHelpProcessUnlock();
+                return (-1);
+        }
 
-    _DtHelpProcessUnlock();
-    return (0);
+        _DtHelpProcessUnlock();
+        return (0);
 }
 
 /*****************************************************************************
@@ -256,10 +236,8 @@ _DtHelpCeGetAsciiVolumeAbstract (
  * Purpose:	Create a canvas and attach the appropriate virtual functions
  *		to the canvas.
  *****************************************************************************/
-CanvasHandle
-_DtHelpCeCreateDefCanvas (void)
-{
-    return (_DtCanvasCreate(MyVirtInfo, NULL));
+CanvasHandle _DtHelpCeCreateDefCanvas(void) {
+        return (_DtCanvasCreate(MyVirtInfo, NULL));
 
 } /* End _DtHelpCeCreateDefCanvas */
 
@@ -277,10 +255,6 @@ _DtHelpCeCreateDefCanvas (void)
  * Purpose:     Parse tokens in resource string values.
  *
  *****************************************************************************/
-char *
-_DtHelpCeGetNxtToken (
-    char        *str,
-    char        **retToken)
-{
-   return (_DtHelpGetNxtToken(str, retToken));
+char *_DtHelpCeGetNxtToken(char *str, char **retToken) {
+        return (_DtHelpGetNxtToken(str, retToken));
 }

@@ -61,7 +61,6 @@
  *  as root, file ownership is also preserved.
  */
 
-
 /*
  *  fsRename:
  *    Renames or moves source to target.
@@ -104,7 +103,6 @@ extern void fsErase(char *name, int *rcP, int force);
  */
 extern void fsEmpty(char *name, int *rcP);
 
-
 /*
  * Callback functions:
  *
@@ -124,6 +122,5 @@ extern void fsEmpty(char *name, int *rcP);
 extern int (*progressCallback)(char *fname);
 extern int (*errorCallback)(char *fname, int errnum);
 extern int (*periodicCallback)(void);
-
 
 #endif /* _fsrtns_h */

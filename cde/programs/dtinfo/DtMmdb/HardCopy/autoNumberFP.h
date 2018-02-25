@@ -36,65 +36,64 @@
 #include "StyleSheet/Element.h"
 #include "StyleSheet/FeatureValue.h"
 #include "HardCopy/autoNumber.h"
-   
+
 #ifndef CDE_NEXT
-typedef hashTable<CC_String, autoNumber> f_autoNumberSet_t ;
+typedef hashTable<CC_String, autoNumber> f_autoNumberSet_t;
 typedef hashTable<CC_String, autoNumberListT> f_resetControlList_t;
 typedef hashTable<CC_String, autoNumberListT> f_registerList_t;
 #else
-typedef hashTable<CC_String, autoNumber> f_autoNumberSet_t ;
+typedef hashTable<CC_String, autoNumber> f_autoNumberSet_t;
 typedef hashTable<CC_String, autoNumberListT> f_resetControlList_t;
 typedef hashTable<CC_String, autoNumberListT> f_registerList_t;
 #endif
 
-class autoNumberFP 
-{
-private:
-// autoNumber FPs that are known through their names
+class autoNumberFP {
+      private:
+        // autoNumber FPs that are known through their names
 
-   f_autoNumberSet_t f_autoNumberSet;
+        f_autoNumberSet_t f_autoNumberSet;
 
-// Inverted reset control list.
-// A reset control list records a list of tags that 
-// once are met, the autonumber the list is associated with
-// will be reset to its initial value.
+        // Inverted reset control list.
+        // A reset control list records a list of tags that
+        // once are met, the autonumber the list is associated with
+        // will be reset to its initial value.
 
-// Each <String, autoNumberList> pair in the dictionary has the
-// meaning that when the tag with String GI is encounted in the doucument,
-// all autonumber in the autoNumberList will reset.
+        // Each <String, autoNumberList> pair in the dictionary has the
+        // meaning that when the tag with String GI is encounted in the
+        // doucument, all autonumber in the autoNumberList will reset.
 
-   f_resetControlList_t f_resetControlList;
+        f_resetControlList_t f_resetControlList;
 
-// Each <String, autoNumberList> pair in the dictionary has the
-// meaning that all autonumber in the autoNumberList are defined
-// in the style sheet under tag with String GI.
+        // Each <String, autoNumberList> pair in the dictionary has the
+        // meaning that all autonumber in the autoNumberList are defined
+        // in the style sheet under tag with String GI.
 
-   f_registerList_t f_registerList;
+        f_registerList_t f_registerList;
 
-private:
-   void pushAutoNumbers(const char *);
-   void popAutoNumbers (const char *);
-   void updateAutoNumbers(const char*);
-	
-   void defineAutoNumber(const char*, const FeatureValue*);
+      private:
+        void pushAutoNumbers(const char *);
+        void popAutoNumbers(const char *);
+        void updateAutoNumbers(const char *);
 
-   void setSeenTagStatus(const char* tagName);
+        void defineAutoNumber(const char *, const FeatureValue *);
 
-   const char* stringToCharPtr(const FeatureValue* f);
+        void setSeenTagStatus(const char *tagName);
 
-public:
-   autoNumberFP();
-   ~autoNumberFP();
+        const char *stringToCharPtr(const FeatureValue *f);
 
-   FeatureValue* evaluate(const char* varName) ;
-   unsigned int accept(const char*, const Expression*);
+      public:
+        autoNumberFP();
+        ~autoNumberFP();
 
-   void beginElement(const Element &);
-   void endElement  (const Symbol  &);
+        FeatureValue *evaluate(const char *varName);
+        unsigned int accept(const char *, const Expression *);
 
-   void clear();
+        void beginElement(const Element &);
+        void endElement(const Symbol &);
 
-   void resetAllAutoNumbers();
+        void clear();
+
+        void resetAllAutoNumbers();
 };
 
 extern autoNumberFP gAutoNumberFP;

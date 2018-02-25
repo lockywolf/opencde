@@ -45,17 +45,18 @@ class InputSource;
 class Trie;
 
 class Recognizer : public Resource {
-public:
-  Recognizer(Trie *, const XcharMap<EquivCode> &);
-  Recognizer(Trie *, const XcharMap<EquivCode> &, Vector<Token> &);
-  Token recognize(InputSource *, Messenger &) const;
-private:
-  Recognizer(const Recognizer &); // undefined
-  void operator=(const Recognizer &); // undefined
-  Boolean multicode_;
-  Owner<Trie> trie_;
-  XcharMap<EquivCode> map_;
-  Vector<Token> suppressTokens_;
+      public:
+        Recognizer(Trie *, const XcharMap<EquivCode> &);
+        Recognizer(Trie *, const XcharMap<EquivCode> &, Vector<Token> &);
+        Token recognize(InputSource *, Messenger &) const;
+
+      private:
+        Recognizer(const Recognizer &);     // undefined
+        void operator=(const Recognizer &); // undefined
+        Boolean multicode_;
+        Owner<Trie> trie_;
+        XcharMap<EquivCode> map_;
+        Vector<Token> suppressTokens_;
 };
 
 #ifdef SP_NAMESPACE

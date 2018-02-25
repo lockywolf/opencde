@@ -46,84 +46,82 @@
 #include "vista.h"
 #include "dbtype.h"
 
-
 /* Find next record of type
-*/
-int
-d_recnext(TASK_DBN_ONLY)
-TASK_DECL
-DBN_DECL
-{
-   INT rectype;
-   FILE_NO fno;
-   FILE_NO ft;
-   DB_ADDR dba;
+ */
+int d_recnext(TASK_DBN_ONLY) TASK_DECL DBN_DECL {
+        INT rectype;
+        FILE_NO fno;
+        FILE_NO ft;
+        DB_ADDR dba;
 #ifndef SINGLE_USER
-   int dbopen_sv;
+        int dbopen_sv;
 #endif
-   int rec_ndx;			/* Index into record table */
-   RECORD_ENTRY FAR *rec_ptr;	/* Pointer to record table */
-   char FAR *recptr;
-   F_ADDR rno, last;
+        int rec_ndx;               /* Index into record table */
+        RECORD_ENTRY FAR *rec_ptr; /* Pointer to record table */
+        char FAR *recptr;
+        F_ADDR rno, last;
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_IO));
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_IO));
 
-   /* look for the current record type */
-   if ( RN_REF(rn_type) < 0 ) RETURN( dberr(S_NOTYPE) );
+        /* look for the current record type */
+        if (RN_REF(rn_type) < 0)
+                RETURN(dberr(S_NOTYPE));
 
-   /* get the record number and file number from the current record */
-   if (RN_REF(rn_dba)) {
-      fno = (FILE_NO)((RN_REF(rn_dba) >> FILESHIFT) & FILEMASK);
-      rno = RN_REF(rn_dba) & ADDRMASK;
-   }
-   else {			/* No current rec - get fno from rn_type */
-      nrec_check(RN_REF(rn_type) + RECMARK, &rec_ndx, (RECORD_ENTRY FAR * FAR *)&rec_ptr);
-      fno = (FILE_NO)NUM2EXT(rec_ptr->rt_file, ft_offset);
-      fno = (int)((fno >> FILESHIFT) & FILEMASK);
-      rno = 1;
-   }
-   ft = NUM2INT( fno, ft_offset );
+        /* get the record number and file number from the current record */
+        if (RN_REF(rn_dba)) {
+                fno = (FILE_NO)((RN_REF(rn_dba) >> FILESHIFT) & FILEMASK);
+                rno = RN_REF(rn_dba) & ADDRMASK;
+        } else { /* No current rec - get fno from rn_type */
+                nrec_check(RN_REF(rn_type) + RECMARK, &rec_ndx,
+                           (RECORD_ENTRY FAR * FAR *)&rec_ptr);
+                fno = (FILE_NO)NUM2EXT(rec_ptr->rt_file, ft_offset);
+                fno = (int)((fno >> FILESHIFT) & FILEMASK);
+                rno = 1;
+        }
+        ft = NUM2INT(fno, ft_offset);
 
-   /* start looking at the next record number */
-   if ( (last = dio_pznext(ft)) <= 0 )
-      RETURN( db_status );
+        /* start looking at the next record number */
+        if ((last = dio_pznext(ft)) <= 0)
+                RETURN(db_status);
 
-   ++rno;
-   do {
-	/* make sure we haven't gone past the end of the file */
-	if ( rno >= last ) RETURN( db_status = S_NOTFOUND );
+        ++rno;
+        do {
+                /* make sure we haven't gone past the end of the file */
+                if (rno >= last)
+                        RETURN(db_status = S_NOTFOUND);
 
-	/* create the database address to read */
-	dba = ( (FILEMASK & fno) << FILESHIFT ) | (ADDRMASK & rno);
+                /* create the database address to read */
+                dba = ((FILEMASK & fno) << FILESHIFT) | (ADDRMASK & rno);
 
-	/* set up to allow unlocked read */
+                /* set up to allow unlocked read */
 #ifndef SINGLE_USER
-	dbopen_sv = dbopen;
-	dbopen = 2;
+                dbopen_sv = dbopen;
+                dbopen = 2;
 #endif
 
-	/* read the record */
-	dio_read( dba, (char FAR * FAR *)&recptr, NOPGHOLD );
+                /* read the record */
+                dio_read(dba, (char FAR *FAR *)&recptr, NOPGHOLD);
 #ifndef SINGLE_USER
-	dbopen = dbopen_sv;
+                dbopen = dbopen_sv;
 #endif
-	if ( db_status != S_OKAY )
-	    RETURN( db_status );
+                if (db_status != S_OKAY)
+                        RETURN(db_status);
 
-	/* get the record type out of the record */
-	bytecpy( &rectype, recptr, sizeof(INT) );
+                /* get the record type out of the record */
+                bytecpy(&rectype, recptr, sizeof(INT));
 #ifndef SINGLE_USER
-	rectype &= ~RLBMASK;
+                rectype &= ~RLBMASK;
 #endif
 
-	++rno;
-   } while ( rectype != RN_REF(rn_type) );
+                ++rno;
+        } while (rectype != RN_REF(rn_type));
 
-   /* set the current record */
-   curr_rec = dba;
-   RN_REF(rn_type) = rectype;
-   RN_REF(rn_dba)  = dba;
+        /* set the current record */
+        curr_rec = dba;
+        RN_REF(rn_type) = rectype;
+        RN_REF(rn_dba) = dba;
 
-   RETURN( db_status = S_OKAY );
+        RETURN(db_status = S_OKAY);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin recnext.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin recnext.c */

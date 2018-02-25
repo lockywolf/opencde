@@ -71,27 +71,20 @@
  *
  *****************************************************************************/
 
-char * 
-_DtGetMessage(
-        char *filename,
-        int set,
-        int n,
-        char *s )
-{
+char *_DtGetMessage(char *filename, int set, int n, char *s) {
         char *msg;
-	char *lang;
-	nl_catd catopen();
-	char *catgets();
-	static int first = 1;
-	static nl_catd nlmsg_fd;
+        char *lang;
+        nl_catd catopen();
+        char *catgets();
+        static int first = 1;
+        static nl_catd nlmsg_fd;
 
-	_DtSvcProcessLock();
-	if ( first ) 
-        {
-		first = 0;
-		nlmsg_fd = catopen(filename, NL_CAT_LOCALE);
-	}
-	msg=catgets(nlmsg_fd,set,n,s);
-	_DtSvcProcessUnlock();
-	return (msg);
+        _DtSvcProcessLock();
+        if (first) {
+                first = 0;
+                nlmsg_fd = catopen(filename, NL_CAT_LOCALE);
+        }
+        msg = catgets(nlmsg_fd, set, n, s);
+        _DtSvcProcessUnlock();
+        return (msg);
 }

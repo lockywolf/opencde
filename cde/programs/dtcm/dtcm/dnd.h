@@ -24,7 +24,8 @@
 **
 **  dnd.h
 **
-**  static char sccsid[] = "@(#)dnd.h 1.9 94/11/07 Copyr 1993 Sun Microsystems, Inc.";
+**  static char sccsid[] = "@(#)dnd.h 1.9 94/11/07 Copyr 1993 Sun Microsystems,
+*Inc.";
 **
 **  $XConsortium: dnd.h /main/4 1996/04/15 13:24:16 rswiston $
 **
@@ -54,30 +55,28 @@
 
 #include "ansi_c.h"
 
-typedef enum {SingleEditorList, 
-	      SingleEditorIcon, 
-	      GroupEditorList, 
-	      GroupEditorIcon, 
-	      TodoEditorList, 
-	      TodoEditorIcon, 
-	      StandAloneEditor } EditorType;
+typedef enum {
+        SingleEditorList,
+        SingleEditorIcon,
+        GroupEditorList,
+        GroupEditorIcon,
+        TodoEditorList,
+        TodoEditorIcon,
+        StandAloneEditor
+} EditorType;
 
 typedef struct {
-	Calendar	*calendar;
-	EditorType	editor_type;
-	caddr_t		editor;
-	char		*data;
+        Calendar *calendar;
+        EditorType editor_type;
+        caddr_t editor;
+        char *data;
 } DragContext;
 
 #define DRAG_THRESHOLD 4
 
-
-extern void cm_register_drop_site	P((Calendar *c, Widget w));
-extern void ApptDragStart		P((Widget, XEvent *, Calendar *,
-					   EditorType));
-extern void TranslationDragStart	P((Widget, XEvent *, String *,
-					   Cardinal *));
-extern void DtcmProcessPress		P((Widget, XEvent *, String *,
-					   Cardinal *));
+extern void cm_register_drop_site P((Calendar * c, Widget w));
+extern void ApptDragStart P((Widget, XEvent *, Calendar *, EditorType));
+extern void TranslationDragStart P((Widget, XEvent *, String *, Cardinal *));
+extern void DtcmProcessPress P((Widget, XEvent *, String *, Cardinal *));
 
 #endif

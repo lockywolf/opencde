@@ -40,13 +40,13 @@
 #define _TCLPORT
 
 #if defined(__WIN32__) || defined(_WIN32)
-#   include "../win/tclWinPort.h"
+#include "../win/tclWinPort.h"
 #else
-#   if defined(MAC_TCL)
-#	include "tclMacPort.h"
-#    else
-#	include "tclUnixPort.h"
-#    endif
+#if defined(MAC_TCL)
+#include "tclMacPort.h"
+#else
+#include "tclUnixPort.h"
+#endif
 #endif
 
 #endif /* _TCLPORT */

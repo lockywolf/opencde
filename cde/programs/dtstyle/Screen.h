@@ -32,7 +32,7 @@
  **  file
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -43,11 +43,9 @@
 
 /* External Interface */
 
-
-extern void popup_screenBB( Widget shell) ;
-extern void restoreScreen( Widget shell, XrmDatabase db) ;
-extern void saveScreen( int fd) ;
-
+extern void popup_screenBB(Widget shell);
+extern void restoreScreen(Widget shell, XrmDatabase db);
+extern void saveScreen(int fd);
 
 #endif /* _screen_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

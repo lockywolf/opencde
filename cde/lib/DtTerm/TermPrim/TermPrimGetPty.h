@@ -29,8 +29,8 @@
  * (c) Copyright 1993, 1994 Sun Microsystems, Inc.                      *
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
-#ifndef	_Dt_TermPrimGetPty_h
-#define	_Dt_TermPrimGetPty_h
+#ifndef _Dt_TermPrimGetPty_h
+#define _Dt_TermPrimGetPty_h
 
 int _DtTermPrimGetPty(char **ptySlave, char **ptyMaster);
 int _DtTermPrimSetupPty(char *ptySlave, int ptyFd);
@@ -39,5 +39,5 @@ void _DtTermPrimPtyCleanup();
 int _DtTermPrimGetPty(char **ptySlave, char **ptyMaster);
 void _DtTermPrimReleasePty(char *ptySlave);
 
-#endif	/* _Dt_TermPrimGetPty_h */
+#endif /* _Dt_TermPrimGetPty_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif... */

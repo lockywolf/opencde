@@ -26,7 +26,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -34,7 +34,7 @@
  *+SNOTICE
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -56,17 +56,16 @@
 //         by
 //           Douglas Young
 //           Prentice Hall, 1992
-//           ISBN 0-13-630252-1	
+//           ISBN 0-13-630252-1
 //
 //         Copyright 1991 by Prentice Hall
 //         All Rights Reserved
 //
-//  Permission to use, copy, modify, and distribute this software for 
-//  any purpose except publication and without fee is hereby granted, provided 
+//  Permission to use, copy, modify, and distribute this software for
+//  any purpose except publication and without fee is hereby granted, provided
 //  that the above copyright notice appear in all copies of the software.
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
-
 
 ////////////////////////////////////////////////////////////////
 // DialogCallbackData.h: Auxiliary class used by DialogManager
@@ -76,38 +75,32 @@
 
 class DialogManager;
 
-typedef void (*DialogCallback)( void * );
+typedef void (*DialogCallback)(void *);
 
 class DialogCallbackData {
 
-  private:
-    
-    DialogManager  *_dialogManager;
-    DialogCallback  _ok;
-    DialogCallback  _help;
-    DialogCallback  _cancel;
-    void           *_clientData;
-    
-  public:
-    
-    DialogCallbackData ( DialogManager *dialog, 
-			void          *clientData,
-			DialogCallback ok,
-			DialogCallback cancel,
-			DialogCallback help)
-    {
-	_dialogManager = dialog;
-	_ok            = ok;
-	_help          = help;
-	_cancel        = cancel;
-	_clientData    = clientData;
-    }
-    
-    DialogManager  *dialogManager() { return _dialogManager; }
-    DialogCallback  ok() { return _ok; }
-    DialogCallback  help() { return _help; }
-    DialogCallback  cancel() { return _cancel; }
-    void           *clientData() { return _clientData; }
+      private:
+        DialogManager *_dialogManager;
+        DialogCallback _ok;
+        DialogCallback _help;
+        DialogCallback _cancel;
+        void *_clientData;
+
+      public:
+        DialogCallbackData(DialogManager *dialog, void *clientData,
+                           DialogCallback ok, DialogCallback cancel,
+                           DialogCallback help) {
+                _dialogManager = dialog;
+                _ok = ok;
+                _help = help;
+                _cancel = cancel;
+                _clientData = clientData;
+        }
+
+        DialogManager *dialogManager() { return _dialogManager; }
+        DialogCallback ok() { return _ok; }
+        DialogCallback help() { return _help; }
+        DialogCallback cancel() { return _cancel; }
+        void *clientData() { return _clientData; }
 };
 #endif
-

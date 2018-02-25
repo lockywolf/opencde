@@ -47,24 +47,18 @@
 /****************************************************************************
  *			Public Defines
  ****************************************************************************/
-#ifndef	_DtHelpObsoleteP_h
-typedef	void*	CanvasHandle;
-typedef	void*	VolumeHandle;
+#ifndef _DtHelpObsoleteP_h
+typedef void *CanvasHandle;
+typedef void *VolumeHandle;
 #endif
 
 /****************************************************************************
  *			Semi-Public Externals
  ****************************************************************************/
-extern	CanvasHandle	_DtHelpCeCreateDefCanvas(void);
-extern  int      _DtHelpCeGetAsciiVolumeAbstract (
-			CanvasHandle	canvas,
-			VolumeHandle	volume,
-                        char            **retAbs);
-extern  char    *_DtHelpCeGetNxtToken (
-			char             *str,
-			char            **retToken);
-extern	int	 _DtHelpCeGetVolumeTitle(
-			CanvasHandle	canvas,
-			VolumeHandle	volume,
-			char          **ret_title);
+extern CanvasHandle _DtHelpCeCreateDefCanvas(void);
+extern int _DtHelpCeGetAsciiVolumeAbstract(CanvasHandle canvas,
+                                           VolumeHandle volume, char **retAbs);
+extern char *_DtHelpCeGetNxtToken(char *str, char **retToken);
+extern int _DtHelpCeGetVolumeTitle(CanvasHandle canvas, VolumeHandle volume,
+                                   char **ret_title);
 #endif /* _DtHelpGenUtilsP_h */

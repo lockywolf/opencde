@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: iserror.c /main/3 1995/10/23 11:38:16 rswiston $ 			 				 */
+/*%%  $XConsortium: iserror.c /main/3 1995/10/23 11:38:16 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)iserror.c 1.10 89/07/17 Copyr 1988 Sun Micro";
 #endif
@@ -53,78 +54,72 @@ static char sccsid[] = "@(#)iserror.c 1.10 89/07/17 Copyr 1988 Sun Micro";
  * Fatal error. Display message and terminate program.
  */
 
-static int (*fatal_error_user_handler)();    /* set by iscntl(..,ISCNTL_FATAL,..) */
+static int (
+    *fatal_error_user_handler)(); /* set by iscntl(..,ISCNTL_FATAL,..) */
 
-void 
-_isfatal_error(char *msg)
-{
-  int		logerr;
+void _isfatal_error(char *msg) {
+        int logerr;
 
-  if (fatal_error_user_handler) {
-    logerr = fatal_error_user_handler(msg); /* User returns 1 in order
-					     * to use syslog() 
-					     */
-  }
-  else
-    logerr = 1;
+        if (fatal_error_user_handler) {
+                logerr =
+                    fatal_error_user_handler(msg); /* User returns 1 in order
+                                                    * to use syslog()
+                                                    */
+        } else
+                logerr = 1;
 
-  if (logerr) {
-    openlog("NetISAM", LOG_PID, LOG_USER);
+        if (logerr) {
+                openlog("NetISAM", LOG_PID, LOG_USER);
 
-    /* Free one UNIX for syslog */
-    (void)close(0);			    
-					    
-    syslog(LOG_ERR, "Fatal error: %s - UNIX errno %d", msg, errno);
+                /* Free one UNIX for syslog */
+                (void)close(0);
 
-    closelog();
-  }
-  exit (1);
+                syslog(LOG_ERR, "Fatal error: %s - UNIX errno %d", msg, errno);
+
+                closelog();
+        }
+        exit(1);
 }
 
-void 
-_isfatal_error1(char *msg)
-{
-  extern int	_is_rpcnetisamd; /* is 1 if this is rpc.netisamd */
-  extern int	_is_netisamlockd; /* is 1 if this is netisamlockd */
-  int		logerr;
+void _isfatal_error1(char *msg) {
+        extern int _is_rpcnetisamd;  /* is 1 if this is rpc.netisamd */
+        extern int _is_netisamlockd; /* is 1 if this is netisamlockd */
+        int logerr;
 
-  if (fatal_error_user_handler) {
-    logerr = fatal_error_user_handler(msg); /* User returns 1 in order
-					     * to use syslog() 
-					     */
-  }
-  else
-    logerr = 1;
+        if (fatal_error_user_handler) {
+                logerr =
+                    fatal_error_user_handler(msg); /* User returns 1 in order
+                                                    * to use syslog()
+                                                    */
+        } else
+                logerr = 1;
 
-  if (logerr) {
-      openlog("NetISAM", LOG_PID, LOG_USER);
+        if (logerr) {
+                openlog("NetISAM", LOG_PID, LOG_USER);
 
-    /* Free one UNIX for syslog */
-    (void)close(0);			    
-					    
-    syslog(LOG_ERR, "Fatal error: %s - UNIX errno %d", msg, errno);
+                /* Free one UNIX for syslog */
+                (void)close(0);
 
-    closelog();
-  }
+                syslog(LOG_ERR, "Fatal error: %s - UNIX errno %d", msg, errno);
+
+                closelog();
+        }
 }
 
-void
-_isam_warning(char *msg)
-{
-    openlog("NetISAM", LOG_PID, LOG_USER);
-    syslog(LOG_ERR, "%s", msg);
+void _isam_warning(char *msg) {
+        openlog("NetISAM", LOG_PID, LOG_USER);
+        syslog(LOG_ERR, "%s", msg);
 }
 
 /* Set user specified fatal_error handler */
-int  (*_isfatal_error_set_func(func))()
-    int		(*func)();
+int (*_isfatal_error_set_func(func))() int (*func)();
 {
-    int		(*oldfunc)();
+        int (*oldfunc)();
 
-    oldfunc = fatal_error_user_handler;
-    fatal_error_user_handler = func;
+        oldfunc = fatal_error_user_handler;
+        fatal_error_user_handler = func;
 
-    return (oldfunc);
+        return (oldfunc);
 }
 
 /*
@@ -133,12 +128,10 @@ int  (*_isfatal_error_set_func(func))()
  * Set iserrno variable.
  */
 
-void
-_setiserrno2(int error, int is1, int is2)
-{
-    iserrno = error;
-    isstat1 = is1;
-    isstat2 = is2;
+void _setiserrno2(int error, int is1, int is2) {
+        iserrno = error;
+        isstat1 = is1;
+        isstat2 = is2;
 }
 
 /*
@@ -147,12 +140,10 @@ _setiserrno2(int error, int is1, int is2)
  * Set all error and status variable from errcode structure.
  */
 
-void
-_seterr_errcode(struct errcode *errcode)
-{
-    iserrno = errcode->iserrno;
-    isstat1 = errcode->isstat[0];
-    isstat2 = errcode->isstat[1];
-    isstat3 = errcode->isstat[2];
-    isstat4 = errcode->isstat[3];
+void _seterr_errcode(struct errcode *errcode) {
+        iserrno = errcode->iserrno;
+        isstat1 = errcode->isstat[0];
+        isstat2 = errcode->isstat[1];
+        isstat3 = errcode->isstat[2];
+        isstat4 = errcode->isstat[3];
 }

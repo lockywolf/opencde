@@ -29,7 +29,7 @@
 
 typedef unsigned int CC_Boolean;
 
-#define TRUE  1
+#define TRUE 1
 #define FALSE 0
 
 #undef MIN

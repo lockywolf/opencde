@@ -27,6 +27,6 @@
 
 #include "utility/c_streambuf.h"
 
-extern char*  sform(const char* ...);
+extern char *sform(const char *...);
 
 #endif

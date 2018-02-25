@@ -29,16 +29,13 @@
  * (c) Copyright 1993, 1994 Sun Microsystems, Inc.                      *
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
-#ifndef	_Dt_TermPrimRenderFont_h
-#define	_Dt_TermPrimRenderFont_h
+#ifndef _Dt_TermPrimRenderFont_h
+#define _Dt_TermPrimRenderFont_h
 
 #include "TermPrimRender.h"
 #include "TermPrimRenderFont.h"
 
-extern TermFont _DtTermPrimRenderFontCreate(
-    Widget		  w,
-    XFontStruct		 *fontStruct
-);
+extern TermFont _DtTermPrimRenderFontCreate(Widget w, XFontStruct *fontStruct);
 
-#endif	/* _Dt_TermPrimRenderFont_h */
+#endif /* _Dt_TermPrimRenderFont_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif... */

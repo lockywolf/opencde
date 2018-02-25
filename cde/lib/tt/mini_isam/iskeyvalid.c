@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: iskeyvalid.c /main/3 1995/10/23 11:42:06 rswiston $ 			 				 */
+/*%%  $XConsortium: iskeyvalid.c /main/3 1995/10/23 11:42:06 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)iskeyvalid.c 1.3 89/07/17 Copyr 1988 Sun Micro";
 #endif
@@ -37,7 +38,7 @@ static char sccsid[] = "@(#)iskeyvalid.c 1.3 89/07/17 Copyr 1988 Sun Micro";
  *
  * Description:
  *	Functions dealing with the keydesc structure.
- *	
+ *
  *
  */
 
@@ -53,43 +54,41 @@ static int _check_typelen();
  *
  */
 
-int
-_validate_keydesc(keydesc, minreclen)
-    register struct keydesc	*keydesc;
-    int				minreclen;
+int _validate_keydesc(keydesc, minreclen) register struct keydesc *keydesc;
+int minreclen;
 {
-    int 		nparts;
-    register int 	i;
-    int			type, start, length;
-    int			keylen = 0;
+        int nparts;
+        register int i;
+        int type, start, length;
+        int keylen = 0;
 
-    nparts =  keydesc->k_nparts;
+        nparts = keydesc->k_nparts;
 
-    if (nparts <= 0 || nparts > NPARTS)
-	return (ISERROR);
+        if (nparts <= 0 || nparts > NPARTS)
+                return (ISERROR);
 
-    for (i = 0; i < nparts;i++) {
+        for (i = 0; i < nparts; i++) {
 
-	type = keydesc->k_part[i].kp_type & ~ISDESC;
-	start = keydesc->k_part[i].kp_start;
-	length = keydesc->k_part[i].kp_leng;
+                type = keydesc->k_part[i].kp_type & ~ISDESC;
+                start = keydesc->k_part[i].kp_start;
+                length = keydesc->k_part[i].kp_leng;
 
-	if(_check_typelen(type, length) == ISERROR)
-	    return (ISERROR);
+                if (_check_typelen(type, length) == ISERROR)
+                        return (ISERROR);
 
-	if (type < MINTYPE || type >= MAXTYPE)
-	    return (ISERROR);
+                if (type < MINTYPE || type >= MAXTYPE)
+                        return (ISERROR);
 
-	if (start < 0 || start + length > minreclen)
-	    return (ISERROR);
+                if (start < 0 || start + length > minreclen)
+                        return (ISERROR);
 
-	keylen += length;
-    }
+                keylen += length;
+        }
 
-    if(keylen > MAXKEYSIZE)
-	return (ISERROR);
+        if (keylen > MAXKEYSIZE)
+                return (ISERROR);
 
-    return (ISOK);
+        return (ISOK);
 }
 
 /*
@@ -98,26 +97,22 @@ _validate_keydesc(keydesc, minreclen)
  * Check length against the length of the corresponding type.
  */
 
-static int
-_check_typelen(type, length)
-    int		type;
-    int		length;
+static int _check_typelen(type, length) int type;
+int length;
 {
-    switch (type) {
-    case INTTYPE:
-	return ((length == INTSIZE) ? ISOK : ISERROR);
-    case LONGTYPE:
-	return ((length == LONGSIZE) ? ISOK : ISERROR);
-    case FLOATTYPE:
-	return ((length == FLOATSIZE) ? ISOK : ISERROR);
-    case DOUBLETYPE:
-	return ((length == DOUBLESIZE) ? ISOK : ISERROR);
-    case CHARTYPE:
-    case BINTYPE:
-	return ((length > 0) ? ISOK : ISERROR);
-    default:
-	return (ISERROR);
-    }
+        switch (type) {
+        case INTTYPE:
+                return ((length == INTSIZE) ? ISOK : ISERROR);
+        case LONGTYPE:
+                return ((length == LONGSIZE) ? ISOK : ISERROR);
+        case FLOATTYPE:
+                return ((length == FLOATSIZE) ? ISOK : ISERROR);
+        case DOUBLETYPE:
+                return ((length == DOUBLESIZE) ? ISOK : ISERROR);
+        case CHARTYPE:
+        case BINTYPE:
+                return ((length > 0) ? ISOK : ISERROR);
+        default:
+                return (ISERROR);
+        }
 }
-    
-

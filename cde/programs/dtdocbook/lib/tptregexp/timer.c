@@ -54,152 +54,150 @@
 #include <stdio.h>
 
 struct try {
-	char *re, *str, *ans, *src, *dst;
-} tests[] = {
+        char *re, *str, *ans, *src, *dst;
+}
+tests[] = {
 #include "timer.t.h"
-{ NULL, NULL, NULL, NULL, NULL }
-};
+    {NULL, NULL, NULL, NULL, NULL}};
 
 #include <tptregexp.h>
 
-int errreport = 0;		/* Report errors via errseen? */
-char *errseen = NULL;		/* Error message. */
+int errreport = 0;    /* Report errors via errseen? */
+char *errseen = NULL; /* Error message. */
 
 char *progname;
 
 /* ARGSUSED */
-main(argc, argv)
-int argc;
+main(argc, argv) int argc;
 char *argv[];
 {
-	int ncomp, nexec, nsub;
-	struct try one;
-	char dummy[512];
+        int ncomp, nexec, nsub;
+        struct try
+                one;
+        char dummy[512];
 
-	if (argc < 4) {
-		ncomp = 1;
-		nexec = 1;
-		nsub = 1;
-	} else {
-		ncomp = atoi(argv[1]);
-		nexec = atoi(argv[2]);
-		nsub = atoi(argv[3]);
-	}
-	
-	progname = argv[0];
-	if (argc > 5) {
-		one.re = argv[4];
-		one.str = argv[5];
-		if (argc > 6)
-			one.ans = argv[6];
-		else
-			one.ans = "y";
-		if (argc > 7) {	
-			one.src = argv[7];
-			one.dst = "xxx";
-		} else {
-			one.src = "x";
-			one.dst = "x";
-		}
-		errreport = 1;
-		try(one, ncomp, nexec, nsub);
-	} else
-		multiple(ncomp, nexec, nsub);
-	exit(0);
+        if (argc < 4) {
+                ncomp = 1;
+                nexec = 1;
+                nsub = 1;
+        } else {
+                ncomp = atoi(argv[1]);
+                nexec = atoi(argv[2]);
+                nsub = atoi(argv[3]);
+        }
+
+        progname = argv[0];
+        if (argc > 5) {
+                one.re = argv[4];
+                one.str = argv[5];
+                if (argc > 6)
+                        one.ans = argv[6];
+                else
+                        one.ans = "y";
+                if (argc > 7) {
+                        one.src = argv[7];
+                        one.dst = "xxx";
+                } else {
+                        one.src = "x";
+                        one.dst = "x";
+                }
+                errreport = 1;
+                try
+                        (one, ncomp, nexec, nsub);
+        } else
+                multiple(ncomp, nexec, nsub);
+        exit(0);
 }
 
-void
-tpt_regerror(s)
-char *s;
+void tpt_regerror(s) char *s;
 {
-	if (errreport)
-		errseen = s;
-	else
-		error(s, "");
+        if (errreport)
+                errseen = s;
+        else
+                error(s, "");
 }
 
 #ifndef ERRAVAIL
-error(s1, s2)
-char *s1;
+error(s1, s2) char *s1;
 char *s2;
 {
-	fprintf(stderr, "regexp: ");
-	fprintf(stderr, s1, s2);
-	fprintf(stderr, "\n");
-	exit(1);
+        fprintf(stderr, "regexp: ");
+        fprintf(stderr, s1, s2);
+        fprintf(stderr, "\n");
+        exit(1);
 }
 #endif
 
 int lineno = 0;
 
-multiple(ncomp, nexec, nsub)
-int ncomp, nexec, nsub;
+multiple(ncomp, nexec, nsub) int ncomp, nexec, nsub;
 {
-	register int i;
-	extern char *strchr();
+        register int i;
+        extern char *strchr();
 
-	errreport = 1;
-	for (i = 0; tests[i].re != NULL; i++) {
-		lineno++;
-		try(tests[i], ncomp, nexec, nsub);
-	}
+        errreport = 1;
+        for (i = 0; tests[i].re != NULL; i++) {
+                lineno++;
+                try
+                        (tests[i], ncomp, nexec, nsub);
+        }
 }
 
-try(fields, ncomp, nexec, nsub)
-struct try fields;
+try
+        (fields, ncomp, nexec, nsub) struct try
+                fields;
 int ncomp, nexec, nsub;
 {
-	regexp *r;
-	char dbuf[BUFSIZ];
-	register int i;
+        regexp *r;
+        char dbuf[BUFSIZ];
+        register int i;
 
-	errseen = NULL;
-	r = tpt_regcomp(fields.re);
-	if (r == NULL) {
-		if (*fields.ans != 'c')
-			complain("tpt_regcomp failure in `%s'", fields.re);
-		return;
-	}
-	if (*fields.ans == 'c') {
-		complain("unexpected tpt_regcomp success in `%s'", fields.re);
-		free((char *)r);
-		return;
-	}
-	for (i = ncomp-1; i > 0; i--) {
-		free((char *)r);
-		r = tpt_regcomp(fields.re);
-	}
-	if (!tpt_regexec(r, fields.str)) {
-		if (*fields.ans != 'n')
-			complain("tpt_regexec failure in `%s'", "");
-		free((char *)r);
-		return;
-	}
-	if (*fields.ans == 'n') {
-		complain("unexpected tpt_regexec success", "");
-		free((char *)r);
-		return;
-	}
-	for (i = nexec-1; i > 0; i--)
-		(void) tpt_regexec(r, fields.str);
-	errseen = NULL;
-	for (i = nsub; i > 0; i--)
-		tpt_regsub(r, fields.src, dbuf);
-	if (errseen != NULL) {	
-		complain("tpt_regsub complaint", "");
-		free((char *)r);
-		return;
-	}
-	if (strcmp(dbuf, fields.dst) != 0)
-		complain("tpt_regsub result `%s' wrong", dbuf);
-	free((char *)r);
+        errseen = NULL;
+        r = tpt_regcomp(fields.re);
+        if (r == NULL) {
+                if (*fields.ans != 'c')
+                        complain("tpt_regcomp failure in `%s'", fields.re);
+                return;
+        }
+        if (*fields.ans == 'c') {
+                complain("unexpected tpt_regcomp success in `%s'", fields.re);
+                free((char *)r);
+                return;
+        }
+        for (i = ncomp - 1; i > 0; i--) {
+                free((char *)r);
+                r = tpt_regcomp(fields.re);
+        }
+        if (!tpt_regexec(r, fields.str)) {
+                if (*fields.ans != 'n')
+                        complain("tpt_regexec failure in `%s'", "");
+                free((char *)r);
+                return;
+        }
+        if (*fields.ans == 'n') {
+                complain("unexpected tpt_regexec success", "");
+                free((char *)r);
+                return;
+        }
+        for (i = nexec - 1; i > 0; i--)
+                (void)tpt_regexec(r, fields.str);
+        errseen = NULL;
+        for (i = nsub; i > 0; i--)
+                tpt_regsub(r, fields.src, dbuf);
+        if (errseen != NULL) {
+                complain("tpt_regsub complaint", "");
+                free((char *)r);
+                return;
+        }
+        if (strcmp(dbuf, fields.dst) != 0)
+                complain("tpt_regsub result `%s' wrong", dbuf);
+        free((char *)r);
 }
 
-complain(s1, s2)
-char *s1;
+complain(s1, s2) char *s1;
 char *s2;
 {
-	fprintf(stderr, "try: %d: ", lineno);
-	fprintf(stderr, s1, s2);
-	fprintf(stderr, " (%s)\n", (errseen != NULL) ? errseen : "");
+        fprintf(stderr, "try: %d: ", lineno);
+        fprintf(stderr, s1, s2);
+        fprintf(stderr, " (%s)\n", (errseen != NULL) ? errseen : "");
 }

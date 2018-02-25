@@ -42,21 +42,21 @@
  * will not work properly.
  */
 
-#define NSUBEXP  20
+#define NSUBEXP 20
 
 typedef struct regexp {
-	char *startp[NSUBEXP];
-	char *endp[NSUBEXP];
-	char regstart;		/* Internal use only. */
-	char reganch;		/* Internal use only. */
-	char *regmust;		/* Internal use only. */
-	int regmlen;		/* Internal use only. */
-	char program[1];	/* Unwarranted chumminess with compiler. */
+        char *startp[NSUBEXP];
+        char *endp[NSUBEXP];
+        char regstart;   /* Internal use only. */
+        char reganch;    /* Internal use only. */
+        char *regmust;   /* Internal use only. */
+        int regmlen;     /* Internal use only. */
+        char program[1]; /* Unwarranted chumminess with compiler. */
 } regexp;
 
 EXTERN regexp *TclRegComp _ANSI_ARGS_((char *exp));
-EXTERN int TclRegExec _ANSI_ARGS_((regexp *prog, char *string, char *start));
-EXTERN void TclRegSub _ANSI_ARGS_((regexp *prog, char *source, char *dest));
+EXTERN int TclRegExec _ANSI_ARGS_((regexp * prog, char *string, char *start));
+EXTERN void TclRegSub _ANSI_ARGS_((regexp * prog, char *source, char *dest));
 EXTERN void TclRegError _ANSI_ARGS_((char *msg));
 EXTERN char *TclGetRegError _ANSI_ARGS_((void));
 

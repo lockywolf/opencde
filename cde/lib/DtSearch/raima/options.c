@@ -40,66 +40,61 @@
 #include "vista.h"
 #include "dbtype.h"
 
-
 /* Turn on db_VISTA runtime options
-*/
-int
-d_on_opt(optflag TASK_PARM)
-int optflag;
-TASK_DECL
-{
-   int i;
+ */
+int d_on_opt(optflag TASK_PARM) int optflag;
+TASK_DECL {
+        int i;
 
-   DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(LOCK_ALL));
-   dboptions |= optflag;
+        DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(LOCK_ALL));
+        dboptions |= optflag;
 
 #ifndef NO_TRANS
-   if ( optflag & ARCLOGGING ) d_tron();
+        if (optflag & ARCLOGGING)
+                d_tron();
 #endif
 
 #ifndef NO_COUNTRY
-   if ( optflag & IGNORECASE ) {
-      if ( !db_global.ctbl_activ) {
-	 if (ctbl_alloc() != S_OKAY )
-	    RETURN (db_status);
-	 db_global.ctbl_activ = TRUE;
-      }
-      for ( i = 97; i < 123; i++)
-	 /* map lower to upper */
-	 db_global.country_tbl.ptr[i].sort_as1 = (char)(i-32);
-   }
+        if (optflag & IGNORECASE) {
+                if (!db_global.ctbl_activ) {
+                        if (ctbl_alloc() != S_OKAY)
+                                RETURN(db_status);
+                        db_global.ctbl_activ = TRUE;
+                }
+                for (i = 97; i < 123; i++)
+                        /* map lower to upper */
+                        db_global.country_tbl.ptr[i].sort_as1 = (char)(i - 32);
+        }
 #endif
 
-   RETURN( db_status = S_OKAY );
+        RETURN(db_status = S_OKAY);
 }
-
 
 /* Turn off db_VISTA runtime options
-*/
-int
-d_off_opt(optflag TASK_PARM)
-int optflag;
-TASK_DECL
-{
-   int i;
+ */
+int d_off_opt(optflag TASK_PARM) int optflag;
+TASK_DECL {
+        int i;
 
-   DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(LOCK_ALL));
-   dboptions &= ~optflag;
+        DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(LOCK_ALL));
+        dboptions &= ~optflag;
 
 #ifndef NO_TRANS
-   if ( optflag & ARCLOGGING ) d_troff();
+        if (optflag & ARCLOGGING)
+                d_troff();
 #endif
 
 #ifndef NO_COUNTRY
-   if ( optflag & IGNORECASE ) {
-      if ( db_global.ctbl_activ) {
-	 for ( i = 97; i < 123; i++)
-	    /* restore lower to lower */
-	    db_global.country_tbl.ptr[i].sort_as1 = (char)i;
-      }
-   }
+        if (optflag & IGNORECASE) {
+                if (db_global.ctbl_activ) {
+                        for (i = 97; i < 123; i++)
+                                /* restore lower to lower */
+                                db_global.country_tbl.ptr[i].sort_as1 = (char)i;
+                }
+        }
 #endif
 
-   RETURN( db_status = S_OKAY );
+        RETURN(db_status = S_OKAY);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin options.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin options.c */

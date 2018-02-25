@@ -52,22 +52,22 @@
  * Freeze DtSearch 0.1, AusText 2.1.8
  */
 #include "SearchP.h"
-int	load_custom_language (DBLK *dblk, DBLK *dblist)
-{
-    char	msgbuf [1024];
-    sprintf (msgbuf,
-	"CUSLANG01 Database '%s': Language number %d\n"
-	"  is unsupported and user has not provided a\n"
-	"  load_custom_language() function to handle it.",
-	dblk->name, dblk->dbrec.or_language);
-    DtSearchAddMessage (msgbuf);
-    return FALSE;
+int load_custom_language(DBLK *dblk, DBLK *dblist) {
+        char msgbuf[1024];
+        sprintf(msgbuf,
+                "CUSLANG01 Database '%s': Language number %d\n"
+                "  is unsupported and user has not provided a\n"
+                "  load_custom_language() function to handle it.",
+                dblk->name, dblk->dbrec.or_language);
+        DtSearchAddMessage(msgbuf);
+        return FALSE;
 }
 
-void	unload_custom_language (DBLK *dblk)
+void unload_custom_language(DBLK *dblk)
 /* If user provides load() but not unload(),
  * then this dummy will almost certainly cause
  * memory leaks at REINIT.
  */
-{ return; }
-
+{
+        return;
+}

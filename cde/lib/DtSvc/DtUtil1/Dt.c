@@ -40,6 +40,4 @@
 /* CDE Version information */
 
 externaldef(dtversion) const int DtVersion = DtVERSION_NUMBER;
-externaldef(dtversionstring) const char* DtVersionString = DtVERSION_STRING;
-
-
+externaldef(dtversionstring) const char *DtVersionString = DtVERSION_STRING;

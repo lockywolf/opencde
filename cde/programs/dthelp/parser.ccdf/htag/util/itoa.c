@@ -29,44 +29,43 @@
 
 char *m_itoa(
 #if defined(M_PROTO)
-  int n, char *s
+    int n, char *s
 #endif
-  ) ;
+);
 
 void reverse(
 #if defined(M_PROTO)
-  char *s
+    char *s
 #endif
-  ) ;
+);
 
-char *m_itoa(n, s)  /* convert n to characters in s */
-char s[]; 
+char *m_itoa(n, s) /* convert n to characters in s */
+    char s[];
 int n;
-{   
-    int sign ;
-    char *p = s ;
+{
+        int sign;
+        char *p = s;
 
-    if ( (sign = n) < 0 ) /* record sign */
-        n = -n;
-    do {    /* generate digits in reverse order */
-        *p++ = (char) (n % 10 + '0') ;
-    }  while (( n/= 10) > 0);
-    if (sign < 0)
-        *p++ = '-';
-    *p = '\0';
+        if ((sign = n) < 0) /* record sign */
+                n = -n;
+        do { /* generate digits in reverse order */
+                *p++ = (char)(n % 10 + '0');
+        } while ((n /= 10) > 0);
+        if (sign < 0)
+                *p++ = '-';
+        *p = '\0';
 
-    reverse(s);
-    return(s) ;
+        reverse(s);
+        return (s);
 }
 
-void reverse(s)
-char s[];
+void reverse(s) char s[];
 {
-    int c, i, j;
+        int c, i, j;
 
-    for (i=0, j=strlen(s)-1; i < j ; i++, j--) {
-        c = s[i];
-        s[i] = s[j];
-        s[j] = (char) c;
-    }
+        for (i = 0, j = strlen(s) - 1; i < j; i++, j--) {
+                c = s[i];
+                s[i] = s[j];
+                s[j] = (char)c;
+        }
 }

@@ -34,35 +34,30 @@
 #include <Xm/Xm.h>
 
 #if defined(USL) || defined(__uxp__)
-#undef STRDUP  /* get rid of memutil.h definition. Use def in BaseUI.h. */
+#undef STRDUP /* get rid of memutil.h definition. Use def in BaseUI.h. */
 #endif
 
 #include "BaseUI.h"
 #include "MotifThread.h"
 
 extern "C" {
-extern XtPointer _XmStringUngenerate (
-				XmString string,
-				XmStringTag tag,
-				XmTextType tag_type,
-				XmTextType output_type);
+extern XtPointer _XmStringUngenerate(XmString string, XmStringTag tag,
+                                     XmTextType tag_type,
+                                     XmTextType output_type);
 }
-
 
 #define AnyUI MotifUI
 #define HasDumpUI 1
 
-#define PointInRect(RECT, X, Y) \
-    (X >= (int) (RECT).x && \
-     Y >= (int) (RECT).y && \
-     X <= (int) (RECT).x + (int) (RECT).width && \
-     Y <= (int) (RECT).y + (int) (RECT).height)
+#define PointInRect(RECT, X, Y)                                                \
+        (X >= (int)(RECT).x && Y >= (int)(RECT).y &&                           \
+         X <= (int)(RECT).x + (int)(RECT).width &&                             \
+         Y <= (int)(RECT).y + (int)(RECT).height)
 
-typedef struct
-{
-   char *name;
-   Pixmap pixmap;
-   Pixmap mask;
+typedef struct {
+        char *name;
+        Pixmap pixmap;
+        Pixmap mask;
 } PixmapLookupStruct, *PixmapLookup, **PixmapLookupList;
 
 class DtDND;
@@ -70,132 +65,133 @@ class MotifThread;
 
 class MotifUI : public BaseUI {
 
- friend class DtDND;
+        friend class DtDND;
 
- private:
+      private:
+        static void WidgetDestroyCB(Widget, XtPointer, XtPointer);
+        static void WidgetHelpCB(Widget, XtPointer, XtPointer);
+        Cursor InitHourGlassCursor();
+        static void DumpWidget(Widget w, boolean verbose = false,
+                               int level = 0);
+        static void DumpWidgets(Widget w, boolean verbose = false,
+                                int level = 0);
+        static void ThreadCB(MotifThread *_thread, BaseUI *obj,
+                             ThreadCallback cb);
 
-   static void WidgetDestroyCB(Widget, XtPointer, XtPointer);
-   static void WidgetHelpCB(Widget, XtPointer, XtPointer);
-   Cursor InitHourGlassCursor();
-   static void DumpWidget(Widget w, boolean verbose = false, int level = 0);
-   static void DumpWidgets(Widget w, boolean verbose = false, int level = 0);
-   static void ThreadCB(MotifThread *_thread, BaseUI *obj, ThreadCallback cb);
+      protected:
+        Widget _w;
+        char *_widgetName;
 
- protected:
+        MotifUI(MotifUI *parent, const char *name, const char *category,
+                const char *widgetName = NULL);
+        void InstallDestroyCB();
+        void InstallHelpCB();
+        virtual void WidgetDestroyed();
+        void GetPixmaps(Widget widget, char *iconFile, Pixmap *pixmap,
+                        Pixmap *mask = NULL);
+        void FillBackground(Widget widget, Pixmap pixmap, Pixmap mask);
+        void SetDefaultResources(const Widget, const String *);
+        void GetResources(const XtResourceList, const int);
+        XmString StringCreate(char *string) {
+                if (string)
+                        return XmStringCreateLocalized(string);
+                else
+                        return NULL;
+        }
+        void StringFree(XmString string) {
+                if (string)
+                        XmStringFree(string);
+                string = NULL;
+        }
+        char *StringExtract(XmString string) {
+                char *s = NULL;
+                s = (char *)_XmStringUngenerate(string, NULL, XmMULTIBYTE_TEXT,
+                                                XmMULTIBYTE_TEXT);
+                return s;
+        };
 
-   Widget _w;
-   char *_widgetName;
+        // Definitions for BaseUI virtual functions
+        virtual boolean SetCategory(char * /*name*/) { return true; }
+        virtual boolean SetName(char *name);
+        virtual boolean SetActivity(boolean flag);
+        virtual boolean SetVisiblity(boolean flag);
+        virtual boolean SetSelected(boolean flag);
+        void DoSetFocus(Widget);
+        void DoRefresh();
+        void DoToFront();
+        void DoContextualHelp();
+        virtual void DoMakeVisible();
+        virtual boolean DoIsVisible();
+        virtual void DoBeginUpdate() {}
+        virtual void DoEndUpdate() {}
+        virtual void DoUpdateMessage(char * /*message*/) {}
+        virtual boolean SetOrder(int new_postion);
 
-   MotifUI(MotifUI *parent, 
-	   const char *name,
-	   const char *category,
-	   const char *widgetName = NULL);
-   void InstallDestroyCB();
-   void InstallHelpCB();
-   virtual void WidgetDestroyed();
-   void GetPixmaps(Widget widget, char *iconFile, Pixmap *pixmap,
-		   Pixmap *mask = NULL);
-   void FillBackground(Widget widget, Pixmap pixmap, Pixmap mask);
-   void SetDefaultResources(const Widget, const String *);
-   void GetResources(const XtResourceList, const int);
-   XmString StringCreate(char *string)
-       { if (string) return XmStringCreateLocalized(string);
-	 else return NULL;
-       }
-   void StringFree(XmString string) 
-       { if (string) XmStringFree(string); string = NULL; }
-   char * StringExtract(XmString string)
-       { char *s = NULL;
-  	 s = (char *) _XmStringUngenerate(
-			string, NULL,
-			XmMULTIBYTE_TEXT, XmMULTIBYTE_TEXT);
-	 return s; };
+        // Containers widgets should override SetView
+        virtual boolean SetView(ViewStyle) { return true; }
 
-   // Definitions for BaseUI virtual functions
-   virtual boolean SetCategory(char * /*name*/) { return true; }
-   virtual boolean SetName(char *name);
-   virtual boolean SetActivity(boolean flag);
-   virtual boolean SetVisiblity(boolean flag);
-   virtual boolean SetSelected(boolean flag);
-   void DoSetFocus(Widget);
-   void DoRefresh();
-   void DoToFront();
-   void DoContextualHelp();
-   virtual void DoMakeVisible();
-   virtual boolean DoIsVisible();
-   virtual void DoBeginUpdate() { }
-   virtual void DoEndUpdate() { }
-   virtual void DoUpdateMessage(char * /*message*/) { }
-   virtual boolean SetOrder(int new_postion);
+        // Containers and icon widgets should override these
+        virtual boolean SetOpen(boolean) { return true; }
 
-   // Containers widgets should override SetView
-   virtual boolean SetView(ViewStyle) { return true; }
+        // Icon widgets should override these
+        virtual boolean SetIcon(IconStyle) { return true; }
+        virtual boolean SetParent(BaseUI *) { return true; }
 
-   // Containers and icon widgets should override these
-   virtual boolean SetOpen(boolean) { return true; }
+        virtual void NotifyDelete(BaseUI *);
+        static PixmapLookupList pixmap_table;
+        static int n_pixmaps;
+        static PointerCursor pointer_style;
 
-   // Icon widgets should override these
-   virtual boolean SetIcon(IconStyle) { return true; }
-   virtual boolean SetParent(BaseUI *) { return true; }
+      public:
+        static Widget topLevel;
+        static Display *display;
+        static XtAppContext appContext;
+        static XmFontList userFont;
+        static Font font;
+        static Window root;
+        static Pixel black;
+        static Pixel white;
+        static int depth;
+        static int shadowThickness;
+        static int bMenuButton;
 
-   virtual void NotifyDelete(BaseUI *);
-   static PixmapLookupList pixmap_table;
-   static int n_pixmaps;
-   static PointerCursor pointer_style;
+        virtual ~MotifUI();
 
- public:
+        void Thread(const char *cmd, ThreadCallback, int buf_len);
+        void Thread(int pid, int fd, ThreadCallback, int buf_len);
+        void Thread(int socket, ThreadCallback, int buf_len);
 
-   static Widget topLevel;
-   static Display *display;
-   static XtAppContext appContext;
-   static XmFontList userFont;
-   static Font font;
-   static Window root;
-   static Pixel black;
-   static Pixel white;
-   static int depth;
-   static int shadowThickness;
-   static int bMenuButton;
+        virtual void SetFocus();
+        void PointerShape(PointerCursor style);
+        PointerCursor PointerShape();
+        virtual void WidthHeight(int w, int h);
+        virtual void WidthHeight(int *w, int *h);
+        virtual void Width(int w);
+        virtual int Width();
+        virtual void Height(int h);
+        virtual int Height();
+        void AttachAll(int offset = 0);
+        void AttachTop(int offset = 0);
+        void AttachBottom(int offset = 0);
+        void AttachLeft(int offset = 0);
+        void AttachRight(int offset = 0);
+        void AttachTop(BaseUI *, int offset = 0, boolean opposite = false);
+        void AttachBottom(BaseUI *, int offset = 0, boolean opposite = false);
+        void AttachLeft(BaseUI *, int offset = 0, boolean opposite = false);
+        void AttachRight(BaseUI *, int offset = 0, boolean opposite = false);
+        void StringWidthHeight(const char *string, int *w, int *h);
+        int StringWidth(const char *string);
+        int StringHeight(const char *string);
+        void SetAddTimeOut(TimeOutCallback, void *callback_data, long interval);
+        void DumpUIHierarchy(boolean verbose = false, int level = 0);
 
-   virtual ~MotifUI();
+        const Widget BaseWidget() { return _w; }
+        virtual const Widget InnerWidget() { return _w; }
 
-   void Thread(const char *cmd, ThreadCallback, int buf_len);
-   void Thread(int pid, int fd, ThreadCallback, int buf_len);
-   void Thread(int socket, ThreadCallback, int buf_len);
+        void Dump(boolean verbose = false, int level = 0);
 
-   virtual void SetFocus();
-   void PointerShape(PointerCursor style);
-   PointerCursor PointerShape();
-   virtual void WidthHeight(int w, int h);
-   virtual void WidthHeight(int *w, int *h);
-   virtual void Width(int w);
-   virtual int Width();
-   virtual void Height(int h);
-   virtual int Height();
-   void AttachAll(int offset = 0);
-   void AttachTop(int offset = 0);
-   void AttachBottom(int offset = 0);
-   void AttachLeft(int offset = 0);
-   void AttachRight(int offset = 0);
-   void AttachTop(BaseUI *, int offset = 0, boolean opposite = false);
-   void AttachBottom(BaseUI *, int offset = 0, boolean opposite = false);
-   void AttachLeft(BaseUI *, int offset = 0, boolean opposite = false);
-   void AttachRight(BaseUI *, int offset = 0, boolean opposite = false);
-   void StringWidthHeight(const char *string, int *w, int *h);
-   int StringWidth(const char *string);
-   int StringHeight(const char *string);
-   void SetAddTimeOut(TimeOutCallback, void *callback_data, long interval);
-   void DumpUIHierarchy(boolean verbose = false, int level = 0);
-
-   const Widget BaseWidget()             { return _w; }
-   virtual const Widget InnerWidget()    { return _w; }
-
-   void Dump(boolean verbose = false,
-	     int level = 0);
-
-   // returns a classname to be used in GetResources
-   virtual const char *const className() { return "MotifUI"; }
-
+        // returns a classname to be used in GetResources
+        virtual const char *const className() { return "MotifUI"; }
 };
 
 #endif /* MOTIFUI_H */

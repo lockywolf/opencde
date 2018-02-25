@@ -31,8 +31,8 @@ $COPYRIGHT$:
     (c) Copyright 1993, 1994 Hewlett-Packard Company
     (c) Copyright 1993, 1994 International Business Machines Corp.
     (c) Copyright 1993, 1994 Sun Microsystems, Inc.
-    (c) Copyright 1993, 1994 Unix System Labs, Inc., a subsidiary of Novell, Inc.
-$END$
+    (c) Copyright 1993, 1994 Unix System Labs, Inc., a subsidiary of Novell,
+Inc. $END$
  ****************************************************************************
  ************************************<+>*************************************/
 
@@ -45,9 +45,9 @@ $END$
 #include <limits.h>
 #define X_INCLUDE_PWD_H
 #define XOS_USE_XT_LOCKING
-#include <X11/Xos_r.h>		/* for getpw... */
-#include <sys/param.h>		/* MAXPATHLEN */
-#include <sys/utsname.h>	/* for uname */
+#include <X11/Xos_r.h>   /* for getpw... */
+#include <sys/param.h>   /* MAXPATHLEN */
+#include <sys/utsname.h> /* for uname */
 #include <unistd.h>
 
 /* for Xrm */
@@ -56,10 +56,10 @@ $END$
 
 #include "XlationSvc.h"
 /*=================================================================
-$SHAREDBEG$:  This is the header file that should appear in all 
+$SHAREDBEG$:  This is the header file that should appear in all
 DtLcx topics
 =======================================================$SKIP$======*/
-/*$INCLUDE$*/ 
+/*$INCLUDE$*/
 #include "LocaleXlate.h"
 /*$END$*/
 
@@ -199,48 +199,55 @@ $EXAMPLE$:
 #include <LocaleXlate.h>
 main()
 {
-   _DtXlateDb db = NULL;
-   int  ret;
-   char plat[_DtPLATFORM_MAX_LEN];
-   int  execver;
-   int  compver;
-   char * val = NULL;
-   char * str = NULL;
-   char * val1 = NULL;
-   char * val2 = NULL;
-   char * val3 = NULL;
+        _DtXlateDb db = NULL;
+        int ret;
+        char plat[_DtPLATFORM_MAX_LEN];
+        int execver;
+        int compver;
+        char *val = NULL;
+        char *str = NULL;
+        char *val1 = NULL;
+        char *val2 = NULL;
+        char *val3 = NULL;
 
-   ret = _DtLcxOpenAllDbs(&db);
+        ret = _DtLcxOpenAllDbs(&db);
 
-   ret = _DtXlateGetXlateEnv(db,plat,&execver,&compver);
-   printf("Platform: %s\nExec Ver: %d\nComp Ver: %d\n",
-                    plat,execver,compver);
-   ret = _DtLcxXlateStdToOp(db,plat,compver,DtLCX_OPER_SETLOCALE,
-                     str="en_US.hp-roman8",NULL,NULL,NULL,&val);
-   if (ret==0) printf("setlocale(%s) xlation=%s\n", str, val);
-   else printf("no xlation\n", val);
+        ret = _DtXlateGetXlateEnv(db, plat, &execver, &compver);
+        printf("Platform: %s\nExec Ver: %d\nComp Ver: %d\n", plat, execver,
+               compver);
+        ret =
+            _DtLcxXlateStdToOp(db, plat, compver, DtLCX_OPER_SETLOCALE,
+                               str = "en_US.hp-roman8", NULL, NULL, NULL, &val);
+        if (ret == 0)
+                printf("setlocale(%s) xlation=%s\n", str, val);
+        else
+                printf("no xlation\n", val);
 
-   ret = _DtLcxXlateStdToOp(db,plat,compver,DtLCX_OPER_SETLOCALE,
-                     str="en_US.?",NULL,NULL,NULL,&val);
-   if (ret==0) printf("setlocale(%s) xlation=%s\n", str, val);
-   else printf("no xlation\n", val);
+        ret = _DtLcxXlateStdToOp(db, plat, compver, DtLCX_OPER_SETLOCALE,
+                                 str = "en_US.?", NULL, NULL, NULL, &val);
+        if (ret == 0)
+                printf("setlocale(%s) xlation=%s\n", str, val);
+        else
+                printf("no xlation\n", val);
 
-   ret = _DtLcxXlateOpToStd(db,plat,execver,DtLCX_OPER_SETLOCALE,
-                     str="american",&val,&val1,&val2,&val3);
-   if (ret==0) printf("setlocale(%s) xlation=%s; %s; %s; %s\n",
-                       str, val,val1,val2,val3);
-   else printf("no xlation\n", val,val1,val2,val3);
+        ret = _DtLcxXlateOpToStd(db, plat, execver, DtLCX_OPER_SETLOCALE,
+                                 str = "american", &val, &val1, &val2, &val3);
+        if (ret == 0)
+                printf("setlocale(%s) xlation=%s; %s; %s; %s\n", str, val, val1,
+                       val2, val3);
+        else
+                printf("no xlation\n", val, val1, val2, val3);
 
-   ret = _DtLcxXlateOpToStd(db,plat,execver,DtLCX_OPER_SETLOCALE,
-                     str="dutch@fold",&val,&val1,&val2,&val3);
-   if (ret==0) printf("setlocale(%s) xlation=%s; %s; %s; %s\n",
-                       str, val,val1,val2,val3);
+        ret = _DtLcxXlateOpToStd(db, plat, execver, DtLCX_OPER_SETLOCALE,
+                                 str = "dutch@fold", &val, &val1, &val2, &val3);
+        if (ret == 0)
+                printf("setlocale(%s) xlation=%s; %s; %s; %s\n", str, val, val1,
+                       val2, val3);
 
-   ret = _DtLcxCloseDb(&db);
+        ret = _DtLcxCloseDb(&db);
 }
 /*=$END$================================================*/
 #endif
-
 
 /*========================================================*/
 /*====================== Constants =======================*/
@@ -249,48 +256,47 @@ main()
 /*=============== private =================*/
 /* A "random" number used to ensure that the Db has been initalized */
 #define PATH_SEPARATOR ':'
-#define EOS            '\0'
-#define DIR_SLASH      '/'
-#define DIR_SLASH_STR  "/"
+#define EOS '\0'
+#define DIR_SLASH '/'
+#define DIR_SLASH_STR "/"
 
-#define MATCHALL_STR   "?"
-#define DOT_STR        "."
+#define MATCHALL_STR "?"
+#define DOT_STR "."
 
 /*=============== internal =================*/
-#define  DTLCXSEARCHPATH  "DTLCXSEARCHPATH"
+#define DTLCXSEARCHPATH "DTLCXSEARCHPATH"
 
 #ifndef CDE_CONFIGURATION_TOP
 #define CDE_CONFIGURATION_TOP "/etc/dt"
 #endif
 
 #ifndef CDE_INSTALLATION_TOP
-#define CDE_INSTALLATION_TOP  "/usr/dt"
+#define CDE_INSTALLATION_TOP "/usr/dt"
 #endif
 
 #ifndef CDE_USER_TOP
-#define CDE_USER_TOP          ".dt"
+#define CDE_USER_TOP ".dt"
 #endif
 
-#define DtLCX_USER_PATH     		s_LcxUserPath
-#define DtLCX_INSTALL_AND_CONFIG_PATHS	s_LcxInstallAndConfigPaths
+#define DtLCX_USER_PATH s_LcxUserPath
+#define DtLCX_INSTALL_AND_CONFIG_PATHS s_LcxInstallAndConfigPaths
 
-#define _DtLCX_INSTALL_DB_DIR     CDE_INSTALLATION_TOP "/config/svc/"
+#define _DtLCX_INSTALL_DB_DIR CDE_INSTALLATION_TOP "/config/svc/"
 
 /* This is the file type of a _DtLcx file */
-#define _DtLCX_DATABASE_TYPE      ".lcx"
+#define _DtLCX_DATABASE_TYPE ".lcx"
 /* This is the name of the fallback _DtLcx file */
-#define _DtLCX_DATABASE_FALLBACK  ("dtcomplete" _DtLCX_DATABASE_TYPE)
+#define _DtLCX_DATABASE_FALLBACK ("dtcomplete" _DtLCX_DATABASE_TYPE)
 /* This is the name of the CDE standard _DtLcx file */
-#define _DtLCX_DATABASE_CDE       ("CDE" _DtLCX_DATABASE_TYPE)
+#define _DtLCX_DATABASE_CDE ("CDE" _DtLCX_DATABASE_TYPE)
 
 /*========================================================*/
 /*====================== Variables =======================*/
 /*========================================================*/
 
 static char s_LcxUserPath[] = CDE_USER_TOP "/config/svc";
-static char s_LcxInstallAndConfigPaths[] = 
-                 CDE_INSTALLATION_TOP  "/config/svc:"
-                 CDE_CONFIGURATION_TOP "/config/svc:";
+static char s_LcxInstallAndConfigPaths[] =
+    CDE_INSTALLATION_TOP "/config/svc:" CDE_CONFIGURATION_TOP "/config/svc:";
 
 /*========================================================*/
 /*================== Private routines ====================*/
@@ -301,183 +307,162 @@ static char s_LcxInstallAndConfigPaths[] =
 /*
 $PFUNBEG$: GetHomeDirPath()
 $1LINER$:  Retrieves path to current user's home directory
-$SUMMARY$: 
+$SUMMARY$:
 Looks for first the HOME and then USER environment
 variables.  If these are not set, uses the password
 info to get the user's home directory.
 $ARGS$:
-outptr: pts to string allocated by caller to hold the home dir path 
+outptr: pts to string allocated by caller to hold the home dir path
         Generally, the string should be at least MAXPATHLEN+1 in size.
 max:    maximum number of bytes allowed (including ending bytes).
 $RETURNS$:
  */
 /*================================================$SKIP$==*/
 #endif
-static
-void GetHomeDirPath(
-         char * outptr,
-	 unsigned int    max)
-{        /*$CODE$*/
-    int    uid;
-    char * ptr = NULL;
-    _Xgetpwparams pwd_buf;
-    struct passwd * pwd_ret;
+static void GetHomeDirPath(char *outptr, unsigned int max) { /*$CODE$*/
+        int uid;
+        char *ptr = NULL;
+        _Xgetpwparams pwd_buf;
+        struct passwd *pwd_ret;
 
-    if((ptr = (char *)getenv("HOME")) == NULL) 
-    {
-        if((ptr = (char *)getenv("USER")) != NULL)
-            pwd_ret = _XGetpwnam(ptr, pwd_buf);
-        else 
-        {
-            uid = getuid();
-            pwd_ret = _XGetpwuid(uid, pwd_buf);
+        if ((ptr = (char *)getenv("HOME")) == NULL) {
+                if ((ptr = (char *)getenv("USER")) != NULL)
+                        pwd_ret = _XGetpwnam(ptr, pwd_buf);
+                else {
+                        uid = getuid();
+                        pwd_ret = _XGetpwuid(uid, pwd_buf);
+                }
+                if (pwd_ret != NULL)
+                        ptr = pwd_ret->pw_dir;
+                else
+                        ptr = NULL;
         }
-        if (pwd_ret != NULL)
-            ptr = pwd_ret->pw_dir;
-        else
-            ptr = NULL;
-    }
 
-    if (ptr && strlen(ptr))
-    { 
-	strncpy(outptr, ptr, max-1);
-	outptr[max-1] = '\0';
-    }
-    else outptr[0] = '\0' ;
-}        /*$END$*/
+        if (ptr && strlen(ptr)) {
+                strncpy(outptr, ptr, max - 1);
+                outptr[max - 1] = '\0';
+        } else
+                outptr[0] = '\0';
+} /*$END$*/
 
-
-/*========================================================*/
-/*================ Public DtLcx routines =================*/
-/*========================================================*/
-
+        /*========================================================*/
+        /*================ Public DtLcx routines =================*/
+        /*========================================================*/
 
 #if DOC
 /*========================================================*/
-$FUNBEG$: _DtLcxOpenAllDbs()
-$1LINER$: Open and merge all locale translation databases that can be found
-$SUMMARY$:
-DtLcxOpenAllDbs() locates all translation databases
-named "<platform>.lcx" present in the DTLCXSEARCHPATH 
-directories.  If none exist, the file "dtcomplete.lcx"
-is tried in those directories.  Finally, the database "CDE.lcx"
-is merged into those databases already loaded.
+$FUNBEG$ : _DtLcxOpenAllDbs() $1LINER$
+    : Open and merge all locale
+      translation databases that can be found $SUMMARY$
+    : DtLcxOpenAllDbs() locates all translation databases named
+      "<platform>.lcx" present in the DTLCXSEARCHPATH directories.If none exist,
+    the file "dtcomplete.lcx" is tried in those directories.Finally,
+    the database "CDE.lcx" is merged into those databases already loaded.
 
-The <platform> string is taken from uname(2), which is the
-same string returned by the command 'uname -s'.  For example,
-on HP-UX platforms, the string is "HPUX", so the translation
-databases to be loaded must be named "HPUX.lcx".
+    The<platform> string is taken from uname(2),
+    which is the same string returned by the command 'uname -s'.For example,
+    on HP - UX platforms, the string is "HPUX",
+    so the translation databases to be loaded must be named "HPUX.lcx".
 
-By default, the search paths are:
-DTLCXSEARCHPATH = "/usr/dt/config/svc:" \
-                  "/etc/dt/config/svc:" \
-                  "$HOME/.dt/config/svc"
+    By default,
+    the search paths are
+    : DTLCXSEARCHPATH = "/usr/dt/config/svc:"
+                        "/etc/dt/config/svc:"
+                        "$HOME/.dt/config/svc"
 
-Alternatively, the DTLCXSEARCHPATH directory may be used
-to specify a colon separated search path.  Relative paths
-in the search path are relative to the current working
-directory.
-$ARGS$:
-$RETURNS$:
-Returns the return value of _DtXlateOpenAllDbs()
+      Alternatively,
+      the
+      DTLCXSEARCHPATH directory may be used to specify a colon separated search
+      path.Relative paths in the search path are relative to the current working
+      directory.$ARGS$ : $RETURNS$
+    : Returns the return value of _DtXlateOpenAllDbs()
 /*================================================$SKIP$==*/
 #endif
 
-int  _DtLcxOpenAllDbs(
-         _DtXlateDb *   ret_db)
-{       /*$CODE$*/
-   char * paths;
-   char * dbPaths;
-   struct utsname names;
-   int    ret = 0;
-   int    globRet = -1;
-   int    len;
-   char   lcxfile[100];
-   char   homePath[MAXPATHLEN];
-   _DtXlateDb   cde_db = NULL;
+          int _DtLcxOpenAllDbs(_DtXlateDb * ret_db) { /*$CODE$*/
+        char *paths;
+        char *dbPaths;
+        struct utsname names;
+        int ret = 0;
+        int globRet = -1;
+        int len;
+        char lcxfile[100];
+        char homePath[MAXPATHLEN];
+        _DtXlateDb cde_db = NULL;
 
 #define MAXSHORTFNAMELEN 14
 
-   /* get host specifics and generate platform-specific lcx file name */
-   uname(&names);
-   len = MAXSHORTFNAMELEN - strlen(_DtLCX_DATABASE_TYPE);
-   strncpy(lcxfile,names.sysname,len);
-   lcxfile[len-1] = EOS;
-   strcat(lcxfile,_DtLCX_DATABASE_TYPE);       /* e.g. HP-UX.lcx */
+        /* get host specifics and generate platform-specific lcx file name */
+        uname(&names);
+        len = MAXSHORTFNAMELEN - strlen(_DtLCX_DATABASE_TYPE);
+        strncpy(lcxfile, names.sysname, len);
+        lcxfile[len - 1] = EOS;
+        strcat(lcxfile, _DtLCX_DATABASE_TYPE); /* e.g. HP-UX.lcx */
 
-   /* get paths for LCX */
-   paths = getenv(DTLCXSEARCHPATH);
-   if (NULL != paths && paths[0] != EOS)
-   {
-      dbPaths = strdup(paths);
-   }
-   else
-   {
-      const char *slash;
-      char *end;
+        /* get paths for LCX */
+        paths = getenv(DTLCXSEARCHPATH);
+        if (NULL != paths && paths[0] != EOS) {
+                dbPaths = strdup(paths);
+        } else {
+                const char *slash;
+                char *end;
 
-      /* no DTLCXSEARCHPATH; build a default path */
-      GetHomeDirPath(homePath, MAXPATHLEN);
-      end = homePath + strlen(homePath);
-      _DtMBStrrchr(homePath,DIR_SLASH,-1,&slash);
-      if ((end - 1) != slash && end < homePath + MAXPATHLEN - 2 )
-	{
-	  *end++ = DIR_SLASH;
-	  *end   = EOS;
-	}
-      if (end < homePath + MAXPATHLEN - strlen(DtLCX_USER_PATH) - 1)
-          strcat(homePath,DtLCX_USER_PATH);
+                /* no DTLCXSEARCHPATH; build a default path */
+                GetHomeDirPath(homePath, MAXPATHLEN);
+                end = homePath + strlen(homePath);
+                _DtMBStrrchr(homePath, DIR_SLASH, -1, &slash);
+                if ((end - 1) != slash && end < homePath + MAXPATHLEN - 2) {
+                        *end++ = DIR_SLASH;
+                        *end = EOS;
+                }
+                if (end < homePath + MAXPATHLEN - strlen(DtLCX_USER_PATH) - 1)
+                        strcat(homePath, DtLCX_USER_PATH);
 
-      dbPaths = malloc(sizeof(char) * 
-                (strlen(homePath)+strlen(DtLCX_INSTALL_AND_CONFIG_PATHS)+5));
-      if (dbPaths) 
-         sprintf(dbPaths,"%s:%s",DtLCX_INSTALL_AND_CONFIG_PATHS,homePath);
-   }
+                dbPaths = malloc(sizeof(char) *
+                                 (strlen(homePath) +
+                                  strlen(DtLCX_INSTALL_AND_CONFIG_PATHS) + 5));
+                if (dbPaths)
+                        sprintf(dbPaths, "%s:%s",
+                                DtLCX_INSTALL_AND_CONFIG_PATHS, homePath);
+        }
 
-   /* open all dbs of filename found in paths */
-   globRet = _DtXlateOpenAllDbs(dbPaths,lcxfile, ret_db);
-   if (globRet != 0)
-   {  /* on failure */
-      /* open all dbs of the fallback filename found in paths */
-      globRet = _DtXlateOpenAllDbs(dbPaths,_DtLCX_DATABASE_FALLBACK, ret_db);
-   }
+        /* open all dbs of filename found in paths */
+        globRet = _DtXlateOpenAllDbs(dbPaths, lcxfile, ret_db);
+        if (globRet != 0) { /* on failure */
+                /* open all dbs of the fallback filename found in paths */
+                globRet = _DtXlateOpenAllDbs(dbPaths, _DtLCX_DATABASE_FALLBACK,
+                                             ret_db);
+        }
 
-   /* merge in the CDE standard translations database */
-   ret = _DtXlateOpenAllDbs(dbPaths,_DtLCX_DATABASE_CDE, &cde_db);
+        /* merge in the CDE standard translations database */
+        ret = _DtXlateOpenAllDbs(dbPaths, _DtLCX_DATABASE_CDE, &cde_db);
 
-   if (ret == 0)
-   {
-      globRet = 0;
-      _DtXlateMergeDbs(&cde_db,ret_db);  /* cde_db get's closed by the merge */
-   }
-   else
-      _DtXlateCloseDb(&cde_db);
+        if (ret == 0) {
+                globRet = 0;
+                _DtXlateMergeDbs(&cde_db,
+                                 ret_db); /* cde_db get's closed by the merge */
+        } else
+                _DtXlateCloseDb(&cde_db);
 
-   if(dbPaths) free(dbPaths);
-   return globRet;
-}       /*$END$*/
+        if (dbPaths)
+                free(dbPaths);
+        return globRet;
+} /*$END$*/
 
 #if DOC
 /*========================================================*/
-$FUNBEG$: _DtLcxCloseDb()
-$1LINER$: Close an open locale translation database
-$SUMMARY$:
-_DtLcxCloseDb() releases all memory associated with
-the translation database.  Further use of the database
-object is an error.
-$ARGS$:
-$RETURNS$:
- 0:  database was valid and has been closed
--1:  invalid database pointer
+$FUNBEG$ : _DtLcxCloseDb() $1LINER$
+    : Close an open locale translation database $SUMMARY$
+    : _DtLcxCloseDb() releases all memory associated with the
+      translation database.Further use of the database object is an error.$ARGS$
+    : $RETURNS$ : 0 : database was valid and has been closed
+    - 1 : invalid database pointer
 
-$DEF$:
-int _DtLcxCloseDb(
-       _DtXlateDb * io_db)
-$NOTE$: the current implementation is a macro call to
-        _DtXlateCloseDb().
+          $DEF$ : int _DtLcxCloseDb(_DtXlateDb *io_db) $NOTE$
+    : the current implementation is a macro call to _DtXlateCloseDb()
+          .
 /*================================================$SKIP$==*/
 #endif
-
 
 #if DOC
 /*========================================================*/
@@ -556,49 +541,49 @@ Return values are those of _DtXlateOpToStd()
 /*================================================$SKIP$==*/
 #endif
 
-int _DtLcxXlateOpToStd(
-       const _DtXlateDb   xlationDb,
-       const char *       platform,
-       const int          version,
-       const char *       operation,
-       const char *       opValue,
-       char * *           ret_stdLocale,
-       char * *           ret_stdLangTerr,
-       char * *           ret_stdCodeset,
-       char * *           ret_stdModifier)
-{       /*$CODE$*/
-    int     ret;
-    char *  stdValue = NULL;
-    Boolean freeStdValue = True;
-    int     scanned = 0;
-    char    langterr[50];
-    char    codeset[50];
-    char    mod[50];
+      int _DtLcxXlateOpToStd(const _DtXlateDb xlationDb, const char *platform,
+                             const int version, const char *operation,
+                             const char *opValue, char **ret_stdLocale,
+                             char **ret_stdLangTerr, char **ret_stdCodeset,
+                             char **ret_stdModifier) { /*$CODE$*/
+        int ret;
+        char *stdValue = NULL;
+        Boolean freeStdValue = True;
+        int scanned = 0;
+        char langterr[50];
+        char codeset[50];
+        char mod[50];
 
-    /* do the translation */
-    ret = _DtXlateOpToStdValue(xlationDb,platform,version,operation,opValue,
-                                      &stdValue,NULL);
+        /* do the translation */
+        ret = _DtXlateOpToStdValue(xlationDb, platform, version, operation,
+                                   opValue, &stdValue, NULL);
 
-    /* std locale string syntax: langterr.codeset.modifier */
-    /* parse into the desire chunks */
-    if (ret == 0 && stdValue) 
-       scanned = sscanf(stdValue,"%[^.].%[^.].%s",langterr,codeset,mod);
+        /* std locale string syntax: langterr.codeset.modifier */
+        /* parse into the desire chunks */
+        if (ret == 0 && stdValue)
+                scanned =
+                    sscanf(stdValue, "%[^.].%[^.].%s", langterr, codeset, mod);
 
-    /* locale string is just the std value */
+        /* locale string is just the std value */
 
-    if ( ret_stdLocale ) 
-        { *ret_stdLocale = stdValue; freeStdValue = False; }
-    if ( ret_stdLangTerr)
-        { *ret_stdLangTerr = ( scanned >= 1 ? strdup(langterr) : NULL); }
-    if ( ret_stdCodeset ) 
-        { *ret_stdCodeset = ( scanned >= 2 ? strdup(codeset) : NULL); }
-    if ( ret_stdModifier ) 
-        { *ret_stdModifier = ( scanned >= 3 ? strdup(mod) : NULL); }
+        if (ret_stdLocale) {
+                *ret_stdLocale = stdValue;
+                freeStdValue = False;
+        }
+        if (ret_stdLangTerr) {
+                *ret_stdLangTerr = (scanned >= 1 ? strdup(langterr) : NULL);
+        }
+        if (ret_stdCodeset) {
+                *ret_stdCodeset = (scanned >= 2 ? strdup(codeset) : NULL);
+        }
+        if (ret_stdModifier) {
+                *ret_stdModifier = (scanned >= 3 ? strdup(mod) : NULL);
+        }
 
-    if (freeStdValue && NULL != stdValue) free(stdValue);
-    return ret;
-}       /*$END$*/
-
+        if (freeStdValue && NULL != stdValue)
+                free(stdValue);
+        return ret;
+} /*$END$*/
 
 #if DOC
 /*========================================================*/
@@ -676,71 +661,76 @@ int _DtLcxXlateStdToOp(
        const char *       stdModifier,
        char * *           ret_opValue)
 {       /*$CODE$*/
-#define DTLCXXLATE_STDTOOP_BUFSIZE	256
-    char   stdValueBuf[DTLCXXLATE_STDTOOP_BUFSIZE];
-    char   *stdValue = stdValueBuf;
-    char   empty = EOS;
-    char * matchall = MATCHALL_STR;
-    char * dot = DOT_STR;
-    char * sepLC = &empty;
-    char * sepCM = &empty;
-    int retval;
- 
-    if (stdLocale)
-    {
-	if (strlen(stdLocale) >= DTLCXXLATE_STDTOOP_BUFSIZE)
-	  stdValue = malloc(strlen(stdLocale) + 1);
-	else
-	  stdValue = stdValueBuf;
+#define DTLCXXLATE_STDTOOP_BUFSIZE 256
+        char stdValueBuf[DTLCXXLATE_STDTOOP_BUFSIZE];
+        char *stdValue = stdValueBuf;
+        char empty = EOS;
+        char *matchall = MATCHALL_STR;
+        char *dot = DOT_STR;
+        char *sepLC = &empty;
+        char *sepCM = &empty;
+        int retval;
 
-        stdValue[0] = EOS;
-        strcpy(stdValue, stdLocale);
-    }
-    else 
-    {  
-       int need = 0;
-       int bytes_needed = 0;
+        if (stdLocale) {
+                if (strlen(stdLocale) >= DTLCXXLATE_STDTOOP_BUFSIZE)
+                        stdValue = malloc(strlen(stdLocale) + 1);
+                else
+                        stdValue = stdValueBuf;
+
+                stdValue[0] = EOS;
+                strcpy(stdValue, stdLocale);
+        } else {
+                int need = 0;
+                int bytes_needed = 0;
 
 #define NEED_LANGTERR 0x01
-#define NEED_CODESET  0x02
+#define NEED_CODESET 0x02
 #define NEED_MODIFIER 0x04
 
-       if (stdLangTerr)  need = NEED_LANGTERR;
-       if (stdCodeset)   need = NEED_LANGTERR | NEED_CODESET;
-       if (stdModifier)  need = NEED_LANGTERR | NEED_CODESET | NEED_MODIFIER;
+                if (stdLangTerr)
+                        need = NEED_LANGTERR;
+                if (stdCodeset)
+                        need = NEED_LANGTERR | NEED_CODESET;
+                if (stdModifier)
+                        need = NEED_LANGTERR | NEED_CODESET | NEED_MODIFIER;
 
-       if (need == 0) return -1;    /* RETURN: need a pattern */
+                if (need == 0)
+                        return -1; /* RETURN: need a pattern */
 
-       /* only include matchalls for those that are needed */
-       /* This is needed because of the manner of scoring matches.
-          If unnecessary matchall's are present, that can detract
-          from the score. */
-       if (need & NEED_LANGTERR) 
-          { stdLangTerr = (stdLangTerr ? stdLangTerr : matchall); }
-       if (need & (NEED_LANGTERR | NEED_CODESET))
-          { stdCodeset = (stdCodeset ? stdCodeset : matchall); sepLC = dot; }
-       if (need & (NEED_LANGTERR | NEED_CODESET | NEED_MODIFIER))
-          { stdModifier = (stdModifier ? stdModifier : matchall); sepCM = dot; }
+                /* only include matchalls for those that are needed */
+                /* This is needed because of the manner of scoring matches.
+                   If unnecessary matchall's are present, that can detract
+                   from the score. */
+                if (need & NEED_LANGTERR) {
+                        stdLangTerr = (stdLangTerr ? stdLangTerr : matchall);
+                }
+                if (need & (NEED_LANGTERR | NEED_CODESET)) {
+                        stdCodeset = (stdCodeset ? stdCodeset : matchall);
+                        sepLC = dot;
+                }
+                if (need & (NEED_LANGTERR | NEED_CODESET | NEED_MODIFIER)) {
+                        stdModifier = (stdModifier ? stdModifier : matchall);
+                        sepCM = dot;
+                }
 
-	bytes_needed =
-	  strlen(stdLangTerr) + strlen(sepLC) + strlen(stdCodeset) +
-	  strlen(sepCM) + strlen(stdModifier) + 1;
+                bytes_needed = strlen(stdLangTerr) + strlen(sepLC) +
+                               strlen(stdCodeset) + strlen(sepCM) +
+                               strlen(stdModifier) + 1;
 
-	if (bytes_needed > DTLCXXLATE_STDTOOP_BUFSIZE)
-	  stdValue = malloc(bytes_needed);
-	else
-	  stdValue = stdValueBuf;
+                if (bytes_needed > DTLCXXLATE_STDTOOP_BUFSIZE)
+                        stdValue = malloc(bytes_needed);
+                else
+                        stdValue = stdValueBuf;
 
-       /* generate the std value string */
-       stdValue[0] = EOS;
-       sprintf(stdValue,
-		"%s%s%s%s%s", 
-                stdLangTerr, sepLC, stdCodeset, sepCM, stdModifier);
-    }
+                /* generate the std value string */
+                stdValue[0] = EOS;
+                sprintf(stdValue, "%s%s%s%s%s", stdLangTerr, sepLC, stdCodeset,
+                        sepCM, stdModifier);
+        }
 
-    retval = _DtXlateStdToOpValue(
-				xlationDb,platform,version,operation,
-				stdValue, ret_opValue,NULL);
-    if (stdValue && stdValue != stdValueBuf) free(stdValue);
-    return retval;
-}       /*$END$*/
+        retval = _DtXlateStdToOpValue(xlationDb, platform, version, operation,
+                                      stdValue, ret_opValue, NULL);
+        if (stdValue && stdValue != stdValueBuf)
+                free(stdValue);
+        return retval;
+} /*$END$*/

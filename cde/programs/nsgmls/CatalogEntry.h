@@ -36,11 +36,11 @@ namespace SP_NAMESPACE {
 #endif
 
 struct CatalogEntry {
-  StringC to;
-  Location loc;
-  size_t catalogNumber;
-  size_t baseNumber;
-  size_t serial;
+        StringC to;
+        Location loc;
+        size_t catalogNumber;
+        size_t baseNumber;
+        size_t serial;
 };
 
 #ifdef SP_NAMESPACE

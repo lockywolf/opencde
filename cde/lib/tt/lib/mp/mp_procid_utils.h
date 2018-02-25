@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp_procid_utils.h /main/3 1995/10/23 10:27:43 rswiston $ 			 				 */
+/*%%  $XConsortium: mp_procid_utils.h /main/3 1995/10/23 10:27:43 rswiston $
+ */
 /*
  *
  * mp_procid_utils.h
@@ -40,7 +41,6 @@
 #include <util/tt_table.h>
 
 class _Tt_procid;
-declare_list_of(_Tt_procid)
-declare_table_of(_Tt_procid)
+declare_list_of(_Tt_procid) declare_table_of(_Tt_procid)
 
-#endif				/* MP_PROCID_UTILS_H */
+#endif /* MP_PROCID_UTILS_H */

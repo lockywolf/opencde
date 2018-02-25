@@ -52,14 +52,12 @@
  *   which is passed in to the funciton.
  */
 
-extern void _DtHelpTurnOnHourGlass(
-    Widget widget);
+extern void _DtHelpTurnOnHourGlass(Widget widget);
 
- /*
-  * widget is the toplevel shell of the window you want
-  * the hourglass cursor to appear in.
-  */
-
+/*
+ * widget is the toplevel shell of the window you want
+ * the hourglass cursor to appear in.
+ */
 
 /* TurnOffHourGlass -
  *
@@ -67,21 +65,12 @@ extern void _DtHelpTurnOnHourGlass(
  *   which is passed in to the funciton.
  */
 
-extern void _DtHelpTurnOffHourGlass(
-    Widget widget);
+extern void _DtHelpTurnOffHourGlass(Widget widget);
 
- /*
-  *  widget is the toplevel shell of the window you want
-  *  to remove hourglass cursor from.
-  */
+/*
+ *  widget is the toplevel shell of the window you want
+ *  to remove hourglass cursor from.
+ */
 
 #endif /* _hourglassI_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */
-
-
-
-
-
-
-
-

@@ -61,7 +61,7 @@
  * Private variables and defines.
  *
  *****************************************************************************/
-#define REALLOC_INCR    10
+#define REALLOC_INCR 10
 
 /******************************************************************************
  *
@@ -83,25 +83,20 @@
  *	Returns in number of characters in p1.
  *
  *****************************************************************************/
-int
-_DtCvStrLen (
-    const void    *p1,
-    int            type )
-{
-    int		   len = 0;
-    const wchar_t *wcs;
+int _DtCvStrLen(const void *p1, int type) {
+        int len = 0;
+        const wchar_t *wcs;
 
-    if (0 == type)
-	return (strlen((const char *) p1));
+        if (0 == type)
+                return (strlen((const char *)p1));
 
-    wcs = (wchar_t *) p1;
-    while (0 != *wcs)
-      {
-	wcs++;
-	len++;
-      }
+        wcs = (wchar_t *)p1;
+        while (0 != *wcs) {
+                wcs++;
+                len++;
+        }
 
-    return len;
+        return len;
 }
 
 /******************************************************************************
@@ -120,17 +115,12 @@ _DtCvStrLen (
  *	Get to a point in the wide character or char string.
  *
  *****************************************************************************/
-void *
-_DtCvStrPtr (
-    const void    *p1,
-    int            type,
-    int		   count)
-{
+void *_DtCvStrPtr(const void *p1, int type, int count) {
 
-    if (0 == type)
-	return ((void *) (((char *) p1) + count));
+        if (0 == type)
+                return ((void *)(((char *)p1) + count));
 
-    return ((void *) (((wchar_t *) p1) + count));
+        return ((void *)(((wchar_t *)p1) + count));
 }
 
 /******************************************************************************
@@ -149,20 +139,15 @@ _DtCvStrPtr (
  *	Get a character value.
  *
  *****************************************************************************/
-wchar_t
-_DtCvChar (
-    const void    *p1,
-    int            type,
-    int		   count)
-{
-    wchar_t value = (wchar_t) -1;
+wchar_t _DtCvChar(const void *p1, int type, int count) {
+        wchar_t value = (wchar_t)-1;
 
-    if (0 == type)
-	value = *(((char *) p1) + count);
-    else
-	value = *(((wchar_t *) p1) + count);
+        if (0 == type)
+                value = *(((char *)p1) + count);
+        else
+                value = *(((wchar_t *)p1) + count);
 
-    return (value);
+        return (value);
 }
 
 /******************************************************************************
@@ -186,83 +171,70 @@ _DtCvChar (
  *	 3  s2 contained more than 15 characters, and didn't find any
  *	    of the first fifteen characters in string s2.
  *****************************************************************************/
-int
-_DtCvStrcspn (
-    const void    *s1,
-    const char    *s2,
-    int            type,
-    int           *ret_len )
-{
-    size_t         num;
-    wchar_t	   widec[16];
-    const wchar_t *wcp;
-    const wchar_t *wcp2;
+int _DtCvStrcspn(const void *s1, const char *s2, int type, int *ret_len) {
+        size_t num;
+        wchar_t widec[16];
+        const wchar_t *wcp;
+        const wchar_t *wcp2;
 
-    if (NULL == s1)
-      {
-	*ret_len = 0;
-	return 0;
-      }
+        if (NULL == s1) {
+                *ret_len = 0;
+                return 0;
+        }
 
-    if ((0 == type && '\0' == *((char *) s1)) ||
-	(0 != type && 0 == *((wchar_t *) s1)))
-      {
-	*ret_len = 0;
-	return 1;
-      }
+        if ((0 == type && '\0' == *((char *)s1)) ||
+            (0 != type && 0 == *((wchar_t *)s1))) {
+                *ret_len = 0;
+                return 1;
+        }
 
-    if (NULL == s2 || '\0' == *s2)
-      {
-	*ret_len = _DtCvStrLen (s1, type);
-	return 1;
-      }
+        if (NULL == s2 || '\0' == *s2) {
+                *ret_len = _DtCvStrLen(s1, type);
+                return 1;
+        }
 
-    if (0 == type)
-      {
-	/*
-	 * no need to go through any hassle, just use the 3C function
-	 */
-	*ret_len = strcspn ((char *) s1, s2);
-	if ('\0' == ((char *) s1)[*ret_len])
-	    return 1;
-	return 0;
-      }
+        if (0 == type) {
+                /*
+                 * no need to go through any hassle, just use the 3C function
+                 */
+                *ret_len = strcspn((char *)s1, s2);
+                if ('\0' == ((char *)s1)[*ret_len])
+                        return 1;
+                return 0;
+        }
 
-    /*
-     * convert the test string into a wide char array
-     */
-    num = mbstowcs(widec, s2, 16);
-    if ((size_t) -1 == num)
-	return -1;
+        /*
+         * convert the test string into a wide char array
+         */
+        num = mbstowcs(widec, s2, 16);
+        if ((size_t)-1 == num)
+                return -1;
 
-    /*
-     * force a null termination of the array
-     */
-    widec[15] = 0;
+        /*
+         * force a null termination of the array
+         */
+        widec[15] = 0;
 
-    /*
-     * if greater than 15 characters were converted, set the flag to 2
-     */
-    num = ((num > 15) ? 2 : 0);
+        /*
+         * if greater than 15 characters were converted, set the flag to 2
+         */
+        num = ((num > 15) ? 2 : 0);
 
-    wcp = s1;
-    while (0 != *wcp)
-      {
-	wcp2 = widec;
-	while (0 != *wcp2)
-	  {
-	    if (*wcp2 == *wcp)
-	      {
-		*ret_len = wcp - (wchar_t *) s1;
-		return 0 + num;
-	      }
-	    wcp2++;
-	  }
-	wcp++;
-      }
+        wcp = s1;
+        while (0 != *wcp) {
+                wcp2 = widec;
+                while (0 != *wcp2) {
+                        if (*wcp2 == *wcp) {
+                                *ret_len = wcp - (wchar_t *)s1;
+                                return 0 + num;
+                        }
+                        wcp2++;
+                }
+                wcp++;
+        }
 
-    *ret_len = wcp - (wchar_t *) s1;
-    return 1 + num;
+        *ret_len = wcp - (wchar_t *)s1;
+        return 1 + num;
 }
 
 /****************************************************************************
@@ -281,52 +253,48 @@ _DtCvStrcspn (
  *              pointers to any type of data.
  *
  ****************************************************************************/
-void **
-_DtCvAddPtrToArray (
-       void  **array,
-       void   *ptr)
-{
+void **_DtCvAddPtrToArray(void **array, void *ptr) {
 
-    void **nextP = NULL;
-    int numElements;
+        void **nextP = NULL;
+        int numElements;
 
-    /* If this is the first item for the array, malloc the array and set
-       nextP to point to the first element. */
-    if (array == NULL || *array == NULL) {
-        array = (void **) malloc (REALLOC_INCR * sizeof (void *));
+        /* If this is the first item for the array, malloc the array and set
+           nextP to point to the first element. */
+        if (array == NULL || *array == NULL) {
+                array = (void **)malloc(REALLOC_INCR * sizeof(void *));
 
-        nextP = array;
-    }
-
-    else {
-
-        /* Find the NULL pointer at the end of the array. */
-        numElements = 0;
-        for (nextP = array; *nextP != NULL; nextP++)
-                numElements++;
-
-        /* The array always grows by chunks of size REALLOC_INCR.  So see if
-           it currently is an exact multiple of REALLOC_INCR size (remember to
-           count the NULL pointer).  If it is then it must be full, so realloc
-           another chunk.  Also remember to move 'nextP' because the array
-           will probably move in memory. */
-        if ((numElements + 1) % REALLOC_INCR == 0) {
-            array = (void **) realloc (array,
-                        (numElements + 1 + REALLOC_INCR) * sizeof (void *));
-            if (array)
-                nextP = array + numElements;
-            else
-                nextP = NULL;
+                nextP = array;
         }
-    }
 
-    if (nextP)
-      {
-        *nextP++ = ptr;
-        *nextP = NULL;
-      }
+        else {
 
-    return (array);
+                /* Find the NULL pointer at the end of the array. */
+                numElements = 0;
+                for (nextP = array; *nextP != NULL; nextP++)
+                        numElements++;
+
+                /* The array always grows by chunks of size REALLOC_INCR.  So
+                   see if it currently is an exact multiple of REALLOC_INCR size
+                   (remember to count the NULL pointer).  If it is then it must
+                   be full, so realloc another chunk.  Also remember to move
+                   'nextP' because the array will probably move in memory. */
+                if ((numElements + 1) % REALLOC_INCR == 0) {
+                        array = (void **)realloc(
+                            array,
+                            (numElements + 1 + REALLOC_INCR) * sizeof(void *));
+                        if (array)
+                                nextP = array + numElements;
+                        else
+                                nextP = NULL;
+                }
+        }
+
+        if (nextP) {
+                *nextP++ = ptr;
+                *nextP = NULL;
+        }
+
+        return (array);
 }
 
 /******************************************************************************
@@ -340,22 +308,20 @@ _DtCvAddPtrToArray (
  * Purpose:      Free the memory used for a NULL-terminated string array.
  *
  ******************************************************************************/
-int
-_DtCvFreeArray (void **array)
-{
-    void        **next;
+int _DtCvFreeArray(void **array) {
+        void **next;
 
-    if (array == NULL)
-        return -1;
+        if (array == NULL)
+                return -1;
 
-    for (next = array; *next != NULL; next++)
-        free (*next);
+        for (next = array; *next != NULL; next++)
+                free(*next);
 
-    free (array);
-    return (0);
+        free(array);
+        return (0);
 }
 
-#if defined(_AIX) || defined (USL) || defined(__uxp__)
+#if defined(_AIX) || defined(USL) || defined(__uxp__)
 /*****************************************************************************
  * Function: _DtCvStrCaseCmp
  *
@@ -366,49 +332,45 @@ _DtCvFreeArray (void **array)
  * Purpose: IBM and USL do not support the 'strcasecmp' routine. This takes it's
  *          place.
  *****************************************************************************/
-int
-_DtCvStrCaseCmp (
-    const char	*s1,
-    const char	*s2)
-{
-    int   c1;
-    int   c2;
-    int   result = 0;
+int _DtCvStrCaseCmp(const char *s1, const char *s2) {
+        int c1;
+        int c2;
+        int result = 0;
 
-    if (s1 == s2)    return  0;
-    if (NULL == s1)  return -1;
-    if (NULL == s2)  return  1;
+        if (s1 == s2)
+                return 0;
+        if (NULL == s1)
+                return -1;
+        if (NULL == s2)
+                return 1;
 
+        while (result == 0 && *s1 != '\0' && *s2 != '\0') {
+                c1 = (unsigned char)*s1;
+                c2 = (unsigned char)*s2;
 
-    while (result == 0 && *s1 != '\0' && *s2 != '\0')
-      {
-	c1 = (unsigned char) *s1;
-	c2 = (unsigned char) *s2;
+                if (isupper(c1))
+                        c1 = _tolower(c1);
+                if (isupper(c2))
+                        c2 = _tolower(c2);
 
-	if (isupper(c1))
-	    c1 = _tolower(c1);
-	if (isupper(c2))
-	    c2 = _tolower(c2);
+                result = c1 - c2;
+                s1++;
+                s2++;
+        }
 
-	result = c1 - c2;
-	s1++;
-	s2++;
-      }
+        if (result == 0 && (*s1 != '\0' || *s2 != '\0')) {
+                c1 = (unsigned char)*s1;
+                c2 = (unsigned char)*s2;
 
-    if (result == 0 && (*s1 != '\0' || *s2 != '\0'))
-      {
-	c1 = (unsigned char) *s1;
-	c2 = (unsigned char) *s2;
+                if (isupper(c1))
+                        c1 = _tolower(c1);
+                if (isupper(c2))
+                        c2 = _tolower(c2);
 
-	if (isupper(c1))
-	    c1 = _tolower(c1);
-	if (isupper(c2))
-	    c2 = _tolower(c2);
+                result = c1 - c2;
+        }
 
-	result = c1 - c2;
-      }
-
-    return result;
+        return result;
 }
 #endif /* _AIX or USL */
 
@@ -424,47 +386,42 @@ _DtCvStrCaseCmp (
  *	    Latin1 characters to it's lower case.  I.e.  when we -know-
  *	    the data is in English.
  *****************************************************************************/
-int
-_DtCvStrNCaseCmpLatin1 (
-    const char	*s1,
-    const char	*s2,
-    size_t	 n)
-{
-    int   c1;
-    int   c2;
-    int   result = 0;
+int _DtCvStrNCaseCmpLatin1(const char *s1, const char *s2, size_t n) {
+        int c1;
+        int c2;
+        int result = 0;
 
-    if (s1 == s2 || n < 1) return  0;
-    if (NULL == s1)        return -1;
-    if (NULL == s2)        return  1;
+        if (s1 == s2 || n < 1)
+                return 0;
+        if (NULL == s1)
+                return -1;
+        if (NULL == s2)
+                return 1;
 
+        while (result == 0 && *s1 != '\0' && *s2 != '\0' && n > 0) {
+                c1 = (unsigned char)*s1;
+                c2 = (unsigned char)*s2;
 
-    while (result == 0 && *s1 != '\0' && *s2 != '\0' && n > 0)
-      {
-	c1 = (unsigned char) *s1;
-	c2 = (unsigned char) *s2;
+                c1 = _DtCvToLower(c1);
+                c2 = _DtCvToLower(c2);
 
-	c1 = _DtCvToLower(c1);
-	c2 = _DtCvToLower(c2);
+                result = c1 - c2;
+                s1++;
+                s2++;
+                n--;
+        }
 
-	result = c1 - c2;
-	s1++;
-	s2++;
-	n--;
-      }
+        if (result == 0 && n > 0 && (*s1 != '\0' || *s2 != '\0')) {
+                c1 = (unsigned char)*s1;
+                c2 = (unsigned char)*s2;
 
-    if (result == 0 && n > 0 && (*s1 != '\0' || *s2 != '\0'))
-      {
-	c1 = (unsigned char) *s1;
-	c2 = (unsigned char) *s2;
+                c1 = _DtCvToLower(c1);
+                c2 = _DtCvToLower(c2);
 
-	c1 = _DtCvToLower(c1);
-	c2 = _DtCvToLower(c2);
+                result = c1 - c2;
+        }
 
-	result = c1 - c2;
-      }
-
-    return result;
+        return result;
 }
 
 /*****************************************************************************
@@ -479,44 +436,39 @@ _DtCvStrNCaseCmpLatin1 (
  *	    Latin1 characters to it's lower case.  I.e.  when we -know-
  *	    the data is in English.
  *****************************************************************************/
-int
-_DtCvStrCaseCmpLatin1 (
-    const char	*s1,
-    const char	*s2)
-{
-    int   c1;
-    int   c2;
-    int   result = 0;
+int _DtCvStrCaseCmpLatin1(const char *s1, const char *s2) {
+        int c1;
+        int c2;
+        int result = 0;
 
-    if (s1 == s2)    return  0;
-    if (NULL == s1)  return -1;
-    if (NULL == s2)  return  1;
+        if (s1 == s2)
+                return 0;
+        if (NULL == s1)
+                return -1;
+        if (NULL == s2)
+                return 1;
 
+        while (result == 0 && *s1 != '\0' && *s2 != '\0') {
+                c1 = (unsigned char)*s1;
+                c2 = (unsigned char)*s2;
 
-    while (result == 0 && *s1 != '\0' && *s2 != '\0')
-      {
-	c1 = (unsigned char) *s1;
-	c2 = (unsigned char) *s2;
+                c1 = _DtCvToLower(c1);
+                c2 = _DtCvToLower(c2);
 
-	c1 = _DtCvToLower(c1);
-	c2 = _DtCvToLower(c2);
+                result = c1 - c2;
+                s1++;
+                s2++;
+        }
 
-	result = c1 - c2;
-	s1++;
-	s2++;
-      }
+        if (result == 0 && (*s1 != '\0' || *s2 != '\0')) {
+                c1 = (unsigned char)*s1;
+                c2 = (unsigned char)*s2;
 
-    if (result == 0 && (*s1 != '\0' || *s2 != '\0'))
-      {
-	c1 = (unsigned char) *s1;
-	c2 = (unsigned char) *s2;
+                c1 = _DtCvToLower(c1);
+                c2 = _DtCvToLower(c2);
 
-	c1 = _DtCvToLower(c1);
-	c2 = _DtCvToLower(c2);
+                result = c1 - c2;
+        }
 
-	result = c1 - c2;
-      }
-
-    return result;
+        return result;
 }
-

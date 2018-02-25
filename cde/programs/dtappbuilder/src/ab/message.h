@@ -27,7 +27,7 @@
  * @(#)message.h	1.1 08 Jul 1994
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -40,14 +40,13 @@
  *
  */
 
-/* 
+/*
  * File: message.h - message .h file for this directory
  */
 
 #ifndef _ab_message_h
 #define _ab_message_h
 
-extern void 	msgEd_show_dialog(
-		);
+extern void msgEd_show_dialog();
 
 #endif /* _ab_message_h */

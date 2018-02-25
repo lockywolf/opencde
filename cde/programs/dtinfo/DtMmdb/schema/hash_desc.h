@@ -30,34 +30,35 @@
 
 class mphf_desc : public stored_object_desc {
 
-public:
-   mphf_desc();
-   ~mphf_desc() {};
+      public:
+        mphf_desc();
+        ~mphf_desc(){};
 
-   handler* init_handler(object_dict&) ;
+        handler *init_handler(object_dict &);
 
-protected:
+      protected:
 };
 
 class btree_desc : public stored_object_desc {
 
-public:
-   btree_desc();
-   ~btree_desc() {};
+      public:
+        btree_desc();
+        ~btree_desc(){};
 
-   handler* init_handler(object_dict&) ;
-protected:
+        handler *init_handler(object_dict &);
+
+      protected:
 };
 
 class smphf_desc : public stored_object_desc {
 
-public:
-   smphf_desc();
-   ~smphf_desc() {};
+      public:
+        smphf_desc();
+        ~smphf_desc(){};
 
-   handler* init_handler(object_dict&) ;
-protected:
+        handler *init_handler(object_dict &);
+
+      protected:
 };
-
 
 #endif

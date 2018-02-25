@@ -67,111 +67,102 @@
 /************************************************************************
  * Default Text Editor help volume name
  ************************************************************************/
-#define TEXTEDITOR_HELP_VOLUME			"Textedit"
-#define HELP_ON_HELP_VOLUME			"Help4Help"
-
+#define TEXTEDITOR_HELP_VOLUME "Textedit"
+#define HELP_ON_HELP_VOLUME "Help4Help"
 
 /************************************************************************
  * Help location ids for the menubar
  ************************************************************************/
-#define MENUBAR_HELP				"menubar"
-
+#define MENUBAR_HELP "menubar"
 
 /************************************************************************
  * Help location ids for pulldown menus within the menubar
  ************************************************************************/
 
-#define FILE_MENU_HELP                          "TextEditorFileMenu"
-#define EDIT_MENU_HELP                          "TextEditorEditMenu"
-#define OPTIONS_MENU_HELP                       "TextEditorOptionsMenu"
-#define HELP_MENU_HELP                          "TextEditorHelpMenu"
-#define FORMAT_MENU_HELP			"formatMenu"
-
+#define FILE_MENU_HELP "TextEditorFileMenu"
+#define EDIT_MENU_HELP "TextEditorEditMenu"
+#define OPTIONS_MENU_HELP "TextEditorOptionsMenu"
+#define HELP_MENU_HELP "TextEditorHelpMenu"
+#define FORMAT_MENU_HELP "formatMenu"
 
 /************************************************************************
  * Help location ids for individual items within the [Help] pulldown menu
  ************************************************************************/
-#define HELP_MENU_OVERVIEW_HELP			"_hometopic"
-#define HELP_MENU_TASKS_HELP			"Tasks"
-#define HELP_MENU_TOC_HELP			"TableOfContents"			
-#define HELP_MENU_REFERENCE_HELP		"Reference"
+#define HELP_MENU_OVERVIEW_HELP "_hometopic"
+#define HELP_MENU_TASKS_HELP "Tasks"
+#define HELP_MENU_TOC_HELP "TableOfContents"
+#define HELP_MENU_REFERENCE_HELP "Reference"
 /* 'XmNActivateCallback' for [On Item] does not set a specific location id */
 /* the HELP_MENU_USING_HELP_HELP location id is for the HELP_ON_HELP_VOLUME */
-#define HELP_MENU_USING_HELP_HELP		"_hometopic"
-#define HELP_MENU_ABOUT_HELP			"_copyright"
-
+#define HELP_MENU_USING_HELP_HELP "_hometopic"
+#define HELP_MENU_ABOUT_HELP "_copyright"
 
 /************************************************************************
  * Help location ids for dialogs posted directly or indirectly by [File]
  * menu items
  ************************************************************************/
-#define FILE_OPEN_DIALOG_HELP			"openDialog"
-#define FILE_INCLUDE_DIALOG_HELP		"includeDialog"
-#define FILE_SAVEAS_DIALOG_HELP			"saveAsDialog"
-#define FILE_COPYTOFILE_DIALOG_HELP		"copytofileDialog"
+#define FILE_OPEN_DIALOG_HELP "openDialog"
+#define FILE_INCLUDE_DIALOG_HELP "includeDialog"
+#define FILE_SAVEAS_DIALOG_HELP "saveAsDialog"
+#define FILE_COPYTOFILE_DIALOG_HELP "copytofileDialog"
 /* [Print...] causes a separate process to be invoked with its own help */
 
 /* -----> dialogs conditionally posted as the result of a [File] menu action */
-#define FILE_ASKIFSAVE_DIALOG_HELP		"askIfSaveDialog"
-#define FILE_EXISTS_DIALOG_HELP			"fileExistsDialog"
-#define FILE_CONFIRM_DIALOG_HELP		"fileConfirmDialog"
-
+#define FILE_ASKIFSAVE_DIALOG_HELP "askIfSaveDialog"
+#define FILE_EXISTS_DIALOG_HELP "fileExistsDialog"
+#define FILE_CONFIRM_DIALOG_HELP "fileConfirmDialog"
 
 /************************************************************************
  * Help location ids for the dialog posted by [File] menu [Print...]
  * (this dialog is controlled by the DtPrintSetupBox widget)
  ************************************************************************/
-#define PRINT_SETUP_DIALOG_HELP			"printSetupDialog"
+#define PRINT_SETUP_DIALOG_HELP "printSetupDialog"
 
 /* -----> fields/buttons within the Print Setup dialog */
-#define PRINT_APP_SPECIFIC_OPTIONS		"print-appSpecific"
-#define PRINT_GENERIC_OPTIONS			"print-generic"
-#define PRINT_PAGE_HEADERS_FOOTERS		"print-pageHeadersFooters"
-#define PRINT_PAGE_MARGINS			"print-pageMargins"
-
+#define PRINT_APP_SPECIFIC_OPTIONS "print-appSpecific"
+#define PRINT_GENERIC_OPTIONS "print-generic"
+#define PRINT_PAGE_HEADERS_FOOTERS "print-pageHeadersFooters"
+#define PRINT_PAGE_MARGINS "print-pageMargins"
 
 /************************************************************************
  * Help location ids for edit area and status line of the DtEditor widget
  ************************************************************************/
-#define EDIT_AREA_HELP				"TextEditorWindow"
+#define EDIT_AREA_HELP "TextEditorWindow"
 
 /* -----> fields/buttons within the status line */
-#define STATUS_LINE_HELP			"statusLine"
-#define STATUS_CURRENT_LINE_HELP		"status-currentLine"
-#define STATUS_TOTAL_LINES_HELP			"status-totalLines"
-#define STATUS_MESSAGE_HELP			"status-message"
-#define STATUS_OVERSTRIKE_HELP			"status-overstrike"
-
+#define STATUS_LINE_HELP "statusLine"
+#define STATUS_CURRENT_LINE_HELP "status-currentLine"
+#define STATUS_TOTAL_LINES_HELP "status-totalLines"
+#define STATUS_MESSAGE_HELP "status-message"
+#define STATUS_OVERSTRIKE_HELP "status-overstrike"
 
 /************************************************************************
  * Help location ids for the dialog posted by [Format] menu [Settings...]
  * (this dialog is controlled by the DtEditor widget)
  ************************************************************************/
-#define FORMAT_SETTINGS_HELP			"formatDialog"
+#define FORMAT_SETTINGS_HELP "formatDialog"
 
 /* -----> fields/buttons within the Format Settings dialog */
-#define FORMAT_LEFT_MARGIN_HELP			"format-leftmargin"
-#define FORMAT_RIGHT_MARGIN_HELP		"format-rightmargin"
-#define FORMAT_ALIGNMENT_HELP			"format-alignment"
-
+#define FORMAT_LEFT_MARGIN_HELP "format-leftmargin"
+#define FORMAT_RIGHT_MARGIN_HELP "format-rightmargin"
+#define FORMAT_ALIGNMENT_HELP "format-alignment"
 
 /************************************************************************
  * Help location ids for the dialog posted by [Edit] menu [Find/Change...]
  * (this dialog is controlled by the DtEditor widget)
  ************************************************************************/
-#define FINDCHANGE_HELP				"findchangeDialog"
+#define FINDCHANGE_HELP "findchangeDialog"
 
 /* -----> fields/buttons within the Find/Change dialog */
-#define FINDCHANGE_FIND_HELP			"fc-find"
-#define FINDCHANGE_CHANGETO_HELP		"fc-changeto"
-	
+#define FINDCHANGE_FIND_HELP "fc-find"
+#define FINDCHANGE_CHANGETO_HELP "fc-changeto"
 
 /************************************************************************
  * Help location ids for the dialog posted by [Edit] menu [Find/Change...]
  * (this dialog is controlled by the DtEditor widget)
  ************************************************************************/
-#define SPELL_HELP				"spellDialog"
+#define SPELL_HELP "spellDialog"
 
 /* -----> fields/buttons within the Check Spelling dialog */
-#define SPELL_MISSPELLED_WORDS_HELP		"sp-spelllist"
-#define SPELL_CHANGETO_HELP			"sp-changeto"
+#define SPELL_MISSPELLED_WORDS_HELP "sp-spelllist"
+#define SPELL_CHANGETO_HELP "sp-changeto"

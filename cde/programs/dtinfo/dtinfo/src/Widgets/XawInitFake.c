@@ -40,12 +40,12 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL M.I.T.
  * BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
- * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN 
+ * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- * 
- * 
+ *
+ *
  * 			    XawInitializeWidgetSet
- * 
+ *
  * This routine forces a reference to vendor shell so that the one in this
  * widget is installed.  Any other cross-widget set initialization should be
  * done here as well.  All Athena widgets should include "XawInit.h" and
@@ -59,16 +59,15 @@
 #include <X11/Vendor.h>
 #include <X11/Xaw/XawInit.h>
 
-void XawInitializeWidgetSet ()
-{
-  /*
-    static int firsttime = 1;
+void XawInitializeWidgetSet() {
+        /*
+          static int firsttime = 1;
 
-    if (firsttime) {
-	firsttime = 0;
-	XtInitializeWidgetClass (vendorShellWidgetClass);
-    }
-  */
+          if (firsttime) {
+              firsttime = 0;
+              XtInitializeWidgetClass (vendorShellWidgetClass);
+          }
+        */
 }
 
 #endif

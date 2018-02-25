@@ -41,44 +41,37 @@
 #include <Dt/IndicatorM.h>
 #include <Tt/tttk.h>
 
-
 /********    Public Function Declarations    ********/
 
-extern void _DtSendActivityNotification( int ) ;
-extern void _DtSendActivityDoneNotification( void ) ;
+extern void _DtSendActivityNotification(int);
+extern void _DtSendActivityDoneNotification(void);
 
 /********    End Public Function Declarations    ********/
-
-
 
 /*
  * _DtSendActivityNotification()
  *
  *   This function provides the client with a means for broadcasting
  *   notification that an activity has been started.  For the present
- *   time, this will enable the activity indicator for upto a specified 
+ *   time, this will enable the activity indicator for upto a specified
  *   number of seconds.
  */
 
-void 
-_DtSendActivityNotification(
-        int duration )
-{
-    Tt_message	msg;
-    Tt_status	status;
+void _DtSendActivityNotification(int duration) {
+        Tt_message msg;
+        Tt_status status;
 
-    msg = tt_pnotice_create(TT_SESSION, "DtActivity_Beginning");
-    status = tt_ptr_error(msg);
-    if (status != TT_OK) {
-	return;
-    }
-    status = tt_message_send(msg);
-    if (status != TT_OK) {
-	return;
-    }
-    tt_message_destroy(msg);
+        msg = tt_pnotice_create(TT_SESSION, "DtActivity_Beginning");
+        status = tt_ptr_error(msg);
+        if (status != TT_OK) {
+                return;
+        }
+        status = tt_message_send(msg);
+        if (status != TT_OK) {
+                return;
+        }
+        tt_message_destroy(msg);
 }
-
 
 /*
  * _DtSendActivityDoneNotification()
@@ -88,20 +81,18 @@ _DtSendActivityNotification(
  *   now down.
  */
 
-void 
-_DtSendActivityDoneNotification( void )
-{
-    Tt_message	msg;
-    Tt_status	status;
+void _DtSendActivityDoneNotification(void) {
+        Tt_message msg;
+        Tt_status status;
 
-    msg = tt_pnotice_create(TT_SESSION, "DtActivity_Began");
-    status = tt_ptr_error(msg);
-    if (status != TT_OK) {
-	return;
-    }
-    status = tt_message_send(msg);
-    if (status != TT_OK) {
-	return;
-    }
-    tt_message_destroy(msg);
+        msg = tt_pnotice_create(TT_SESSION, "DtActivity_Began");
+        status = tt_ptr_error(msg);
+        if (status != TT_OK) {
+                return;
+        }
+        status = tt_message_send(msg);
+        if (status != TT_OK) {
+                return;
+        }
+        tt_message_destroy(msg);
 }

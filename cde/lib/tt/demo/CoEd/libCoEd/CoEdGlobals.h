@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: CoEdGlobals.h /main/3 1995/10/20 17:07:02 rswiston $ 			 				 */
+/*%%  $XConsortium: CoEdGlobals.h /main/3 1995/10/20 17:07:02 rswiston $
+ */
 /*
  * CoEdGlobals.h
  *
@@ -58,12 +59,12 @@
 #include "CoEd.h"
 #include "CoEdSiteID.h"
 
-extern char	       *coEdProcID;
-extern int		coEdTtFd;
-extern int		coEdTtStackMark;
-extern CoEdFileList    *coEdFiles;
-extern CoEdSiteID      *coEdSiteID;
+extern char *coEdProcID;
+extern int coEdTtFd;
+extern int coEdTtStackMark;
+extern CoEdFileList *coEdFiles;
+extern CoEdSiteID *coEdSiteID;
 
-int coEdSelect( int fd, long timeoutSec = 0, long timeoutUSec = 0 );
+int coEdSelect(int fd, long timeoutSec = 0, long timeoutUSec = 0);
 
 #endif CoEdGlobals_h

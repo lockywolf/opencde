@@ -43,31 +43,28 @@
  ************************************<+>*************************************/
 #ifndef _smhftring_h
 #define _smhftring_h
- 
-/* 
- *  #include statements 
- */
 
-
-/* 
- *  #define statements 
- */
-
-/* 
- * typedef statements 
+/*
+ *  #include statements
  */
 
 /*
- *  External variables  
+ *  #define statements
  */
 
+/*
+ * typedef statements
+ */
 
-/*  
- *  External Interface  
+/*
+ *  External variables
+ */
+
+/*
+ *  External Interface
  */
 
 extern void AixEnableHftRing(int);
-
 
 #endif /*_smhftring_h*/
 /* DON'T ADD ANYTHING AFTER THIS #endif */

@@ -32,7 +32,7 @@
  **  file
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -44,20 +44,18 @@
 /* typedef statements */
 
 typedef struct {
-  XmFontList sysFont;
-  XmFontList userFont;
-  String     sysStr;
-  String     userStr;
-  XmString   pointSize;
+        XmFontList sysFont;
+        XmFontList userFont;
+        String sysStr;
+        String userStr;
+        XmString pointSize;
 } Fontset;
 
 /* External Interface */
 
-
-extern void popup_fontBB( Widget shell) ;
-extern void restoreFonts( Widget shell, XrmDatabase db) ;
-extern void saveFonts( int fd) ;
-
+extern void popup_fontBB(Widget shell);
+extern void restoreFonts(Widget shell, XrmDatabase db);
+extern void saveFonts(int fd);
 
 #endif /* _font_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

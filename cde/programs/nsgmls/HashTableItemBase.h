@@ -34,20 +34,18 @@
 namespace SP_NAMESPACE {
 #endif
 
-template<class K>
-class HashTableItemBase {
-public:
-  HashTableItemBase(const K &k);
-  virtual ~HashTableItemBase();
-  virtual HashTableItemBase<K> *copy() const = 0;
-  K key;
+template <class K> class HashTableItemBase {
+      public:
+        HashTableItemBase(const K &k);
+        virtual ~HashTableItemBase();
+        virtual HashTableItemBase<K> *copy() const = 0;
+        K key;
 };
 
-template<class K>
-struct HashTableKeyFunction {
-  static inline const K &key(const HashTableItemBase<K> &obj) {
-    return obj.key;
-  }
+template <class K> struct HashTableKeyFunction {
+        static inline const K &key(const HashTableItemBase<K> &obj) {
+                return obj.key;
+        }
 };
 
 #ifdef SP_NAMESPACE

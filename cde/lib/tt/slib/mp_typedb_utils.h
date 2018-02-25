@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp_typedb_utils.h /main/3 1995/10/23 12:02:50 rswiston $ 			 				 */
+/*%%  $XConsortium: mp_typedb_utils.h /main/3 1995/10/23 12:02:50 rswiston $
+ */
 /*
  *
  * mp_typedb_utils.h

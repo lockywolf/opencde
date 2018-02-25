@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: isdelrec.c /main/3 1995/10/23 11:37:39 rswiston $ 			 				 */
+/*%%  $XConsortium: isdelrec.c /main/3 1995/10/23 11:37:39 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)isdelrec.c 1.8 89/07/17 Copyr 1988 Sun Micro";
 #endif
@@ -36,9 +37,8 @@ static char sccsid[] = "@(#)isdelrec.c 1.8 89/07/17 Copyr 1988 Sun Micro";
  * isdelrec.c
  *
  * Description:
- *	Delete a record in ISAM file. 
+ *	Delete a record in ISAM file.
  */
-
 
 #include "isam_impl.h"
 #include <sys/time.h>
@@ -46,7 +46,7 @@ static char sccsid[] = "@(#)isdelrec.c 1.8 89/07/17 Copyr 1988 Sun Micro";
 /*
  * err =  isdelrec(isfd, recnum)
  *
- * Isdelete() deletes a record from ISAM file. The record is identified 
+ * Isdelete() deletes a record from ISAM file. The record is identified
  * by its record number. All indexes of the ISAM file are updated.
  *
  * Current record position is not changed.
@@ -62,36 +62,34 @@ static char sccsid[] = "@(#)isdelrec.c 1.8 89/07/17 Copyr 1988 Sun Micro";
  *	ENOREC	Record with record number recnum does not exist.
  */
 
-int 
-isdelrec(isfd, recnum)
-    int			isfd;
-    long		recnum;
+int isdelrec(isfd, recnum) int isfd;
+long recnum;
 {
-    int			_amdelrec();
-    register Fab	*fab;
-    int			ret;
+        int _amdelrec();
+        register Fab *fab;
+        int ret;
 
-    /*
-     * Get File Access Block.
-     */
-    if ((fab = _isfd_find(isfd)) == NULL) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Get File Access Block.
+         */
+        if ((fab = _isfd_find(isfd)) == NULL) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-    /*
-     * Check that the open mode was ISINOUT.
-     */
-    if (fab->openmode != OM_INOUT) {
-	_setiserrno2(ENOTOPEN, '9', '0');
-	return (ISERROR);
-    }
+        /*
+         * Check that the open mode was ISINOUT.
+         */
+        if (fab->openmode != OM_INOUT) {
+                _setiserrno2(ENOTOPEN, '9', '0');
+                return (ISERROR);
+        }
 
-    if ((ret = _amdelrec(&fab->isfhandle, recnum, &fab->errcode)) == ISOK) {
-	isrecnum = recnum;		     /* Set isrecnum */
-    }
+        if ((ret = _amdelrec(&fab->isfhandle, recnum, &fab->errcode)) == ISOK) {
+                isrecnum = recnum; /* Set isrecnum */
+        }
 
-    _seterr_errcode(&fab->errcode);
+        _seterr_errcode(&fab->errcode);
 
-    return (ret);			     /* Successful write */
+        return (ret); /* Successful write */
 }

@@ -60,9 +60,12 @@
 /****#define DEBUG_ISCOMPAT****/
 
 #ifdef DEBUG_ISCOMPAT
-static int false (int n) { printf("iscompat=%d\n",n);  return FALSE; }
+static int false(int n) {
+        printf("iscompat=%d\n", n);
+        return FALSE;
+}
 #else
-#define false(n)	FALSE
+#define false(n) FALSE
 #endif
 
 /************************************************/
@@ -81,63 +84,62 @@ static int false (int n) { printf("iscompat=%d\n",n);  return FALSE; }
  * Returns FALSE if caller's version is not within that range.
  * Uses strtok()!
  */
-int             is_compatible_version (char *callers_version, char *VERSCONST)
-{
-char            safebuf [24];
-char           *ptr;
-int             fuzzy_v, fuzzy_r, his_v, his_r, my_v, my_r;
-_Xstrtokparams	strtok_buf;
+int is_compatible_version(char *callers_version, char *VERSCONST) {
+        char safebuf[24];
+        char *ptr;
+        int fuzzy_v, fuzzy_r, his_v, his_r, my_v, my_r;
+        _Xstrtokparams strtok_buf;
 
-    if (callers_version == NULL)
-	return false(1);
-    if (*callers_version == '\0')
-	return false(2);
-    strncpy (safebuf, callers_version, sizeof(safebuf));
-    safebuf[sizeof(safebuf) - 1] = 0;
-    if ((ptr = _XStrtok (safebuf, ".", strtok_buf)) == NULL)
-	return false(3);
-    if ((his_v = atoi (ptr)) == 0)
-	if (*ptr != '0')
-	    return false(4);
-    if ((ptr = _XStrtok (NULL, ".", strtok_buf)) == NULL)
-	return false(5);
-    if ((his_r = atoi (ptr)) == 0)
-	if (*ptr != '0')
-	    return false(6);
+        if (callers_version == NULL)
+                return false(1);
+        if (*callers_version == '\0')
+                return false(2);
+        strncpy(safebuf, callers_version, sizeof(safebuf));
+        safebuf[sizeof(safebuf) - 1] = 0;
+        if ((ptr = _XStrtok(safebuf, ".", strtok_buf)) == NULL)
+                return false(3);
+        if ((his_v = atoi(ptr)) == 0)
+                if (*ptr != '0')
+                        return false(4);
+        if ((ptr = _XStrtok(NULL, ".", strtok_buf)) == NULL)
+                return false(5);
+        if ((his_r = atoi(ptr)) == 0)
+                if (*ptr != '0')
+                        return false(6);
 
-    strncpy (safebuf, VERSCONST, sizeof(safebuf));
-    safebuf[sizeof(safebuf) - 1] = 0;
-    if ((ptr = _XStrtok (safebuf, ".", strtok_buf)) == NULL)
-	return false(7);
-    if ((my_v = atoi (ptr)) == 0)
-	if (*ptr != '0')
-	    return false(8);
-    if ((ptr = _XStrtok (NULL, ".", strtok_buf)) == NULL)
-	return false(9);
-    if ((my_r = atoi (ptr)) == 0)
-	if (*ptr != '0')
-	    return false(10);
+        strncpy(safebuf, VERSCONST, sizeof(safebuf));
+        safebuf[sizeof(safebuf) - 1] = 0;
+        if ((ptr = _XStrtok(safebuf, ".", strtok_buf)) == NULL)
+                return false(7);
+        if ((my_v = atoi(ptr)) == 0)
+                if (*ptr != '0')
+                        return false(8);
+        if ((ptr = _XStrtok(NULL, ".", strtok_buf)) == NULL)
+                return false(9);
+        if ((my_r = atoi(ptr)) == 0)
+                if (*ptr != '0')
+                        return false(10);
 
-    strncpy (safebuf, AUSAPI_VERSION, sizeof(safebuf));
-    safebuf[sizeof(safebuf) - 1] = 0;
-    if ((ptr = _XStrtok (safebuf, ".", strtok_buf)) == NULL)
-	return false(11);
-    if ((fuzzy_v = atoi (ptr)) == 0)
-	if (*ptr != '0')
-	    return false(12);
-    if ((ptr = _XStrtok (NULL, ".", strtok_buf)) == NULL)
-	return false(13);
-    if ((fuzzy_r = atoi (ptr)) == 0)
-	if (*ptr != '0')
-	    return false(14);
+        strncpy(safebuf, AUSAPI_VERSION, sizeof(safebuf));
+        safebuf[sizeof(safebuf) - 1] = 0;
+        if ((ptr = _XStrtok(safebuf, ".", strtok_buf)) == NULL)
+                return false(11);
+        if ((fuzzy_v = atoi(ptr)) == 0)
+                if (*ptr != '0')
+                        return false(12);
+        if ((ptr = _XStrtok(NULL, ".", strtok_buf)) == NULL)
+                return false(13);
+        if ((fuzzy_r = atoi(ptr)) == 0)
+                if (*ptr != '0')
+                        return false(14);
 
-    if (his_v < my_v || fuzzy_v < his_v)
-	return false(15);
-    if (his_v == my_v && his_r < my_r)
-	return false(16);
-    if (fuzzy_v == his_v && fuzzy_r < his_r)
-	return false(17);
-    return TRUE;
-}  /* is_compatible_version() */
+        if (his_v < my_v || fuzzy_v < his_v)
+                return false(15);
+        if (his_v == my_v && his_r < my_r)
+                return false(16);
+        if (fuzzy_v == his_v && fuzzy_r < his_r)
+                return false(17);
+        return TRUE;
+} /* is_compatible_version() */
 
 /*********************** ISCOMPAT.C ************************/

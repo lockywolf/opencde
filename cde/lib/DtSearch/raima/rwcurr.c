@@ -51,84 +51,79 @@
 #include "vista.h"
 #include "dbtype.h"
 
-
 /* Read currency table
-*/
-int
-d_rdcurr(currbuff, currsize TASK_PARM)
-DB_ADDR **currbuff;
+ */
+int d_rdcurr(currbuff, currsize TASK_PARM) DB_ADDR **currbuff;
 int FAR *currsize;
-TASK_DECL
-{
-   int cs;
+TASK_DECL {
+        int cs;
 
-   DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(SET_NOIO));
+        DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(SET_NOIO));
 
-   cs = 2*size_st + 1;
-#ifndef	 NO_TIMESTAMP
-   if ( db_tsrecs ) cs *= 2;
-   if ( db_tssets ) cs += size_st;
+        cs = 2 * size_st + 1;
+#ifndef NO_TIMESTAMP
+        if (db_tsrecs)
+                cs *= 2;
+        if (db_tssets)
+                cs += size_st;
 #endif
-   *currbuff = (DB_ADDR *)ALLOC(NULL, cs*sizeof(DB_ADDR), "currbuff");
-   if ( *currbuff == NULL ) RETURN( dberr(S_NOMEMORY) );
-   *currsize = cs * sizeof(DB_ADDR);
-   RETURN( d_rerdcurr(currbuff TASK_PARM) );
+        *currbuff = (DB_ADDR *)ALLOC(NULL, cs * sizeof(DB_ADDR), "currbuff");
+        if (*currbuff == NULL)
+                RETURN(dberr(S_NOMEMORY));
+        *currsize = cs * sizeof(DB_ADDR);
+        RETURN(d_rerdcurr(currbuff TASK_PARM));
 }
 
-int d_rerdcurr(currbuff TASK_PARM)
-DB_ADDR **currbuff;
-TASK_DECL
-{
-   DB_ADDR FAR *cb_ptr;
+int d_rerdcurr(currbuff TASK_PARM) DB_ADDR **currbuff;
+TASK_DECL {
+        DB_ADDR FAR *cb_ptr;
 
-   DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(SET_NOIO));
+        DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(SET_NOIO));
 
-   *(cb_ptr = *currbuff) = curr_rec;
-   bytecpy(++cb_ptr, curr_own, size_st*sizeof(*cb_ptr));
-   bytecpy(cb_ptr += size_st, curr_mem, size_st*sizeof(*cb_ptr));
-#ifndef	 NO_TIMESTAMP
-   if ( db_tsrecs ) {
-      *(cb_ptr += size_st) = cr_time;
-      bytecpy(++cb_ptr, co_time, size_st*sizeof(*cb_ptr));
-      bytecpy(cb_ptr += size_st, cm_time, size_st*sizeof(*cb_ptr));
-   }
-   if ( db_tssets ) {
-      bytecpy(cb_ptr + size_st, cs_time, size_st*sizeof(*cb_ptr));
-   }
+        *(cb_ptr = *currbuff) = curr_rec;
+        bytecpy(++cb_ptr, curr_own, size_st * sizeof(*cb_ptr));
+        bytecpy(cb_ptr += size_st, curr_mem, size_st * sizeof(*cb_ptr));
+#ifndef NO_TIMESTAMP
+        if (db_tsrecs) {
+                *(cb_ptr += size_st) = cr_time;
+                bytecpy(++cb_ptr, co_time, size_st * sizeof(*cb_ptr));
+                bytecpy(cb_ptr += size_st, cm_time, size_st * sizeof(*cb_ptr));
+        }
+        if (db_tssets) {
+                bytecpy(cb_ptr + size_st, cs_time, size_st * sizeof(*cb_ptr));
+        }
 #endif
-   MEM_UNLOCK(currbuff);
-   RETURN( db_status = S_OKAY );
+        MEM_UNLOCK(currbuff);
+        RETURN(db_status = S_OKAY);
 }
-
-
 
 /* Write currency table
-*/
-int
-d_wrcurr(currbuff TASK_PARM)
-DB_ADDR *currbuff;
-TASK_DECL
-{
-   DB_ADDR FAR *cb_ptr;
+ */
+int d_wrcurr(currbuff TASK_PARM) DB_ADDR *currbuff;
+TASK_DECL {
+        DB_ADDR FAR *cb_ptr;
 
-   DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(SET_NOIO));
+        DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(SET_NOIO));
 
-   if ( (cb_ptr = currbuff) != NULL) {
-      curr_rec = *cb_ptr;
-      bytecpy(curr_own, ++cb_ptr, size_st*sizeof(*cb_ptr));
-      bytecpy(curr_mem, cb_ptr += size_st, size_st*sizeof(*cb_ptr));
-#ifndef	 NO_TIMESTAMP
-      if ( db_tsrecs ) {
-	 cr_time = *(cb_ptr += size_st);
-	 bytecpy(co_time, ++cb_ptr, size_st*sizeof(*cb_ptr));
-	 bytecpy(cm_time, cb_ptr += size_st, size_st*sizeof(*cb_ptr));
-      }
-      if ( db_tssets ) {
-	 bytecpy(cs_time, cb_ptr + size_st, size_st*sizeof(*cb_ptr));
-      }
+        if ((cb_ptr = currbuff) != NULL) {
+                curr_rec = *cb_ptr;
+                bytecpy(curr_own, ++cb_ptr, size_st * sizeof(*cb_ptr));
+                bytecpy(curr_mem, cb_ptr += size_st, size_st * sizeof(*cb_ptr));
+#ifndef NO_TIMESTAMP
+                if (db_tsrecs) {
+                        cr_time = *(cb_ptr += size_st);
+                        bytecpy(co_time, ++cb_ptr, size_st * sizeof(*cb_ptr));
+                        bytecpy(cm_time, cb_ptr += size_st,
+                                size_st * sizeof(*cb_ptr));
+                }
+                if (db_tssets) {
+                        bytecpy(cs_time, cb_ptr + size_st,
+                                size_st * sizeof(*cb_ptr));
+                }
 #endif
-   }
-   free(currbuff);
-   RETURN( db_status = S_OKAY );
+        }
+        free(currbuff);
+        RETURN(db_status = S_OKAY);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin rwcurr.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin rwcurr.c */

@@ -31,13 +31,13 @@
 
 int m_upper(
 #if defined(M_PROTO)
-  int c
+    int c
 #endif
-  ) ;
+);
 
-int m_upper(c)
-  int c ;
-  {
-    if (c >= 'a' && c <= 'z') c += 'A' - 'a' ;
-    return(c) ;
-    }
+int m_upper(c) int c;
+{
+        if (c >= 'a' && c <= 'z')
+                c += 'A' - 'a';
+        return (c);
+}

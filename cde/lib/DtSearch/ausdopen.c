@@ -62,8 +62,7 @@
 #include "SearchP.h"
 #include "vista.h"
 
-#define PROGNAME	"AUSDOPEN"
-
+#define PROGNAME "AUSDOPEN"
 
 /****************************************/
 /*					*/
@@ -88,121 +87,119 @@
  *		FALSE and writes error msg to ausapi_msglist if could not open.
  *		(vista abort prints out its own error messages).
  */
-int	austext_dopen (
-		char	*dbname,
-		char	*path,
-		char	*d2xpath,
-		int	cache,
-		DBREC   *dbrec)
-{
-    char            dbdbuf[2048];
-    char            d2xbuf[2048];
-    int             i;
-    char            sprintbuf[2048];
-    char           *d2xptr, *ptr, *src;
+int austext_dopen(char *dbname, char *path, char *d2xpath, int cache,
+                  DBREC *dbrec) {
+        char dbdbuf[2048];
+        char d2xbuf[2048];
+        int i;
+        char sprintbuf[2048];
+        char *d2xptr, *ptr, *src;
 
-    /* Test dbname */
-    if (dbname == NULL) {
-INVALID_DBNAME:
-	sprintf (sprintbuf, catgets (dtsearch_catd, 13, 348,
-	    "%s Invalid database name '%s'."),
-	    PROGNAME"348", NULLORSTR(dbname));
-	DtSearchAddMessage (sprintbuf);
-	return FALSE;
-    }
-    i = strlen (dbname);
-    if (i < 1 || i > 8)
-	goto INVALID_DBNAME;
+        /* Test dbname */
+        if (dbname == NULL) {
+        INVALID_DBNAME:
+                sprintf(sprintbuf,
+                        catgets(dtsearch_catd, 13, 348,
+                                "%s Invalid database name '%s'."),
+                        PROGNAME "348", NULLORSTR(dbname));
+                DtSearchAddMessage(sprintbuf);
+                return FALSE;
+        }
+        i = strlen(dbname);
+        if (i < 1 || i > 8)
+                goto INVALID_DBNAME;
 
-    /* Test cache, silently rounding up to nearest power of 2.
-     * 2^4 = 16 = minimum cache.  2^12 = 4096 = maximum cache.
-     */
-    if (cache == 0)
-	cache = CACHE_SIZE;
-    else {
-	for (i = 4; i < 12; i++)
-	    if (1 << i >= cache)
-		break;
-	cache = 1 << i;
-    }
+        /* Test cache, silently rounding up to nearest power of 2.
+         * 2^4 = 16 = minimum cache.  2^12 = 4096 = maximum cache.
+         */
+        if (cache == 0)
+                cache = CACHE_SIZE;
+        else {
+                for (i = 4; i < 12; i++)
+                        if (1 << i >= cache)
+                                break;
+                cache = 1 << i;
+        }
 
-    /* If mrclean needs special d2x renames, build them now.
-     * (d2xptr is where the ".d2x" extensions will be copied.)
-     */
-    if (d2xpath) {
-	d2xptr = d2xbuf;
-	for (i = 0; i < sizeof (d2xbuf) - 14; i++) {
-	    if (d2xpath[i] == 0)
-		break;
-	    *d2xptr++ = d2xpath[i];
-	}
-	if (i > 0 && *(d2xptr - 1) != LOCAL_SLASH)
-	    *d2xptr++ = LOCAL_SLASH;
-	src = dbname;
-	while (*src != 0)
-	    *d2xptr++ = *src++;
-    }
+        /* If mrclean needs special d2x renames, build them now.
+         * (d2xptr is where the ".d2x" extensions will be copied.)
+         */
+        if (d2xpath) {
+                d2xptr = d2xbuf;
+                for (i = 0; i < sizeof(d2xbuf) - 14; i++) {
+                        if (d2xpath[i] == 0)
+                                break;
+                        *d2xptr++ = d2xpath[i];
+                }
+                if (i > 0 && *(d2xptr - 1) != LOCAL_SLASH)
+                        *d2xptr++ = LOCAL_SLASH;
+                src = dbname;
+                while (*src != 0)
+                        *d2xptr++ = *src++;
+        }
 
-    /* Copy path, if any, to name buffer leaving room for the slash
-     * which the caller may not have originally specified,
-     * the 8 char database name, the 3 char file name extensions,
-     * and the terminating \0.  Then set 'ptr' to the place
-     * where the dbdname should be appended.
-     */
-    ptr = dbdbuf;
-    if (path != NULL) {
-	for (i = 0; i < sizeof (dbdbuf) - 14; i++) {
-	    if (path[i] == 0)
-		break;
-	    *ptr++ = path[i];
-	}
-	if (i > 0 && *(ptr - 1) != LOCAL_SLASH)
-	    *ptr++ = LOCAL_SLASH;
-    }
+        /* Copy path, if any, to name buffer leaving room for the slash
+         * which the caller may not have originally specified,
+         * the 8 char database name, the 3 char file name extensions,
+         * and the terminating \0.  Then set 'ptr' to the place
+         * where the dbdname should be appended.
+         */
+        ptr = dbdbuf;
+        if (path != NULL) {
+                for (i = 0; i < sizeof(dbdbuf) - 14; i++) {
+                        if (path[i] == 0)
+                                break;
+                        *ptr++ = path[i];
+                }
+                if (i > 0 && *(ptr - 1) != LOCAL_SLASH)
+                        *ptr++ = LOCAL_SLASH;
+        }
 
-    /* Now concatenate the dbname and set ptr to where
-     * the file name extensions should go.
-     */
-    src = dbname;
-    while (*src != 0)
-	*ptr++ = *src++;
+        /* Now concatenate the dbname and set ptr to where
+         * the file name extensions should go.
+         */
+        src = dbname;
+        while (*src != 0)
+                *ptr++ = *src++;
 
-    /* Specify the cache size and open the database.
-     * I use the original d_open() call so I can print
-     * a good error msg if it fails.
-     */
-    *ptr = 0;	/* no extension used for .dbd file in OPEN */
-    SETPAGES (PROGNAME "283", cache, 4);
-    d_open (dbdbuf, "o");
-    if (db_status != S_OKAY) {
-	sprintf (sprintbuf, catgets (dtsearch_catd, 13, 379,
-	    "%s Could not open database '%s':\n  %s."),
-	    PROGNAME"379", dbdbuf, vista_msg (PROGNAME"379"));
-	DtSearchAddMessage (sprintbuf);
-	return FALSE;
-    }
+        /* Specify the cache size and open the database.
+         * I use the original d_open() call so I can print
+         * a good error msg if it fails.
+         */
+        *ptr = 0; /* no extension used for .dbd file in OPEN */
+        SETPAGES(PROGNAME "283", cache, 4);
+        d_open(dbdbuf, "o");
+        if (db_status != S_OKAY) {
+                sprintf(sprintbuf,
+                        catgets(dtsearch_catd, 13, 379,
+                                "%s Could not open database '%s':\n  %s."),
+                        PROGNAME "379", dbdbuf, vista_msg(PROGNAME "379"));
+                DtSearchAddMessage(sprintbuf);
+                return FALSE;
+        }
 
-    /* From here on, emergency exits MUST close the database. */
-    austext_exit_dbms = (void (*) (int)) d_close;
+        /* From here on, emergency exits MUST close the database. */
+        austext_exit_dbms = (void (*)(int))d_close;
 
-    /* If requested, read the dbrec into caller's buffer. */
-    if (dbrec != NULL) {
-	RECFRST (PROGNAME "285", OR_DBREC, 0);	/* seqtl retrieval */
-	if (db_status != S_OKAY) {
-NO_DBREC:
-	    sprintf (sprintbuf,
-		PROGNAME "289 Database '%s' has not been initialized.",
-		dbname);
-	    DtSearchAddMessage (sprintbuf);
-	    return FALSE;
-	}
-	RECREAD (PROGNAME "302", dbrec, 0);
-	if (db_status != S_OKAY)
-	    goto NO_DBREC;
-	swab_dbrec (dbrec, NTOH);
-    }
+        /* If requested, read the dbrec into caller's buffer. */
+        if (dbrec != NULL) {
+                RECFRST(PROGNAME "285", OR_DBREC, 0); /* seqtl retrieval */
+                if (db_status != S_OKAY) {
+                NO_DBREC:
+                        sprintf(sprintbuf,
+                                PROGNAME
+                                "289 Database '%s' has not been initialized.",
+                                dbname);
+                        DtSearchAddMessage(sprintbuf);
+                        return FALSE;
+                }
+                RECREAD(PROGNAME "302", dbrec, 0);
+                if (db_status != S_OKAY)
+                        goto NO_DBREC;
+                swab_dbrec(dbrec, NTOH);
+        }
 
-    return TRUE;
-}  /* austext_dopen() */
+        return TRUE;
+} /* austext_dopen() */
 
 /*************************** AUSDOPEN.C **************************/

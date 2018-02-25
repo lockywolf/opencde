@@ -21,7 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $XConsortium: SmMigResources.h /main/4 1996/05/08 20:11:49 drk $ */
-/* @(#)49       1.1  src/cde/cde1/dtsession/SmMigResources.h, desktop, cde41J, 9517B_all 4/25/95 14:06:42 */
+/* @(#)49       1.1  src/cde/cde1/dtsession/SmMigResources.h, desktop, cde41J,
+ * 9517B_all 4/25/95 14:06:42 */
 /*
  *   COMPONENT_NAME: desktop
  *

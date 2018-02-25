@@ -64,42 +64,43 @@
  * Private variables and defines.
  *
  *****************************************************************************/
-#ifndef	NULL
-#define	NULL	0
+#ifndef NULL
+#define NULL 0
 #endif
 
-static	_DtHelpFontHints	DefaultFontAttrs =
-  {
-	"C",
-	"ISO-8859-1",
-	10, 0,				/* pointsz, setsize */
-	  NULL,					/* color            */
-	  NULL, NULL, NULL, NULL,		/* xlfd strings     */
-	  NULL, NULL, NULL, NULL,		/* MS-Win strings   */
-	_DtHelpFontStyleSanSerif,
-	_DtHelpFontSpacingProp  ,
-	_DtHelpFontWeightMedium ,
-	_DtHelpFontSlantRoman   ,
-	_DtHelpFontSpecialNone  ,
-	NULL
-  };
+static _DtHelpFontHints DefaultFontAttrs = {"C",
+                                            "ISO-8859-1",
+                                            10,
+                                            0,    /* pointsz, setsize */
+                                            NULL, /* color            */
+                                            NULL,
+                                            NULL,
+                                            NULL,
+                                            NULL, /* xlfd strings     */
+                                            NULL,
+                                            NULL,
+                                            NULL,
+                                            NULL, /* MS-Win strings   */
+                                            _DtHelpFontStyleSanSerif,
+                                            _DtHelpFontSpacingProp,
+                                            _DtHelpFontWeightMedium,
+                                            _DtHelpFontSlantRoman,
+                                            _DtHelpFontSpecialNone,
+                                            NULL};
 
 /******************************************************************************
  *
  * Private Functions
  *
  *****************************************************************************/
-static int
-HintDuplicate(char **string)
-{
-    if (NULL != *string)
-      {
-	*string = strdup(*string);
-	if (NULL == *string)
-	    return -1;
-      }
+static int HintDuplicate(char **string) {
+        if (NULL != *string) {
+                *string = strdup(*string);
+                if (NULL == *string)
+                        return -1;
+        }
 
-    return 0;
+        return 0;
 }
 
 /******************************************************************************
@@ -118,10 +119,8 @@ HintDuplicate(char **string)
  *		Sets '_DtMB_LEN_MAX' to the default character size.
  *
  *****************************************************************************/
-void
-_DtHelpCeCopyDefFontAttrList (_DtHelpFontHints *font_attr )
-{
-    *font_attr = DefaultFontAttrs;
+void _DtHelpCeCopyDefFontAttrList(_DtHelpFontHints *font_attr) {
+        *font_attr = DefaultFontAttrs;
 }
 
 /******************************************************************************
@@ -134,46 +133,44 @@ _DtHelpCeCopyDefFontAttrList (_DtHelpFontHints *font_attr )
  * Purpose:	frees the strings in the font structure.
  *
  *****************************************************************************/
-void
-_DtHelpFreeFontHints (_DtHelpFontHints *font_hints )
-{
-    /*
-     * do the language and charset
-     */
-    if (NULL != font_hints->language)
-        free(font_hints->language);
-    if (NULL != font_hints->char_set)
-        free(font_hints->char_set);
+void _DtHelpFreeFontHints(_DtHelpFontHints *font_hints) {
+        /*
+         * do the language and charset
+         */
+        if (NULL != font_hints->language)
+                free(font_hints->language);
+        if (NULL != font_hints->char_set)
+                free(font_hints->char_set);
 
-    /*
-     * do the color
-     */
-    if (NULL != font_hints->color)
-        free(font_hints->color);
+        /*
+         * do the color
+         */
+        if (NULL != font_hints->color)
+                free(font_hints->color);
 
-    /*
-     * do the xlfd fonts
-     */
-    if (NULL != font_hints->xlfd)
-        free(font_hints->xlfd);
-    if (NULL != font_hints->xlfdb)
-        free(font_hints->xlfdb);
-    if (NULL != font_hints->xlfdi)
-        free(font_hints->xlfdi);
-    if (NULL != font_hints->xlfdib)
-        free(font_hints->xlfdib);
+        /*
+         * do the xlfd fonts
+         */
+        if (NULL != font_hints->xlfd)
+                free(font_hints->xlfd);
+        if (NULL != font_hints->xlfdb)
+                free(font_hints->xlfdb);
+        if (NULL != font_hints->xlfdi)
+                free(font_hints->xlfdi);
+        if (NULL != font_hints->xlfdib)
+                free(font_hints->xlfdib);
 
-    /*
-     * do the ms-windows fonts
-     */
-    if (NULL != font_hints->typenam)
-        free(font_hints->typenam);
-    if (NULL != font_hints->typenamb)
-        free(font_hints->typenamb);
-    if (NULL != font_hints->typenami)
-        free(font_hints->typenami);
-    if (NULL != font_hints->typenamib)
-        free(font_hints->typenamib);
+        /*
+         * do the ms-windows fonts
+         */
+        if (NULL != font_hints->typenam)
+                free(font_hints->typenam);
+        if (NULL != font_hints->typenamb)
+                free(font_hints->typenamb);
+        if (NULL != font_hints->typenami)
+                free(font_hints->typenami);
+        if (NULL != font_hints->typenamib)
+                free(font_hints->typenamib);
 }
 
 /******************************************************************************
@@ -186,51 +183,49 @@ _DtHelpFreeFontHints (_DtHelpFontHints *font_hints )
  * Purpose:	to the dup the strings in the font hint structure.
  *
  *****************************************************************************/
-int
-_DtHelpDupFontHints (_DtHelpFontHints *font_hints )
-{
-    int result = 0;
+int _DtHelpDupFontHints(_DtHelpFontHints *font_hints) {
+        int result = 0;
 
-    /*
-     * do the language and charset
-     */
-    if (-1 == HintDuplicate(&(font_hints->language)))
-	result = -1;
-    if (-1 == HintDuplicate(&(font_hints->char_set)))
-	result = -1;
+        /*
+         * do the language and charset
+         */
+        if (-1 == HintDuplicate(&(font_hints->language)))
+                result = -1;
+        if (-1 == HintDuplicate(&(font_hints->char_set)))
+                result = -1;
 
-    /*
-     * do the color
-     */
-    if (-1 == HintDuplicate(&(font_hints->color)))
-	result = -1;
+        /*
+         * do the color
+         */
+        if (-1 == HintDuplicate(&(font_hints->color)))
+                result = -1;
 
-    /*
-     * do the xlfd fonts
-     */
-    if (-1 == HintDuplicate(&(font_hints->xlfd)))
-	result = -1;
-    if (-1 == HintDuplicate(&(font_hints->xlfdb)))
-	result = -1;
-    if (-1 == HintDuplicate(&(font_hints->xlfdi)))
-	result = -1;
-    if (-1 == HintDuplicate(&(font_hints->xlfdib)))
-	result = -1;
+        /*
+         * do the xlfd fonts
+         */
+        if (-1 == HintDuplicate(&(font_hints->xlfd)))
+                result = -1;
+        if (-1 == HintDuplicate(&(font_hints->xlfdb)))
+                result = -1;
+        if (-1 == HintDuplicate(&(font_hints->xlfdi)))
+                result = -1;
+        if (-1 == HintDuplicate(&(font_hints->xlfdib)))
+                result = -1;
 
-    /*
-     * do the ms-windows fonts
-     */
-    if (-1 == HintDuplicate(&(font_hints->typenam)))
-	result = -1;
-    if (-1 == HintDuplicate(&(font_hints->typenamb)))
-	result = -1;
-    if (-1 == HintDuplicate(&(font_hints->typenami)))
-	result = -1;
-    if (-1 == HintDuplicate(&(font_hints->typenamib)))
-	result = -1;
+        /*
+         * do the ms-windows fonts
+         */
+        if (-1 == HintDuplicate(&(font_hints->typenam)))
+                result = -1;
+        if (-1 == HintDuplicate(&(font_hints->typenamb)))
+                result = -1;
+        if (-1 == HintDuplicate(&(font_hints->typenami)))
+                result = -1;
+        if (-1 == HintDuplicate(&(font_hints->typenamib)))
+                result = -1;
 
-    if (-1 == result)
-	_DtHelpFreeFontHints(font_hints);
+        if (-1 == result)
+                _DtHelpFreeFontHints(font_hints);
 
-    return result;
+        return result;
 }

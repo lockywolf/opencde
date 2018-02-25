@@ -22,9 +22,9 @@
  */
 /* $XConsortium: iljpgdecode.h /main/3 1995/10/23 15:54:28 rswiston $ */
 /**---------------------------------------------------------------------
-***	
+***
 ***    (c)Copyright 1992 Hewlett-Packard Co.
-***    
+***
 ***                             RESTRICTED RIGHTS LEGEND
 ***    Use, duplication, or disclosure by the U.S. Government is subject to
 ***    restrictions as set forth in sub-paragraph (c)(1)(ii) of the Rights in
@@ -37,8 +37,6 @@
 ***
 ***-------------------------------------------------------------------*/
 
-
-
 #ifndef ILJPGDECODE_H
 #define ILJPGDECODE_H
 
@@ -49,36 +47,24 @@
 #include "iljpgdecodedefs.h"
 #endif
 
-    ILJPG_PUBLIC_EXTERN 
-iljpgError iljpgDecodeJIF (
-    ILJPG_DECODE_STREAM stream,
-    iljpgDataPtr       *ppData                  /* RETURNED */
-    );
+ILJPG_PUBLIC_EXTERN
+iljpgError iljpgDecodeJIF(ILJPG_DECODE_STREAM stream,
+                          iljpgDataPtr *ppData /* RETURNED */
+);
 
-    ILJPG_PUBLIC_EXTERN 
-iljpgError iljpgFreeData (
-    iljpgDataPtr        pData
-    );
+ILJPG_PUBLIC_EXTERN
+iljpgError iljpgFreeData(iljpgDataPtr pData);
 
-    ILJPG_PUBLIC_EXTERN 
-iljpgError iljpgDecodeInit (
-    iljpgDataPtr        pData,
-    iljpgPtr           *pPrivate                /* RETURNED */
-    );
+ILJPG_PUBLIC_EXTERN
+iljpgError iljpgDecodeInit(iljpgDataPtr pData, iljpgPtr *pPrivate /* RETURNED */
+);
 
-    ILJPG_PUBLIC_EXTERN 
-iljpgError iljpgDecodeCleanup (
-    iljpgPtr           pPrivate
-    );
+ILJPG_PUBLIC_EXTERN
+iljpgError iljpgDecodeCleanup(iljpgPtr pPrivate);
 
-    ILJPG_PUBLIC_EXTERN 
-iljpgError iljpgDecodeExecute (
-    iljpgPtr            pPrivate,
-    ILJPG_DECODE_STREAM stream,
-    int                 doReset,
-    long                nDstLines,
-    iljpgPtr            pPixels[],
-    long                nBytesPerRow[]
-    );
+ILJPG_PUBLIC_EXTERN
+iljpgError iljpgDecodeExecute(iljpgPtr pPrivate, ILJPG_DECODE_STREAM stream,
+                              int doReset, long nDstLines, iljpgPtr pPixels[],
+                              long nBytesPerRow[]);
 
 #endif

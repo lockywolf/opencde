@@ -34,37 +34,33 @@ class SGMLDefn;
 
 class AttributeRec {
 
-friend class OL_AttributeList;
-friend class Token;
-  
-private:
-  
-  int attName;
-  int attType;
-  const char *attValueString;
-  char  *copy;
-  int  attValue;
-  AttributeRec *next;
-  
-protected:
-  AttributeRec( const char * name, const char *value,
-		int type );
-  ~AttributeRec();
+        friend class OL_AttributeList;
+        friend class Token;
 
-public:  
-  int getAttrName() const;
+      private:
+        int attName;
+        int attType;
+        const char *attValueString;
+        char *copy;
+        int attValue;
+        AttributeRec *next;
 
-  /* use this for CDATA attributes */
-  const char *getAttrValueString() const { return(attValueString); }
+      protected:
+        AttributeRec(const char *name, const char *value, int type);
+        ~AttributeRec();
 
-  /* use this for NAME, NOTATION, ENTITY attributes */
-  int   getAttValue()        const    { return(attValue); } 
+      public:
+        int getAttrName() const;
 
-  int getAttrType() const    { return(attType); }
+        /* use this for CDATA attributes */
+        const char *getAttrValueString() const { return (attValueString); }
 
-  int operator== ( AttributeRec & s ) {
-    return ( attName == s.attName );
-  }
+        /* use this for NAME, NOTATION, ENTITY attributes */
+        int getAttValue() const { return (attValue); }
+
+        int getAttrType() const { return (attType); }
+
+        int operator==(AttributeRec &s) { return (attName == s.attName); }
 };
 
 #endif

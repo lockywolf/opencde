@@ -29,20 +29,17 @@
  * (c) Copyright 1993, 1994 Sun Microsystems, Inc.                      *
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
-#ifndef	_Dt_TermPrimSetUtmp_h
-#define	_Dt_TermPrimSetUtmp_h
+#ifndef _Dt_TermPrimSetUtmp_h
+#define _Dt_TermPrimSetUtmp_h
 
-#define	TermUtmpIdString	"__TermUtmpId"
+#define TermUtmpIdString "__TermUtmpId"
 
 void _DtTermPrimUtmpInit(Widget w);
-void _DtTermPrimUtmpAddEntry
-(
-    char		 *utmpLine
-);
+void _DtTermPrimUtmpAddEntry(char *utmpLine);
 char *_DtTermPrimUtmpGetUtLine(int pty, char *ptyName);
 char *_DtTermPrimUtmpEntryCreate(Widget w, pid_t pid, char *utmpLine);
 void _DtTermPrimUtmpEntryDestroy(Widget w, char *utId);
 void _DtTermPrimUtmpCleanup();
 
-#endif	/* _Dt_TermPrimSetUtmp_h */
+#endif /* _Dt_TermPrimSetUtmp_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif... */

@@ -48,68 +48,66 @@
 #include "vista.h"
 #include "dbtype.h"
 
-
 /* Read contents of current record
-*/
-int
-d_recread(rec TASK_PARM DBN_PARM)
-char FAR *rec; /* ptr to record area */
+ */
+int d_recread(rec TASK_PARM DBN_PARM) char FAR *rec; /* ptr to record area */
 TASK_DECL
-DBN_DECL
-{
-   INT  rt;     /* record type */
-   DB_ADDR dba;
+DBN_DECL {
+        INT rt; /* record type */
+        DB_ADDR dba;
 #ifndef SINGLE_USER
-   int dbopen_sv;
+        int dbopen_sv;
 #endif
-   RECORD_ENTRY FAR *rec_ptr;
+        RECORD_ENTRY FAR *rec_ptr;
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_IO));
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_IO));
 
-   if ( ! dbopen ) RETURN( dberr(S_DBOPEN) );
+        if (!dbopen)
+                RETURN(dberr(S_DBOPEN));
 
-   /* Make sure we have a current record */
-   if ( ! curr_rec )
-      RETURN( dberr(S_NOCR) );
+        /* Make sure we have a current record */
+        if (!curr_rec)
+                RETURN(dberr(S_NOCR));
 
-   /* set up to allow unlocked read access */
+                /* set up to allow unlocked read access */
 #ifndef SINGLE_USER
-   dbopen_sv = dbopen;
-   dbopen = 2;
+        dbopen_sv = dbopen;
+        dbopen = 2;
 #endif
 
-   /* read current record */
-   dio_read( curr_rec, (char FAR * FAR *)&crloc, NOPGHOLD);
+        /* read current record */
+        dio_read(curr_rec, (char FAR *FAR *)&crloc, NOPGHOLD);
 #ifndef SINGLE_USER
-   dbopen = dbopen_sv;
+        dbopen = dbopen_sv;
 #endif
-   if ( db_status != S_OKAY )
-      RETURN( db_status );
+        if (db_status != S_OKAY)
+                RETURN(db_status);
 
-   /* copy record type from record */
-   bytecpy(&rt, crloc, sizeof(INT));
-   if ( rt < 0 )
-      RETURN( db_status = S_DELETED );
+        /* copy record type from record */
+        bytecpy(&rt, crloc, sizeof(INT));
+        if (rt < 0)
+                RETURN(db_status = S_DELETED);
 
 #ifndef SINGLE_USER
-   if ( rt & RLBMASK ) {
-      rt &= ~RLBMASK; /* mask off rlb */
-      rlb_status = S_LOCKED;
-   }
-   else {
-      rlb_status = S_UNLOCKED;
-   }
+        if (rt & RLBMASK) {
+                rt &= ~RLBMASK; /* mask off rlb */
+                rlb_status = S_LOCKED;
+        } else {
+                rlb_status = S_UNLOCKED;
+        }
 #endif
-   rec_ptr = &record_table[NUM2INT(rt, rt_offset)];
+        rec_ptr = &record_table[NUM2INT(rt, rt_offset)];
 
-   /* Copy db_addr from record and check with curr_rec */
-   bytecpy(&dba, crloc+sizeof(INT), DB_ADDR_SIZE);
-   if ( ADDRcmp(&dba, &curr_rec) != 0 )
-      RETURN( dberr(S_INVADDR) );
+        /* Copy db_addr from record and check with curr_rec */
+        bytecpy(&dba, crloc + sizeof(INT), DB_ADDR_SIZE);
+        if (ADDRcmp(&dba, &curr_rec) != 0)
+                RETURN(dberr(S_INVADDR));
 
-   /* Copy data from crloc into rec */
-   bytecpy(rec, &crloc[rec_ptr->rt_data], rec_ptr->rt_len - rec_ptr->rt_data);
+        /* Copy data from crloc into rec */
+        bytecpy(rec, &crloc[rec_ptr->rt_data],
+                rec_ptr->rt_len - rec_ptr->rt_data);
 
-   RETURN( db_status = S_OKAY );
+        RETURN(db_status = S_OKAY);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin recread.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin recread.c */

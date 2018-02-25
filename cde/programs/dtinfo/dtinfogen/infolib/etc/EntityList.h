@@ -28,24 +28,22 @@
 
 class EntityList {
 
-friend class EntityScope;
-friend class Dispatch;
-  
-protected:
-  SGMLDefn *head;
-  SGMLDefn *tail;
-  EntityList *next;
+        friend class EntityScope;
+        friend class Dispatch;
 
-  SGMLDefn *lookup( int ) const;
-  void      insert  ( SGMLDefn * );
+      protected:
+        SGMLDefn *head;
+        SGMLDefn *tail;
+        EntityList *next;
 
-  // SGMLDefn *GetFirstAttr() const;
-  // SGMLDefn *GetNextAttr( const SGMLDefn *) const;
+        SGMLDefn *lookup(int) const;
+        void insert(SGMLDefn *);
 
-  EntityList();
-  ~EntityList();
+        // SGMLDefn *GetFirstAttr() const;
+        // SGMLDefn *GetNextAttr( const SGMLDefn *) const;
+
+        EntityList();
+        ~EntityList();
 };
 
 #endif
-
-

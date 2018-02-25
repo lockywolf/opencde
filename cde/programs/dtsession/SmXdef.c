@@ -53,12 +53,11 @@
  * State data
  *   dbXdefaults - copy of .Xdefaults in Xrm database form
  */
- static XrmDatabase dbXdefaults = NULL;
-
+static XrmDatabase dbXdefaults = NULL;
 
 /*
  * Note:
- * 
+ *
  * The memory for dbXdefaults is freed only upon dtsession termination
  *
  * This code is currently restricted to handling the .Xdefaults file,
@@ -66,7 +65,6 @@
  *
  */
 
-
 /*************************************<->*************************************
  *
  *  SmXdefMerge(display)
@@ -87,73 +85,66 @@
  *  --------
  *
  *************************************<->***********************************/
-void
-SmXdefMerge(Display *display)
-{
-  char *xdefaults;
-  char *home;
+void SmXdefMerge(Display *display) {
+        char *xdefaults;
+        char *home;
 
- /*
-  * Load .Xdefaults
-  */
-  if ((home = getenv("HOME")) == NULL)
-    home = "";
+        /*
+         * Load .Xdefaults
+         */
+        if ((home = getenv("HOME")) == NULL)
+                home = "";
 
-  if( (xdefaults = (char *)malloc(strlen(home)+12)) != NULL)  
-  {
-    sprintf(xdefaults,"%s/%s",home,".Xdefaults");
-    if(access(xdefaults,R_OK) == 0)
-    {
-      FILE *fp;
-      char *b = NULL;
-      int size;
-      struct stat statinfo; 
+        if ((xdefaults = (char *)malloc(strlen(home) + 12)) != NULL) {
+                sprintf(xdefaults, "%s/%s", home, ".Xdefaults");
+                if (access(xdefaults, R_OK) == 0) {
+                        FILE *fp;
+                        char *b = NULL;
+                        int size;
+                        struct stat statinfo;
 
-     /*
-      * Determine size of file.
-      */
-      if (stat(xdefaults, &statinfo) == -1)
-      {
-        statinfo.st_size = 0;
-      }
+                        /*
+                         * Determine size of file.
+                         */
+                        if (stat(xdefaults, &statinfo) == -1) {
+                                statinfo.st_size = 0;
+                        }
 
-     /*
-      * Get some memory.
-      */
-      if (statinfo.st_size > 0)
-      {
-        b = (char *)SM_MALLOC(statinfo.st_size + 1);
-      }
+                        /*
+                         * Get some memory.
+                         */
+                        if (statinfo.st_size > 0) {
+                                b = (char *)SM_MALLOC(statinfo.st_size + 1);
+                        }
 
-      if (b != NULL)
-      {
-       /*
-        * Read file into memory.
-        */
-        if ((fp = fopen(xdefaults, "r")) != NULL)
-        {
-          size = fread(b, 1, statinfo.st_size, fp);
-          fclose(fp);
+                        if (b != NULL) {
+                                /*
+                                 * Read file into memory.
+                                 */
+                                if ((fp = fopen(xdefaults, "r")) != NULL) {
+                                        size =
+                                            fread(b, 1, statinfo.st_size, fp);
+                                        fclose(fp);
+                                }
+
+                                if (size == statinfo.st_size) {
+                                        /*
+                                         * Merge .Xdefaults string into
+                                         * RESOURCE_MANAGER database, and also
+                                         * convert to Xrm database form for
+                                         * later subtraction.
+                                         */
+                                        b[size] = '\0';
+                                        _DtAddToResource(display, b);
+                                        dbXdefaults = XrmGetStringDatabase(b);
+                                        SM_FREE(b);
+                                }
+                        }
+                }
+                free(xdefaults);
         }
-
-        if (size == statinfo.st_size)
-        {
-         /*
-          * Merge .Xdefaults string into RESOURCE_MANAGER database, and
-          * also convert to Xrm database form for later subtraction.
-          */
-          b[size] = '\0';
-          _DtAddToResource(display, b);
-          dbXdefaults = XrmGetStringDatabase(b);  
-          SM_FREE(b);
-        }
-      }
-    }
-    free(xdefaults);
-  }
 }
 
-
 /*************************************<->*************************************
  *
  *  SmXdefSubtract(db)
@@ -169,7 +160,7 @@ SmXdefMerge(Display *display)
  *  Outputs:
  *  -------
  *
- *  Return: 
+ *  Return:
  *  ------
  *  dbResult - result database
  *
@@ -179,18 +170,13 @@ SmXdefMerge(Display *display)
  *
  *
  *************************************<->***********************************/
-XrmDatabase
-SmXdefSubtract(XrmDatabase db)
-{
-  XrmDatabase dbResult;
+XrmDatabase SmXdefSubtract(XrmDatabase db) {
+        XrmDatabase dbResult;
 
-  if (dbXdefaults)
-  {
-    dbResult = SmXrmSubtractDatabase(dbXdefaults, db);
-  }
-  else
-  {
-    dbResult = NULL;
-  }
-  return(dbResult);
+        if (dbXdefaults) {
+                dbResult = SmXrmSubtractDatabase(dbXdefaults, db);
+        } else {
+                dbResult = NULL;
+        }
+        return (dbResult);
 }

@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         MemoryMgr.h $XConsortium: MemoryMgr.h /main/3 1995/10/26 15:45:08 rswiston $
- * Language:     C
+ * File:         MemoryMgr.h $XConsortium: MemoryMgr.h /main/3 1995/10/26
+ * 15:45:08 rswiston $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -34,38 +34,37 @@
 
 /* Allocation routines */
 
-#ifndef  _MemoryMgr_h
-#define  _MemoryMgr_h
+#ifndef _MemoryMgr_h
+#define _MemoryMgr_h
 
-void *XeMalloc   
+void *XeMalloc
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (size_t size);
+    (size_t size);
 #else
-   ();
+    ();
 #endif
 
-void XeFree   
+void XeFree
 #if defined(__STDC__) || defined(__cplusplus) || defined(c_plusplus)
-   (void * ptr);
+    (void *ptr);
 #else
-   ();
+    ();
 #endif
 
-#define Xe_make_struct(type)     ((struct type *)XeMalloc(sizeof(struct type)))
-#define Xe_make_ntype(n, type)   ((type *)       XeMalloc((n)*sizeof(type)))
-#define Xe_make_buffer(size)     ((XeString)     XeMalloc(size))
-#define Xe_make_str(size)        ((XeString)     XeMalloc((size)+1))
-   
-#define XeCopyStringM(string_xxx) (string_xxx				\
- ? (XeString) strcpy(Xe_make_str(strlen(string_xxx)), string_xxx)	\
- : (XeString) NULL)
+#define Xe_make_struct(type) ((struct type *)XeMalloc(sizeof(struct type)))
+#define Xe_make_ntype(n, type) ((type *)XeMalloc((n) * sizeof(type)))
+#define Xe_make_buffer(size) ((XeString)XeMalloc(size))
+#define Xe_make_str(size) ((XeString)XeMalloc((size) + 1))
 
+#define XeCopyStringM(string_xxx)                                              \
+        (string_xxx                                                            \
+             ? (XeString)strcpy(Xe_make_str(strlen(string_xxx)), string_xxx)   \
+             : (XeString)NULL)
 
-/* Dellocation */       
+/* Dellocation */
 
-#define Xe_release_ntype(ptr, n, type)     XeFree(ptr)
-#define Xe_release_str(ptr)                XeFree(ptr)
+#define Xe_release_ntype(ptr, n, type) XeFree(ptr)
+#define Xe_release_str(ptr) XeFree(ptr)
 
-#endif  /* _MemoryMgr_h */
+#endif /* _MemoryMgr_h */
 /* PLACE NOTHING AFTER THIS endif */
-

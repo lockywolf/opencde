@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: isbytearray.c /main/3 1995/10/23 11:36:32 rswiston $ 			 				 */
+/*%%  $XConsortium: isbytearray.c /main/3 1995/10/23 11:36:32 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)isbytearray.c 1.3 89/07/17 Copyr 1988 Sun Micro";
 #endif
@@ -43,19 +44,16 @@ static char sccsid[] = "@(#)isbytearray.c 1.3 89/07/17 Copyr 1988 Sun Micro";
 
 #include "isam_impl.h"
 
-
 /*
  * _bytearr_getempty()
  *
  * Return an empty byte array.
  */
 
-Bytearray 
-_bytearr_getempty()
-{
-    static Bytearray	empty_bytearray = { 0, NULL};
+Bytearray _bytearr_getempty() {
+        static Bytearray empty_bytearray = {0, NULL};
 
-    return (empty_bytearray);
+        return (empty_bytearray);
 }
 
 /*
@@ -64,18 +62,16 @@ _bytearr_getempty()
  * Create a byte array object.
  */
 
-Bytearray
-_bytearr_new(len, data)
-    u_short		len;
-    char		*data;
+Bytearray _bytearr_new(len, data) u_short len;
+char *data;
 {
-    Bytearray		bytearray;
+        Bytearray bytearray;
 
-    bytearray.length = len;
-    bytearray.data = _ismalloc(len);
-    memcpy( bytearray.data,data, (int)len);
-    
-    return (bytearray);
+        bytearray.length = len;
+        bytearray.data = _ismalloc(len);
+        memcpy(bytearray.data, data, (int)len);
+
+        return (bytearray);
 }
 
 /*
@@ -84,12 +80,8 @@ _bytearr_new(len, data)
  * Duplicate a byte array object.
  */
 
-Bytearray
-_bytearr_dup(old)
-    Bytearray		*old;
-{
-    return (_bytearr_new(old->length, old->data));
-}
+Bytearray _bytearr_dup(old) Bytearray *old;
+{ return (_bytearr_new(old->length, old->data)); }
 
 /*
  * _bytearr_free(barrray)
@@ -97,14 +89,12 @@ _bytearr_dup(old)
  * Free byte array buffer, set barray to an empty byte array.
  */
 
-void
-_bytearr_free(barray)
-    register Bytearray	*barray;
+void _bytearr_free(barray) register Bytearray *barray;
 {
-    if (barray->data)
-	free(barray->data);
+        if (barray->data)
+                free(barray->data);
 
-    *barray = _bytearr_getempty();
+        *barray = _bytearr_getempty();
 }
 
 /*
@@ -114,13 +104,10 @@ _bytearr_free(barray)
  * they differ.
  */
 
-int
-_bytearr_cmp(l,r)
-    register Bytearray	*l, *r;
+int _bytearr_cmp(l, r) register Bytearray *l, *r;
 {
-    if (l->length == r->length)
-	return (memcmp(l->data, r->data, (int)l->length));
-    else
-	return (1);			     /* not equal */
+        if (l->length == r->length)
+                return (memcmp(l->data, r->data, (int)l->length));
+        else
+                return (1); /* not equal */
 }
-

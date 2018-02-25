@@ -37,7 +37,6 @@
 extern "C" {
 #endif
 
-
 /*
  * Constants
  */
@@ -45,41 +44,40 @@ extern "C" {
 /* General Help Dialog-specific Resources */
 
 #ifndef DtNmarginWidth
-#define DtNmarginWidth			XmNmarginWidth
+#define DtNmarginWidth XmNmarginWidth
 #endif
 #ifndef DtNmarginHeight
-#define DtNmarginHeight			XmNmarginHeight
+#define DtNmarginHeight XmNmarginHeight
 #endif
 #ifndef DtNshowNewWindowButton
-#define DtNshowNewWindowButton		"showNewWindowButton"
+#define DtNshowNewWindowButton "showNewWindowButton"
 #endif
 #ifndef DtNtopicTitle
-#define DtNtopicTitle			"topicTitle"
+#define DtNtopicTitle "topicTitle"
 #endif
 #ifndef DtNvisiblePathCount
-#define DtNvisiblePathCount		"visiblePathCount"
+#define DtNvisiblePathCount "visiblePathCount"
 #endif
 
 #ifndef DtCCallback
-#define DtCCallback                     XmCCallback
+#define DtCCallback XmCCallback
 #endif
 
 #ifndef DtCMarginWidth
-#define DtCMarginWidth			XmCMarginWidth
+#define DtCMarginWidth XmCMarginWidth
 #endif
 #ifndef DtCMarginHeight
-#define DtCMarginHeight			XmCMarginHeight
+#define DtCMarginHeight XmCMarginHeight
 #endif
 #ifndef DtCShowNewWindowButton
-#define DtCShowNewWindowButton		"ShowNewWindowButton"
+#define DtCShowNewWindowButton "ShowNewWindowButton"
 #endif
 #ifndef DtCTopicTitle
-#define DtCTopicTitle			"TopicTitle"
+#define DtCTopicTitle "TopicTitle"
 #endif
 #ifndef DtCVisiblePathCount
-#define DtCVisiblePathCount		"VisiblePathCount"
+#define DtCVisiblePathCount "VisiblePathCount"
 #endif
-
 
 /*
  * Types
@@ -87,9 +85,8 @@ extern "C" {
 
 /* Widget class and instance */
 
-typedef struct _DtHelpDialogWidgetClassRec * DtHelpDialogWidgetClass;
-typedef struct _DtHelpDialogWidgetRec      * DtHelpDialogWidget;
-
+typedef struct _DtHelpDialogWidgetClassRec *DtHelpDialogWidgetClass;
+typedef struct _DtHelpDialogWidgetRec *DtHelpDialogWidget;
 
 /*
  * Data
@@ -99,16 +96,12 @@ typedef struct _DtHelpDialogWidgetRec      * DtHelpDialogWidget;
 
 externalref WidgetClass dtHelpDialogWidgetClass;
 
-
 /*
  * Functions
  */
 
-extern Widget DtCreateHelpDialog(
-		Widget		parent,
-		char		*name,
-		ArgList		arglist,
-		Cardinal	argcount);
+extern Widget DtCreateHelpDialog(Widget parent, char *name, ArgList arglist,
+                                 Cardinal argcount);
 
 #ifdef __cplusplus
 }

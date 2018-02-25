@@ -31,21 +31,19 @@ class OL_Data;
 
 class GenericId : public BaseData {
 
-friend class FirstOf;
-friend class OL_Data;
-friend class Concat;  
-  
-private:
-  int giname;
-  int done;
-  OL_Data *f_data;
-  
-protected:
-  GenericId( const Token &t, int giname,ActionType mode);
-  void markup( const Token &t );
-  void data( const char *str, size_t sz );
+        friend class FirstOf;
+        friend class OL_Data;
+        friend class Concat;
 
+      private:
+        int giname;
+        int done;
+        OL_Data *f_data;
+
+      protected:
+        GenericId(const Token &t, int giname, ActionType mode);
+        void markup(const Token &t);
+        void data(const char *str, size_t sz);
 };
-  
-  
+
 #endif

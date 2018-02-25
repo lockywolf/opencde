@@ -46,13 +46,13 @@
 #include <Xm/List.h>
 #include <sys/stat.h>
 #if defined(AIXV3)
-#    include <sys/dir.h>
+#include <sys/dir.h>
 #else
-#  if defined(__osf__) || defined(linux)
-#    include <dirent.h>
-#  else
-#    include <sys/dirent.h>
-#  endif
+#if defined(__osf__) || defined(linux)
+#include <dirent.h>
+#else
+#include <sys/dirent.h>
+#endif
 #endif
 
 #include <Dt/Icon.h>
@@ -92,12 +92,11 @@
 /* OUTPUT: Widget wid - id of selected icon gadget                            */
 /*                                                                            */
 /******************************************************************************/
-Widget get_selected_filetype_icon (void)
-{
-  if (!last_filetype_pushed) {
-    last_filetype_pushed = AF_MED_IconGadget;
-  }
-  return (last_filetype_pushed);
+Widget get_selected_filetype_icon(void) {
+        if (!last_filetype_pushed) {
+                last_filetype_pushed = AF_MED_IconGadget;
+        }
+        return (last_filetype_pushed);
 }
 
 /******************************************************************************/
@@ -110,51 +109,54 @@ Widget get_selected_filetype_icon (void)
 /* OUTPUT: none                                                               */
 /*                                                                            */
 /******************************************************************************/
-void activateCB_filetype_icon (Widget wid, XtPointer client_data,
-                               DtIconCallbackStruct *cbs)
-{
-  Time    lts, mct = 0;
-  static  Time prev_lts = 0;
+void activateCB_filetype_icon(Widget wid, XtPointer client_data,
+                              DtIconCallbackStruct *cbs) {
+        Time lts, mct = 0;
+        static Time prev_lts = 0;
 
-  if (cbs->reason == XmCR_ACTIVATE) {
-
-#ifdef DEBUG
-    printf("In activate_filetype_icon callback.\n");
-#endif
-    if (last_filetype_pushed && (last_filetype_pushed != wid)) {
-       XtVaSetValues(XtParent(last_filetype_pushed), XmNborderWidth, 0, NULL);
-    }
-    XtVaSetValues(XtParent(wid), XmNborderWidth, ICON_BORDER_WIDTH, NULL);
-
-    last_filetype_pushed = wid;
-
-    /********************************************************************/
-    /* This is the support needed to provide double-click functionality */
-    /* to the icon gadgets.  When double-clicked, the icon editor will  */
-    /* be launched.                                                     */
-    /********************************************************************/
-    XtVaSetValues(wid, XmNpushButtonClickTime, 0, NULL);
-
-    lts = XtLastTimestampProcessed(XtDisplay(wid));
-    mct = XtGetMultiClickTime(XtDisplay(wid));
-
-    if ((prev_lts + mct) > lts) {
-       prev_lts = XtLastTimestampProcessed(XtDisplay(wid));
-    } else {
-       prev_lts = XtLastTimestampProcessed(XtDisplay(wid));
-       return;
-    }
+        if (cbs->reason == XmCR_ACTIVATE) {
 
 #ifdef DEBUG
-    printf("DblClick icon callback.\n");
+                printf("In activate_filetype_icon callback.\n");
+#endif
+                if (last_filetype_pushed && (last_filetype_pushed != wid)) {
+                        XtVaSetValues(XtParent(last_filetype_pushed),
+                                      XmNborderWidth, 0, NULL);
+                }
+                XtVaSetValues(XtParent(wid), XmNborderWidth, ICON_BORDER_WIDTH,
+                              NULL);
+
+                last_filetype_pushed = wid;
+
+                /********************************************************************/
+                /* This is the support needed to provide double-click
+                 * functionality */
+                /* to the icon gadgets.  When double-clicked, the icon editor
+                 * will  */
+                /* be launched. */
+                /********************************************************************/
+                XtVaSetValues(wid, XmNpushButtonClickTime, 0, NULL);
+
+                lts = XtLastTimestampProcessed(XtDisplay(wid));
+                mct = XtGetMultiClickTime(XtDisplay(wid));
+
+                if ((prev_lts + mct) > lts) {
+                        prev_lts = XtLastTimestampProcessed(XtDisplay(wid));
+                } else {
+                        prev_lts = XtLastTimestampProcessed(XtDisplay(wid));
+                        return;
+                }
+
+#ifdef DEBUG
+                printf("DblClick icon callback.\n");
 #endif
 
-    activateCB_edit_icon(wid, (XtPointer)CA_FILETYPE_ICONS,
-	(XmPushButtonCallbackStruct *)cbs /* unused anyway */);
+                activateCB_edit_icon(
+                    wid, (XtPointer)CA_FILETYPE_ICONS,
+                    (XmPushButtonCallbackStruct *)cbs /* unused anyway */);
+        }
 
-  }
-
-  return;
+        return;
 }
 
 /******************************************************************************/
@@ -164,15 +166,14 @@ void activateCB_filetype_icon (Widget wid, XtPointer client_data,
 /*                                                                            */
 /*                                                                            */
 /******************************************************************************/
-void readAFFromGUI (FiletypeData *pFiletypedata)
-{
-  getAF_FiletypeName(pFiletypedata);
-  getAF_HelpText(pFiletypedata);
-  getAF_OpenCmd(pFiletypedata);
-  getAF_PrintCmd(pFiletypedata);
-  getAF_Icons(pFiletypedata);
+void readAFFromGUI(FiletypeData *pFiletypedata) {
+        getAF_FiletypeName(pFiletypedata);
+        getAF_HelpText(pFiletypedata);
+        getAF_OpenCmd(pFiletypedata);
+        getAF_PrintCmd(pFiletypedata);
+        getAF_Icons(pFiletypedata);
 
-  return;
+        return;
 }
 
 /******************************************************************************/
@@ -183,10 +184,10 @@ void readAFFromGUI (FiletypeData *pFiletypedata)
 /* OUTPUT: none                                                               */
 /*                                                                            */
 /******************************************************************************/
-void getAF_FiletypeName (FiletypeData *pFiletypedata)
-{
-  GetWidgetTextString(AF_FileTypeNameTextField, &(pFiletypedata->pszName));
-  return;
+void getAF_FiletypeName(FiletypeData *pFiletypedata) {
+        GetWidgetTextString(AF_FileTypeNameTextField,
+                            &(pFiletypedata->pszName));
+        return;
 }
 
 /******************************************************************************/
@@ -197,10 +198,9 @@ void getAF_FiletypeName (FiletypeData *pFiletypedata)
 /* OUTPUT: none                                                               */
 /*                                                                            */
 /******************************************************************************/
-void getAF_HelpText (FiletypeData *pFiletypedata)
-{
-  GetWidgetTextString(AF_FiletypeHelpText, &(pFiletypedata->pszHelp));
-  return;
+void getAF_HelpText(FiletypeData *pFiletypedata) {
+        GetWidgetTextString(AF_FiletypeHelpText, &(pFiletypedata->pszHelp));
+        return;
 }
 
 /******************************************************************************/
@@ -211,68 +211,70 @@ void getAF_HelpText (FiletypeData *pFiletypedata)
 /* OUTPUT: none                                                               */
 /*                                                                            */
 /******************************************************************************/
-void getAF_Icons(FiletypeData *pFiletypedata)
-{
-  IconData  *pIconData;
+void getAF_Icons(FiletypeData *pFiletypedata) {
+        IconData *pIconData;
 
-  /***************************************************************/
-  /* Medium Pixmap                                               */
-  /***************************************************************/
-  pIconData = GetIconDataFromWid(AF_MED_IconGadget);
-  if ( (pIconData->pmDirtyBit) &&
-       (pIconData->pmFileName) &&
-       (strlen(pIconData->pmFileName)) ) {
-     pFiletypedata->pszMedPmIcon = XtMalloc(strlen(pIconData->pmFileName) + 1);
-     if (pFiletypedata->pszMedPmIcon) {
-        strcpy(pFiletypedata->pszMedPmIcon, pIconData->pmFileName);
-     }
-  }
-  pIconData->pmDirtyBit = False;
-  strcpy(pIconData->pmFileName, "");
+        /***************************************************************/
+        /* Medium Pixmap                                               */
+        /***************************************************************/
+        pIconData = GetIconDataFromWid(AF_MED_IconGadget);
+        if ((pIconData->pmDirtyBit) && (pIconData->pmFileName) &&
+            (strlen(pIconData->pmFileName))) {
+                pFiletypedata->pszMedPmIcon =
+                    XtMalloc(strlen(pIconData->pmFileName) + 1);
+                if (pFiletypedata->pszMedPmIcon) {
+                        strcpy(pFiletypedata->pszMedPmIcon,
+                               pIconData->pmFileName);
+                }
+        }
+        pIconData->pmDirtyBit = False;
+        strcpy(pIconData->pmFileName, "");
 
-  /***************************************************************/
-  /* Medium Bitmap                                               */
-  /***************************************************************/
-  if ( (pIconData->bmDirtyBit) &&
-       (pIconData->bmFileName) &&
-       (strlen(pIconData->bmFileName)) ) {
-     pFiletypedata->pszMedBmIcon = XtMalloc(strlen(pIconData->bmFileName) + 1);
-     if (pFiletypedata->pszMedBmIcon) {
-        strcpy(pFiletypedata->pszMedBmIcon, pIconData->bmFileName);
-     }
-  }
-  pIconData->bmDirtyBit = False;
-  strcpy(pIconData->bmFileName, "");
+        /***************************************************************/
+        /* Medium Bitmap                                               */
+        /***************************************************************/
+        if ((pIconData->bmDirtyBit) && (pIconData->bmFileName) &&
+            (strlen(pIconData->bmFileName))) {
+                pFiletypedata->pszMedBmIcon =
+                    XtMalloc(strlen(pIconData->bmFileName) + 1);
+                if (pFiletypedata->pszMedBmIcon) {
+                        strcpy(pFiletypedata->pszMedBmIcon,
+                               pIconData->bmFileName);
+                }
+        }
+        pIconData->bmDirtyBit = False;
+        strcpy(pIconData->bmFileName, "");
 
-  /***************************************************************/
-  /* Tiny Pixmap                                                 */
-  /***************************************************************/
-  pIconData = GetIconDataFromWid(AF_TINY_IconGadget);
-  if ( (pIconData->pmDirtyBit) &&
-       (pIconData->pmFileName) &&
-       (strlen(pIconData->pmFileName)) ) {
-     pFiletypedata->pszTinyPmIcon = XtMalloc(strlen(pIconData->pmFileName) + 1);
-     if (pFiletypedata->pszTinyPmIcon) {
-        strcpy(pFiletypedata->pszTinyPmIcon, pIconData->pmFileName);
-     }
-  }
-  pIconData->pmDirtyBit = False;
-  strcpy(pIconData->pmFileName, "");
+        /***************************************************************/
+        /* Tiny Pixmap                                                 */
+        /***************************************************************/
+        pIconData = GetIconDataFromWid(AF_TINY_IconGadget);
+        if ((pIconData->pmDirtyBit) && (pIconData->pmFileName) &&
+            (strlen(pIconData->pmFileName))) {
+                pFiletypedata->pszTinyPmIcon =
+                    XtMalloc(strlen(pIconData->pmFileName) + 1);
+                if (pFiletypedata->pszTinyPmIcon) {
+                        strcpy(pFiletypedata->pszTinyPmIcon,
+                               pIconData->pmFileName);
+                }
+        }
+        pIconData->pmDirtyBit = False;
+        strcpy(pIconData->pmFileName, "");
 
-  /***************************************************************/
-  /* Tiny Bitmap                                                 */
-  /***************************************************************/
-  if ( (pIconData->bmDirtyBit) &&
-       (pIconData->bmFileName) &&
-       (strlen(pIconData->bmFileName)) ) {
-     pFiletypedata->pszTinyBmIcon = XtMalloc(strlen(pIconData->bmFileName) + 1);
-     if (pFiletypedata->pszTinyBmIcon) {
-        strcpy(pFiletypedata->pszTinyBmIcon, pIconData->bmFileName);
-     }
-  }
-  pIconData->bmDirtyBit = False;
-  strcpy(pIconData->bmFileName, "");
-
+        /***************************************************************/
+        /* Tiny Bitmap                                                 */
+        /***************************************************************/
+        if ((pIconData->bmDirtyBit) && (pIconData->bmFileName) &&
+            (strlen(pIconData->bmFileName))) {
+                pFiletypedata->pszTinyBmIcon =
+                    XtMalloc(strlen(pIconData->bmFileName) + 1);
+                if (pFiletypedata->pszTinyBmIcon) {
+                        strcpy(pFiletypedata->pszTinyBmIcon,
+                               pIconData->bmFileName);
+                }
+        }
+        pIconData->bmDirtyBit = False;
+        strcpy(pIconData->bmFileName, "");
 
 #if 0
   Widget    AF_wids[2];
@@ -309,8 +311,6 @@ void getAF_Icons(FiletypeData *pFiletypedata)
      strcpy(pIconData->bmFileName, "");
   }
 #endif
-
-
 }
 
 /******************************************************************************/
@@ -321,10 +321,9 @@ void getAF_Icons(FiletypeData *pFiletypedata)
 /* OUTPUT: none                                                               */
 /*                                                                            */
 /******************************************************************************/
-void getAF_OpenCmd (FiletypeData *pFiletypedata)
-{
-  GetWidgetTextString(AF_OpenCmdText, &(pFiletypedata->pszOpenCmd));
-  return;
+void getAF_OpenCmd(FiletypeData *pFiletypedata) {
+        GetWidgetTextString(AF_OpenCmdText, &(pFiletypedata->pszOpenCmd));
+        return;
 }
 
 /******************************************************************************/
@@ -335,10 +334,10 @@ void getAF_OpenCmd (FiletypeData *pFiletypedata)
 /* OUTPUT: none                                                               */
 /*                                                                            */
 /******************************************************************************/
-void getAF_PrintCmd (FiletypeData *pFiletypedata)
-{
-  GetWidgetTextString(AF_FiletypePrintCmdTextField, &(pFiletypedata->pszPrintCmd));
-  return;
+void getAF_PrintCmd(FiletypeData *pFiletypedata) {
+        GetWidgetTextString(AF_FiletypePrintCmdTextField,
+                            &(pFiletypedata->pszPrintCmd));
+        return;
 }
 
 /******************************************************************************/
@@ -349,82 +348,104 @@ void getAF_PrintCmd (FiletypeData *pFiletypedata)
 /* OUTPUT: none                                                               */
 /*                                                                            */
 /******************************************************************************/
-void init_AddFiletype_dialog_fields(FiletypeData *pFtD)
-{
-  char *pszIconFileName = (char *)NULL;
-  char *pszTmpFile;
+void init_AddFiletype_dialog_fields(FiletypeData *pFtD) {
+        char *pszIconFileName = (char *)NULL;
+        char *pszTmpFile;
 
-  if (pFtD->pszName) {
-     PutWidgetTextString(AF_FileTypeNameTextField, pFtD->pszName);
-  }
-
-  ParseAndUpdateID(pFtD);
-
-  if (pFtD->pszHelp) {
-     PutWidgetTextString(AF_FiletypeHelpText, pFtD->pszHelp);
-  }
-
-  if (pFtD->pszIcon) {
-
-     if (bShowPixmaps) {
-
-        /*************************/
-        /* Medium Pixmap         */
-        /*************************/
-        if (pFtD->pszMedPmIcon) {
-           SET_ICONGADGET_ICON(AF_MED_IconGadget, pFtD->pszMedPmIcon);
-        } else {
-           pszIconFileName = (char *)NULL;
-           FIND_ICONGADGET_ICON(pFtD->pszIcon, pszIconFileName, DtMEDIUM);
-           pszTmpFile = GetCorrectIconType(pszIconFileName);
-           SET_ICONGADGET_ICON(AF_MED_IconGadget, pszTmpFile);
-           if (pszIconFileName) XtFree(pszIconFileName);
-           if (pszTmpFile) XtFree(pszTmpFile);
+        if (pFtD->pszName) {
+                PutWidgetTextString(AF_FileTypeNameTextField, pFtD->pszName);
         }
 
-        /*************************/
-        /* Tiny Pixmap           */
-        /*************************/
-        if (pFtD->pszTinyPmIcon) {
-           SET_ICONGADGET_ICON(AF_TINY_IconGadget, pFtD->pszTinyPmIcon);
-        } else {
-           pszIconFileName = (char *)NULL;
-           FIND_ICONGADGET_ICON(pFtD->pszIcon, pszIconFileName, DtTINY);
-           pszTmpFile = GetCorrectIconType(pszIconFileName);
-           SET_ICONGADGET_ICON(AF_TINY_IconGadget, pszTmpFile);
-           if (pszIconFileName) XtFree(pszIconFileName);
-           if (pszTmpFile) XtFree(pszTmpFile);
-        }
-     } else {
-        /*************************/
-        /* Medium Pixmap         */
-        /*************************/
-        if (pFtD->pszMedBmIcon) {
-           SET_ICONGADGET_ICON(AF_MED_IconGadget, pFtD->pszMedBmIcon);
-        } else {
-           pszIconFileName = (char *)NULL;
-           FIND_ICONGADGET_ICON(pFtD->pszIcon, pszIconFileName, DtMEDIUM);
-           pszTmpFile = GetCorrectIconType(pszIconFileName);
-           SET_ICONGADGET_ICON(AF_MED_IconGadget, pszTmpFile);
-           if (pszIconFileName) XtFree(pszIconFileName);
-           if (pszTmpFile) XtFree(pszTmpFile);
+        ParseAndUpdateID(pFtD);
+
+        if (pFtD->pszHelp) {
+                PutWidgetTextString(AF_FiletypeHelpText, pFtD->pszHelp);
         }
 
-        /*************************/
-        /* Tiny Pixmap           */
-        /*************************/
-        if (pFtD->pszTinyBmIcon) {
-           SET_ICONGADGET_ICON(AF_TINY_IconGadget, pFtD->pszTinyBmIcon);
-        } else {
-           pszIconFileName = (char *)NULL;
-           FIND_ICONGADGET_ICON(pFtD->pszIcon, pszIconFileName, DtTINY);
-           pszTmpFile = GetCorrectIconType(pszIconFileName);
-           SET_ICONGADGET_ICON(AF_TINY_IconGadget, pszTmpFile);
-           if (pszIconFileName) XtFree(pszIconFileName);
-           if (pszTmpFile) XtFree(pszTmpFile);
-        }
-     }
+        if (pFtD->pszIcon) {
 
+                if (bShowPixmaps) {
+
+                        /*************************/
+                        /* Medium Pixmap         */
+                        /*************************/
+                        if (pFtD->pszMedPmIcon) {
+                                SET_ICONGADGET_ICON(AF_MED_IconGadget,
+                                                    pFtD->pszMedPmIcon);
+                        } else {
+                                pszIconFileName = (char *)NULL;
+                                FIND_ICONGADGET_ICON(pFtD->pszIcon,
+                                                     pszIconFileName, DtMEDIUM);
+                                pszTmpFile =
+                                    GetCorrectIconType(pszIconFileName);
+                                SET_ICONGADGET_ICON(AF_MED_IconGadget,
+                                                    pszTmpFile);
+                                if (pszIconFileName)
+                                        XtFree(pszIconFileName);
+                                if (pszTmpFile)
+                                        XtFree(pszTmpFile);
+                        }
+
+                        /*************************/
+                        /* Tiny Pixmap           */
+                        /*************************/
+                        if (pFtD->pszTinyPmIcon) {
+                                SET_ICONGADGET_ICON(AF_TINY_IconGadget,
+                                                    pFtD->pszTinyPmIcon);
+                        } else {
+                                pszIconFileName = (char *)NULL;
+                                FIND_ICONGADGET_ICON(pFtD->pszIcon,
+                                                     pszIconFileName, DtTINY);
+                                pszTmpFile =
+                                    GetCorrectIconType(pszIconFileName);
+                                SET_ICONGADGET_ICON(AF_TINY_IconGadget,
+                                                    pszTmpFile);
+                                if (pszIconFileName)
+                                        XtFree(pszIconFileName);
+                                if (pszTmpFile)
+                                        XtFree(pszTmpFile);
+                        }
+                } else {
+                        /*************************/
+                        /* Medium Pixmap         */
+                        /*************************/
+                        if (pFtD->pszMedBmIcon) {
+                                SET_ICONGADGET_ICON(AF_MED_IconGadget,
+                                                    pFtD->pszMedBmIcon);
+                        } else {
+                                pszIconFileName = (char *)NULL;
+                                FIND_ICONGADGET_ICON(pFtD->pszIcon,
+                                                     pszIconFileName, DtMEDIUM);
+                                pszTmpFile =
+                                    GetCorrectIconType(pszIconFileName);
+                                SET_ICONGADGET_ICON(AF_MED_IconGadget,
+                                                    pszTmpFile);
+                                if (pszIconFileName)
+                                        XtFree(pszIconFileName);
+                                if (pszTmpFile)
+                                        XtFree(pszTmpFile);
+                        }
+
+                        /*************************/
+                        /* Tiny Pixmap           */
+                        /*************************/
+                        if (pFtD->pszTinyBmIcon) {
+                                SET_ICONGADGET_ICON(AF_TINY_IconGadget,
+                                                    pFtD->pszTinyBmIcon);
+                        } else {
+                                pszIconFileName = (char *)NULL;
+                                FIND_ICONGADGET_ICON(pFtD->pszIcon,
+                                                     pszIconFileName, DtTINY);
+                                pszTmpFile =
+                                    GetCorrectIconType(pszIconFileName);
+                                SET_ICONGADGET_ICON(AF_TINY_IconGadget,
+                                                    pszTmpFile);
+                                if (pszIconFileName)
+                                        XtFree(pszIconFileName);
+                                if (pszTmpFile)
+                                        XtFree(pszTmpFile);
+                        }
+                }
 
 #if 0
         /*************************/
@@ -469,17 +490,17 @@ void init_AddFiletype_dialog_fields(FiletypeData *pFtD)
         if (pszIconFileName) XtFree(pszIconFileName);
      }
 #endif
+        }
 
-  }
+        if (pFtD->pszOpenCmd) {
+                PutWidgetTextString(AF_OpenCmdText, pFtD->pszOpenCmd);
+        }
+        if (pFtD->pszPrintCmd) {
+                PutWidgetTextString(AF_FiletypePrintCmdTextField,
+                                    pFtD->pszPrintCmd);
+        }
 
-  if (pFtD->pszOpenCmd) {
-     PutWidgetTextString(AF_OpenCmdText, pFtD->pszOpenCmd);
-  }
-  if (pFtD->pszPrintCmd) {
-     PutWidgetTextString(AF_FiletypePrintCmdTextField, pFtD->pszPrintCmd);
-  }
-
-  return;
+        return;
 }
 
 /******************************************************************************/
@@ -490,23 +511,23 @@ void init_AddFiletype_dialog_fields(FiletypeData *pFtD)
 /* OUTPUT: none                                                               */
 /*                                                                            */
 /******************************************************************************/
-void clear_AddFiletype_dialog_fields(void)
-{
-  /*char pszFile[MAXBUFSIZE];*/
+void clear_AddFiletype_dialog_fields(void) {
+        /*char pszFile[MAXBUFSIZE];*/
 
-  clear_text(AF_FileTypeNameTextField);
-  clear_text(AF_IdCharacteristicsText);
-  clear_text(AF_FiletypeHelpText);
-  createCB_IconGadget(AF_MED_IconGadget, FALSE, Medium_Icon);
-  createCB_IconGadget(AF_TINY_IconGadget, FALSE, Tiny_Icon);
-  /*
-  SET_ICONGADGET_ICON_AND_EXT(AF_MED_IconGadget, af_med_icon_default, pszFile);
-  SET_ICONGADGET_ICON_AND_EXT(AF_TINY_IconGadget, af_tiny_icon_default, pszFile);
-  */
-  clear_text(AF_OpenCmdText);
-  clear_text(AF_FiletypePrintCmdTextField);
+        clear_text(AF_FileTypeNameTextField);
+        clear_text(AF_IdCharacteristicsText);
+        clear_text(AF_FiletypeHelpText);
+        createCB_IconGadget(AF_MED_IconGadget, FALSE, Medium_Icon);
+        createCB_IconGadget(AF_TINY_IconGadget, FALSE, Tiny_Icon);
+        /*
+        SET_ICONGADGET_ICON_AND_EXT(AF_MED_IconGadget, af_med_icon_default,
+        pszFile); SET_ICONGADGET_ICON_AND_EXT(AF_TINY_IconGadget,
+        af_tiny_icon_default, pszFile);
+        */
+        clear_text(AF_OpenCmdText);
+        clear_text(AF_FiletypePrintCmdTextField);
 
-  return;
+        return;
 }
 
 /******************************************************************************/
@@ -517,63 +538,74 @@ void clear_AddFiletype_dialog_fields(void)
 /* OUTPUT: none                                                               */
 /*                                                                            */
 /******************************************************************************/
-void free_Filetypedata(FiletypeData *pFtD)
-{
-  char buffer[MAXFILENAME];
+void free_Filetypedata(FiletypeData *pFtD) {
+        char buffer[MAXFILENAME];
 
 #ifdef DEBUG
-  printf("Free FiletypeData structure\n"); /* debug */
+        printf("Free FiletypeData structure\n"); /* debug */
 #endif
 
-  if (pFtD->pszName) XtFree(pFtD->pszName);
+        if (pFtD->pszName)
+                XtFree(pFtD->pszName);
 #if DEBUG
-  printf("Freed Name\n");
+        printf("Freed Name\n");
 #endif
 
-  if (pFtD->pszIcon) XtFree(pFtD->pszIcon);
-  if (pFtD->pszMedPmIcon) {
+        if (pFtD->pszIcon)
+                XtFree(pFtD->pszIcon);
+        if (pFtD->pszMedPmIcon) {
 #if DEBUG
-     printf("free_Filetypedata: unlink '%s'\n", pFtD->pszMedPmIcon);  /* debug */
+                printf("free_Filetypedata: unlink '%s'\n",
+                       pFtD->pszMedPmIcon); /* debug */
 #endif
-     unlink(pFtD->pszMedPmIcon);
-     XtFree(pFtD->pszMedPmIcon);
-  }
-  if (pFtD->pszMedBmIcon) {
+                unlink(pFtD->pszMedPmIcon);
+                XtFree(pFtD->pszMedPmIcon);
+        }
+        if (pFtD->pszMedBmIcon) {
 #if DEBUG
-     printf("free_Filetypedata: unlink '%s'\n", pFtD->pszMedBmIcon);  /* debug */
+                printf("free_Filetypedata: unlink '%s'\n",
+                       pFtD->pszMedBmIcon); /* debug */
 #endif
-     unlink(pFtD->pszMedBmIcon);
-     /**** remove the mask if it exists ****/
-     sprintf(buffer, "%s_m", pFtD->pszMedBmIcon);
-     unlink(buffer);
-     XtFree(pFtD->pszMedBmIcon);
-  }
-  if (pFtD->pszTinyPmIcon) {
+                unlink(pFtD->pszMedBmIcon);
+                /**** remove the mask if it exists ****/
+                sprintf(buffer, "%s_m", pFtD->pszMedBmIcon);
+                unlink(buffer);
+                XtFree(pFtD->pszMedBmIcon);
+        }
+        if (pFtD->pszTinyPmIcon) {
 #if DEBUG
-     printf("free_Filetypedata: unlink '%s'\n", pFtD->pszTinyPmIcon);  /* debug */
+                printf("free_Filetypedata: unlink '%s'\n",
+                       pFtD->pszTinyPmIcon); /* debug */
 #endif
-     unlink(pFtD->pszTinyPmIcon);
-     XtFree(pFtD->pszTinyPmIcon);
-  }
-  if (pFtD->pszTinyBmIcon) {
+                unlink(pFtD->pszTinyPmIcon);
+                XtFree(pFtD->pszTinyPmIcon);
+        }
+        if (pFtD->pszTinyBmIcon) {
 #if DEBUG
-     printf("free_Filetypedata: unlink '%s'\n", pFtD->pszTinyBmIcon);  /* debug */
+                printf("free_Filetypedata: unlink '%s'\n",
+                       pFtD->pszTinyBmIcon); /* debug */
 #endif
-     unlink(pFtD->pszTinyBmIcon);
-     /**** remove the mask if it exists ****/
-     sprintf(buffer, "%s_m", pFtD->pszTinyBmIcon);
-     unlink(buffer);
-     XtFree(pFtD->pszTinyBmIcon);
-  }
+                unlink(pFtD->pszTinyBmIcon);
+                /**** remove the mask if it exists ****/
+                sprintf(buffer, "%s_m", pFtD->pszTinyBmIcon);
+                unlink(buffer);
+                XtFree(pFtD->pszTinyBmIcon);
+        }
 
-  if (pFtD->pszHelp) XtFree(pFtD->pszHelp);
-  if (pFtD->pszOpenCmd) XtFree(pFtD->pszOpenCmd);
-  if (pFtD->pszPrintCmd) XtFree(pFtD->pszPrintCmd);
-  if (pFtD->pszPattern) XtFree(pFtD->pszPattern);
-  if (pFtD->pszPermissions) XtFree(pFtD->pszPermissions);
-  if (pFtD->pszContents) XtFree(pFtD->pszContents);
-  XtFree((char *) pFtD);
-  return;
+        if (pFtD->pszHelp)
+                XtFree(pFtD->pszHelp);
+        if (pFtD->pszOpenCmd)
+                XtFree(pFtD->pszOpenCmd);
+        if (pFtD->pszPrintCmd)
+                XtFree(pFtD->pszPrintCmd);
+        if (pFtD->pszPattern)
+                XtFree(pFtD->pszPattern);
+        if (pFtD->pszPermissions)
+                XtFree(pFtD->pszPermissions);
+        if (pFtD->pszContents)
+                XtFree(pFtD->pszContents);
+        XtFree((char *)pFtD);
+        return;
 }
 
 /******************************************************************************/
@@ -584,11 +616,15 @@ void free_Filetypedata(FiletypeData *pFtD)
 /* OUTPUT: none                                                               */
 /*                                                                            */
 /******************************************************************************/
-void AddFiletypeToList(void)
-{
-  if (!XmListItemExists(CA_FiletypesList, XmStringCreateSimple(XmTextFieldGetString(AF_FileTypeNameTextField)))) {
-    XmListAddItem(CA_FiletypesList, XmStringCreateSimple(XmTextFieldGetString(AF_FileTypeNameTextField)), 0);
-  }
+void AddFiletypeToList(void) {
+        if (!XmListItemExists(CA_FiletypesList,
+                              XmStringCreateSimple(XmTextFieldGetString(
+                                  AF_FileTypeNameTextField)))) {
+                XmListAddItem(CA_FiletypesList,
+                              XmStringCreateSimple(XmTextFieldGetString(
+                                  AF_FileTypeNameTextField)),
+                              0);
+        }
 }
 
 /******************************************************************************/
@@ -599,24 +635,25 @@ void AddFiletypeToList(void)
 /* OUTPUT: none                                                               */
 /*                                                                            */
 /******************************************************************************/
-void UpdateFiletypeDataArray(FiletypeData *pFtD)
-{
-  FiletypeData  **papArray;
-  int           i;
+void UpdateFiletypeDataArray(FiletypeData *pFtD) {
+        FiletypeData **papArray;
+        int i;
 
-  /**************************************************************************/
-  /* Add this structure to the filetype array in the ActionData structure.  */
-  /**************************************************************************/
-  papArray = (FiletypeData **) XtMalloc(sizeof(FiletypeData *) * (AD.cFiletypes + 1));
-  for (i=0; i < AD.cFiletypes; i++) {
-     papArray[i] = AD.papFiletypes[i];
-  }
-  papArray[AD.cFiletypes] = pFtD;
-  if (AD.papFiletypes) {
-    XtFree((char *) AD.papFiletypes);
-  }
-  AD.papFiletypes = papArray;
-  AD.cFiletypes++;
+        /**************************************************************************/
+        /* Add this structure to the filetype array in the ActionData structure.
+         */
+        /**************************************************************************/
+        papArray = (FiletypeData **)XtMalloc(sizeof(FiletypeData *) *
+                                             (AD.cFiletypes + 1));
+        for (i = 0; i < AD.cFiletypes; i++) {
+                papArray[i] = AD.papFiletypes[i];
+        }
+        papArray[AD.cFiletypes] = pFtD;
+        if (AD.papFiletypes) {
+                XtFree((char *)AD.papFiletypes);
+        }
+        AD.papFiletypes = papArray;
+        AD.cFiletypes++;
 }
 
 /******************************************************************************/
@@ -628,60 +665,62 @@ void UpdateFiletypeDataArray(FiletypeData *pFtD)
 /*         TRUE   - found errors                                              */
 /*                                                                            */
 /******************************************************************************/
-Boolean AddFiletypeCheckFields(void)
-{
+Boolean AddFiletypeCheckFields(void) {
 
-  char    *ptr = (char *)NULL;
-  Boolean bError = FALSE;
-  char    *msgPtr, *errPtr;
+        char *ptr = (char *)NULL;
+        Boolean bError = FALSE;
+        char *msgPtr, *errPtr;
 
-  /**************************************************************************/
-  /* Check if filetype name is present.                                     */
-  /**************************************************************************/
-  if (!bError) {
-     ptr = (char *)NULL;
-     GetWidgetTextString(AF_FileTypeNameTextField, &ptr);
+        /**************************************************************************/
+        /* Check if filetype name is present. */
+        /**************************************************************************/
+        if (!bError) {
+                ptr = (char *)NULL;
+                GetWidgetTextString(AF_FileTypeNameTextField, &ptr);
 #ifdef DEBUG
-     printf("Filetype Family Name = '%s'\n", ptr);
+                printf("Filetype Family Name = '%s'\n", ptr);
 #endif
-     if (!ptr) {
-	msgPtr = GETMESSAGE(8, 10, "The Datatype Family Name is missing.\n\
+                if (!ptr) {
+                        msgPtr = GETMESSAGE(
+                            8, 10, "The Datatype Family Name is missing.\n\
 Enter a name in the 'Name of Datatype Family' field.");
-	errPtr = XtNewString(msgPtr);
-        display_error_message(AddFiletype, errPtr);
-	XtFree(errPtr);
-        XmProcessTraversal(AF_FileTypeNameTextField, XmTRAVERSE_CURRENT);
-        bError = TRUE;
-     } else {
-        XtFree(ptr);
-     }
-  }
+                        errPtr = XtNewString(msgPtr);
+                        display_error_message(AddFiletype, errPtr);
+                        XtFree(errPtr);
+                        XmProcessTraversal(AF_FileTypeNameTextField,
+                                           XmTRAVERSE_CURRENT);
+                        bError = TRUE;
+                } else {
+                        XtFree(ptr);
+                }
+        }
 
-  /**************************************************************************/
-  /* Check if identifying characteristics are present.                      */
-  /**************************************************************************/
-  if (!bError) {
-     ptr = (char *)NULL;
-     GetWidgetTextString(AF_IdCharacteristicsText, &ptr);
+        /**************************************************************************/
+        /* Check if identifying characteristics are present. */
+        /**************************************************************************/
+        if (!bError) {
+                ptr = (char *)NULL;
+                GetWidgetTextString(AF_IdCharacteristicsText, &ptr);
 #ifdef DEBUG
-     printf("Identifying Chars = '%s'\n", ptr);
+                printf("Identifying Chars = '%s'\n", ptr);
 #endif
-     if (!ptr) {
-	msgPtr = GETMESSAGE(8, 15,
-	     "The Identifying Characteristics are missing.\n\
+                if (!ptr) {
+                        msgPtr = GETMESSAGE(
+                            8, 15,
+                            "The Identifying Characteristics are missing.\n\
 You must specify the characteristics before the datatype\n\
 can be created. Select the Edit button next to the\n\
 Identifying Characteristics list to specify the characteristics.");
-	errPtr = XtNewString(msgPtr);
-        display_error_message(AddFiletype, errPtr);
-	XtFree(errPtr);
-        XmProcessTraversal(AF_IdCharacteristicsEdit, XmTRAVERSE_CURRENT);
-        bError = TRUE;
-     } else {
-        XtFree(ptr);
-     }
-  }
+                        errPtr = XtNewString(msgPtr);
+                        display_error_message(AddFiletype, errPtr);
+                        XtFree(errPtr);
+                        XmProcessTraversal(AF_IdCharacteristicsEdit,
+                                           XmTRAVERSE_CURRENT);
+                        bError = TRUE;
+                } else {
+                        XtFree(ptr);
+                }
+        }
 
-  return(bError);
+        return (bError);
 }
-

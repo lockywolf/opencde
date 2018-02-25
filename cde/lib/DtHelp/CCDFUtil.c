@@ -28,7 +28,7 @@
  **
  **   Project:    Un*x Desktop Help
  **
- **  
+ **
  **   Description: Semi private format utility functions for
  **		   formatting CCDF
  **
@@ -79,17 +79,9 @@ extern int errno;
 #endif
 
 /********    Private Function Declarations    ********/
-static	int	GetCmdData(
-	BufFilePtr in_file,
-	char      *in_buf,
-	int        in_size,
-	char     **in_ptr,
-	int	   cur_mb_len,
-	int	   allowed,
-	int        strip,
-	int	  *ret_size,
-	int	  *ret_max,
-	char     **ret_string );
+static int GetCmdData(BufFilePtr in_file, char *in_buf, int in_size,
+                      char **in_ptr, int cur_mb_len, int allowed, int strip,
+                      int *ret_size, int *ret_max, char **ret_string);
 /********    End Private Function Declarations    ********/
 
 /******************************************************************************
@@ -97,38 +89,36 @@ static	int	GetCmdData(
  * Private variables and defines.
  *
  *****************************************************************************/
-#define MIN_GROW	16
+#define MIN_GROW 16
 #define REALLOC_INCR 10
-#define	CMD_NOT_ALLOWED		-1000
+#define CMD_NOT_ALLOWED -1000
 
 typedef struct {
-	char *cmd;
-	int   type;
-	int   significant;
+        char *cmd;
+        int type;
+        int significant;
 } FormatCmds;
 
-static const FormatCmds  CcdfFormatCmds[] =
-  {
-	{ "abbrev"      , CCDF_ABBREV_CMD   , 2 },
-	{ "angle"       , CCDF_FONT_CMD     , 2 },
-	{ "characterset", CCDF_FONT_CMD     , 1 },
-	{ "figure"      , CCDF_FIGURE_CMD   , 1 },
-	{ "graphic"     , CCDF_GRAPHIC_CMD  , 1 },
-	{ "id"          , CCDF_ID_CMD       , 1 },
-	{ "label"       , CCDF_LABEL_CMD    , 2 },
-	{ "link"        , CCDF_LINK_CMD     , 2 },
-	{ "newline"     , CCDF_NEWLINE_CMD  , 1 },
-	{ "paragraph"   , CCDF_PARAGRAPH_CMD, 1 },
-	{ "size"        , CCDF_FONT_CMD     , 2 },
-	{ "spacing"     , CCDF_FONT_CMD     , 2 },
-	{ "title"       , CCDF_TITLE_CMD    , 2 },
-	{ "topic"       , CCDF_TOPIC_CMD    , 2 },
-	{ "type"        , CCDF_FONT_CMD     , 2 },
-	{ "weight"      , CCDF_FONT_CMD     , 1 },
-	{ "0x"          , CCDF_OCTAL_CMD    , 2 },
-	/* always leave this one as the last entry */
-	{ "/"           , CCDF_FORMAT_END   , 1 }
-  };
+static const FormatCmds CcdfFormatCmds[] = {
+    {"abbrev", CCDF_ABBREV_CMD, 2},
+    {"angle", CCDF_FONT_CMD, 2},
+    {"characterset", CCDF_FONT_CMD, 1},
+    {"figure", CCDF_FIGURE_CMD, 1},
+    {"graphic", CCDF_GRAPHIC_CMD, 1},
+    {"id", CCDF_ID_CMD, 1},
+    {"label", CCDF_LABEL_CMD, 2},
+    {"link", CCDF_LINK_CMD, 2},
+    {"newline", CCDF_NEWLINE_CMD, 1},
+    {"paragraph", CCDF_PARAGRAPH_CMD, 1},
+    {"size", CCDF_FONT_CMD, 2},
+    {"spacing", CCDF_FONT_CMD, 2},
+    {"title", CCDF_TITLE_CMD, 2},
+    {"topic", CCDF_TOPIC_CMD, 2},
+    {"type", CCDF_FONT_CMD, 2},
+    {"weight", CCDF_FONT_CMD, 1},
+    {"0x", CCDF_OCTAL_CMD, 2},
+    /* always leave this one as the last entry */
+    {"/", CCDF_FORMAT_END, 1}};
 
 /******************************************************************************
  *
@@ -165,7 +155,7 @@ static const FormatCmds  CcdfFormatCmds[] =
  *					'ret_string'
  *				Returns the new size of 'ret_string'.
  *		ret_string	Returns the data found.
- *				
+ *
  *
  * Returns:	0 if successful, -1 if errors.
  *
@@ -176,388 +166,390 @@ static const FormatCmds  CcdfFormatCmds[] =
  *		CEErrorIllegalInfo
  *		CEErrorReadEmpty
  *
- * 
+ *
  * Purpose:	Gets a string containing font change tags
  *		Incoming source:
  *			"data with font change tags </>"
  *
  *****************************************************************************/
-static int
-GetCmdData(
-	BufFilePtr in_file,
-	char      *in_buf,
-	int        in_size,
-	char     **in_ptr,
-	int	   cur_mb_len,
-	int	   allowed,
-	int        strip,
-	int	  *ret_size,
-	int	  *ret_max,
-	char     **ret_string )
-{
-    int       size;
-    int       fontType;
-    int       charSize = 1;
-    int       result = 0;
-    char     *myBufPtr   = *in_ptr;
-    char     *tmpPtr;
-    int   skipString = False;
-    int   endToken;
-    int   stripCmd;
+static int GetCmdData(BufFilePtr in_file, char *in_buf, int in_size,
+                      char **in_ptr, int cur_mb_len, int allowed, int strip,
+                      int *ret_size, int *ret_max, char **ret_string) {
+        int size;
+        int fontType;
+        int charSize = 1;
+        int result = 0;
+        char *myBufPtr = *in_ptr;
+        char *tmpPtr;
+        int skipString = False;
+        int endToken;
+        int stripCmd;
 
-    if (!ret_string)
-	skipString = True;
+        if (!ret_string)
+                skipString = True;
 
-    while (!result)
-      {
-	if (cur_mb_len != 1)
-	    charSize = mblen(myBufPtr, cur_mb_len);
+        while (!result) {
+                if (cur_mb_len != 1)
+                        charSize = mblen(myBufPtr, cur_mb_len);
 
-	if (charSize == 1)
-	  {
-            /*
-              * Do we need to read more information?
-              */
-            if (((int) strlen (myBufPtr)) < 3 &&
-		_DtHelpCeGetNxtBuf(in_file,in_buf,&myBufPtr,in_size) == -1)
-                 return -1;
-
-	    switch (*myBufPtr)
-	      {
-		case '<':
-			/*
-			 * Go to the next character.
+                if (charSize == 1) {
+                        /*
+                         * Do we need to read more information?
                          */
-                        myBufPtr++;
-			endToken = True;
-			stripCmd = False;
+                        if (((int)strlen(myBufPtr)) < 3 &&
+                            _DtHelpCeGetNxtBuf(in_file, in_buf, &myBufPtr,
+                                               in_size) == -1)
+                                return -1;
 
-			/*
-			 * end token
-			 */
-			if (*myBufPtr == '/')
-			  {
-			    *in_ptr = myBufPtr;
-			    return _DtHelpCeGetCcdfEndMark (in_file, in_buf,
-						in_ptr, in_size,cur_mb_len);
-			  }
+                        switch (*myBufPtr) {
+                        case '<':
+                                /*
+                                 * Go to the next character.
+                                 */
+                                myBufPtr++;
+                                endToken = True;
+                                stripCmd = False;
 
-			fontType = _DtHelpCeGetCcdfFontType (myBufPtr);
-			if (fontType == -1)
-			  {
-			    switch (_DtCvToLower (*myBufPtr))
-			      {
-				/*
-				 * <0xff>
-				 */
-				case '0':
-				    if ((!skipString &&
-						_DtHelpCeAddOctalToBuf (
-							myBufPtr,
-							ret_string, ret_size,
-							ret_max, 0) == -1)
-						||
-					_DtHelpCeGetCcdfEndMark (in_file, in_buf,
-						&myBufPtr,in_size,cur_mb_len) == -1)
-					return -1;
+                                /*
+                                 * end token
+                                 */
+                                if (*myBufPtr == '/') {
+                                        *in_ptr = myBufPtr;
+                                        return _DtHelpCeGetCcdfEndMark(
+                                            in_file, in_buf, in_ptr, in_size,
+                                            cur_mb_len);
+                                }
 
-				    endToken = False;
-				    break;
+                                fontType = _DtHelpCeGetCcdfFontType(myBufPtr);
+                                if (fontType == -1) {
+                                        switch (_DtCvToLower(*myBufPtr)) {
+                                        /*
+                                         * <0xff>
+                                         */
+                                        case '0':
+                                                if ((!skipString &&
+                                                     _DtHelpCeAddOctalToBuf(
+                                                         myBufPtr, ret_string,
+                                                         ret_size, ret_max,
+                                                         0) == -1) ||
+                                                    _DtHelpCeGetCcdfEndMark(
+                                                        in_file, in_buf,
+                                                        &myBufPtr, in_size,
+                                                        cur_mb_len) == -1)
+                                                        return -1;
 
-				/*
-				 * <abbrev>
-				 */
-				case 'a':
-				    myBufPtr++;
-				    if (_DtCvToLower (*myBufPtr) == 'b')
-				      {
-					if (CCDF_NOT_ALLOW_CMD (allowed,
-							CCDF_ABBREV_CMD))
-					  {
-					    errno = CMD_NOT_ALLOWED;
-					    return -1;
-				          }
-					else if (CCDF_NOT_ALLOW_CMD (strip,
-							CCDF_ABBREV_CMD))
-					    stripCmd = True;
-				      }
-				    else
-				      {
-					errno = CEErrorFormattingCmd;
-					return -1;
-				      }
+                                                endToken = False;
+                                                break;
 
-				    break;
-					
+                                        /*
+                                         * <abbrev>
+                                         */
+                                        case 'a':
+                                                myBufPtr++;
+                                                if (_DtCvToLower(*myBufPtr) ==
+                                                    'b') {
+                                                        if (CCDF_NOT_ALLOW_CMD(
+                                                                allowed,
+                                                                CCDF_ABBREV_CMD)) {
+                                                                errno =
+                                                                    CMD_NOT_ALLOWED;
+                                                                return -1;
+                                                        } else if (
+                                                            CCDF_NOT_ALLOW_CMD(
+                                                                strip,
+                                                                CCDF_ABBREV_CMD))
+                                                                stripCmd = True;
+                                                } else {
+                                                        errno =
+                                                            CEErrorFormattingCmd;
+                                                        return -1;
+                                                }
 
-				/*
-				 * <figure>
-				 */
-				case 'f':
-				    if (CCDF_NOT_ALLOW_CMD (allowed,
-							CCDF_FIGURE_CMD))
-				      {
-					errno = CMD_NOT_ALLOWED;
-					return -1;
-				      }
-				    else if (CCDF_NOT_ALLOW_CMD (strip,
-							CCDF_FIGURE_CMD))
-				        stripCmd = True;
+                                                break;
 
-				    break;
-					
-				/*
-				 * <graphic>
-				 */
-				case 'g':
-				    if (CCDF_NOT_ALLOW_CMD (allowed,
-							CCDF_GRAPHIC_CMD))
-				      {
-					errno = CMD_NOT_ALLOWED;
-					return -1;
-				      }
+                                        /*
+                                         * <figure>
+                                         */
+                                        case 'f':
+                                                if (CCDF_NOT_ALLOW_CMD(
+                                                        allowed,
+                                                        CCDF_FIGURE_CMD)) {
+                                                        errno = CMD_NOT_ALLOWED;
+                                                        return -1;
+                                                } else if (CCDF_NOT_ALLOW_CMD(
+                                                               strip,
+                                                               CCDF_FIGURE_CMD))
+                                                        stripCmd = True;
 
-				    if (_DtHelpCeGetCcdfEndMark (in_file, in_buf,
-						&myBufPtr,in_size,cur_mb_len) == -1)
-					return -1;
+                                                break;
 
-				    endToken = False;
-				    break;
+                                        /*
+                                         * <graphic>
+                                         */
+                                        case 'g':
+                                                if (CCDF_NOT_ALLOW_CMD(
+                                                        allowed,
+                                                        CCDF_GRAPHIC_CMD)) {
+                                                        errno = CMD_NOT_ALLOWED;
+                                                        return -1;
+                                                }
 
-				/*
-				 * <id>
-				 */
-				case 'i':
-				    if (CCDF_NOT_ALLOW_CMD (allowed,
-							CCDF_ID_CMD))
-				      {
-					errno = CMD_NOT_ALLOWED;
-					return -1;
-				      }
-				    else if (CCDF_NOT_ALLOW_CMD (strip,
-							CCDF_ID_CMD))
-				        stripCmd = True;
-				    break;
+                                                if (_DtHelpCeGetCcdfEndMark(
+                                                        in_file, in_buf,
+                                                        &myBufPtr, in_size,
+                                                        cur_mb_len) == -1)
+                                                        return -1;
 
-				/*
-				 * <label>
-				 * <link>
-				 */
-				case 'l':
-				    myBufPtr++;
-				    if (_DtCvToLower (*myBufPtr) == 'a')
-				      {
-					if (CCDF_NOT_ALLOW_CMD (allowed,
-							CCDF_LABEL_CMD))
-				          {
-					    errno = CMD_NOT_ALLOWED;
-					    return -1;
-				          }
-					else if (CCDF_NOT_ALLOW_CMD (strip,
-							CCDF_LABEL_CMD))
-					    stripCmd = True;
-				      }
-				    else if (_DtCvToLower (*myBufPtr) == 'i')
-				      {
-					if (CCDF_NOT_ALLOW_CMD (allowed,
-							CCDF_LINK_CMD))
-				          {
-					    errno = CMD_NOT_ALLOWED;
-					    return -1;
-				          }
-					else if (CCDF_NOT_ALLOW_CMD (strip,
-							CCDF_LINK_CMD))
-					    stripCmd = True;
-				      }
-				    else
-				      {
-					errno = CEErrorFormattingCmd;
-					return -1;
-				      }
+                                                endToken = False;
+                                                break;
 
-				    break;
+                                        /*
+                                         * <id>
+                                         */
+                                        case 'i':
+                                                if (CCDF_NOT_ALLOW_CMD(
+                                                        allowed, CCDF_ID_CMD)) {
+                                                        errno = CMD_NOT_ALLOWED;
+                                                        return -1;
+                                                } else if (CCDF_NOT_ALLOW_CMD(
+                                                               strip,
+                                                               CCDF_ID_CMD))
+                                                        stripCmd = True;
+                                                break;
 
-				/*
-				 * <newline>
-				 */
-				case 'n':
-				    if (CCDF_NOT_ALLOW_CMD (allowed,
-							CCDF_NEWLINE_CMD))
-				      {
-					errno = CMD_NOT_ALLOWED;
-					return -1;
-				      }
+                                        /*
+                                         * <label>
+                                         * <link>
+                                         */
+                                        case 'l':
+                                                myBufPtr++;
+                                                if (_DtCvToLower(*myBufPtr) ==
+                                                    'a') {
+                                                        if (CCDF_NOT_ALLOW_CMD(
+                                                                allowed,
+                                                                CCDF_LABEL_CMD)) {
+                                                                errno =
+                                                                    CMD_NOT_ALLOWED;
+                                                                return -1;
+                                                        } else if (
+                                                            CCDF_NOT_ALLOW_CMD(
+                                                                strip,
+                                                                CCDF_LABEL_CMD))
+                                                                stripCmd = True;
+                                                } else if (_DtCvToLower(
+                                                               *myBufPtr) ==
+                                                           'i') {
+                                                        if (CCDF_NOT_ALLOW_CMD(
+                                                                allowed,
+                                                                CCDF_LINK_CMD)) {
+                                                                errno =
+                                                                    CMD_NOT_ALLOWED;
+                                                                return -1;
+                                                        } else if (
+                                                            CCDF_NOT_ALLOW_CMD(
+                                                                strip,
+                                                                CCDF_LINK_CMD))
+                                                                stripCmd = True;
+                                                } else {
+                                                        errno =
+                                                            CEErrorFormattingCmd;
+                                                        return -1;
+                                                }
 
-				    if (_DtHelpCeGetCcdfEndMark (in_file, in_buf,
-						&myBufPtr,in_size,cur_mb_len) == -1)
-					return -1;
+                                                break;
 
-				    endToken = False;
-				    break;
+                                        /*
+                                         * <newline>
+                                         */
+                                        case 'n':
+                                                if (CCDF_NOT_ALLOW_CMD(
+                                                        allowed,
+                                                        CCDF_NEWLINE_CMD)) {
+                                                        errno = CMD_NOT_ALLOWED;
+                                                        return -1;
+                                                }
 
-				/*
-				 * <paragraph>
-				 */
-				case 'p':
-				    if (CCDF_NOT_ALLOW_CMD (allowed,
-							CCDF_PARAGRAPH_CMD))
-				      {
-					errno = CMD_NOT_ALLOWED;
-					return -1;
-				      }
-				    else if (CCDF_NOT_ALLOW_CMD (strip,
-							CCDF_PARAGRAPH_CMD))
-				        stripCmd = True;
-				    break;
+                                                if (_DtHelpCeGetCcdfEndMark(
+                                                        in_file, in_buf,
+                                                        &myBufPtr, in_size,
+                                                        cur_mb_len) == -1)
+                                                        return -1;
 
-				/*
-				 * <title>
-				 * <topic>
-				 */
-				case 't':
-				    myBufPtr++;
-				    if (_DtCvToLower (*myBufPtr) == 'o')
-				      {
-					if (CCDF_NOT_ALLOW_CMD (allowed,
-							CCDF_TOPIC_CMD))
-				          {
-					    errno = CMD_NOT_ALLOWED;
-					    return -1;
-				          }
-				        else if (CCDF_NOT_ALLOW_CMD (strip,
-							CCDF_TOPIC_CMD))
-				            stripCmd = True;
-				      }
-				    else if (_DtCvToLower (*myBufPtr) == 'i')
-				      {
-					if (CCDF_NOT_ALLOW_CMD (allowed,
-							CCDF_TITLE_CMD))
-				          {
-					    errno = CMD_NOT_ALLOWED;
-					    return -1;
-				          }
-				        else if (CCDF_NOT_ALLOW_CMD (strip,
-							CCDF_TITLE_CMD))
-				            stripCmd = True;
-				      }
-				    else
-				      {
-					errno = CEErrorFormattingCmd;
-					return -1;
-				      }
+                                                endToken = False;
+                                                break;
 
-				    break;
+                                        /*
+                                         * <paragraph>
+                                         */
+                                        case 'p':
+                                                if (CCDF_NOT_ALLOW_CMD(
+                                                        allowed,
+                                                        CCDF_PARAGRAPH_CMD)) {
+                                                        errno = CMD_NOT_ALLOWED;
+                                                        return -1;
+                                                } else if (
+                                                    CCDF_NOT_ALLOW_CMD(
+                                                        strip,
+                                                        CCDF_PARAGRAPH_CMD))
+                                                        stripCmd = True;
+                                                break;
 
-				default:
-				    errno = CEErrorFormattingCmd;
-				    return -1;
-			      }
-			  }
-			else if (CCDF_NOT_ALLOW_CMD (allowed, CCDF_FONT_CMD))
-			  {
-			    errno = CMD_NOT_ALLOWED;
-			    return -1;
-			  }
-			else if (CCDF_NOT_ALLOW_CMD (strip, CCDF_FONT_CMD))
-			    stripCmd = True;
+                                        /*
+                                         * <title>
+                                         * <topic>
+                                         */
+                                        case 't':
+                                                myBufPtr++;
+                                                if (_DtCvToLower(*myBufPtr) ==
+                                                    'o') {
+                                                        if (CCDF_NOT_ALLOW_CMD(
+                                                                allowed,
+                                                                CCDF_TOPIC_CMD)) {
+                                                                errno =
+                                                                    CMD_NOT_ALLOWED;
+                                                                return -1;
+                                                        } else if (
+                                                            CCDF_NOT_ALLOW_CMD(
+                                                                strip,
+                                                                CCDF_TOPIC_CMD))
+                                                                stripCmd = True;
+                                                } else if (_DtCvToLower(
+                                                               *myBufPtr) ==
+                                                           'i') {
+                                                        if (CCDF_NOT_ALLOW_CMD(
+                                                                allowed,
+                                                                CCDF_TITLE_CMD)) {
+                                                                errno =
+                                                                    CMD_NOT_ALLOWED;
+                                                                return -1;
+                                                        } else if (
+                                                            CCDF_NOT_ALLOW_CMD(
+                                                                strip,
+                                                                CCDF_TITLE_CMD))
+                                                                stripCmd = True;
+                                                } else {
+                                                        errno =
+                                                            CEErrorFormattingCmd;
+                                                        return -1;
+                                                }
 
-			if (endToken)
-			  {
-			    /*
-			     * This is a <token>....</token> construct.
-			     * pass over the <token> part.
-			     */
-			    if (_DtHelpCeGetCcdfEndMark (in_file, in_buf,
-					&myBufPtr, in_size,cur_mb_len) == -1 ||
-			    	GetCmdData (in_file, in_buf, in_size,
-					&myBufPtr, cur_mb_len, allowed, strip,
-					ret_size, ret_max, ret_string) == -1)
-				return -1;
-			  }
-			break;
+                                                break;
 
-		case ' ':
-		case '\n':
-			/*
-			 * Put a space in the segment
-			 */
-			if (!skipString)
-			  {
-			    tmpPtr = " ";
-			    result = _DtHelpCeAddCharToBuf (&tmpPtr,
-				ret_string, ret_size, ret_max, MIN_GROW);
-			  }
-			myBufPtr++;
-			break;
+                                        default:
+                                                errno = CEErrorFormattingCmd;
+                                                return -1;
+                                        }
+                                } else if (CCDF_NOT_ALLOW_CMD(allowed,
+                                                              CCDF_FONT_CMD)) {
+                                        errno = CMD_NOT_ALLOWED;
+                                        return -1;
+                                } else if (CCDF_NOT_ALLOW_CMD(strip,
+                                                              CCDF_FONT_CMD))
+                                        stripCmd = True;
 
-		case '\\':
-			myBufPtr++;
+                                if (endToken) {
+                                        /*
+                                         * This is a <token>....</token>
+                                         * construct. pass over the <token>
+                                         * part.
+                                         */
+                                        if (_DtHelpCeGetCcdfEndMark(
+                                                in_file, in_buf, &myBufPtr,
+                                                in_size, cur_mb_len) == -1 ||
+                                            GetCmdData(in_file, in_buf, in_size,
+                                                       &myBufPtr, cur_mb_len,
+                                                       allowed, strip, ret_size,
+                                                       ret_max,
+                                                       ret_string) == -1)
+                                                return -1;
+                                }
+                                break;
 
-			/*
-			 * Save the escaped character
-			 */
-			if (!skipString)
-			    result = _DtHelpCeAddCharToBuf (&myBufPtr,
-				ret_string, ret_size, ret_max, MIN_GROW);
-			else
-			    myBufPtr++;
-			break;
+                        case ' ':
+                        case '\n':
+                                /*
+                                 * Put a space in the segment
+                                 */
+                                if (!skipString) {
+                                        tmpPtr = " ";
+                                        result = _DtHelpCeAddCharToBuf(
+                                            &tmpPtr, ret_string, ret_size,
+                                            ret_max, MIN_GROW);
+                                }
+                                myBufPtr++;
+                                break;
 
-		default:
-			/*
-			 * Put the information in the buffer
-			 */
-			result = _DtHelpCeStrcspn (myBufPtr, "<\\\n ",
-							cur_mb_len, &size);
-			/*
-			 * If _DtHelpCeStrcspn found an invalid character
-			 * we don't want to quit yet. Allow another pass
-			 * to try to read another buffer of information.
-			 */
-			result = 0;
+                        case '\\':
+                                myBufPtr++;
 
-			if (!skipString && size)
-			    result = _DtHelpCeAddStrToBuf (&myBufPtr,
-				ret_string, ret_size, ret_max, size, 0);
-			else
-			    myBufPtr += size;
-	      }
-	  }
-	else if (charSize > 1)
-	  {
-	    result = _DtHelpCeStrcspn (myBufPtr, "<\\\n ", cur_mb_len, &size);
+                                /*
+                                 * Save the escaped character
+                                 */
+                                if (!skipString)
+                                        result = _DtHelpCeAddCharToBuf(
+                                            &myBufPtr, ret_string, ret_size,
+                                            ret_max, MIN_GROW);
+                                else
+                                        myBufPtr++;
+                                break;
 
-	    /*
-	     * If _DtHelpCeStrcspn found an invalid character
-	     * we don't want to quit yet. Allow another pass
-	     * to try to read another buffer of information.
-	     */
-	    result = 0;
+                        default:
+                                /*
+                                 * Put the information in the buffer
+                                 */
+                                result = _DtHelpCeStrcspn(myBufPtr, "<\\\n ",
+                                                          cur_mb_len, &size);
+                                /*
+                                 * If _DtHelpCeStrcspn found an invalid
+                                 * character we don't want to quit yet. Allow
+                                 * another pass to try to read another buffer of
+                                 * information.
+                                 */
+                                result = 0;
 
-	    if (!skipString && size)
-	        result = _DtHelpCeAddStrToBuf (&myBufPtr,
-				ret_string, ret_size, ret_max, size, 0);
-	    else
-		myBufPtr += size;
-	  }
-	else /* if (charSize < 1) */
-	  {
-	    if (*myBufPtr == '\0' || ((int) strlen (in_buf)) < cur_mb_len)
-	        result = _DtHelpCeGetNxtBuf(in_file,in_buf,&myBufPtr,in_size);
-	    else
-	      {
-		errno = CEErrorIllegalInfo;
-		result = -1;
-	      }
-	  }
-      }
-    return result;
+                                if (!skipString && size)
+                                        result = _DtHelpCeAddStrToBuf(
+                                            &myBufPtr, ret_string, ret_size,
+                                            ret_max, size, 0);
+                                else
+                                        myBufPtr += size;
+                        }
+                } else if (charSize > 1) {
+                        result = _DtHelpCeStrcspn(myBufPtr, "<\\\n ",
+                                                  cur_mb_len, &size);
+
+                        /*
+                         * If _DtHelpCeStrcspn found an invalid character
+                         * we don't want to quit yet. Allow another pass
+                         * to try to read another buffer of information.
+                         */
+                        result = 0;
+
+                        if (!skipString && size)
+                                result = _DtHelpCeAddStrToBuf(
+                                    &myBufPtr, ret_string, ret_size, ret_max,
+                                    size, 0);
+                        else
+                                myBufPtr += size;
+                } else /* if (charSize < 1) */
+                {
+                        if (*myBufPtr == '\0' ||
+                            ((int)strlen(in_buf)) < cur_mb_len)
+                                result = _DtHelpCeGetNxtBuf(in_file, in_buf,
+                                                            &myBufPtr, in_size);
+                        else {
+                                errno = CEErrorIllegalInfo;
+                                result = -1;
+                        }
+                }
+        }
+        return result;
 }
 
 /******************************************************************************
  * Function: int GetTitleCmd (FILE *in_file, char in_buf, int in_size,
  *				char **in_ptr, char **ret_string)
- * 
+ *
  * Parameters:
  *		in_file		Specifies a stream to read from.
  *		in_buf		Specifies the buffer where new information
@@ -585,50 +577,44 @@ GetCmdData(
  *		its </> is the <NEWLINE> command. And it is stripped.
  *
  *****************************************************************************/
-static int
-GetTitleCmd(
-	BufFilePtr in_file,
-	char      *in_buf,
-	int        in_size,
-	int        cur_mb_len,
-	char     **in_ptr,
-	char     **ret_string )
-{
-    int       result;
-    int       junkSize  = 0;
-    int       junkMax  = 0;
+static int GetTitleCmd(BufFilePtr in_file, char *in_buf, int in_size,
+                       int cur_mb_len, char **in_ptr, char **ret_string) {
+        int result;
+        int junkSize = 0;
+        int junkMax = 0;
 
-    /*
-     * null the return string
-     */
-    if (ret_string)
-	*ret_string = NULL;
+        /*
+         * null the return string
+         */
+        if (ret_string)
+                *ret_string = NULL;
 
-    /*
-     * check for the token
-     */
-    result = _DtHelpCeCheckNextCcdfCmd ("ti", in_file, in_buf, in_size, cur_mb_len, in_ptr);
-    if (result != 0)
-      {
-	if (result == -2)
-	    errno = CEErrorMissingTitleCmd;
-	return -1;
-      }
+        /*
+         * check for the token
+         */
+        result = _DtHelpCeCheckNextCcdfCmd("ti", in_file, in_buf, in_size,
+                                           cur_mb_len, in_ptr);
+        if (result != 0) {
+                if (result == -2)
+                        errno = CEErrorMissingTitleCmd;
+                return -1;
+        }
 
-    if (_DtHelpCeGetCcdfEndMark(in_file,in_buf,in_ptr,in_size,cur_mb_len) != 0)
-	return -1;
+        if (_DtHelpCeGetCcdfEndMark(in_file, in_buf, in_ptr, in_size,
+                                    cur_mb_len) != 0)
+                return -1;
 
-    result = GetCmdData (in_file, in_buf, in_size, in_ptr, cur_mb_len,
-			(CCDF_NEWLINE_CMD | CCDF_GRAPHIC_CMD |
-				CCDF_LINK_CMD | CCDF_FONT_CMD | CCDF_ID_CMD),
-			(CCDF_NEWLINE_CMD | CCDF_GRAPHIC_CMD |
-				CCDF_LINK_CMD | CCDF_FONT_CMD | CCDF_ID_CMD),
-			&junkSize, &junkMax, ret_string);
+        result = GetCmdData(in_file, in_buf, in_size, in_ptr, cur_mb_len,
+                            (CCDF_NEWLINE_CMD | CCDF_GRAPHIC_CMD |
+                             CCDF_LINK_CMD | CCDF_FONT_CMD | CCDF_ID_CMD),
+                            (CCDF_NEWLINE_CMD | CCDF_GRAPHIC_CMD |
+                             CCDF_LINK_CMD | CCDF_FONT_CMD | CCDF_ID_CMD),
+                            &junkSize, &junkMax, ret_string);
 
-    if (result == -1 && errno == CMD_NOT_ALLOWED)
-	errno = CEErrorTitleSyntax;
+        if (result == -1 && errno == CMD_NOT_ALLOWED)
+                errno = CEErrorTitleSyntax;
 
-    return result;
+        return result;
 }
 
 /******************************************************************************
@@ -662,60 +648,51 @@ GetTitleCmd(
  * Purpose:	Find the end of tag marker '>'.
  *
  ******************************************************************************/
-int 
-_DtHelpCeGetCcdfEndMark (
-     BufFilePtr	  file,
-     char	 *buffer,
-     char	**buf_ptr,
-     int	  buf_size,
-     int	  cur_mb_len)
-{
-    int      len;
-    int      result;
-    char    *ptr;
-    int  done = False;
+int _DtHelpCeGetCcdfEndMark(BufFilePtr file, char *buffer, char **buf_ptr,
+                            int buf_size, int cur_mb_len) {
+        int len;
+        int result;
+        char *ptr;
+        int done = False;
 
-    ptr = *buf_ptr;
-    do
-      {
-	/*
-	 * Find the end of marker or end of topic
-	 */
-	result = _DtHelpCeStrcspn (ptr, "\\>", cur_mb_len, &len);
-	ptr += len;
+        ptr = *buf_ptr;
+        do {
+                /*
+                 * Find the end of marker or end of topic
+                 */
+                result = _DtHelpCeStrcspn(ptr, "\\>", cur_mb_len, &len);
+                ptr += len;
 
-	if (result == 0)
-	  {
-	    /*
-	     * found either a backslash or the end marker,
-	     * update the pointer and if it was the '>'
-	     * say we're done.
-	     */
-	    if (*ptr == '>')
-	        done = True;
-	    else
-		ptr++;
-	    ptr++;
-	  }
-	else /* result == -1 || result == 1 */
-	  {
-	    /*
-	     * nothing here - get the next buffer and keep looking
-	     * unless getting the next buffer has problems/eof
-	     */
-	    if (((int) strlen(ptr)) >=  cur_mb_len)
-	      {
-		errno = CEErrorIllegalInfo;
-		return -1;
-	      }
+                if (result == 0) {
+                        /*
+                         * found either a backslash or the end marker,
+                         * update the pointer and if it was the '>'
+                         * say we're done.
+                         */
+                        if (*ptr == '>')
+                                done = True;
+                        else
+                                ptr++;
+                        ptr++;
+                } else /* result == -1 || result == 1 */
+                {
+                        /*
+                         * nothing here - get the next buffer and keep looking
+                         * unless getting the next buffer has problems/eof
+                         */
+                        if (((int)strlen(ptr)) >= cur_mb_len) {
+                                errno = CEErrorIllegalInfo;
+                                return -1;
+                        }
 
-	    if (_DtHelpCeGetNxtBuf (file, buffer, &ptr, buf_size) == -1)
-		return -1;
-	  }
-      } while (!done);
+                        if (_DtHelpCeGetNxtBuf(file, buffer, &ptr, buf_size) ==
+                            -1)
+                                return -1;
+                }
+        } while (!done);
 
-    *buf_ptr = ptr;
-    return 0;
+        *buf_ptr = ptr;
+        return 0;
 }
 
 /******************************************************************************
@@ -723,7 +700,7 @@ _DtHelpCeGetCcdfEndMark (
  *				int in_size, char **in_ptr, int flag,
  *				int eat_escape, Boolean ignore_quotes,
  *				int less_test, char **ret_string)
- * 
+ *
  * Parameters:
  *		in_file		Specifies a stream to read from.
  *		in_buf		Specifies the buffer where new information
@@ -763,197 +740,189 @@ _DtHelpCeGetCcdfEndMark (
  *			end token '>'.
  *
  *****************************************************************************/
-int
-_DtHelpCeGetCcdfStrParam(
-	BufFilePtr in_file,
-	char      *in_buf,
-	int        in_size,
-	int	   cur_mb_len,
-	char     **in_ptr,
-    _DtCvValue	  flag,
-    _DtCvValue	  eat_escape,
-    _DtCvValue	  ignore_quotes,
-    _DtCvValue	  less_test,
-	char     **ret_string )
-{
-    int		 copySize;
-    int		 result = 0;
-    int		 spnResult;
-    int		 stringSize = 0;
-    int		 stringMax  = 0;
-    char	*stringPtr  = NULL;
-    char	*myBufPtr;
-    char	*mySpace;
-    int      done = False;
-    int      singleQuotes = False;
-    int      doubleQuotes = False;
-    int      skipString   = False;
-    int      testMB       = False;
-    
-    if (cur_mb_len != 1)
-        testMB = True;
+int _DtHelpCeGetCcdfStrParam(BufFilePtr in_file, char *in_buf, int in_size,
+                             int cur_mb_len, char **in_ptr, _DtCvValue flag,
+                             _DtCvValue eat_escape, _DtCvValue ignore_quotes,
+                             _DtCvValue less_test, char **ret_string) {
+        int copySize;
+        int result = 0;
+        int spnResult;
+        int stringSize = 0;
+        int stringMax = 0;
+        char *stringPtr = NULL;
+        char *myBufPtr;
+        char *mySpace;
+        int done = False;
+        int singleQuotes = False;
+        int doubleQuotes = False;
+        int skipString = False;
+        int testMB = False;
 
-    /*
-     * do we want to skip the string or read it.
-     */
-    if (!ret_string)
-	skipString = True;
+        if (cur_mb_len != 1)
+                testMB = True;
 
-    /*
-     * skip to the next parameter or > character. If flag is true,
-     * we want another parameter, so error if the > character is found.
-     */
-    if (_DtHelpCeSkipToNextCcdfToken (in_file, in_buf, in_size, cur_mb_len, in_ptr, flag) != 0)
-	return -1; 
+        /*
+         * do we want to skip the string or read it.
+         */
+        if (!ret_string)
+                skipString = True;
 
-    myBufPtr = *in_ptr;
+        /*
+         * skip to the next parameter or > character. If flag is true,
+         * we want another parameter, so error if the > character is found.
+         */
+        if (_DtHelpCeSkipToNextCcdfToken(in_file, in_buf, in_size, cur_mb_len,
+                                         in_ptr, flag) != 0)
+                return -1;
 
-    /*
-     * see if there is another parameter
-     */
-    if (_DtCvFALSE == flag && *myBufPtr == '>')
-	return 1;
+        myBufPtr = *in_ptr;
 
-    /*
-     * Initialize the global buffer.
-     */
-    if (_DtCvFALSE == ignore_quotes &&
-				(!testMB || mblen (myBufPtr, cur_mb_len) == 1))
-      {
-	if (*myBufPtr == '\"')
-	  {
-	    doubleQuotes = True;
-	    myBufPtr++;
-	  }
-	else if (*myBufPtr == '\'')
-	  {
-	    singleQuotes = True;
-	    myBufPtr++;
-	  }
-      }
+        /*
+         * see if there is another parameter
+         */
+        if (_DtCvFALSE == flag && *myBufPtr == '>')
+                return 1;
 
-    while (!done)
-      {
-        spnResult = _DtHelpCeStrcspn (myBufPtr, " <>\'\"\\\n",
-						cur_mb_len, &copySize);
-	/*
-	 * Either skip the string or place it in storage
-	 */
-	if (skipString)
-	    myBufPtr += copySize;
-	else if (_DtHelpCeAddStrToBuf (&myBufPtr, &stringPtr, &stringSize,
-					&stringMax, copySize, 0) == -1)
-	    return -1;
+        /*
+         * Initialize the global buffer.
+         */
+        if (_DtCvFALSE == ignore_quotes &&
+            (!testMB || mblen(myBufPtr, cur_mb_len) == 1)) {
+                if (*myBufPtr == '\"') {
+                        doubleQuotes = True;
+                        myBufPtr++;
+                } else if (*myBufPtr == '\'') {
+                        singleQuotes = True;
+                        myBufPtr++;
+                }
+        }
 
-	/*
-	 * If spnResult is non-zero, read the next buffer of information
-	 */
-	if (spnResult)
-	  {
-	    if (spnResult == -1 && ((int)strlen(myBufPtr)) >= cur_mb_len)
-	      {
-		errno = CEErrorIllegalInfo;
-		return -1;
-	      }
+        while (!done) {
+                spnResult = _DtHelpCeStrcspn(myBufPtr, " <>\'\"\\\n",
+                                             cur_mb_len, &copySize);
+                /*
+                 * Either skip the string or place it in storage
+                 */
+                if (skipString)
+                        myBufPtr += copySize;
+                else if (_DtHelpCeAddStrToBuf(&myBufPtr, &stringPtr,
+                                              &stringSize, &stringMax, copySize,
+                                              0) == -1)
+                        return -1;
 
-	    if (_DtHelpCeGetNxtBuf(in_file,in_buf,&myBufPtr,in_size) == -1)
-	        return -1;
-	  }
+                /*
+                 * If spnResult is non-zero, read the next buffer of information
+                 */
+                if (spnResult) {
+                        if (spnResult == -1 &&
+                            ((int)strlen(myBufPtr)) >= cur_mb_len) {
+                                errno = CEErrorIllegalInfo;
+                                return -1;
+                        }
 
-	/*
-	 * Otherwise _DtHelpCeStrcspn stopped at a character we want
-	 */
-	else
-	  {
-	    switch (*myBufPtr)
-	      {
-	        case '\\':
-		    if (_DtCvTRUE == eat_escape || skipString)
-		        myBufPtr++;
-		    else if (_DtHelpCeAddCharToBuf (&myBufPtr, &stringPtr,
-				&stringSize, &stringMax, MIN_GROW) == -1)
-			return -1;
+                        if (_DtHelpCeGetNxtBuf(in_file, in_buf, &myBufPtr,
+                                               in_size) == -1)
+                                return -1;
+                }
 
-		    if (*myBufPtr == '\0' && _DtHelpCeGetNxtBuf(in_file,
-					in_buf,&myBufPtr,in_size) == -1)
-		        return -1;
+                /*
+                 * Otherwise _DtHelpCeStrcspn stopped at a character we want
+                 */
+                else {
+                        switch (*myBufPtr) {
+                        case '\\':
+                                if (_DtCvTRUE == eat_escape || skipString)
+                                        myBufPtr++;
+                                else if (_DtHelpCeAddCharToBuf(
+                                             &myBufPtr, &stringPtr, &stringSize,
+                                             &stringMax, MIN_GROW) == -1)
+                                        return -1;
 
-		    if (skipString)
-			myBufPtr++;
-		    else if (_DtHelpCeAddCharToBuf (&myBufPtr, &stringPtr,
-				&stringSize, &stringMax, MIN_GROW) == -1)
-			return -1;
-		    break;
+                                if (*myBufPtr == '\0' &&
+                                    _DtHelpCeGetNxtBuf(in_file, in_buf,
+                                                       &myBufPtr,
+                                                       in_size) == -1)
+                                        return -1;
 
-	        case '\n':
-		    if (!doubleQuotes && !singleQuotes)
-		        done = True;
-		    else if (skipString)
-			myBufPtr++;
-		    else
-		      {
-			mySpace = " ";
-			if (_DtHelpCeAddCharToBuf (&mySpace, &stringPtr,
-				&stringSize, &stringMax, MIN_GROW) == -1)
-			    return -1;
-		      }
-		    break;
+                                if (skipString)
+                                        myBufPtr++;
+                                else if (_DtHelpCeAddCharToBuf(
+                                             &myBufPtr, &stringPtr, &stringSize,
+                                             &stringMax, MIN_GROW) == -1)
+                                        return -1;
+                                break;
 
-	        case '<':
-		    if (_DtCvTRUE == less_test)
-			done = True;
-		    else if (skipString)
-			myBufPtr++;
-		    else if (_DtHelpCeAddCharToBuf (&myBufPtr, &stringPtr,
-				&stringSize, &stringMax, MIN_GROW) == -1)
-			return -1;
-		    break;
+                        case '\n':
+                                if (!doubleQuotes && !singleQuotes)
+                                        done = True;
+                                else if (skipString)
+                                        myBufPtr++;
+                                else {
+                                        mySpace = " ";
+                                        if (_DtHelpCeAddCharToBuf(
+                                                &mySpace, &stringPtr,
+                                                &stringSize, &stringMax,
+                                                MIN_GROW) == -1)
+                                                return -1;
+                                }
+                                break;
 
-	        case '>':
-	        case ' ':
-		    if (!doubleQuotes && !singleQuotes)
-		        done = True;
-		    else if (skipString)
-			myBufPtr++;
-		    else if (_DtHelpCeAddCharToBuf (&myBufPtr, &stringPtr,
-				&stringSize, &stringMax, MIN_GROW) == -1)
-			return -1;
-		    break;
+                        case '<':
+                                if (_DtCvTRUE == less_test)
+                                        done = True;
+                                else if (skipString)
+                                        myBufPtr++;
+                                else if (_DtHelpCeAddCharToBuf(
+                                             &myBufPtr, &stringPtr, &stringSize,
+                                             &stringMax, MIN_GROW) == -1)
+                                        return -1;
+                                break;
 
-	        case '\'':
-		    if (_DtCvFALSE == ignore_quotes && singleQuotes)
-		        done = True;
-		    else if (skipString)
-			myBufPtr++;
-		    else if (_DtHelpCeAddCharToBuf (&myBufPtr, &stringPtr,
-				&stringSize, &stringMax, MIN_GROW) == -1)
-			return -1;
-		    break;
+                        case '>':
+                        case ' ':
+                                if (!doubleQuotes && !singleQuotes)
+                                        done = True;
+                                else if (skipString)
+                                        myBufPtr++;
+                                else if (_DtHelpCeAddCharToBuf(
+                                             &myBufPtr, &stringPtr, &stringSize,
+                                             &stringMax, MIN_GROW) == -1)
+                                        return -1;
+                                break;
 
-	        case '\"':
-		    if (_DtCvFALSE == ignore_quotes && doubleQuotes)
-		        done = True;
-		    else if (skipString)
-			myBufPtr++;
-		    else if (_DtHelpCeAddCharToBuf (&myBufPtr, &stringPtr,
-				&stringSize, &stringMax, MIN_GROW) == -1)
-			return -1;
-		    break;
+                        case '\'':
+                                if (_DtCvFALSE == ignore_quotes && singleQuotes)
+                                        done = True;
+                                else if (skipString)
+                                        myBufPtr++;
+                                else if (_DtHelpCeAddCharToBuf(
+                                             &myBufPtr, &stringPtr, &stringSize,
+                                             &stringMax, MIN_GROW) == -1)
+                                        return -1;
+                                break;
 
-	      }
-	  }
-      }
+                        case '\"':
+                                if (_DtCvFALSE == ignore_quotes && doubleQuotes)
+                                        done = True;
+                                else if (skipString)
+                                        myBufPtr++;
+                                else if (_DtHelpCeAddCharToBuf(
+                                             &myBufPtr, &stringPtr, &stringSize,
+                                             &stringMax, MIN_GROW) == -1)
+                                        return -1;
+                                break;
+                        }
+                }
+        }
 
-    if (skipString)
-      {
-	if (stringPtr)
-	    free (stringPtr);
-      }
-    else
-        *ret_string = stringPtr;
+        if (skipString) {
+                if (stringPtr)
+                        free(stringPtr);
+        } else
+                *ret_string = stringPtr;
 
-    *in_ptr = myBufPtr;
-    return result;
+        *in_ptr = myBufPtr;
+        return result;
 
 } /* End _DtHelpCeGetCcdfStrParam */
 
@@ -961,7 +930,7 @@ _DtHelpCeGetCcdfStrParam(
  * Function: int _DtHelpCeGetCcdfValueParam (FILE *in_file, char *in_buf,
  *					int in_size, char **in_ptr,
  *					int flag, int *ret_value)
- * 
+ *
  * Parameters:
  *		in_file		Specifies a stream to read from.
  *		in_buf		Specifies the buffer where new information
@@ -990,75 +959,64 @@ _DtHelpCeGetCcdfStrParam(
  * Purpose:	Get then next numeric parameter.
  *
  *****************************************************************************/
-int
-_DtHelpCeGetCcdfValueParam(
-	BufFilePtr in_file,
-	char      *in_buf,
-	int        in_size,
-	char     **in_ptr,
-	_DtCvValue flag,
-	int	   cur_mb_len,
-	int	  *ret_value )
-{
-    int    done = False;
-    char *myBufPtr;
-    char *stringPtr = NULL;
-    int stringSize = 0;
-    int stringMax  = 0;
-    int result = 0;
-    int spnResult = 0;
-    int	copySize;
+int _DtHelpCeGetCcdfValueParam(BufFilePtr in_file, char *in_buf, int in_size,
+                               char **in_ptr, _DtCvValue flag, int cur_mb_len,
+                               int *ret_value) {
+        int done = False;
+        char *myBufPtr;
+        char *stringPtr = NULL;
+        int stringSize = 0;
+        int stringMax = 0;
+        int result = 0;
+        int spnResult = 0;
+        int copySize;
 
-    if (_DtHelpCeSkipToNextCcdfToken (in_file, in_buf, in_size,
-					cur_mb_len, in_ptr, _DtCvTRUE) != 0)
-	return -1; 
+        if (_DtHelpCeSkipToNextCcdfToken(in_file, in_buf, in_size, cur_mb_len,
+                                         in_ptr, _DtCvTRUE) != 0)
+                return -1;
 
-    myBufPtr = *in_ptr;
+        myBufPtr = *in_ptr;
 
-    while (!done)
-      {
-	spnResult = _DtHelpCeStrcspn (myBufPtr, " >\n", cur_mb_len, &copySize);
-	if (_DtHelpCeAddStrToBuf (&myBufPtr, &stringPtr, &stringSize,
-					&stringMax, copySize, 0) == -1)
-	    return -1;
+        while (!done) {
+                spnResult =
+                    _DtHelpCeStrcspn(myBufPtr, " >\n", cur_mb_len, &copySize);
+                if (_DtHelpCeAddStrToBuf(&myBufPtr, &stringPtr, &stringSize,
+                                         &stringMax, copySize, 0) == -1)
+                        return -1;
 
-	/*
-	 * _DtHelpCeStrcspn stopped at a character we want
-	 */
-	if (spnResult == 0)
-	    done = True;
-	else if (((int)strlen(myBufPtr)) >= cur_mb_len)
-	  {
-	    errno = CEErrorIllegalInfo;
-	    return -1;
-	  }
-	else if (_DtHelpCeGetNxtBuf(in_file,in_buf,&myBufPtr,in_size) == -1)
-	    return -1;
-      }
+                /*
+                 * _DtHelpCeStrcspn stopped at a character we want
+                 */
+                if (spnResult == 0)
+                        done = True;
+                else if (((int)strlen(myBufPtr)) >= cur_mb_len) {
+                        errno = CEErrorIllegalInfo;
+                        return -1;
+                } else if (_DtHelpCeGetNxtBuf(in_file, in_buf, &myBufPtr,
+                                              in_size) == -1)
+                        return -1;
+        }
 
-    if (stringPtr != NULL && *stringPtr != '\0')
-      {
-        *ret_value = atoi(stringPtr);
-	free (stringPtr);
-      }
-    else
-      {
-	errno = CEErrorFormattingValue;
-	result = -1;
-      }
+        if (stringPtr != NULL && *stringPtr != '\0') {
+                *ret_value = atoi(stringPtr);
+                free(stringPtr);
+        } else {
+                errno = CEErrorFormattingValue;
+                result = -1;
+        }
 
-    *in_ptr = myBufPtr;
+        *in_ptr = myBufPtr;
 
-    if (result != -1 && _DtCvTRUE == flag && *myBufPtr == '>')
-	return -2;
+        if (result != -1 && _DtCvTRUE == flag && *myBufPtr == '>')
+                return -2;
 
-    return result;
+        return result;
 }
 
 /******************************************************************************
  * Function: int _DtHelpCeSkipToNextCcdfToken (FILE *read_file, char *read_buf,
  *				int read_size, char **src_ptr, int flag)
- * 
+ *
  * Parameters:
  *		read_file	Specifies a stream to read from.
  *		read_buf	Specifies the buffer where new information
@@ -1085,78 +1043,68 @@ _DtHelpCeGetCcdfValueParam(
  *		or the first character after the next space.
  *
  *****************************************************************************/
-int
-_DtHelpCeSkipToNextCcdfToken (
-	BufFilePtr read_file,
-	char	 *read_buf,
-	int	  read_size,
-	int	  cur_mb_len,
-	char	**src_ptr,
-    _DtCvValue	  flag )
-{
-    int       len;
-    int       result;
-    char     *srcPtr = *src_ptr;
+int _DtHelpCeSkipToNextCcdfToken(BufFilePtr read_file, char *read_buf,
+                                 int read_size, int cur_mb_len, char **src_ptr,
+                                 _DtCvValue flag) {
+        int len;
+        int result;
+        char *srcPtr = *src_ptr;
 
-    /*
-     * Skip the rest of the alphanumeric string.
-     */
-    do
-      {
-	/*
-	 * _DtHelpCeStrcspn returns 0 for 'found a character'
-	 */
-	result = _DtHelpCeStrcspn (srcPtr, " >\n", cur_mb_len, &len);
-	srcPtr = srcPtr + len;
+        /*
+         * Skip the rest of the alphanumeric string.
+         */
+        do {
+                /*
+                 * _DtHelpCeStrcspn returns 0 for 'found a character'
+                 */
+                result = _DtHelpCeStrcspn(srcPtr, " >\n", cur_mb_len, &len);
+                srcPtr = srcPtr + len;
 
-	if (result)
-	  {
-	    if (result == -1 && ((int)strlen(srcPtr)) >= cur_mb_len)
-	      {
-		errno = CEErrorIllegalInfo;
-		return -1;
-	      }
-	    if (_DtHelpCeGetNxtBuf(read_file, read_buf,&srcPtr,read_size) == -1)
-	        return -1;
-	  }
-      } while (result);
+                if (result) {
+                        if (result == -1 &&
+                            ((int)strlen(srcPtr)) >= cur_mb_len) {
+                                errno = CEErrorIllegalInfo;
+                                return -1;
+                        }
+                        if (_DtHelpCeGetNxtBuf(read_file, read_buf, &srcPtr,
+                                               read_size) == -1)
+                                return -1;
+                }
+        } while (result);
 
-    /*
-     * Now skip the blanks and end of lines
-     */
-    do
-      {
-	/*
-	 * _DtHelpCeStrspn returns 0 for 'found a character'
-	 */
-	result = _DtHelpCeStrspn (srcPtr, " \n", cur_mb_len, &len);
-	srcPtr = srcPtr + len;
-	if (result)
-	  {
-	    if (result == -1 && ((int)strlen(srcPtr)) >= cur_mb_len)
-	      {
-		errno = CEErrorIllegalInfo;
-		return -1;
-	      }
-	    if (_DtHelpCeGetNxtBuf(read_file,read_buf,&srcPtr,read_size) == -1)
-	        return -1;
-	  }
-      } while (result);
+        /*
+         * Now skip the blanks and end of lines
+         */
+        do {
+                /*
+                 * _DtHelpCeStrspn returns 0 for 'found a character'
+                 */
+                result = _DtHelpCeStrspn(srcPtr, " \n", cur_mb_len, &len);
+                srcPtr = srcPtr + len;
+                if (result) {
+                        if (result == -1 &&
+                            ((int)strlen(srcPtr)) >= cur_mb_len) {
+                                errno = CEErrorIllegalInfo;
+                                return -1;
+                        }
+                        if (_DtHelpCeGetNxtBuf(read_file, read_buf, &srcPtr,
+                                               read_size) == -1)
+                                return -1;
+                }
+        } while (result);
 
-    *src_ptr = srcPtr;
+        *src_ptr = srcPtr;
 
-    if (_DtCvTRUE == flag && *srcPtr == '>')
-      {
-	errno = CEErrorFormattingOption;
-	return 1;
-      }
+        if (_DtCvTRUE == flag && *srcPtr == '>') {
+                errno = CEErrorFormattingOption;
+                return 1;
+        }
 
-    return 0;
+        return 0;
 }
 /******************************************************************************
- * Function: int _DtHelpCeGetCcdfTopicCmd (void *dpy, FILE *in_file, char *in_buf,
- *				char **in_ptr, int in_size,
- *				char **ret_charSet)
+ * Function: int _DtHelpCeGetCcdfTopicCmd (void *dpy, FILE *in_file, char
+ **in_buf, char **in_ptr, int in_size, char **ret_charSet)
  *
  * Parameters:
  *		in_file		Specifies a stream to read from.
@@ -1178,89 +1126,77 @@ _DtHelpCeSkipToNextCcdfToken (
  *		CEErrorIllegalInfo
  *		CEErrorReadEmpty
  *
- * 
+ *
  * Purpose:	Checks for the <TOPIC> command and returns the charset
  *		if specified.
  *
  *****************************************************************************/
-int
-_DtHelpCeGetCcdfTopicCmd (
-    void     *dpy,
-    BufFilePtr in_file,
-    char     *in_buf,
-    char    **in_ptr,
-    int       in_size,
-    int       cur_mb_len,
-    char    **ret_charSet )
-{
-    char    *mycharSet = NULL;
-
-    /*
-     * null the return values
-     */
-    if (ret_charSet)
-	*ret_charSet = NULL;
-
-    /*
-     * check for <TOPIC charset string>
-     */
-    if (_DtHelpCeCheckNextCcdfCmd ("to",in_file,in_buf,in_size,cur_mb_len,in_ptr) == 0)
-      {
-	/*
-	 * The <TOPIC> command and it's attributes must be in 1-byte charset.
-	 */
-        if (_DtHelpCeSkipToNextCcdfToken(in_file, in_buf, in_size, 1,
-						in_ptr, _DtCvFALSE) == -1)
-            return -1;
+int _DtHelpCeGetCcdfTopicCmd(void *dpy, BufFilePtr in_file, char *in_buf,
+                             char **in_ptr, int in_size, int cur_mb_len,
+                             char **ret_charSet) {
+        char *mycharSet = NULL;
 
         /*
-         * charset string
+         * null the return values
          */
-        if (_DtCvToLower (**in_ptr) == 'c')
-          {
-            if (_DtHelpCeGetCcdfStrParam (in_file, in_buf, in_size,
-                        1, in_ptr, True, False, False, False, &mycharSet) == -1)
+        if (ret_charSet)
+                *ret_charSet = NULL;
+
+        /*
+         * check for <TOPIC charset string>
+         */
+        if (_DtHelpCeCheckNextCcdfCmd("to", in_file, in_buf, in_size,
+                                      cur_mb_len, in_ptr) == 0) {
+                /*
+                 * The <TOPIC> command and it's attributes must be in 1-byte
+                 * charset.
+                 */
+                if (_DtHelpCeSkipToNextCcdfToken(in_file, in_buf, in_size, 1,
+                                                 in_ptr, _DtCvFALSE) == -1)
+                        return -1;
+
+                /*
+                 * charset string
+                 */
+                if (_DtCvToLower(**in_ptr) == 'c') {
+                        if (_DtHelpCeGetCcdfStrParam(
+                                in_file, in_buf, in_size, 1, in_ptr, True,
+                                False, False, False, &mycharSet) == -1)
+                                return -1;
+
+                        if (_DtHelpCeGetCcdfEndMark(in_file, in_buf, in_ptr,
+                                                    in_size, 1) == -1) {
+                                if (mycharSet)
+                                        free(mycharSet);
+                                return -1;
+                        }
+
+                } else if (**in_ptr != '>') {
+                        errno = CEErrorTopicSyntax;
+                        return -1;
+                } else {
+                        /*
+                         * skip the end token
+                         */
+                        *in_ptr = *in_ptr + 1;
+                }
+        } else {
+                errno = CEErrorMissingTopicCmd;
                 return -1;
+        }
 
-            if (_DtHelpCeGetCcdfEndMark(in_file,in_buf,in_ptr,in_size,1) == -1)
-	      {
-		if (mycharSet)
-		    free (mycharSet);
-                return -1;
-	      }
+        if (ret_charSet)
+                *ret_charSet = mycharSet;
+        else if (mycharSet)
+                free(mycharSet);
 
-          }
-        else if (**in_ptr != '>')
-          {
-            errno = CEErrorTopicSyntax;
-            return -1;
-          }
-        else
-          {
-            /*
-             * skip the end token
-             */
-            *in_ptr = *in_ptr + 1;
-          }
-      }
-    else
-      {
-	errno = CEErrorMissingTopicCmd;
-	return -1;
-      }
-
-    if (ret_charSet)
-	*ret_charSet = mycharSet;
-    else if (mycharSet)
-	free (mycharSet);
-
-    return 0;
+        return 0;
 }
 
 /******************************************************************************
- * Function: int _DtHelpCeCheckNextCcdfCmd (char *token, FILE *in_file, char in_buf,
- *				int in_size, char **in_ptr)
- * 
+ * Function: int _DtHelpCeCheckNextCcdfCmd (char *token, FILE *in_file, char
+ *in_buf, int in_size, char **in_ptr)
+ *
  * Parameters:
  *		token		Specifies the syntax to look for.
  *					<token ....> data </>
@@ -1287,61 +1223,48 @@ _DtHelpCeGetCcdfTopicCmd (
  * Note:	'token' must be a lower case string.
  *
  *****************************************************************************/
-int
-_DtHelpCeCheckNextCcdfCmd(
-	char	  *token,
-	BufFilePtr in_file,
-	char      *in_buf,
-	int        in_size,
-	int        cur_mb_len,
-	char     **in_ptr )
-{
-    int      result = 0;
-    int      len = strlen (token);
-    char    *str;
+int _DtHelpCeCheckNextCcdfCmd(char *token, BufFilePtr in_file, char *in_buf,
+                              int in_size, int cur_mb_len, char **in_ptr) {
+        int result = 0;
+        int len = strlen(token);
+        char *str;
 
-    /*
-     * check for the token
-     */
-    while (len > 0 && result > -1)
-      {
-        if (**in_ptr == '\0' &&
-		_DtHelpCeGetNxtBuf(in_file, in_buf, in_ptr, in_size) == -1)
-            return -1;
+        /*
+         * check for the token
+         */
+        while (len > 0 && result > -1) {
+                if (**in_ptr == '\0' &&
+                    _DtHelpCeGetNxtBuf(in_file, in_buf, in_ptr, in_size) == -1)
+                        return -1;
 
-        if (cur_mb_len == 1 || mblen (*in_ptr, cur_mb_len) == 1)
-          {
-            if ((isspace (**in_ptr) || **in_ptr == '\n'))
-                *in_ptr = *in_ptr + 1;
-            else if (**in_ptr == '<')
-              {
-                if (((int)strlen(*in_ptr)) < (len + 1) &&
-				_DtHelpCeGetNxtBuf (in_file, in_buf,
-                                            in_ptr, in_size) == -1)
-                    return -1;
+                if (cur_mb_len == 1 || mblen(*in_ptr, cur_mb_len) == 1) {
+                        if ((isspace(**in_ptr) || **in_ptr == '\n'))
+                                *in_ptr = *in_ptr + 1;
+                        else if (**in_ptr == '<') {
+                                if (((int)strlen(*in_ptr)) < (len + 1) &&
+                                    _DtHelpCeGetNxtBuf(in_file, in_buf, in_ptr,
+                                                       in_size) == -1)
+                                        return -1;
 
-		for (str = *in_ptr + 1; len > 0; len--, str++, token++)
-		  {
-                    if (_DtCvToLower (*str) != *token)
-			return -2;
-		  }
-                result = 0;
-              }
-            else
-                result = -2;
-          }
-        else
-            result = -2;
-      }
+                                for (str = *in_ptr + 1; len > 0;
+                                     len--, str++, token++) {
+                                        if (_DtCvToLower(*str) != *token)
+                                                return -2;
+                                }
+                                result = 0;
+                        } else
+                                result = -2;
+                } else
+                        result = -2;
+        }
 
-    return result;
+        return result;
 }
 
 /*****************************************************************************
- * Function: int _DtHelpCeGetCcdfTopicAbbrev (void *dpy, FILE *file, char *buffer,
- *			char **buf_ptr, int buf_size, int strip,
- *			char **ret_title, char **ret_charSet,
- *			char **ret_abbrev)
+ * Function: int _DtHelpCeGetCcdfTopicAbbrev (void *dpy, FILE *file, char
+ **buffer, char **buf_ptr, int buf_size, int strip, char **ret_title, char
+ ***ret_charSet, char **ret_abbrev)
  *
  * Parameters:
  *		dpy		Specifies the display connection as a void.
@@ -1380,51 +1303,38 @@ _DtHelpCeCheckNextCcdfCmd(
  * Purpose:	Find the title and abbreviated title of a topic.
  *
  *****************************************************************************/
-int
-_DtHelpCeGetCcdfTopicAbbrev (
-	void		 *dpy,
-	BufFilePtr	  file,
-	char		 *buffer,
-	char		**buf_ptr,
-	int		  buf_size,
-	int		  cur_mb_len,
-	char		**ret_title,
-	char		**ret_charSet,
-	char		**ret_abbrev )
-{
-    /*
-     * NULL the entries.
-     */
-    if (ret_title)
-        *ret_title   = NULL;
-    if (ret_abbrev)
-        *ret_abbrev  = NULL;
+int _DtHelpCeGetCcdfTopicAbbrev(void *dpy, BufFilePtr file, char *buffer,
+                                char **buf_ptr, int buf_size, int cur_mb_len,
+                                char **ret_title, char **ret_charSet,
+                                char **ret_abbrev) {
+        /*
+         * NULL the entries.
+         */
+        if (ret_title)
+                *ret_title = NULL;
+        if (ret_abbrev)
+                *ret_abbrev = NULL;
 
-    /*
-     * check for <TOPIC charset string>
-     */
-    if (_DtHelpCeGetCcdfTopicCmd (dpy,
-			  file,
-			  buffer,
-			  buf_ptr,
-			  buf_size,
-			  cur_mb_len,
-			  ret_charSet) == -1
-			||
-	/* Must have a <TITLE> token*/
-	GetTitleCmd(file, buffer, buf_size, cur_mb_len,buf_ptr,ret_title) == -1
-			||
-	/* check for the <ABBREV> token */
-	_DtHelpCeGetCcdfAbbrevCmd (file, buffer, buf_size, cur_mb_len,buf_ptr, ret_abbrev) == -1)
+        /*
+         * check for <TOPIC charset string>
+         */
+        if (_DtHelpCeGetCcdfTopicCmd(dpy, file, buffer, buf_ptr, buf_size,
+                                     cur_mb_len, ret_charSet) == -1 ||
+            /* Must have a <TITLE> token*/
+            GetTitleCmd(file, buffer, buf_size, cur_mb_len, buf_ptr,
+                        ret_title) == -1 ||
+            /* check for the <ABBREV> token */
+            _DtHelpCeGetCcdfAbbrevCmd(file, buffer, buf_size, cur_mb_len,
+                                      buf_ptr, ret_abbrev) == -1)
 
-	return -1;
+                return -1;
 
-    return 0;
+        return 0;
 }
 
 /*****************************************************************************
- * Function: int _DtHelpCeSkipCcdfAbbrev (FILE *file, char *buffer, int buf_size,
- *							char **buf_ptr)
+ * Function: int _DtHelpCeSkipCcdfAbbrev (FILE *file, char *buffer, int
+ *buf_size, char **buf_ptr)
  *
  * Parameters:
  * 		file		Specifies the stream of the open file.
@@ -1447,24 +1357,19 @@ _DtHelpCeGetCcdfTopicAbbrev (
  * Purpose:	Skip the <ABBREV> command
  *
  *****************************************************************************/
-int
-_DtHelpCeSkipCcdfAbbrev (
-	BufFilePtr	  file,
-	char		 *buffer,
-	char		**buf_ptr,
-	int		  buf_size,
-	int		  cur_mb_len)
-{
-    /*
-     * check for the <ABBREV> token and skip its data.
-     */
-    return _DtHelpCeGetCcdfAbbrevCmd(file, buffer, buf_size, cur_mb_len,buf_ptr, NULL);
+int _DtHelpCeSkipCcdfAbbrev(BufFilePtr file, char *buffer, char **buf_ptr,
+                            int buf_size, int cur_mb_len) {
+        /*
+         * check for the <ABBREV> token and skip its data.
+         */
+        return _DtHelpCeGetCcdfAbbrevCmd(file, buffer, buf_size, cur_mb_len,
+                                         buf_ptr, NULL);
 }
 
 /******************************************************************************
- * Function: int _DtHelpCeGetCcdfAbbrevCmd (FILE *in_file, char *in_buf, int in_size,
- *				char **in_ptr, char **ret_string)
- * 
+ * Function: int _DtHelpCeGetCcdfAbbrevCmd (FILE *in_file, char *in_buf, int
+ *in_size, char **in_ptr, char **ret_string)
+ *
  * Parameters:
  *		in_file		Specifies a stream to read from.
  *		in_buf		Specifies the buffer where new information
@@ -1492,44 +1397,39 @@ _DtHelpCeSkipCcdfAbbrev (
  *		its </> is the <NEWLINE> command. And it is stripped.
  *
  *****************************************************************************/
-int
-_DtHelpCeGetCcdfAbbrevCmd(
-	BufFilePtr in_file,
-	char      *in_buf,
-	int        in_size,
-	int        cur_mb_len,
-	char     **in_ptr,
-	char     **ret_string )
-{
-    int       result;
-    int       junkSize  = 0;
-    int       junkMax  = 0;
+int _DtHelpCeGetCcdfAbbrevCmd(BufFilePtr in_file, char *in_buf, int in_size,
+                              int cur_mb_len, char **in_ptr,
+                              char **ret_string) {
+        int result;
+        int junkSize = 0;
+        int junkMax = 0;
 
-    /*
-     * null the return string
-     */
-    if (ret_string)
-	*ret_string = NULL;
+        /*
+         * null the return string
+         */
+        if (ret_string)
+                *ret_string = NULL;
 
-    /*
-     * check for the token
-     */
-    result = _DtHelpCeCheckNextCcdfCmd ("ab", in_file, in_buf, in_size, cur_mb_len, in_ptr);
-    if (result == -2)
-	result = 0;
-    else if (result == 0 &&
-	_DtHelpCeGetCcdfEndMark(in_file,in_buf,in_ptr,in_size,cur_mb_len) != -1)
-      {
-	result = GetCmdData (in_file, in_buf, in_size, in_ptr, cur_mb_len,
-					CCDF_NEWLINE_CMD, CCDF_NEWLINE_CMD,
-					&junkSize, &junkMax, ret_string);
-        if (result == -1 && errno == CMD_NOT_ALLOWED)
-	    errno = CEErrorAbbrevSyntax;
-      }
-    else
-	result = -1;
+        /*
+         * check for the token
+         */
+        result = _DtHelpCeCheckNextCcdfCmd("ab", in_file, in_buf, in_size,
+                                           cur_mb_len, in_ptr);
+        if (result == -2)
+                result = 0;
+        else if (result == 0 &&
+                 _DtHelpCeGetCcdfEndMark(in_file, in_buf, in_ptr, in_size,
+                                         cur_mb_len) != -1) {
+                result =
+                    GetCmdData(in_file, in_buf, in_size, in_ptr, cur_mb_len,
+                               CCDF_NEWLINE_CMD, CCDF_NEWLINE_CMD, &junkSize,
+                               &junkMax, ret_string);
+                if (result == -1 && errno == CMD_NOT_ALLOWED)
+                        errno = CEErrorAbbrevSyntax;
+        } else
+                result = -1;
 
-    return result;
+        return result;
 }
 
 /******************************************************************************
@@ -1557,113 +1457,108 @@ _DtHelpCeGetCcdfAbbrevCmd(
  *		command.
  *
  *****************************************************************************/
-int
-_DtHelpCeGetCcdfCmd (
-    int     current,
-    char   *buffer,
-    char  **buf_ptr,
-    BufFilePtr my_file,
-    int     size,
-    int     allowed)
-{
-    int   i = -1;
-    int   j = 1;
-    int   different;
-    int   my_error = 0;
-    char  firstChar;
-    char *myPtr;
+int _DtHelpCeGetCcdfCmd(int current, char *buffer, char **buf_ptr,
+                        BufFilePtr my_file, int size, int allowed) {
+        int i = -1;
+        int j = 1;
+        int different;
+        int my_error = 0;
+        char firstChar;
+        char *myPtr;
 
-    /*
-     * always allow the end of formatting command
-     */
-    allowed = allowed | CCDF_FORMAT_END;
+        /*
+         * always allow the end of formatting command
+         */
+        allowed = allowed | CCDF_FORMAT_END;
 
-    /*
-     * set the pointer to the current position in the input buffer
-     */
-    myPtr = *buf_ptr;
-    if (*myPtr == '\0' &&
-		_DtHelpCeGetNxtBuf(my_file, buffer, &myPtr, size) == -1)
-	return -1;
+        /*
+         * set the pointer to the current position in the input buffer
+         */
+        myPtr = *buf_ptr;
+        if (*myPtr == '\0' &&
+            _DtHelpCeGetNxtBuf(my_file, buffer, &myPtr, size) == -1)
+                return -1;
 
-    firstChar = _DtCvToLower (*myPtr);
-    do {
-	i++;
-	different = firstChar - CcdfFormatCmds[i].cmd[0];
+        firstChar = _DtCvToLower(*myPtr);
+        do {
+                i++;
+                different = firstChar - CcdfFormatCmds[i].cmd[0];
 
-	if (!different && CcdfFormatCmds[i].significant > 1)
-	  {
-	    if (((int)strlen(myPtr)) < CcdfFormatCmds[i].significant &&
-		_DtHelpCeGetNxtBuf (my_file, buffer, &myPtr, size) == -1)
-	        return -1;
+                if (!different && CcdfFormatCmds[i].significant > 1) {
+                        if (((int)strlen(myPtr)) <
+                                CcdfFormatCmds[i].significant &&
+                            _DtHelpCeGetNxtBuf(my_file, buffer, &myPtr, size) ==
+                                -1)
+                                return -1;
 
-	    j = 1;
-	    do {
-		different = _DtCvToLower(myPtr[j]) - CcdfFormatCmds[i].cmd[j];
-		j++;
-	      } while (!different && j < CcdfFormatCmds[i].significant);
-	  }
+                        j = 1;
+                        do {
+                                different = _DtCvToLower(myPtr[j]) -
+                                            CcdfFormatCmds[i].cmd[j];
+                                j++;
+                        } while (!different &&
+                                 j < CcdfFormatCmds[i].significant);
+                }
 
-      } while (different && CcdfFormatCmds[i].type != CCDF_FORMAT_END);
+        } while (different && CcdfFormatCmds[i].type != CCDF_FORMAT_END);
 
-    /*
-     * update the passed in pointer
-     */
-    *buf_ptr = myPtr;
+        /*
+         * update the passed in pointer
+         */
+        *buf_ptr = myPtr;
 
-    /*
-     * check to see if the formatting command is valid
-     */
-    if (different)
-	errno = CEErrorFormattingCmd;
+        /*
+         * check to see if the formatting command is valid
+         */
+        if (different)
+                errno = CEErrorFormattingCmd;
 
-    else if (!different && CCDF_NOT_ALLOW_CMD (allowed, CcdfFormatCmds[i].type))
-      {
-	my_error = -1;
-	switch (current)
-	  {
-	    case CCDF_ABBREV_CMD:
-			errno = CEErrorAbbrevSyntax;
-			break;
-	    case CCDF_FIGURE_CMD:
-			errno = CEErrorFigureSyntax;
-			break;
-	    case CCDF_FONT_CMD:
-			errno = CEErrorFontSyntax;
-			break;
-	    case CCDF_GRAPHIC_CMD:
-			errno = CEErrorGraphicSyntax;
-			break;
-	    case CCDF_ID_CMD:
-			errno = CEErrorIdSyntax;
-			break;
-	    case CCDF_LABEL_CMD:
-			errno = CEErrorLabelSyntax;
-			break;
-	    case CCDF_LINK_CMD:
-			errno = CEErrorLinkSyntax;
-			break;
-	    case CCDF_NEWLINE_CMD:
-			errno = CEErrorNewLineSyntax;
-			break;
-	    case CCDF_OCTAL_CMD:
-			errno = CEErrorOctalSyntax;
-			break;
-	    case CCDF_PARAGRAPH_CMD:
-			errno = CEErrorParagraphSyntax;
-			break;
-	    case CCDF_TITLE_CMD:
-			errno = CEErrorTitleSyntax;
-			break;
-	    case CCDF_TOPIC_CMD:
-			errno = CEErrorTopicSyntax;
-			break;
-	  }
-      }
-    if (different || my_error)
-	return -1;
+        else if (!different &&
+                 CCDF_NOT_ALLOW_CMD(allowed, CcdfFormatCmds[i].type)) {
+                my_error = -1;
+                switch (current) {
+                case CCDF_ABBREV_CMD:
+                        errno = CEErrorAbbrevSyntax;
+                        break;
+                case CCDF_FIGURE_CMD:
+                        errno = CEErrorFigureSyntax;
+                        break;
+                case CCDF_FONT_CMD:
+                        errno = CEErrorFontSyntax;
+                        break;
+                case CCDF_GRAPHIC_CMD:
+                        errno = CEErrorGraphicSyntax;
+                        break;
+                case CCDF_ID_CMD:
+                        errno = CEErrorIdSyntax;
+                        break;
+                case CCDF_LABEL_CMD:
+                        errno = CEErrorLabelSyntax;
+                        break;
+                case CCDF_LINK_CMD:
+                        errno = CEErrorLinkSyntax;
+                        break;
+                case CCDF_NEWLINE_CMD:
+                        errno = CEErrorNewLineSyntax;
+                        break;
+                case CCDF_OCTAL_CMD:
+                        errno = CEErrorOctalSyntax;
+                        break;
+                case CCDF_PARAGRAPH_CMD:
+                        errno = CEErrorParagraphSyntax;
+                        break;
+                case CCDF_TITLE_CMD:
+                        errno = CEErrorTitleSyntax;
+                        break;
+                case CCDF_TOPIC_CMD:
+                        errno = CEErrorTopicSyntax;
+                        break;
+                }
+        }
+        if (different || my_error)
+                return -1;
 
-    return CcdfFormatCmds[i].type;
+        return CcdfFormatCmds[i].type;
 }
 
 /******************************************************************************
@@ -1680,51 +1575,50 @@ _DtHelpCeGetCcdfCmd (
  * Purpose:	Determines if the code is a font change specification.
  *
  *****************************************************************************/
-int
-_DtHelpCeGetCcdfFontType (char      *code)
-{
-    char  my2Char;
-    char  myChar = _DtCvToLower (*code);
+int _DtHelpCeGetCcdfFontType(char *code) {
+        char my2Char;
+        char myChar = _DtCvToLower(*code);
 
-    code++;
-    my2Char = _DtCvToLower (*code);
-    switch (myChar)
-      {
+        code++;
+        my2Char = _DtCvToLower(*code);
+        switch (myChar) {
         /*
          * <angle string>
          */
         case 'a':
-		if (my2Char == 'n')
-		    return _CEFONT_ANGLE;
-		break;
+                if (my2Char == 'n')
+                        return _CEFONT_ANGLE;
+                break;
         /*
          * <charset string>
          */
-        case 'c': return _CEFONT_CHAR_SET;
+        case 'c':
+                return _CEFONT_CHAR_SET;
 
         /*
          * <type string>
          */
         case 't':
-		if (my2Char == 'y')
-		    return _CEFONT_TYPE;
-		break;
+                if (my2Char == 'y')
+                        return _CEFONT_TYPE;
+                break;
 
         /*
          * <weight string>
          */
-        case 'w': return _CEFONT_WEIGHT;
+        case 'w':
+                return _CEFONT_WEIGHT;
 
         /*
          * <size string>
          * <spacing string>
          */
         case 's':
-            if (my2Char == 'i')
-		return _CEFONT_SIZE;
+                if (my2Char == 'i')
+                        return _CEFONT_SIZE;
 
-            if (my2Char == 'p')
-		return _CEFONT_SPACING;
-      }
-    return -1;
+                if (my2Char == 'p')
+                        return _CEFONT_SPACING;
+        }
+        return -1;
 }

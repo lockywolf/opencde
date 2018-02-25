@@ -28,9 +28,4 @@
 #include "userinc.h"
 #include "globdec.h"
 
-void *m_openfirst(M_NOPAR)
-  {
-    return((void *) stdin) ;
-    }
-
-
+void *m_openfirst(M_NOPAR) { return ((void *)stdin); }

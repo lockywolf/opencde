@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,9 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
 
 #ifndef _olias_server_h
 #define _olias_server_h 1
@@ -66,37 +65,32 @@
 #include "oliasdb/mark.h"
 #include "oliasdb/pref.h"
 
+class olias_server : public server {
 
-class olias_server : public server
-{
+      public:
+        enum TestSelector { LOC, GRA };
+        olias_server(Boolean delayed_infolib_init = false,
+                     char *selected_base_name = 0,
+                     char *x_info_lib_path = getenv("MMDB_PATH"));
+        ~olias_server();
 
-public:
+        void init_infolib();
 
-   enum TestSelector { LOC, GRA };
-   olias_server(
-                Boolean delayed_infolib_init = false,
-                char* selected_base_name = 0,
-                char* x_info_lib_path = getenv("MMDB_PATH")
-               );
-   ~olias_server();
+        info_base *get_infobase(const char *locator_string,
+                                enum TestSelector = LOC);
+        info_base **get_infobases(char **locator_strings, int count,
+                                  enum TestSelector = LOC);
 
-  void init_infolib();
-
-  info_base* get_infobase(const char *locator_string, enum TestSelector = LOC);
-  info_base** get_infobases(char **locator_strings, int count, enum TestSelector = LOC);
-
-protected:
-   dlp      		dlp_template;
-   doc      		doc_template;
-   graphic  		graphic_template;
-   olias_locator 	locator_template;
-   olias_node       	node_template;
-   toc      		toc_template;
-   umark 		mark_template;
-   pref 		pref_template;
-   stylesheet		stylesheet_template;
-
+      protected:
+        dlp dlp_template;
+        doc doc_template;
+        graphic graphic_template;
+        olias_locator locator_template;
+        olias_node node_template;
+        toc toc_template;
+        umark mark_template;
+        pref pref_template;
+        stylesheet stylesheet_template;
 };
-
 
 #endif

@@ -53,40 +53,31 @@
 #include "msgs.h"
 #include <locale.h>
 
-
 /*
  * LocaleChanged is defined in ksh93/src/cmd/ksh93/sh/init.c
  */
 
-extern void LocaleChanged (
-		Namval_t * np,
-		const char * val,
-		int flags,
-		Namfun_t * fp );
+extern void LocaleChanged(Namval_t *np, const char *val, int flags,
+                          Namfun_t *fp);
 
-
-static Namdisc_t localeDisc = { 0, LocaleChanged, NULL, NULL, NULL, NULL, NULL, NULL };
-static Namfun_t localeFun = {NULL, NULL };
+static Namdisc_t localeDisc = {0,    LocaleChanged, NULL, NULL,
+                               NULL, NULL,          NULL, NULL};
+static Namfun_t localeFun = {NULL, NULL};
 
 extern char *savedNlsPath; /* in ./ksh93/src/cmd/ksh93/sh/init.c */
 
+void SyncEnv(char *name) {
+        char *value, *buf;
 
-void
-SyncEnv(
-    char *name)
-{
-  char *value, *buf;
-
-  value = getenv(name);
-  if(value != (char *)NULL)
-  {
-    buf = malloc(strlen(name) + strlen(value) + 2);
-    strcpy(buf, name);
-    strcat(buf, "=");
-    strcat(buf, value);
-    ksh_putenv(buf);
-    free(buf);  /* I hope it's legal to free this! */
-  }
+        value = getenv(name);
+        if (value != (char *)NULL) {
+                buf = malloc(strlen(name) + strlen(value) + 2);
+                strcpy(buf, name);
+                strcat(buf, "=");
+                strcat(buf, value);
+                ksh_putenv(buf);
+                free(buf); /* I hope it's legal to free this! */
+        }
 }
 
 /*
@@ -94,38 +85,37 @@ SyncEnv(
  *  A function of this name is called in main after sh_init().
  */
 
-void
-sh_userinit( void )
+void sh_userinit(void)
 
 {
-   int * lockedFds;
+        int *lockedFds;
 
-   lockedFds = LockKshFileDescriptors();
-   (void) XtSetLanguageProc((XtAppContext)NULL, (XtLanguageProc)NULL,
-				(XtPointer)NULL);
-   setlocale(LC_ALL, "");
-   DtNlInitialize();
-   _DtEnvControl(DT_ENV_SET);
-   localeFun.disc = &localeDisc;
-   nv_stack(LANGNOD, &localeFun);
-   UnlockKshFileDescriptors(lockedFds);
+        lockedFds = LockKshFileDescriptors();
+        (void)XtSetLanguageProc((XtAppContext)NULL, (XtLanguageProc)NULL,
+                                (XtPointer)NULL);
+        setlocale(LC_ALL, "");
+        DtNlInitialize();
+        _DtEnvControl(DT_ENV_SET);
+        localeFun.disc = &localeDisc;
+        nv_stack(LANGNOD, &localeFun);
+        UnlockKshFileDescriptors(lockedFds);
 
-   /*
-    * Save the current setting of NLSPATH.  The user/script may want to
-    * set its own NLSPATH to access its message catalog, so we need to
-    * remember where to find our own catalog(s).  This saved path is used
-    * in ksh93/src/cmd/ksh93/sh/init.c: _DtGetMessage().  We don't mess
-    * with the user/script's setting of LANG as we want to track changes
-    * in LANG.
-    */
-   savedNlsPath = strdup(getenv("NLSPATH"));
+        /*
+         * Save the current setting of NLSPATH.  The user/script may want to
+         * set its own NLSPATH to access its message catalog, so we need to
+         * remember where to find our own catalog(s).  This saved path is used
+         * in ksh93/src/cmd/ksh93/sh/init.c: _DtGetMessage().  We don't mess
+         * with the user/script's setting of LANG as we want to track changes
+         * in LANG.
+         */
+        savedNlsPath = strdup(getenv("NLSPATH"));
 
-   /*
-    * Sync the libc environment (set up by DtEnvControl) with our internal
-    * hash table environment.
-    */
-  SyncEnv("NLSPATH");
-  SyncEnv("LANG");
+        /*
+         * Sync the libc environment (set up by DtEnvControl) with our internal
+         * hash table environment.
+         */
+        SyncEnv("NLSPATH");
+        SyncEnv("LANG");
 }
 
 /*
@@ -140,8 +130,8 @@ sh_userinit( void )
 static const char *DfltStdCharset = "ISO-8859-1";
 static const char *DfltStdLang = "C";
 
-static char       MyPlatform[_DtPLATFORM_MAX_LEN+1];
-static int        CompVer;
+static char MyPlatform[_DtPLATFORM_MAX_LEN + 1];
+static int CompVer;
 
 /******************************************************************************
  * Function:    static _DtXlateDb OpenLcxDb ()
@@ -155,52 +145,48 @@ static int        CompVer;
  * Purpose: Opens the Ce-private Lcx database
  *
  *****************************************************************************/
-static _DtXlateDb
-OpenLcxDb (void)
-{
-    static _DtXlateDb MyDb;
-    static Boolean  MyFirst   = True;
-    static Boolean  MyProcess = False;
-    static int        ExecVer;
-    time_t      time1  = 0;
-    time_t      time2  = 0;
+static _DtXlateDb OpenLcxDb(void) {
+        static _DtXlateDb MyDb;
+        static Boolean MyFirst = True;
+        static Boolean MyProcess = False;
+        static int ExecVer;
+        time_t time1 = 0;
+        time_t time2 = 0;
 
-    /*
-     * wait up to 30 sec. until another thread or enter is done 
-     * modifying the table.
-     */
-    while (MyProcess == True)
-      {
-        /* if time out, return */
-        if (time(&time2) == (time_t)-1)
-            return (_DtXlateDb)NULL;
+        /*
+         * wait up to 30 sec. until another thread or enter is done
+         * modifying the table.
+         */
+        while (MyProcess == True) {
+                /* if time out, return */
+                if (time(&time2) == (time_t)-1)
+                        return (_DtXlateDb)NULL;
 
-        if (time1 == 0)
-            time1 = time2;
-        else if (time2 - time1 >= (time_t)30)
-            return (_DtXlateDb)NULL;
-      }
+                if (time1 == 0)
+                        time1 = time2;
+                else if (time2 - time1 >= (time_t)30)
+                        return (_DtXlateDb)NULL;
+        }
 
-    if (MyFirst == True)
-      {
-        MyProcess = True;
-        if (_DtLcxOpenAllDbs(&MyDb) == 0 &&
-            _DtXlateGetXlateEnv(MyDb,MyPlatform,&ExecVer,&CompVer) != 0)
-          {
-            _DtLcxCloseDb(&MyDb);
-            MyDb = NULL;
-          }
-        MyFirst = False;
-        MyProcess = False;
-      }
+        if (MyFirst == True) {
+                MyProcess = True;
+                if (_DtLcxOpenAllDbs(&MyDb) == 0 &&
+                    _DtXlateGetXlateEnv(MyDb, MyPlatform, &ExecVer, &CompVer) !=
+                        0) {
+                        _DtLcxCloseDb(&MyDb);
+                        MyDb = NULL;
+                }
+                MyFirst = False;
+                MyProcess = False;
+        }
 
-    return MyDb;
+        return MyDb;
 }
 
 /******************************************************************************
  * Function:    static void XlateOpToStdLocale(char *operation, char *opLocale,
- *                                             char **ret_stdLocale, 
- *                                             char **ret_stdLang, 
+ *                                             char **ret_stdLocale,
+ *                                             char **ret_stdLang,
  *                                             char **ret_stdSet)
  *
  * Parameters:
@@ -218,41 +204,34 @@ OpenLcxDb (void)
  * Purpose:  Gets the standard locale given an operation and its locale
  *
  *****************************************************************************/
-static void
-XlateOpToStdLocale (
-     char       *operation,
-     char       *opLocale,
-     char       **ret_stdLocale,
-     char       **ret_stdLang,
-     char       **ret_stdSet)
-{
-    _DtXlateDb MyDb;
+static void XlateOpToStdLocale(char *operation, char *opLocale,
+                               char **ret_stdLocale, char **ret_stdLang,
+                               char **ret_stdSet) {
+        _DtXlateDb MyDb;
 
-    MyDb = OpenLcxDb();
+        MyDb = OpenLcxDb();
 
-    if (MyDb != NULL)
-      {
-        (void) _DtLcxXlateOpToStd(MyDb, MyPlatform, CompVer,
-                                operation,opLocale,
-                                ret_stdLocale, ret_stdLang, ret_stdSet, NULL);
-      }
+        if (MyDb != NULL) {
+                (void)_DtLcxXlateOpToStd(MyDb, MyPlatform, CompVer, operation,
+                                         opLocale, ret_stdLocale, ret_stdLang,
+                                         ret_stdSet, NULL);
+        }
 
-    /* if failed, give default values */
-    if (ret_stdLocale != NULL && *ret_stdLocale == NULL)
-    {
-        *ret_stdLocale = malloc(strlen(DfltStdLang)+strlen(DfltStdCharset)+3);
-        sprintf(*ret_stdLocale,"%s.%s",DfltStdLang,DfltStdCharset);
-    }
-    if (ret_stdLang != NULL && *ret_stdLang == NULL)
-        *ret_stdLang = strdup(DfltStdLang);
-    if (ret_stdSet != NULL && *ret_stdSet == NULL)
-        *ret_stdSet = strdup(DfltStdCharset);
+        /* if failed, give default values */
+        if (ret_stdLocale != NULL && *ret_stdLocale == NULL) {
+                *ret_stdLocale =
+                    malloc(strlen(DfltStdLang) + strlen(DfltStdCharset) + 3);
+                sprintf(*ret_stdLocale, "%s.%s", DfltStdLang, DfltStdCharset);
+        }
+        if (ret_stdLang != NULL && *ret_stdLang == NULL)
+                *ret_stdLang = strdup(DfltStdLang);
+        if (ret_stdSet != NULL && *ret_stdSet == NULL)
+                *ret_stdSet = strdup(DfltStdCharset);
 }
 
-
 /******************************************************************************
- * Function:    static void XlateStdToOpLocale(char *operation, 
- *                              char *stdLocale, char *dflt_opLocale, 
+ * Function:    static void XlateStdToOpLocale(char *operation,
+ *                              char *stdLocale, char *dflt_opLocale,
  *                              char **ret_opLocale)
  *
  * Parameters:
@@ -268,20 +247,16 @@ XlateOpToStdLocale (
  * Purpose: Gets an operation-specific locale string given the standard string
  *
  *****************************************************************************/
-static void
-XlateStdToOpLocale (
-     char       *operation,
-     char       *stdLocale,
-     char       *dflt_opLocale,
-     char       **ret_opLocale)
-{
-    _DtXlateDb MyDb;
+static void XlateStdToOpLocale(char *operation, char *stdLocale,
+                               char *dflt_opLocale, char **ret_opLocale) {
+        _DtXlateDb MyDb;
 
-    MyDb = OpenLcxDb();
+        MyDb = OpenLcxDb();
 
-    if (MyDb != NULL)
-        (void) _DtLcxXlateStdToOp(MyDb, MyPlatform, CompVer,
-                        operation, stdLocale, NULL, NULL, NULL, ret_opLocale);
+        if (MyDb != NULL)
+                (void)_DtLcxXlateStdToOp(MyDb, MyPlatform, CompVer, operation,
+                                         stdLocale, NULL, NULL, NULL,
+                                         ret_opLocale);
 }
 
 extern int shSpecialParse; /* in ksh93/src/cmd/ksh93/sh/lex.c */
@@ -290,32 +265,28 @@ extern int shSpecialParse; /* in ksh93/src/cmd/ksh93/sh/lex.c */
  * updateShellSpecialParse uses the libXvh database to determine if the
  * current character encoding requires special care in the ksh parser.
  * It sets or clears a global flag (shSpecialParse) based on the value
- * from the database.  This flag is declared and inspected in sh_lex() in 
- * ksh93/src/cmd/ksh93/sh/lex.c.  This routine is stubbed in the 
+ * from the database.  This flag is declared and inspected in sh_lex() in
+ * ksh93/src/cmd/ksh93/sh/lex.c.  This routine is stubbed in the
  * file .../sh/userinit.c to allow ksh93 to compile & run, albeit
  * without any knowledge of when to do special parsing.
  */
 
-void
-updateShSpecialParse( void )
-{
-    char *locale = (char *)NULL, *parseVal = (char *)NULL;
-    int * lockedFds;
+void updateShSpecialParse(void) {
+        char *locale = (char *)NULL, *parseVal = (char *)NULL;
+        int *lockedFds;
 
-    lockedFds = LockKshFileDescriptors();
+        lockedFds = LockKshFileDescriptors();
 
-    XlateOpToStdLocale(DtLCX_OPER_SETLOCALE, setlocale(LC_CTYPE,NULL),
-		       &locale, NULL, NULL);
-    XlateStdToOpLocale("dtkshSpecialParse", locale, NULL, &parseVal);
-    XtFree(locale);
+        XlateOpToStdLocale(DtLCX_OPER_SETLOCALE, setlocale(LC_CTYPE, NULL),
+                           &locale, NULL, NULL);
+        XlateStdToOpLocale("dtkshSpecialParse", locale, NULL, &parseVal);
+        XtFree(locale);
 
-    UnlockKshFileDescriptors(lockedFds);
+        UnlockKshFileDescriptors(lockedFds);
 
-    if(parseVal != (char *)NULL)
-    {
-        shSpecialParse = 1;
-	XtFree(parseVal);
-    }
-    else
-        shSpecialParse = 0;
+        if (parseVal != (char *)NULL) {
+                shSpecialParse = 1;
+                XtFree(parseVal);
+        } else
+                shSpecialParse = 0;
 }

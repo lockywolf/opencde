@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,10 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
-
 
 #ifndef _server_h
 #define _server_h 1
@@ -56,27 +54,25 @@
 #include "api/info_base.h"
 #include "mgrs/managers.h"
 
-class server 
-{
+class server {
 
-public:
-   server(char* x_info_lib_path);
-   ~server();
+      public:
+        server(char *x_info_lib_path);
+        ~server();
 
-   info_lib* infolib_ptr() { return infolibptr; };
+        info_lib *infolib_ptr() { return infolibptr; };
 
-   int major_code_version() ;
-   int minor_code_version() ;
-   mm_version code_version();
+        int major_code_version();
+        int minor_code_version();
+        mm_version code_version();
 
-protected:
-   char info_lib_dir[PATHSIZ];
-   info_lib* infolibptr;
-   char** info_base_set_names;
-   char** info_base_list_names;
+      protected:
+        char info_lib_dir[PATHSIZ];
+        info_lib *infolibptr;
+        char **info_base_set_names;
+        char **info_base_list_names;
 
-   managers internal_managers;
+        managers internal_managers;
 };
-
 
 #endif

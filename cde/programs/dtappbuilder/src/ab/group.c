@@ -39,7 +39,6 @@
  *
  */
 
-
 #include <stdio.h>
 #include <Xm/Xm.h>
 #include <Xm/BulletinB.h>
@@ -51,7 +50,7 @@
 **       Global  Data
 **
 **************************************************************************/
-static const char	*groupwin_dialog = { "ggpwin112" };
+static const char *groupwin_dialog = {"ggpwin112"};
 
 /*************************************************************************
 **
@@ -63,47 +62,39 @@ static const char	*groupwin_dialog = { "ggpwin112" };
  * Popup the group window by managing the BulletinBoard child of the
  * Dialog shell.
  */
-void
-group_show_dialog(
-    Widget              widget,
-    MrmHierarchy	s_mrm_hierarchy
-)
-{
-    Widget	shell;
-    Widget      *children;
-    MrmType     class   = NULL;
- 
-    /* Get the dialog shell for the group popup window.  */
+void group_show_dialog(Widget widget, MrmHierarchy s_mrm_hierarchy) {
+        Widget shell;
+        Widget *children;
+        MrmType class = NULL;
 
-    if (AB_group_dialog == NULL)
-    {
-	if (MrmFetchWidget(s_mrm_hierarchy, (String)groupwin_dialog,
-                 widget, &shell, &class) != MrmSUCCESS)
-	{
-	    fprintf(stderr,"Can't fetch interface\n");
-	    exit(1);
-	}
+        /* Get the dialog shell for the group popup window.  */
 
-        XtAddCallback(shell, XtNpopupCallback,
-                ab_dialog_popupCB, (XtPointer)GroupEditorUp);
-        XtAddCallback(shell, XtNpopdownCallback,
-                ab_dialog_popdownCB, (XtPointer)GroupEditorUp);
+        if (AB_group_dialog == NULL) {
+                if (MrmFetchWidget(s_mrm_hierarchy, (String)groupwin_dialog,
+                                   widget, &shell, &class) != MrmSUCCESS) {
+                        fprintf(stderr, "Can't fetch interface\n");
+                        exit(1);
+                }
 
-	/* Now get the handle to the bulletin board widget, so that
-	* we can popup the group window by managing the BBoard.
-	*/
-	XtVaGetValues(shell, XmNchildren, &children, NULL);
+                XtAddCallback(shell, XtNpopupCallback, ab_dialog_popupCB,
+                              (XtPointer)GroupEditorUp);
+                XtAddCallback(shell, XtNpopdownCallback, ab_dialog_popdownCB,
+                              (XtPointer)GroupEditorUp);
 
-	/* There can be only one child of a shell widget, and
-	* we know that the child is the BBoard widget.
-	*/
-	if (*children != NULL)
-	{
-	    /* Store the group dialog bulletin board handle in
-	     * a global variable so that it can be easily accessed.
-	     */
-	    AB_group_dialog = *children;
-	}
-    }
-    XtManageChild(AB_group_dialog);
+                /* Now get the handle to the bulletin board widget, so that
+                 * we can popup the group window by managing the BBoard.
+                 */
+                XtVaGetValues(shell, XmNchildren, &children, NULL);
+
+                /* There can be only one child of a shell widget, and
+                 * we know that the child is the BBoard widget.
+                 */
+                if (*children != NULL) {
+                        /* Store the group dialog bulletin board handle in
+                         * a global variable so that it can be easily accessed.
+                         */
+                        AB_group_dialog = *children;
+                }
+        }
+        XtManageChild(AB_group_dialog);
 }

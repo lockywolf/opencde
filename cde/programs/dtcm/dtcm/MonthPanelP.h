@@ -60,7 +60,7 @@ extern "C" {
 
 /* New fields for the MonthPanel widget class record */
 typedef struct {
-     int mumble;   /* No new procedures */
+        int mumble; /* No new procedures */
 } XmMonthPanelClassPart;
 
 /******************************
@@ -69,11 +69,11 @@ typedef struct {
  *
  ******************************/
 typedef struct _XmMonthPanelClassRec {
-    CoreClassPart		core_class;
-    CompositeClassPart  	composite_class;
-    ConstraintClassPart 	constraint_class;
-    XmManagerClassPart  	manager_class;
-    XmMonthPanelClassPart	month_panel_class;
+        CoreClassPart core_class;
+        CompositeClassPart composite_class;
+        ConstraintClassPart constraint_class;
+        XmManagerClassPart manager_class;
+        XmMonthPanelClassPart month_panel_class;
 } XmMonthPanelClassRec;
 
 externalref XmMonthPanelClassRec xmMonthPanelClassRec;
@@ -84,24 +84,23 @@ externalref XmMonthPanelClassRec xmMonthPanelClassRec;
  *
  ************************************/
 typedef struct {
-/* resource fields */
-   int year;
-   int month;
-   XtCallbackList callback;
-   String title_format;
-   Boolean active_header;
-   Boolean active_days;
-   Boolean show_panel_header;
-   Boolean show_column_headers;
-   Boolean show_separator;
-/* private fields */
-   Widget header;
-   Widget separator;
-   Widget *day_labels;   
-   Widget *days;   
-   int    display_rows;
+        /* resource fields */
+        int year;
+        int month;
+        XtCallbackList callback;
+        String title_format;
+        Boolean active_header;
+        Boolean active_days;
+        Boolean show_panel_header;
+        Boolean show_column_headers;
+        Boolean show_separator;
+        /* private fields */
+        Widget header;
+        Widget separator;
+        Widget *day_labels;
+        Widget *days;
+        int display_rows;
 } XmMonthPanelPart;
-
 
 /************************************************************************
  *									*
@@ -110,22 +109,19 @@ typedef struct {
  ************************************************************************/
 
 typedef struct _XmMonthPanelRec {
-    CorePart	    core;
-    CompositePart   composite;
-    ConstraintPart constraint;
-    XmManagerPart   manager;
-    XmMonthPanelPart   month_panel;
+        CorePart core;
+        CompositePart composite;
+        ConstraintPart constraint;
+        XmManagerPart manager;
+        XmMonthPanelPart month_panel;
 } XmMonthPanelRec;
-
 
 /********    Private Function Declarations    ********/
 
-
 /********    End Private Function Declarations    ********/
 
-
 #ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
 #endif /* _XmMonthPanelP_h */

@@ -42,8 +42,8 @@
  **
  ****************************************************************************
  ************************************<+>*************************************/
-#ifndef	_DtResizeI_h
-#define	_DtResizeI_h
+#ifndef _DtResizeI_h
+#define _DtResizeI_h
 
 /*****************************************************************************
  *                 Defines
@@ -54,10 +54,7 @@
 /*****************************************************************************
  *                 Routine Declarations
  *****************************************************************************/
-extern	void	_DtHelpResizeDisplayArea (
-			Widget	parent,
-			XtPointer client_data,
-			int	rows,
-			int	columns );
+extern void _DtHelpResizeDisplayArea(Widget parent, XtPointer client_data,
+                                     int rows, int columns);
 
 #endif /* _DtResizeI_h */

@@ -40,7 +40,7 @@
  **   Lock Handling for the session manager
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -48,38 +48,34 @@
  ************************************<+>*************************************/
 #ifndef _smlock_h
 #define _smlock_h
- 
-/* 
- *  #include statements 
+
+/*
+ *  #include statements
  */
 
-
-/* 
- *  #define statements 
+/*
+ *  #define statements
  */
 
 /*
  * Type of lock states possible during session
  */
-#define		UNLOCKED		0
-#define 	LOCKED			1
+#define UNLOCKED 0
+#define LOCKED 1
 
-
-/* 
- * typedef statements 
+/*
+ * typedef statements
  */
 /*
- *  External variables  
+ *  External variables
  */
 
-/*  
- *  External Interface  
+/*
+ *  External Interface
  */
 
-extern void LockDisplay( Boolean locknow ) ;
-extern void CreateLockCursor( void ) ;
-
-
+extern void LockDisplay(Boolean locknow);
+extern void CreateLockCursor(void);
 
 #endif /*_smlock_h*/
 /* DON'T ADD ANYTHING AFTER THIS #endif */

@@ -41,90 +41,51 @@
 #ifndef _VF_Help_h
 #define _VF_Help_h
 
+#define MAIN_HELP_DIALOG 0
+#define HYPER_HELP_DIALOG 1
 
-#define MAIN_HELP_DIALOG    0
-#define HYPER_HELP_DIALOG   1
+extern DialogClass *helpClass;
 
-extern DialogClass * helpClass;
+typedef struct {
+        Boolean displayed;
+        Position x;
+        Position y;
+        Dimension width;
+        Dimension height;
 
+        String idString;
+        String volString;
+        String topicTitle;
+        String fileType;
+        int helpType;
+} HelpData, *HelpDataPtr;
 
-typedef struct
-{
-   Boolean       displayed;
-   Position      x;
-   Position      y;
-   Dimension     width;
-   Dimension     height;
-
-   String        idString;
-   String        volString;
-   String        topicTitle;
-   String        fileType;
-   int           helpType;
-} HelpData, * HelpDataPtr;
-
-
-typedef struct
-{
-   Widget    shell;
-   Widget    helpDialog;
+typedef struct {
+        Widget shell;
+        Widget helpDialog;
 } HelpRec;
 
+extern void HelpRequestCB(Widget w, XtPointer clientData, XtPointer callData);
+extern void DTHelpRequestCB(Widget w, XtPointer clientData, XtPointer callData);
+extern void TrashHelpRequestCB(Widget w, XtPointer clientData,
+                               XtPointer callData);
+extern void ShowHelpDialog(Widget parentShell, XtPointer topLevelRec,
+                           int dialogType, DialogData *dialogData,
+                           char *idString, char *volString, char *topicTitle,
+                           char *fileType, int helpType);
+extern void ShowTrashHelpDialog(Widget parentShell, int dialogType,
+                                DialogData *dialogData, char *idString,
+                                char *volString);
+extern void ShowDTHelpDialog(Widget parentShell, int workspaceNum,
+                             int dialogType, DialogData *dialogData,
+                             char *idString, char *volString, char *topicTitle,
+                             char *fileType, int helpType);
+extern XtPointer MapFileTypeToHelpString(String filetype, String topicTitle);
 
+extern void ObjectHelp(Widget w, XtPointer clientData, XtPointer callData);
 
-extern void HelpRequestCB( 
-                        Widget w,
-                        XtPointer clientData,
-                        XtPointer callData) ;
-extern void DTHelpRequestCB(
-                        Widget w,
-                        XtPointer clientData,
-                        XtPointer callData) ;
-extern void TrashHelpRequestCB( 
-                        Widget w,
-                        XtPointer clientData,
-                        XtPointer callData) ;
-extern void ShowHelpDialog(
-                        Widget parentShell,
-                        XtPointer topLevelRec,
-                        int dialogType,
-                        DialogData *dialogData,
-                        char *idString,
-                        char *volString,
-                        char *topicTitle,
-                        char *fileType,
-                        int helpType) ;
-extern void ShowTrashHelpDialog(
-                        Widget parentShell,
-                        int dialogType,
-                        DialogData *dialogData,
-                        char *idString,
-                        char *volString) ;
-extern void ShowDTHelpDialog(
-                        Widget parentShell,
-                        int workspaceNum,
-                        int dialogType,
-                        DialogData *dialogData,
-                        char *idString,
-                        char *volString,
-                        char *topicTitle,
-                        char *fileType,
-                        int helpType) ;
-extern XtPointer MapFileTypeToHelpString (
-                        String filetype,
-                        String topicTitle) ;
-
-extern void ObjectHelp( 
-                        Widget w,
-                        XtPointer clientData,
-                        XtPointer callData) ;
-
-extern void closeCB_mainHelpDialog(
-                        Widget wid,
-                        XtPointer client_data,
-                        XtPointer cbs) ;
-
-
+extern void closeCB_mainHelpDialog(Widget wid, XtPointer client_data,
+                                   XtPointer cbs);
 
 /* Help defines for Trash.c */
 #define HELP_TRASH_DIALOG_STR "FMTrashDialogDE"
@@ -160,7 +121,7 @@ extern void closeCB_mainHelpDialog(
 /* Help defines for FileOp.c */
 #define HELP_FILE_MANAGER_REP_REN "FMCopyWarnRenDialogDE"
 #define HELP_FILE_MANAGER_REP_MRG "FMCopyWarnMrgDialogDE"
-#define HELP_FILE_MANAGER_MULTI   "FMCopyWarnMultiDialogDE"
+#define HELP_FILE_MANAGER_MULTI "FMCopyWarnMultiDialogDE"
 
 /* Help defines for Filter.c */
 #define HELP_FILTER_DIALOG_STR "FMFilterDialogDE"

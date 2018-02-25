@@ -22,19 +22,21 @@
  */
 /* $XConsortium: latin1.h /main/3 1996/06/19 17:15:27 drk $ */
 /* SGML Character Use: ISO Latin 1.
-*/
-#define EOFCHAR   '\032'      /* FUNCTION: EE (entity end: files). */
-#define EOBCHAR   '\034'      /* NONCHAR: EOB (file entity: end of buffer. */
-#define RSCHAR    '\012'      /* FUNCTION: RS (record start). */
-#define RECHAR    '\015'      /* FUNCTION: RE (record end). */
-#define TABCHAR   '\011'      /* FUNCTION: TAB (horizontal tab). */
-#define SPCCHAR   '\040'      /* FUNCTION: SPACE (horizontal space). */
-#define GENRECHAR '\010'      /* NONCHAR: Generated RE. */
-#define DELCDATA  '\035'      /* NONCHAR: Delimiter for CDATA entity in
-				 attribute value. */
-#define DELSDATA  '\036'      /* NONCHAR: Delimiter for SDATA entity in
-				 attribute value. */
-#define DELNONCH  '\037'      /* NONCHAR: non-SGML character prefix. */
+ */
+#define EOFCHAR '\032'   /* FUNCTION: EE (entity end: files). */
+#define EOBCHAR '\034'   /* NONCHAR: EOB (file entity: end of buffer. */
+#define RSCHAR '\012'    /* FUNCTION: RS (record start). */
+#define RECHAR '\015'    /* FUNCTION: RE (record end). */
+#define TABCHAR '\011'   /* FUNCTION: TAB (horizontal tab). */
+#define SPCCHAR '\040'   /* FUNCTION: SPACE (horizontal space). */
+#define GENRECHAR '\010' /* NONCHAR: Generated RE. */
+#define DELCDATA                                                               \
+        '\035' /* NONCHAR: Delimiter for CDATA entity in                       \
+                  attribute value. */
+#define DELSDATA                                                               \
+        '\036'          /* NONCHAR: Delimiter for SDATA entity in              \
+                           attribute value. */
+#define DELNONCH '\037' /* NONCHAR: non-SGML character prefix. */
 
 /* These two macros are used to handle non-SGML characters. A non-SGML
 by character is represented by a DELNONCH character followed by

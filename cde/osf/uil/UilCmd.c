@@ -20,24 +20,25 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* 
+/*
  *  @OSF_COPYRIGHT@
  *  COPYRIGHT NOTICE
  *  Copyright (c) 1990, 1991, 1992, 1993 Open Software Foundation, Inc.
  *  ALL RIGHTS RESERVED (MOTIF). See the file named COPYRIGHT.MOTIF for
  *  the full copyright text.
-*/ 
-/* 
+ */
+/*
  * HISTORY
-*/ 
+ */
 #ifdef REV_INFO
 #ifndef lint
-static char rcsid[] = "$XConsortium: UilCmd.c /main/11 1995/07/14 09:32:29 drk $"
+static char rcsid[] =
+    "$XConsortium: UilCmd.c /main/11 1995/07/14 09:32:29 drk $"
 #endif
 #endif
 
 /*
-*  (c) Copyright 1989, 1990, DIGITAL EQUIPMENT CORPORATION, MAYNARD, MASS. */
+ *  (c) Copyright 1989, 1990, DIGITAL EQUIPMENT CORPORATION, MAYNARD, MASS. */
 
 /*
 **++
@@ -58,20 +59,16 @@ static char rcsid[] = "$XConsortium: UilCmd.c /main/11 1995/07/14 09:32:29 drk $
 **
 **/
 
-
 #include "UilDefI.h"
 #include "UilCmdDef.h"
 
+    /*
+    **
+    **  GLOBAL DECLARATIONS
+    **
+    **/
 
-/*
-**
-**  GLOBAL DECLARATIONS
-**
-**/
-
-externaldef(uil_comp_glbl) cmd_command_line_type Uil_cmd_z_command;
-
-
+    externaldef(uil_comp_glbl) cmd_command_line_type Uil_cmd_z_command;
 
 /*
 **++
@@ -104,229 +101,196 @@ externaldef(uil_comp_glbl) cmd_command_line_type Uil_cmd_z_command;
 **
 **--
 **/
-void	cmd_decode_command_line( l_arg_count, rac_arg_value )
-int 	l_arg_count;
-char 	*rac_arg_value[ ];
+void cmd_decode_command_line(l_arg_count, rac_arg_value) int l_arg_count;
+char *rac_arg_value[];
 
 {
-    static char	    *include_list	[Uil_k_max_include_dir_count];
-    int	i;
+        static char *include_list[Uil_k_max_include_dir_count];
+        int i;
 
-    Uil_cmd_z_command.ac_source_file = NULL;
-    Uil_cmd_z_command.ac_resource_file = NULL;
-    Uil_cmd_z_command.ac_listing_file = NULL;
-    Uil_cmd_z_command.include_dir_count = 0;
-    Uil_cmd_z_command.ac_include_dir = (char **)include_list;
-    Uil_cmd_z_command.v_resource_file = TRUE;
-    Uil_cmd_z_command.v_listing_file = FALSE;
-    Uil_cmd_z_command.v_show_machine_code = FALSE;
-    Uil_cmd_z_command.v_report_info_msg = TRUE;
-    Uil_cmd_z_command.v_report_warn_msg = TRUE;
-    Uil_cmd_z_command.v_parse_tree = FALSE;
-    Uil_cmd_z_command.v_use_setlocale = FALSE;
-    Uil_cmd_z_command.status_update_delay = 0;
-    Uil_cmd_z_command.message_cb = (Uil_continue_type(*)())NULL;
-    Uil_cmd_z_command.status_cb = (Uil_continue_type(*)())NULL;
-    Uil_cmd_z_command.ac_database = NULL;
-    Uil_cmd_z_command.v_database = FALSE;
+        Uil_cmd_z_command.ac_source_file = NULL;
+        Uil_cmd_z_command.ac_resource_file = NULL;
+        Uil_cmd_z_command.ac_listing_file = NULL;
+        Uil_cmd_z_command.include_dir_count = 0;
+        Uil_cmd_z_command.ac_include_dir = (char **)include_list;
+        Uil_cmd_z_command.v_resource_file = TRUE;
+        Uil_cmd_z_command.v_listing_file = FALSE;
+        Uil_cmd_z_command.v_show_machine_code = FALSE;
+        Uil_cmd_z_command.v_report_info_msg = TRUE;
+        Uil_cmd_z_command.v_report_warn_msg = TRUE;
+        Uil_cmd_z_command.v_parse_tree = FALSE;
+        Uil_cmd_z_command.v_use_setlocale = FALSE;
+        Uil_cmd_z_command.status_update_delay = 0;
+        Uil_cmd_z_command.message_cb = (Uil_continue_type(*)())NULL;
+        Uil_cmd_z_command.status_cb = (Uil_continue_type(*)())NULL;
+        Uil_cmd_z_command.ac_database = NULL;
+        Uil_cmd_z_command.v_database = FALSE;
 
 #if debug_version
-    uil_v_dump_tokens = FALSE;
-    uil_v_dump_symbols = FALSE;
+        uil_v_dump_tokens = FALSE;
+        uil_v_dump_symbols = FALSE;
 #endif
 
-    /* traverse the options on the command line */
+        /* traverse the options on the command line */
 
-    for (i = 1;  i < l_arg_count;  i++)
-    {
-	/* check for an output file  */
+        for (i = 1; i < l_arg_count; i++) {
+                /* check for an output file  */
 
-	if ( strcmp("-o", rac_arg_value[ i ]) == 0 )
-	{
-	    /* the next argument is the output file name  */
+                if (strcmp("-o", rac_arg_value[i]) == 0) {
+                        /* the next argument is the output file name  */
 
-	    /* check next field is not an option */
+                        /* check next field is not an option */
 
-            if (((i+1) >= l_arg_count) ||
-                ( '-' == rac_arg_value[ i+1 ][ 0 ] ))
-	    {
-		diag_issue_diagnostic
-			( d_miss_opt_arg, 
-			  diag_k_no_source, diag_k_no_column,
-			  rac_arg_value[ i ],
-			  "output file"
-			);
-		continue;
-	    }
+                        if (((i + 1) >= l_arg_count) ||
+                            ('-' == rac_arg_value[i + 1][0])) {
+                                diag_issue_diagnostic(
+                                    d_miss_opt_arg, diag_k_no_source,
+                                    diag_k_no_column, rac_arg_value[i],
+                                    "output file");
+                                continue;
+                        }
 
-	    if (Uil_cmd_z_command.ac_resource_file == NULL)
-	        Uil_cmd_z_command.ac_resource_file = rac_arg_value[ i+1 ];
-	    else
-		diag_issue_diagnostic
-		    ( d_dupl_opt, 
-		      diag_k_no_source, diag_k_no_column,
-		      rac_arg_value[ i ]
-		    );
-	    i = i + 1;
-	}
-	    
-	/* check for a binary database file */
+                        if (Uil_cmd_z_command.ac_resource_file == NULL)
+                                Uil_cmd_z_command.ac_resource_file =
+                                    rac_arg_value[i + 1];
+                        else
+                                diag_issue_diagnostic(
+                                    d_dupl_opt, diag_k_no_source,
+                                    diag_k_no_column, rac_arg_value[i]);
+                        i = i + 1;
+                }
 
-	else if ( strcmp("-wmd", rac_arg_value[ i ]) == 0 )
-	{
-	    /* the next argument is the binary database file name  */
+                /* check for a binary database file */
 
-	    /* check next field is not an option */
+                else if (strcmp("-wmd", rac_arg_value[i]) == 0) {
+                        /* the next argument is the binary database file name */
 
-            if (((i+1) >= l_arg_count) ||
-                ( '-' == rac_arg_value[ i+1 ][ 0 ] ))
-	    {
-		diag_issue_diagnostic
-			( d_miss_opt_arg, 
-			  diag_k_no_source, diag_k_no_column,
-			  rac_arg_value[ i ],
-			  "binary database file"
-			);
-		continue;
-	    }
+                        /* check next field is not an option */
 
-	    if (!Uil_cmd_z_command.v_database)
-	    {
-	        Uil_cmd_z_command.v_database = TRUE;
-	        Uil_cmd_z_command.ac_database = rac_arg_value[ i+1 ];
-	    }
-	    else
-		diag_issue_diagnostic
-		    ( d_dupl_opt, 
-		      diag_k_no_source, diag_k_no_column,
-		      rac_arg_value[ i ]
-		    );
-	    i = i + 1;
-	}
+                        if (((i + 1) >= l_arg_count) ||
+                            ('-' == rac_arg_value[i + 1][0])) {
+                                diag_issue_diagnostic(
+                                    d_miss_opt_arg, diag_k_no_source,
+                                    diag_k_no_column, rac_arg_value[i],
+                                    "binary database file");
+                                continue;
+                        }
 
-	/* check for an listing file */
+                        if (!Uil_cmd_z_command.v_database) {
+                                Uil_cmd_z_command.v_database = TRUE;
+                                Uil_cmd_z_command.ac_database =
+                                    rac_arg_value[i + 1];
+                        } else
+                                diag_issue_diagnostic(
+                                    d_dupl_opt, diag_k_no_source,
+                                    diag_k_no_column, rac_arg_value[i]);
+                        i = i + 1;
+                }
 
-	else if ( strcmp("-v", rac_arg_value[ i ]) == 0 )
-	{
-	    /* the next argument is the listing file name  */
+                /* check for an listing file */
 
-	    /* check next field is not an option */
+                else if (strcmp("-v", rac_arg_value[i]) == 0) {
+                        /* the next argument is the listing file name  */
 
-            if (((i+1) >= l_arg_count) ||
-                ( '-' == rac_arg_value[ i+1 ][ 0 ] ))
-	    {
-		diag_issue_diagnostic
-			( d_miss_opt_arg, 
-			  diag_k_no_source, diag_k_no_column,
-			  rac_arg_value[ i ],
-			  "listing file"
-			);
-		continue;
-	    }
+                        /* check next field is not an option */
 
-	    if (!Uil_cmd_z_command.v_listing_file)
-	    {
-	        Uil_cmd_z_command.v_listing_file = TRUE;
-	        Uil_cmd_z_command.ac_listing_file = rac_arg_value[ i+1 ];
-	    }
-	    else
-		diag_issue_diagnostic
-		    ( d_dupl_opt, 
-		      diag_k_no_source, diag_k_no_column,
-		      rac_arg_value[ i ]
-		    );
-	    i = i + 1;
-	}
-	    
-	/* check for the machine code option */
+                        if (((i + 1) >= l_arg_count) ||
+                            ('-' == rac_arg_value[i + 1][0])) {
+                                diag_issue_diagnostic(
+                                    d_miss_opt_arg, diag_k_no_source,
+                                    diag_k_no_column, rac_arg_value[i],
+                                    "listing file");
+                                continue;
+                        }
 
-	else if ( strcmp("-m", rac_arg_value[ i ]) == 0 )
-	{
-	        Uil_cmd_z_command.v_show_machine_code = TRUE;
-	}
-	    
-	/* check if warnings are to be supressed */
+                        if (!Uil_cmd_z_command.v_listing_file) {
+                                Uil_cmd_z_command.v_listing_file = TRUE;
+                                Uil_cmd_z_command.ac_listing_file =
+                                    rac_arg_value[i + 1];
+                        } else
+                                diag_issue_diagnostic(
+                                    d_dupl_opt, diag_k_no_source,
+                                    diag_k_no_column, rac_arg_value[i]);
+                        i = i + 1;
+                }
 
-	else if ( strcmp("-w", rac_arg_value[ i ]) == 0 )
-	{
-	        Uil_cmd_z_command.v_report_info_msg = FALSE;
-	        Uil_cmd_z_command.v_report_warn_msg = FALSE;
-	}
+                /* check for the machine code option */
 
-	/* check if setlocale is to be enabled */
+                else if (strcmp("-m", rac_arg_value[i]) == 0) {
+                        Uil_cmd_z_command.v_show_machine_code = TRUE;
+                }
 
-	else if ( strcmp("-s", rac_arg_value[ i ]) == 0 )
-	{
-	  Uil_cmd_z_command.v_use_setlocale = TRUE;
-	}
-	
-	/* check for an unexpected option */
+                /* check if warnings are to be supressed */
 
-	else if ( '-' == rac_arg_value[ i ][ 0 ] )
-	{
+                else if (strcmp("-w", rac_arg_value[i]) == 0) {
+                        Uil_cmd_z_command.v_report_info_msg = FALSE;
+                        Uil_cmd_z_command.v_report_warn_msg = FALSE;
+                }
 
-	/* check for an include directory */
+                /* check if setlocale is to be enabled */
 
-	    if ( 'I' == rac_arg_value[ i ][ 1 ] )
-	    {
-		if (Uil_cmd_z_command.include_dir_count < Uil_k_max_include_dir_count)
-		    
-		    include_list[Uil_cmd_z_command.include_dir_count++] = 
-			& rac_arg_value[i] [2];
-		else
-		    diag_issue_diagnostic
-		        ( d_too_many_dirs, 
-		          diag_k_no_source, diag_k_no_column,
-		          rac_arg_value[ i ], Uil_k_max_include_dir_count
-		        );
-	    } else
-	    {
-		diag_issue_diagnostic
-		    ( d_unknown_opt, 
-		      diag_k_no_source, diag_k_no_column,
-		      rac_arg_value[ i ]
-		    );
-	    }
-	}
+                else if (strcmp("-s", rac_arg_value[i]) == 0) {
+                        Uil_cmd_z_command.v_use_setlocale = TRUE;
+                }
 
-	/* assume it is a UIL source file specification
-	 * validation of the file spec is done when file is opened */
+                /* check for an unexpected option */
 
-	else
-	{
-	    if (Uil_cmd_z_command.ac_source_file == NULL)
-	       Uil_cmd_z_command.ac_source_file = rac_arg_value[ i ];
-	    else
-		diag_issue_diagnostic
-		    ( d_add_source, 
-		      diag_k_no_source, diag_k_no_column,
-		      rac_arg_value[ i ]
-		    );
-	}
-    }
+                else if ('-' == rac_arg_value[i][0]) {
 
-    /*
-    **	Check for a source file - otherwise issue a diagnostic.
-    */
+                        /* check for an include directory */
 
-    if (Uil_cmd_z_command.ac_source_file == NULL)
-	diag_issue_diagnostic
-	    ( d_no_source, diag_k_no_source, diag_k_no_column );
+                        if ('I' == rac_arg_value[i][1]) {
+                                if (Uil_cmd_z_command.include_dir_count <
+                                    Uil_k_max_include_dir_count)
 
-    if (Uil_cmd_z_command.ac_resource_file == NULL)
-	{
-        Uil_cmd_z_command.ac_resource_file = XtMalloc (strlen ("a.uid") + 1);
-        strcpy (Uil_cmd_z_command.ac_resource_file,"a.uid");
+                                        include_list[Uil_cmd_z_command
+                                                         .include_dir_count++] =
+                                            &rac_arg_value[i][2];
+                                else
+                                        diag_issue_diagnostic(
+                                            d_too_many_dirs, diag_k_no_source,
+                                            diag_k_no_column, rac_arg_value[i],
+                                            Uil_k_max_include_dir_count);
+                        } else {
+                                diag_issue_diagnostic(
+                                    d_unknown_opt, diag_k_no_source,
+                                    diag_k_no_column, rac_arg_value[i]);
+                        }
+                }
+
+                /* assume it is a UIL source file specification
+                 * validation of the file spec is done when file is opened */
+
+                else {
+                        if (Uil_cmd_z_command.ac_source_file == NULL)
+                                Uil_cmd_z_command.ac_source_file =
+                                    rac_arg_value[i];
+                        else
+                                diag_issue_diagnostic(
+                                    d_add_source, diag_k_no_source,
+                                    diag_k_no_column, rac_arg_value[i]);
+                }
         }
 
-    /*
-    **	Machine code listing only makes sense if listing is set.
-    */
-    
-    Uil_cmd_z_command.v_show_machine_code =
-        ( Uil_cmd_z_command.v_listing_file & 
-	  Uil_cmd_z_command.v_show_machine_code);
+        /*
+        **	Check for a source file - otherwise issue a diagnostic.
+        */
+
+        if (Uil_cmd_z_command.ac_source_file == NULL)
+                diag_issue_diagnostic(d_no_source, diag_k_no_source,
+                                      diag_k_no_column);
+
+        if (Uil_cmd_z_command.ac_resource_file == NULL) {
+                Uil_cmd_z_command.ac_resource_file =
+                    XtMalloc(strlen("a.uid") + 1);
+                strcpy(Uil_cmd_z_command.ac_resource_file, "a.uid");
+        }
+
+        /*
+        **	Machine code listing only makes sense if listing is set.
+        */
+
+        Uil_cmd_z_command.v_show_machine_code =
+            (Uil_cmd_z_command.v_listing_file &
+             Uil_cmd_z_command.v_show_machine_code);
 }
-
-
-

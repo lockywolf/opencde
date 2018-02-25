@@ -28,4 +28,3 @@
 #include "oliasdb/pref.h"
 
 #endif
-

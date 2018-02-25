@@ -31,13 +31,12 @@
 #ifndef PARSEJOBS_H
 #define PARSEJOBS_H
 
-typedef enum
-{
-   UNKNOWN_OUTPUT,
-   AIX_V2_OUTPUT,
-   AIX_V3_OUTPUT,
-   BSD_OUTPUT
-} JobOutputType;   
+typedef enum {
+        UNKNOWN_OUTPUT,
+        AIX_V2_OUTPUT,
+        AIX_V3_OUTPUT,
+        BSD_OUTPUT
+} JobOutputType;
 
 extern JobOutputType DetermineOutput(char *output);
 
@@ -48,39 +47,22 @@ extern int ConnectToPrintServer(const char *server, int timeout);
 // return 0 if error, otherwise return 1 if successful
 extern int SendPrintJobStatusReguest(int sockfd, const char *printer);
 
-extern void LocalPrintJobs(
-   char *printer,
-   char **return_job_list,
-   int *return_n_jobs);
+extern void LocalPrintJobs(char *printer, char **return_job_list,
+                           int *return_n_jobs);
 
-extern int RemotePrintJobs(
-   char *server,
-   char *printer,
-   char **return_job_list,
-   int *return_n_jobs);
+extern int RemotePrintJobs(char *server, char *printer, char **return_job_list,
+                           int *return_n_jobs);
 
-extern int ParseRemotePrintJobs(
-   char *printer,
-   char *jobs,
-   char **return_job_list,
-   int *return_n_jobs);
+extern int ParseRemotePrintJobs(char *printer, char *jobs,
+                                char **return_job_list, int *return_n_jobs);
 
-extern int ParseBSDPrintJobs(
-   char *printer,
-   char *jobs,
-   char **return_job_list,
-   int *return_n_jobs);
+extern int ParseBSDPrintJobs(char *printer, char *jobs, char **return_job_list,
+                             int *return_n_jobs);
 
-extern int ParseAIXv3PrintJobs(
-   char *printer,
-   char *jobs,
-   char **return_job_list,
-   int *return_n_jobs);
+extern int ParseAIXv3PrintJobs(char *printer, char *jobs,
+                               char **return_job_list, int *return_n_jobs);
 
-extern int ParseAIXv2PrintJobs(
-   char *printer,
-   char *jobs,
-   char **return_job_list,
-   int *return_n_jobs);
+extern int ParseAIXv2PrintJobs(char *printer, char *jobs,
+                               char **return_job_list, int *return_n_jobs);
 
 #endif // PARSEJOBS_H

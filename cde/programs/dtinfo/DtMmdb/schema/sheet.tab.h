@@ -51,14 +51,13 @@
 #define MODE 284
 #define PAGE_SZ 285
 #define CACHED_PAGES 286
-#undef  BYTE_ORDER
+#undef BYTE_ORDER
 #define BYTE_ORDER 287
 #define SEPARATOR 288
-typedef union
-{
- char   *string;
- int    integer;
- desc*  trans;
- page_store_desc*  ps_trans;
+typedef union {
+        char *string;
+        int integer;
+        desc *trans;
+        page_store_desc *ps_trans;
 } YYSTYPE;
-extern YYSTYPE  schemalval;
+extern YYSTYPE schemalval;

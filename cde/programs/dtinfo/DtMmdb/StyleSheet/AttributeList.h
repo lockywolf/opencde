@@ -30,28 +30,23 @@
 /* **************************************************************
    class AttributeList
 
-   A linked list of Attributes 
+   A linked list of Attributes
    ************************************************************** */
 
+class AttributeList : private CC_TPtrSlist<Attribute> {
+      public:
+        AttributeList();
+        virtual ~AttributeList();
 
-class AttributeList : private CC_TPtrSlist<Attribute>
-{
-public:
-  AttributeList();
-  virtual ~AttributeList();
-  
-  void add(Attribute *);
+        void add(Attribute *);
 
-  const Attribute *lookup(const Symbol &name) const;
+        const Attribute *lookup(const Symbol &name) const;
 
-  ostream &print(ostream &) const ;
-
+        ostream &print(ostream &) const;
 };
 
-inline
-ostream &operator<<(ostream &o, const AttributeList &attrlist)
-{
-  return attrlist.print(o);
+inline ostream &operator<<(ostream &o, const AttributeList &attrlist) {
+        return attrlist.print(o);
 }
 
 #endif /* _AttributeList_h */

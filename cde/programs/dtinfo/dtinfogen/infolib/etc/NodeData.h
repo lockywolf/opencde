@@ -36,33 +36,31 @@ class OL_Data;
 
 class NodeData : public ComplexTask {
 
-friend int nodedatalex();
+        friend int nodedatalex();
 
-public:
-  NodeData( NodeTask *, const Token & );
-  ~NodeData();
-  void markup( const Token & );
-  void data(const char *, size_t );
-  NodeTask *node() const { return f_node; }
-  const char *graphics_id();
-  
-protected:
-  NodeTask *f_node;
-  FlexBuffer *NodeBuffer;
-  int        CollectObject;
-  int        f_base;
-  SearchEngine *f_search;
-  void        write_record();
-  void        reset();
+      public:
+        NodeData(NodeTask *, const Token &);
+        ~NodeData();
+        void markup(const Token &);
+        void data(const char *, size_t);
+        NodeTask *node() const { return f_node; }
+        const char *graphics_id();
 
-private:
-  
-  int seq_no;
-  FlexBuffer  *DbBuffer;
-  FlexBuffer  *internal_buffer;
-  OL_Data     *current_graphics_id;
-  void         write_start_tag( const Token &t, FlexBuffer *buf );
-  
+      protected:
+        NodeTask *f_node;
+        FlexBuffer *NodeBuffer;
+        int CollectObject;
+        int f_base;
+        SearchEngine *f_search;
+        void write_record();
+        void reset();
+
+      private:
+        int seq_no;
+        FlexBuffer *DbBuffer;
+        FlexBuffer *internal_buffer;
+        OL_Data *current_graphics_id;
+        void write_start_tag(const Token &t, FlexBuffer *buf);
 };
 
 #endif

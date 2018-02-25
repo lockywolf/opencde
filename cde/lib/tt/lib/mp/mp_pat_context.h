@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp_pat_context.h /main/3 1995/10/23 10:26:23 rswiston $ 			 				 */
+/*%%  $XConsortium: mp_pat_context.h /main/3 1995/10/23 10:26:23 rswiston $
+ */
 /* -*-C++-*-
  *
  * @(#)mp_pat_context.h	1.4 30 Jul 1993
@@ -47,36 +48,21 @@
 
 class _Tt_pat_context : public _Tt_context {
       public:
-	_Tt_pat_context();
-	_Tt_pat_context(const _Tt_context &);
-	virtual ~_Tt_pat_context();
+        _Tt_pat_context();
+        _Tt_pat_context(const _Tt_context &);
+        virtual ~_Tt_pat_context();
 
-	Tt_status		addValue(
-					const _Tt_string &value
-				);
-	Tt_status		addValue(
-					int value
-				);
-	Tt_status		addValue(
-					const _Tt_msg_context &msgCntxt
-				);
-	Tt_status		deleteValue(
-					const _Tt_msg_context &msgCntxt
-				);
+        Tt_status addValue(const _Tt_string &value);
+        Tt_status addValue(int value);
+        Tt_status addValue(const _Tt_msg_context &msgCntxt);
+        Tt_status deleteValue(const _Tt_msg_context &msgCntxt);
 
-	void			print(
-					const _Tt_ostream &os
-				) const;
-	static void		print_(
-					const _Tt_ostream &os,
-					const _Tt_object *obj
-				);
-	bool_t			xdr(
-					XDR *xdrs
-				);
+        void print(const _Tt_ostream &os) const;
+        static void print_(const _Tt_ostream &os, const _Tt_object *obj);
+        bool_t xdr(XDR *xdrs);
 
       protected:
-	_Tt_arg_list_ptr	_values;
+        _Tt_arg_list_ptr _values;
 };
 
-#endif				/* _MP_PAT_CONTEXT_H */
+#endif /* _MP_PAT_CONTEXT_H */

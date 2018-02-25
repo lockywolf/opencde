@@ -45,29 +45,23 @@
 
 static int inited = 0;
 
-extern void
-_DtCm_print_tick(time_t t)
-{
+extern void _DtCm_print_tick(time_t t) {
         char *a;
-	_Xctimeparams ctime_buf;
- 
+        _Xctimeparams ctime_buf;
+
         a = _XCtime(&t, ctime_buf);
-        (void) fprintf (stderr, "%d %s\n", t, a);
+        (void)fprintf(stderr, "%d %s\n", t, a);
 }
 
-extern void
-_DtCm_print_errmsg(const char *msg)
-{
-	if (inited == 0) {
-		openlog("libcsa", 0, 0);
-		inited = 1;
-	}
+extern void _DtCm_print_errmsg(const char *msg) {
+        if (inited == 0) {
+                openlog("libcsa", 0, 0);
+                inited = 1;
+        }
 
 #ifdef CM_DEBUG
-	fprintf(stderr, "libcsa: %s\n", msg);
+        fprintf(stderr, "libcsa: %s\n", msg);
 #else
-	syslog(LOG_ERR, "%s\n", msg);
+        syslog(LOG_ERR, "%s\n", msg);
 #endif
-
 }
-

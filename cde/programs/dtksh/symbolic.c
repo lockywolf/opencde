@@ -29,10 +29,10 @@
 /*	The copyright notice above does not evidence any       */
 /*	actual or intended publication of such source code.    */
 
-#include        "name.h"
-#include        "shell.h"
+#include "name.h"
+#include "shell.h"
 #include "stdio.h"
-#include "exksh.h" /* which includes sys/types.h */
+#include "exksh.h"  /* which includes sys/types.h */
 #include "struct.h" /* which includes sys/types.h */
 #include <string.h>
 #include "msgs.h"
@@ -52,129 +52,118 @@ int Nsymlist;
 ** field will be necessary to maintain uniqueness.
 */
 
+struct symlist *fsymbolic(struct memtbl *tbl) {
+        int i;
 
-struct symlist *
-fsymbolic(
-        struct memtbl *tbl )
-{
-	int i;
-
-	for (i = 0; i < Nsymlist; i++)
-		if (memcmp(tbl, &Symlist[i].tbl, sizeof(struct memtbl)) == 0)
-			return(Symlist + i);
-	return(NULL);
+        for (i = 0; i < Nsymlist; i++)
+                if (memcmp(tbl, &Symlist[i].tbl, sizeof(struct memtbl)) == 0)
+                        return (Symlist + i);
+        return (NULL);
 }
 
-int
-do_symbolic(
-        int argc,
-        char **argv )
-{
-	int i, nsyms, isflag;
-	unsigned long j;
-	struct symarray syms[50];
-	struct memtbl *tbl;
-	char *p;
-	char *type = NULL;
-        char * errmsg;
+int do_symbolic(int argc, char **argv) {
+        int i, nsyms, isflag;
+        unsigned long j;
+        struct symarray syms[50];
+        struct memtbl *tbl;
+        char *p;
+        char *type = NULL;
+        char *errmsg;
 
-	nsyms = 0;
-	isflag = 0;
-	for (i = 1; (i < argc) && argv[i]; i++) {
-		if (argv[i][0] == '-') {
-			for (j = 1; argv[i][j]; j++) {
-				switch(argv[i][j]) {
-				case 'm':
-					isflag = 1;
-					break;
-				case 't':
-					if (argv[i][j + 1])
-						type = argv[i] + j + 1;
-					else
-						type = argv[++i];
-					j = strlen(argv[i]) - 1;
-					break;
-				}
-			}
-		}
-		else {
-			syms[nsyms++].str = argv[i];
-			if (nsyms == 50)
-				break;
-		}
-	}
-	if ((type == NULL) || (!nsyms)) {
-		XK_USAGE(argv[0]);
-	}
-	if (p = strchr(type, '.')) {
-		*p = '\0';
-		if ((tbl = all_tbl_search(type, 0)) == NULL) {
-			*p = '.';
+        nsyms = 0;
+        isflag = 0;
+        for (i = 1; (i < argc) && argv[i]; i++) {
+                if (argv[i][0] == '-') {
+                        for (j = 1; argv[i][j]; j++) {
+                                switch (argv[i][j]) {
+                                case 'm':
+                                        isflag = 1;
+                                        break;
+                                case 't':
+                                        if (argv[i][j + 1])
+                                                type = argv[i] + j + 1;
+                                        else
+                                                type = argv[++i];
+                                        j = strlen(argv[i]) - 1;
+                                        break;
+                                }
+                        }
+                } else {
+                        syms[nsyms++].str = argv[i];
+                        if (nsyms == 50)
+                                break;
+                }
+        }
+        if ((type == NULL) || (!nsyms)) {
+                XK_USAGE(argv[0]);
+        }
+        if (p = strchr(type, '.')) {
+                *p = '\0';
+                if ((tbl = all_tbl_search(type, 0)) == NULL) {
+                        *p = '.';
                         errmsg = strdup(GetSharedMsg(DT_UNDEF_TYPE));
-			printerrf(argv[0], errmsg, type, NULL, NULL,
-                                  NULL, NULL, NULL, NULL, NULL);
+                        printerrf(argv[0], errmsg, type, NULL, NULL, NULL, NULL,
+                                  NULL, NULL, NULL);
                         free(errmsg);
-			return(SH_FAIL);
-		}
-		if ((tbl = ffind(tbl, p + 1, NULL)) == NULL) {
-                        errmsg=strdup(GETMESSAGE(13,1, 
-                           "Unable to locate a field named '%s' for the type '%s'"));
-			printerrf(argv[0], errmsg, p + 1, type, NULL,
-                                  NULL, NULL, NULL, NULL, NULL);
+                        return (SH_FAIL);
+                }
+                if ((tbl = ffind(tbl, p + 1, NULL)) == NULL) {
+                        errmsg =
+                            strdup(GETMESSAGE(13, 1,
+                                              "Unable to locate a field named "
+                                              "'%s' for the type '%s'"));
+                        printerrf(argv[0], errmsg, p + 1, type, NULL, NULL,
+                                  NULL, NULL, NULL, NULL);
                         free(errmsg);
-			*p = '.';
-			return(SH_FAIL);
-		}
-		*p = '.';
-	}
-	else if ((tbl = all_tbl_search(type, 0)) == NULL) {
+                        *p = '.';
+                        return (SH_FAIL);
+                }
+                *p = '.';
+        } else if ((tbl = all_tbl_search(type, 0)) == NULL) {
                 errmsg = strdup(GetSharedMsg(DT_UNDEF_TYPE));
-		printerrf(argv[0], errmsg, type, NULL, NULL,
-                          NULL, NULL, NULL, NULL, NULL);
+                printerrf(argv[0], errmsg, type, NULL, NULL, NULL, NULL, NULL,
+                          NULL, NULL);
                 free(errmsg);
-		return(SH_FAIL);
-	}
-		
-	for (i = 0; i < nsyms; i++) {
-		if (!fdef(syms[i].str, &j)) {
-                        errmsg=strdup(GETMESSAGE(13,2, 
-                               "The name '%s' has not been defined"));
-			printerrf(argv[0], errmsg, syms[i].str,
-                                  NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+                return (SH_FAIL);
+        }
+
+        for (i = 0; i < nsyms; i++) {
+                if (!fdef(syms[i].str, &j)) {
+                        errmsg = strdup(GETMESSAGE(
+                            13, 2, "The name '%s' has not been defined"));
+                        printerrf(argv[0], errmsg, syms[i].str, NULL, NULL,
+                                  NULL, NULL, NULL, NULL, NULL);
                         free(errmsg);
-			return(SH_FAIL);
-		}
-		syms[i].str = strdup(syms[i].str);
-		syms[i].addr = j;
-	}
-	add_symbolic(isflag, tbl, syms, nsyms);
-	return(SH_SUCC);
+                        return (SH_FAIL);
+                }
+                syms[i].str = strdup(syms[i].str);
+                syms[i].addr = j;
+        }
+        add_symbolic(isflag, tbl, syms, nsyms);
+        return (SH_SUCC);
 }
 
-int
-add_symbolic(
-        int isflag,
-        struct memtbl *tbl,
-        struct symarray *syms,
-        int nsyms )
-{
-	struct symlist *symptr;
+int add_symbolic(int isflag, struct memtbl *tbl, struct symarray *syms,
+                 int nsyms) {
+        struct symlist *symptr;
 
-	if ((symptr = fsymbolic(tbl)) == NULL) {
-		if (!Symlist)
-			Symlist = (struct symlist *) malloc((Nsymlist + 1) * sizeof(struct symlist));
-		else
-			Symlist = (struct symlist *) realloc(Symlist, (Nsymlist + 1) * sizeof(struct symlist));
-		if (!Symlist)
-			return(SH_FAIL);
-		symptr = Symlist + Nsymlist;
-		Nsymlist++;
-	}
-	else
-		free(symptr->syms);
-	symptr->tbl = *tbl;
-	symptr->nsyms = nsyms;
-	symptr->isflag = isflag;
-	symptr->syms = (struct symarray *) malloc(nsyms * sizeof(struct symarray));
-	memcpy(symptr->syms, syms, nsyms * sizeof(struct symarray));
+        if ((symptr = fsymbolic(tbl)) == NULL) {
+                if (!Symlist)
+                        Symlist = (struct symlist *)malloc(
+                            (Nsymlist + 1) * sizeof(struct symlist));
+                else
+                        Symlist = (struct symlist *)realloc(
+                            Symlist, (Nsymlist + 1) * sizeof(struct symlist));
+                if (!Symlist)
+                        return (SH_FAIL);
+                symptr = Symlist + Nsymlist;
+                Nsymlist++;
+        } else
+                free(symptr->syms);
+        symptr->tbl = *tbl;
+        symptr->nsyms = nsyms;
+        symptr->isflag = isflag;
+        symptr->syms =
+            (struct symarray *)malloc(nsyms * sizeof(struct symarray));
+        memcpy(symptr->syms, syms, nsyms * sizeof(struct symarray));
 }

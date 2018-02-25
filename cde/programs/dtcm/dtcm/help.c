@@ -48,7 +48,8 @@
  */
 
 #ifndef lint
-static char sccsid[] = "@(#)help.c 1.19 95/03/28 Copyr 1991 Sun Microsystems, Inc.";
+static char sccsid[] =
+    "@(#)help.c 1.19 95/03/28 Copyr 1991 Sun Microsystems, Inc.";
 #endif
 
 #include <EUSCompat.h>
@@ -59,7 +60,7 @@ static char sccsid[] = "@(#)help.c 1.19 95/03/28 Copyr 1991 Sun Microsystems, In
 #include <sys/param.h> /* MAXPATHLEN defined here */
 #ifdef SVR4
 #include <sys/utsname.h> /* SYS_NMLN */
-#endif /* SVR4 specific includes */
+#endif                   /* SVR4 specific includes */
 #include <dirent.h>
 #include <ctype.h>
 #include <string.h>
@@ -92,148 +93,160 @@ static char sccsid[] = "@(#)help.c 1.19 95/03/28 Copyr 1991 Sun Microsystems, In
 
 static void display_help(Calendar *, ArgList, int);
 
-static void
-display_help(Calendar *c, ArgList args, int nargs)
-{
-  if (!c->mainhelpdialog)
-  {
-    Arg oneArg;
-    char *title = XtNewString(catgets(c->DT_catd, 1, 1076, "Calendar : Help"));
+static void display_help(Calendar *c, ArgList args, int nargs) {
+        if (!c->mainhelpdialog) {
+                Arg oneArg;
+                char *title = XtNewString(
+                    catgets(c->DT_catd, 1, 1076, "Calendar : Help"));
 
-    XtSetArg(oneArg, XmNtitle, title);
-    c->mainhelpdialog =
-      (Widget)DtCreateHelpDialog(c->frame, "mainhelpdialog", &oneArg, 1);
-    XtFree(title);
-  }
-
-  XtSetValues(c->mainhelpdialog, args, nargs);
-  XtManageChild(c->mainhelpdialog);
-}
-
-void show_main_help(Widget w, XtPointer clientData, XtPointer cbs)
-{
-        int 		ac;
-        Arg 		al[10];
-        Calendar 	*c = calendar;
-	Props_pu       	*p = (Props_pu *) c->properties_pu;
-        Widget 		selWidget = NULL;
-        int 		status = DtHELP_SELECT_ERROR;
- 
-        ac = 0;
-        XtSetArg(al[ac], DtNhelpType, DtHELP_TYPE_TOPIC); ac++;
-        switch ((intptr_t)clientData) {
-            case HELP_OVERVIEW:
-        	XtSetArg(al[ac], DtNhelpVolume, "Calendar"); ac++;
-                XtSetArg(al[ac], DtNlocationId, "_HOMETOPIC"); ac++;
-                break;
-            case HELP_USINGHELP:
-        	XtSetArg(al[ac], DtNhelpVolume, "Help4Help"); ac++;
-                XtSetArg(al[ac], DtNlocationId, "_HOMETOPIC"); ac++;
-                break;
-            case HELP_TASKS:
-        	XtSetArg(al[ac], DtNhelpVolume, "Calendar"); ac++;
-                XtSetArg(al[ac], DtNlocationId, "TASKS"); ac++;
-                break;
-            case HELP_REFERENCE:
-        	XtSetArg(al[ac], DtNhelpVolume, "Calendar"); ac++;
-                XtSetArg(al[ac], DtNlocationId, "REFERENCE"); ac++;
-                break;
-            case HELP_ABOUTCALENDAR:
-        	XtSetArg(al[ac], DtNhelpVolume, "Help4Help"); ac++;
-                XtSetArg(al[ac], DtNlocationId, "_COPYRIGHT"); ac++;
-                break;
-            case HELP_TOC:
-        	XtSetArg(al[ac], DtNhelpVolume, "Calendar"); ac++;
-                XtSetArg(al[ac], DtNlocationId, "TOC"); ac++;
-                break;
-            case HELP_ONITEM:
-               while (!XtIsSubclass(w, applicationShellWidgetClass))
-                   w = XtParent(w);
- 
-               status = DtHelpReturnSelectedWidgetId(w, 0, &selWidget);     
-               switch ((int)status)
-                  {
-                    case DtHELP_SELECT_ERROR:
-                      printf("%s", catgets(c->DT_catd, 1, 350, "Selection Error, cannot continue\n"));
-                    break;
-                    case DtHELP_SELECT_VALID:
-                      while (selWidget != NULL)
-                        {
-                          if ((XtHasCallbacks(selWidget, XmNhelpCallback)                                            == XtCallbackHasSome))
-                            {
-                               XtCallCallbacks((Widget)selWidget,
-                                               XmNhelpCallback,NULL);
-                               break;
-                            }
-                          else
-                           selWidget = XtParent(selWidget);
-                        }
-                    break;
-                    case DtHELP_SELECT_ABORT:
-                      return;
-
-                    case DtHELP_SELECT_INVALID:
-		      {
-			char *title = XtNewString(catgets(c->DT_catd, 1, 110, "Calendar : Error - Help"));
-			char *text = XtNewString(catgets(c->DT_catd, 1, 352, "You must select a component within your application."));
-			char *ident1 = XtNewString(catgets(c->DT_catd, 1, 95, "Continue"));
-			dialog_popup(c->frame,
-				     DIALOG_TITLE, title,
-				     DIALOG_TEXT, text,
-				     BUTTON_IDENT, 1, ident1,
-				     DIALOG_IMAGE, p->xm_error_pixmap,
-				     NULL);
-			XtFree(ident1);
-			XtFree(text);
-			XtFree(title);
-			return;
-		      }
-                  }
- 
-               break;
- 
-            default:
-        	XtSetArg(al[ac], DtNhelpVolume, "Calendar"); ac++;
-                XtSetArg(al[ac], DtNlocationId, "_HOMETOPIC"); ac++;
-                break;
+                XtSetArg(oneArg, XmNtitle, title);
+                c->mainhelpdialog = (Widget)DtCreateHelpDialog(
+                    c->frame, "mainhelpdialog", &oneArg, 1);
+                XtFree(title);
         }
 
-	display_help(c, al, ac);
+        XtSetValues(c->mainhelpdialog, args, nargs);
+        XtManageChild(c->mainhelpdialog);
 }
 
-extern void
-help_cb(Widget w, XtPointer clientData, XtPointer callData)
-{
+void show_main_help(Widget w, XtPointer clientData, XtPointer cbs) {
         int ac;
         Arg al[10];
         Calendar *c = calendar;
-	char *locationid = (char *) clientData;
+        Props_pu *p = (Props_pu *)c->properties_pu;
+        Widget selWidget = NULL;
+        int status = DtHELP_SELECT_ERROR;
 
         ac = 0;
-        XtSetArg(al[ac], DtNhelpType, DtHELP_TYPE_TOPIC); ac++;
-        XtSetArg(al[ac], DtNhelpVolume, "Calendar"); ac++;
-        XtSetArg(al[ac], DtNlocationId, locationid); ac++;
+        XtSetArg(al[ac], DtNhelpType, DtHELP_TYPE_TOPIC);
+        ac++;
+        switch ((intptr_t)clientData) {
+        case HELP_OVERVIEW:
+                XtSetArg(al[ac], DtNhelpVolume, "Calendar");
+                ac++;
+                XtSetArg(al[ac], DtNlocationId, "_HOMETOPIC");
+                ac++;
+                break;
+        case HELP_USINGHELP:
+                XtSetArg(al[ac], DtNhelpVolume, "Help4Help");
+                ac++;
+                XtSetArg(al[ac], DtNlocationId, "_HOMETOPIC");
+                ac++;
+                break;
+        case HELP_TASKS:
+                XtSetArg(al[ac], DtNhelpVolume, "Calendar");
+                ac++;
+                XtSetArg(al[ac], DtNlocationId, "TASKS");
+                ac++;
+                break;
+        case HELP_REFERENCE:
+                XtSetArg(al[ac], DtNhelpVolume, "Calendar");
+                ac++;
+                XtSetArg(al[ac], DtNlocationId, "REFERENCE");
+                ac++;
+                break;
+        case HELP_ABOUTCALENDAR:
+                XtSetArg(al[ac], DtNhelpVolume, "Help4Help");
+                ac++;
+                XtSetArg(al[ac], DtNlocationId, "_COPYRIGHT");
+                ac++;
+                break;
+        case HELP_TOC:
+                XtSetArg(al[ac], DtNhelpVolume, "Calendar");
+                ac++;
+                XtSetArg(al[ac], DtNlocationId, "TOC");
+                ac++;
+                break;
+        case HELP_ONITEM:
+                while (!XtIsSubclass(w, applicationShellWidgetClass))
+                        w = XtParent(w);
 
-	display_help(c, al, ac);
+                status = DtHelpReturnSelectedWidgetId(w, 0, &selWidget);
+                switch ((int)status) {
+                case DtHELP_SELECT_ERROR:
+                        printf("%s",
+                               catgets(c->DT_catd, 1, 350,
+                                       "Selection Error, cannot continue\n"));
+                        break;
+                case DtHELP_SELECT_VALID:
+                        while (selWidget != NULL) {
+                                if ((XtHasCallbacks(selWidget,
+                                                    XmNhelpCallback) ==
+                                     XtCallbackHasSome)) {
+                                        XtCallCallbacks((Widget)selWidget,
+                                                        XmNhelpCallback, NULL);
+                                        break;
+                                } else
+                                        selWidget = XtParent(selWidget);
+                        }
+                        break;
+                case DtHELP_SELECT_ABORT:
+                        return;
+
+                case DtHELP_SELECT_INVALID: {
+                        char *title = XtNewString(catgets(
+                            c->DT_catd, 1, 110, "Calendar : Error - Help"));
+                        char *text =
+                            XtNewString(catgets(c->DT_catd, 1, 352,
+                                                "You must select a component "
+                                                "within your application."));
+                        char *ident1 =
+                            XtNewString(catgets(c->DT_catd, 1, 95, "Continue"));
+                        dialog_popup(c->frame, DIALOG_TITLE, title, DIALOG_TEXT,
+                                     text, BUTTON_IDENT, 1, ident1,
+                                     DIALOG_IMAGE, p->xm_error_pixmap, NULL);
+                        XtFree(ident1);
+                        XtFree(text);
+                        XtFree(title);
+                        return;
+                }
+                }
+
+                break;
+
+        default:
+                XtSetArg(al[ac], DtNhelpVolume, "Calendar");
+                ac++;
+                XtSetArg(al[ac], DtNlocationId, "_HOMETOPIC");
+                ac++;
+                break;
+        }
+
+        display_help(c, al, ac);
+}
+
+extern void help_cb(Widget w, XtPointer clientData, XtPointer callData) {
+        int ac;
+        Arg al[10];
+        Calendar *c = calendar;
+        char *locationid = (char *)clientData;
+
+        ac = 0;
+        XtSetArg(al[ac], DtNhelpType, DtHELP_TYPE_TOPIC);
+        ac++;
+        XtSetArg(al[ac], DtNhelpVolume, "Calendar");
+        ac++;
+        XtSetArg(al[ac], DtNlocationId, locationid);
+        ac++;
+
+        display_help(c, al, ac);
 }
 
 /* special case where we must determine the view */
-extern void
-help_view_cb(Widget w, XtPointer clientData, XtPointer callData)
-{
+extern void help_view_cb(Widget w, XtPointer clientData, XtPointer callData) {
         Calendar *c = calendar;
 
-	switch (c->view->glance) {
-		case dayGlance:
-			help_cb(w, (XtPointer)CALENDAR_HELP_DAY_WINDOW, callData);
-			break;
-		case weekGlance:
-			help_cb(w, (XtPointer)CALENDAR_HELP_WEEK_WINDOW, callData);
-			break;
-		case monthGlance:
-			help_cb(w, (XtPointer)CALENDAR_HELP_MONTH_WINDOW, callData);
-			break;
-		default:
-			break;
-	}
+        switch (c->view->glance) {
+        case dayGlance:
+                help_cb(w, (XtPointer)CALENDAR_HELP_DAY_WINDOW, callData);
+                break;
+        case weekGlance:
+                help_cb(w, (XtPointer)CALENDAR_HELP_WEEK_WINDOW, callData);
+                break;
+        case monthGlance:
+                help_cb(w, (XtPointer)CALENDAR_HELP_MONTH_WINDOW, callData);
+                break;
+        default:
+                break;
+        }
 }

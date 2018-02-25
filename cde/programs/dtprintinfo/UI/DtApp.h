@@ -49,78 +49,76 @@ extern const char *OPEN;
 extern const char *CLOSE;
 extern const char *PRINTERS_DIR;
 
-class DtApp : public Application
-{
+class DtApp : public Application {
 
-   friend void InitQueueDetails(BaseUI *obj, void *data);
-   friend void RemoteStatusCB(BaseUI *obj, char *output, int rc);
-   friend void TurnOffHourGlass(BaseUI *obj, void *data);
-   friend void OpenClose(void *data, BaseUI *obj);
-   friend void ActionCB(void *data, BaseUI *obj, char *actionReferenceName);
-   friend void UpdatePrintJobs(BaseUI *obj, void *data);
-   friend void PreferenceCB(void *data, PreferenceRequest req, char *value);
-   friend void FilterCB(void *data);
-   friend void ModifyCB(void *data);
-   friend boolean SelectPrintJobs(BaseUI *obj);
-   friend void FindCB(void *data);
-   friend void AddQueues(BaseUI *obj, void *data);
-   friend void RestoreAppCB(BaseUI *obj, void *data);
+        friend void InitQueueDetails(BaseUI *obj, void *data);
+        friend void RemoteStatusCB(BaseUI *obj, char *output, int rc);
+        friend void TurnOffHourGlass(BaseUI *obj, void *data);
+        friend void OpenClose(void *data, BaseUI *obj);
+        friend void ActionCB(void *data, BaseUI *obj,
+                             char *actionReferenceName);
+        friend void UpdatePrintJobs(BaseUI *obj, void *data);
+        friend void PreferenceCB(void *data, PreferenceRequest req,
+                                 char *value);
+        friend void FilterCB(void *data);
+        friend void ModifyCB(void *data);
+        friend boolean SelectPrintJobs(BaseUI *obj);
+        friend void FindCB(void *data);
+        friend void AddQueues(BaseUI *obj, void *data);
+        friend void RestoreAppCB(BaseUI *obj, void *data);
 
- private:
+      private:
+        static void InitQueueDetails(BaseUI *obj, void *data);
+        static void RemoteStatusCB(BaseUI *obj, char *output, int rc);
+        static void TurnOffHourGlass(BaseUI *obj, void *data);
+        static void OpenClose(void *data, BaseUI *obj);
+        static void ActionCB(void *data, BaseUI *obj,
+                             char *actionReferenceName);
+        static void UpdatePrintJobs(BaseUI *obj, void *data);
+        static void PreferenceCB(void *data, PreferenceRequest req,
+                                 char *value);
+        static void FilterCB(void *data);
+        static void ModifyCB(void *data);
+        static boolean SelectPrintJobs(BaseUI *obj);
+        static void FindCB(void *data);
+        static void AddQueues(BaseUI *obj, void *data);
+        static void RestoreAppCB(BaseUI *obj, void *data);
 
-   static void InitQueueDetails(BaseUI *obj, void *data);
-   static void RemoteStatusCB(BaseUI *obj, char *output, int rc);
-   static void TurnOffHourGlass(BaseUI *obj, void *data);
-   static void OpenClose(void *data, BaseUI *obj);
-   static void ActionCB(void *data, BaseUI *obj, char *actionReferenceName);
-   static void UpdatePrintJobs(BaseUI *obj, void *data);
-   static void PreferenceCB(void *data, PreferenceRequest req, char *value);
-   static void FilterCB(void *data);
-   static void ModifyCB(void *data);
-   static boolean SelectPrintJobs(BaseUI *obj);
-   static void FindCB(void *data);
-   static void AddQueues(BaseUI *obj, void *data);
-   static void RestoreAppCB(BaseUI *obj, void *data);
+        void OpenClose(BaseUI *obj);
+        void PreferenceCB(PreferenceRequest req, char *value);
+        void FilterCB(BaseUI *container);
+        void UpdateStatusLine();
+        void UpdateQueues();
+        void RestoreApp();
+        void AddActions(BaseObj *dummy);
+        void ShowStatusDialog(DtPrinterIcon *);
+        void HandleShowDetailsLabelPreferenceRequest(IconStyle style);
+        void HandleDetailsPreferenceRequest(boolean details_on);
+        boolean ShowUserJob(DtPrtJobIcon *_job, char *user_name);
+        void ShowUserJobs(BaseUI *queue, char *user_name, boolean flag);
+        void HandleShowOnlyMinePreferenceRequest(boolean flag);
 
-   void OpenClose(BaseUI *obj);
-   void PreferenceCB(PreferenceRequest req, char *value);
-   void FilterCB(BaseUI *container);
-   void UpdateStatusLine();
-   void UpdateQueues();
-   void RestoreApp();
-   void AddActions(BaseObj *dummy);
-   void ShowStatusDialog(DtPrinterIcon *);
-   void HandleShowDetailsLabelPreferenceRequest(IconStyle style);
-   void HandleDetailsPreferenceRequest(boolean details_on);
-   boolean ShowUserJob(DtPrtJobIcon *_job, char *user_name);
-   void ShowUserJobs(BaseUI *queue, char *user_name, boolean flag);
-   void HandleShowOnlyMinePreferenceRequest(boolean flag);
+        int connect_timeout; // connect timeout to contact server
+        long Frequency;
+        char *old_dbsearchpath;
+        boolean save_state;
 
-   int connect_timeout; // connect timeout to contact server
-   long Frequency;
-   char *old_dbsearchpath;
-   boolean save_state;
+      public:
+        int old_uid;
+        PrinterApplicationMode app_mode;
+        DtPrinterIcon *single_printer;
+        DtMainW *window;
+        char *printer_dir;
+        char *lang;
+        char *home;
 
- public:
-
-   int old_uid;
-   PrinterApplicationMode app_mode;
-   DtPrinterIcon *single_printer;
-   DtMainW *window;
-   char *printer_dir;
-   char *lang;
-   char *home;
-
-   DtApp(char *progname, int *argc, char **argv);
-   ~DtApp();
-   void SaveYourSelf();
-   char *SessionFile();
-   char *SessionPath() { return printer_dir; }
-   char *GetBottomString(BaseObj *job, boolean need_details);
-   void ActionCB(BaseUI *obj, char *actionReferenceName);
-
+        DtApp(char *progname, int *argc, char **argv);
+        ~DtApp();
+        void SaveYourSelf();
+        char *SessionFile();
+        char *SessionPath() { return printer_dir; }
+        char *GetBottomString(BaseObj *job, boolean need_details);
+        void ActionCB(BaseUI *obj, char *actionReferenceName);
 };
-
-
 
 #endif // DTAPP_H

@@ -44,31 +44,29 @@
  ************************************<+>*************************************/
 #ifndef _smxdef_h
 #define _smxdef_h
- 
-/* 
- *  #include statements 
- */
 
-
-/* 
- *  #define statements 
- */
-
-/* 
- * typedef statements 
+/*
+ *  #include statements
  */
 
 /*
- *  External variables  
+ *  #define statements
  */
 
-/*  
- *  External Interface  
+/*
+ * typedef statements
+ */
+
+/*
+ *  External variables
+ */
+
+/*
+ *  External Interface
  */
 
 extern void SmXdefMerge(Display *display);
 extern XrmDatabase SmXdefSubtract(XrmDatabase db);
-
 
 #endif /*_smxdef_h*/
 /* DON'T ADD ANYTHING AFTER THIS #endif */

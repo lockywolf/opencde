@@ -29,10 +29,10 @@
  * (c) Copyright 1993, 1994 Sun Microsystems, Inc.                      *
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
-#ifndef	_Dt_TermPrimLineFont_h
-#define	_Dt_TermPrimLineFont_h
+#ifndef _Dt_TermPrimLineFont_h
+#define _Dt_TermPrimLineFont_h
 
 typedef struct _GlyphInfoRec *GlyphInfo;
 
-#endif	/* _Dt_TermPrimLineFont_h */
+#endif /* _Dt_TermPrimLineFont_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif... */

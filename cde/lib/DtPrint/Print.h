@@ -31,7 +31,7 @@
  *     HEWLETT-PACKARD COMPANY
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -40,7 +40,7 @@
 
 #include <Xm/Xm.h>
 #if 0 && defined(PRINTING_SUPPORTED)
-#include <X11/extensions/Print.h> 
+#include <X11/extensions/Print.h>
 #endif /* PRINTING_SUPPORTED */
 
 #ifdef __cplusplus
@@ -48,16 +48,15 @@ extern "C" {
 #endif
 
 /*
- * Class record constants 
+ * Class record constants
  */
 externalref WidgetClass dtPrintSetupBoxWidgetClass;
 
-typedef struct _DtPrintSetupBoxClassRec * DtPrintSetupBoxWidgetClass;
-typedef struct _DtPrintSetupBoxRec      * DtPrintSetupBoxWidget;
-
+typedef struct _DtPrintSetupBoxClassRec *DtPrintSetupBoxWidgetClass;
+typedef struct _DtPrintSetupBoxRec *DtPrintSetupBoxWidget;
 
 #ifndef DtIsPrintSetupBox
-#define DtIsPrintSetupBox(w)  (XtIsSubclass (w, dtPrintSetupBoxWidgetClass))
+#define DtIsPrintSetupBox(w) (XtIsSubclass(w, dtPrintSetupBoxWidgetClass))
 #endif
 
 /*
@@ -70,7 +69,7 @@ typedef struct _DtPrintSetupBoxRec      * DtPrintSetupBoxWidget;
 #define DtNdestroyContextCallback "destroyContextCallback"
 #define DtNfileName "fileName"
 #ifndef DtNminimizeButtons
-# define DtNminimizeButtons "minimizeButtons"
+#define DtNminimizeButtons "minimizeButtons"
 #endif
 #define DtNoptionCount "optionCount"
 #define DtNoptions "options"
@@ -92,7 +91,7 @@ typedef struct _DtPrintSetupBoxRec      * DtPrintSetupBoxWidget;
 #define DtCDestroyContextCallback "DestroyContextCallback"
 #define DtCFileName "FileName"
 #ifndef DtCMinimizeButtons
-# define DtCMinimizeButtons "MinimizeButtons"
+#define DtCMinimizeButtons "MinimizeButtons"
 #endif
 #define DtCOptionCount "OptionCount"
 #define DtCOptions "Options"
@@ -112,20 +111,15 @@ typedef struct _DtPrintSetupBoxRec      * DtPrintSetupBoxWidget;
 /*
  * DtNsetupMode Resource Values
  */
-enum {
-    DtPRINT_SETUP_PLAIN,
-    DtPRINT_SETUP_XP
-};
+enum { DtPRINT_SETUP_PLAIN, DtPRINT_SETUP_XP };
 
 /*
  * DtNworkAreaLocation Resource Values
  */
-enum {
-    DtWORK_AREA_NONE,
-    DtWORK_AREA_TOP,
-    DtWORK_AREA_TOP_AND_BOTTOM,
-    DtWORK_AREA_BOTTOM
-};
+enum { DtWORK_AREA_NONE,
+       DtWORK_AREA_TOP,
+       DtWORK_AREA_TOP_AND_BOTTOM,
+       DtWORK_AREA_BOTTOM };
 
 /*
  * DtNprintDestination Resource Values
@@ -141,96 +135,75 @@ enum { DtSHORT_NAME, DtMEDIUM_NAME, DtLONG_NAME };
  * Mode values for DtPrintSetupBoxResetConnection()
  */
 typedef enum {
-    DtPRINT_CLOSE_CONNECTION,
-    DtPRINT_RELEASE_CONNECTION
+        DtPRINT_CLOSE_CONNECTION,
+        DtPRINT_RELEASE_CONNECTION
 } DtPrintResetConnectionMode;
 
 /*
  * Callback Reasons
  */
-enum {
-    DtPRINT_CR_NONE,
-    DtPRINT_CR_CANCEL,
-    DtPRINT_CR_CLOSE_PRINT_DISPLAY,
-    DtPRINT_CR_PRINT,
-    DtPRINT_CR_SETUP
-};
+enum { DtPRINT_CR_NONE,
+       DtPRINT_CR_CANCEL,
+       DtPRINT_CR_CLOSE_PRINT_DISPLAY,
+       DtPRINT_CR_PRINT,
+       DtPRINT_CR_SETUP };
 
 /*
  * DtPrint proecdure return values
  */
-enum {
-    DtPRINT_SUCCESS,
-    DtPRINT_BAD_PARM,
-    DtPRINT_FAILURE,
-    DtPRINT_INVALID_DISPLAY,
-    DtPRINT_NOT_XP_DISPLAY,
-    DtPRINT_NO_CONNECTION,
-    DtPRINT_NO_DEFAULT,
-    DtPRINT_NO_DEFAULT_DISPLAY,
-    DtPRINT_NO_PRINTER,
-    DtPRINT_PRINTER_MISSING
-};
+enum { DtPRINT_SUCCESS,
+       DtPRINT_BAD_PARM,
+       DtPRINT_FAILURE,
+       DtPRINT_INVALID_DISPLAY,
+       DtPRINT_NOT_XP_DISPLAY,
+       DtPRINT_NO_CONNECTION,
+       DtPRINT_NO_DEFAULT,
+       DtPRINT_NO_DEFAULT_DISPLAY,
+       DtPRINT_NO_PRINTER,
+       DtPRINT_PRINTER_MISSING };
 
-enum {
-    DtPRINT_HINT_MESSAGES_OK,
-    DtPRINT_HINT_NO_MESSAGES
-};
+enum { DtPRINT_HINT_MESSAGES_OK, DtPRINT_HINT_NO_MESSAGES };
 
 /*
  * PrintSetupBox Callback Structure Definition
  */
-typedef struct _DtPrintSetupData
-{
-    String printer_name;
-    Display *print_display;
+typedef struct _DtPrintSetupData {
+        String printer_name;
+        Display *print_display;
 #ifdef PRINTING_SUPPORT
-    XPContext print_context;
+        XPContext print_context;
 #endif /* PRINTING_SUPPORTED */
-    XtEnum destination;
-    String dest_info;
-    XtEnum messages_hint;
+        XtEnum destination;
+        String dest_info;
+        XtEnum messages_hint;
 } DtPrintSetupData;
 
-typedef struct _DtPrintSetupCallbackStruct
-{
-    int reason;
-    XEvent *event;
-    DtPrintSetupData *print_data;
+typedef struct _DtPrintSetupCallbackStruct {
+        int reason;
+        XEvent *event;
+        DtPrintSetupData *print_data;
 } DtPrintSetupCallbackStruct;
 
 /*
  * PrintSetupBox Procedure Resource Type Definition
  */
-typedef XtEnum (*DtPrintSetupProc)(Widget, DtPrintSetupData*);
+typedef XtEnum (*DtPrintSetupProc)(Widget, DtPrintSetupData *);
 
 /*
  * Public Function Declarations
  */
-extern Widget DtCreatePrintSetupBox(
-				    Widget p,
-				    String name,
-				    ArgList args,
-				    Cardinal n) ;
-extern Widget DtCreatePrintSetupDialog(
-				       Widget ds_p,
-				       String name,
-				       ArgList sb_args,
-				       Cardinal sb_n) ;
-extern DtPrintSetupData* DtPrintCopySetupData(
-					      DtPrintSetupData* target,
-					      const DtPrintSetupData* source);
-extern XtEnum DtPrintFillSetupData(
-				   Widget psub,
-				   DtPrintSetupData* print_data);
-extern void DtPrintFreeSetupData(
-				 DtPrintSetupData* target);
-extern XtEnum DtPrintResetConnection(
-				     Widget psub,
-				     DtPrintResetConnectionMode m);
+extern Widget DtCreatePrintSetupBox(Widget p, String name, ArgList args,
+                                    Cardinal n);
+extern Widget DtCreatePrintSetupDialog(Widget ds_p, String name,
+                                       ArgList sb_args, Cardinal sb_n);
+extern DtPrintSetupData *DtPrintCopySetupData(DtPrintSetupData *target,
+                                              const DtPrintSetupData *source);
+extern XtEnum DtPrintFillSetupData(Widget psub, DtPrintSetupData *print_data);
+extern void DtPrintFreeSetupData(DtPrintSetupData *target);
+extern XtEnum DtPrintResetConnection(Widget psub, DtPrintResetConnectionMode m);
 
 #ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
 #endif /* _DtPrint_h */

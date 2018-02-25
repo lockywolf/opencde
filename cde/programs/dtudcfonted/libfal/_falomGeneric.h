@@ -20,7 +20,7 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* XomGeneric.h 1.6 - Fujitsu source for CDEnext    96/02/29 18:02:52 	*/ 
+/* XomGeneric.h 1.6 - Fujitsu source for CDEnext    96/02/29 18:02:52 	*/
 /* $XConsortium: _falomGeneric.h /main/1 1996/04/08 15:20:29 cde-fuj $ */
 /*
  * Copyright 1992, 1993 by TOSHIBA Corp.
@@ -61,72 +61,69 @@
 
 #include "_fallcPublic.h"
 
-#define XOM_GENERIC(om)		(&((XOMGeneric) om)->gen)
-#define XOC_GENERIC(font_set)	(&((XOCGeneric) font_set)->gen)
+#define XOM_GENERIC(om) (&((XOMGeneric)om)->gen)
+#define XOC_GENERIC(font_set) (&((XOCGeneric)font_set)->gen)
 
 /* For VW/UDC */
 typedef struct _CodeRangeRec {
-    unsigned long       start;
-    unsigned long       end;
-    unsigned long       dmy1;
-    unsigned long       dmy2;
+        unsigned long start;
+        unsigned long end;
+        unsigned long dmy1;
+        unsigned long dmy2;
 } CodeRangeRec, *CodeRange;
 
 typedef struct _VRotateRec {
-    char        *charset_name;  /* Charset name                         */
-    XlcSide     side;           /* Encoding side                        */
-    int         num_cr;
-    CodeRange   code_range;
-    char        *xlfd_name;
-    XFontStruct *font;
+        char *charset_name; /* Charset name                         */
+        XlcSide side;       /* Encoding side                        */
+        int num_cr;
+        CodeRange code_range;
+        char *xlfd_name;
+        XFontStruct *font;
 } VRotateRec, *VRotate;
 
-typedef enum {
-    XOMMultiByte,
-    XOMWideChar
-} XOMTextType;
+typedef enum { XOMMultiByte, XOMWideChar } XOMTextType;
 
 typedef struct _FontDataRec {
-    char 	*name;
-    XlcSide 	side;
-    /* For VW/UDC */
-    int       	scopes_num;
-    FontScope 	scopes;
-    char      	*xlfd_name;
-    XFontStruct *font;
+        char *name;
+        XlcSide side;
+        /* For VW/UDC */
+        int scopes_num;
+        FontScope scopes;
+        char *xlfd_name;
+        XFontStruct *font;
 } FontDataRec, *FontData;
 
-#define VROTATE_NONE   0
-#define VROTATE_PART   1
-#define VROTATE_ALL    2
+#define VROTATE_NONE 0
+#define VROTATE_PART 1
+#define VROTATE_ALL 2
 
 typedef struct _OMDataRec {
-    int 	charset_count;
-    XlcCharSet 	*charset_list;
-    int 	font_data_count;
-    FontData 	font_data;
-    /* For VW/UDC */
-    int substitute_num;
-    FontData substitute;
-    /* Vertical Writing */
-    int         vmap_num;
-    FontData    vmap;
-    int		vrotate_type;
-    int         vrotate_num;
-    CodeRange   vrotate;
+        int charset_count;
+        XlcCharSet *charset_list;
+        int font_data_count;
+        FontData font_data;
+        /* For VW/UDC */
+        int substitute_num;
+        FontData substitute;
+        /* Vertical Writing */
+        int vmap_num;
+        FontData vmap;
+        int vrotate_type;
+        int vrotate_num;
+        CodeRange vrotate;
 } OMDataRec, *OMData;
 
 typedef struct _XOMGenericPart {
-    int 	data_num;
-    OMData 	data;
-    Bool 	on_demand_loading;
-    char 	*object_name;
+        int data_num;
+        OMData data;
+        Bool on_demand_loading;
+        char *object_name;
 } XOMGenericPart;
 
 typedef struct _XOMGenericRec {
-    XOMMethods 		methods;
-    XOMCoreRec 		core;
-    XOMGenericPart 	gen;
+        XOMMethods methods;
+        XOMCoreRec core;
+        XOMGenericPart gen;
 } XOMGenericRec, *XOMGeneric;
 
 /*
@@ -134,71 +131,62 @@ typedef struct _XOMGenericRec {
  */
 
 typedef struct _FontSetRec {
-    int 		id;
-    int 		charset_count;
-    XlcCharSet 		*charset_list;
-    int 		font_data_count;
-    FontData 		font_data;
-    char 		*font_name;
-    XFontStruct 	*info;
-    XFontStruct 	*font;
-    XlcSide 		side;
-    Bool 		is_xchar2b;
-    /* For VW/UDC */
-    int 		substitute_num;
-    FontData 		substitute;
-    /* Vertical Writing */
-    int         vmap_num;
-    FontData    vmap;
-    int         vrotate_num;
-    VRotate     vrotate;
+        int id;
+        int charset_count;
+        XlcCharSet *charset_list;
+        int font_data_count;
+        FontData font_data;
+        char *font_name;
+        XFontStruct *info;
+        XFontStruct *font;
+        XlcSide side;
+        Bool is_xchar2b;
+        /* For VW/UDC */
+        int substitute_num;
+        FontData substitute;
+        /* Vertical Writing */
+        int vmap_num;
+        FontData vmap;
+        int vrotate_num;
+        VRotate vrotate;
 } FontSetRec, *FontSet;
 
 typedef struct _XOCGenericPart {
-    XlcConv 		mbs_to_cs;
-    XlcConv 		wcs_to_cs;
-    int 		font_set_num;
-    FontSet 		font_set;
+        XlcConv mbs_to_cs;
+        XlcConv wcs_to_cs;
+        int font_set_num;
+        FontSet font_set;
 } XOCGenericPart;
 
 typedef struct _XOCGenericRec {
-    XOCMethods 		methods;
-    XOCCoreRec 		core;	
-    XOCGenericPart 	gen;
+        XOCMethods methods;
+        XOCCoreRec core;
+        XOCGenericPart gen;
 } XOCGenericRec, *XOCGeneric;
 
 _XFUNCPROTOBEGIN
 
 extern XOM _falomGenericOpenOM(
 #if NeedFunctionPrototypes
-    XLCd		/* lcd */,
-    Display*		/* dpy */,
-    XrmDatabase		/* rdb */,
-    _Xconst char*	/* res_name */,
-    _Xconst char*	/* res_class */
+    XLCd /* lcd */, Display * /* dpy */, XrmDatabase /* rdb */,
+    _Xconst char * /* res_name */, _Xconst char * /* res_class */
 #endif
 );
 
 extern XlcConv _XomInitConverter(
 #if NeedFunctionPrototypes
-    XOC			/* oc */,
-    XOMTextType		/* type */
+    XOC /* oc */, XOMTextType /* type */
 #endif
 );
 
 extern int _XomConvert(
 #if NeedFunctionPrototypes
-    XOC			/* oc */,
-    XlcConv		/* conv */,
-    XPointer*		/* from */,
-    int*		/* from_left */,
-    XPointer*		/* to */,
-    int*		/* to_left */,
-    XPointer*		/* args */,
-    int			/* num_args */
+    XOC /* oc */, XlcConv /* conv */, XPointer * /* from */,
+    int * /* from_left */, XPointer * /* to */, int * /* to_left */,
+    XPointer * /* args */, int /* num_args */
 #endif
 );
 
 _XFUNCPROTOEND
 
-#endif  /* _XOMGENERIC_H_ */
+#endif /* _XOMGENERIC_H_ */

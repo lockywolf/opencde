@@ -48,7 +48,8 @@
  */
 
 #ifndef lint
-static  char sccsid[] = "@(#)datefield.c 1.7 94/11/07 Copyr 1993 Sun Microsystems, Inc.";
+static char sccsid[] =
+    "@(#)datefield.c 1.7 94/11/07 Copyr 1993 Sun Microsystems, Inc.";
 #endif
 
 #include <EUSCompat.h>
@@ -65,54 +66,51 @@ static  char sccsid[] = "@(#)datefield.c 1.7 94/11/07 Copyr 1993 Sun Microsystem
 /*
 **  Returns a date string the parser can handle
 */
-extern char*
-get_date_from_widget(Tick t, Widget w, OrderingType order,
-		     SeparatorType separator) {
-        char		*date = NULL;
-	WidgetClass	wc;
-        static char	buf[80];
+extern char *get_date_from_widget(Tick t, Widget w, OrderingType order,
+                                  SeparatorType separator) {
+        char *date = NULL;
+        WidgetClass wc;
+        static char buf[80];
 
-	memset(buf, '\0', 80);
+        memset(buf, '\0', 80);
 
-	if (!w)
-		format_tick(t, order, separator, buf, 80);
-	else {
-		wc = XtClass(w);
-		if (wc == xmTextWidgetClass)
-			date = XmTextGetString(w);
-		else if (wc == xmTextFieldWidgetClass)
-			date = XmTextFieldGetString(w);
-		else
-			return NULL;
+        if (!w)
+                format_tick(t, order, separator, buf, 80);
+        else {
+                wc = XtClass(w);
+                if (wc == xmTextWidgetClass)
+                        date = XmTextGetString(w);
+                else if (wc == xmTextFieldWidgetClass)
+                        date = XmTextFieldGetString(w);
+                else
+                        return NULL;
 
-		if (!date || *date == '\0')
-			format_tick(t, order, separator, buf, 80);
-		else if (!datestr2mdy(date, order, separator, buf, 80)) {
-			XtFree(date);
-			return NULL;
-		}
-		if (date)
-			XtFree(date);
-	}
+                if (!date || *date == '\0')
+                        format_tick(t, order, separator, buf, 80);
+                else if (!datestr2mdy(date, order, separator, buf, 80)) {
+                        XtFree(date);
+                        return NULL;
+                }
+                if (date)
+                        XtFree(date);
+        }
 
-	return buf;
+        return buf;
 }
 
-extern void
-set_date_in_widget(Tick t, Widget w, OrderingType order,
-		   SeparatorType separator) {
-        char		buf[80];
-	XmString	xmstr;
-	WidgetClass	wc = XtClass(w);
+extern void set_date_in_widget(Tick t, Widget w, OrderingType order,
+                               SeparatorType separator) {
+        char buf[80];
+        XmString xmstr;
+        WidgetClass wc = XtClass(w);
 
         format_tick(t, order, separator, buf, 80);
-	if (wc == xmLabelGadgetClass || wc == xmLabelWidgetClass) {
-		xmstr = XmStringCreateLocalized(buf);
-		XtVaSetValues(w, XmNlabelString, xmstr,
-			NULL);
-		XmStringFree(xmstr);
-	} else if (wc == xmTextWidgetClass)
-		XmTextSetString(w, buf);
-	else if (wc == xmTextFieldWidgetClass)
-		XmTextFieldSetString(w, buf);
+        if (wc == xmLabelGadgetClass || wc == xmLabelWidgetClass) {
+                xmstr = XmStringCreateLocalized(buf);
+                XtVaSetValues(w, XmNlabelString, xmstr, NULL);
+                XmStringFree(xmstr);
+        } else if (wc == xmTextWidgetClass)
+                XmTextSetString(w, buf);
+        else if (wc == xmTextFieldWidgetClass)
+                XmTextFieldSetString(w, buf);
 }

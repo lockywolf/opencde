@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: CoEdChangeHistory.h /main/3 1995/10/20 17:06:20 rswiston $ 			 				 */
+/*%%  $XConsortium: CoEdChangeHistory.h /main/3 1995/10/20 17:06:20 rswiston $
+ */
 /* -*-C++-*-
  *
  * CoEdChangeHistory.h
@@ -59,15 +60,15 @@
 #include "CoEdTextChange.h"
 
 class CoEdChangeHistory : private CoEdTextChangeList {
-    public:
-	CoEdChangeHistory();
+      public:
+        CoEdChangeHistory();
 
-	void		insert( CoEdTextChange *change );
-	CoEdTextChange *translate( CoEdTextChange &change );
+        void insert(CoEdTextChange *change);
+        CoEdTextChange *translate(CoEdTextChange &change);
 
-    private:
-	void		_translateOverEarlierChgs( CoEdTextChange &change );
-	CoEdTextChange *_translateOverLaterChgs( const CoEdTextChange &change);
+      private:
+        void _translateOverEarlierChgs(CoEdTextChange &change);
+        CoEdTextChange *_translateOverLaterChgs(const CoEdTextChange &change);
 };
 
 #endif CoEdChangeHistory_h

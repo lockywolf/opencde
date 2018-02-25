@@ -33,34 +33,34 @@
 #include "HardCopy/HardCopyFP.h"
 #include "HardCopy/lout_limits.h"
 
-class FPset
-{
-public:
-/*
-  FPset(const FPset& fps) : ptrs(fps.ptrs), count(fps.count), f_QuaddingString(0) {};
-  FPset(featureProcessorPtr* p, int s) : ptrs(p), count(s), f_QuaddingString(0) {};
-*/
-  FPset(int s, const Element&, const FeatureSet&, 
-	const FeatureSet&, const FeatureSet&);
-  ~FPset();
+class FPset {
+      public:
+        /*
+          FPset(const FPset& fps) : ptrs(fps.ptrs), count(fps.count),
+          f_QuaddingString(0) {}; FPset(featureProcessorPtr* p, int s) :
+          ptrs(p), count(s), f_QuaddingString(0) {};
+        */
+        FPset(int s, const Element &, const FeatureSet &, const FeatureSet &,
+              const FeatureSet &);
+        ~FPset();
 
-  const Element& element() { return *f_element; };
-  const FeatureSet& local() { return *f_local; };
-  const FeatureSet& complete() { return *f_complete; };
-  const FeatureSet& parent() { return *f_parent; };
+        const Element &element() { return *f_element; };
+        const FeatureSet &local() { return *f_local; };
+        const FeatureSet &complete() { return *f_complete; };
+        const FeatureSet &parent() { return *f_parent; };
 
-  FPset operator=(const FPset&);
-  unsigned int operator==(const FPset&);
+        FPset operator=(const FPset &);
+        unsigned int operator==(const FPset &);
 
-  featureProcessorPtr* ptrs;
-  int count;
+        featureProcessorPtr *ptrs;
+        int count;
 
-  const char* f_QuaddingString;
+        const char *f_QuaddingString;
 
-  const Element* f_element;
-  const FeatureSet* f_local;
-  const FeatureSet* f_complete;
-  const FeatureSet* f_parent;
+        const Element *f_element;
+        const FeatureSet *f_local;
+        const FeatureSet *f_complete;
+        const FeatureSet *f_parent;
 };
 
 #endif

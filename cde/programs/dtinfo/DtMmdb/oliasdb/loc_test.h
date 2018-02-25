@@ -29,11 +29,9 @@
 #include "oliasdb/locator_hd.h"
 #include "object/random_gen.h"
 
-
-int compare_locator(locator_smart_ptr& pattern, info_base* base_ptr);
-int loc_test(info_lib* infolib_ptr, const char* base_name, const char* loc );
-void generate_loc_instance(random_gen&, ostream& out);
-
+int compare_locator(locator_smart_ptr &pattern, info_base *base_ptr);
+int loc_test(info_lib *infolib_ptr, const char *base_name, const char *loc);
+void generate_loc_instance(random_gen &, ostream &out);
 
 #endif
 #endif

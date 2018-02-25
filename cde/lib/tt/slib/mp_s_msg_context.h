@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp_s_msg_context.h /main/3 1995/10/23 11:57:02 rswiston $ 			 				 */
+/*%%  $XConsortium: mp_s_msg_context.h /main/3 1995/10/23 11:57:02 rswiston $
+ */
 /* -*-C++-*-
  *
  * @(#)mp_s_msg_context.h	1.3 29 Jul 1993
@@ -45,15 +46,11 @@
 
 class _Tt_s_msg_context : public _Tt_msg_context {
       public:
-	_Tt_s_msg_context();
-	virtual ~_Tt_s_msg_context();
+        _Tt_s_msg_context();
+        virtual ~_Tt_s_msg_context();
 
-	Tt_status		s_join(
-					_Tt_procid_ptr &procID
-				) const;
-	Tt_status		s_quit(
-					_Tt_procid_ptr &procID
-				) const;
+        Tt_status s_join(_Tt_procid_ptr &procID) const;
+        Tt_status s_quit(_Tt_procid_ptr &procID) const;
 };
 
-#endif				/* _MP_S_MSG_CONTEXT_H */
+#endif /* _MP_S_MSG_CONTEXT_H */

@@ -21,7 +21,7 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $XConsortium: tclFHandle.c /main/2 1996/08/08 14:43:54 cde-hp $ */
-/* 
+/*
  * tclFHandle.c --
  *
  *	This file contains functions for manipulating Tcl file handles.
@@ -43,29 +43,29 @@
  */
 
 typedef struct FileHashKey {
-    int type;			/* File handle type. */
-    ClientData osHandle;	/* Platform specific OS file handle. */
+        int type;            /* File handle type. */
+        ClientData osHandle; /* Platform specific OS file handle. */
 } FileHashKey;
 
 typedef struct FileHandle {
-    FileHashKey key;		/* Hash key for a given file. */
-    ClientData data;		/* Platform specific notifier data. */
-    Tcl_FileFreeProc *proc;	/* Callback to invoke when file is freed. */
+        FileHashKey key;        /* Hash key for a given file. */
+        ClientData data;        /* Platform specific notifier data. */
+        Tcl_FileFreeProc *proc; /* Callback to invoke when file is freed. */
 } FileHandle;
 
 /*
  * Static variables used in this file:
  */
 
-static Tcl_HashTable fileTable;	/* Hash table containing file handles. */
-static int initialized = 0;	/* 1 if this module has been initialized. */
+static Tcl_HashTable fileTable; /* Hash table containing file handles. */
+static int initialized = 0;     /* 1 if this module has been initialized. */
 
 /*
  * Static procedures used in this file:
  */
 
-static void 		FileExitProc _ANSI_ARGS_((ClientData clientData));
-
+static void FileExitProc _ANSI_ARGS_((ClientData clientData));
+
 /*
  *----------------------------------------------------------------------
  *
@@ -84,35 +84,35 @@ static void 		FileExitProc _ANSI_ARGS_((ClientData clientData));
  *----------------------------------------------------------------------
  */
 
-Tcl_File
-Tcl_GetFile(osHandle, type)
-    ClientData osHandle;	/* Platform specific file handle. */
-    int type;			/* Type of file handle. */
+Tcl_File Tcl_GetFile(osHandle, type)
+    ClientData osHandle; /* Platform specific file handle. */
+int type;                /* Type of file handle. */
 {
-    FileHashKey key;
-    Tcl_HashEntry *entryPtr;
-    int new;
+        FileHashKey key;
+        Tcl_HashEntry *entryPtr;
+        int new;
 
-    if (!initialized) {
-	Tcl_InitHashTable(&fileTable, sizeof(FileHashKey)/sizeof(int));
-	Tcl_CreateExitHandler(FileExitProc, 0);
-	initialized = 1;
-    }
-    key.osHandle = osHandle;
-    key.type = type;
-    entryPtr = Tcl_CreateHashEntry(&fileTable, (char *) &key, &new);
-    if (new) {
-	FileHandle *newHandlePtr;
-	newHandlePtr = (FileHandle *) ckalloc(sizeof(FileHandle));
-	newHandlePtr->key = key;
-	newHandlePtr->data = NULL;
-	newHandlePtr->proc = NULL;
-	Tcl_SetHashValue(entryPtr, newHandlePtr);
-    }
-    
-    return (Tcl_File) Tcl_GetHashValue(entryPtr);
+        if (!initialized) {
+                Tcl_InitHashTable(&fileTable,
+                                  sizeof(FileHashKey) / sizeof(int));
+                Tcl_CreateExitHandler(FileExitProc, 0);
+                initialized = 1;
+        }
+        key.osHandle = osHandle;
+        key.type = type;
+        entryPtr = Tcl_CreateHashEntry(&fileTable, (char *)&key, &new);
+        if (new) {
+                FileHandle *newHandlePtr;
+                newHandlePtr = (FileHandle *)ckalloc(sizeof(FileHandle));
+                newHandlePtr->key = key;
+                newHandlePtr->data = NULL;
+                newHandlePtr->proc = NULL;
+                Tcl_SetHashValue(entryPtr, newHandlePtr);
+        }
+
+        return (Tcl_File)Tcl_GetHashValue(entryPtr);
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -129,28 +129,26 @@ Tcl_GetFile(osHandle, type)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_FreeFile(handle)
-    Tcl_File handle;
+void Tcl_FreeFile(handle) Tcl_File handle;
 {
-    Tcl_HashEntry *entryPtr;
-    FileHandle *handlePtr = (FileHandle *) handle;
+        Tcl_HashEntry *entryPtr;
+        FileHandle *handlePtr = (FileHandle *)handle;
 
-    /*
-     * Invoke free procedure, then delete the handle.
-     */
+        /*
+         * Invoke free procedure, then delete the handle.
+         */
 
-    if (handlePtr->proc) {
-	(*handlePtr->proc)(handlePtr->data);
-    }
+        if (handlePtr->proc) {
+                (*handlePtr->proc)(handlePtr->data);
+        }
 
-    entryPtr = Tcl_FindHashEntry(&fileTable, (char *) &handlePtr->key);
-    if (entryPtr) {
-	Tcl_DeleteHashEntry(entryPtr);
-	ckfree((char *) handlePtr);
-    }
+        entryPtr = Tcl_FindHashEntry(&fileTable, (char *)&handlePtr->key);
+        if (entryPtr) {
+                Tcl_DeleteHashEntry(entryPtr);
+                ckfree((char *)handlePtr);
+        }
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -169,19 +167,17 @@ Tcl_FreeFile(handle)
  *----------------------------------------------------------------------
  */
 
-ClientData
-Tcl_GetFileInfo(handle, typePtr)
-    Tcl_File handle;
-    int *typePtr;
+ClientData Tcl_GetFileInfo(handle, typePtr) Tcl_File handle;
+int *typePtr;
 {
-    FileHandle *handlePtr = (FileHandle *) handle;
+        FileHandle *handlePtr = (FileHandle *)handle;
 
-    if (typePtr) {
-	*typePtr = handlePtr->key.type;
-    }
-    return handlePtr->key.osHandle;
+        if (typePtr) {
+                *typePtr = handlePtr->key.type;
+        }
+        return handlePtr->key.osHandle;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -200,17 +196,15 @@ Tcl_GetFileInfo(handle, typePtr)
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_SetNotifierData(handle, proc, data)
-    Tcl_File handle;
-    Tcl_FileFreeProc *proc;
-    ClientData data;
+void Tcl_SetNotifierData(handle, proc, data) Tcl_File handle;
+Tcl_FileFreeProc *proc;
+ClientData data;
 {
-    FileHandle *handlePtr = (FileHandle *) handle;
-    handlePtr->proc = proc;
-    handlePtr->data = data;
+        FileHandle *handlePtr = (FileHandle *)handle;
+        handlePtr->proc = proc;
+        handlePtr->data = data;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -230,18 +224,16 @@ Tcl_SetNotifierData(handle, proc, data)
  *----------------------------------------------------------------------
  */
 
-ClientData
-Tcl_GetNotifierData(handle, procPtr)
-    Tcl_File handle;
-    Tcl_FileFreeProc **procPtr;
+ClientData Tcl_GetNotifierData(handle, procPtr) Tcl_File handle;
+Tcl_FileFreeProc **procPtr;
 {
-    FileHandle *handlePtr = (FileHandle *) handle;
-    if (procPtr != NULL) {
-	*procPtr = handlePtr->proc;
-    }
-    return handlePtr->data;
+        FileHandle *handlePtr = (FileHandle *)handle;
+        if (procPtr != NULL) {
+                *procPtr = handlePtr->proc;
+        }
+        return handlePtr->data;
 }
-
+
 /*
  *----------------------------------------------------------------------
  *
@@ -259,19 +251,17 @@ Tcl_GetNotifierData(handle, procPtr)
  *----------------------------------------------------------------------
  */
 
-static void
-FileExitProc(clientData)
-    ClientData clientData;	/* Not used. */
+static void FileExitProc(clientData) ClientData clientData; /* Not used. */
 {
-    Tcl_HashSearch search;
-    Tcl_HashEntry *entryPtr;
+        Tcl_HashSearch search;
+        Tcl_HashEntry *entryPtr;
 
-    entryPtr = Tcl_FirstHashEntry(&fileTable, &search);
+        entryPtr = Tcl_FirstHashEntry(&fileTable, &search);
 
-    while (entryPtr) {
-	ckfree(Tcl_GetHashValue(entryPtr));
-	entryPtr = Tcl_NextHashEntry(&search);
-    }
+        while (entryPtr) {
+                ckfree(Tcl_GetHashValue(entryPtr));
+                entryPtr = Tcl_NextHashEntry(&search);
+        }
 
-    Tcl_DeleteHashTable(&fileTable);
+        Tcl_DeleteHashTable(&fileTable);
 }

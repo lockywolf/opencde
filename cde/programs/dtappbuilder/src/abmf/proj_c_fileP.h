@@ -27,7 +27,7 @@
  *	%W% %G%	cde_app_builder/src/abmf
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -48,12 +48,7 @@
 
 #include "write_codeP.h"
 
-int abmfP_write_project_c_file(
-		GenCodeInfo		genCodeInfo,
-		STRING			codeFileName,
-		BOOL			prepareForMerge,
-		ABObj			project
-		);
+int abmfP_write_project_c_file(GenCodeInfo genCodeInfo, STRING codeFileName,
+                               BOOL prepareForMerge, ABObj project);
 
 #endif /* _ABMF_PROJ_C_FILEP_H_ */
-

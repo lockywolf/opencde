@@ -25,7 +25,7 @@
  * (c) Copyright 1993, 1994, 1995 Hewlett-Packard Company
  * (c) Copyright 1993, 1994, 1995 International Business Machines Corp.
  * (c) Copyright 1993, 1994, 1995 Sun Microsystems, Inc.
- * (c) Copyright 1993, 1994, 1995 Novell, Inc. 
+ * (c) Copyright 1993, 1994, 1995 Novell, Inc.
  * (c) Copyright 1995 FUJITSU LIMITED.
  * (c) Copyright 1995 Hitachi.
  *
@@ -63,37 +63,22 @@ in this Software without prior written authorization from the X Consortium.
 #include <X11/Intrinsic.h>
 #include "SmXSMP.h"
 
-extern void SetPropertiesProc (
-	SmsConn         	smsConn,
-	SmPointer       	managerData,
-	int             	numProps,
-	SmProp          	**props);
+extern void SetPropertiesProc(SmsConn smsConn, SmPointer managerData,
+                              int numProps, SmProp **props);
 
-extern void DeletePropertiesProc (
-	SmsConn         	smsConn,
-	SmPointer       	managerData,
-	int             	numProps,
-	char            	**propNames);
+extern void DeletePropertiesProc(SmsConn smsConn, SmPointer managerData,
+                                 int numProps, char **propNames);
 
-extern void GetPropertiesProc (
-	SmsConn         	smsConn,
-	SmPointer       	managerData);
+extern void GetPropertiesProc(SmsConn smsConn, SmPointer managerData);
 
-extern PropertyRecPtr GetPropertyRec (
-	ClientRecPtr		pClientRec,
-	char			* propName);
+extern PropertyRecPtr GetPropertyRec(ClientRecPtr pClientRec, char *propName);
 
-extern char * GetArrayPropertyValue (
-	ClientRecPtr		pClientRec,
-	char			* propName);
+extern char *GetArrayPropertyValue(ClientRecPtr pClientRec, char *propName);
 
-extern char ** GetListOfArrayPropertyValue (
-	ClientRecPtr		pClientRec,
-	char			* propName);
+extern char **GetListOfArrayPropertyValue(ClientRecPtr pClientRec,
+                                          char *propName);
 
-extern Boolean GetCardPropertyValue (
-	ClientRecPtr		pClientRec,
-	char			* propName,
-	int			* propValue);		/* MODIFIED */
+extern Boolean GetCardPropertyValue(ClientRecPtr pClientRec, char *propName,
+                                    int *propValue); /* MODIFIED */
 
 #endif /* _smprop_h */

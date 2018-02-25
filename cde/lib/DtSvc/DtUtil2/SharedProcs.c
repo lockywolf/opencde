@@ -36,7 +36,7 @@
  **
  **   Description: Contains the set of functions which are of general
  **                use to all DT clients.
- **		  
+ **
  **
  ****************************************************************************
  ************************************<+>*************************************/
@@ -61,7 +61,6 @@
 #include <X11/Shell.h>
 #include <X11/Xatom.h>
 
-
 #include <Dt/DtP.h>
 #include <Dt/Connect.h>
 #include <Dt/DtNlUtils.h>
@@ -70,17 +69,14 @@
 #endif
 #include "SharedProcs.h"
 
-
 /* Defines */
-#define RW_ALL S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH
-
+#define RW_ALL S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH
 
 /********    Static Function Declarations    ********/
 static void MessageDialogPopupCB(Widget w, XtPointer client_data,
-	XtPointer call_data);
+                                 XtPointer call_data);
 
 /********    End Static Function Declarations    ********/
-
 
 /************************************************************************
  *
@@ -90,80 +86,71 @@ static void MessageDialogPopupCB(Widget w, XtPointer client_data,
  *
  ************************************************************************/
 
-String
-_DtStripSpaces(
-        String string )
+String _DtStripSpaces(String string)
 
 {
-   int i;
-   String space;
+        int i;
+        String space;
 
-   if (string == NULL)
-      return (string);
+        if (string == NULL)
+                return (string);
 
-
-   /* Strip off leading spaces first */
-   i = 0;
-   while (
+        /* Strip off leading spaces first */
+        i = 0;
+        while (
 #ifdef NLS16
-          (!is_multibyte || (mblen(string + i, MB_CUR_MAX) == 1)) &&
+            (!is_multibyte || (mblen(string + i, MB_CUR_MAX) == 1)) &&
 #endif
-          isspace((u_char)string[i]))
-   {
-      i++;
-   }
+            isspace((u_char)string[i])) {
+                i++;
+        }
 
-   /* Copy over the leading spaces */
-   strcpy(string, string + i);
+        /* Copy over the leading spaces */
+        strcpy(string, string + i);
 
-   /* Drop out, if the string is now empty */
-   if ((i = strlen(string) - 1) < 0)
-      return(string);
+        /* Drop out, if the string is now empty */
+        if ((i = strlen(string) - 1) < 0)
+                return (string);
 
-   /* Strip off trailing spaces */
+                /* Strip off trailing spaces */
 #ifdef NLS16
-   if (!is_multibyte)
-   {
+        if (!is_multibyte) {
 #endif
-      /* No multibyte; simply work back through the string */
-      while ((i >= 0) && (isspace((u_char)string[i])))
-         i--;
-      string[i + 1] = '\0';
+                /* No multibyte; simply work back through the string */
+                while ((i >= 0) && (isspace((u_char)string[i])))
+                        i--;
+                string[i + 1] = '\0';
 #ifdef NLS16
-   }
-   else
-   {
-      /* Work forward, looking for a trailing space of spaces */
-      int len;
+        } else {
+                /* Work forward, looking for a trailing space of spaces */
+                int len;
 
-      i = 0;
-      space = NULL;
+                i = 0;
+                space = NULL;
 
-      while (string[i])
-      {
-         if (((len = mblen(string + i, MB_CUR_MAX)) == 1) && isspace((u_char)string[i]))
-         {
-            /* Found a space */
-            if (space == NULL)
-               space = string + i;
-         }
-         else if (space)
-            space = NULL;
+                while (string[i]) {
+                        if (((len = mblen(string + i, MB_CUR_MAX)) == 1) &&
+                            isspace((u_char)string[i])) {
+                                /* Found a space */
+                                if (space == NULL)
+                                        space = string + i;
+                        } else if (space)
+                                space = NULL;
 
-         /* if there is an invalid character, treat as a valid one-byte */
-         if (len == -1)
-           len = 1;
-         
-         i += len;
-  
-      }
+                        /* if there is an invalid character, treat as a valid
+                         * one-byte */
+                        if (len == -1)
+                                len = 1;
 
-      if (space)
-         *space = '\0';
-   }
+                        i += len;
+                }
+
+                if (space)
+                        *space = '\0';
+        }
 #endif
 
-   return (string);
+        return (string);
 }
 
 /************************************************************************
@@ -173,20 +160,14 @@ _DtStripSpaces(
  *
  ************************************************************************/
 
-void
-_DtMessage(
-        Widget w,
-        char *title,
-        char *message_text,
-        XtPointer helpIdStr,
-        void (*helpCallback)() )
+void _DtMessage(Widget w, char *title, char *message_text, XtPointer helpIdStr,
+                void (*helpCallback)())
 
 {
-   _DtMessageDialog(w, title, message_text, helpIdStr, False,
-                 NULL, _DtMessageOK, _DtMessageClose, helpCallback, True, 
-                 ERROR_DIALOG);
+        _DtMessageDialog(w, title, message_text, helpIdStr, False, NULL,
+                         _DtMessageOK, _DtMessageClose, helpCallback, True,
+                         ERROR_DIALOG);
 }
-
 
 /************************************************************************
  *
@@ -194,176 +175,152 @@ _DtMessage(
  *
  ************************************************************************/
 
-Widget
-_DtMessageDialog(
-        Widget w,
-        char *title,
-        char *message_text,
-        XtPointer helpIdStr,
-        Boolean cancel_btn,
-        void (*cancel_callback)(),
-        void (*ok_callback)(),
-        void (*close_callback)(),
-        void (*help_callback)(),
-        Boolean deleteOnClose,
-        int dialogType )
+Widget _DtMessageDialog(Widget w, char *title, char *message_text,
+                        XtPointer helpIdStr, Boolean cancel_btn,
+                        void (*cancel_callback)(), void (*ok_callback)(),
+                        void (*close_callback)(), void (*help_callback)(),
+                        Boolean deleteOnClose, int dialogType)
 
 {
-   Widget message;
-   Widget widget;
-   XmString message_string;
-   XWindowAttributes attributes;
-   Arg args[10];
-   XmString okString, cancelString, helpString;
+        Widget message;
+        Widget widget;
+        XmString message_string;
+        XWindowAttributes attributes;
+        Arg args[10];
+        XmString okString, cancelString, helpString;
 
-   okString = XmStringCreateLocalized((Dt11GETMESSAGE(28,1, "OK")));
-   cancelString = XmStringCreateLocalized((Dt11GETMESSAGE(28,2, "Cancel")));
-   helpString = XmStringCreateLocalized((Dt11GETMESSAGE(28,3, "Help")));
+        okString = XmStringCreateLocalized((Dt11GETMESSAGE(28, 1, "OK")));
+        cancelString =
+            XmStringCreateLocalized((Dt11GETMESSAGE(28, 2, "Cancel")));
+        helpString = XmStringCreateLocalized((Dt11GETMESSAGE(28, 3, "Help")));
 
-   XtSetArg (args[0], XmNautoUnmanage, False);
-   XtSetArg (args[1], XmNcancelLabelString, cancelString);
-   XtSetArg (args[2], XmNokLabelString, okString);
-   XtSetArg (args[3], XmNhelpLabelString, helpString);
-   XtSetArg (args[4], XmNuseAsyncGeometry, True);
+        XtSetArg(args[0], XmNautoUnmanage, False);
+        XtSetArg(args[1], XmNcancelLabelString, cancelString);
+        XtSetArg(args[2], XmNokLabelString, okString);
+        XtSetArg(args[3], XmNhelpLabelString, helpString);
+        XtSetArg(args[4], XmNuseAsyncGeometry, True);
 
-   /*  Search up to get the topmost shell  */
+        /*  Search up to get the topmost shell  */
 
-   while (XtParent (w) != NULL && !(XtIsSubclass (w, shellWidgetClass)))
-      w = XtParent (w);
+        while (XtParent(w) != NULL && !(XtIsSubclass(w, shellWidgetClass)))
+                w = XtParent(w);
 
-   switch (dialogType)
-   {  
-      case ERROR_DIALOG:
-        message = XmCreateErrorDialog(w, title, args, 5);
-      break;
+        switch (dialogType) {
+        case ERROR_DIALOG:
+                message = XmCreateErrorDialog(w, title, args, 5);
+                break;
 
-      case WARNING_DIALOG:
-        message = XmCreateWarningDialog(w, title, args, 5);
-      break;
+        case WARNING_DIALOG:
+                message = XmCreateWarningDialog(w, title, args, 5);
+                break;
 
-      case QUESTION_DIALOG:
-        message = XmCreateQuestionDialog(w, title, args, 5);
-      break;
-    }
-   if (XtWindow (w) != 0)
-      XGetWindowAttributes(XtDisplay (w), XtWindow (w), &attributes);
-   else
-      attributes.map_state = IsUnmapped;
+        case QUESTION_DIALOG:
+                message = XmCreateQuestionDialog(w, title, args, 5);
+                break;
+        }
+        if (XtWindow(w) != 0)
+                XGetWindowAttributes(XtDisplay(w), XtWindow(w), &attributes);
+        else
+                attributes.map_state = IsUnmapped;
 
-   /*
-    * If parent widget isn't mapped, attach a callback
-    * procedure that'll center the message dialog on screen.
-	*/
-   if (attributes.map_state == IsUnmapped)
-        XtAddCallback(XtParent(message),XmNpopupCallback,
-			MessageDialogPopupCB,(XtPointer)w);
+        /*
+         * If parent widget isn't mapped, attach a callback
+         * procedure that'll center the message dialog on screen.
+         */
+        if (attributes.map_state == IsUnmapped)
+                XtAddCallback(XtParent(message), XmNpopupCallback,
+                              MessageDialogPopupCB, (XtPointer)w);
 
-   /*  Adjust the decorations and title for the dialog shell of the dialog  */
-   XtSetArg(args[0], XmNtitle, title);
-   XtSetArg(args[1], XmNmwmFunctions, MWM_FUNC_MOVE);
-   XtSetArg(args[2], XmNmwmDecorations, MWM_DECOR_BORDER | MWM_DECOR_TITLE);
-   XtSetValues(XtParent (message), args, 3);
+        /*  Adjust the decorations and title for the dialog shell of the dialog
+         */
+        XtSetArg(args[0], XmNtitle, title);
+        XtSetArg(args[1], XmNmwmFunctions, MWM_FUNC_MOVE);
+        XtSetArg(args[2], XmNmwmDecorations,
+                 MWM_DECOR_BORDER | MWM_DECOR_TITLE);
+        XtSetValues(XtParent(message), args, 3);
 
-   widget = XmMessageBoxGetChild(message, XmDIALOG_CANCEL_BUTTON);
-   if (!cancel_btn)
-      XtUnmanageChild(widget);
-   else if (cancel_callback)
-   {
-      XtAddCallback(widget, XmNactivateCallback, cancel_callback, 
-                     (caddr_t) message);
-      XtSetArg(args[0], XmNcancelButton, widget);
-      XtSetValues(message, args, 1);
-   }
+        widget = XmMessageBoxGetChild(message, XmDIALOG_CANCEL_BUTTON);
+        if (!cancel_btn)
+                XtUnmanageChild(widget);
+        else if (cancel_callback) {
+                XtAddCallback(widget, XmNactivateCallback, cancel_callback,
+                              (caddr_t)message);
+                XtSetArg(args[0], XmNcancelButton, widget);
+                XtSetValues(message, args, 1);
+        }
 
-   widget = XmMessageBoxGetChild(message, XmDIALOG_OK_BUTTON);
-   XtSetArg(args[0], XmNmarginWidth, 10);
-   XtSetArg(args[1], XmNmarginHeight, 2);
-   XtSetValues(widget, args, 2);
-   XtAddCallback(widget, XmNactivateCallback, ok_callback, (caddr_t) message);
-  
-   widget = XmMessageBoxGetChild(message, XmDIALOG_HELP_BUTTON);
-   if (helpIdStr != NULL)
-   {
-      if (help_callback)
-      {
-         XtAddCallback(widget, XmNactivateCallback, help_callback, 
-                       (caddr_t) helpIdStr);
-      }
-      XtSetValues(widget, args, 2);
-   }
-   else
-      XtUnmanageChild(widget);
+        widget = XmMessageBoxGetChild(message, XmDIALOG_OK_BUTTON);
+        XtSetArg(args[0], XmNmarginWidth, 10);
+        XtSetArg(args[1], XmNmarginHeight, 2);
+        XtSetValues(widget, args, 2);
+        XtAddCallback(widget, XmNactivateCallback, ok_callback,
+                      (caddr_t)message);
 
-   widget = XmMessageBoxGetChild(message, XmDIALOG_MESSAGE_LABEL);
-   message_string = XmStringCreateLocalized(message_text);
-   XtSetArg(args[0], XmNlabelString, message_string);
-   XtSetValues(widget, args, 1);
-   XmStringFree(message_string);
+        widget = XmMessageBoxGetChild(message, XmDIALOG_HELP_BUTTON);
+        if (helpIdStr != NULL) {
+                if (help_callback) {
+                        XtAddCallback(widget, XmNactivateCallback,
+                                      help_callback, (caddr_t)helpIdStr);
+                }
+                XtSetValues(widget, args, 2);
+        } else
+                XtUnmanageChild(widget);
 
-   XtManageChild(message);
+        widget = XmMessageBoxGetChild(message, XmDIALOG_MESSAGE_LABEL);
+        message_string = XmStringCreateLocalized(message_text);
+        XtSetArg(args[0], XmNlabelString, message_string);
+        XtSetValues(widget, args, 1);
+        XmStringFree(message_string);
 
-   if (deleteOnClose)
-   {
-      if (close_callback == NULL)
-         close_callback = _DtMessageClose;
+        XtManageChild(message);
 
-      XtAddEventHandler(XtParent (message), StructureNotifyMask, True,
-                         (XtEventHandler)close_callback, message);
-   }
+        if (deleteOnClose) {
+                if (close_callback == NULL)
+                        close_callback = _DtMessageClose;
 
-   XmStringFree(okString);
-   XmStringFree(cancelString);
-   XmStringFree(helpString);
+                XtAddEventHandler(XtParent(message), StructureNotifyMask, True,
+                                  (XtEventHandler)close_callback, message);
+        }
 
-   return(message);
+        XmStringFree(okString);
+        XmStringFree(cancelString);
+        XmStringFree(helpString);
+
+        return (message);
 }
-
-
-
 
 /************************************************************************
  *
  *  _DtMessageOK
  *	Close the error message box.
  *
- ************************************************************************/ 
+ ************************************************************************/
 
 /* ARGSUSED */
-void
-_DtMessageOK(
-        Widget w,
-        XtPointer client_data,
-        XtPointer call_data )
+void _DtMessageOK(Widget w, XtPointer client_data, XtPointer call_data)
 
 {
-   XtUnmanageChild(client_data);
+        XtUnmanageChild(client_data);
 }
-
-
-
 
 /************************************************************************
  *
  *  _DtMessageClose
  *	Close the error message box.
  *
- ************************************************************************/ 
+ ************************************************************************/
 
-void
-_DtMessageClose(
-        Widget w,
-        XtPointer client_data,
-        XEvent *event )
+void _DtMessageClose(Widget w, XtPointer client_data, XEvent *event)
 
 {
-   if (event->type == UnmapNotify)
-   {
-      XtRemoveEventHandler(XtParent(client_data), StructureNotifyMask, 
-                            True, (XtEventHandler)_DtMessageClose, client_data);
+        if (event->type == UnmapNotify) {
+                XtRemoveEventHandler(XtParent(client_data), StructureNotifyMask,
+                                     True, (XtEventHandler)_DtMessageClose,
+                                     client_data);
 
-      XtUnmanageChild(client_data);
-      XtDestroyWidget(w);
-   }
+                XtUnmanageChild(client_data);
+                XtDestroyWidget(w);
+        }
 }
 
 /*
@@ -371,47 +328,50 @@ _DtMessageClose(
  * client_data is expected to contain the parent shell widget handle.
  */
 static void MessageDialogPopupCB(Widget w, XtPointer client_data,
-	XtPointer call_data)
-{
-	Position msg_x, msg_y;
-	unsigned int scr_w, scr_h, off_x=0, off_y=0;
-	Dimension msg_w=0, msg_h=0;
-	Arg args[2];
-	#ifdef USE_XINERAMA
-	DtXineramaInfo_t *dt_xi;
-	#endif
+                                 XtPointer call_data) {
+        Position msg_x, msg_y;
+        unsigned int scr_w, scr_h, off_x = 0, off_y = 0;
+        Dimension msg_w = 0, msg_h = 0;
+        Arg args[2];
+#ifdef USE_XINERAMA
+        DtXineramaInfo_t *dt_xi;
+#endif
 
-	msg_w=XtWidth(w);
-	msg_h=XtHeight(w);
+        msg_w = XtWidth(w);
+        msg_h = XtHeight(w);
 
-	scr_w=WidthOfScreen(XtScreen(w));
-	scr_h=HeightOfScreen(XtScreen(w));
+        scr_w = WidthOfScreen(XtScreen(w));
+        scr_h = HeightOfScreen(XtScreen(w));
 
-	#ifdef USE_XINERAMA
-	/* determine xinerama screen number the parent shell resides on,
-	 * and override scr_w/scr_h and off_x/off_y on success */
-	if((dt_xi=_DtXineramaInit(XtDisplay(w)))){
-		int i;
-		unsigned int pw_x=XtX((Widget)client_data);
-		unsigned int pw_y=XtY((Widget)client_data);
+#ifdef USE_XINERAMA
+        /* determine xinerama screen number the parent shell resides on,
+         * and override scr_w/scr_h and off_x/off_y on success */
+        if ((dt_xi = _DtXineramaInit(XtDisplay(w)))) {
+                int i;
+                unsigned int pw_x = XtX((Widget)client_data);
+                unsigned int pw_y = XtY((Widget)client_data);
 
-		for(i=0; i<dt_xi->numscreens; i++){
-			unsigned int sw,sh,sx,sy;
-			_DtXineramaGetScreen(dt_xi,i,&sw,&sh,&sx,&sy);
-			if(pw_x>=sx && pw_x<(sx+sw) && pw_y>=sy && pw_y<(sy+sh)){
-				off_x=sx; off_y=sy;
-				scr_w=sw; scr_h=sh;
-				break;
-			}
-		}
-	}
-	#endif /* USE_XINERAMA */
+                for (i = 0; i < dt_xi->numscreens; i++) {
+                        unsigned int sw, sh, sx, sy;
+                        _DtXineramaGetScreen(dt_xi, i, &sw, &sh, &sx, &sy);
+                        if (pw_x >= sx && pw_x < (sx + sw) && pw_y >= sy &&
+                            pw_y < (sy + sh)) {
+                                off_x = sx;
+                                off_y = sy;
+                                scr_w = sw;
+                                scr_h = sh;
+                                break;
+                        }
+                }
+        }
+#endif /* USE_XINERAMA */
 
-	msg_x=off_x+(scr_w-msg_w)/2;
-	msg_y=off_y+(scr_h-msg_h)/2;
+        msg_x = off_x + (scr_w - msg_w) / 2;
+        msg_y = off_y + (scr_h - msg_h) / 2;
 
-	XtSetArg(args[0],XmNx,msg_x);
-	XtSetArg(args[1],XmNy,msg_y);
-	XtSetValues(w,args,2);
-	XtRemoveCallback(w,XmNpopupCallback,MessageDialogPopupCB,client_data);
+        XtSetArg(args[0], XmNx, msg_x);
+        XtSetArg(args[1], XmNy, msg_y);
+        XtSetValues(w, args, 2);
+        XtRemoveCallback(w, XmNpopupCallback, MessageDialogPopupCB,
+                         client_data);
 }

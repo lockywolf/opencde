@@ -20,7 +20,7 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* 
+/*
 ** $XConsortium: TermPrimParseTable.h /main/1 1996/04/21 19:18:18 drk $
 */
 /*                                                                      *
@@ -29,8 +29,8 @@
  * (c) Copyright 1993, 1994 Sun Microsystems, Inc.                      *
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
-#ifndef   _Dt_TermPrimParseTable_h
-#define   _Dt_TermPrimParseTable_h
+#ifndef _Dt_TermPrimParseTable_h
+#define _Dt_TermPrimParseTable_h
 
 /* state table declarations... */
 extern StateTable _DtTermPrimStateStart;
@@ -44,9 +44,9 @@ extern void _DtTermPrimParseLF(Widget w);
 extern void _DtTermPrimParseCR(Widget w);
 extern void _DtTermPrimParseWriteChar(Widget w);
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 } /* close scope of 'extern "C"'... */
-#endif	/* __cplusplus */
+#endif /* __cplusplus */
 
 #endif /* _Dt_TermPrimParseTable_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif... */

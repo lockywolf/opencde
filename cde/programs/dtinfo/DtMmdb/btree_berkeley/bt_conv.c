@@ -80,140 +80,136 @@ static void mswap __P((PAGE *));
  *	pg:	page number
  *	h:	page to convert
  */
-void
-__bt_pgin(t, pg, pp)
-	void *t;
-	pgno_t pg;
-	void *pp;
+void __bt_pgin(t, pg, pp) void *t;
+pgno_t pg;
+void *pp;
 {
-	PAGE *h;
-	int i, top;
-	u_char flags;
-	char *p;
+        PAGE *h;
+        int i, top;
+        u_char flags;
+        char *p;
 
-	if (!ISSET(((BTREE *)t), B_NEEDSWAP))
-		return;
-	if (pg == P_META) {
-		mswap(pp);
-		return;
-	}
+        if (!ISSET(((BTREE *)t), B_NEEDSWAP))
+                return;
+        if (pg == P_META) {
+                mswap(pp);
+                return;
+        }
 
-	h = pp;
-	BLSWAP(h->pgno);
-	BLSWAP(h->prevpg);
-	BLSWAP(h->nextpg);
-	BLSWAP(h->flags);
-	BSSWAP(h->lower);
-	BSSWAP(h->upper);
+        h = pp;
+        BLSWAP(h->pgno);
+        BLSWAP(h->prevpg);
+        BLSWAP(h->nextpg);
+        BLSWAP(h->flags);
+        BSSWAP(h->lower);
+        BSSWAP(h->upper);
 
-	top = NEXTINDEX(h);
-	if ((h->flags & P_TYPE) == P_BINTERNAL)
-		for (i = 0; i < top; i++) {
-			BSSWAP(h->linp[i]);
-			p = (char *)GETBINTERNAL(h, i);
-			BLPSWAP(p);
-			p += sizeof(size_t);
-			BLPSWAP(p);
-			p += sizeof(pgno_t);
-			if (*(u_char *)p & P_BIGKEY) {
-				p += sizeof(u_char);
-				BLPSWAP(p);
-				p += sizeof(pgno_t);
-				BLPSWAP(p);
-			}
-		}
-	else if ((h->flags & P_TYPE) == P_BLEAF)
-		for (i = 0; i < top; i++) {
-			BSSWAP(h->linp[i]);
-			p = (char *)GETBLEAF(h, i);
-			BLPSWAP(p);
-			p += sizeof(size_t);
-			BLPSWAP(p);
-			p += sizeof(size_t);
-			flags = *(u_char *)p;
-			if (flags & (P_BIGKEY | P_BIGDATA)) {
-				p += sizeof(u_char);
-				if (flags & P_BIGKEY) {
-					BLPSWAP(p);
-					p += sizeof(pgno_t);
-					BLPSWAP(p);
-				}
-				if (flags & P_BIGDATA) {
-					p += sizeof(size_t);
-					BLPSWAP(p);
-					p += sizeof(pgno_t);
-					BLPSWAP(p);
-				}
-			}
-		}
+        top = NEXTINDEX(h);
+        if ((h->flags & P_TYPE) == P_BINTERNAL)
+                for (i = 0; i < top; i++) {
+                        BSSWAP(h->linp[i]);
+                        p = (char *)GETBINTERNAL(h, i);
+                        BLPSWAP(p);
+                        p += sizeof(size_t);
+                        BLPSWAP(p);
+                        p += sizeof(pgno_t);
+                        if (*(u_char *)p & P_BIGKEY) {
+                                p += sizeof(u_char);
+                                BLPSWAP(p);
+                                p += sizeof(pgno_t);
+                                BLPSWAP(p);
+                        }
+                }
+        else if ((h->flags & P_TYPE) == P_BLEAF)
+                for (i = 0; i < top; i++) {
+                        BSSWAP(h->linp[i]);
+                        p = (char *)GETBLEAF(h, i);
+                        BLPSWAP(p);
+                        p += sizeof(size_t);
+                        BLPSWAP(p);
+                        p += sizeof(size_t);
+                        flags = *(u_char *)p;
+                        if (flags & (P_BIGKEY | P_BIGDATA)) {
+                                p += sizeof(u_char);
+                                if (flags & P_BIGKEY) {
+                                        BLPSWAP(p);
+                                        p += sizeof(pgno_t);
+                                        BLPSWAP(p);
+                                }
+                                if (flags & P_BIGDATA) {
+                                        p += sizeof(size_t);
+                                        BLPSWAP(p);
+                                        p += sizeof(pgno_t);
+                                        BLPSWAP(p);
+                                }
+                        }
+                }
 }
 
-void
-__bt_pgout(t, pg, pp)
-	void *t;
-	pgno_t pg;
-	void *pp;
+void __bt_pgout(t, pg, pp) void *t;
+pgno_t pg;
+void *pp;
 {
-	PAGE *h;
-	int i, top;
-	u_char flags;
-	char *p;
+        PAGE *h;
+        int i, top;
+        u_char flags;
+        char *p;
 
-	if (!ISSET(((BTREE *)t), B_NEEDSWAP))
-		return;
-	if (pg == P_META) {
-		mswap(pp);
-		return;
-	}
+        if (!ISSET(((BTREE *)t), B_NEEDSWAP))
+                return;
+        if (pg == P_META) {
+                mswap(pp);
+                return;
+        }
 
-	h = pp;
-	top = NEXTINDEX(h);
-	if ((h->flags & P_TYPE) == P_BINTERNAL)
-		for (i = 0; i < top; i++) {
-			p = (char *)GETBINTERNAL(h, i);
-			BLPSWAP(p);
-			p += sizeof(size_t);
-			BLPSWAP(p);
-			p += sizeof(pgno_t);
-			if (*(u_char *)p & P_BIGKEY) {
-				p += sizeof(u_char);
-				BLPSWAP(p);
-				p += sizeof(pgno_t);
-				BLPSWAP(p);
-			}
-			BSSWAP(h->linp[i]);
-		}
-	else if ((h->flags & P_TYPE) == P_BLEAF)
-		for (i = 0; i < top; i++) {
-			p = (char *)GETBLEAF(h, i);
-			BLPSWAP(p);
-			p += sizeof(size_t);
-			BLPSWAP(p);
-			p += sizeof(size_t);
-			flags = *(u_char *)p;
-			if (flags & (P_BIGKEY | P_BIGDATA)) {
-				p += sizeof(u_char);
-				if (flags & P_BIGKEY) {
-					BLPSWAP(p);
-					p += sizeof(pgno_t);
-					BLPSWAP(p);
-				}
-				if (flags & P_BIGDATA) {
-					p += sizeof(size_t);
-					BLPSWAP(p);
-					p += sizeof(pgno_t);
-					BLPSWAP(p);
-				}
-			}
-			BSSWAP(h->linp[i]);
-		}
+        h = pp;
+        top = NEXTINDEX(h);
+        if ((h->flags & P_TYPE) == P_BINTERNAL)
+                for (i = 0; i < top; i++) {
+                        p = (char *)GETBINTERNAL(h, i);
+                        BLPSWAP(p);
+                        p += sizeof(size_t);
+                        BLPSWAP(p);
+                        p += sizeof(pgno_t);
+                        if (*(u_char *)p & P_BIGKEY) {
+                                p += sizeof(u_char);
+                                BLPSWAP(p);
+                                p += sizeof(pgno_t);
+                                BLPSWAP(p);
+                        }
+                        BSSWAP(h->linp[i]);
+                }
+        else if ((h->flags & P_TYPE) == P_BLEAF)
+                for (i = 0; i < top; i++) {
+                        p = (char *)GETBLEAF(h, i);
+                        BLPSWAP(p);
+                        p += sizeof(size_t);
+                        BLPSWAP(p);
+                        p += sizeof(size_t);
+                        flags = *(u_char *)p;
+                        if (flags & (P_BIGKEY | P_BIGDATA)) {
+                                p += sizeof(u_char);
+                                if (flags & P_BIGKEY) {
+                                        BLPSWAP(p);
+                                        p += sizeof(pgno_t);
+                                        BLPSWAP(p);
+                                }
+                                if (flags & P_BIGDATA) {
+                                        p += sizeof(size_t);
+                                        BLPSWAP(p);
+                                        p += sizeof(pgno_t);
+                                        BLPSWAP(p);
+                                }
+                        }
+                        BSSWAP(h->linp[i]);
+                }
 
-	BLSWAP(h->pgno);
-	BLSWAP(h->prevpg);
-	BLSWAP(h->nextpg);
-	BLSWAP(h->flags);
-	BSSWAP(h->lower);
-	BSSWAP(h->upper);
+        BLSWAP(h->pgno);
+        BLSWAP(h->prevpg);
+        BLSWAP(h->nextpg);
+        BLSWAP(h->flags);
+        BSSWAP(h->lower);
+        BSSWAP(h->upper);
 }
 
 /*
@@ -222,23 +218,21 @@ __bt_pgout(t, pg, pp)
  * Parameters:
  *	p:	page to convert
  */
-static void
-mswap(pg)
-	PAGE *pg;
+static void mswap(pg) PAGE *pg;
 {
-	char *p;
+        char *p;
 
-	p = (char *)pg;
-	BLPSWAP(p);		/* m_magic */
-	p += sizeof(u_long);
-	BLPSWAP(p);		/* m_version */
-	p += sizeof(u_long);
-	BLPSWAP(p);		/* m_psize */
-	p += sizeof(u_long);
-	BLPSWAP(p);		/* m_free */
-	p += sizeof(u_long);
-	BLPSWAP(p);		/* m_nrecs */
-	p += sizeof(u_long);
-	BLPSWAP(p);		/* m_flags */
-	p += sizeof(u_long);
+        p = (char *)pg;
+        BLPSWAP(p); /* m_magic */
+        p += sizeof(u_long);
+        BLPSWAP(p); /* m_version */
+        p += sizeof(u_long);
+        BLPSWAP(p); /* m_psize */
+        p += sizeof(u_long);
+        BLPSWAP(p); /* m_free */
+        p += sizeof(u_long);
+        BLPSWAP(p); /* m_nrecs */
+        p += sizeof(u_long);
+        BLPSWAP(p); /* m_flags */
+        p += sizeof(u_long);
 }

@@ -42,10 +42,10 @@
  * Revision 1.1.2.2  1995/04/21  13:05:38  Peter_Derr
  * 	dtlogin auth key fixes from deltacde
  * 	[1995/04/12  19:21:26  Peter_Derr]
- * 
+ *
  * 	R6 xdm version used to pick up XDMCP improvements.
  * 	[1995/04/12  18:05:54  Peter_Derr]
- * 
+ *
  * $EndLog$
  */
 /*
@@ -98,79 +98,79 @@ from the X Consortium.
 extern int errno;
 #endif
 
+extern int xdmcpFd;
+extern int chooserFd;
 
-extern int	xdmcpFd;
-extern int	chooserFd;
+extern FD_TYPE WellKnownSocketsMask;
+extern int WellKnownSocketsMax;
 
-extern FD_TYPE	WellKnownSocketsMask;
-extern int	WellKnownSocketsMax;
+CreateWellKnownSockets() {
+        struct sockaddr_in sock_addr;
+        char *name, *localHostname();
 
-CreateWellKnownSockets ()
-{
-    struct sockaddr_in	sock_addr;
-    char		*name, *localHostname();
-
-    if (request_port == 0)
-	    return 0;
-    Debug ("creating socket %d\n", request_port);
-    xdmcpFd = socket (AF_INET, SOCK_DGRAM, 0);
-    if (xdmcpFd == -1) {
-	LogError (ReadCatalog(MC_LOG_SET,MC_LOG_FAIL_SOCK,MC_DEF_LOG_FAIL_SOCK),
-		  request_port);
-	return 0;
-    }
-    name = localHostname ();
-    registerHostname (name, strlen (name));
-    RegisterCloseOnFork (xdmcpFd);
-    /* zero out the entire structure; this avoids 4.4 incompatibilities */
-    bzero ((char *) &sock_addr, sizeof (sock_addr));
+        if (request_port == 0)
+                return 0;
+        Debug("creating socket %d\n", request_port);
+        xdmcpFd = socket(AF_INET, SOCK_DGRAM, 0);
+        if (xdmcpFd == -1) {
+                LogError(ReadCatalog(MC_LOG_SET, MC_LOG_FAIL_SOCK,
+                                     MC_DEF_LOG_FAIL_SOCK),
+                         request_port);
+                return 0;
+        }
+        name = localHostname();
+        registerHostname(name, strlen(name));
+        RegisterCloseOnFork(xdmcpFd);
+        /* zero out the entire structure; this avoids 4.4 incompatibilities */
+        bzero((char *)&sock_addr, sizeof(sock_addr));
 #ifdef BSD44SOCKETS
-    sock_addr.sin_len = sizeof(sock_addr);
+        sock_addr.sin_len = sizeof(sock_addr);
 #endif
-    sock_addr.sin_family = AF_INET;
-    sock_addr.sin_port = htons ((short) request_port);
-    sock_addr.sin_addr.s_addr = htonl (INADDR_ANY);
-    if (bind (xdmcpFd, (struct sockaddr *)&sock_addr, sizeof (sock_addr)) == -1)
-    {
-	LogError (ReadCatalog(MC_LOG_SET,MC_LOG_ERR_BIND,MC_DEF_LOG_ERR_BIND),
-		  request_port, errno);
-	close (xdmcpFd);
-	xdmcpFd = -1;
-	return 0;
-    }
-    WellKnownSocketsMax = xdmcpFd;
-    FD_SET (xdmcpFd, &WellKnownSocketsMask);
+        sock_addr.sin_family = AF_INET;
+        sock_addr.sin_port = htons((short)request_port);
+        sock_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+        if (bind(xdmcpFd, (struct sockaddr *)&sock_addr, sizeof(sock_addr)) ==
+            -1) {
+                LogError(ReadCatalog(MC_LOG_SET, MC_LOG_ERR_BIND,
+                                     MC_DEF_LOG_ERR_BIND),
+                         request_port, errno);
+                close(xdmcpFd);
+                xdmcpFd = -1;
+                return 0;
+        }
+        WellKnownSocketsMax = xdmcpFd;
+        FD_SET(xdmcpFd, &WellKnownSocketsMask);
 
-    chooserFd = socket (AF_INET, SOCK_STREAM, 0);
-    Debug ("Created chooser socket %d\n", chooserFd);
-    if (chooserFd == -1)
-    {
-	LogError ((unsigned char *)"chooser socket creation failed, errno %d\n", errno);
-	return 0;
-    }
-    listen (chooserFd, 5);
-    if (chooserFd > WellKnownSocketsMax)
-	WellKnownSocketsMax = chooserFd;
-    FD_SET (chooserFd, &WellKnownSocketsMask);
+        chooserFd = socket(AF_INET, SOCK_STREAM, 0);
+        Debug("Created chooser socket %d\n", chooserFd);
+        if (chooserFd == -1) {
+                LogError((unsigned char
+                              *)"chooser socket creation failed, errno %d\n",
+                         errno);
+                return 0;
+        }
+        listen(chooserFd, 5);
+        if (chooserFd > WellKnownSocketsMax)
+                WellKnownSocketsMax = chooserFd;
+        FD_SET(chooserFd, &WellKnownSocketsMask);
 }
 
-GetChooserAddr (addr, lenp)
-    char	*addr;
-    int		*lenp;
+GetChooserAddr(addr, lenp) char *addr;
+int *lenp;
 {
-    struct sockaddr_in	in_addr;
-    int			len;
+        struct sockaddr_in in_addr;
+        int len;
 
-    len = sizeof in_addr;
-#if defined (_AIX) && (OSMAJORVERSION==4) && (OSMINORVERSION==2)
-    if (getsockname (chooserFd, (struct sockaddr *)&in_addr, (size_t *)&len) < 0)
+        len = sizeof in_addr;
+#if defined(_AIX) && (OSMAJORVERSION == 4) && (OSMINORVERSION == 2)
+        if (getsockname(chooserFd, (struct sockaddr *)&in_addr,
+                        (size_t *)&len) < 0)
 #else
-    if (getsockname (chooserFd, (struct sockaddr *)&in_addr, &len) < 0)
+        if (getsockname(chooserFd, (struct sockaddr *)&in_addr, &len) < 0)
 #endif
-	return -1;
-    Debug ("Chooser socket port: %d\n", ntohs(in_addr.sin_port));
-    memmove( addr, (char *) &in_addr, len);
-    *lenp = len;
-    return 0;
+                return -1;
+        Debug("Chooser socket port: %d\n", ntohs(in_addr.sin_port));
+        memmove(addr, (char *)&in_addr, len);
+        *lenp = len;
+        return 0;
 }
-

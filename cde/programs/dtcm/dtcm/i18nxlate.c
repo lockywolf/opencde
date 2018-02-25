@@ -34,7 +34,7 @@
 #include <locale.h>
 #include <time.h>
 
-#include <LocaleXlate.h>	/* under DtHelp, for Operation constants */
+#include <LocaleXlate.h> /* under DtHelp, for Operation constants */
 
 #ifndef True
 #define True 1
@@ -42,7 +42,6 @@
 #ifndef False
 #define False 0
 #endif
-
 
 /*
  * Wrapper functions taken from libHelp/CEUtil.c
@@ -58,13 +57,12 @@
 static const char *DfltStdCharset = "ISO-8859-1";
 static const char *DfltStdLang = "C";
 
-static char       MyPlatform[_DtPLATFORM_MAX_LEN+1];
+static char MyPlatform[_DtPLATFORM_MAX_LEN + 1];
 static _DtXlateDb MyDb = NULL;
-char       MyProcess = False;
-char       MyFirst   = True;
-int        ExecVer;
-int        CompVer;
-
+char MyProcess = False;
+char MyFirst = True;
+int ExecVer;
+int CompVer;
 
 /******************************************************************************
  * Function:    static int OpenLcxDb ()
@@ -79,46 +77,44 @@ int        CompVer;
  * Purpose: Opens the Ce-private Lcx database
  *
  *****************************************************************************/
-static int
-OpenLcxDb (void)
-{
-    time_t	time1  = 0;
-    time_t	time2  = 0;
+static int OpenLcxDb(void) {
+        time_t time1 = 0;
+        time_t time2 = 0;
 
-    /*
-     * wait 30 sec. until another thread or enter is done modifying the table
-     */
-    while (MyProcess == True)
-      {
-        /* if time out, return */
-	if (time(&time2) == (time_t)-1)
-	    return -1;
+        /*
+         * wait 30 sec. until another thread or enter is done modifying the
+         * table
+         */
+        while (MyProcess == True) {
+                /* if time out, return */
+                if (time(&time2) == (time_t)-1)
+                        return -1;
 
-        if (time1 == 0)
-	    time1 = time2;
-	else if (time2 - time1 >= (time_t)30)
-	    return -1;
-      }
+                if (time1 == 0)
+                        time1 = time2;
+                else if (time2 - time1 >= (time_t)30)
+                        return -1;
+        }
 
-    if (MyFirst == True)
-      {
-        MyProcess = True;
-        if (_DtLcxOpenAllDbs(&MyDb) == 0 &&
-			_DtXlateGetXlateEnv(MyDb,MyPlatform,&ExecVer,&CompVer) != 0)
-	  {
-	    _DtLcxCloseDb(&MyDb);
-	    MyDb = NULL;
-	  }
-	MyFirst = False;
-        MyProcess = False;
-      }
+        if (MyFirst == True) {
+                MyProcess = True;
+                if (_DtLcxOpenAllDbs(&MyDb) == 0 &&
+                    _DtXlateGetXlateEnv(MyDb, MyPlatform, &ExecVer, &CompVer) !=
+                        0) {
+                        _DtLcxCloseDb(&MyDb);
+                        MyDb = NULL;
+                }
+                MyFirst = False;
+                MyProcess = False;
+        }
 
-    return (MyDb == NULL ? -1 : 0 );
+        return (MyDb == NULL ? -1 : 0);
 }
 
 /******************************************************************************
  * Function:    int DtI18NXlateOpToStdLocale (char *operation, char *opLocale,
- *                         char **ret_stdLocale, char **ret_stdLang, char **ret_stdSet)
+ *                         char **ret_stdLocale, char **ret_stdLang, char
+ ***ret_stdSet)
  *
  * Parameters:
  *              operation       Operation associated with the locale value
@@ -135,39 +131,34 @@ OpenLcxDb (void)
  * Purpose:  Gets the standard locale given an operation and its locale
  *
  *****************************************************************************/
-void
-_DtI18NXlateOpToStdLocale (
-     char       *operation,
-     char       *opLocale,
-     char       **ret_stdLocale,
-     char       **ret_stdLang,
-     char       **ret_stdSet)
-{
-    OpenLcxDb();
+void _DtI18NXlateOpToStdLocale(char *operation, char *opLocale,
+                               char **ret_stdLocale, char **ret_stdLang,
+                               char **ret_stdSet) {
+        OpenLcxDb();
 
-    if (MyDb != NULL)
-      {
-	(void) _DtLcxXlateOpToStd(MyDb, MyPlatform, CompVer,
-				operation,opLocale,
-				ret_stdLocale, ret_stdLang, ret_stdSet, NULL);
-      }
+        if (MyDb != NULL) {
+                (void)_DtLcxXlateOpToStd(MyDb, MyPlatform, CompVer, operation,
+                                         opLocale, ret_stdLocale, ret_stdLang,
+                                         ret_stdSet, NULL);
+        }
 
-    /* if failed, give default values */
-    if (ret_stdLocale != NULL && *ret_stdLocale == NULL)
-    {
-	int size = strlen(DfltStdLang) + strlen(DfltStdCharset) + 3;
-        *ret_stdLocale = (char *)malloc(size);
-	snprintf(*ret_stdLocale, size, "%s.%s", DfltStdLang,DfltStdCharset);
-    }
-    if (ret_stdLang != NULL && *ret_stdLang == NULL)
-	*ret_stdLang = (char *)strdup(DfltStdLang);
-    if (ret_stdSet != NULL && *ret_stdSet == NULL)
-	*ret_stdSet = (char *)strdup(DfltStdCharset);
+        /* if failed, give default values */
+        if (ret_stdLocale != NULL && *ret_stdLocale == NULL) {
+                int size = strlen(DfltStdLang) + strlen(DfltStdCharset) + 3;
+                *ret_stdLocale = (char *)malloc(size);
+                snprintf(*ret_stdLocale, size, "%s.%s", DfltStdLang,
+                         DfltStdCharset);
+        }
+        if (ret_stdLang != NULL && *ret_stdLang == NULL)
+                *ret_stdLang = (char *)strdup(DfltStdLang);
+        if (ret_stdSet != NULL && *ret_stdSet == NULL)
+                *ret_stdSet = (char *)strdup(DfltStdCharset);
 }
 
 /******************************************************************************
  * Function:    int DtI18NXlateStdToOpLocale ( char *operation, char *stdLocale,
- *                                      char *dflt_opLocale, char **ret_opLocale)
+ *                                      char *dflt_opLocale, char
+ ***ret_opLocale)
  *
  * Parameters:
  *    operation		operation whose locale value will be retrieved
@@ -182,26 +173,21 @@ _DtI18NXlateOpToStdLocale (
  * Purpose: Gets an operation-specific locale string given the standard string
  *
  *****************************************************************************/
-void
-_DtI18NXlateStdToOpLocale (
-     char       *operation,
-     char       *stdLocale,
-     char       *dflt_opLocale,
-     char       **ret_opLocale)
-{
-    OpenLcxDb();
+void _DtI18NXlateStdToOpLocale(char *operation, char *stdLocale,
+                               char *dflt_opLocale, char **ret_opLocale) {
+        OpenLcxDb();
 
-    if (MyDb != NULL)
-    {
-	(void) _DtLcxXlateStdToOp(MyDb, MyPlatform, CompVer,
-			operation, stdLocale, NULL, NULL, NULL, ret_opLocale);
-    }
+        if (MyDb != NULL) {
+                (void)_DtLcxXlateStdToOp(MyDb, MyPlatform, CompVer, operation,
+                                         stdLocale, NULL, NULL, NULL,
+                                         ret_opLocale);
+        }
 
-    /* if translation fails, use a default value */
-    if (ret_opLocale && *ret_opLocale == NULL)
-    {
-       if (dflt_opLocale) *ret_opLocale = (char *)strdup(dflt_opLocale);
-       else if (stdLocale) *ret_opLocale = (char *)strdup(stdLocale);
-    }
+        /* if translation fails, use a default value */
+        if (ret_opLocale && *ret_opLocale == NULL) {
+                if (dflt_opLocale)
+                        *ret_opLocale = (char *)strdup(dflt_opLocale);
+                else if (stdLocale)
+                        *ret_opLocale = (char *)strdup(stdLocale);
+        }
 }
-

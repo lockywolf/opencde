@@ -27,7 +27,7 @@
  * @(#)obj_motif.c	3.80 13 Feb 1994	cde_app_builder/src/libABobj
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -39,7 +39,6 @@
  *	Copyright 1993 Sun Microsystems, Inc.  All rights reserved.
  *
  */
-
 
 /*
  *  motif.c - Handles motif stuff
@@ -59,5 +58,3 @@
 /*
  * This file is now obsolete - all this is in libABobjXm
  */
-
-

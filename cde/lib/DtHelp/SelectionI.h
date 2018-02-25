@@ -42,7 +42,6 @@
 #ifndef __DtCvSelectionI_h
 #define __DtCvSelectionI_h
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -56,20 +55,16 @@ extern "C" {
 /********    Private Macro Declarations    ********/
 
 /********    Private Function Declarations    ********/
-extern	_DtCvStatus	_DtCvGetMarkSegs(
-				_DtCanvasStruct	  *canvas,
-				_DtCvPointInfo	***ret_info);
-extern	void		_DtCvDrawAreaWithFlags(
-				_DtCanvasStruct	  *canvas,
-				_DtCvSelectData	   start,
-				_DtCvSelectData	   end,
-				_DtCvFlags	   old_flag,
-				_DtCvFlags	   new_flag,
-				_DtCvElemType	   trav_type,
-				_DtCvPointer	   trav_data);
+extern _DtCvStatus _DtCvGetMarkSegs(_DtCanvasStruct *canvas,
+                                    _DtCvPointInfo ***ret_info);
+extern void _DtCvDrawAreaWithFlags(_DtCanvasStruct *canvas,
+                                   _DtCvSelectData start, _DtCvSelectData end,
+                                   _DtCvFlags old_flag, _DtCvFlags new_flag,
+                                   _DtCvElemType trav_type,
+                                   _DtCvPointer trav_data);
 
 #ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
 #endif /* __DtCvSelectionI_h */

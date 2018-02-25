@@ -46,7 +46,7 @@
  *   USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
  *   OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE
  *   OR PERFORMANCE OF THIS SOFTWARE.
-*/
+ */
 /*---------------------------------------------------------------------
  * $XConsortium: UxXt.h /main/4 1995/11/01 16:09:11 rswiston $
  *---------------------------------------------------------------------
@@ -95,131 +95,117 @@ typedef char *caddr_t;
 #ifdef UXORB_HEADER
 #include UXORB_HEADER
 #else
-        /*
-         * In the absence of an ORB implementation,
-         * these minimal definitions satisfy our method dispatch code.
-         */
-        typedef enum {
-                NO_EXCEPTION,
-                USER_EXCEPTION,
-                SYSTEM_EXCEPTION
-        } exception_type;
+/*
+ * In the absence of an ORB implementation,
+ * these minimal definitions satisfy our method dispatch code.
+ */
+typedef enum { NO_EXCEPTION, USER_EXCEPTION, SYSTEM_EXCEPTION } exception_type;
 
-        typedef struct Environment {
-                exception_type  _major;
-        } Environment;
-#endif  /* UXORB_HEADER */
+typedef struct Environment {
+        exception_type _major;
+} Environment;
+#endif /* UXORB_HEADER */
 
 /*
  * UxEnv is provided as a convenience for use in interface methods.
  */
-extern  Environment     UxEnv;
-
+extern Environment UxEnv;
 
 /* The following macros are used in converting string values to the form
    required by the widgets */
 
-#define RES_CONVERT( res_name, res_value) \
+#define RES_CONVERT(res_name, res_value)                                       \
         XtVaTypedArg, (res_name), XmRString, (res_value), strlen(res_value) + 1
 
-#define UxPutStrRes( wgt, res_name, res_value ) \
-        XtVaSetValues( wgt, RES_CONVERT( res_name, res_value ), NULL )
+#define UxPutStrRes(wgt, res_name, res_value)                                  \
+        XtVaSetValues(wgt, RES_CONVERT(res_name, res_value), NULL)
 
-
-#ifndef UX_INTERPRETER  /* Omit this section when interpreting the code */
+#ifndef UX_INTERPRETER /* Omit this section when interpreting the code */
 
 /* The following macros are supplied for compatibility with swidget code */
-#define swidget                 Widget
-#define UxWidgetToSwidget(w)    (w)
-#define UxGetWidget(sw)         (sw)
-#define UxIsValidSwidget(sw)    ((sw) != NULL)
-#define NO_PARENT               ((Widget) NULL)
-#define UxThisWidget            (UxWidget)
+#define swidget Widget
+#define UxWidgetToSwidget(w) (w)
+#define UxGetWidget(sw) (sw)
+#define UxIsValidSwidget(sw) ((sw) != NULL)
+#define NO_PARENT ((Widget)NULL)
+#define UxThisWidget (UxWidget)
 
 /* Macros needed for the method support code */
-#define UxMalloc(a)             (malloc(a))
-#define UxRealloc(a,b)          (realloc((a), (b)))
-#define UxCalloc(a,b)           (calloc((a), (b)))
-#define UxStrEqual(a,b)         (!strcmp((a),(b)))
-#define UxGetParent(a)          (XtParent((a)))
+#define UxMalloc(a) (malloc(a))
+#define UxRealloc(a, b) (realloc((a), (b)))
+#define UxCalloc(a, b) (calloc((a), (b)))
+#define UxStrEqual(a, b) (!strcmp((a), (b)))
+#define UxGetParent(a) (XtParent((a)))
 
-#define no_grab                 XtGrabNone
-#define nonexclusive_grab       XtGrabNonexclusive
-#define exclusive_grab          XtGrabExclusive
-
+#define no_grab XtGrabNone
+#define nonexclusive_grab XtGrabNonexclusive
+#define exclusive_grab XtGrabExclusive
 
 /* The following global variables are defined in the main() function */
-extern  XtAppContext    UxAppContext;
-extern  Widget          UxTopLevel;
-extern  Display         *UxDisplay;
-extern  int             UxScreen;
-
+extern XtAppContext UxAppContext;
+extern Widget UxTopLevel;
+extern Display *UxDisplay;
+extern int UxScreen;
 
 /* The following are error codes returned by the functions in UxXt.c */
-#define UX_ERROR           -1
-#define UX_NO_ERROR        0
+#define UX_ERROR -1
+#define UX_NO_ERROR 0
 
 #ifdef UIL_CODE
-extern  void            UxMrmFetchError(MrmHierarchy, char *, Widget, Cardinal);
-extern  MrmHierarchy    UxMrmOpenHierarchy( char *);
-extern  void            UxMrmRegisterClass( char *, Widget (*)(Widget, String, Arg *, Cardinal));
+extern void UxMrmFetchError(MrmHierarchy, char *, Widget, Cardinal);
+extern MrmHierarchy UxMrmOpenHierarchy(char *);
+extern void UxMrmRegisterClass(char *,
+                               Widget (*)(Widget, String, Arg *, Cardinal));
 #endif /* UIL_CODE */
-
-
 
 /* The following are declarations of the functions in UxXt.c */
 
+extern void *UxNewContext(size_t size, int isSubclass);
+extern int UxPopupInterface(Widget wgt, XtGrabKind grab_flag);
+extern int UxPopdownInterface(Widget wgt);
+extern int UxDestroyInterface(Widget wgt);
+extern int UxPutContext(Widget wgt, caddr_t context);
+extern caddr_t UxGetContext(Widget wgt);
+extern void UxFreeClientDataCB(Widget wgt, XtPointer client_data,
+                               XtPointer call_data);
+extern void UxLoadResources(char *fname);
+extern XmFontList UxConvertFontList(char *fontlist_str);
+extern Pixmap UxConvertPixmap(char *file_name);
+extern Pixmap UxConvert_bitmap(char *file_name);
+extern wchar_t *UxConvertValueWcs(char *value_str);
 
-extern  void*		UxNewContext (size_t size, int isSubclass);
-extern  int             UxPopupInterface( Widget wgt, XtGrabKind grab_flag );
-extern  int             UxPopdownInterface( Widget wgt );
-extern  int             UxDestroyInterface( Widget wgt);
-extern  int             UxPutContext( Widget wgt, caddr_t context );
-extern  caddr_t         UxGetContext( Widget wgt );
-extern  void            UxFreeClientDataCB( Widget wgt, XtPointer client_data,
-                                                 XtPointer call_data );
-extern  void            UxLoadResources( char *fname );
-extern  XmFontList      UxConvertFontList( char *fontlist_str );
-extern  Pixmap          UxConvertPixmap( char *file_name );
-extern  Pixmap          UxConvert_bitmap( char *file_name );
-extern  wchar_t *       UxConvertValueWcs( char *value_str );
+extern void UxDestroyContextCB(Widget, XtPointer, XtPointer);
+extern void UxDeleteContextCB(Widget, XtPointer, XtPointer);
+extern XtArgVal UxRemoveValueFromArgList(Arg *args, Cardinal *ptr_num_args,
+                                         String res_name);
+extern Widget UxChildSite(Widget);
+extern Widget UxRealWidget(Widget);
 
-extern  void            UxDestroyContextCB(Widget, XtPointer, XtPointer);
-extern  void            UxDeleteContextCB( Widget, XtPointer, XtPointer);
-extern  XtArgVal        UxRemoveValueFromArgList( Arg *args,
-                                                Cardinal *ptr_num_args,
-                                                String res_name );
-extern  Widget          UxChildSite( Widget );
-extern  Widget          UxRealWidget( Widget );
-
-extern  Widget          GetTrueToplevel( Widget );
-
+extern Widget GetTrueToplevel(Widget);
 
 #ifdef __cplusplus
 class _UxCInterface {
 
-public:
-
-        virtual swidget childSite (Environment * pEnv) {
+      public:
+        virtual swidget childSite(Environment *pEnv) {
                 if (pEnv)
                         pEnv->_major = NO_EXCEPTION;
                 return 0;
         }
-        virtual swidget UxChildSite (swidget sw);
+        virtual swidget UxChildSite(swidget sw);
 
-protected:
+      protected:
         swidget UxThis;
 };
 
-#define CPLUS_ADAPT_CONTEXT(CLASS) \
-        static inline \
-                CLASS* UxGetContext(CLASS*self) {return self;} \
-        static inline\
-                void* UxGetContext(swidget any) {return ::UxGetContext(any);}
+#define CPLUS_ADAPT_CONTEXT(CLASS)                                             \
+        static inline CLASS *UxGetContext(CLASS *self) { return self; }        \
+        static inline void *UxGetContext(swidget any) {                        \
+                return ::UxGetContext(any);                                    \
+        }
 
 #endif /* _cplusplus */
 
 #endif /* ! UX_INTERPRETER */
 
 #endif /* ! _UX_XT_H_INCLUDED */
-

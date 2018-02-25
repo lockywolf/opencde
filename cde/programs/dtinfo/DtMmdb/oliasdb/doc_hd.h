@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,9 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
 
 #ifndef _doc_hd_h
 #define _doc_hd_h 1
@@ -67,47 +66,43 @@
 // The doc class
 /*************************************/
 
-class doc : public tuple
-{
-public:
-   doc() : tuple(NUM_DOC_FIELDS, DOC_CODE) {};
-   virtual ~doc() {};
+class doc : public tuple {
+      public:
+        doc() : tuple(NUM_DOC_FIELDS, DOC_CODE){};
+        virtual ~doc(){};
 
-   MMDB_SIGNATURES(doc);
- 
-protected:
-   friend class doc_smart_ptr;
+        MMDB_SIGNATURES(doc);
+
+      protected:
+        friend class doc_smart_ptr;
 };
 
-typedef doc* docPtr;
+typedef doc *docPtr;
 
 /*************************************/
 /*************************************/
 
+class doc_smart_ptr : public smart_ptr {
+      public:
+        doc_smart_ptr(info_lib *, const char *base_name, const int seq_num);
+        doc_smart_ptr(info_base *base_ptr, const int seq_num);
 
-class doc_smart_ptr : public smart_ptr
-{
-public:
-   doc_smart_ptr(info_lib*, const char* base_name, const int seq_num);
-   doc_smart_ptr(info_base* base_ptr, const int seq_num);
+        doc_smart_ptr(info_lib *, const char *ibase_name,
+                      const oid_t &toc_node_id);
+        doc_smart_ptr(info_base *ibase_ptr, const oid_t &toc_node_id);
 
-   doc_smart_ptr(info_lib*, const char* ibase_name, const oid_t& toc_node_id);
-   doc_smart_ptr(info_base* ibase_ptr, const oid_t& toc_node_id);
+        doc_smart_ptr(const oid_t &doc_id, info_lib *, const char *ibase_name);
+        doc_smart_ptr(const oid_t &doc_id, info_base *);
 
-   doc_smart_ptr(const oid_t& doc_id, info_lib*, const char* ibase_name);
-   doc_smart_ptr(const oid_t& doc_id, info_base*);
+        virtual ~doc_smart_ptr(){};
 
-   virtual ~doc_smart_ptr() {};
-
-   oid_t  locator_id();
-   const char*  short_title();
-   const char*  long_title();
-   short_list_handler* tab_list();
-   int seq_num();  // seq number for Fulcrum.
-   const char*  license_terms();
-   unsigned int license_terms_size();
+        oid_t locator_id();
+        const char *short_title();
+        const char *long_title();
+        short_list_handler *tab_list();
+        int seq_num(); // seq number for Fulcrum.
+        const char *license_terms();
+        unsigned int license_terms_size();
 };
-
-
 
 #endif

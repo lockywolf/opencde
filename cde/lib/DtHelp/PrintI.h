@@ -28,7 +28,7 @@
  **
  **  Project:  Cache Creek (Rivers) Project:
  **
- **  Description:  Internal Header file for Print.c 
+ **  Description:  Internal Header file for Print.c
  **  -----------
  **
  **  (c) Copyright 1987, 1988, 1989, 1990, 1991, 1992 Hewlett-Packard Company
@@ -45,17 +45,17 @@
 
 /* Printer Type Defines */
 
-#define _DtPRINT_ALL     1
-#define _DtPRINT_SUB     2
+#define _DtPRINT_ALL 1
+#define _DtPRINT_SUB 2
 #define _DtPRINT_CURRENT 3
-#define _DtPRINT_TOC     4 
+#define _DtPRINT_TOC 4
 
 /* default helpprint executable */
 extern char _DtHelpDefaultHelpPrint[];
 /* paper size resource names */
-extern char * _DtHelpPaperSizeNames[];
+extern char *_DtHelpPaperSizeNames[];
 /* number paper size resource names */
-extern int    _DtHelpPaperSizeNamesCnt;
+extern int _DtHelpPaperSizeNamesCnt;
 
 /*****************************************************************************
  * Function:        void _DtHelpDisplayPrintDialog();
@@ -68,11 +68,9 @@ extern int    _DtHelpPaperSizeNamesCnt;
  * Purpose:         Creates and displays an instance of the print dialog.
  *
  *****************************************************************************/
-void _DtHelpDisplayPrintDialog(
-   Widget               widget,
-   _DtHelpPrintStuff *   print,
-   _DtHelpDisplayWidgetStuff * display,
-   _DtHelpCommonHelpStuff * help);
+void _DtHelpDisplayPrintDialog(Widget widget, _DtHelpPrintStuff *print,
+                               _DtHelpDisplayWidgetStuff *display,
+                               _DtHelpCommonHelpStuff *help);
 
 /*****************************************************************************
  * Function:        void _DtHelpUpdatePrintDialog();
@@ -85,11 +83,10 @@ void _DtHelpDisplayPrintDialog(
  * Purpose:         Updates the print dialog to reflect current topic
  *
  *****************************************************************************/
-void _DtHelpUpdatePrintDialog(
-    _DtHelpPrintStuff *         print,
-    _DtHelpDisplayWidgetStuff * display,
-    _DtHelpCommonHelpStuff *    help,
-    Boolean                     setDefaults);
+void _DtHelpUpdatePrintDialog(_DtHelpPrintStuff *print,
+                              _DtHelpDisplayWidgetStuff *display,
+                              _DtHelpCommonHelpStuff *help,
+                              Boolean setDefaults);
 
 /************************************************************************
  * Function: _DtHelpPrintSetValues()
@@ -97,52 +94,31 @@ void _DtHelpUpdatePrintDialog(
  *      set print-related data
  *
  ************************************************************************/
-void _DtHelpPrintSetValues (
-    _DtHelpPrintStuff * currentPrint,
-    _DtHelpPrintStuff * newPrint,
-    _DtHelpDisplayWidgetStuff * newDisplay,
-    _DtHelpCommonHelpStuff * newCommonHelp);
-
+void _DtHelpPrintSetValues(_DtHelpPrintStuff *currentPrint,
+                           _DtHelpPrintStuff *newPrint,
+                           _DtHelpDisplayWidgetStuff *newDisplay,
+                           _DtHelpCommonHelpStuff *newCommonHelp);
 
 /*****************************************************************************
  * Function:	    void _DtHelpPrintJob(
- *                   
- *                            
  *
- * Parameters:  
+ *
+ *
+ * Parameters:
  *
  * Return Value:    Void.
  *
  * Purpose: 	    Sets up and forks off a print job to helpprint
  *
  *****************************************************************************/
-void _DtHelpPrintJob(
-    Widget	widget,
-    char *	printExec,
-    char *	printer,
-    int		paperSize,
-    char *	copies,
-    char *	helpVolume,
-    int 	helpType,
-    char *	helpData,
-    Boolean	printAll,
-    Boolean	printSub,
-    Boolean	printToc,
-    char *	topicTitle);
+void _DtHelpPrintJob(Widget widget, char *printExec, char *printer,
+                     int paperSize, char *copies, char *helpVolume,
+                     int helpType, char *helpData, Boolean printAll,
+                     Boolean printSub, Boolean printToc, char *topicTitle);
 
-extern void _DtHelpInitPrintStuff (
-    _DtHelpPrintStuff * print);
+extern void _DtHelpInitPrintStuff(_DtHelpPrintStuff *print);
 
-extern void _DtHelpFreePrintStuff (
-    _DtHelpPrintStuff * print,
-    int                 cleanUpKind);
-
+extern void _DtHelpFreePrintStuff(_DtHelpPrintStuff *print, int cleanUpKind);
 
 #endif /* _PrintI_h */
 /* Do not add anything after this endif. */
-
-
-
-
-
-

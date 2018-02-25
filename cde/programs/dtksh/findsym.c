@@ -59,45 +59,40 @@ extern void **sh_getliblist(void);
  * to locate any arbitrary symbol.
  */
 
-unsigned long
-fsym(
-        char *str,
-        int lib )
-{
+unsigned long fsym(char *str, int lib) {
 #ifdef DYNLIB
-   void ** liblist;
-   int i = 0;
-   long addr;
+        void **liblist;
+        int i = 0;
+        long addr;
 #endif
 #ifdef HPUX_DYNLIB
-   void *found;
-   shl_t handle;
+        void *found;
+        shl_t handle;
 #endif
 
 #ifdef DYNLIB
-   if ((liblist = sh_getliblist()) == NULL)
-        return(NULL);
+        if ((liblist = sh_getliblist()) == NULL)
+                return (NULL);
 
-   while (liblist[i])
-   {
-      if (addr = dlsym(liblist[i], str))
-         return((unsigned long)addr);
-      i++;
-   }
+        while (liblist[i]) {
+                if (addr = dlsym(liblist[i], str))
+                        return ((unsigned long)addr);
+                i++;
+        }
 #else
 #ifdef HPUX_DYNLIB
-   handle = NULL;
-   if ((shl_findsym(&handle, str, TYPE_PROCEDURE, &found)) == 0)
-      return((unsigned long) found);
-   if ((shl_findsym(&handle, str, TYPE_DATA, &found)) == 0)
-      return((unsigned long) found);
-   handle = PROG_HANDLE;
-   if ((shl_findsym(&handle, str, TYPE_PROCEDURE, &found)) == 0)
-      return((unsigned long) found);
-   if ((shl_findsym(&handle, str, TYPE_DATA, &found)) == 0)
-      return((unsigned long) found);
+        handle = NULL;
+        if ((shl_findsym(&handle, str, TYPE_PROCEDURE, &found)) == 0)
+                return ((unsigned long)found);
+        if ((shl_findsym(&handle, str, TYPE_DATA, &found)) == 0)
+                return ((unsigned long)found);
+        handle = PROG_HANDLE;
+        if ((shl_findsym(&handle, str, TYPE_PROCEDURE, &found)) == 0)
+                return ((unsigned long)found);
+        if ((shl_findsym(&handle, str, TYPE_DATA, &found)) == 0)
+                return ((unsigned long)found);
 #endif
 #endif
 
-   return(NULL);
+        return (NULL);
 }

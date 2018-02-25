@@ -22,7 +22,7 @@
  */
 /* $XConsortium: oliasmsg.c /main/4 1996/10/04 14:57:52 drk $ */
 /* **************************************************************
- * 
+ *
  * This program is an example of how to use the OLIAS external
  * API to asyncronously message the Browser and tell it to fetch
  * a section at a given locator. The locator might be either of
@@ -42,9 +42,9 @@
  * this condition the Browser crashes in Xlib. A workaround for
  * this problem (until it is fixed) is to set the selection
  * timeout value long enough to avoid this condition.
- * 
+ *
  * ************************************************************** */
- 
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -57,123 +57,121 @@
 #define BUFSIZE 1024
 #endif
 
-static  char  loc_buf[BUFSIZE] = "NO_LOCATOR_SPECIFIED";
-static  long  sel_timeout = 60000;  /* default is 60 secs */
+static char loc_buf[BUFSIZE] = "NO_LOCATOR_SPECIFIED";
+static long sel_timeout = 60000; /* default is 60 secs */
 
 /* **************************************************************
  * print program usage and exit with error code
  * ************************************************************** */
 
-static void
-print_usage_and_exit (char *pname, char *arg)
-{
-  if (arg)
-    fprintf(stderr, "\nUnknown argument: %s\n\n", arg);
-  fprintf(stderr, "Usage: %s [-to secs] locator\n", pname);
-  fprintf(stderr, "   -to     : Selection timeout in seconds\n");
-  fprintf(stderr, "   locator : MMDB locator or WWW URL\n");
-  fprintf(stderr, "\nExample: %s http://www.hal.com\n\n", pname);
-  exit (-1);
+static void print_usage_and_exit(char *pname, char *arg) {
+        if (arg)
+                fprintf(stderr, "\nUnknown argument: %s\n\n", arg);
+        fprintf(stderr, "Usage: %s [-to secs] locator\n", pname);
+        fprintf(stderr, "   -to     : Selection timeout in seconds\n");
+        fprintf(stderr, "   locator : MMDB locator or WWW URL\n");
+        fprintf(stderr, "\nExample: %s http://www.hal.com\n\n", pname);
+        exit(-1);
 }
 
 /* **************************************************************
  * parse program arguments
  * ************************************************************** */
 
-static void
-parse_args (int argc, char *argv[])
-{
-  int i. len;
+static void parse_args(int argc, char *argv[]) {
+        int i.len;
 
-  if (argc == 1)
-     print_usage_and_exit (argv[0], NULL);
+        if (argc == 1)
+                print_usage_and_exit(argv[0], NULL);
 
-  for (i=1; i < argc; i++) {
+        for (i = 1; i < argc; i++) {
 
-    if (argv[i][0] == '-') {
+                if (argv[i][0] == '-') {
 
-      if (!(strncmp(argv[i], "-to", 2))) {
-        if (argv[++i])
-          sel_timeout = atoi(argv[i]) * 1000;
-        else    
-          print_usage_and_exit(argv[0], NULL);
-      }
-      else
-        print_usage_and_exit(argv[0], argv[i]);
-    }
-    else
-      len = MIN(strlen(argv[i]), BUFSIZE -1);
-      *((char *) memcpy (loc_buf, argv[i], len) + len) = '\0';
-
-  }
-
+                        if (!(strncmp(argv[i], "-to", 2))) {
+                                if (argv[++i])
+                                        sel_timeout = atoi(argv[i]) * 1000;
+                                else
+                                        print_usage_and_exit(argv[0], NULL);
+                        } else
+                                print_usage_and_exit(argv[0], argv[i]);
+                } else
+                        len = MIN(strlen(argv[i]), BUFSIZE - 1);
+                *((char *)memcpy(loc_buf, argv[i], len) + len) = '\0';
+        }
 }
 
 /* **************************************************************
  * main program
  * ************************************************************** */
 
-int
-main (int argc, char *argv[])
-{
-  Widget             toplevel;
-  XtAppContext       app_context;
-  OliasStatus        olias_status;
-  OliasDisplayEvent  event;
-  int                exit_status = 0;
-  char              *p;
+int main(int argc, char *argv[]) {
+        Widget toplevel;
+        XtAppContext app_context;
+        OliasStatus olias_status;
+        OliasDisplayEvent event;
+        int exit_status = 0;
+        char *p;
 
-  /* parse input arguments */
-  parse_args(argc, argv);
+        /* parse input arguments */
+        parse_args(argc, argv);
 
-  /* init x toolkit internals using varargs argument style */
-  toplevel = XtVaAppInitialize (&app_context, "OliasDpy", NULL,
-                                0, &argc, argv, NULL, 
-                                XtNmappedWhenManaged, False, NULL);
+        /* init x toolkit internals using varargs argument style */
+        toplevel =
+            XtVaAppInitialize(&app_context, "OliasDpy", NULL, 0, &argc, argv,
+                              NULL, XtNmappedWhenManaged, False, NULL);
 
-  /* make width & height nonzero; (req'd on solaris) */
-  XtVaSetValues (toplevel, XtNwidth, 1, XtNheight, 1, NULL);
+        /* make width & height nonzero; (req'd on solaris) */
+        XtVaSetValues(toplevel, XtNwidth, 1, XtNheight, 1, NULL);
 
-  /* realize the widget */
-  XtRealizeWidget (toplevel);
+        /* realize the widget */
+        XtRealizeWidget(toplevel);
 
-  /* set the selection timeout */
-  XtAppSetSelectionTimeout(app_context, sel_timeout);
+        /* set the selection timeout */
+        XtAppSetSelectionTimeout(app_context, sel_timeout);
 
-  /* trim potential trailing space from locator */
-  for (p = loc_buf; !isspace(*p) && *p != '\0'; p++);
-  *p = '\0';
+        /* trim potential trailing space from locator */
+        for (p = loc_buf; !isspace(*p) && *p != '\0'; p++)
+                ;
+        *p = '\0';
 
-  /* send a display message to the olias browser */
-  event.type = OLIAS_DISPLAY_EVENT;
-  event.infobase = "";
-  event.locator = loc_buf;
-  olias_status = olias_send_event (toplevel, (OliasEvent *) &event);
+        /* send a display message to the olias browser */
+        event.type = OLIAS_DISPLAY_EVENT;
+        event.infobase = "";
+        event.locator = loc_buf;
+        olias_status = olias_send_event(toplevel, (OliasEvent *)&event);
 
-  /* if not successful then report the problem */
-  if (olias_status != OLIAS_SUCCESS) {
-      switch (olias_status) {
-	  case OLIAS_TIMEOUT:
-	    fprintf (stderr, "\nWARNING, either:\n");
-            fprintf (stderr, " 1. The Browser is not running at this time.\n");
-            fprintf (stderr, "         OR\n");
-            fprintf (stderr, " 2. A selection timeout occurred while waiting for the Browser reply.\n");
-            fprintf (stderr, "\nSuggestions\n");
-            fprintf (stderr, " Case 1: Start the Browser before messaging through this client.\n");
-            fprintf (stderr, " Case 2: Restart Browser and then increase the selection timeout\n");
-            fprintf (stderr, "         using the '-to' command line option.\n\n");
-          break;
+        /* if not successful then report the problem */
+        if (olias_status != OLIAS_SUCCESS) {
+                switch (olias_status) {
+                case OLIAS_TIMEOUT:
+                        fprintf(stderr, "\nWARNING, either:\n");
+                        fprintf(
+                            stderr,
+                            " 1. The Browser is not running at this time.\n");
+                        fprintf(stderr, "         OR\n");
+                        fprintf(stderr, " 2. A selection timeout occurred "
+                                        "while waiting for the Browser "
+                                        "reply.\n");
+                        fprintf(stderr, "\nSuggestions\n");
+                        fprintf(stderr, " Case 1: Start the Browser before "
+                                        "messaging through this client.\n");
+                        fprintf(stderr, " Case 2: Restart Browser and then "
+                                        "increase the selection timeout\n");
+                        fprintf(stderr, "         using the '-to' command line "
+                                        "option.\n\n");
+                        break;
 
-	  case OLIAS_LOCATOR_NOT_FOUND:
-	    fprintf (stderr, "Locator '%s' not found.\n", loc_buf);
-          break;
+                case OLIAS_LOCATOR_NOT_FOUND:
+                        fprintf(stderr, "Locator '%s' not found.\n", loc_buf);
+                        break;
 
-          default:
-          break;
-      }
-      exit_status = -1;
-  }
+                default:
+                        break;
+                }
+                exit_status = -1;
+        }
 
-  /* see ya! */
-  exit (exit_status);
+        /* see ya! */
+        exit(exit_status);
 }

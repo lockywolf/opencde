@@ -31,7 +31,7 @@
 #define _FILEIO_H_INCLUDED
 
 #ifndef STORAGECLASS
-#ifdef  NOEXTERN
+#ifdef NOEXTERN
 #define STORAGECLASS
 #else
 #define STORAGECLASS extern
@@ -44,14 +44,14 @@
 /*                                                                         */
 /***************************************************************************/
 
-extern ushort  WriteDefinitionFile(char *, ActionData *);
-extern ushort  WriteActionFile(ActionData *);
+extern ushort WriteDefinitionFile(char *, ActionData *);
+extern ushort WriteActionFile(ActionData *);
 extern Boolean check_file_exists(char *);
-extern int     OpenDefinitionFile(char *, ActionData *);
-extern ushort  CopyIconFiles(ActionData *);
-extern char *  CreateIconName(char *, char *, enum icon_size_range, char *, Boolean);
-extern Boolean ActionHasIcon (void);
-extern Boolean FiletypeHasIcon (FiletypeData *);
-
+extern int OpenDefinitionFile(char *, ActionData *);
+extern ushort CopyIconFiles(ActionData *);
+extern char *CreateIconName(char *, char *, enum icon_size_range, char *,
+                            Boolean);
+extern Boolean ActionHasIcon(void);
+extern Boolean FiletypeHasIcon(FiletypeData *);
 
 #endif /* _FILEIO_H_INCLUDED */

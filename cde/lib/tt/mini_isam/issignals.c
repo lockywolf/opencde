@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: issignals.c /main/3 1995/10/23 11:44:41 rswiston $ 			 				 */
+/*%%  $XConsortium: issignals.c /main/3 1995/10/23 11:44:41 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)issignals.c 1.7 89/08/30 Copyr 1988 Sun Micro";
 #endif
@@ -38,7 +39,6 @@ static char sccsid[] = "@(#)issignals.c 1.7 89/08/30 Copyr 1988 Sun Micro";
  * Description:
  *	Signal masking functions
  */
-
 
 #include "isam_impl.h"
 #include <signal.h>
@@ -58,43 +58,36 @@ static char sccsid[] = "@(#)issignals.c 1.7 89/08/30 Copyr 1988 Sun Micro";
  * were called twice in a row.
  */
 
-
-static int      do_mask = 1;		    /* default value */
-static int      already_masked;
+static int do_mask = 1; /* default value */
+static int already_masked;
 static sigset_t oldmask;
 static sigset_t allsignals;
 
-
-_issignals_cntl(opt)
-    int		opt;			     /* 1 will enable masking */
-					     /* 0 will disable masking */
+_issignals_cntl(opt) int opt; /* 1 will enable masking */
+                              /* 0 will disable masking */
 {
-    int		oldmask = do_mask;
+        int oldmask = do_mask;
 
-    do_mask = opt ? 1 : 0;
+        do_mask = opt ? 1 : 0;
 
-    return (oldmask);
+        return (oldmask);
 }
 
-void
-_issignals_mask(void)
-{
-    if (do_mask && !already_masked) {
-        (void) sigfillset(&allsignals);
-        (void) sigdelset(&allsignals, SIGTRAP);
-        (void) sigdelset(&allsignals, SIGSEGV);
-        (void) sigdelset(&allsignals, SIGILL);
-        (void) sigdelset(&allsignals, SIGBUS);
-        (void) sigprocmask(SIG_SETMASK, &allsignals, &oldmask);
-	already_masked = 1;
-    }
+void _issignals_mask(void) {
+        if (do_mask && !already_masked) {
+                (void)sigfillset(&allsignals);
+                (void)sigdelset(&allsignals, SIGTRAP);
+                (void)sigdelset(&allsignals, SIGSEGV);
+                (void)sigdelset(&allsignals, SIGILL);
+                (void)sigdelset(&allsignals, SIGBUS);
+                (void)sigprocmask(SIG_SETMASK, &allsignals, &oldmask);
+                already_masked = 1;
+        }
 }
 
-void
-_issignals_unmask(void)
-{
-    if (do_mask) {
-	(void)sigprocmask(SIG_SETMASK, &oldmask, NULL);
-	already_masked = 0;
-    }
+void _issignals_unmask(void) {
+        if (do_mask) {
+                (void)sigprocmask(SIG_SETMASK, &oldmask, NULL);
+                already_masked = 0;
+        }
 }

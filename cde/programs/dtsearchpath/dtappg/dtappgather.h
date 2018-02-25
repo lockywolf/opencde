@@ -33,32 +33,31 @@
  *
  *  Purpose:           Class definitions for the gathering process
  *
- *  Product:           @(#)Common Desktop Environment 1.0          
+ *  Product:           @(#)Common Desktop Environment 1.0
  *
- *  Revision:          $XConsortium: dtappgather.h /main/3 1995/11/03 12:30:33 rswiston $
+ *  Revision:          $XConsortium: dtappgather.h /main/3 1995/11/03 12:30:33
+ *rswiston $
  *
  ********************************************************************/
 
 #include "Environ.h"
 
 class AppManagerDirectory {
- public:
-  AppManagerDirectory() {}
-  AppManagerDirectory(CDEEnvironment *, const CString &);
-  ~AppManagerDirectory() { delete user_; }
+      public:
+        AppManagerDirectory() {}
+        AppManagerDirectory(CDEEnvironment *, const CString &);
+        ~AppManagerDirectory() { delete user_; }
 
-  void GatherAppsFromASearchElement (const CString & path);
-  void TraversePath();
+        void GatherAppsFromASearchElement(const CString &path);
+        void TraversePath();
 
-  char * operator()() const { return dirname_.data(); }
+        char *operator()() const { return dirname_.data(); }
 
- private:
-  int goodFile (const CString &, const CString &) const;
+      private:
+        int goodFile(const CString &, const CString &) const;
 
-  CString          dirname_;
-  CDEEnvironment * user_;
-  CString          appsp_;
-  int              langVersionFound;
+        CString dirname_;
+        CDEEnvironment *user_;
+        CString appsp_;
+        int langVersionFound;
 };
-
-

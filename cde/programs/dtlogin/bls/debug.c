@@ -40,22 +40,21 @@
  * Author:  Keith Packard, MIT X Consortium
  */
 
- /***************
-    debug.c
- ****************/
+/***************
+   debug.c
+****************/
 
 #ifndef NDEBUG
 /* don't compile anything in this file unless this is pre-release code */
-#include <stdio.h> 
+#include <stdio.h>
 #include <signal.h>
 #include "../vg.h"
 #include "bls.h"
 
-# include <stdarg.h>
-# define Va_start(a,b) va_start(a,b)
+#include <stdarg.h>
+#define Va_start(a, b) va_start(a, b)
 
-char *DisplayName=NULL;
-
+char *DisplayName = NULL;
 
 /****************************************************************************
  *
@@ -65,66 +64,55 @@ char *DisplayName=NULL;
  *
  ****************************************************************************/
 
-static int  DoName=TRUE;
-static int  debugLevel=0;
+static int DoName = TRUE;
+static int debugLevel = 0;
 
-
-int
-BLS_ToggleDebug( int arg)
-{
-	debugLevel = !debugLevel;
-	(void) signal(SIGHUP,BLS_ToggleDebug);
+int BLS_ToggleDebug(int arg) {
+        debugLevel = !debugLevel;
+        (void)signal(SIGHUP, BLS_ToggleDebug);
 }
 
+void Debug(char *fmt, ...) {
+        static int sentinel = 0;
+        static char *debugLog;
 
+        va_list args;
 
-void 
-Debug( char *fmt, ...)
-{
-	static int sentinel = 0;
-	static char *debugLog;
+        Va_start(args, fmt);
 
-    va_list  args;
+        if (!sentinel) {
+                /*
+                 * open up an error log for dtgreet
+                 */
+                if ((debugLog = getenv("VG_DEBUG")) == 0)
+                        debugLog = "/usr/lib/X11/dt/Dtlogin/dtgreet.log";
 
-    Va_start(args,fmt);
+                if (!freopen(debugLog, "a", stderr)) {
+                        perror("Debug:");
+                }
+                DisplayName = dpyinfo.name;
+                sentinel = 1;
+        }
 
+        if (debugLevel > 0) {
+                if (strlen(DisplayName) > 0 && DoName)
+                        fprintf(stderr, "(%s) ", DisplayName);
 
+                vfprintf(stderr, fmt, args);
+                fflush(stderr);
 
-    if ( !sentinel ) {
-    /* 
-     * open up an error log for dtgreet
-     */
-	if ((debugLog = getenv("VG_DEBUG")) == 0)
-		debugLog = "/usr/lib/X11/dt/Dtlogin/dtgreet.log";
+                /*
+                 * don't prepend the display name next time if this debug
+                 * message does not contain a "new line" character...
+                 */
 
-	if ( !freopen(debugLog,"a",stderr)) {
-		perror("Debug:");
-	}
-	DisplayName=dpyinfo.name;
-	sentinel = 1;
-    }
+                if (strchr(fmt, '\n') == NULL)
+                        DoName = FALSE;
+                else
+                        DoName = TRUE;
+        }
 
-    if (debugLevel > 0)
-    {
-	if ( strlen(DisplayName) > 0 && DoName)
-	    fprintf(stderr, "(%s) ", DisplayName);
-
-	vfprintf (stderr,fmt, args);
-	fflush (stderr);
-
-	/*
-	 * don't prepend the display name next time if this debug message
-	 * does not contain a "new line" character...
-	 */
-
-	if ( strchr(fmt,'\n') == NULL )
-	    DoName=FALSE;
-	else
-	    DoName=TRUE;
-	    
-    }
-
-    va_end(args);
+        va_end(args);
 }
 
 #else
@@ -133,8 +121,6 @@ Debug( char *fmt, ...)
  * Debug stub for product purposes
  */
 
-void 
-Debug( )
-{ }
+void Debug() {}
 
-#endif	/* NDEBUG */
+#endif /* NDEBUG */

@@ -28,9 +28,6 @@
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
 
-dtterm(argc,argv)
-int argc;
+dtterm(argc, argv) int argc;
 char *argv[];
-{
-	main(argc,argv);
-}
+{ main(argc, argv); }

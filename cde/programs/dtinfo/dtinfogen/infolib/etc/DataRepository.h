@@ -34,62 +34,60 @@ template <class T> class Stack;
 template <class T> class CC_TPtrSlist;
 
 class Rec {
-friend class DataRepository;
-private:
-  int level;
-  FlexBuffer *Buf;
+        friend class DataRepository;
 
-public:
-  Rec(int l, FlexBuffer *buf):level(l),Buf(buf){}
-  Rec():level(-1),Buf(NULL){}
-  Rec( const Rec &t ) { 
-    if ( this != &t ) { 
-      this->level = t.level;
-      this->Buf = t.Buf;
-    }
-  }
-  Rec & operator=( Rec &t ) {
-    if ( this != &t ) { 
-      this->level = t.level;
-      this->Buf = t.Buf;
-    }
-    return *this;
-  }
+      private:
+        int level;
+        FlexBuffer *Buf;
 
+      public:
+        Rec(int l, FlexBuffer *buf) : level(l), Buf(buf) {}
+        Rec() : level(-1), Buf(NULL) {}
+        Rec(const Rec &t) {
+                if (this != &t) {
+                        this->level = t.level;
+                        this->Buf = t.Buf;
+                }
+        }
+        Rec &operator=(Rec &t) {
+                if (this != &t) {
+                        this->level = t.level;
+                        this->Buf = t.Buf;
+                }
+                return *this;
+        }
 };
-  
+
 class DataRepository {
 
-public:
+      public:
+        typedef enum {
+                Default = 0,
+                Head,
+                Graphic,
+                Example,
+                Index,
+                Table,
+                Total
+        } ZoneType;
 
-typedef enum 
-  { Default=0, Head, Graphic, Example, Index, Table, Total} ZoneType;
+      private:
+        FlexBuffer *table[Total]; // zone buffer
+        Stack<Rec> *zone_stack;
+        FlexBuffer *current_buf;
 
-private:
-  FlexBuffer *table[Total];  // zone buffer
-  Stack<Rec> *zone_stack;
-  FlexBuffer *current_buf;
+      public:
+        DataRepository();
+        ~DataRepository();
 
-public:
-  
-  DataRepository();
-  ~DataRepository();
+        void ActivateZone(int zone_type, int level); // throw Exception
+        void deActivateZone(int level);              // throw Exception
 
-  void ActivateZone( int zone_type, int level );  // throw Exception
-  void deActivateZone( int level );      // throw Exception
+        void put(char);
+        void write(const char *, size_t);
 
-  void put( char );
-  void write ( const char *, size_t );
-
-  FlexBuffer **tabbuf() {  return ( table ); }
-  const char *get_zone_name( int zone_type );
-
+        FlexBuffer **tabbuf() { return (table); }
+        const char *get_zone_name(int zone_type);
 };
 
-#endif  
-  
-
-  
-
-
-
+#endif

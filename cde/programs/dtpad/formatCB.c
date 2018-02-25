@@ -58,82 +58,65 @@
  * FormatCB - [Format] menu, [Settings...] button
  ************************************************************************/
 /* ARGSUSED */
-void
-FormatCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data)
-{
-    Editor *pPad = (Editor *) client_data;
-    DtEditorInvokeFormatDialog(pPad->editor);
+void FormatCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        DtEditorInvokeFormatDialog(pPad->editor);
 }
-
 
 /************************************************************************
  * FormatParaCB - [Format] menu, [Paragraph] button
  ************************************************************************/
 /* ARGSUSED */
-void
-FormatParaCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data)
-{
-    Editor		*pPad = (Editor *) client_data;
-    DtEditorErrorCode	 error = DtEDITOR_NO_ERRORS;
+void FormatParaCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        DtEditorErrorCode error = DtEDITOR_NO_ERRORS;
 
-    error = DtEditorFormat(pPad->editor, NULL, DtEDITOR_FORMAT_PARAGRAPH);
-    if (DtEDITOR_NO_ERRORS != error)
-    {
-        switch(error)
-	{
-	    case DtEDITOR_INSUFFICIENT_MEMORY:
-	        Warning(
-			pPad,
-			(char *) GETMESSAGE(5, 47, "Operation failed due to insufficient memory.\nTry increasing swap space."),
-		    	XmDIALOG_ERROR);
-	        return;
-	    default:
-	        Warning(
-			pPad,
-			(char *) GETMESSAGE(5, 48, "Format operation failed."),
-		    	XmDIALOG_ERROR);
-	        return;
+        error = DtEditorFormat(pPad->editor, NULL, DtEDITOR_FORMAT_PARAGRAPH);
+        if (DtEDITOR_NO_ERRORS != error) {
+                switch (error) {
+                case DtEDITOR_INSUFFICIENT_MEMORY:
+                        Warning(pPad,
+                                (char *)GETMESSAGE(
+                                    5, 47,
+                                    "Operation failed due to insufficient "
+                                    "memory.\nTry increasing swap space."),
+                                XmDIALOG_ERROR);
+                        return;
+                default:
+                        Warning(pPad,
+                                (char *)GETMESSAGE(5, 48,
+                                                   "Format operation failed."),
+                                XmDIALOG_ERROR);
+                        return;
+                }
         }
-    }
 }
-
 
 /************************************************************************
  * FormatAllCB - [Format] menu, [All] button
  ************************************************************************/
 /* ARGSUSED */
-void
-FormatAllCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data)
-{
-    Editor		*pPad = (Editor *)client_data;
-    DtEditorErrorCode	 error = DtEDITOR_NO_ERRORS;
+void FormatAllCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        DtEditorErrorCode error = DtEDITOR_NO_ERRORS;
 
-    error = DtEditorFormat(pPad->editor, NULL, DtEDITOR_FORMAT_ALL);
-    if (DtEDITOR_NO_ERRORS != error)
-    {
-        switch(error)
-	{
-	    case DtEDITOR_INSUFFICIENT_MEMORY:
-	        Warning(
-			pPad,
-			(char *) GETMESSAGE(5, 47, "Operation failed due to insufficient memory.\nTry increasing swap space."),
-		    	XmDIALOG_ERROR);
-	        return;
-	    default:
-	        Warning(
-			pPad,
-			(char *) GETMESSAGE(5, 48, "Format operation failed."),
-		    	XmDIALOG_ERROR);
-	        return;
+        error = DtEditorFormat(pPad->editor, NULL, DtEDITOR_FORMAT_ALL);
+        if (DtEDITOR_NO_ERRORS != error) {
+                switch (error) {
+                case DtEDITOR_INSUFFICIENT_MEMORY:
+                        Warning(pPad,
+                                (char *)GETMESSAGE(
+                                    5, 47,
+                                    "Operation failed due to insufficient "
+                                    "memory.\nTry increasing swap space."),
+                                XmDIALOG_ERROR);
+                        return;
+                default:
+                        Warning(pPad,
+                                (char *)GETMESSAGE(5, 48,
+                                                   "Format operation failed."),
+                                XmDIALOG_ERROR);
+                        return;
+                }
         }
-    }
 }

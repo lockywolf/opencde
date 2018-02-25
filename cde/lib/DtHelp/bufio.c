@@ -39,122 +39,106 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL M.I.T.
  * BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
- * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN 
+ * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  * Author:  Keith Packard, MIT X Consortium
  */
 
-
 /* #include    "fontmisc.h" */
-#include    <errno.h>
-#include    <stdio.h>
-#include    <stdlib.h>
-#include    <stdint.h>
-#include    <unistd.h>
-#include    "bufioI.h"
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <unistd.h>
+#include "bufioI.h"
 
 #include <X11/Xos.h>
 #ifdef X_NOT_STDC_ENV
 extern int errno;
 #endif
 
-#ifndef	MIN
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#ifndef MIN
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 
-#define FileDes(f)		((intptr_t) (f)->hidden)
-#define CompressFileDes(f)	(((CECompressInfoPtr) (f)->hidden)->fd)
-#define CompressSize(f)		(((CECompressInfoPtr) (f)->hidden)->size)
+#define FileDes(f) ((intptr_t)(f)->hidden)
+#define CompressFileDes(f) (((CECompressInfoPtr)(f)->hidden)->fd)
+#define CompressSize(f) (((CECompressInfoPtr)(f)->hidden)->size)
 
-static int
-BufFileRawSkip (
-    BufFilePtr	f,
-    int		count )
-{
-    int	    curoff;
-    int	    fileoff;
-    int	    todo;
+static int BufFileRawSkip(BufFilePtr f, int count) {
+        int curoff;
+        int fileoff;
+        int todo;
 
-    curoff = f->bufp - f->buffer;
-    fileoff = curoff + f->left;
-    if (curoff + count <= fileoff) {
-	f->bufp += count;
-	f->left -= count;
-    } else {
-	todo = count - (fileoff - curoff);
-	if (lseek (FileDes(f), todo, 1) == -1) {
-	    if (errno != ESPIPE)
-		return BUFFILEEOF;
-	    while (todo) {
-		curoff = BUFFILESIZE;
-		if (curoff > todo)
-		    curoff = todo;
-		fileoff = read (FileDes(f), f->buffer, curoff);
-		if (fileoff <= 0)
-		    return BUFFILEEOF;
-		todo -= fileoff;
-	    }
-	}
-	f->left = 0;
-    }
-    return count;
+        curoff = f->bufp - f->buffer;
+        fileoff = curoff + f->left;
+        if (curoff + count <= fileoff) {
+                f->bufp += count;
+                f->left -= count;
+        } else {
+                todo = count - (fileoff - curoff);
+                if (lseek(FileDes(f), todo, 1) == -1) {
+                        if (errno != ESPIPE)
+                                return BUFFILEEOF;
+                        while (todo) {
+                                curoff = BUFFILESIZE;
+                                if (curoff > todo)
+                                        curoff = todo;
+                                fileoff = read(FileDes(f), f->buffer, curoff);
+                                if (fileoff <= 0)
+                                        return BUFFILEEOF;
+                                todo -= fileoff;
+                        }
+                }
+                f->left = 0;
+        }
+        return count;
 }
 
-static int
-BufFileRawFlush (
-    int		c,
-    BufFilePtr	f )
-{
-    int	cnt;
+static int BufFileRawFlush(int c, BufFilePtr f) {
+        int cnt;
 
-    if (c != BUFFILEEOF)
-	*f->bufp++ = c;
-    cnt = f->bufp - f->buffer;
-    f->bufp = f->buffer;
-    f->left = BUFFILESIZE;
-    if (write (FileDes(f), f->buffer, cnt) != cnt)
-	return BUFFILEEOF;
-    return c;
+        if (c != BUFFILEEOF)
+                *f->bufp++ = c;
+        cnt = f->bufp - f->buffer;
+        f->bufp = f->buffer;
+        f->left = BUFFILESIZE;
+        if (write(FileDes(f), f->buffer, cnt) != cnt)
+                return BUFFILEEOF;
+        return c;
 }
 
-BufFilePtr
-_DtHelpCeBufFileOpenWr (int fd)
-{
-    BufFilePtr	f;
+BufFilePtr _DtHelpCeBufFileOpenWr(int fd) {
+        BufFilePtr f;
 
-    f = _DtHelpCeBufFileCreate ((char *) (intptr_t) fd, BufFileRawFlush, NULL, _DtHelpCeBufFileFlush);
-    f->bufp = f->buffer;
-    f->left = BUFFILESIZE;
-    return f;
+        f = _DtHelpCeBufFileCreate((char *)(intptr_t)fd, BufFileRawFlush, NULL,
+                                   _DtHelpCeBufFileFlush);
+        f->bufp = f->buffer;
+        f->left = BUFFILESIZE;
+        return f;
 }
 
-#ifdef	obsolete_function
-_DtHelpCeBufFileWrite (
-    BufFilePtr	f,
-    char	*b,
-    int		n )
-{
-    int	    cnt;
-    cnt = n;
-    while (cnt--) {
-	if (BufFilePut (*b++, f) == BUFFILEEOF)
-	    return BUFFILEEOF;
-    }
-    return n;
+#ifdef obsolete_function
+_DtHelpCeBufFileWrite(BufFilePtr f, char *b, int n) {
+        int cnt;
+        cnt = n;
+        while (cnt--) {
+                if (BufFilePut(*b++, f) == BUFFILEEOF)
+                        return BUFFILEEOF;
+        }
+        return n;
 }
 #endif
 
-int
-_DtHelpCeBufFileFlush (BufFilePtr f, int doClose)
-{
-    if (f->bufp != f->buffer)
-	(*f->io) (BUFFILEEOF, f);
+int _DtHelpCeBufFileFlush(BufFilePtr f, int doClose) {
+        if (f->bufp != f->buffer)
+                (*f->io)(BUFFILEEOF, f);
 
-    if (doClose)
-	return (close (FileDes(f)));
+        if (doClose)
+                return (close(FileDes(f)));
 
-    return 0;
+        return 0;
 }
 
 /*****************************************************************************
@@ -163,62 +147,49 @@ _DtHelpCeBufFileFlush (BufFilePtr f, int doClose)
 /*****************************************************************************
  *			Routines working on a File descriptor
  *****************************************************************************/
-static int
-FdRawRead (BufFilePtr f)
-{
-    int	left;
+static int FdRawRead(BufFilePtr f) {
+        int left;
 
-    left = read (FileDes(f), f->buffer, BUFFILESIZE);
-    if (left <= 0) {
-	f->left = 0;
-	return BUFFILEEOF;
-    }
-    f->left = left - 1;
-    f->bufp = f->buffer + 1;
-    return f->buffer[0];
+        left = read(FileDes(f), f->buffer, BUFFILESIZE);
+        if (left <= 0) {
+                f->left = 0;
+                return BUFFILEEOF;
+        }
+        f->left = left - 1;
+        f->bufp = f->buffer + 1;
+        return f->buffer[0];
 }
 
-static	int
-FdClose (
-    BufFilePtr	f,
-    int         doClose)
-{
-    if (doClose)
-	close (FileDes (f));
-    return 1;
+static int FdClose(BufFilePtr f, int doClose) {
+        if (doClose)
+                close(FileDes(f));
+        return 1;
 }
 
 /*****************************************************************************
  *			Routines working on a Raw Compressed file
  *****************************************************************************/
-static int
-CompressRawRead (BufFilePtr f)
-{
-    int	left;
+static int CompressRawRead(BufFilePtr f) {
+        int left;
 
-
-    left = read (CompressFileDes(f), f->buffer,
-					MIN(CompressSize(f),BUFFILESIZE));
-    if (left <= 0) {
-	f->left = 0;
-	CompressSize(f) = 0;
-	return BUFFILEEOF;
-    }
-    CompressSize(f) -= left;
-    f->left = left - 1;
-    f->bufp = f->buffer + 1;
-    return f->buffer[0];
+        left = read(CompressFileDes(f), f->buffer,
+                    MIN(CompressSize(f), BUFFILESIZE));
+        if (left <= 0) {
+                f->left = 0;
+                CompressSize(f) = 0;
+                return BUFFILEEOF;
+        }
+        CompressSize(f) -= left;
+        f->left = left - 1;
+        f->bufp = f->buffer + 1;
+        return f->buffer[0];
 }
 
-static	int
-CompressRawClose (
-    BufFilePtr	f,
-    int         doClose)
-{
-    if (doClose)
-	close (CompressFileDes (f));
-    free(f->hidden);
-    return 1;
+static int CompressRawClose(BufFilePtr f, int doClose) {
+        if (doClose)
+                close(CompressFileDes(f));
+        free(f->hidden);
+        return 1;
 }
 
 /*****************************************************************************
@@ -232,23 +203,20 @@ CompressRawClose (
  * Purpose:
  *
  *****************************************************************************/
-static int
-RdPipeStream (BufFilePtr f)
-{
-    int    left;
+static int RdPipeStream(BufFilePtr f) {
+        int left;
 
-    left = fread(f->buffer, 1, BUFFILESIZE, FileStream(f));
+        left = fread(f->buffer, 1, BUFFILESIZE, FileStream(f));
 
-    if (left <= 0)
-      {
-        f->left = 0;
-        return BUFFILEEOF;
-      }
+        if (left <= 0) {
+                f->left = 0;
+                return BUFFILEEOF;
+        }
 
-    clearerr(FileStream(f));
-    f->left = left - 1;
-    f->bufp = f->buffer + 1;
-    return f->buffer[0];
+        clearerr(FileStream(f));
+        f->left = left - 1;
+        f->bufp = f->buffer + 1;
+        return f->buffer[0];
 }
 
 /*********************************************************************
@@ -259,15 +227,11 @@ RdPipeStream (BufFilePtr f)
  * Purpose:
  *
  ********************************************************************/
-static int
-ClosePipeStream (
-    BufFilePtr  f,
-    int         doClose)
-{
-    if (doClose)
-        pclose(FileStream(f));
+static int ClosePipeStream(BufFilePtr f, int doClose) {
+        if (doClose)
+                pclose(FileStream(f));
 
-    return 1;
+        return 1;
 }
 
 /*****************************************************************************
@@ -283,25 +247,20 @@ ClosePipeStream (
  * Purpose:	Create a buffered i/o mechanism.
  *
  *****************************************************************************/
-BufFilePtr
-_DtHelpCeBufFileCreate (
-    char    *hidden,
-    int	    (*io)(),
-    int	    (*skip)(),
-    int	    (*close)() )
-{
-    BufFilePtr	f;
+BufFilePtr _DtHelpCeBufFileCreate(char *hidden, int (*io)(), int (*skip)(),
+                                  int (*close)()) {
+        BufFilePtr f;
 
-    f = (BufFilePtr) malloc (sizeof *f);
-    if (!f)
-	return 0;
-    f->hidden = hidden;
-    f->bufp = f->buffer;
-    f->left = 0;
-    f->io = io;
-    f->skip = skip;
-    f->close = close;
-    return f;
+        f = (BufFilePtr)malloc(sizeof *f);
+        if (!f)
+                return 0;
+        f->hidden = hidden;
+        f->bufp = f->buffer;
+        f->left = 0;
+        f->io = io;
+        f->skip = skip;
+        f->close = close;
+        return f;
 }
 
 /*****************************************************************************
@@ -314,10 +273,9 @@ _DtHelpCeBufFileCreate (
  *		routine.
  *
  *****************************************************************************/
-BufFilePtr
-_DtHelpCeBufFileRdWithFd (int fd)
-{
-    return _DtHelpCeBufFileCreate ((char *) (intptr_t) fd, FdRawRead, BufFileRawSkip, FdClose);
+BufFilePtr _DtHelpCeBufFileRdWithFd(int fd) {
+        return _DtHelpCeBufFileCreate((char *)(intptr_t)fd, FdRawRead,
+                                      BufFileRawSkip, FdClose);
 }
 
 /*****************************************************************************
@@ -330,11 +288,9 @@ _DtHelpCeBufFileRdWithFd (int fd)
  *		data to the i/o routine.
  *
  *****************************************************************************/
-BufFilePtr
-_DtHelpCeBufFileRdRawZ (CECompressInfoPtr file)
-{
-    return _DtHelpCeBufFileCreate ((char *) file, CompressRawRead, NULL,
-							CompressRawClose);
+BufFilePtr _DtHelpCeBufFileRdRawZ(CECompressInfoPtr file) {
+        return _DtHelpCeBufFileCreate((char *)file, CompressRawRead, NULL,
+                                      CompressRawClose);
 }
 
 /*****************************************************************************
@@ -346,13 +302,9 @@ _DtHelpCeBufFileRdRawZ (CECompressInfoPtr file)
  *		Frees the BufFile information.
  *
  *****************************************************************************/
-void
-_DtHelpCeBufFileClose (
-    BufFilePtr	f,
-    int         doClose )
-{
-    (void) (*f->close) (f, doClose);
-    free (f);
+void _DtHelpCeBufFileClose(BufFilePtr f, int doClose) {
+        (void)(*f->close)(f, doClose);
+        free(f);
 }
 
 /*****************************************************************************
@@ -364,21 +316,16 @@ _DtHelpCeBufFileClose (
  *		Frees the BufFile information.
  *
  *****************************************************************************/
-int
-_DtHelpCeBufFileRd (
-    BufFilePtr	f,
-    char	*b,
-    int		n )
-{
-    int	    c, cnt;
-    cnt = n;
-    while (cnt--) {
-	c = BufFileGet (f);
-	if (c == BUFFILEEOF)
-	    break;
-	*b++ = c;
-    }
-    return n - cnt - 1;
+int _DtHelpCeBufFileRd(BufFilePtr f, char *b, int n) {
+        int c, cnt;
+        cnt = n;
+        while (cnt--) {
+                c = BufFileGet(f);
+                if (c == BUFFILEEOF)
+                        break;
+                *b++ = c;
+        }
+        return n - cnt - 1;
 }
 
 /*****************************************************************************
@@ -391,9 +338,7 @@ _DtHelpCeBufFileRd (
  *		routine.
  *
  *****************************************************************************/
-BufFilePtr
-_DtHelpCeCreatePipeBufFile (FILE *stream)
-{
-    return _DtHelpCeBufFileCreate ((char *) stream,
-					RdPipeStream, NULL, ClosePipeStream);
+BufFilePtr _DtHelpCeCreatePipeBufFile(FILE *stream) {
+        return _DtHelpCeBufFileCreate((char *)stream, RdPipeStream, NULL,
+                                      ClosePipeStream);
 }

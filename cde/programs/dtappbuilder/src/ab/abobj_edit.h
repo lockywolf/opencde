@@ -24,10 +24,10 @@
 /*
  *	$XConsortium: abobj_edit.h /main/3 1995/11/06 17:15:39 rswiston $
  *
- *	@(#)abobj_edit.h	1.1 15 Feb 1994	
+ *	@(#)abobj_edit.h	1.1 15 Feb 1994
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -52,50 +52,46 @@
 /*
  * Size of each malloc'd block for clipboard/undo buffer
  */
-#define ABOBJ_CLIPBOARD_BLOCK_SIZE	10
-#define ABOBJ_UNDO_BLOCK_SIZE		10
+#define ABOBJ_CLIPBOARD_BLOCK_SIZE 10
+#define ABOBJ_UNDO_BLOCK_SIZE 10
 
 /*
  * Edit operations
  */
-typedef enum
-{
-    AB_EDIT_CUT = 0,
-    AB_EDIT_COPY,
-    AB_EDIT_PASTE,
-    AB_EDIT_DELETE,
-    AB_EDIT_NUM_VALUES
+typedef enum {
+        AB_EDIT_CUT = 0,
+        AB_EDIT_COPY,
+        AB_EDIT_PASTE,
+        AB_EDIT_DELETE,
+        AB_EDIT_NUM_VALUES
 } AB_EDIT_TYPE;
 
 /*
  * Supported actions that can be undone
  */
-typedef enum
-{
-    AB_UNDO_NO_TYPE = 0,
-    AB_UNDO_CUT,
-    AB_UNDO_DELETE,
-    AB_UNDO_PASTE,
-    AB_UNDO_MOVE,
-    AB_UNDO_RESIZE,
-    AB_UNDO_GROUP,
-    AB_UNDO_UNGROUP,
-    AB_UNDO_NUM_VALUES
+typedef enum {
+        AB_UNDO_NO_TYPE = 0,
+        AB_UNDO_CUT,
+        AB_UNDO_DELETE,
+        AB_UNDO_PASTE,
+        AB_UNDO_MOVE,
+        AB_UNDO_RESIZE,
+        AB_UNDO_GROUP,
+        AB_UNDO_UNGROUP,
+        AB_UNDO_NUM_VALUES
 } AB_UNDO_TYPE;
 
 /*
 ** Supported initiator locations of a paste operation
 */
-typedef enum
-{
-    AB_PASTE_INITIATOR_NO_TYPE = 0,
-    AB_PASTE_INITIATOR_OBJ_MENU,	/* Object popup menu */
-    AB_PASTE_INITIATOR_BRWS_MENU,	/* Browser popup menu */
-    AB_PASTE_INITIATOR_BRWS_EDIT_MENU,	/* Browser's edit menu */
-    AB_PASTE_INITIATOR_PAL_EDIT_MENU,	/* Palette's edit menu */
-    AB_PASTE_INITIATOR_NUM_VALUES
+typedef enum {
+        AB_PASTE_INITIATOR_NO_TYPE = 0,
+        AB_PASTE_INITIATOR_OBJ_MENU,       /* Object popup menu */
+        AB_PASTE_INITIATOR_BRWS_MENU,      /* Browser popup menu */
+        AB_PASTE_INITIATOR_BRWS_EDIT_MENU, /* Browser's edit menu */
+        AB_PASTE_INITIATOR_PAL_EDIT_MENU,  /* Palette's edit menu */
+        AB_PASTE_INITIATOR_NUM_VALUES
 } AB_PASTE_INITIATOR_TYPE;
-
 
 /*
  * Data structures for clipboard/undo
@@ -114,170 +110,143 @@ typedef enum
 /*
  * Additional info needed for clipboard
  */
-typedef struct _AB_CLIPB_INFO
-{
-    ABObj	dup_obj;	/* duplicated object, not just ptr to */
-    ABObj	action_list;	/* duplicated ACTIONS for object and it's descendants */
-    char	*other_stuff;	/* placeholder for now, will be filled 
-				 * in later */
-}AB_CLIPB_INFO, *ABClipbInfo;
+typedef struct _AB_CLIPB_INFO {
+        ABObj dup_obj; /* duplicated object, not just ptr to */
+        ABObj
+            action_list;   /* duplicated ACTIONS for object and it's descendants
+                            */
+        char *other_stuff; /* placeholder for now, will be filled
+                            * in later */
+} AB_CLIPB_INFO, *ABClipbInfo;
 
 /*
  * Additional info needed for undoing cut
  */
-typedef struct _AB_UNDO_CUT_INFO
-{
-    ABObj	dup_obj;
-    ABObj	from_action_list;	/* duplicated ACTIONS for object (object == source) */
-    ABObj	to_action_list;		/* duplicated ACTIONS for object (object == target) */
-    ABObj	parent;			/* POINTER to parent */
-    ABObj	pane_sibling;		/* POINTER to sibling - used for layers */
+typedef struct _AB_UNDO_CUT_INFO {
+        ABObj dup_obj;
+        ABObj from_action_list; /* duplicated ACTIONS for object (object ==
+                                   source) */
+        ABObj to_action_list;   /* duplicated ACTIONS for object (object ==
+                                   target) */
+        ABObj parent;           /* POINTER to parent */
+        ABObj pane_sibling;     /* POINTER to sibling - used for layers */
 } AB_UNDO_CUT_INFO, *ABUndoCutInfo;
 
 /*
  * Additional info needed for undoing move
  */
-typedef struct _AB_UNDO_MOVE_INFO
-{
-    int		x;
-    int		y;
+typedef struct _AB_UNDO_MOVE_INFO {
+        int x;
+        int y;
 } AB_UNDO_MOVE_INFO, *ABUndoMoveInfo;
 
 /*
  * Additional info needed for undoing resize
  */
-typedef struct _AB_UNDO_RESIZE_INFO
-{
-    int		width;
-    int		height;
+typedef struct _AB_UNDO_RESIZE_INFO {
+        int width;
+        int height;
 } AB_UNDO_RESIZE_INFO, *ABUndoResizeInfo;
 
 /*
  * Additional info needed for undoing ungroup
  */
-typedef struct _AB_UNDO_UNGROUP_INFO
-{
-    ABObj	dup_old_group;		/* DUPLICATE of ungrouped group */
-    ABObj	*member_list;		/* List of POINTERS to members */
-    int		member_count;
+typedef struct _AB_UNDO_UNGROUP_INFO {
+        ABObj dup_old_group; /* DUPLICATE of ungrouped group */
+        ABObj *member_list;  /* List of POINTERS to members */
+        int member_count;
 } AB_UNDO_UNGROUP_INFO, *ABUndoUngroupInfo;
 
 /*
  * Union of additional info for undo actions
  */
-typedef union _AB_UNDO_EXTRA_INFO
-{
-    AB_UNDO_CUT_INFO		cut;
-    /* undo for cut == undo for delete */
-    /* don't need special info for undoing paste */
-    AB_UNDO_MOVE_INFO		move;
-    AB_UNDO_RESIZE_INFO		resize;
-    AB_UNDO_UNGROUP_INFO	ungroup;
-    /* don't need special info for undoing group */
-}AB_UNDO_EXTRA_INFO, *ABUndoExtraInfo;
+typedef union _AB_UNDO_EXTRA_INFO {
+        AB_UNDO_CUT_INFO cut;
+        /* undo for cut == undo for delete */
+        /* don't need special info for undoing paste */
+        AB_UNDO_MOVE_INFO move;
+        AB_UNDO_RESIZE_INFO resize;
+        AB_UNDO_UNGROUP_INFO ungroup;
+        /* don't need special info for undoing group */
+} AB_UNDO_EXTRA_INFO, *ABUndoExtraInfo;
 
 /*
  * Info for undoing an action on ONE object
  */
-typedef struct _AB_UNDO_INFO
-{
-    AB_UNDO_TYPE	type;
-    AB_UNDO_EXTRA_INFO	info;
-}AB_UNDO_INFO, *ABUndoInfo;
+typedef struct _AB_UNDO_INFO {
+        AB_UNDO_TYPE type;
+        AB_UNDO_EXTRA_INFO info;
+} AB_UNDO_INFO, *ABUndoInfo;
 
 /*
  * Data structure for clipboard
  */
-typedef struct _AB_CLIPBOARD_REC{
-    ABObj		*list;	/* List of POINTERS to copied/cut objects */
-    AB_CLIPB_INFO	*info_list;
-    int			count;
-    int			action_count;
-    int			size;
+typedef struct _AB_CLIPBOARD_REC {
+        ABObj *list; /* List of POINTERS to copied/cut objects */
+        AB_CLIPB_INFO *info_list;
+        int count;
+        int action_count;
+        int size;
 } AB_CLIPBOARD_REC, *ABClipboardRec;
 
 /*
  * Type for ABUndoFunc
  */
-struct _AB_UNDO_REC;		/* forward ref for ABUndoFunc */
+struct _AB_UNDO_REC; /* forward ref for ABUndoFunc */
 typedef void AB_UNDO_FUNC(struct _AB_UNDO_REC *undo_rec);
 typedef AB_UNDO_FUNC *ABUndoFunc;
 
 /*
  * Data structure for undo buffer
  */
-typedef struct _AB_UNDO_REC{
-    ABObj		*list;
-    AB_UNDO_INFO	*info_list;
-    ABUndoFunc		undo_func;
-    int			count;
-    int			action_count;
-    int			size;
+typedef struct _AB_UNDO_REC {
+        ABObj *list;
+        AB_UNDO_INFO *info_list;
+        ABUndoFunc undo_func;
+        int count;
+        int action_count;
+        int size;
 } AB_UNDO_REC, *ABUndoRec;
-
 
 /*
  * Editing functions
  */
-extern void	abobj_edit_init(
-		);
+extern void abobj_edit_init();
 
-extern int	abobj_cut(
-		);
+extern int abobj_cut();
 
-extern int	abobj_copy(
-		);
+extern int abobj_copy();
 
-extern int	abobj_paste(
-                AB_PASTE_INITIATOR_TYPE initiator
-		);
+extern int abobj_paste(AB_PASTE_INITIATOR_TYPE initiator);
 
-extern int	abobj_delete(void);
+extern int abobj_delete(void);
 
-extern int	abobj_undo(void);
+extern int abobj_undo(void);
 
-extern int	abobj_cancel_undo(void);
+extern int abobj_cancel_undo(void);
 
-extern BOOL	abobj_undo_active(
-		);
+extern BOOL abobj_undo_active();
 
 /*
  * CLIPBOARD manipulating functions
  */
-extern BOOL	abobj_clipboard_is_empty(
-		);
+extern BOOL abobj_clipboard_is_empty();
 
-extern BOOL	abobj_in_clipboard(
-		    ABObj	obj
-		);
+extern BOOL abobj_in_clipboard(ABObj obj);
 
-extern void	abobj_clipboard_clear(
-		);
+extern void abobj_clipboard_clear();
 
-extern void	abobj_clipboard_set(
-		    ABObj	*obj,
-		    int		count
-		);
+extern void abobj_clipboard_set(ABObj *obj, int count);
 
-extern void	abobj_clipboard_add(
-		    ABObj	*obj,
-		    int		count
-		);
+extern void abobj_clipboard_add(ABObj *obj, int count);
 
 /*
  * Function to set undo buffer
  */
-extern int	abobj_set_undo(
-		    ABObj		*obj,
-		    int			count,
-		    ABUndoFunc		undo_func,
-		    AB_UNDO_TYPE	undo_type
-		);
+extern int abobj_set_undo(ABObj *obj, int count, ABUndoFunc undo_func,
+                          AB_UNDO_TYPE undo_type);
 
-extern void	abobj_setup_undo_cut_layer(
-		    ABObj       layer,
-		    ABObj       last_pane
-		);
+extern void abobj_setup_undo_cut_layer(ABObj layer, ABObj last_pane);
 
 /*
  * Xt Callbacks for editing functions:
@@ -287,34 +256,19 @@ extern void	abobj_setup_undo_cut_layer(
  *	paste
  *	delete
  */
-extern void	abobj_undo_cb(
-		    Widget	widget,
-		    XtPointer	client_data,
-		    XtPointer	call_data
-		);
+extern void abobj_undo_cb(Widget widget, XtPointer client_data,
+                          XtPointer call_data);
 
-extern void	abobj_cut_cb(
-		    Widget	widget,
-		    XtPointer	client_data,
-		    XtPointer	call_data
-		);
+extern void abobj_cut_cb(Widget widget, XtPointer client_data,
+                         XtPointer call_data);
 
-extern void	abobj_copy_cb(
-		    Widget	widget,
-		    XtPointer	client_data,
-		    XtPointer	call_data
-		);
+extern void abobj_copy_cb(Widget widget, XtPointer client_data,
+                          XtPointer call_data);
 
-extern void	abobj_paste_cb(
-		    Widget	widget,
-		    XtPointer	client_data,
-		    XtPointer	call_data
-		);
+extern void abobj_paste_cb(Widget widget, XtPointer client_data,
+                           XtPointer call_data);
 
-extern void	abobj_delete_cb(
-		    Widget	widget,
-		    XtPointer	client_data,
-		    XtPointer	call_data
-		);
+extern void abobj_delete_cb(Widget widget, XtPointer client_data,
+                            XtPointer call_data);
 
 #endif /* _ABOBJ_EDIT_H_ */

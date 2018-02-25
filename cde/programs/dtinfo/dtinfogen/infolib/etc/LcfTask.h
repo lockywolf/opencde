@@ -28,22 +28,22 @@
 
 class NodeTask;
 
-class LcfTask : public ComplexTask{
-friend class NodeTask;
+class LcfTask : public ComplexTask {
+        friend class NodeTask;
 
-public:
-  LcfTask( NodeTask *f_parent , const Token &t );
-  void markup(const Token& t);
-  
-protected:
-  void reset();
-  void write_record();
+      public:
+        LcfTask(NodeTask *f_parent, const Token &t);
+        void markup(const Token &t);
 
-  // void setNode(NodeTask *n) { f_node = n; }
+      protected:
+        void reset();
+        void write_record();
 
-private:
-  NodeTask *f_node;
-  int f_base;
+        // void setNode(NodeTask *n) { f_node = n; }
+
+      private:
+        NodeTask *f_node;
+        int f_base;
 };
 
 #endif /* LcfTask.h */

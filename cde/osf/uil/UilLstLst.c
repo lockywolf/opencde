@@ -20,16 +20,16 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* 
+/*
  *  @OSF_COPYRIGHT@
  *  COPYRIGHT NOTICE
  *  Copyright (c) 1990, 1991, 1992, 1993 Open Software Foundation, Inc.
  *  ALL RIGHTS RESERVED (MOTIF). See the file named COPYRIGHT.MOTIF for
  *  the full copyright text.
-*/ 
-/* 
+ */
+/*
  * HISTORY
-*/ 
+ */
 #ifdef REV_INFO
 #ifndef lint
 static char rcsid[] = "$TOG: UilLstLst.c /main/20 1999/07/21 09:03:16 vipin $"
@@ -37,7 +37,7 @@ static char rcsid[] = "$TOG: UilLstLst.c /main/20 1999/07/21 09:03:16 vipin $"
 #endif
 
 /*
-*  (c) Copyright 1989, 1990, DIGITAL EQUIPMENT CORPORATION, MAYNARD, MASS. */
+ *  (c) Copyright 1989, 1990, DIGITAL EQUIPMENT CORPORATION, MAYNARD, MASS. */
 
 /*
 **++
@@ -52,7 +52,6 @@ static char rcsid[] = "$TOG: UilLstLst.c /main/20 1999/07/21 09:03:16 vipin $"
 **--
 **/
 
-
 /*
 **
 **  INCLUDE FILES
@@ -66,30 +65,27 @@ static char rcsid[] = "$TOG: UilLstLst.c /main/20 1999/07/21 09:03:16 vipin $"
 
 #include "UilDefI.h"
 
+    /*
+    **
+    **  EXTERNAL storage used by the listing
+    **
+    */
 
-/*
-**
-**  EXTERNAL storage used by the listing
-**
-*/
+    /*
+    **
+    **  OWN storage used by the listing
+    **
+    */
 
+    externaldef(uil_comp_glbl) char Uil_lst_c_title2[132];
 
-/*
-**
-**  OWN storage used by the listing
-**
-*/
+static int lst_l_usable_lines;
+static int lst_l_lines_left;
+static int lst_l_page_no;
+static char lst_c_title1[132];
+static uil_fcb_type *lst_az_fcb;
+static boolean lst_v_listing_open = FALSE;
 
-externaldef(uil_comp_glbl) char		Uil_lst_c_title2[132];
-
-static	    int			lst_l_usable_lines;
-static	    int			lst_l_lines_left;
-static	    int			lst_l_page_no;
-static	    char		lst_c_title1[132];
-static	    uil_fcb_type	*lst_az_fcb;
-static	     boolean		lst_v_listing_open = FALSE;
-
-
 /*
 **++
 **  FUNCTIONAL DESCRIPTION:
@@ -125,48 +121,42 @@ static	     boolean		lst_v_listing_open = FALSE;
 **--
 **/
 
-void	lst_open_listing()
-{
-    status  open_status;
-    _Xctimeparams	ctime_buf;
+void lst_open_listing() {
+        status open_status;
+        _Xctimeparams ctime_buf;
 
-    /* allocate fcb */
+        /* allocate fcb */
 
-    lst_az_fcb = (uil_fcb_type *)_get_memory( sizeof( uil_fcb_type ) );
+        lst_az_fcb = (uil_fcb_type *)_get_memory(sizeof(uil_fcb_type));
 
-    /* open the listing file */
+        /* open the listing file */
 
-    open_status = 
-	create_listing_file( lst_az_fcb );
+        open_status = create_listing_file(lst_az_fcb);
 
-    if ( open_status == src_k_open_error )
-    {
-	diag_issue_diagnostic( d_listing_open,
-			       diag_k_no_source, diag_k_no_column,
-			       lst_az_fcb->expanded_name );
-        /* should never return - error is fatal */
+        if (open_status == src_k_open_error) {
+                diag_issue_diagnostic(d_listing_open, diag_k_no_source,
+                                      diag_k_no_column,
+                                      lst_az_fcb->expanded_name);
+                /* should never return - error is fatal */
 
-	return;
-    }
+                return;
+        }
 
-    lst_l_lines_left = 0;
-    lst_l_page_no = 0;
-    lst_v_listing_open = TRUE;
+        lst_l_lines_left = 0;
+        lst_l_page_no = 0;
+        lst_v_listing_open = TRUE;
 
-    sprintf(lst_c_title1, 
-	    "%s %s \t%s\t\t Page ",
-	    _host_compiler, _compiler_version,
-	    current_time(&ctime_buf));
+        sprintf(lst_c_title1, "%s %s \t%s\t\t Page ", _host_compiler,
+                _compiler_version, current_time(&ctime_buf));
 
-    /*
-    **	Haven't parsed the module yet.
-    **  UilSarMod.c routines will fill it in.
-    */
+        /*
+        **	Haven't parsed the module yet.
+        **  UilSarMod.c routines will fill it in.
+        */
 
-    Uil_lst_c_title2[ 0 ] = 0;
-
+        Uil_lst_c_title2[0] = 0;
 }
-
+
 /*
 **++
 **  FUNCTIONAL DESCRIPTION:
@@ -198,29 +188,22 @@ void	lst_open_listing()
 **--
 **/
 
-void	Uil_lst_cleanup_listing()
-{
-    /*
-    **	Check that there is a listing file requested and that
-    **	it is not already in error.
-    */
+void Uil_lst_cleanup_listing() {
+        /*
+        **	Check that there is a listing file requested and that
+        **	it is not already in error.
+        */
 
-    if (!(lst_v_listing_open && Uil_cmd_z_command.v_listing_file))
-	return;
+        if (!(lst_v_listing_open && Uil_cmd_z_command.v_listing_file))
+                return;
 
-    /*
-    ** free fcb 
-    */
+        /*
+        ** free fcb
+        */
 
-    _free_memory((char*)lst_az_fcb);
-    lst_az_fcb = NULL;
+        _free_memory((char *)lst_az_fcb);
+        lst_az_fcb = NULL;
 }
-
-
-
-
-
-
 
 /*
 **++
@@ -252,30 +235,29 @@ void	Uil_lst_cleanup_listing()
 **--
 **/
 
-status	create_listing_file( az_fcb )
+status create_listing_file(az_fcb)
 
-uil_fcb_type			*az_fcb;
+    uil_fcb_type *az_fcb;
 
 {
-    /* place the file name in the expanded_name buffer */
+        /* place the file name in the expanded_name buffer */
 
-    strcpy(az_fcb->expanded_name, Uil_cmd_z_command.ac_listing_file);
+        strcpy(az_fcb->expanded_name, Uil_cmd_z_command.ac_listing_file);
 
-    /* open the file */
+        /* open the file */
 
-    az_fcb->az_file_ptr = fopen(Uil_cmd_z_command.ac_listing_file, "w");
+        az_fcb->az_file_ptr = fopen(Uil_cmd_z_command.ac_listing_file, "w");
 
-    if (az_fcb->az_file_ptr == NULL)
-	return src_k_open_error;
+        if (az_fcb->az_file_ptr == NULL)
+                return src_k_open_error;
 
-    /* assume 66 lines on a page */
+        /* assume 66 lines on a page */
 
-    lst_l_usable_lines = 66 - 9;
+        lst_l_usable_lines = 66 - 9;
 
-    return src_k_open_normal;
+        return src_k_open_normal;
 }
 
-
 /*
 **++
 **  FUNCTIONAL DESCRIPTION:
@@ -309,53 +291,47 @@ uil_fcb_type			*az_fcb;
 **--
 **/
 
+void lst_output_line(ac_line, v_new_page)
 
-void	lst_output_line( ac_line, v_new_page )
-
-char	*ac_line;
-boolean	v_new_page;
+    char *ac_line;
+boolean v_new_page;
 
 {
-    status	error_status;
+        status error_status;
 
-    if (!lst_v_listing_open)
-	return;
+        if (!lst_v_listing_open)
+                return;
 
-    /*
-    **	Update the current file and call the Status callback routine to report
-    **	our progress.
-    */
-    Uil_current_file = lst_az_fcb->expanded_name;
-    if (Uil_cmd_z_command.status_cb != (Uil_continue_type(*)())NULL)
-	diag_report_status();    
+        /*
+        **	Update the current file and call the Status callback routine to
+        *report *	our progress.
+        */
+        Uil_current_file = lst_az_fcb->expanded_name;
+        if (Uil_cmd_z_command.status_cb != (Uil_continue_type(*)())NULL)
+                diag_report_status();
 
+        if ((lst_l_lines_left <= 0) || v_new_page) {
+                lst_l_page_no++;
+                lst_l_lines_left = lst_l_usable_lines;
 
-    if ((lst_l_lines_left <= 0) || v_new_page)
-    {
-	lst_l_page_no ++;
-	lst_l_lines_left = lst_l_usable_lines;
+                fprintf(lst_az_fcb->az_file_ptr, "\f\n%s%d\n%s\n\n",
+                        lst_c_title1, lst_l_page_no, Uil_lst_c_title2);
+        }
 
-	fprintf(lst_az_fcb->az_file_ptr, 
-		"\f\n%s%d\n%s\n\n", 
-		lst_c_title1, lst_l_page_no, Uil_lst_c_title2);
-    }
+        error_status = fprintf(lst_az_fcb->az_file_ptr, "%s\n", ac_line);
 
-    error_status = fprintf(lst_az_fcb->az_file_ptr, "%s\n", ac_line);
+        if (error_status == EOF) {
+                lst_v_listing_open = FALSE;
+                diag_issue_diagnostic(d_listing_write, diag_k_no_source,
+                                      diag_k_no_column,
+                                      lst_az_fcb->expanded_name);
+        }
 
-    if (error_status == EOF)
-    {
-	lst_v_listing_open = FALSE;
-        diag_issue_diagnostic( d_listing_write,
-                               diag_k_no_source, diag_k_no_column,
-                               lst_az_fcb->expanded_name );
-    }
+        lst_l_lines_left--;
 
-    lst_l_lines_left --;
-
-    return;
+        return;
 }
 
-
 /*
 **++
 **  FUNCTIONAL DESCRIPTION:
@@ -385,21 +361,19 @@ boolean	v_new_page;
 **--
 **/
 
-char	*current_time(_Xctimeparams *ctime_buf)
-{
-    time_t	time_location;
-    char	*ascii_time;
+char *current_time(_Xctimeparams *ctime_buf) {
+        time_t time_location;
+        char *ascii_time;
 
-    time_location = time( 0 );
+        time_location = time(0);
 
-    ascii_time = _XCtime( &time_location, *ctime_buf );
+        ascii_time = _XCtime(&time_location, *ctime_buf);
 
-    ascii_time[24] = 0;
+        ascii_time[24] = 0;
 
-    return ascii_time;
+        return ascii_time;
 }
 
-
 /*
 **++
 **  FUNCTIONAL DESCRIPTION:
@@ -421,114 +395,106 @@ char	*current_time(_Xctimeparams *ctime_buf)
 **--
 **/
 
-void	lst_output_listing()
+void lst_output_listing()
 
 {
-    src_source_record_type  *az_src_rec;
-    char		    src_buffer[ src_k_max_source_line_length+12 ];
-    char		    *src_ptr;
-    int			    i;
+        src_source_record_type *az_src_rec;
+        char src_buffer[src_k_max_source_line_length + 12];
+        char *src_ptr;
+        int i;
 
-    /*
-    **	Check that there is a listing file requested and that
-    **	it is not already in error.
-    */
+        /*
+        **	Check that there is a listing file requested and that
+        **	it is not already in error.
+        */
 
-    if (!(lst_v_listing_open &&
-	  Uil_cmd_z_command.v_listing_file)
-       )
-	return;
+        if (!(lst_v_listing_open && Uil_cmd_z_command.v_listing_file))
+                return;
 
-    /*
-    **	Walk the list of source records.
-    */
+        /*
+        **	Walk the list of source records.
+        */
 
-    for (az_src_rec = src_az_first_source_record;  
-	 az_src_rec != NULL;  
-	 az_src_rec = az_src_rec->az_next_source_record)
-    {
+        for (az_src_rec = src_az_first_source_record; az_src_rec != NULL;
+             az_src_rec = az_src_rec->az_next_source_record) {
 
-	/*
-	**  place the line and file number in the output buffer
-	*/
+                /*
+                **  place the line and file number in the output buffer
+                */
 
-	sprintf(src_buffer, "%5d (%d)\t", 
-		az_src_rec->w_line_number, 
-		az_src_rec->b_file_number);
+                sprintf(src_buffer, "%5d (%d)\t", az_src_rec->w_line_number,
+                        az_src_rec->b_file_number);
 
-	src_ptr = &(src_buffer[ strlen( src_buffer ) ]);
-	
-	src_retrieve_source( az_src_rec, src_ptr );
+                src_ptr = &(src_buffer[strlen(src_buffer)]);
 
-	/*
-	**  filter standard unprintable characters if necessary
-	*/
+                src_retrieve_source(az_src_rec, src_ptr);
 
-	if ( az_src_rec->b_flags & src_m_unprintable_chars)
-	    lex_filter_unprintable_chars( (unsigned char*)src_ptr, strlen( src_ptr ), 0 );
+                /*
+                **  filter standard unprintable characters if necessary
+                */
 
-	/*
-	**  replace leading formfeed with a blank
-	*/
+                if (az_src_rec->b_flags & src_m_unprintable_chars)
+                        lex_filter_unprintable_chars((unsigned char *)src_ptr,
+                                                     strlen(src_ptr), 0);
 
-	if ( az_src_rec->b_flags & src_m_form_feed)
-	    *src_ptr = ' ';
+                /*
+                **  replace leading formfeed with a blank
+                */
 
-	lst_output_line( src_buffer, 
-			 (az_src_rec->b_flags & src_m_form_feed) != 0 );
+                if (az_src_rec->b_flags & src_m_form_feed)
+                        *src_ptr = ' ';
 
-	/*
-	**  if the line has messages, get them displayed
-	*/
+                lst_output_line(src_buffer,
+                                (az_src_rec->b_flags & src_m_form_feed) != 0);
 
-	if (az_src_rec->az_message_list != NULL)
-	{
-	    lst_output_message_ptr_line( az_src_rec, src_ptr );
-	    lst_output_messages( az_src_rec->az_message_list );
-	}
+                /*
+                **  if the line has messages, get them displayed
+                */
 
-	/*
-	**  if the line has machine code, get it displayed if requested
-	*/
+                if (az_src_rec->az_message_list != NULL) {
+                        lst_output_message_ptr_line(az_src_rec, src_ptr);
+                        lst_output_messages(az_src_rec->az_message_list);
+                }
 
-	if ( (Uil_cmd_z_command.v_show_machine_code) &&
-	     (az_src_rec->w_machine_code_cnt > 0) )
-	{
-	    lst_output_machine_code( az_src_rec );
-	}
+                /*
+                **  if the line has machine code, get it displayed if requested
+                */
 
-    }
+                if ((Uil_cmd_z_command.v_show_machine_code) &&
+                    (az_src_rec->w_machine_code_cnt > 0)) {
+                        lst_output_machine_code(az_src_rec);
+                }
+        }
 
-    /*
-    **  output the orphan messages
-    */
+        /*
+        **  output the orphan messages
+        */
 
-    if (src_az_orphan_messages != NULL)
-	lst_output_messages( src_az_orphan_messages );
+        if (src_az_orphan_messages != NULL)
+                lst_output_messages(src_az_orphan_messages);
 
-    /*
-    **  output the file summary
-    */
+        /*
+        **  output the file summary
+        */
 
-    lst_output_line( " ", FALSE );
+        lst_output_line(" ", FALSE);
 
-    for (i = 0; i <= src_l_last_source_file_number; i++) {
+        for (i = 0; i <= src_l_last_source_file_number; i++) {
 
-	uil_fcb_type	*az_fcb;	    /* file control block ptr */
-	char		buffer [132];
+                uil_fcb_type *az_fcb; /* file control block ptr */
+                char buffer[132];
 
-	az_fcb = src_az_source_file_table [i];
-	sprintf (buffer,
-		 "     File (%d)   %s",
-		 i, az_fcb->expanded_name );
-	lst_output_line( buffer, FALSE );
-    }    
+                az_fcb = src_az_source_file_table[i];
+                sprintf(buffer, "     File (%d)   %s", i,
+                        az_fcb->expanded_name);
+                lst_output_line(buffer, FALSE);
+        }
 
-    lst_output_line( " ", FALSE );
+        lst_output_line(" ", FALSE);
 
-    return;
+        return;
 }
-
+
 /*
 **++
 **  FUNCTIONAL DESCRIPTION:
@@ -557,49 +523,44 @@ void	lst_output_listing()
 **--
 **/
 
-void	lst_output_messages( az_message_item )
+void lst_output_messages(az_message_item)
 
-src_message_item_type	*az_message_item;
+    src_message_item_type *az_message_item;
 
 {
-    src_message_item_type	*az_msg;
-    char			buffer[132];
-    int				msg_no;
-    int				last_pos;
-    int				current_pos;
+        src_message_item_type *az_msg;
+        char buffer[132];
+        int msg_no;
+        int last_pos;
+        int current_pos;
 
-    last_pos = -1;
-    msg_no = 9;
+        last_pos = -1;
+        msg_no = 9;
 
-    for (az_msg = az_message_item;  
-	 az_msg != NULL;  
-	 az_msg = az_msg->az_next_message)
-    {
-	current_pos = az_msg->b_source_pos;
+        for (az_msg = az_message_item; az_msg != NULL;
+             az_msg = az_msg->az_next_message) {
+                current_pos = az_msg->b_source_pos;
 
-	if (last_pos < current_pos)
-	{
-	    last_pos = current_pos;
-	    if (last_pos == diag_k_no_column)
-		msg_no = 0;
-	    else
-		msg_no = (msg_no % 9) + 1;
-	}
+                if (last_pos < current_pos) {
+                        last_pos = current_pos;
+                        if (last_pos == diag_k_no_column)
+                                msg_no = 0;
+                        else
+                                msg_no = (msg_no % 9) + 1;
+                }
 
+                sprintf(buffer, "%s (%d) %s",
+                        diag_get_message_abbrev(az_msg->l_message_number),
+                        msg_no, az_msg->c_text);
 
-	sprintf(buffer, "%s (%d) %s", 
-		diag_get_message_abbrev( az_msg->l_message_number ),
-		msg_no, 
-		az_msg->c_text);
+                lst_output_line(buffer, FALSE);
+        }
 
-	lst_output_line( buffer, FALSE );
-    }    
+        lst_output_line(" ", FALSE);
 
-    lst_output_line( " ", FALSE );
-
-    return;
+        return;
 }
-
+
 /*
 **++
 **  FUNCTIONAL DESCRIPTION:
@@ -629,227 +590,232 @@ src_message_item_type	*az_message_item;
 **--
 **/
 
-void	lst_output_machine_code ( az_src_rec )
+void lst_output_machine_code(az_src_rec)
 
-src_source_record_type	*az_src_rec;
+    src_source_record_type *az_src_rec;
 
 {
 
-    static	src_machine_code_type * * mc_array = NULL;
-    static	unsigned short mc_cnt = 0;
+        static src_machine_code_type **mc_array = NULL;
+        static unsigned short mc_cnt = 0;
 
-    src_machine_code_type	*az_code;
-    int				code_cnt, mc_i;
+        src_machine_code_type *az_code;
+        int code_cnt, mc_i;
 
-/*	Go through the machine code list, and save the entries in
-	the array; traverse them in reverse order.  Reuse the vector
-	if it is large enough.	*/
+        /*	Go through the machine code list, and save the entries in
+                the array; traverse them in reverse order.  Reuse the vector
+                if it is large enough.	*/
 
+        code_cnt = az_src_rec->w_machine_code_cnt;
 
+        if ((int)mc_cnt < code_cnt) {
+                if (mc_array != NULL) {
+                        _free_memory((char *)mc_array);
+                }
+                mc_array = (src_machine_code_type **)_get_memory(
+                    sizeof(char *) * code_cnt);
+                mc_cnt = code_cnt;
+        }
 
-    code_cnt = az_src_rec->w_machine_code_cnt;
+        for (az_code = az_src_rec->az_machine_code_list, mc_i = 0;
+             az_code != NULL; az_code = az_code->az_next_machine_code, mc_i++) {
+                mc_array[mc_i] = az_code;
+        }
 
-    if ((int)mc_cnt < code_cnt) {
-	if (mc_array != NULL) {
-	    _free_memory ((char*)mc_array);
-	}
-	mc_array = 
-	    (src_machine_code_type * *)_get_memory (sizeof (char *) * code_cnt);
-	mc_cnt = code_cnt;
-    }
+        for (mc_i = code_cnt - 1; mc_i >= 0; mc_i--) {
 
-    for (az_code = az_src_rec->az_machine_code_list, mc_i = 0;
-	 az_code != NULL;  
-	 az_code = az_code->az_next_machine_code, mc_i++) {
-	mc_array [mc_i] = az_code;
-    }
-   
-    for (mc_i = code_cnt - 1; mc_i >= 0; mc_i--)
-    {
+#define BIT_64_LONG ((sizeof(long) * 8) == 64)
 
-#define BIT_64_LONG   ((sizeof(long)*8)==64)
+#define OFFSET_COL                                                             \
+        (BIT_64_LONG ? 75 : 43) /*should be 75 on 64 bit mach, 43 on 32*/
+#define TEXT_COL (BIT_64_LONG ? 82 : 50) /*82 on 64 bit mach, 50 on 32*/
+#define BUF_LEN                                                                \
+        (BIT_64_LONG ? 164 : 132) /*164 on 64 bit mach. 132 on 32 bit mach.*/
+#define HEX_PER_WORD 4
+#define HEX_PER_LONG                                                           \
+        (BIT_64_LONG ? 16                                                      \
+                     : 8) /*should be 16 on 64 bit mach., 8 on 32 bit mach*/
 
-#define         OFFSET_COL      (BIT_64_LONG ? 75 : 43) /*should be 75 on 64 bit mach, 43 on 32*/
-#define         TEXT_COL        (BIT_64_LONG ? 82 : 50) /*82 on 64 bit mach, 50 on 32*/
-#define         BUF_LEN         (BIT_64_LONG ? 164 : 132) /*164 on 64 bit mach. 132 on 32 bit mach.*/
-#define         HEX_PER_WORD    4
-#define         HEX_PER_LONG    (BIT_64_LONG ? 16 : 8) /*should be 16 on 64 bit mach., 8 on 32 bit mach*/
+#define LONG_PER_LINE 4
+#define ASCII_PER_LINE (LONG_PER_LINE * sizeof(long))
 
-#define		LONG_PER_LINE	4
-#define		ASCII_PER_LINE	(LONG_PER_LINE * sizeof (long))
+                unsigned short long_cnt, extra_byte_cnt, text_len, code_len,
+                    line_cnt, extra_long_cnt, i, j, code_offset;
+                unsigned char buffer[BUF_LEN + 1], *text_ptr,
+                    hex_longword[HEX_PER_LONG + 1], line_written;
+                unsigned long *code_ptr;
 
-	unsigned short 	long_cnt, extra_byte_cnt, text_len, code_len,
-			line_cnt, extra_long_cnt, i, j, code_offset;
-	unsigned char	buffer[ BUF_LEN + 1 ], * text_ptr,
-			hex_longword [HEX_PER_LONG + 1], line_written;
-	unsigned long	* code_ptr;
+                unsigned long temp_long;
+                static unsigned short start_hex_long[4];
+                /*if 64-bit environment, it should have vals { 55, 38, 21, 4 };
+                  if 32 bit environment, { 31, 22, 13, 4 };
+                */
+                start_hex_long[0] = (BIT_64_LONG ? 55 : 31);
+                start_hex_long[1] = (BIT_64_LONG ? 38 : 22);
+                start_hex_long[2] = (BIT_64_LONG ? 21 : 13);
+                start_hex_long[3] = 4;
 
-	unsigned long temp_long;
-        static unsigned short start_hex_long [4];
-	/*if 64-bit environment, it should have vals { 55, 38, 21, 4 };
-	  if 32 bit environment, { 31, 22, 13, 4 };
-	*/
-	start_hex_long[0]=(BIT_64_LONG ? 55 : 31);
-	start_hex_long[1]=(BIT_64_LONG ? 38 : 22);
-	start_hex_long[2]=(BIT_64_LONG ? 21 : 13);
-	start_hex_long[3]=4;
+                az_code = mc_array[mc_i];
 
+                code_ptr = (unsigned long *)az_code->data.c_data;
+                code_len = az_code->w_code_len;
+                code_offset = az_code->w_offset;
+                text_ptr = (unsigned char *)(&az_code->data.c_data[code_len]);
+                text_len = strlen((char *)text_ptr);
+                if (text_len > (unsigned short)(BUF_LEN - TEXT_COL + 1))
+                        text_len = BUF_LEN - TEXT_COL + 1;
 
-	az_code = mc_array [mc_i];
+                long_cnt = code_len / sizeof(char *);
+                line_cnt = long_cnt / LONG_PER_LINE;
+                extra_long_cnt = long_cnt % LONG_PER_LINE;
+                extra_byte_cnt = code_len % sizeof(char *);
 
-	code_ptr = (unsigned long *)az_code -> data.c_data;
-	code_len = az_code -> w_code_len;
-	code_offset = az_code -> w_offset;
-	text_ptr = (unsigned char *)(& az_code -> data.c_data [code_len]);
-	text_len = strlen ((char *)text_ptr);
-	if (text_len > (unsigned short) (BUF_LEN - TEXT_COL + 1))
-	    text_len = BUF_LEN - TEXT_COL + 1;
+                _fill(buffer, ' ', sizeof buffer - 1);
 
-	long_cnt = code_len / sizeof (char *);
-	line_cnt = long_cnt / LONG_PER_LINE;
-	extra_long_cnt = long_cnt % LONG_PER_LINE;
-	extra_byte_cnt = code_len % sizeof (char *);
+                sprintf((char *)hex_longword, "%04X", code_offset);
+                _move(&buffer[OFFSET_COL - 1], hex_longword, HEX_PER_WORD);
 
-	_fill (buffer, ' ', sizeof buffer - 1);
+                _move(&buffer[TEXT_COL - 1], text_ptr, text_len);
+                buffer[TEXT_COL + text_len] = '\0';
 
+                line_written = FALSE;
 
-	sprintf ((char *)hex_longword, "%04X", code_offset);
-	_move  (& buffer [OFFSET_COL - 1], hex_longword, HEX_PER_WORD);
+                /*
+                **	Write out entire lines.  Clear the text after the first
+                *line. *	Filter all non-printable characters.
+                */
 
-	_move (& buffer [TEXT_COL - 1], text_ptr, text_len);
-	buffer [TEXT_COL + text_len] = '\0';
+                for (i = 0; i < line_cnt; i++) {
 
-	line_written = FALSE;
+                        if (text_len == 0) {
+                                _move(&buffer[TEXT_COL - 1], code_ptr,
+                                      ASCII_PER_LINE);
+                                lex_filter_unprintable_chars(
+                                    (unsigned char *)&buffer[TEXT_COL - 1],
+                                    ASCII_PER_LINE, lex_m_filter_tab);
+                                buffer[TEXT_COL - 1 + ASCII_PER_LINE] = '\0';
+                        }
 
-/*
-**	Write out entire lines.  Clear the text after the first line.
-**	Filter all non-printable characters.
-*/
+                        for (j = 0; j < LONG_PER_LINE; j++, code_ptr++) {
 
-	for (i = 0; i < line_cnt; i++) {
+                                if (BIT_64_LONG) {
 
-	    if (text_len == 0) {
-		_move  (& buffer [TEXT_COL - 1], code_ptr, ASCII_PER_LINE);
-		lex_filter_unprintable_chars ((unsigned char*)
-			& buffer [TEXT_COL - 1], ASCII_PER_LINE,
-			lex_m_filter_tab );
-		buffer [TEXT_COL - 1 + ASCII_PER_LINE] = '\0';
-	    }
+                                        sprintf((char *)hex_longword, "%lX",
+                                                (*code_ptr));
+                                } else {
+                                        sprintf((char *)hex_longword, "%08X",
+                                                (*code_ptr));
+                                }
 
-	    for (j = 0; j < LONG_PER_LINE; j++, code_ptr++) {
+                                _move(&buffer[start_hex_long[j]], hex_longword,
+                                      HEX_PER_LONG);
+                        }
 
+                        lst_output_line((char *)buffer, FALSE);
+                        line_written = TRUE;
 
-	      if (BIT_64_LONG){
+                        code_offset += LONG_PER_LINE * sizeof(long);
+                        sprintf((char *)hex_longword, "%04X", code_offset);
+                        _move(&buffer[OFFSET_COL - 1], hex_longword,
+                              HEX_PER_WORD);
 
-		sprintf ((char *)hex_longword, "%lX", (* code_ptr));
-	      }
-	      else{
-                sprintf ((char *)hex_longword, "%08X", (* code_ptr));
-	      }
+                        if (i == 0 && text_len > 0) {
+                                _fill(&buffer[TEXT_COL - 1], ' ', text_len);
+                        }
+                }
 
-		_move (& buffer [start_hex_long [j]],
-			hex_longword, HEX_PER_LONG);
+                /*	Write out a partial line.	*/
 
-	    }
+                if (extra_long_cnt > 0 || extra_byte_cnt > 0) {
 
+                        if (text_len == 0) {
+                                int ascii_cnt;
 
-	    lst_output_line((char*) buffer, FALSE );
-	    line_written = TRUE;
+                                ascii_cnt = (extra_long_cnt * sizeof(long)) +
+                                            extra_byte_cnt;
+                                _move(&buffer[TEXT_COL - 1], code_ptr,
+                                      ascii_cnt);
+                                lex_filter_unprintable_chars(
+                                    (unsigned char *)&buffer[TEXT_COL - 1],
+                                    ascii_cnt, lex_m_filter_tab);
+                                buffer[TEXT_COL - 1 + ascii_cnt] = '\0';
+                        }
 
-	    code_offset += LONG_PER_LINE * sizeof (long);
-	    sprintf ((char *)hex_longword, "%04X", code_offset);
-	    _move  (& buffer [OFFSET_COL - 1], hex_longword, HEX_PER_WORD);
+                        /*	Clear code from previous lines, keeping the
+                           offset and text if it is there. */
 
-	    if (i == 0 && text_len > 0) {
-		_fill (& buffer [TEXT_COL - 1], ' ', text_len);
-	    }
-	}
+                        _fill(buffer, ' ', OFFSET_COL - 1);
 
-/*	Write out a partial line.	*/
+                        if (extra_long_cnt > 0) {
 
-	if (extra_long_cnt > 0 || extra_byte_cnt > 0) {
+                                /*	Format the code longwords.	*/
 
-	    if (text_len == 0) {
-		int	ascii_cnt;
+                                for (i = 0; i < extra_long_cnt;
+                                     i++, code_ptr++) {
+                                        unsigned long temp_long;
+                                        if (BIT_64_LONG) {
+                                                /*		      _move(
+                                                 * (char*) &temp_long, (char*)
+                                                 * code_ptr, sizeof(temp_long));
+                                                 */
+                                                sprintf((char *)hex_longword,
+                                                        "%lX", (*code_ptr));
+                                        } else {
+                                                sprintf((char *)hex_longword,
+                                                        "%08X", (*code_ptr));
+                                        }
 
-		ascii_cnt = (extra_long_cnt * sizeof (long)) + extra_byte_cnt;
-		_move  (& buffer [TEXT_COL - 1], code_ptr, ascii_cnt);
-		lex_filter_unprintable_chars ((unsigned char*)
-			& buffer [TEXT_COL - 1], ascii_cnt,
-			lex_m_filter_tab );
-		buffer [TEXT_COL - 1 + ascii_cnt] = '\0';
-	    }
+                                        _move(&buffer[start_hex_long[i]],
+                                              hex_longword, HEX_PER_LONG);
+                                }
+                        }
 
-/*	Clear code from previous lines, keeping the offset and text if
-	it is there. */
+                        /*	Format the extra code bytes.	*/
 
-	    _fill (buffer, ' ', OFFSET_COL - 1);
+                        if (extra_byte_cnt > 0) {
+                                int l;
+                                unsigned char extra_bytes[sizeof(long)];
 
-	    if (extra_long_cnt > 0) {
+                                _move(extra_bytes, code_ptr, extra_byte_cnt);
+                                _fill(hex_longword, ' ', HEX_PER_LONG);
+                                for (l = extra_byte_cnt - 1; l >= 0; l--) {
+                                        if (BIT_64_LONG)
+                                                sprintf((char *)&hex_longword
+                                                            [HEX_PER_LONG -
+                                                             (2 * (l + 1))],
+                                                        "%02X", extra_bytes[l]);
+                                        else
+                                                sprintf(
+                                                    (char *)&hex_longword
+                                                        [HEX_PER_LONG -
+                                                         (2 * (l + 1))],
+                                                    "%02X",
+                                                    extra_bytes[extra_byte_cnt -
+                                                                l - 1]);
+                                }
+                                _move(&buffer[start_hex_long[extra_long_cnt]],
+                                      hex_longword, HEX_PER_LONG);
+                        }
 
-/*	Format the code longwords.	*/
+                        /*	Output the partial line.	*/
 
-		for (i = 0; i < extra_long_cnt; i++, code_ptr++) {
-                    unsigned long temp_long;
-		    if (BIT_64_LONG){
-/*		      _move( (char*) &temp_long, (char*) code_ptr, sizeof(temp_long));*/
-		      sprintf ((char *)hex_longword, "%lX", (* code_ptr));
-		    }
-		    else{
-		      sprintf ((char *)hex_longword, "%08X", (*code_ptr));
-		    }
+                        lst_output_line((char *)buffer, FALSE);
 
-		    _move (& buffer [start_hex_long [i]],
-			hex_longword, HEX_PER_LONG);
-		}
-	    }
+                        line_written = TRUE;
+                }
 
-/*	Format the extra code bytes.	*/
+                if (!line_written) {
+                        if (text_len > 0) {
+                                lst_output_line((char *)buffer, FALSE);
+                        } else {
+                                lst_output_line(" ", FALSE);
+                        }
+                }
+        }
 
-	    if (extra_byte_cnt > 0) {
-		int		l;
-		unsigned char	extra_bytes [sizeof (long)];
-
-		_move (extra_bytes, code_ptr, extra_byte_cnt);
-		_fill (hex_longword, ' ', HEX_PER_LONG);
-		for (l = extra_byte_cnt - 1; l >= 0; l--) {
-		if (BIT_64_LONG)
-		    sprintf ((char *)
-			     & hex_longword [HEX_PER_LONG - (2 * (l + 1))],
-			     "%02X", extra_bytes [l]);
-		else
-		    sprintf ((char *)
-			     & hex_longword [HEX_PER_LONG - (2 * (l + 1))],
-			     "%02X", extra_bytes [extra_byte_cnt-l-1]);
-		
-		}
-		_move (& buffer [start_hex_long [extra_long_cnt]],
-			hex_longword, HEX_PER_LONG);
-	    }
-
-/*	Output the partial line.	*/
-
-	    lst_output_line( (char*)buffer, FALSE );
-
-	    line_written = TRUE;
-
-	}
-
-	if (! line_written) {
-	    if (text_len > 0) {
-		lst_output_line((char*) buffer, FALSE );
-	    } else {
-		lst_output_line( " ", FALSE );
-	    }
-	}
-
-    }    
-
-
-
-    return;
+        return;
 }
-
+
 /*
 **++
 **  FUNCTIONAL DESCRIPTION:
@@ -880,77 +846,73 @@ src_source_record_type	*az_src_rec;
 **--
 **/
 
-void	lst_output_message_ptr_line( az_src_rec, src_buffer )
+void lst_output_message_ptr_line(az_src_rec, src_buffer)
 
-src_source_record_type	*az_src_rec;
-char			*src_buffer;
+    src_source_record_type *az_src_rec;
+char *src_buffer;
 
 {
-    src_message_item_type	*az_msg;
-    char			buffer[ src_k_max_source_line_length + 3 ];
-    char			*ptr_buffer;
-    int				msg_no;
-    int				pos;
-    int				msg_pos;
-    char			c_char;
-    boolean			v_output_line;
+        src_message_item_type *az_msg;
+        char buffer[src_k_max_source_line_length + 3];
+        char *ptr_buffer;
+        int msg_no;
+        int pos;
+        int msg_pos;
+        char c_char;
+        boolean v_output_line;
 
-    if (_src_null_access_key( az_src_rec->z_access_key) )
-	return;
+        if (_src_null_access_key(az_src_rec->z_access_key))
+                return;
 
-    msg_no = 9;
+        msg_no = 9;
 
-    buffer[ 0 ] = '\t';
-    buffer[ 1 ] = '\t';
-    ptr_buffer = &buffer[ 2 ];
+        buffer[0] = '\t';
+        buffer[1] = '\t';
+        ptr_buffer = &buffer[2];
 
-    az_msg = az_src_rec->az_message_list;
-    if (az_msg == NULL)
-	return;
-    msg_pos = az_msg->b_source_pos;
-    if (msg_pos == diag_k_no_column)
-	return;
+        az_msg = az_src_rec->az_message_list;
+        if (az_msg == NULL)
+                return;
+        msg_pos = az_msg->b_source_pos;
+        if (msg_pos == diag_k_no_column)
+                return;
 
-    v_output_line = FALSE;
-    
-    for (pos = 0;  c_char = src_buffer[ pos ], c_char != 0; )
-    {
-	if (pos < msg_pos)
-	{
-	    if (c_char == '\t')
-		ptr_buffer[ pos++ ] = '\t';
-	    else
-		ptr_buffer[ pos++ ] = ' ';
+        v_output_line = FALSE;
 
-	    continue;
-	}
-    
-	msg_no = (msg_no % 9) + 1;
-	ptr_buffer[ pos++ ] = msg_no + '0';
-	v_output_line = TRUE;
+        for (pos = 0; c_char = src_buffer[pos], c_char != 0;) {
+                if (pos < msg_pos) {
+                        if (c_char == '\t')
+                                ptr_buffer[pos++] = '\t';
+                        else
+                                ptr_buffer[pos++] = ' ';
 
-next_message:
-	az_msg = az_msg->az_next_message;
-	if (az_msg == NULL)
-	    goto finished_scan;
-	msg_pos = az_msg->b_source_pos;
-	if ((pos-1) == msg_pos)			/* pos already advanced */
-	    goto next_message;
-	if (msg_pos == diag_k_no_column)
-	    goto finished_scan;
+                        continue;
+                }
 
-    }
+                msg_no = (msg_no % 9) + 1;
+                ptr_buffer[pos++] = msg_no + '0';
+                v_output_line = TRUE;
+
+        next_message:
+                az_msg = az_msg->az_next_message;
+                if (az_msg == NULL)
+                        goto finished_scan;
+                msg_pos = az_msg->b_source_pos;
+                if ((pos - 1) == msg_pos) /* pos already advanced */
+                        goto next_message;
+                if (msg_pos == diag_k_no_column)
+                        goto finished_scan;
+        }
 
 finished_scan:
-    ptr_buffer[ pos ] = 0;
+        ptr_buffer[pos] = 0;
 
-    if (v_output_line)
-	lst_output_line( buffer, FALSE );
+        if (v_output_line)
+                lst_output_line(buffer, FALSE);
 
-    return;
+        return;
 }
 
-
 /*
 **++
 **  FUNCTIONAL DESCRIPTION:
@@ -981,52 +943,46 @@ finished_scan:
 **--
 **/
 
-static	int	cur_pos=0;
-static	char	buffer[132];
+static int cur_pos = 0;
+static char buffer[132];
 
-void	lst_debug_output
+void lst_debug_output
 
-	(char *format, ...)
-{
-    va_list	ap;			/* ptr to variable length parameter */
+    (char *format, ...) {
+        va_list ap; /* ptr to variable length parameter */
 
-    /*
-    **	establish the start of the parameter list
-    */
+        /*
+        **	establish the start of the parameter list
+        */
 
-    va_start(ap,format);
+        va_start(ap, format);
 
-    /*
-    **	check if the listing file is open for output
-    */
+        /*
+        **	check if the listing file is open for output
+        */
 
-    if (lst_v_listing_open)
-    {
-	int	count;
-	char	*ptr;
+        if (lst_v_listing_open) {
+                int count;
+                char *ptr;
 
-	vsprintf( &(buffer[cur_pos]), format, ap );
+                vsprintf(&(buffer[cur_pos]), format, ap);
 
-	for ( ptr=buffer; ptr[0] != '\0'; ptr += (count+1) )
-	{
-	    _assert( ptr <= &(buffer[132]), "Overflowed debug listing buffer" );
-	    count = strcspn( ptr, "\n" );
-	    if (count == strlen( ptr )) 
-	    {
-		cur_pos = ptr - buffer + count;
-		return;
-	    } 
-	    else 
-	    {
-		ptr[ count ] = '\0';
-	    }
-	    lst_output_line( ptr, FALSE );
-	}
-	cur_pos = 0;
+                for (ptr = buffer; ptr[0] != '\0'; ptr += (count + 1)) {
+                        _assert(ptr <= &(buffer[132]),
+                                "Overflowed debug listing buffer");
+                        count = strcspn(ptr, "\n");
+                        if (count == strlen(ptr)) {
+                                cur_pos = ptr - buffer + count;
+                                return;
+                        } else {
+                                ptr[count] = '\0';
+                        }
+                        lst_output_line(ptr, FALSE);
+                }
+                cur_pos = 0;
 
-    }
-    else
- 	vprintf( format, ap );
+        } else
+                vprintf(format, ap);
 
-    va_end(ap);
+        va_end(ap);
 }

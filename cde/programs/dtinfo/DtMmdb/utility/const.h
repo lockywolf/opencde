@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,10 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
-
 
 #ifndef _const_h
 #define _const_h 1
@@ -58,12 +56,12 @@
 #define NAMESIZ 50
 
 #ifndef LBUFSIZ
-#define LBUFSIZ (8*KB)
+#define LBUFSIZ (8 * KB)
 #endif
 
-#define PAGSIZ LBUFSIZ 
+#define PAGSIZ LBUFSIZ
 
-#ifndef CACHE_PAGES 
+#ifndef CACHE_PAGES
 #define CACHE_PAGES 500
 #endif
 
@@ -71,13 +69,12 @@
 #define TOTAL_MEM_PAGES 4000
 #endif
 
-#define LIST_MARK_CHAR '#' // LIST_MARK_CHAR encloses
-                           // short_list elements. Used in
-                           // short_list::asciiIn(), and
-                           // dl_list::asciiIn().
+#define LIST_MARK_CHAR                                                         \
+        '#' // LIST_MARK_CHAR encloses
+            // short_list elements. Used in
+            // short_list::asciiIn(), and
+            // dl_list::asciiIn().
 
 #define CommentChar '#'
 
-
 #endif
-

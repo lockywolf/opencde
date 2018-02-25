@@ -38,45 +38,45 @@
 **  2-3-4 tree, a.k.a. red-black tree
 */
 
-typedef enum {red=0, black=1} Color;
+typedef enum { red = 0, black = 1 } Color;
 
 typedef struct node {
-	struct node *llink;
-	struct node *rlink;
-	Color	color;
-	caddr_t	data;
+        struct node *llink;
+        struct node *rlink;
+        Color color;
+        caddr_t data;
 } Tree_node;
 
 typedef struct {
-	Tree_node *root;
-	caddr_t private;	/* for internal tool state */
+        Tree_node *root;
+        caddr_t private; /* for internal tool state */
 } Rb_tree;
 
-extern Rb_tree* rb_create P((_DtCmsGetKeyProc, _DtCmsCompareProc));
+extern Rb_tree *rb_create P((_DtCmsGetKeyProc, _DtCmsCompareProc));
 
-extern void rb_destroy P((Rb_tree*, _DtCmsEnumerateProc)); 
+extern void rb_destroy P((Rb_tree *, _DtCmsEnumerateProc));
 
-extern int rb_size P((Rb_tree*t));
+extern int rb_size P((Rb_tree * t));
 
-extern Rb_Status rb_insert P((Rb_tree*, caddr_t data, caddr_t key)); 
+extern Rb_Status rb_insert P((Rb_tree *, caddr_t data, caddr_t key));
 
-extern Rb_Status rb_insert_node P((Rb_tree*, Tree_node*, caddr_t key));
+extern Rb_Status rb_insert_node P((Rb_tree *, Tree_node *, caddr_t key));
 
-extern Tree_node * rb_delete P((Rb_tree*, caddr_t key));
+extern Tree_node *rb_delete P((Rb_tree *, caddr_t key));
 
-extern caddr_t rb_lookup P((Rb_tree*, caddr_t key));
+extern caddr_t rb_lookup P((Rb_tree *, caddr_t key));
 
-extern caddr_t rb_lookup_next_larger P((Rb_tree*, caddr_t key));
+extern caddr_t rb_lookup_next_larger P((Rb_tree *, caddr_t key));
 
-extern caddr_t rb_lookup_next_smaller P((Rb_tree*, caddr_t key));
+extern caddr_t rb_lookup_next_smaller P((Rb_tree *, caddr_t key));
 
-extern caddr_t rb_lookup_smallest P((Rb_tree*));
+extern caddr_t rb_lookup_smallest P((Rb_tree *));
 
-extern caddr_t rb_lookup_largest P((Rb_tree*));
+extern caddr_t rb_lookup_largest P((Rb_tree *));
 
-extern Rb_Status rb_enumerate_up P((Rb_tree*, _DtCmsEnumerateProc));
+extern Rb_Status rb_enumerate_up P((Rb_tree *, _DtCmsEnumerateProc));
 
-extern void rb_enumerate_down P((Rb_tree*, _DtCmsEnumerateProc));
+extern void rb_enumerate_down P((Rb_tree *, _DtCmsEnumerateProc));
 
 extern Rb_Status rb_check_tree P((Rb_tree *));
 

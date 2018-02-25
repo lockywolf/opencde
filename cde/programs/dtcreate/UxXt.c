@@ -20,7 +20,8 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-static char sccsid[] = "@(#)96  1.4  com/config/UxXt.c, aic, aic324, 9317324f 5/12/93 15:40:01";
+static char sccsid[] =
+    "@(#)96  1.4  com/config/UxXt.c, aic, aic324, 9317324f 5/12/93 15:40:01";
 /*
  *  COMPONENT_NAME: AIC           AIXwindows Interface Composer
  *
@@ -46,7 +47,7 @@ static char sccsid[] = "@(#)96  1.4  com/config/UxXt.c, aic, aic324, 9317324f 5/
  *   USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
  *   OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE
  *   OR PERFORMANCE OF THIS SOFTWARE.
-*/
+ */
 /*---------------------------------------------------------------------
  * $XConsortium: UxXt.c /main/4 1995/11/01 16:08:57 rswiston $
  *---------------------------------------------------------------------
@@ -64,7 +65,7 @@ static char sccsid[] = "@(#)96  1.4  com/config/UxXt.c, aic, aic324, 9317324f 5/
  * the software without specific, written prior permission. The year
  * included in the notice is the year of the creation of the work.
  *-------------------------------------------------------------------*/
- /*------------------------------------------------------------------------
+/*------------------------------------------------------------------------
  *                              UxXt.c
  *-----------------------------------------------------------------------*/
 
@@ -87,7 +88,7 @@ static char sccsid[] = "@(#)96  1.4  com/config/UxXt.c, aic, aic324, 9317324f 5/
 
 #include "UxXt.h"
 
-static  XContext        xcontext_id = 0;
+static XContext xcontext_id = 0;
 
 /******************************************************************************
 NAME:           GetTrueToplevel( wgt )
@@ -102,10 +103,8 @@ DESCRIPTION:    Returns the true toplevel of that interface.
 
 CREATION:       Visual Edge Software            April 6 1991
 -----------------------------------------------------------------------------*/
-Widget  GetTrueToplevel( Widget wgt )
-{
-        while (wgt && !XtIsShell(wgt))
-        {
+Widget GetTrueToplevel(Widget wgt) {
+        while (wgt && !XtIsShell(wgt)) {
                 wgt = XtParent(wgt);
         }
         return wgt;
@@ -126,16 +125,13 @@ DESCRIPTION:    Handles the popping up or popping down of dialog shells
 
 CREATION:       Visual Edge Software            Sept 19/91
 -----------------------------------------------------------------------------*/
-static  int     handle_dialog_child( Widget wgt, void (*manage_func)(Widget) )
-{
+static int handle_dialog_child(Widget wgt, void (*manage_func)(Widget)) {
         XtArgVal i, num_children;
-        Widget  *children;
-        int     error_flag = UX_ERROR;
+        Widget *children;
+        int error_flag = UX_ERROR;
 
-        XtVaGetValues( wgt,
-                       XmNnumChildren, &num_children,
-                       XmNchildren, &children,
-                       NULL );
+        XtVaGetValues(wgt, XmNnumChildren, &num_children, XmNchildren,
+                      &children, NULL);
 
         /*-----------------------------------------------------
          * We manage/unmanage the first rectObj child in the list.
@@ -146,18 +142,16 @@ static  int     handle_dialog_child( Widget wgt, void (*manage_func)(Widget) )
          * should not be managed. We'll skip it.
          *-----------------------------------------------------*/
 
-        for (i = 0; i < num_children; i++)
-        {
-                if ( XtIsSubclass( children[i], rectObjClass )  &&
-                        (XtClass (children[i]) != coreWidgetClass))
-                {
+        for (i = 0; i < num_children; i++) {
+                if (XtIsSubclass(children[i], rectObjClass) &&
+                    (XtClass(children[i]) != coreWidgetClass)) {
                         (*manage_func)(children[i]);
                         error_flag = UX_NO_ERROR;
                         break;
                 }
         }
 
-        return ( error_flag );
+        return (error_flag);
 }
 
 /******************************************************************************
@@ -172,10 +166,9 @@ DESCRIPTION:    Pops up a dialogShell.
 
 CREATION:       Visual Edge Software            Sept 19/91
 -----------------------------------------------------------------------------*/
-static  void    popup_dialog( Widget wgt, XtGrabKind grab_flag )
-{
-        if ( handle_dialog_child( wgt, XtManageChild ) == UX_ERROR )
-                XtPopup( wgt, grab_flag );
+static void popup_dialog(Widget wgt, XtGrabKind grab_flag) {
+        if (handle_dialog_child(wgt, XtManageChild) == UX_ERROR)
+                XtPopup(wgt, grab_flag);
 }
 
 /******************************************************************************
@@ -197,21 +190,17 @@ DESCRIPTION:    Popups up an interface. The widget should be a toplevel widget.
 
 CREATION:       Visual Edge Software            April 6 1991
 -----------------------------------------------------------------------------*/
-int     UxPopupInterface( Widget wgt, XtGrabKind grab_flag )
-{
+int UxPopupInterface(Widget wgt, XtGrabKind grab_flag) {
         if (!(wgt = GetTrueToplevel(wgt)))
-                return ( UX_ERROR );
+                return (UX_ERROR);
 
-        if ( XtIsSubclass( wgt, xmDialogShellWidgetClass ) )
-        {
-                popup_dialog( wgt, grab_flag );
-        }
-        else
-        {
-                XtPopup( wgt, grab_flag );
+        if (XtIsSubclass(wgt, xmDialogShellWidgetClass)) {
+                popup_dialog(wgt, grab_flag);
+        } else {
+                XtPopup(wgt, grab_flag);
         }
 
-        return ( UX_NO_ERROR );
+        return (UX_NO_ERROR);
 }
 
 /******************************************************************************
@@ -225,10 +214,9 @@ DESCRIPTION:    Pops down a dialogShell.
 
 CREATION:       Visual Edge Software            Sept 19/91
 -----------------------------------------------------------------------------*/
-static  void    popdown_dialog( Widget wgt )
-{
-        if ( handle_dialog_child( wgt, XtUnmanageChild ) == UX_ERROR )
-                XtPopdown( wgt );
+static void popdown_dialog(Widget wgt) {
+        if (handle_dialog_child(wgt, XtUnmanageChild) == UX_ERROR)
+                XtPopdown(wgt);
 }
 
 /******************************************************************************
@@ -245,21 +233,17 @@ DESCRIPTION:    Pops down an interface. The widget should be a toplevel widget.
 
 CREATION:       Visual Edge Software            April 6 1991
 -----------------------------------------------------------------------------*/
-int     UxPopdownInterface( Widget wgt )
-{
+int UxPopdownInterface(Widget wgt) {
         if (!(wgt = GetTrueToplevel(wgt)))
-                return ( UX_ERROR );
+                return (UX_ERROR);
 
-        if ( XtIsSubclass( wgt, xmDialogShellWidgetClass ) )
-        {
-                popdown_dialog( wgt );
-        }
-        else
-        {
-                XtPopdown( wgt );
+        if (XtIsSubclass(wgt, xmDialogShellWidgetClass)) {
+                popdown_dialog(wgt);
+        } else {
+                XtPopdown(wgt);
         }
 
-        return ( UX_NO_ERROR );
+        return (UX_NO_ERROR);
 }
 
 /******************************************************************************
@@ -277,14 +261,12 @@ EXT REFERENCES: UxTopLevel, xcontext_id
 
 CREATION:       Visual Edge Software            April 6 1991
 -----------------------------------------------------------------------------*/
-void    UxDeleteContextCB( Widget wgt, XtPointer client_data,
-                                                XtPointer _call_data )
-{
-        XtPointer       call_data = _call_data;
+void UxDeleteContextCB(Widget wgt, XtPointer client_data,
+                       XtPointer _call_data) {
+        XtPointer call_data = _call_data;
 
-        (void) XDeleteContext( XtDisplay( UxTopLevel ),
-                               (Window) wgt,
-                               (XContext)(XtArgVal) client_data );
+        (void)XDeleteContext(XtDisplay(UxTopLevel), (Window)wgt,
+                             (XContext)(XtArgVal)client_data);
 }
 
 /******************************************************************************
@@ -305,27 +287,24 @@ EXT EFFECTS:    xcontext_id
 
 CREATION:       Visual Edge Software            April 6 1991
 -----------------------------------------------------------------------------*/
-int     UxPutContext( Widget wgt, caddr_t context )
-{
-        int             status;
+int UxPutContext(Widget wgt, caddr_t context) {
+        int status;
 
-        if ( xcontext_id == 0 )
+        if (xcontext_id == 0)
                 xcontext_id = XUniqueContext();
 
-        if ( wgt == NULL )
-                return ( UX_ERROR );
+        if (wgt == NULL)
+                return (UX_ERROR);
 
-        status = XSaveContext( XtDisplay( UxTopLevel ),
-                               (Window) wgt,
-                               xcontext_id,
-                               (char *) context );
-        if ( status != 0 )
-                return ( UX_ERROR );
+        status = XSaveContext(XtDisplay(UxTopLevel), (Window)wgt, xcontext_id,
+                              (char *)context);
+        if (status != 0)
+                return (UX_ERROR);
 
-        XtAddCallback (wgt, XmNdestroyCallback,
-                        UxDeleteContextCB, (XtPointer)(XtArgVal) xcontext_id);
+        XtAddCallback(wgt, XmNdestroyCallback, UxDeleteContextCB,
+                      (XtPointer)(XtArgVal)xcontext_id);
 
-        return ( UX_NO_ERROR );
+        return (UX_NO_ERROR);
 }
 
 /******************************************************************************
@@ -342,23 +321,20 @@ EXT REFERENCES: UxTopLevel, xcontext_id
 
 CREATION:       Visual Edge Software            April 6 1991
 -----------------------------------------------------------------------------*/
-caddr_t         UxGetContext( Widget wgt )
-{
-        int             status;
-        caddr_t         context;
+caddr_t UxGetContext(Widget wgt) {
+        int status;
+        caddr_t context;
 
-        if ( wgt == NULL )
-                return ( (caddr_t) NULL );
+        if (wgt == NULL)
+                return ((caddr_t)NULL);
 
-        status = XFindContext( XtDisplay( UxTopLevel ),
-                               (Window) wgt,
-                               xcontext_id,
-                               &context );
+        status = XFindContext(XtDisplay(UxTopLevel), (Window)wgt, xcontext_id,
+                              &context);
 
-        if ( status != 0 )
-                return  ( (caddr_t) NULL );
+        if (status != 0)
+                return ((caddr_t)NULL);
 
-        return ( context );
+        return (context);
 }
 
 /******************************************************************************
@@ -373,12 +349,11 @@ DESCRIPTION:    This XtTimerCallbackProc function simply frees the client data.
 
 CREATION:       Visual Edge Software            April 30 1993
 -----------------------------------------------------------------------------*/
-static  void    DelayedFreeData( XtPointer client_data, XtIntervalId *_id)
-{
-        XtIntervalId    *id = _id;
+static void DelayedFreeData(XtPointer client_data, XtIntervalId *_id) {
+        XtIntervalId *id = _id;
 
         if (client_data != NULL) {
-                XtFree((char *) client_data);
+                XtFree((char *)client_data);
         }
 }
 /******************************************************************************
@@ -397,15 +372,13 @@ DESCRIPTION:    This callback function registers a timeout to free the
 
 CREATION:       Visual Edge Software            April 6 1991
 -----------------------------------------------------------------------------*/
-void    UxDestroyContextCB( Widget _wgt, XtPointer client_data,
-                                XtPointer _call_data )
-{
-        Widget          wgt = _wgt;
-        XtPointer       call_data = _call_data;
+void UxDestroyContextCB(Widget _wgt, XtPointer client_data,
+                        XtPointer _call_data) {
+        Widget wgt = _wgt;
+        XtPointer call_data = _call_data;
 
         if (client_data != NULL) {
-                XtAppAddTimeOut(UxAppContext, 0,
-                                DelayedFreeData, client_data);
+                XtAppAddTimeOut(UxAppContext, 0, DelayedFreeData, client_data);
         }
 }
 
@@ -424,23 +397,21 @@ DESCRIPTION:    Converts a fontlist from the resource-file string format
 
 CREATION:       Visual Edge Software            June 17 1992
 -----------------------------------------------------------------------------*/
-XmFontList    UxConvertFontList( char *fontlist_str )
-{
-        XrmValue        from, to;
-        XmFontList      fontlist = NULL;
-        Boolean         status;
+XmFontList UxConvertFontList(char *fontlist_str) {
+        XrmValue from, to;
+        XmFontList fontlist = NULL;
+        Boolean status;
 
-        from.size = strlen( fontlist_str ) + 1;
+        from.size = strlen(fontlist_str) + 1;
         from.addr = fontlist_str;
 
         to.size = sizeof(XmFontList);
-        to.addr = (caddr_t) &fontlist;
+        to.addr = (caddr_t)&fontlist;
 
-        status = XtConvertAndStore( UxTopLevel,
-                                    XmRString, &from,
-                                    XmRFontList, &to );
+        status =
+            XtConvertAndStore(UxTopLevel, XmRString, &from, XmRFontList, &to);
 
-        return ( fontlist );
+        return (fontlist);
 }
 
 /******************************************************************************
@@ -462,8 +433,7 @@ DESCRIPTION:    If the depth argument is 0 , then call XmGetPixmap (no depth
 
 CREATION:       Visual Edge Software            March 31, 1993
 -----------------------------------------------------------------------------*/
-static Pixmap    ConvertPixmap( char *file_name, int depth )
-{
+static Pixmap ConvertPixmap(char *file_name, int depth) {
         XrmValue fg_from, fg_to, bg_from, bg_to;
         Pixel fg, bg;
 
@@ -473,17 +443,17 @@ static Pixmap    ConvertPixmap( char *file_name, int depth )
         bg_from.size = strlen(XtDefaultBackground);
         bg_from.addr = XtDefaultBackground;
         bg_to.addr = (XPointer)&bg;
-        if (!XtConvertAndStore
-             (UxTopLevel, XtRString, &bg_from, XtRPixel, &bg_to)
-            || !XtConvertAndStore
-                (UxTopLevel, XtRString, &fg_from, XtRPixel, &fg_to)
-            || (fg == bg)) {
+        if (!XtConvertAndStore(UxTopLevel, XtRString, &bg_from, XtRPixel,
+                               &bg_to) ||
+            !XtConvertAndStore(UxTopLevel, XtRString, &fg_from, XtRPixel,
+                               &fg_to) ||
+            (fg == bg)) {
                 fg = WhitePixelOfScreen(XtScreen(UxTopLevel));
                 bg = BlackPixelOfScreen(XtScreen(UxTopLevel));
-                }
+        }
         if (depth)
-                return (XmGetPixmapByDepth
-                        (XtScreen(UxTopLevel), file_name, fg, bg, depth));
+                return (XmGetPixmapByDepth(XtScreen(UxTopLevel), file_name, fg,
+                                           bg, depth));
 
         else
                 return (XmGetPixmap(XtScreen(UxTopLevel), file_name, fg, bg));
@@ -500,8 +470,7 @@ DESCRIPTION:    Call ConvertPixmap with depth 0 (Pixmap)
 
 CREATION:       Visual Edge Software            March 31, 1993
 -----------------------------------------------------------------------------*/
-Pixmap    UxConvertPixmap( char *file_name )
-{
+Pixmap UxConvertPixmap(char *file_name) {
         return (ConvertPixmap(file_name, 0));
 }
 
@@ -514,12 +483,11 @@ Pixmap    UxConvertPixmap( char *file_name )
  *                                 returned for the base.
  * RETURNS:     Pointer to a data area of (at least) the desired size.
  *------------------------------------------------------------------------*/
-void*   UxNewContext (size_t size, int isSubclass)
-{
-        static void* LastSubclassResult = 0;
-        static int   LastResultSize = 0;
+void *UxNewContext(size_t size, int isSubclass) {
+        static void *LastSubclassResult = 0;
+        static int LastResultSize = 0;
 
-        void * result;
+        void *result;
 
         if (LastSubclassResult) {
                 result = LastSubclassResult;
@@ -529,12 +497,12 @@ void*   UxNewContext (size_t size, int isSubclass)
 
         if (isSubclass) {
                 LastSubclassResult = result;
-                if (LastResultSize  < size) {
-                        LastResultSize   = size;
+                if (LastResultSize < size) {
+                        LastResultSize = size;
                 }
         } else {
                 LastSubclassResult = 0;
-                LastResultSize     = 0;
+                LastResultSize = 0;
         }
 
         return (result);

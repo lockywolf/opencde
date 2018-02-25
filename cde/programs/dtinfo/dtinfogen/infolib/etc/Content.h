@@ -29,18 +29,17 @@
 class Token;
 
 class Content : public BaseData {
-  
-friend class FirstOf;
-friend class OL_Data;
-friend class Concat;  
-  
-protected:
-  Content( const Token &t , ActionType mode);
-  void markup( const Token &t );
-  void data( const char *str, size_t sz );
+
+        friend class FirstOf;
+        friend class OL_Data;
+        friend class Concat;
+
+      protected:
+        Content(const Token &t, ActionType mode);
+        void markup(const Token &t);
+        void data(const char *str, size_t sz);
 };
 
-inline
-Content::Content( const Token &t, ActionType mode ):BaseData(t, mode) {}
+inline Content::Content(const Token &t, ActionType mode) : BaseData(t, mode) {}
 
 #endif

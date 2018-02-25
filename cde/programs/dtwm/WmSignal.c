@@ -20,16 +20,17 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* 
- * (c) Copyright 1989, 1990, 1991, 1992 OPEN SOFTWARE FOUNDATION, INC. 
- * ALL RIGHTS RESERVED 
-*/ 
-/* 
+/*
+ * (c) Copyright 1989, 1990, 1991, 1992 OPEN SOFTWARE FOUNDATION, INC.
+ * ALL RIGHTS RESERVED
+ */
+/*
  * Motif Release 1.2
-*/ 
+ */
 #ifdef REV_INFO
 #ifndef lint
-static char rcsid[] = "$XConsortium: WmSignal.c /main/6 1996/10/17 16:20:07 drk $"
+static char rcsid[] =
+    "$XConsortium: WmSignal.c /main/6 1996/10/17 16:20:07 drk $"
 #endif
 #endif
 /*
@@ -43,7 +44,6 @@ static char rcsid[] = "$XConsortium: WmSignal.c /main/6 1996/10/17 16:20:07 drk 
 #include <signal.h>
 #include <unistd.h>
 
-
 /*
  * include extern functions
  */
@@ -51,57 +51,52 @@ static char rcsid[] = "$XConsortium: WmSignal.c /main/6 1996/10/17 16:20:07 drk 
 #include "WmFeedback.h"
 #include "WmFunction.h"
 
-
 /*
  * Function Declarations:
  */
 
-#include "WmSignal.h" 
-
+#include "WmSignal.h"
 
 /*
  * Global Variables:
  */
 
-
 #ifdef WSM
-
-/*************************************<->*************************************
- *
- *  AbortWmSignalHandler ()
- *
- *
- *  Description:
- *  -----------
- *  This function is called on receipt of a fatal signal. We reset
- *  the keyboard focus to pointer root before aborting.
- *
- *************************************<->***********************************/
-static void
-AbortWmSignalHandler (int sig)
-{
-    struct sigaction sa;
 
-    /*
-     * Set input focus back to pointer root
-     */
-    XSetInputFocus(DISPLAY, PointerRoot, RevertToPointerRoot, CurrentTime);
-    XSync (DISPLAY, False);
-    XCloseDisplay (DISPLAY);
+    /*************************************<->*************************************
+     *
+     *  AbortWmSignalHandler ()
+     *
+     *
+     *  Description:
+     *  -----------
+     *  This function is called on receipt of a fatal signal. We reset
+     *  the keyboard focus to pointer root before aborting.
+     *
+     *************************************<->***********************************/
+    static void
+    AbortWmSignalHandler(int sig) {
+        struct sigaction sa;
 
-    /*
-     * Invoke the default handler
-     */
-    (void) sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    sa.sa_handler = SIG_DFL;
-    (void) sigaction (sig, &sa, (struct sigaction *) 0);
+        /*
+         * Set input focus back to pointer root
+         */
+        XSetInputFocus(DISPLAY, PointerRoot, RevertToPointerRoot, CurrentTime);
+        XSync(DISPLAY, False);
+        XCloseDisplay(DISPLAY);
 
-    kill (getpid(), sig);
+        /*
+         * Invoke the default handler
+         */
+        (void)sigemptyset(&sa.sa_mask);
+        sa.sa_flags = 0;
+        sa.sa_handler = SIG_DFL;
+        (void)sigaction(sig, &sa, (struct sigaction *)0);
+
+        kill(getpid(), sig);
 
 } /* END OF FUNCTION AbortSignalHandler */
 
-
 /*************************************<->*************************************
  *
  *  RestoreDefaultSignalHandlers ()
@@ -113,47 +108,42 @@ AbortWmSignalHandler (int sig)
  *
  *************************************<->***********************************/
 
-void
-RestoreDefaultSignalHandlers (void)
-{
-    struct sigaction sa;
-    struct sigaction osa;
+void RestoreDefaultSignalHandlers(void) {
+        struct sigaction sa;
+        struct sigaction osa;
 
-    /*
-     * Restore default action for signals we're interested in.
-     */
+        /*
+         * Restore default action for signals we're interested in.
+         */
 
-    (void) sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    sa.sa_handler = SIG_DFL;
+        (void)sigemptyset(&sa.sa_mask);
+        sa.sa_flags = 0;
+        sa.sa_handler = SIG_DFL;
 
-    if ((sigaction (SIGINT, (struct sigaction *) 0, &osa) != 0) ||
-	(osa.sa_handler != SIG_IGN))
-    {
-	(void) sigaction (SIGINT, &sa, (struct sigaction *) 0);
-    }
+        if ((sigaction(SIGINT, (struct sigaction *)0, &osa) != 0) ||
+            (osa.sa_handler != SIG_IGN)) {
+                (void)sigaction(SIGINT, &sa, (struct sigaction *)0);
+        }
 
-    if ((sigaction (SIGHUP, (struct sigaction *) 0, &osa) != 0) ||
-	(osa.sa_handler != SIG_IGN))
-    {
-	(void) sigaction (SIGHUP, &sa, (struct sigaction *) 0);
-    }
+        if ((sigaction(SIGHUP, (struct sigaction *)0, &osa) != 0) ||
+            (osa.sa_handler != SIG_IGN)) {
+                (void)sigaction(SIGHUP, &sa, (struct sigaction *)0);
+        }
 
-    (void) sigaction (SIGQUIT, &sa, (struct sigaction *) 0);
-    (void) sigaction (SIGTERM, &sa, (struct sigaction *) 0);
-    (void) sigaction (SIGPIPE, &sa, (struct sigaction *) 0);
-    (void) sigaction (SIGCHLD, &sa, (struct sigaction *) 0);
-    (void) sigaction (SIGILL, &sa, (struct sigaction *) 0);
-    (void) sigaction (SIGFPE, &sa, (struct sigaction *) 0);
-    (void) sigaction (SIGBUS, &sa, (struct sigaction *) 0);
-    (void) sigaction (SIGSEGV, &sa, (struct sigaction *) 0);
+        (void)sigaction(SIGQUIT, &sa, (struct sigaction *)0);
+        (void)sigaction(SIGTERM, &sa, (struct sigaction *)0);
+        (void)sigaction(SIGPIPE, &sa, (struct sigaction *)0);
+        (void)sigaction(SIGCHLD, &sa, (struct sigaction *)0);
+        (void)sigaction(SIGILL, &sa, (struct sigaction *)0);
+        (void)sigaction(SIGFPE, &sa, (struct sigaction *)0);
+        (void)sigaction(SIGBUS, &sa, (struct sigaction *)0);
+        (void)sigaction(SIGSEGV, &sa, (struct sigaction *)0);
 #ifdef SIGSYS
-    (void) sigaction (SIGSYS, &sa, (struct sigaction *) 0);
+        (void)sigaction(SIGSYS, &sa, (struct sigaction *)0);
 #endif
 }
 #endif /* WSM */
 
-
 /*************************************<->*************************************
  *
  *  SetupWmSignalHandlers ()
@@ -165,89 +155,82 @@ RestoreDefaultSignalHandlers (void)
  *
  *************************************<->***********************************/
 
-void SetupWmSignalHandlers (int dummy)
-{
+void SetupWmSignalHandlers(int dummy) {
 #ifndef WSM
-    void (*signalHandler) ();
+        void (*signalHandler)();
 #endif
 
 #ifdef WSM
-    struct sigaction 	sa;
-    struct sigaction 	osa;
+        struct sigaction sa;
+        struct sigaction osa;
 
-    /*
-     * Catch software signals that we ask the user about
-     * before quitting.
-     */
-    (void) sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    sa.sa_handler = QuitWmSignalHandler;
+        /*
+         * Catch software signals that we ask the user about
+         * before quitting.
+         */
+        (void)sigemptyset(&sa.sa_mask);
+        sa.sa_flags = 0;
+        sa.sa_handler = QuitWmSignalHandler;
 
-    if ((sigaction (SIGINT, (struct sigaction *) 0, &osa) != 0) ||
-	(osa.sa_handler != SIG_IGN))
-    {
-	(void) sigaction (SIGINT, &sa, (struct sigaction *) 0);
-    }
+        if ((sigaction(SIGINT, (struct sigaction *)0, &osa) != 0) ||
+            (osa.sa_handler != SIG_IGN)) {
+                (void)sigaction(SIGINT, &sa, (struct sigaction *)0);
+        }
 
-    if ((sigaction (SIGHUP, (struct sigaction *) 0, &osa) != 0) ||
-	(osa.sa_handler != SIG_IGN))
-    {
-	(void) sigaction (SIGHUP, &sa, (struct sigaction *) 0);
-    }
+        if ((sigaction(SIGHUP, (struct sigaction *)0, &osa) != 0) ||
+            (osa.sa_handler != SIG_IGN)) {
+                (void)sigaction(SIGHUP, &sa, (struct sigaction *)0);
+        }
 
-    (void) sigaction (SIGQUIT, &sa, (struct sigaction *) 0);
-    (void) sigaction (SIGTERM, &sa, (struct sigaction *) 0);
+        (void)sigaction(SIGQUIT, &sa, (struct sigaction *)0);
+        (void)sigaction(SIGTERM, &sa, (struct sigaction *)0);
 
-    /*
-     * Ignore child death
-     */
+        /*
+         * Ignore child death
+         */
 
 #ifdef SA_NOCLDWAIT
-    sa.sa_flags = SA_NOCLDWAIT;  /* Don't create zombies */
+        sa.sa_flags = SA_NOCLDWAIT; /* Don't create zombies */
 #else
-    sa.sa_flags = 0;
+        sa.sa_flags = 0;
 #endif
-    sa.sa_handler = SIG_IGN;
-    (void) sigaction (SIGCHLD, &sa, (struct sigaction *) 0);
-    sa.sa_flags = 0;
+        sa.sa_handler = SIG_IGN;
+        (void)sigaction(SIGCHLD, &sa, (struct sigaction *)0);
+        sa.sa_flags = 0;
 
-    /* 
-     * Catch other fatal signals so we can reset the 
-     * keyboard focus to pointer root before aborting
-     */
-    sa.sa_handler = AbortWmSignalHandler;
+        /*
+         * Catch other fatal signals so we can reset the
+         * keyboard focus to pointer root before aborting
+         */
+        sa.sa_handler = AbortWmSignalHandler;
 
-    (void) sigaction (SIGILL, &sa, (struct sigaction *) 0);
-    (void) sigaction (SIGFPE, &sa, (struct sigaction *) 0);
-    (void) sigaction (SIGBUS, &sa, (struct sigaction *) 0);
-    (void) sigaction (SIGSEGV, &sa, (struct sigaction *) 0);
+        (void)sigaction(SIGILL, &sa, (struct sigaction *)0);
+        (void)sigaction(SIGFPE, &sa, (struct sigaction *)0);
+        (void)sigaction(SIGBUS, &sa, (struct sigaction *)0);
+        (void)sigaction(SIGSEGV, &sa, (struct sigaction *)0);
 #ifdef SIGSYS
-    (void) sigaction (SIGSYS, &sa, (struct sigaction *) 0);
+        (void)sigaction(SIGSYS, &sa, (struct sigaction *)0);
 #endif
 
-#else /* not WSM - original mwm code*/
+#else  /* not WSM - original mwm code*/
 
-    signalHandler = (void (*)())signal (SIGINT, SIG_IGN);
-    if (signalHandler != (void (*)())SIG_IGN)
-    {
-	signal (SIGINT, QuitWmSignalHandler);
-    }
+        signalHandler = (void (*)())signal(SIGINT, SIG_IGN);
+        if (signalHandler != (void (*)())SIG_IGN) {
+                signal(SIGINT, QuitWmSignalHandler);
+        }
 
-    signalHandler = (void (*)())signal (SIGHUP, SIG_IGN);
-    if (signalHandler != (void (*)())SIG_IGN)
-    {
-	signal (SIGHUP, QuitWmSignalHandler);
-    }
+        signalHandler = (void (*)())signal(SIGHUP, SIG_IGN);
+        if (signalHandler != (void (*)())SIG_IGN) {
+                signal(SIGHUP, QuitWmSignalHandler);
+        }
 
-    signal (SIGQUIT, QuitWmSignalHandler);
+        signal(SIGQUIT, QuitWmSignalHandler);
 
-    signal (SIGTERM, QuitWmSignalHandler);
+        signal(SIGTERM, QuitWmSignalHandler);
 #endif /* WSM */
-
 
 } /* END OF FUNCTION SetupWmSignalHandlers */
 
-
 /*************************************<->*************************************
  *
  *  QuitWmSignalHandler ()
@@ -260,16 +243,12 @@ void SetupWmSignalHandlers (int dummy)
  *
  *************************************<->***********************************/
 
-void QuitWmSignalHandler (int dummy)
-{
-    if (wmGD.showFeedback & WM_SHOW_FB_KILL)
-    {
-	ConfirmAction (ACTIVE_PSD, QUIT_MWM_ACTION);
-	XFlush(DISPLAY);
-    }
-    else
-    {
-	Do_Quit_Mwm(False);
-    }
+void QuitWmSignalHandler(int dummy) {
+        if (wmGD.showFeedback & WM_SHOW_FB_KILL) {
+                ConfirmAction(ACTIVE_PSD, QUIT_MWM_ACTION);
+                XFlush(DISPLAY);
+        } else {
+                Do_Quit_Mwm(False);
+        }
 
 } /* END OF FUNCTION QuitWmSignalHandler */

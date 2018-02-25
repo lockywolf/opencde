@@ -44,23 +44,21 @@
 #include <stdlib.h>
 #include <X11/Intrinsic.h>
 #include <nl_types.h>
-#define DTB_PROJECT_CATALOG	"dtmailopts"
+#define DTB_PROJECT_CATALOG "dtmailopts"
 /* Handle for standard message catalog for the project */
-extern nl_catd	Dtb_project_catd;
+extern nl_catd Dtb_project_catd;
 
 /*
  * Structure to store values for Application Resources
  */
 typedef struct {
-    char	*session_file;
-    
-    /*** DTB_USER_CODE_START vvv Add structure fields below vvv ***/
-    /*** DTB_USER_CODE_END   ^^^ Add structure fields above ^^^ ***/
+        char *session_file;
+
+        /*** DTB_USER_CODE_START vvv Add structure fields below vvv ***/
+        /*** DTB_USER_CODE_END   ^^^ Add structure fields above ^^^ ***/
 } DtbAppResourceRec;
 
-
-extern DtbAppResourceRec	dtb_app_resource_rec;
-
+extern DtbAppResourceRec dtb_app_resource_rec;
 
 /**************************************************************************
  *** DTB_USER_CODE_START
@@ -73,6 +71,5 @@ extern DtbAppResourceRec	dtb_app_resource_rec;
  *** End of user code section
  ***
  **************************************************************************/
-
 
 #endif /* _DTMAILOPTS_H_ */

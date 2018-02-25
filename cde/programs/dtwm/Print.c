@@ -38,8 +38,8 @@
  *
  ****************************************************************************/
 
-#include <Dt/DtP.h>                /* required for DtDirPaths type */
-#include <Dt/DbReader.h>            /* required for DtDbPathId type */
+#include <Dt/DtP.h>      /* required for DtDirPaths type */
+#include <Dt/DbReader.h> /* required for DtDbPathId type */
 #include <Dt/WsmM.h>
 #include <Dt/IconFile.h>
 #include <Dt/Dt.h>
@@ -53,8 +53,6 @@ const char *szWM_TOOL_CLASS = DtWM_TOOL_CLASS;
 char *szWM_TOOL_CLASS = DtWM_TOOL_CLASS;
 #endif /* __STDC__ */
 
-
-
 String unpost_arrow_image;
 String unpost_monitor_arrow_image;
 
@@ -65,12 +63,7 @@ String unpost_monitor_arrow_image;
  *      is a stubbed procedure that ensures that the procedure is defined.
  *
  ************************************************************************/
-Boolean
-CheckOtherMonitorsOn(SubpanelData * subpanel_data)
-{
-   return False;
-}
-
+Boolean CheckOtherMonitorsOn(SubpanelData *subpanel_data) { return False; }
 
 /************************************************************************
  *
@@ -80,18 +73,11 @@ CheckOtherMonitorsOn(SubpanelData * subpanel_data)
  *
  ************************************************************************/
 
+void ToggleDefaultControl(ControlData *main_control_data,
+                          SubpanelData *subpanel_data,
+                          ControlData *control_data)
 
-void
-ToggleDefaultControl (ControlData  * main_control_data,
-                      SubpanelData * subpanel_data,
-                      ControlData  * control_data)
-
-
-{
-}
-
-
-
+{}
 
 /************************************************************************
  *
@@ -101,34 +87,27 @@ ToggleDefaultControl (ControlData  * main_control_data,
  *
  ************************************************************************/
 
-
-String
-GetIconName (String       image_name, 
-             unsigned int icon_size)
-
+String GetIconName(String image_name, unsigned int icon_size)
 
 {
-   String       return_name;
-   Screen     * screen = XtScreen (panel.shell);
+        String return_name;
+        Screen *screen = XtScreen(panel.shell);
 
-   /*  Get name.  */
+        /*  Get name.  */
 
-   return_name = _DtGetIconFileName (screen, image_name, NULL, NULL, icon_size);
+        return_name =
+            _DtGetIconFileName(screen, image_name, NULL, NULL, icon_size);
 
-   if (return_name == NULL)
-       return_name = _DtGetIconFileName (screen, image_name, NULL, NULL,
-		                         DtUNSPECIFIED);
-   if (return_name == NULL)
-       return_name = XtNewString (image_name);
+        if (return_name == NULL)
+                return_name = _DtGetIconFileName(screen, image_name, NULL, NULL,
+                                                 DtUNSPECIFIED);
+        if (return_name == NULL)
+                return_name = XtNewString(image_name);
 
+        /*  Return value to be freed by caller.  */
 
-   /*  Return value to be freed by caller.  */
-
-   return (return_name);
+        return (return_name);
 }
-
-
-
 
 /************************************************************************
  *
@@ -143,80 +122,85 @@ void
 PrintFrontPanelContents(void)
 
 {
-   BoxData * box_data;
-   SwitchData * switch_data;
-   ControlData * control_data, * switch_control_data;
-   SubpanelData * subpanel_data;
-   int switch_position = POSITION_FIRST;
-   int i,j, k;
+        BoxData *box_data;
+        SwitchData *switch_data;
+        ControlData *control_data, *switch_control_data;
+        SubpanelData *subpanel_data;
+        int switch_position = POSITION_FIRST;
+        int i, j, k;
 
+        /*  print out the component tree  */
 
-   /*  print out the component tree  */
-   
-   printf ("PANEL	%s\n", (char *) panel.element_values[0].parsed_value);
+        printf("PANEL	%s\n", (char *)panel.element_values[0].parsed_value);
 
-   for (i = 0; i < panel.box_data_count; i++)
-   {
-      box_data = panel.box_data[i];
+        for (i = 0; i < panel.box_data_count; i++) {
+                box_data = panel.box_data[i];
 
-      if (box_data->switch_data != NULL)
-      {
-         switch_data = box_data->switch_data;
-         switch_position = (int) (intptr_t) box_data->switch_data->element_values[SWITCH_POSITION_HINTS].parsed_value;
-      }
-      else
-         switch_data = NULL;
+                if (box_data->switch_data != NULL) {
+                        switch_data = box_data->switch_data;
+                        switch_position =
+                            (int)(intptr_t)box_data->switch_data
+                                ->element_values[SWITCH_POSITION_HINTS]
+                                .parsed_value;
+                } else
+                        switch_data = NULL;
 
+                printf("   BOX	%s\n",
+                       (char *)box_data->element_values[0].parsed_value);
 
-      printf ("   BOX	%s\n", 
-              (char *) box_data->element_values[0].parsed_value);
+                for (j = 0; j < box_data->control_data_count; j++) {
+                        control_data = box_data->control_data[j];
 
-      for (j = 0; j < box_data->control_data_count; j++)
-      {
-         control_data = box_data->control_data[j];
+                        if (switch_data != NULL &&
+                            switch_position <
+                                (int)(intptr_t)(
+                                    control_data
+                                        ->element_values[CONTROL_POSITION_HINTS]
+                                        .parsed_value)) {
+                                printf("      SWITCH	%s\n",
+                                       (char *)switch_data->element_values[0]
+                                           .parsed_value);
 
-         if (switch_data != NULL &&
-             switch_position < (int) (intptr_t) (control_data->element_values[CONTROL_POSITION_HINTS].parsed_value))
-         {
-            printf ("      SWITCH	%s\n",
-                 (char *) switch_data->element_values[0].parsed_value);
+                                switch_position = POSITION_LAST;
 
-            switch_position = POSITION_LAST;
+                                for (k = 0; k < switch_data->control_data_count;
+                                     k++) {
+                                        switch_control_data =
+                                            switch_data->control_data[k];
 
-            for (k = 0; k < switch_data->control_data_count; k++)
-            {
-		switch_control_data = switch_data->control_data[k];
+                                        printf("         CONTROL	%s\n",
+                                               (char *)switch_control_data
+                                                   ->element_values[0]
+                                                   .parsed_value);
+                                }
+                        }
 
-                printf ("         CONTROL	%s\n", (char *)
-			switch_control_data->element_values[0].parsed_value);
+                        printf("      CONTROL	%s\n",
+                               (char *)control_data->element_values[0]
+                                   .parsed_value);
 
-            }
-         }
+                        if (control_data->subpanel_data != NULL) {
+                                subpanel_data = control_data->subpanel_data;
 
-	 printf ("      CONTROL	%s\n",
-                 (char *) control_data->element_values[0].parsed_value);
+                                printf("         SUBPANEL	%s\n",
+                                       (char *)subpanel_data->element_values[0]
+                                           .parsed_value);
 
-         if (control_data->subpanel_data != NULL)
-	 {
-            subpanel_data = control_data->subpanel_data;
+                                for (k = 0;
+                                     k < subpanel_data->control_data_count;
+                                     k++) {
+                                        control_data =
+                                            subpanel_data->control_data[k];
 
-            printf("         SUBPANEL	%s\n", (char *)
-		    subpanel_data->element_values[0].parsed_value);
-      
-            for (k = 0; k < subpanel_data->control_data_count; k++)
-            {
-                control_data = subpanel_data->control_data[k];
-
-                printf ("               CONTROL	%s\n", (char *)
-			control_data->element_values[0].parsed_value);
-            }
-	 }
-      }
-   }
+                                        printf("               CONTROL	%s\n",
+                                               (char *)control_data
+                                                   ->element_values[0]
+                                                   .parsed_value);
+                                }
+                        }
+                }
+        }
 }
-
-
-
 
 /************************************************************************
  *
@@ -224,41 +208,33 @@ PrintFrontPanelContents(void)
  *
  ************************************************************************/
 
-int
-main (int argc,
-      char         **argv)
-
+int main(int argc, char **argv)
 
 {
-    XtAppContext    appContext;
-    Widget		widget;
+        XtAppContext appContext;
+        Widget widget;
 
-   /* This call is required to have values to pass to DtAppInitialize */
-    widget = XtAppInitialize( &appContext, "Dtfplist",
-                              NULL, 0, &argc, argv, NULL, NULL, 0);
+        /* This call is required to have values to pass to DtAppInitialize */
+        widget = XtAppInitialize(&appContext, "Dtfplist", NULL, 0, &argc, argv,
+                                 NULL, NULL, 0);
 
-   /* This is required initialization so that FrontPanelReadDatabases()
-    * procedure complete successfully.
-    */
-    DtAppInitialize( appContext, XtDisplay(widget), widget,
-		     argv[0], (char *)szWM_TOOL_CLASS);
+        /* This is required initialization so that FrontPanelReadDatabases()
+         * procedure complete successfully.
+         */
+        DtAppInitialize(appContext, XtDisplay(widget), widget, argv[0],
+                        (char *)szWM_TOOL_CLASS);
 
-    
-   /* Load the database for use in printing. If it is able to load print
-    * contents of front panel.
-    */
-    DtDbLoad();
+        /* Load the database for use in printing. If it is able to load print
+         * contents of front panel.
+         */
+        DtDbLoad();
 
-    panel.app_name = strdup(argv[0]);
-    if (FrontPanelReadDatabases ())
-    {
-      /* Print out the contents of the .fp database */
-       PrintFrontPanelContents ();
-    }
-    else
-    {
-      /* NEEDS TO BE LOCALIZED */
-       printf ("PANEL not found. Error in reading database.\n");
-    }
-
+        panel.app_name = strdup(argv[0]);
+        if (FrontPanelReadDatabases()) {
+                /* Print out the contents of the .fp database */
+                PrintFrontPanelContents();
+        } else {
+                /* NEEDS TO BE LOCALIZED */
+                printf("PANEL not found. Error in reading database.\n");
+        }
 }

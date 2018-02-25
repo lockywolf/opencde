@@ -35,24 +35,23 @@
 
 class Process {
 
-   int NumProcs;
-   pid_t last_pid;
-   char **pprocs;
-   char *procs;
-   char *last_proc;
-   char *GetByPid(pid_t);
-   uid_t uid;
-   pid_t pid;
-   pid_t ppid;
+        int NumProcs;
+        pid_t last_pid;
+        char **pprocs;
+        char *procs;
+        char *last_proc;
+        char *GetByPid(pid_t);
+        uid_t uid;
+        pid_t pid;
+        pid_t ppid;
 
- public:
+      public:
+        Process();
+        ~Process();
 
-   Process();
-   ~Process();
-
-   pid_t Parent(pid_t pid);
-   uid_t UID(pid_t pid);
-   char *Command(pid_t pid);
+        pid_t Parent(pid_t pid);
+        uid_t UID(pid_t pid);
+        char *Command(pid_t pid);
 };
 
 #endif // PROCESS_H

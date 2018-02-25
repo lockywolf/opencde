@@ -43,7 +43,7 @@ position, then the character is removed. */
 /* This says that spaces should be transformed to underscores, and
 slashes to percents. */
 #define MIN_DAT_SUBS_FROM " /"
-#define MIN_DAT_SUBS_TO   "_%"
+#define MIN_DAT_SUBS_TO "_%"
 
 /* Define this to allow tracing. */
 /* #define TRACE 1 */
@@ -61,7 +61,7 @@ X/Open extensions; if they do, then, for example,
 
 should print `foobar'.  */
 
-#define HAVE_EXTENDED_PRINTF 1 
+#define HAVE_EXTENDED_PRINTF 1
 
 /* Define HAVE_CAT if your system provides the X/Open message
 catalogue functions catopen() and catgets(), and you want to use them.
@@ -69,7 +69,7 @@ An implementations of these functions is included and will be used if
 you don't define this.  On SunOS 4.1.1, if you do define this you
 should set CC=/usr/xpg2bin/cc in the makefile. */
 
-#define HAVE_CAT 1 
+#define HAVE_CAT 1
 
 #ifdef __STDC__
 /* Define this if your compiler supports prototypes. */

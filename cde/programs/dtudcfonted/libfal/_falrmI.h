@@ -20,7 +20,7 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* XrmI.h 1.1 - Fujitsu source for CDEnext    95/11/06 20:32:12 	*/ 
+/* XrmI.h 1.1 - Fujitsu source for CDEnext    95/11/06 20:32:12 	*/
 /* $XConsortium: _falrmI.h /main/1 1996/04/08 15:22:08 cde-fuj $ */
 /*
 
@@ -52,28 +52,27 @@ from the X Consortium.
 
 */
 
-
 /*
  * Macros to abstract out reading the file, and getting its size.
  *
- * You may need to redefine these for various other operating systems. 
+ * You may need to redefine these for various other operating systems.
  */
 
-#include	<X11/Xos.h>
-#include        <sys/stat.h>                        
+#include <X11/Xos.h>
+#include <sys/stat.h>
 
 #ifdef WIN32
-#define OpenFile(name) 		open((name), O_RDONLY|O_TEXT)
+#define OpenFile(name) open((name), O_RDONLY | O_TEXT)
 #else
-#define OpenFile(name) 		open((name), O_RDONLY)
+#define OpenFile(name) open((name), O_RDONLY)
 #endif
-#define CloseFile(fd)           close((fd))
-#define ReadFile(fd,buf,size)	read((fd), (buf), (size))
-#define GetSizeOfFile(name,size)                    \
-{                                                   \
-    struct stat status_buffer;                      \
-    if ( (stat((name), &status_buffer)) == -1 )     \
-	size = -1;                                  \
-    else                                            \
-	size = status_buffer.st_size;               \
-}
+#define CloseFile(fd) close((fd))
+#define ReadFile(fd, buf, size) read((fd), (buf), (size))
+#define GetSizeOfFile(name, size)                                              \
+        {                                                                      \
+                struct stat status_buffer;                                     \
+                if ((stat((name), &status_buffer)) == -1)                      \
+                        size = -1;                                             \
+                else                                                           \
+                        size = status_buffer.st_size;                          \
+        }

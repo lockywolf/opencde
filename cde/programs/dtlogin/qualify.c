@@ -35,7 +35,7 @@
  * qualifyWithFirst
  *
  * takes:   an unqualified filename like foo.txt, and
- *          a colon-separated list of pathnames, such as 
+ *          a colon-separated list of pathnames, such as
  *                /etc/opt/dt:/opt/dt/config
  *
  * returns: a fully qualified filename.  Space for the filename
@@ -43,68 +43,63 @@
  *          of the calling function to dispose of the space.
  **********************************************************************/
 
-char * qualifyWithFirst
-  (
-  char * filename,
-  char * searchPath
-  )
-{
-char * paths = NULL;
-char * savepaths = NULL;
-char * path;
-char * chance;
-FILE * f;
+char *qualifyWithFirst(char *filename, char *searchPath) {
+        char *paths = NULL;
+        char *savepaths = NULL;
+        char *path;
+        char *chance;
+        FILE *f;
 
-  /* assert that the arguments cannot be NULL */
+        /* assert that the arguments cannot be NULL */
 
-  if (filename == NULL || searchPath == NULL)
-    return NULL;
+        if (filename == NULL || searchPath == NULL)
+                return NULL;
 
-  paths = strdup(searchPath);
-  savepaths = paths;
+        paths = strdup(searchPath);
+        savepaths = paths;
 
-  while (1) {
+        while (1) {
 
-    /* if there is a :, zero it */
+                /* if there is a :, zero it */
 
-    if ((path = strchr(paths, ':')) != NULL)
-      *path = 0;
+                if ((path = strchr(paths, ':')) != NULL)
+                        *path = 0;
 
-    /* allocate space and create the qualified filename */
+                /* allocate space and create the qualified filename */
 
-    chance = (char *)malloc(strlen(paths) + strlen(filename) + 2);
-    sprintf(chance,"%s/%s",paths,filename);
+                chance = (char *)malloc(strlen(paths) + strlen(filename) + 2);
+                sprintf(chance, "%s/%s", paths, filename);
 
-    /* see if it is there by opening it for reading */
+                /* see if it is there by opening it for reading */
 
-    if (f = fopen(chance,"r")) {
+                if (f = fopen(chance, "r")) {
 
-      /* it's there so close it, .... */
+                        /* it's there so close it, .... */
 
-      fclose(f);
+                        fclose(f);
 
-      /* ... restore the colon, .... */
+                        /* ... restore the colon, .... */
 
-      if (path)
-	*path = ':';
+                        if (path)
+                                *path = ':';
 
-      /* return the fully qualified filename */
+                        /* return the fully qualified filename */
 
-      free(savepaths);
-      return chance;
-    }
+                        free(savepaths);
+                        return chance;
+                }
 
-    free(chance);
+                free(chance);
 
-    /* reached the end of the list of paths */
+                /* reached the end of the list of paths */
 
-    if (path == NULL)
-      break;
+                if (path == NULL)
+                        break;
 
-    /* try the next path */
+                /* try the next path */
 
-    paths = path + 1;
-  }
-  free(savepaths);
-  return NULL;
+                paths = path + 1;
+        }
+        free(savepaths);
+        return NULL;
 }

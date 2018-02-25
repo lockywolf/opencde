@@ -27,7 +27,7 @@
  *	%W% %G%	cde_app_builder/src/abmf
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -40,7 +40,6 @@
  *
  */
 
-
 /*
  *  template.c - template c file.
  */
@@ -52,7 +51,7 @@
 **       Constants (#define and const)					**
 **                                                                      **
 **************************************************************************/
-#define	FOO_DEFINES	"here"
+#define FOO_DEFINES "here"
 
 const char *foo_consts = "also here";
 
@@ -63,11 +62,7 @@ const char *foo_consts = "also here";
 **************************************************************************/
 #define foo_macro(x) ((x) + 1)
 
-static int	foo_me(
-		    int	  foo_int,
-		    char *foo_char
-		);
-
+static int foo_me(int foo_int, char *foo_char);
 
 /*************************************************************************
 **                                                                      **
@@ -76,14 +71,13 @@ static int	foo_me(
 **************************************************************************/
 /* static int	foo_private= 0; */
 
-
 /*************************************************************************
 **                                                                      **
 **       Function Definitions                                           **
 **                                                                      **
 **************************************************************************/
 
-/* int 
+/* int
 foo_func(
     char	*foo_char
 )
@@ -99,4 +93,3 @@ foo_me(
 {
 
 } */
-

@@ -34,35 +34,32 @@
 #include "common.h"
 #include "trie.h"
 
-extern M_CHARTYPE m_ctarray[M_CHARSETLEN] ;
+extern M_CHARTYPE m_ctarray[M_CHARSETLEN];
 
 int m_packedlook(
 #if defined(M_PROTO)
-  M_PTRIE *xptrie,
-  M_WCHAR *name
+    M_PTRIE *xptrie, M_WCHAR *name
 #endif
-  ) ;
+);
 
 /* Look for the string NAME in the packed trie PTRIE */
-int m_packedlook(xptrie, name)
-M_PTRIE *xptrie ;
-M_WCHAR *name ;
+int m_packedlook(xptrie, name) M_PTRIE *xptrie;
+M_WCHAR *name;
 {
-int current = 0 ;
-int i ;
-int c ;
+        int current = 0;
+        int i;
+        int c;
 
-for ( ; TRUE ; name++)
-    {
-    c = m_ctupper(*name) ;
-    for (i = current ;
-	 (int) ((xptrie + i)->symbol) < c && (xptrie + i)->more ;
-	 i++) ;
-    if ((int) ((xptrie + i)->symbol) == c)
-	{
-	if (! c) return((xptrie + i)->index) ;
-	current = (xptrie + i)->index ;
-	}
-    else return(FALSE) ;
-    }
+        for (; TRUE; name++) {
+                c = m_ctupper(*name);
+                for (i = current;
+                     (int)((xptrie + i)->symbol) < c && (xptrie + i)->more; i++)
+                        ;
+                if ((int)((xptrie + i)->symbol) == c) {
+                        if (!c)
+                                return ((xptrie + i)->index);
+                        current = (xptrie + i)->index;
+                } else
+                        return (FALSE);
+        }
 }

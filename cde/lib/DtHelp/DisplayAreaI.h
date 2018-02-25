@@ -38,16 +38,16 @@
  **  (c) Copyright 1993, 1994 Novell, Inc.
  ****************************************************************************
  ************************************<+>*************************************/
-#ifndef	_DtHelpDisplayAreaI_h
-#define	_DtHelpDisplayAreaI_h
+#ifndef _DtHelpDisplayAreaI_h
+#define _DtHelpDisplayAreaI_h
 
-typedef	struct {
-	int	 reason;
-	XEvent	*event;
-	Window	 window;
-	char	*specification;
-	int	 hyper_type;
-	int	 window_hint;
+typedef struct {
+        int reason;
+        XEvent *event;
+        Window window;
+        char *specification;
+        int hyper_type;
+        int window_hint;
 } DtHelpHyperTextStruct;
 
 #endif /* _DtHelpDisplayAreaI_h */

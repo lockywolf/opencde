@@ -29,8 +29,4 @@ Copyright 1988, 1989 Hewlett-Packard Co.
 #include "globdec.h"
 
 /* Write error message prefix */
-void m_eprefix(M_NOPAR)
-  {
-    m_errline("\n*****\n") ;
-    }
-
+void m_eprefix(M_NOPAR) { m_errline("\n*****\n"); }

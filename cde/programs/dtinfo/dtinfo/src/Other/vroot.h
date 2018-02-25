@@ -55,7 +55,7 @@
  * window managers.
  * The function implementing the virtual root lookup remembers the result of
  * its last invocation to avoid overhead in the case of repeated calls
- * on the same display and screen arguments. 
+ * on the same display and screen arguments.
  * The lookup code itself is taken from Tom LaStrange's ssetroot program.
  *
  * Most simple root window changing X programs can be converted to using
@@ -80,7 +80,8 @@
 #define _VROOT_H_
 
 #if !defined(lint) && !defined(SABER)
-static const char vroot_rcsid[] = "$XConsortium: vroot.h /main/3 1996/06/11 16:30:45 cde-hal $";
+static const char vroot_rcsid[] =
+    "$XConsortium: vroot.h /main/3 1996/06/11 16:30:45 cde-hal $";
 #endif
 
 #include <X11/X.h>
@@ -142,26 +143,29 @@ VirtualRootWindowOfScreen(Screen *screen)
 }
 #endif
 
-
 /* Need original macros to figure out if there is a virtual root. */
-  
+
 #if 0
 #undef RootWindowOfScreen
 #define RootWindowOfScreen(s) VirtualRootWindowOfScreen(s)
 
 #undef RootWindow
-#define RootWindow(dpy,screen) VirtualRootWindowOfScreen(ScreenOfDisplay(dpy,screen))
+#define RootWindow(dpy, screen)                                                \
+        VirtualRootWindowOfScreen(ScreenOfDisplay(dpy, screen))
 
 #undef DefaultRootWindow
-#define DefaultRootWindow(dpy) VirtualRootWindowOfScreen(DefaultScreenOfDisplay(dpy))
+#define DefaultRootWindow(dpy)                                                 \
+        VirtualRootWindowOfScreen(DefaultScreenOfDisplay(dpy))
 
 #else
 
 #define VRootWindowOfScreen(s) VirtualRootWindowOfScreen(s)
 
-#define VRootWindow(dpy,screen) VirtualRootWindowOfScreen(ScreenOfDisplay(dpy,screen))
+#define VRootWindow(dpy, screen)                                               \
+        VirtualRootWindowOfScreen(ScreenOfDisplay(dpy, screen))
 
-#define VDefaultRootWindow(dpy) VirtualRootWindowOfScreen(DefaultScreenOfDisplay(dpy))
+#define VDefaultRootWindow(dpy)                                                \
+        VirtualRootWindowOfScreen(DefaultScreenOfDisplay(dpy))
 #endif
 
 #endif /* _VROOT_H_ */

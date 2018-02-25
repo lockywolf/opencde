@@ -45,75 +45,73 @@
 #include "vista.h"
 #include "dbtype.h"
 
-
 /* Find first record of type
-*/
-int
-d_recfrst( rec TASK_PARM DBN_PARM )
-int rec;	/* record type/table entry */
+ */
+int d_recfrst(rec TASK_PARM DBN_PARM) int rec; /* record type/table entry */
 TASK_DECL
-DBN_DECL
-{
-   INT rectype;
-   FILE_NO ftype;
-   DB_ADDR dba;
-   char FAR *recptr;
+DBN_DECL {
+        INT rectype;
+        FILE_NO ftype;
+        DB_ADDR dba;
+        char FAR *recptr;
 #ifndef SINGLE_USER
-   int dbopen_sv;
+        int dbopen_sv;
 #endif
-   F_ADDR rno, last;
-   RECORD_ENTRY FAR *rec_ptr;
+        F_ADDR rno, last;
+        RECORD_ENTRY FAR *rec_ptr;
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_IO));
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_IO));
 
-   if (nrec_check(rec, &rec, (RECORD_ENTRY FAR * FAR *)&rec_ptr) != S_OKAY)
-      RETURN( db_status );
-#ifndef	 ONE_DB
-   rec -= curr_db_table->rt_offset;
+        if (nrec_check(rec, &rec, (RECORD_ENTRY FAR * FAR *)&rec_ptr) != S_OKAY)
+                RETURN(db_status);
+#ifndef ONE_DB
+        rec -= curr_db_table->rt_offset;
 #endif
 
-   /* get the normalized number of file containing this record type */
-   ftype = NUM2EXT(rec_ptr->rt_file, ft_offset);
+        /* get the normalized number of file containing this record type */
+        ftype = NUM2EXT(rec_ptr->rt_file, ft_offset);
 
-   if ( (last = dio_pznext(rec_ptr->rt_file)) <= 0 )
-      RETURN( db_status );
+        if ((last = dio_pznext(rec_ptr->rt_file)) <= 0)
+                RETURN(db_status);
 
-   rno = 1;
-   do {
-      /* make sure we haven't gone past the end of the file */
-      if ( rno >= last ) RETURN( db_status = S_NOTFOUND );
+        rno = 1;
+        do {
+                /* make sure we haven't gone past the end of the file */
+                if (rno >= last)
+                        RETURN(db_status = S_NOTFOUND);
 
-      /* create the database address to read */
-      dba = ( (FILEMASK & ftype) << FILESHIFT ) | (ADDRMASK & rno);
+                /* create the database address to read */
+                dba = ((FILEMASK & ftype) << FILESHIFT) | (ADDRMASK & rno);
 
-      /* set up to allow unlocked read */
+                /* set up to allow unlocked read */
 #ifndef SINGLE_USER
-      dbopen_sv = dbopen;
-      dbopen = 2;
+                dbopen_sv = dbopen;
+                dbopen = 2;
 #endif
 
-      /* read the record */
-      dio_read( dba, (char FAR * FAR *)&recptr, NOPGHOLD );
+                /* read the record */
+                dio_read(dba, (char FAR *FAR *)&recptr, NOPGHOLD);
 #ifndef SINGLE_USER
-      dbopen = dbopen_sv;
+                dbopen = dbopen_sv;
 #endif
-      if ( db_status != S_OKAY )
-	 RETURN( db_status );
+                if (db_status != S_OKAY)
+                        RETURN(db_status);
 
-      /* get the record type out of the record */
-      bytecpy( &rectype, recptr, sizeof(INT) );
+                /* get the record type out of the record */
+                bytecpy(&rectype, recptr, sizeof(INT));
 #ifndef SINGLE_USER
-      rectype &= ~RLBMASK;
+                rectype &= ~RLBMASK;
 #endif
 
-      ++rno;
-   } while ( (int)rectype != rec );
+                ++rno;
+        } while ((int)rectype != rec);
 
-   /* set the current record and type */
-   curr_rec = dba;
-   RN_REF(rn_type) = rectype;
-   RN_REF(rn_dba) = dba;
+        /* set the current record and type */
+        curr_rec = dba;
+        RN_REF(rn_type) = rectype;
+        RN_REF(rn_dba) = dba;
 
-   RETURN( db_status = S_OKAY );
+        RETURN(db_status = S_OKAY);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin recfrst.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin recfrst.c */

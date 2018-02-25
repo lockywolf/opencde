@@ -54,26 +54,25 @@
 #define QUOTED_STRING 287
 #define GI_CASE_SENSITIVE 288
 #define SGMLGI_STRING 289
-typedef union
-{
- unsigned char  charData;
- unsigned char* charPtrData;
- unsigned int	boolData;
- int   		intData;
- float		realData;
- Expression*    expPtrData;
- TermNode*      termNodePtrData;
- FeatureValue*	FeatureValuePtrData;
- FeatureSet*	FeatureSetPtrData;
- Feature*	FeaturePtrData;
- SSPath*	PathPtrData;
- PathTerm*	PathTermPtrData;
- charPtrDlist* 	charPtrDlistData;
- PathFeatureList* PathFeatureListPtrData;
- CompositeVariableNode*      CompositeVariableNodePtrData;
+typedef union {
+        unsigned char charData;
+        unsigned char *charPtrData;
+        unsigned int boolData;
+        int intData;
+        float realData;
+        Expression *expPtrData;
+        TermNode *termNodePtrData;
+        FeatureValue *FeatureValuePtrData;
+        FeatureSet *FeatureSetPtrData;
+        Feature *FeaturePtrData;
+        SSPath *PathPtrData;
+        PathTerm *PathTermPtrData;
+        charPtrDlist *charPtrDlistData;
+        PathFeatureList *PathFeatureListPtrData;
+        CompositeVariableNode *CompositeVariableNodePtrData;
 
- CC_TPtrSlist<FeatureValue>* FeatureValueSlistPtrData;
+        CC_TPtrSlist<FeatureValue> *FeatureValueSlistPtrData;
 
- PQExpr*	PQExprPtrData;
+        PQExpr *PQExprPtrData;
 } YYSTYPE;
 extern YYSTYPE stylelval;

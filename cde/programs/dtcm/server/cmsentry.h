@@ -38,17 +38,14 @@
 #include "csa.h"
 #include "cmscalendar.h"
 
-extern CSA_return_code _DtCmsMakeHashedEntry P((
-			_DtCmsCalendar	*cal,
-			uint		num,
-			cms_attribute	*attrs,
-			cms_entry	**entry));
+extern CSA_return_code _DtCmsMakeHashedEntry P((_DtCmsCalendar * cal, uint num,
+                                                cms_attribute *attrs,
+                                                cms_entry **entry));
 
-extern void _DtCmsFreeEntryAttrResItem P((cms_get_entry_attr_res_item *elist));
+extern void _DtCmsFreeEntryAttrResItem P((cms_get_entry_attr_res_item * elist));
 
-extern CSA_return_code _DtCmsGetCmsEntryForClient P((
-			cms_entry	*e,
-			cms_entry	**e_r,
-			boolean_t	time_only));
+extern CSA_return_code _DtCmsGetCmsEntryForClient P((cms_entry * e,
+                                                     cms_entry **e_r,
+                                                     boolean_t time_only));
 
 #endif

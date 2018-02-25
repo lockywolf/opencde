@@ -41,12 +41,13 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API MessageTable {
-public:
-  static const MessageTable *instance();
-  virtual Boolean getText(const MessageFragment &,
-			  String<SP_TCHAR> &) const = 0;
-private:
-  static MessageTable *instance_;
+      public:
+        static const MessageTable *instance();
+        virtual Boolean getText(const MessageFragment &,
+                                String<SP_TCHAR> &) const = 0;
+
+      private:
+        static MessageTable *instance_;
 };
 
 #ifdef SP_NAMESPACE

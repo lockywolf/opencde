@@ -29,8 +29,8 @@
 #define Attr 262
 #define FirstOf 263
 typedef union {
-  int           name;
-  char          *string;
-  OL_Expression *eptr;
+        int name;
+        char *string;
+        OL_Expression *eptr;
 } YYSTYPE;
 extern YYSTYPE ol_datalval;

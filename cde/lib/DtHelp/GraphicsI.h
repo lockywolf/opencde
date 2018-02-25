@@ -46,26 +46,12 @@
 /*
  * Semi-Public Routines
  */
-extern	Pixmap	 _DtHelpProcessGraphic(
-			Display         *dpy,
-			Drawable         drawable,
-			int		 screen,
-			int		 depth,
-			GC               gc,
-			Pixmap          *def_pix,
-			Dimension       *def_pix_width,
-			Dimension       *def_pix_height,
-			_DtGrContext    *context,
-			Colormap	 colormap,
-			Visual		*visual,
-			Pixel		 fore_ground,
-			Pixel		 back_ground,
-			char            *filename,
-			unsigned short media_resolution,
-			Dimension       *pixmapWidth,
-			Dimension       *pixmapHeight,
-			Pixmap		*ret_mask,
-			Pixel          **ret_colors,
-			int             *ret_number );
+extern Pixmap _DtHelpProcessGraphic(
+    Display *dpy, Drawable drawable, int screen, int depth, GC gc,
+    Pixmap *def_pix, Dimension *def_pix_width, Dimension *def_pix_height,
+    _DtGrContext *context, Colormap colormap, Visual *visual, Pixel fore_ground,
+    Pixel back_ground, char *filename, unsigned short media_resolution,
+    Dimension *pixmapWidth, Dimension *pixmapHeight, Pixmap *ret_mask,
+    Pixel **ret_colors, int *ret_number);
 
 #endif /* _DtGraphisI.h */

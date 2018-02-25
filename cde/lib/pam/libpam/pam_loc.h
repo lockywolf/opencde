@@ -30,9 +30,9 @@
  */
 
 #ifndef _PAM_LOC_H
-#define	_PAM_LOC_H
+#define _PAM_LOC_H
 
-#pragma ident	"@(#)pam_loc.h	1.4	96/02/02 SMI"	/* PAM 2.6 */
+#pragma ident "@(#)pam_loc.h	1.4	96/02/02 SMI" /* PAM 2.6 */
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,11 +42,11 @@ extern "C" {
  * PAM_MSG macro for return of internationalized text
  */
 
-#define	PAM_MSG(pamh, number, string)\
-	(char *) __pam_get_i18n_msg(pamh, "libpam", 2, number, string)
+#define PAM_MSG(pamh, number, string)                                          \
+        (char *)__pam_get_i18n_msg(pamh, "libpam", 2, number, string)
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif	/* _PAM_LOC_H */
+#endif /* _PAM_LOC_H */

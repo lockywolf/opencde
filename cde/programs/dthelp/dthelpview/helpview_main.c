@@ -21,9 +21,6 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $XConsortium: helpview_main.c /main/3 1995/11/08 09:23:17 rswiston $ */
-helpview(argc,argv)
-int argc;
+helpview(argc, argv) int argc;
 char *argv[];
-{
-	main(argc,argv);
-}
+{ main(argc, argv); }

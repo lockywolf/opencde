@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         CmdUtility.c $XConsortium: CmdUtility.c /main/4 1995/10/26 15:18:41 rswiston $
- * Language:     C
+ * File:         CmdUtility.c $XConsortium: CmdUtility.c /main/4 1995/10/26
+ * 15:18:41 rswiston $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -51,60 +51,45 @@
 #include <Dt/Utility.h>
 #include <Dt/DtNlUtils.h>
 
-
-#define _SINGLE  "\'"
-#define _DOUBLE  "\""
-
+#define _SINGLE "\'"
+#define _DOUBLE "\""
 
 /********    Static Function Declarations    ********/
 
-static void SkipWhiteSpace( 
-                        String string,
-                        int *position) ;
-static void FillWord( 
-                        char *string,
-                        char *word,
-                        int *position) ;
-static void GetWordWithQuotes( 
-                        String string,
-                        String word,
-                        int *position) ;
+static void SkipWhiteSpace(String string, int *position);
+static void FillWord(char *string, char *word, int *position);
+static void GetWordWithQuotes(String string, String word, int *position);
 
 /********    End Static Function Declarations    ********/
 
-
 /*****************************************************************************
  *
- * SkipWhiteSpace - takes a string and in index ("position") into the 
- *   string and advances "position" until a non-whitespace character is 
+ * SkipWhiteSpace - takes a string and in index ("position") into the
+ *   string and advances "position" until a non-whitespace character is
  *   encountered.
  *
- *   A "whitespace" character is defined by "isspace". 
+ *   A "whitespace" character is defined by "isspace".
  *
  * PARAMETERS:
  *
  *   String string;	- The string to search.
  *
- *   int *position;	- MODIFIED: Set to the location of the first 
+ *   int *position;	- MODIFIED: Set to the location of the first
  *			  non-whitespace character.
  *
  *****************************************************************************/
 
-static void 
-SkipWhiteSpace(
-        String string,
-        int *position )
-{
-   string += (*position);
+static void SkipWhiteSpace(String string, int *position) {
+        string += (*position);
 
-   while (
+        while (
 #ifdef NLS16
-      (!is_multibyte || (mblen (string, MB_CUR_MAX) == 1)) &&
+            (!is_multibyte || (mblen(string, MB_CUR_MAX) == 1)) &&
 #endif
-	 isspace ((u_char)*string)) {
-	    string++;
-	    (*position)++;
-	 }
+            isspace((u_char)*string)) {
+                string++;
+                (*position)++;
+        }
 }
 
 /*****************************************************************************
@@ -119,10 +104,10 @@ SkipWhiteSpace(
  * The algorithm - until the end of the word is found:
  *
  *  For each character "c":
- *     If c = \, remove the \ and pass on the next char. 
+ *     If c = \, remove the \ and pass on the next char.
  *
- *     If c = ' or ", must save this in "qchar" and loop until the 
- *     ending quote is found: 
+ *     If c = ' or ", must save this in "qchar" and loop until the
+ *     ending quote is found:
  *        c = the next char
  *        If c = qchar, found the ending quote, exit this loop
  *        If c = \
@@ -145,153 +130,281 @@ SkipWhiteSpace(
  *
  *   char *word;	- MODIFIED: Points to the beginning of the word.
  *
- *   int *position	- MODIFIED: Starts at the beginning of the string 
+ *   int *position	- MODIFIED: Starts at the beginning of the string
  *			  and gets advanced past "word".
  *
  *****************************************************************************/
 
-static void 
-FillWord(
-        char *string,
-        char *word,
-        int *position )
-{
-   char *qchar;
-   int len, i;
-   Boolean found = False;
-   Boolean done  = False;
-   int j = 0;
-   char *pbeg = string;
+static void FillWord(char *string, char *word, int *position) {
+        char *qchar;
+        int len, i;
+        Boolean found = False;
+        Boolean done = False;
+        int j = 0;
+        char *pbeg = string;
 
-   while ((*string != '\0') && (!found)) {
-      /* 
-       * Check for multibyte chars. The assumption here is that if
-       * is_multibyte is true and "string" points to a multi-byte char,
-       * then that entire char should be copied to "word".
-       */
+        while ((*string != '\0') && (!found)) {
+        /*
+         * Check for multibyte chars. The assumption here is that if
+         * is_multibyte is true and "string" points to a multi-byte char,
+         * then that entire char should be copied to "word".
+         */
 #ifdef NLS16
-      if (is_multibyte && ((len = mblen (string, MB_CUR_MAX)) > 1))
-	 for (i=0; i < len; i++, j++, string++)
-	    word[j] = *string;
-      else 
+                if (is_multibyte && ((len = mblen(string, MB_CUR_MAX)) > 1))
+                        for (i = 0; i < len; i++, j++, string++)
+                                word[j] = *string;
+                else
 #endif
-       {
-	 switch (*string) {
-	    case '\\':
-	       /* Remove the slash and add the following character. */
-	       string++;
+                {
+                        switch (*string) {
+                        case '\\':
+                                /* Remove the slash and add the following
+                                 * character. */
+                                string++;
 #ifdef NLS16
-	       if (is_multibyte && ((len = mblen (string, MB_CUR_MAX)) > 1))
-		  for (i=0; i < len; i++, j++, string++)
-		     word[j] = *string;
-	       else 
+                                if (is_multibyte &&
+                                    ((len = mblen(string, MB_CUR_MAX)) > 1))
+                                        for (i = 0; i < len; i++, j++, string++)
+                                                word[j] = *string;
+                                else
 #endif
-		  word[j++] = *(string)++;
-	       break;
-	    case '\'':
-	    case '\"':
-	       qchar = _DOUBLE;
-	       if (*string == '\'') qchar = _SINGLE;
-	       string++;
-	       /* Search for the ending quote. */ 
-	       done = False;
-	       while ((!done) && (*string != '\0')) {
+                                        word[j++] = *(string)++;
+                                break;
+                        case '\'':
+                        case '\"':
+                                qchar = _DOUBLE;
+                                if (*string == '\'')
+                                        qchar = _SINGLE;
+                                string++;
+                                /* Search for the ending quote. */
+                                done = False;
+                                while ((!done) && (*string != '\0')) {
 #ifdef NLS16
-		  if (is_multibyte && ((len = mblen (string, MB_CUR_MAX)) > 1))
-		     for (i=0; i < len; i++, j++, string++)
-			word[j] = *string;
-		  else 
+                                        if (is_multibyte &&
+                                            ((len = mblen(string, MB_CUR_MAX)) >
+                                             1))
+                                                for (i = 0; i < len;
+                                                     i++, j++, string++)
+                                                        word[j] = *string;
+                                        else
 #endif
-                  {
-		     if (*string == *qchar) {
-			done = True;
-			string++;
-			break;
-		     }
-		     if (*string == '\\') {
-			/* Must follow the rules of the single or double
-			 * quote - which ever "qchar" points to.
-			 */
-			if (!strcmp (qchar, _DOUBLE)) {
-			   if ((DtStrcspn (string+1, "\"\\$`")) == 0) {
-			      /* Skip past the '\', but fill in the 
-			       * following character. 
-			       */
-			      string++;
-			   }
-			   else
-			      /* Want to pass on both the '\' and the 
-			       * following char. 
-			       */
-			      word[j++] = *(string)++;
-			   /* The '\' is skipped.  Fill in the next char. */
+                                        {
+                                                if (*string == *qchar) {
+                                                        done = True;
+                                                        string++;
+                                                        break;
+                                                }
+                                                if (*string == '\\') {
+                                                        /* Must follow the rules
+                                                         * of the single or
+                                                         * double quote - which
+                                                         * ever "qchar" points
+                                                         * to.
+                                                         */
+                                                        if (!strcmp(qchar,
+                                                                    _DOUBLE)) {
+                                                                if ((DtStrcspn(
+                                                                        string +
+                                                                            1,
+                                                                        "\"\\$"
+                                                                        "`")) ==
+                                                                    0) {
+                                                                        /* Skip
+                                                                         * past
+                                                                         * the
+                                                                         * '\',
+                                                                         * but
+                                                                         * fill
+                                                                         * in
+                                                                         * the
+                                                                         * following
+                                                                         * character.
+                                                                         */
+                                                                        string++;
+                                                                } else
+                                                                        /* Want
+                                                                         * to
+                                                                         * pass
+                                                                         * on
+                                                                         * both
+                                                                         * the
+                                                                         * '\'
+                                                                         * and
+                                                                         * the
+                                                                         * following
+                                                                         * char.
+                                                                         */
+                                                                        word[j++] =
+                                                                            *(string)++;
+                                                                        /* The
+                                                                         * '\'
+                                                                         * is
+                                                                         * skipped.
+                                                                         * Fill
+                                                                         * in
+                                                                         * the
+                                                                         * next
+                                                                         * char.
+                                                                         */
 #ifdef NLS16
-			   if (is_multibyte && ((len = mblen (string, MB_CUR_MAX)) > 1))
-			      for (i=0; i < len; i++, j++, string++)
-				 word[j] = *string;
-			   else
+                                                                if (is_multibyte &&
+                                                                    ((len = mblen(
+                                                                          string,
+                                                                          MB_CUR_MAX)) >
+                                                                     1))
+                                                                        for (
+                                                                            i = 0;
+                                                                            i <
+                                                                            len;
+                                                                            i++,
+                                                                           j++,
+                                                                           string++)
+                                                                                word[j] =
+                                                                                    *string;
+                                                                else
 #endif
-			      word[j++] = *(string)++;
-			   /* The \ and following char are now skipped. */
-			}
-			else if (!strcmp (qchar, _SINGLE)) {
-			   /* Must be working on a _SINGLE quoted word. */
-			   if ((DtStrcspn (string+1, "\'")) == 0) {
-			      /* 
-			       * Have \', which passes on the \, skips 
-			       * the single quote and ends the word. An 
-			       * assumption here is that the char following 
-			       * the '\' was a single byte single quote 
-			       * and there is no need for checking multi-byte. 
-			       */
-			      word[j++] = *(string)++;
-			      /* Now skip the quote. */
-			      string++;
-			      done = True;
-			      break;
-			   }
-			   else {
-			      /* 
-			       * Need to pass on both chars.  Pass on the 
-			       * first char here.  
-			       */
-			      word[j++] = *(string)++;
+                                                                        word[j++] =
+                                                                            *(string)++;
+                                                                /* The \ and
+                                                                 * following
+                                                                 * char are now
+                                                                 * skipped. */
+                                                        } else if (
+                                                            !strcmp(qchar,
+                                                                    _SINGLE)) {
+                                                                /* Must be
+                                                                 * working on a
+                                                                 * _SINGLE
+                                                                 * quoted word.
+                                                                 */
+                                                                if ((DtStrcspn(
+                                                                        string +
+                                                                            1,
+                                                                        "\'")) ==
+                                                                    0) {
+                                                                        /*
+                                                                         * Have
+                                                                         * \',
+                                                                         * which
+                                                                         * passes
+                                                                         * on
+                                                                         * the
+                                                                         * \,
+                                                                         * skips
+                                                                         * the
+                                                                         * single
+                                                                         * quote
+                                                                         * and
+                                                                         * ends
+                                                                         * the
+                                                                         * word.
+                                                                         * An
+                                                                         * assumption
+                                                                         * here
+                                                                         * is
+                                                                         * that
+                                                                         * the
+                                                                         * char
+                                                                         * following
+                                                                         * the
+                                                                         * '\'
+                                                                         * was a
+                                                                         * single
+                                                                         * byte
+                                                                         * single
+                                                                         * quote
+                                                                         * and
+                                                                         * there
+                                                                         * is no
+                                                                         * need
+                                                                         * for
+                                                                         * checking
+                                                                         * multi-byte.
+                                                                         */
+                                                                        word[j++] =
+                                                                            *(string)++;
+                                                                        /* Now
+                                                                         * skip
+                                                                         * the
+                                                                         * quote.
+                                                                         */
+                                                                        string++;
+                                                                        done =
+                                                                            True;
+                                                                        break;
+                                                                } else {
+                                                                        /*
+                                                                         * Need
+                                                                         * to
+                                                                         * pass
+                                                                         * on
+                                                                         * both
+                                                                         * chars.
+                                                                         * Pass
+                                                                         * on
+                                                                         * the
+                                                                         * first
+                                                                         * char
+                                                                         * here.
+                                                                         */
+                                                                        word[j++] =
+                                                                            *(string)++;
 
-			      /* 
-			       * The '\' is skipped if present.  Fill in the
-			       * next char.
-			       */
+                                                                        /*
+                                                                         * The
+                                                                         * '\'
+                                                                         * is
+                                                                         * skipped
+                                                                         * if
+                                                                         * present.
+                                                                         * Fill
+                                                                         * in
+                                                                         * the
+                                                                         * next
+                                                                         * char.
+                                                                         */
 #ifdef NLS16
-			      if (is_multibyte && ((len = mblen (string, MB_CUR_MAX)) > 1))
-				 for (i=0; i < len; i++, j++, string++)
-				    word[j] = *string;
-			      else
+                                                                        if (is_multibyte &&
+                                                                            ((len = mblen(
+                                                                                  string,
+                                                                                  MB_CUR_MAX)) >
+                                                                             1))
+                                                                                for (
+                                                                                    i = 0;
+                                                                                    i <
+                                                                                    len;
+                                                                                    i++,
+                                                                                   j++,
+                                                                                   string++)
+                                                                                        word[j] =
+                                                                                            *string;
+                                                                        else
 #endif
-				 /* Pass on what ever char is there. */
-				 word[j++] = *(string)++;
-			   }
-			}
-		     }
-		     else
-			/* This char was not escaped, just add it. */
-			word[j++] = *(string)++;
-                  }
-	       }
-	       break;
-	    case ' ':
-	    case '\t':
-	       /* Found the end of the word. */
-	       found = True;
-	       string++;
-	       break;
-	    default: {
-	       word[j++] = *(string)++;
-	    }
-	 }
-      }
-   }
-   word [j] = '\0';
-   *position = *position + (string - pbeg);
+                                                                                /* Pass on what ever char is there. */
+                                                                                word[j++] =
+                                                                                    *(string)++;
+                                                                }
+                                                        }
+                                                } else
+                                                        /* This char was not
+                                                         * escaped, just add it.
+                                                         */
+                                                        word[j++] = *(string)++;
+                                        }
+                                }
+                                break;
+                        case ' ':
+                        case '\t':
+                                /* Found the end of the word. */
+                                found = True;
+                                string++;
+                                break;
+                        default: { word[j++] = *(string)++; }
+                        }
+                }
+        }
+        word[j] = '\0';
+        *position = *position + (string - pbeg);
 }
 
 /*****************************************************************************
@@ -302,7 +415,7 @@ FillWord(
  * A word is defined in the function "FillWord".
  *
  * Note that if an ending quote is not found, "position" will be advanced to
- * the end of the string.  
+ * the end of the string.
  *
  * PARAMETERS:
  *
@@ -310,28 +423,23 @@ FillWord(
  *
  *   String word;	- MODIFIED - contains the next word in "string".
  *
- *   int *position;	- MODIFIED - starts at beginning of word, ends 
+ *   int *position;	- MODIFIED - starts at beginning of word, ends
  *			  at end of word.
  *
  *****************************************************************************/
 
-static void 
-GetWordWithQuotes(
-        String string,
-        String word,
-        int *position )
-{
-   int len = strlen(string);
-   SkipWhiteSpace (string, position);
+static void GetWordWithQuotes(String string, String word, int *position) {
+        int len = strlen(string);
+        SkipWhiteSpace(string, position);
 
-   if ((*position) >= len) {
-      word[0] = '\0';
-      return;
-   }
+        if ((*position) >= len) {
+                word[0] = '\0';
+                return;
+        }
 
-   string += (*position);
+        string += (*position);
 
-   FillWord (string, word, position);
+        FillWord(string, word, position);
 }
 
 /*****************************************************************************
@@ -348,7 +456,7 @@ GetWordWithQuotes(
  *   "Whitespace" is a tab or blank character.
  *
  *
- * NOTES: 
+ * NOTES:
  *
  *   -  The space for the "words" is malloc'd and must be free'd by
  *   the caller.
@@ -364,50 +472,42 @@ GetWordWithQuotes(
  *
  *****************************************************************************/
 
-void 
-_DtCmdStringToArrayOfStrings(
-        char theString[],
-        char *theArray[] )
-{
-   int len, i, position;
-   char *tmp;
-   tmp = (char *) XtMalloc (1 + strlen (theString));
+void _DtCmdStringToArrayOfStrings(char theString[], char *theArray[]) {
+        int len, i, position;
+        char *tmp;
+        tmp = (char *)XtMalloc(1 + strlen(theString));
 
-   len=strlen(theString);
-   for (position=0, i=0; (position <= len) && 
-        (theString[position] != '\0'); ) {
-      (void) strcpy (tmp, "");
-      GetWordWithQuotes (theString, tmp, &position);
-      /* Check word to see if it contains only trailing blanks. */
-      if (tmp[0] == '\0') 
-      {
-	 if (position < len)
-	 {
-	    /*
-	     * This parameter is empty, such as "" or '' but we are
-	     * not at the end of the line.  Consequently, put an
-	     * empty string in "theArray".
-	     */
-	    theArray[i] = XtNewString ("");
-	 }
-	 else
-	 {
-	    /*
-	     * Must be at the end of the line.
-	     */
-	    theArray[i] = (char *) NULL;
-	    break;
-	 }
-      }
-      else
-	 theArray[i] = XtNewString (tmp);
-      i++;
-   }
+        len = strlen(theString);
+        for (position = 0, i = 0;
+             (position <= len) && (theString[position] != '\0');) {
+                (void)strcpy(tmp, "");
+                GetWordWithQuotes(theString, tmp, &position);
+                /* Check word to see if it contains only trailing blanks. */
+                if (tmp[0] == '\0') {
+                        if (position < len) {
+                                /*
+                                 * This parameter is empty, such as "" or '' but
+                                 * we are not at the end of the line.
+                                 * Consequently, put an empty string in
+                                 * "theArray".
+                                 */
+                                theArray[i] = XtNewString("");
+                        } else {
+                                /*
+                                 * Must be at the end of the line.
+                                 */
+                                theArray[i] = (char *)NULL;
+                                break;
+                        }
+                } else
+                        theArray[i] = XtNewString(tmp);
+                i++;
+        }
 
-   /* Null terminate the array of string pointers. */
-   theArray[i]=NULL;
+        /* Null terminate the array of string pointers. */
+        theArray[i] = NULL;
 
-   XtFree ((char *) tmp);
+        XtFree((char *)tmp);
 }
 
 /******************************************************************************
@@ -424,16 +524,11 @@ _DtCmdStringToArrayOfStrings(
  *
  *****************************************************************************/
 
-void 
-_DtCmdFreeStringVector(
-        char **stringv )
-{
-   char **pch;
+void _DtCmdFreeStringVector(char **stringv) {
+        char **pch;
 
-   for (pch = stringv; *pch != NULL; pch++) {
-      XtFree (*pch);
-      *pch = NULL;
-   }
+        for (pch = stringv; *pch != NULL; pch++) {
+                XtFree(*pch);
+                *pch = NULL;
+        }
 }
-
-

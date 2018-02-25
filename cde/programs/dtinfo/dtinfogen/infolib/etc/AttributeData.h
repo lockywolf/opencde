@@ -30,16 +30,15 @@ class Token;
 
 class AttributeData : public BaseData {
 
-friend class FirstOf;
-friend class OL_Data;
-friend class Concat;  
-  
-private:
-  const char *attribute_value( const Token &t, int attr_name );
-  
-protected:
-  AttributeData( const Token &t, int attr_name, ActionType mode );
+        friend class FirstOf;
+        friend class OL_Data;
+        friend class Concat;
 
+      private:
+        const char *attribute_value(const Token &t, int attr_name);
+
+      protected:
+        AttributeData(const Token &t, int attr_name, ActionType mode);
 };
 
 #endif

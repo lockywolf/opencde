@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp_s_pat_context.h /main/3 1995/10/23 11:57:25 rswiston $ 			 				 */
+/*%%  $XConsortium: mp_s_pat_context.h /main/3 1995/10/23 11:57:25 rswiston $
+ */
 /* -*-C++-*-
  *
  * @(#)mp_s_pat_context.h	1.4 29 Jul 1993
@@ -43,13 +44,11 @@
 
 class _Tt_s_pat_context : public _Tt_pat_context {
       public:
-	_Tt_s_pat_context();
-	_Tt_s_pat_context(const _Tt_context &c);
-	virtual ~_Tt_s_pat_context();
+        _Tt_s_pat_context();
+        _Tt_s_pat_context(const _Tt_context &c);
+        virtual ~_Tt_s_pat_context();
 
-	int			matchVal(
-					const _Tt_message &msg
-				);
+        int matchVal(const _Tt_message &msg);
 };
 
-#endif				/* _MP_S_PAT_CONTEXT_H */
+#endif /* _MP_S_PAT_CONTEXT_H */

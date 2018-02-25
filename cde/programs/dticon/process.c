@@ -22,12 +22,12 @@
  */
 /* $TOG: process.c /main/7 1999/08/16 11:03:31 mgreess $ */
 /********************************************************************
-*  (c) Copyright 1993, 1994 Hewlett-Packard Company
-*  (c) Copyright 1993, 1994 International Business Machines Corp.
-*  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
-*  (c) Copyright 1993, 1994 Unix System Labs, Inc., a subsidiary of
-*      Novell, Inc.
-**********************************************************************/
+ *  (c) Copyright 1993, 1994 Hewlett-Packard Company
+ *  (c) Copyright 1993, 1994 International Business Machines Corp.
+ *  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+ *  (c) Copyright 1993, 1994 Unix System Labs, Inc., a subsidiary of
+ *      Novell, Inc.
+ **********************************************************************/
 /******************************************************************************
  **  Program:           dticon.c
  **
@@ -78,7 +78,7 @@
  **  implied warranty.
  **
  *****************************************************************************
-*/
+ */
 #include <Xm/Xm.h>
 #include <Xm/XmP.h>
 #include <Xm/TextF.h>
@@ -93,7 +93,7 @@
 
 #ifdef __TOOLTALK
 #include <Tt/tttk.h>
-extern void ReplyToMessage( );
+extern void ReplyToMessage();
 extern Tt_message replyMsg;
 #endif
 
@@ -113,8 +113,8 @@ extern Widget newWidthText, newHeightText;
 extern GC scratch_gc;
 extern char dummy[];
 
-Boolean Write_File( char * );
-Boolean Read_File( char * );
+Boolean Write_File(char *);
+Boolean Read_File(char *);
 
 extern void Process_SaveAs(void);
 extern void Eval_NewSize(int, int);
@@ -124,11 +124,11 @@ extern void Process_Resize(void);
 /*-----------------------------------------------------------*/
 /* Insert application global declarations here               */
 /*-----------------------------------------------------------*/
-static char     undo_file[MAX_FNAME];          /* save the file name after new */
+static char undo_file[MAX_FNAME]; /* save the file name after new */
 char dropFileName[MAX_FNAME];
-int SaveMeNot = TRUE;     /* used to flag a save as for existing file */
+int SaveMeNot = TRUE; /* used to flag a save as for existing file */
 int SavedOnce = False;
-int  NewFlag = False;             /* use for undo after new */
+int NewFlag = False; /* use for undo after new */
 
 /***************************************************************************
  *                                                                         *
@@ -143,15 +143,16 @@ int  NewFlag = False;             /* use for undo after new */
  *            dimensions (if desired) for the new icon.                    *
  *                                                                         *
  ***************************************************************************/
-void
-Process_New( void )
-{
-  DialogFlag = NEW;
-  if (Dirty)
-    DoQueryDialog( GETSTR(16,16, "The current icon has not been saved.\n\nYour changes will be lost.") );
-  else {
-    Process_Resize();
-    DialogFlag = NONE; }
+void Process_New(void) {
+        DialogFlag = NEW;
+        if (Dirty)
+                DoQueryDialog(GETSTR(16, 16,
+                                     "The current icon has not been "
+                                     "saved.\n\nYour changes will be lost."));
+        else {
+                Process_Resize();
+                DialogFlag = NONE;
+        }
 }
 
 /***************************************************************************
@@ -168,20 +169,18 @@ Process_New( void )
  *                                                                         *
  ***************************************************************************/
 
-void
-Process_Open( void )
-{
-  DialogFlag = OPEN;
-  fileIOMode = FILE_READ;
-  if (Dirty)
-    DoQueryDialog( GETSTR(16,16, "The current icon has not been saved.\nYour changes will be lost.") );
-  else
-  {
-    XtManageChild(fileIODialog);
-    SetFileIODialogInfo();
-  }
+void Process_Open(void) {
+        DialogFlag = OPEN;
+        fileIOMode = FILE_READ;
+        if (Dirty)
+                DoQueryDialog(GETSTR(16, 16,
+                                     "The current icon has not been "
+                                     "saved.\nYour changes will be lost."));
+        else {
+                XtManageChild(fileIODialog);
+                SetFileIODialogInfo();
+        }
 }
-
 
 /***************************************************************************
  *                                                                         *
@@ -197,40 +196,36 @@ Process_Open( void )
  *                                                                         *
  ***************************************************************************/
 
-void
-Process_Save( void )
-{
-  static char *untitledStr = NULL;
-  static char newName[MAX_FNAME];
-  char *tmp1 = NULL;
-  char *tmp2 = NULL;
-  int c;
+void Process_Save(void) {
+        static char *untitledStr = NULL;
+        static char newName[MAX_FNAME];
+        char *tmp1 = NULL;
+        char *tmp2 = NULL;
+        int c;
 
-  DialogFlag = SAVE;
-  fileIOMode = FILE_WRITE;
+        DialogFlag = SAVE;
+        fileIOMode = FILE_WRITE;
 
-  untitledStr = GETSTR(2,20, "UNTITLED");
-  tmp1= strrchr(last_fname, '/');
-  if (tmp1) {
-     c = tmp1[1];
-     tmp2 = strchr(tmp1, c);
-     strcpy(newName, tmp2);
-  }
-  if (strncmp(newName, untitledStr, 8) == 0 || last_fname[0] == '\0') Process_SaveAs();
-  else
- {
-  if (SavedOnce == True)
-  {
-    if (!Write_File(last_fname))
-      DoErrorDialog( GETSTR(16,4, "Unable to write data to file") );
-    else
-      Dirty = False;
-  }
-  else
-    Process_SaveAs();
- }
+        untitledStr = GETSTR(2, 20, "UNTITLED");
+        tmp1 = strrchr(last_fname, '/');
+        if (tmp1) {
+                c = tmp1[1];
+                tmp2 = strchr(tmp1, c);
+                strcpy(newName, tmp2);
+        }
+        if (strncmp(newName, untitledStr, 8) == 0 || last_fname[0] == '\0')
+                Process_SaveAs();
+        else {
+                if (SavedOnce == True) {
+                        if (!Write_File(last_fname))
+                                DoErrorDialog(GETSTR(
+                                    16, 4, "Unable to write data to file"));
+                        else
+                                Dirty = False;
+                } else
+                        Process_SaveAs();
+        }
 }
-
 
 /***************************************************************************
  *                                                                         *
@@ -243,15 +238,12 @@ Process_Save( void )
  *                                                                         *
  ***************************************************************************/
 
-void
-Process_SaveAs( void )
-{
-  DialogFlag = SAVE_AS;
-  fileIOMode = FILE_WRITE;
-  XtManageChild(fileIODialog);
-  SetFileIODialogInfo();
+void Process_SaveAs(void) {
+        DialogFlag = SAVE_AS;
+        fileIOMode = FILE_WRITE;
+        XtManageChild(fileIODialog);
+        SetFileIODialogInfo();
 }
-
 
 /***************************************************************************
  *                                                                         *
@@ -265,136 +257,124 @@ Process_SaveAs( void )
  *                                                                         *
  ***************************************************************************/
 
-void
-Process_Quit( void )
-{
-  extern int ttMark;
-  extern int tt_tmpfile_fd;
+void Process_Quit(void) {
+        extern int ttMark;
+        extern int tt_tmpfile_fd;
 
-  DialogFlag = QUIT;
-  if (Dirty)
-    DoQueryDialog( GETSTR(16,16, "The current icon has not been saved.\nYour changes will be lost.") );
-  else {
+        DialogFlag = QUIT;
+        if (Dirty)
+                DoQueryDialog(GETSTR(16, 16,
+                                     "The current icon has not been "
+                                     "saved.\nYour changes will be lost."));
+        else {
 #ifdef __TOOLTALK
-  edit_notifier(NULL, 0, 1);
-  ttdt_session_quit( 0, 0, 1 );
-  ttdt_close( 0, 0, 1 );
-  tt_release( ttMark );
-  if (tt_tmpfile_fd != -1) {
-     unlink(last_fname);
-     if (fileFormat != FORMAT_XPM ) {
-        unlink(dummy);
-     } /* if */
-  } /* if */
+                edit_notifier(NULL, 0, 1);
+                ttdt_session_quit(0, 0, 1);
+                ttdt_close(0, 0, 1);
+                tt_release(ttMark);
+                if (tt_tmpfile_fd != -1) {
+                        unlink(last_fname);
+                        if (fileFormat != FORMAT_XPM) {
+                                unlink(dummy);
+                        } /* if */
+                }         /* if */
 #endif
-exit(0);
-} /* else */
+                exit(0);
+        } /* else */
 }
 
 /*****************************************************************************/
 
-void
-Process_Query_OK( void )
-{
-  extern int ttMark;
-  extern int tt_tmpfile_fd;
+void Process_Query_OK(void) {
+        extern int ttMark;
+        extern int tt_tmpfile_fd;
 
-  switch (DialogFlag) {
-    case QUIT :
+        switch (DialogFlag) {
+        case QUIT:
 #ifdef __TOOLTALK
-  edit_notifier(NULL, 0, 1);
-  ttdt_session_quit( 0, 0, 1 );
-  ttdt_close( 0, 0, 1 );
-  tt_release( ttMark );
-  if (tt_tmpfile_fd != -1) {
-     unlink(last_fname);
-     if (fileFormat != FORMAT_XPM ) {
-        unlink(dummy);}
-  }
+                edit_notifier(NULL, 0, 1);
+                ttdt_session_quit(0, 0, 1);
+                ttdt_close(0, 0, 1);
+                tt_release(ttMark);
+                if (tt_tmpfile_fd != -1) {
+                        unlink(last_fname);
+                        if (fileFormat != FORMAT_XPM) {
+                                unlink(dummy);
+                        }
+                }
 #endif
-                  exit(0);
-    break;
-    case NEW  : Process_Resize();
-                DialogFlag= NONE;
-    break;
-    case OPEN :   XtManageChild(fileIODialog);
-                  SetFileIODialogInfo();
-    break;
-    case SAVE_AS : SaveMeNot = False;
-                   Do_FileIO(NULL, NULL, NULL);
-    break;
-    case GRAB :   Do_GrabOp();
-    break;
-    case DROP :   Do_DropOp();
-    break;
-   } /* switch */
-   XSync(dpy, 0);
+                exit(0);
+                break;
+        case NEW:
+                Process_Resize();
+                DialogFlag = NONE;
+                break;
+        case OPEN:
+                XtManageChild(fileIODialog);
+                SetFileIODialogInfo();
+                break;
+        case SAVE_AS:
+                SaveMeNot = False;
+                Do_FileIO(NULL, NULL, NULL);
+                break;
+        case GRAB:
+                Do_GrabOp();
+                break;
+        case DROP:
+                Do_DropOp();
+                break;
+        } /* switch */
+        XSync(dpy, 0);
 }
 
-void
-Process_Query_Cancel( void )
-{
-  DialogFlag = NONE;
+void Process_Query_Cancel(void) { DialogFlag = NONE; }
+
+void Process_Size_OK(void) {
+        char *widthStr, *heightStr;
+        int new_width, new_height;
+
+        XtUnmanageChild(newIconDialog);
+        widthStr = XmTextFieldGetString(newWidthText);
+        heightStr = XmTextFieldGetString(newHeightText);
+        new_width = atoi(widthStr);
+        new_height = atoi(heightStr);
+        Eval_NewSize(new_width, new_height);
+        DialogFlag = NONE;
 }
 
-void
-Process_Size_OK( void )
-{
-  char *widthStr, *heightStr;
-  int new_width, new_height;
+void Eval_NewSize(int width, int height) {
+        char old_width[10], old_height[10];
+        int flag;
 
-  XtUnmanageChild(newIconDialog);
-  widthStr = XmTextFieldGetString(newWidthText);
-  heightStr = XmTextFieldGetString(newHeightText);
-  new_width = atoi(widthStr);
-  new_height = atoi(heightStr);
-  Eval_NewSize(new_width, new_height);
-  DialogFlag = NONE;
+        if ((width < 1) || (width > xrdb.maxIconWidth) || (height < 1) ||
+            (height > xrdb.maxIconHeight)) {
+                sprintf(old_width, "%d", icon_width);
+                XmTextFieldSetString(newWidthText, old_width);
+                sprintf(old_height, "%d", icon_height);
+                XmTextFieldSetString(newHeightText, old_height);
+                DoErrorDialog(
+                    GETSTR(16, 10, "Invalid width and/or\nheight specified"));
+        } else {
+
+                if (DialogFlag == NEW)
+                        flag = DO_NOT_SAVE;
+                else
+                        flag = DO_SAVE;
+
+                Backup_Icons(); /* for undo */
+                Init_Icons(width, height, flag);
+        }
 }
 
-void
-Eval_NewSize(
-        int width,
-        int height )
-{
-  char old_width[10], old_height[10];
-  int flag;
-
-  if ((width < 1) || (width > xrdb.maxIconWidth) ||
-      (height < 1) || (height > xrdb.maxIconHeight)) {
-    sprintf(old_width, "%d", icon_width);
-    XmTextFieldSetString(newWidthText, old_width);
-    sprintf(old_height, "%d", icon_height);
-    XmTextFieldSetString(newHeightText, old_height);
-    DoErrorDialog(GETSTR(16,10,"Invalid width and/or\nheight specified"));
-   }
-  else {
-
-    if (DialogFlag == NEW)
-      flag = DO_NOT_SAVE;
-    else
-      flag = DO_SAVE;
-
-    Backup_Icons();    /* for undo */
-    Init_Icons(width, height, flag);
-
-   }
+void Process_Size_Cancel(void) {
+        DialogFlag = NONE;
+        XtUnmanageChild(newIconDialog);
 }
 
-void
-Process_Size_Cancel( void )
-{
-  DialogFlag = NONE;
-  XtUnmanageChild(newIconDialog);
+void Process_StdErr_OK(void) {
+        DialogFlag = NONE;
+        XtUnmanageChild(stdErrDialog);
 }
-
-void
-Process_StdErr_OK( void )
-{
-  DialogFlag = NONE;
-  XtUnmanageChild(stdErrDialog);
-}
-
 
 /***************************************************************************
  *                                                                         *
@@ -409,140 +389,133 @@ Process_StdErr_OK( void )
  *                                                                         *
  ***************************************************************************/
 
-void
-Process_Undo( void )
-{
-  if (UndoFlag) {
-    if ((icon_width != backup_width) || (icon_height != backup_height))
-      Init_Icons(backup_width, backup_height, DO_NOT_SAVE);
-    XCopyArea(dpy, prev_color_icon, color_icon,
- Color_gc, 0, 0, icon_width, icon_height, 0, 0);
-    XCopyArea(dpy, prev_mono_icon, mono_icon,
- Mono_gc, 0, 0, icon_width, icon_height, 0, 0);
-    if (XtWindow(iconImage))
-      XCopyArea(dpy, color_icon, XtWindow(iconImage), Color_gc,
- 0, 0, icon_width, icon_height, 0, 0);
-    if (XtWindow(monoImage))
-      XCopyArea(dpy, mono_icon, XtWindow(monoImage), Mono_gc,
- 0, 0, icon_width, icon_height, 0, 0);
-    Repaint_Exposed_Tablet();
-    UndoFlag = False;
-    Dirty = True;
-    XtSetSensitive( editMenu_undo_pb, False);
+void Process_Undo(void) {
+        if (UndoFlag) {
+                if ((icon_width != backup_width) ||
+                    (icon_height != backup_height))
+                        Init_Icons(backup_width, backup_height, DO_NOT_SAVE);
+                XCopyArea(dpy, prev_color_icon, color_icon, Color_gc, 0, 0,
+                          icon_width, icon_height, 0, 0);
+                XCopyArea(dpy, prev_mono_icon, mono_icon, Mono_gc, 0, 0,
+                          icon_width, icon_height, 0, 0);
+                if (XtWindow(iconImage))
+                        XCopyArea(dpy, color_icon, XtWindow(iconImage),
+                                  Color_gc, 0, 0, icon_width, icon_height, 0,
+                                  0);
+                if (XtWindow(monoImage))
+                        XCopyArea(dpy, mono_icon, XtWindow(monoImage), Mono_gc,
+                                  0, 0, icon_width, icon_height, 0, 0);
+                Repaint_Exposed_Tablet();
+                UndoFlag = False;
+                Dirty = True;
+                XtSetSensitive(editMenu_undo_pb, False);
 
-  if ( NewFlag == TRUE ){
-    NewFlag = False;
-    strcpy(last_fname, undo_file);
-    last_fname[strlen(last_fname)] = '\0';
-    ChangeTitle();}
-   }
-  else
-    DoErrorDialog( GETSTR(16,8,"There is no previous\nimage available") );
+                if (NewFlag == TRUE) {
+                        NewFlag = False;
+                        strcpy(last_fname, undo_file);
+                        last_fname[strlen(last_fname)] = '\0';
+                        ChangeTitle();
+                }
+        } else
+                DoErrorDialog(
+                    GETSTR(16, 8, "There is no previous\nimage available"));
 }
 
-void
-Process_Cut( void )
-{
-  Process_Copy(&CutCopy, &CutCopy_mono);
-  if (Selected) {
-    Backup_Icons();
-    XSetForeground(dpy, scratch_gc, Transparent);
-    XFillRectangle(dpy, color_icon, scratch_gc, select_box.x, select_box.y,
- select_box.width, select_box.height);
-    XFillRectangle(dpy, mono_icon, scratch_gc, select_box.x, select_box.y,
- select_box.width, select_box.height);
-    XFillRectangle(dpy, XtWindow(iconImage), scratch_gc,
- select_box.x, select_box.y, select_box.width, select_box.height);
-    XFillRectangle(dpy, XtWindow(monoImage), scratch_gc,
- select_box.x, select_box.y, select_box.width, select_box.height);
-    Transfer_Back_Image(select_box.x, select_box.y,
-   (select_box.x+select_box.width),
-   (select_box.y+select_box.height), FILL);
- XtSetSensitive( editMenu_paste_pb, True);
-   }
+void Process_Cut(void) {
+        Process_Copy(&CutCopy, &CutCopy_mono);
+        if (Selected) {
+                Backup_Icons();
+                XSetForeground(dpy, scratch_gc, Transparent);
+                XFillRectangle(dpy, color_icon, scratch_gc, select_box.x,
+                               select_box.y, select_box.width,
+                               select_box.height);
+                XFillRectangle(dpy, mono_icon, scratch_gc, select_box.x,
+                               select_box.y, select_box.width,
+                               select_box.height);
+                XFillRectangle(dpy, XtWindow(iconImage), scratch_gc,
+                               select_box.x, select_box.y, select_box.width,
+                               select_box.height);
+                XFillRectangle(dpy, XtWindow(monoImage), scratch_gc,
+                               select_box.x, select_box.y, select_box.width,
+                               select_box.height);
+                Transfer_Back_Image(select_box.x, select_box.y,
+                                    (select_box.x + select_box.width),
+                                    (select_box.y + select_box.height), FILL);
+                XtSetSensitive(editMenu_paste_pb, True);
+        }
 }
 
-void
-Process_Copy(
- XImage **img,
- XImage **img_mono )
-{
-  if (Selected) {
-    *img = XGetImage(dpy, color_icon, select_box.x, select_box.y,
- select_box.width, select_box.height, AllPlanes, format);
-    *img_mono = XGetImage(dpy, mono_icon, select_box.x, select_box.y,
- select_box.width, select_box.height, AllPlanes, format);
- XtSetSensitive( editMenu_paste_pb, True);
-   }
-  else
-    DoErrorDialog( GETSTR(16,12, "No area has been selected") );
+void Process_Copy(XImage **img, XImage **img_mono) {
+        if (Selected) {
+                *img = XGetImage(dpy, color_icon, select_box.x, select_box.y,
+                                 select_box.width, select_box.height, AllPlanes,
+                                 format);
+                *img_mono = XGetImage(dpy, mono_icon, select_box.x,
+                                      select_box.y, select_box.width,
+                                      select_box.height, AllPlanes, format);
+                XtSetSensitive(editMenu_paste_pb, True);
+        } else
+                DoErrorDialog(GETSTR(16, 12, "No area has been selected"));
 }
 
-void
-Process_Paste( void )
-{
-  if (CutCopy) {
-    Backup_Icons();
-    Backup_G_Op = GraphicsOp;
-    GraphicsOp  = S_PASTE;
-    FirstRigid = True;
-    /* grayout unusable stuff */
-    XtSetSensitive( editMenu_cut_pb, False);
-    XtSetSensitive( editMenu_copy_pb, False);
-    XtSetSensitive(editMenu_rotate_pb, False);
-    XtSetSensitive(editMenu_flip_pb,  False);
-    XtSetSensitive(editMenu_scale_pb,  False);
-    XSync(dpy, 0);
-   }
-  else
-    DoErrorDialog(GETSTR(16,14, "No area was previously\ncut or copied"));
+void Process_Paste(void) {
+        if (CutCopy) {
+                Backup_Icons();
+                Backup_G_Op = GraphicsOp;
+                GraphicsOp = S_PASTE;
+                FirstRigid = True;
+                /* grayout unusable stuff */
+                XtSetSensitive(editMenu_cut_pb, False);
+                XtSetSensitive(editMenu_copy_pb, False);
+                XtSetSensitive(editMenu_rotate_pb, False);
+                XtSetSensitive(editMenu_flip_pb, False);
+                XtSetSensitive(editMenu_scale_pb, False);
+                XSync(dpy, 0);
+        } else
+                DoErrorDialog(
+                    GETSTR(16, 14, "No area was previously\ncut or copied"));
 }
 
-void
-Process_Scale( void )
-{
-  if (Selected) {
-    Backup_Icons();
-    Backup_G_Op = GraphicsOp;
-    GraphicsOp  = S_SCALE_1;
-    FirstRigid = True;
-   }
-  else
-    DoErrorDialog( GETSTR(16,12, "No area has been selected") );
+void Process_Scale(void) {
+        if (Selected) {
+                Backup_Icons();
+                Backup_G_Op = GraphicsOp;
+                GraphicsOp = S_SCALE_1;
+                FirstRigid = True;
+        } else
+                DoErrorDialog(GETSTR(16, 12, "No area has been selected"));
 }
 
-void
-Process_Resize( void )
-{
-  int flag;
-  char old_width[10], old_height[10];
-  static char *untitledStr = NULL;
+void Process_Resize(void) {
+        int flag;
+        char old_width[10], old_height[10];
+        static char *untitledStr = NULL;
 
-  if ( DialogFlag == NEW ) {
-    strcpy(undo_file, last_fname);
-    last_fname[0] = '\0';
-    SavedOnce = False;
-    Backup_Icons();    /* for undo */
-    flag = DO_NOT_SAVE;
-    Init_Icons(icon_width, icon_height, flag);
-    if (!untitledStr)
-      untitledStr = GETSTR(2,20, "UNTITLED");
-    strcpy(last_fname, untitledStr);
-    strcat(last_fname, ".m.pm");
-    last_fname[strlen(last_fname)] = '\0';
-    ChangeTitle();
-    Repaint_Exposed_Tablet();
-    Dirty = False;
-    NewFlag = TRUE;
-    }
-  else{
-    sprintf(old_width, "%d", icon_width);
-    XmTextFieldSetString(newWidthText, old_width);
-    sprintf(old_height, "%d", icon_height);
-    XmTextFieldSetString(newHeightText, old_height);
-    XtManageChild(newIconDialog);
-    XmProcessTraversal(newWidthText, XmTRAVERSE_CURRENT);
-    XmTextFieldSetSelection(newWidthText, 0, 3, CurrentTime); }
+        if (DialogFlag == NEW) {
+                strcpy(undo_file, last_fname);
+                last_fname[0] = '\0';
+                SavedOnce = False;
+                Backup_Icons(); /* for undo */
+                flag = DO_NOT_SAVE;
+                Init_Icons(icon_width, icon_height, flag);
+                if (!untitledStr)
+                        untitledStr = GETSTR(2, 20, "UNTITLED");
+                strcpy(last_fname, untitledStr);
+                strcat(last_fname, ".m.pm");
+                last_fname[strlen(last_fname)] = '\0';
+                ChangeTitle();
+                Repaint_Exposed_Tablet();
+                Dirty = False;
+                NewFlag = TRUE;
+        } else {
+                sprintf(old_width, "%d", icon_width);
+                XmTextFieldSetString(newWidthText, old_width);
+                sprintf(old_height, "%d", icon_height);
+                XmTextFieldSetString(newHeightText, old_height);
+                XtManageChild(newIconDialog);
+                XmProcessTraversal(newWidthText, XmTRAVERSE_CURRENT);
+                XmTextFieldSetSelection(newWidthText, 0, 3, CurrentTime);
+        }
 }
 
 /***************************************************************************
@@ -557,21 +530,21 @@ Process_Resize( void )
  *                                                                         *
  ***************************************************************************/
 
-void
-Process_Clear( void )
-{
-  Backup_Icons();
-  XSetForeground(dpy, scratch_gc, Transparent);
-  XFillRectangle(dpy, color_icon, scratch_gc, 0, 0, icon_width, icon_height);
-  XFillRectangle(dpy, mono_icon, scratch_gc, 0, 0, icon_width, icon_height);
-  if (XtWindow(iconImage))
-    XCopyArea(dpy, color_icon, XtWindow(iconImage), scratch_gc,
- 0, 0, icon_width, icon_height, 0, 0);
-  if (XtWindow(monoImage))
-    XCopyArea(dpy, mono_icon, XtWindow(monoImage), scratch_gc,
- 0, 0, icon_width, icon_height, 0, 0);
-  Repaint_Exposed_Tablet();
-  Dirty = False;
+void Process_Clear(void) {
+        Backup_Icons();
+        XSetForeground(dpy, scratch_gc, Transparent);
+        XFillRectangle(dpy, color_icon, scratch_gc, 0, 0, icon_width,
+                       icon_height);
+        XFillRectangle(dpy, mono_icon, scratch_gc, 0, 0, icon_width,
+                       icon_height);
+        if (XtWindow(iconImage))
+                XCopyArea(dpy, color_icon, XtWindow(iconImage), scratch_gc, 0,
+                          0, icon_width, icon_height, 0, 0);
+        if (XtWindow(monoImage))
+                XCopyArea(dpy, mono_icon, XtWindow(monoImage), scratch_gc, 0, 0,
+                          icon_width, icon_height, 0, 0);
+        Repaint_Exposed_Tablet();
+        Dirty = False;
 }
 /***************************************************************************
  *                                                                         *
@@ -581,16 +554,15 @@ Process_Clear( void )
  *                                                                         *
  ***************************************************************************/
 
-void
-Process_GrabImage( void )
-{
-  DialogFlag = GRAB;
-  if (Dirty)
-    DoQueryDialog( GETSTR(16,16, "The current icon has not been saved.\nYour changes will be lost.") );
-  else
-    Do_GrabOp();
+void Process_GrabImage(void) {
+        DialogFlag = GRAB;
+        if (Dirty)
+                DoQueryDialog(GETSTR(16, 16,
+                                     "The current icon has not been "
+                                     "saved.\nYour changes will be lost."));
+        else
+                Do_GrabOp();
 }
-
 
 /***************************************************************************
  *                                                                         *
@@ -604,13 +576,10 @@ Process_GrabImage( void )
  *                                                                         *
  ***************************************************************************/
 
-void
-Process_AddHotspot( void )
-{
-  Backup_G_Op = GraphicsOp;
-  GraphicsOp  = S_HOTSPOT;
+void Process_AddHotspot(void) {
+        Backup_G_Op = GraphicsOp;
+        GraphicsOp = S_HOTSPOT;
 }
-
 
 /***************************************************************************
  *                                                                         *
@@ -623,63 +592,56 @@ Process_AddHotspot( void )
  *                                                                         *
  ***************************************************************************/
 
-void
-Process_DeleteHotspot( void )
-{
-  X_Hot = -1;
-  Y_Hot = -1;
-  hotSpot = False;
-  Repaint_Exposed_Tablet();
+void Process_DeleteHotspot(void) {
+        X_Hot = -1;
+        Y_Hot = -1;
+        hotSpot = False;
+        Repaint_Exposed_Tablet();
 }
 
-void
-Process_RotateLeft( void )
-{
-  XImage *color_img, *mono_img;
+void Process_RotateLeft(void) {
+        XImage *color_img, *mono_img;
 
-  Process_Copy(&color_img, &mono_img);
-  /* Turn off Paste since no area is available to Paste */
-  XtSetSensitive( editMenu_paste_pb, False);
-  if (Selected) {
-    Backup_Icons();
-    Rotate = XGetImage(dpy, root, 0, 0, color_img->height, color_img->width,
-    AllPlanes, format);
-    Rotate_mono = XGetImage(dpy, root, 0, 0, mono_img->height, mono_img->width,
-    AllPlanes, format);
-    Block_Rotate(color_img, Rotate, ROTATE_L);
-    Block_Rotate(mono_img, Rotate_mono, ROTATE_L);
-    XDestroyImage(color_img);
-    XDestroyImage(mono_img);
-    Backup_G_Op = GraphicsOp;
-    GraphicsOp  = S_ROTATE;
-    FirstRigid = True;
-   }
+        Process_Copy(&color_img, &mono_img);
+        /* Turn off Paste since no area is available to Paste */
+        XtSetSensitive(editMenu_paste_pb, False);
+        if (Selected) {
+                Backup_Icons();
+                Rotate = XGetImage(dpy, root, 0, 0, color_img->height,
+                                   color_img->width, AllPlanes, format);
+                Rotate_mono = XGetImage(dpy, root, 0, 0, mono_img->height,
+                                        mono_img->width, AllPlanes, format);
+                Block_Rotate(color_img, Rotate, ROTATE_L);
+                Block_Rotate(mono_img, Rotate_mono, ROTATE_L);
+                XDestroyImage(color_img);
+                XDestroyImage(mono_img);
+                Backup_G_Op = GraphicsOp;
+                GraphicsOp = S_ROTATE;
+                FirstRigid = True;
+        }
 }
 
-void
-Process_RotateRight( void )
-{
-  XImage *color_img, *mono_img;
+void Process_RotateRight(void) {
+        XImage *color_img, *mono_img;
 
-  Process_Copy(&color_img, &mono_img);
-  /* Turn off Paste since no area is available to Paste */
-  XtSetSensitive( editMenu_paste_pb, False);
-  if (Selected) {
-    Backup_Icons();
-    Rotate = XGetImage(dpy, root, 0, 0, color_img->height, color_img->width,
-    AllPlanes, format);
-    Rotate_mono = XGetImage(dpy, root, 0, 0, mono_img->height, mono_img->width,
-    AllPlanes, format);
-    Block_Rotate(color_img, Rotate, ROTATE_R);
-    Block_Rotate(mono_img, Rotate_mono, ROTATE_R);
-    XDestroyImage(color_img);
-    XDestroyImage(mono_img);
-    Backup_G_Op = GraphicsOp;
-    GraphicsOp  = S_ROTATE;
-    FirstRigid = True;
-   }
+        Process_Copy(&color_img, &mono_img);
+        /* Turn off Paste since no area is available to Paste */
+        XtSetSensitive(editMenu_paste_pb, False);
+        if (Selected) {
+                Backup_Icons();
+                Rotate = XGetImage(dpy, root, 0, 0, color_img->height,
+                                   color_img->width, AllPlanes, format);
+                Rotate_mono = XGetImage(dpy, root, 0, 0, mono_img->height,
+                                        mono_img->width, AllPlanes, format);
+                Block_Rotate(color_img, Rotate, ROTATE_R);
+                Block_Rotate(mono_img, Rotate_mono, ROTATE_R);
+                XDestroyImage(color_img);
+                XDestroyImage(mono_img);
+                Backup_G_Op = GraphicsOp;
+                GraphicsOp = S_ROTATE;
+                FirstRigid = True;
+        }
 }
-
 
 /***************************************************************************
  *                                                                         *
@@ -694,17 +656,13 @@ Process_RotateRight( void )
  *                                                                         *
  ***************************************************************************/
 
-void
-Process_FlipV( void )
-{
-  if (Selected) {
-    Backup_Icons();
-    Mirror_Image(VERTICAL);
-   }
-  else
-    DoErrorDialog( GETSTR(16,12, "No area has been selected") );
+void Process_FlipV(void) {
+        if (Selected) {
+                Backup_Icons();
+                Mirror_Image(VERTICAL);
+        } else
+                DoErrorDialog(GETSTR(16, 12, "No area has been selected"));
 }
-
 
 /***************************************************************************
  *                                                                         *
@@ -719,17 +677,13 @@ Process_FlipV( void )
  *                                                                         *
  ***************************************************************************/
 
-void
-Process_FlipH( void )
-{
-  if (Selected) {
-    Backup_Icons();
-    Mirror_Image(HORIZONTAL);
-   }
-  else
-    DoErrorDialog( GETSTR(16,12, "No area has been selected") );
+void Process_FlipH(void) {
+        if (Selected) {
+                Backup_Icons();
+                Mirror_Image(HORIZONTAL);
+        } else
+                DoErrorDialog(GETSTR(16, 12, "No area has been selected"));
 }
-
 
 /***************************************************************************
  *                                                                         *
@@ -742,31 +696,32 @@ Process_FlipH( void )
  *                                                                         *
  ***************************************************************************/
 
-void
-Process_GridState( void )
-{
-  Arg args[10];
-  int i;
-  Boolean new_val;
+void Process_GridState(void) {
+        Arg args[10];
+        int i;
+        Boolean new_val;
 
-  i = 0;
-  XtSetArg(args[i], XmNset, &new_val); i++;
-  XtGetValues(optionsMenu_grid, args, i);
+        i = 0;
+        XtSetArg(args[i], XmNset, &new_val);
+        i++;
+        XtGetValues(optionsMenu_grid, args, i);
 #ifdef DEBUG
-  if (debug) {
-    stat_out("Toggling tablet grid ");
-    switch (new_val) {
-      case True   : stat_out("ON\n");
-      break;
-      case False  : stat_out("OFF\n");
-      break;
-     }
-   }
+        if (debug) {
+                stat_out("Toggling tablet grid ");
+                switch (new_val) {
+                case True:
+                        stat_out("ON\n");
+                        break;
+                case False:
+                        stat_out("OFF\n");
+                        break;
+                }
+        }
 #endif
-  if (new_val != GridEnabled) {
-    GridEnabled = new_val;
-    Repaint_Exposed_Tablet();
-   }
+        if (new_val != GridEnabled) {
+                GridEnabled = new_val;
+                Repaint_Exposed_Tablet();
+        }
 }
 /***************************************************************************
  *                                                                         *
@@ -782,40 +737,36 @@ Process_GridState( void )
  *           It's simply too late to clean up the ansi... (the bell tolls) *
  *                                                                         *
  ***************************************************************************/
-static char *
-ConvertDropName( char *objects)
-{
-    char *host;
-    char *path;
-    char *fullName;
-    char *tmp;
-    char *netfile;
+static char *ConvertDropName(char *objects) {
+        char *host;
+        char *path;
+        char *fullName;
+        char *tmp;
+        char *netfile;
 
-    host = objects;
-    tmp = strchr(objects,' ');
-    if (tmp==NULL)      /* shouldn't happen */
-      return (strdup(strchr(objects, '/')));
+        host = objects;
+        tmp = strchr(objects, ' ');
+        if (tmp == NULL) /* shouldn't happen */
+                return (strdup(strchr(objects, '/')));
 
-    /* check if same host */
-    tmp[0] = '\0';
-    if ((Boolean)XeIsLocalHostP(host))
-    {
-        tmp[0] = ' ';
-        return (strdup(strchr(objects, '/')));
-    }
+        /* check if same host */
+        tmp[0] = '\0';
+        if ((Boolean)XeIsLocalHostP(host)) {
+                tmp[0] = ' ';
+                return (strdup(strchr(objects, '/')));
+        }
 
-    /* different host... get full path name */
-    path = tmp+3;      /* skip past the " - " */
+        /* different host... get full path name */
+        path = tmp + 3; /* skip past the " - " */
 
-    /* Convert to a valid name on the local host. */
-    netfile = tt_host_file_netfile(host, path);
-    fullName = tt_netfile_file(netfile);
-    tt_free(netfile);
+        /* Convert to a valid name on the local host. */
+        netfile = tt_host_file_netfile(host, path);
+        fullName = tt_netfile_file(netfile);
+        tt_free(netfile);
 
-    tmp[0] = ' ';      /* put back the " " after host name */
-    return (fullName);
+        tmp[0] = ' '; /* put back the " " after host name */
+        return (fullName);
 }
-
 
 /***************************************************************************
  *                                                                         *
@@ -826,39 +777,31 @@ ConvertDropName( char *objects)
  *                                                                         *
  ***************************************************************************/
 
-void
-Process_DropCheckOp(
- Widget w,
- XtPointer client_data,
- XtPointer call_data)
-{
-  DtDndTransferCallback transferInfo = (DtDndTransferCallback) call_data;
+void Process_DropCheckOp(Widget w, XtPointer client_data, XtPointer call_data) {
+        DtDndTransferCallback transferInfo = (DtDndTransferCallback)call_data;
 
-  /* save name in global array for later (Do_DropOp function) */
-  /*
-   * REMIND:  Need to address case of multiple file names - here and
-   *   elsewhere in the code. This continues with the assumption
-   *  that there is only one file name transfered.
-   */
-  if (transferInfo->dropData->numItems > 0)
-  {
-    strncpy (dropFileName, transferInfo->dropData->data.files[0],
-      MAX_FNAME);
-  }
-  else
-    dropFileName[0] = '\0';
+        /* save name in global array for later (Do_DropOp function) */
+        /*
+         * REMIND:  Need to address case of multiple file names - here and
+         *   elsewhere in the code. This continues with the assumption
+         *  that there is only one file name transfered.
+         */
+        if (transferInfo->dropData->numItems > 0) {
+                strncpy(dropFileName, transferInfo->dropData->data.files[0],
+                        MAX_FNAME);
+        } else
+                dropFileName[0] = '\0';
 
-  Do_DropCheckOp(transferInfo);
+        Do_DropCheckOp(transferInfo);
 
 #ifdef DEBUG
-  if (debug) {
-    stat_out("      file-name = %s\n", dropFileName);
-   }
+        if (debug) {
+                stat_out("      file-name = %s\n", dropFileName);
+        }
 #endif
-
 }
 
-extern Widget  formatMenu_xpm_tb, formatMenu_xbm_tb;
+extern Widget formatMenu_xpm_tb, formatMenu_xbm_tb;
 extern int successFormat, x_hot, y_hot;
 extern unsigned int width_ret, height_ret;
 
@@ -871,64 +814,51 @@ extern unsigned int width_ret, height_ret;
  *                                                                         *
  ***************************************************************************/
 
-static void
-Do_DropCheckOp(
- DtDndTransferCallback transferInfo)
-{
+static void Do_DropCheckOp(DtDndTransferCallback transferInfo) {
 
 #ifdef DEBUG
-  if (debug) {
-    stat_out("    Doing DROP OPERATION :\n");
-    stat_out("    name is = %s\n", dropFileName);
-   }
+        if (debug) {
+                stat_out("    Doing DROP OPERATION :\n");
+                stat_out("    name is = %s\n", dropFileName);
+        }
 #endif
 
-  if (dropFileName[0] != '\0')
-  {
-    if (!Read_File(dropFileName))
-    {
-       DoErrorDialog( GETSTR(16,2,
-      "The file cannot be accessed\nor contains invalid data") );
-      transferInfo->status = DtDND_FAILURE;
-    }
-    else
-    {
-      transferInfo->status = DtDND_SUCCESS;
-    } /* else */
-  } /* if */
+        if (dropFileName[0] != '\0') {
+                if (!Read_File(dropFileName)) {
+                        DoErrorDialog(GETSTR(16, 2,
+                                             "The file cannot be accessed\nor "
+                                             "contains invalid data"));
+                        transferInfo->status = DtDND_FAILURE;
+                } else {
+                        transferInfo->status = DtDND_SUCCESS;
+                } /* else */
+        }         /* if */
 }
 
-void
-Process_DropOp(
- Widget w,
-        XtPointer client_data,
-        XtPointer call_data)
-{
-      DialogFlag = DROP;
+void Process_DropOp(Widget w, XtPointer client_data, XtPointer call_data) {
+        DialogFlag = DROP;
 
-      if (Dirty)
-        DoQueryDialog( GETSTR(16,16, "The current icon has not been saved.\n\nYour changes will be lost.") );
-      else  {
-            Do_DropOp();}
+        if (Dirty)
+                DoQueryDialog(GETSTR(16, 16,
+                                     "The current icon has not been "
+                                     "saved.\n\nYour changes will be lost."));
+        else {
+                Do_DropOp();
+        }
 }
 
-static void
-Do_DropOp(void)
-{
-      if (successFormat == FORMAT_XPM)
-      {
-        X_Hot = xpm_ReadAttribs.x_hotspot;
-        Y_Hot = xpm_ReadAttribs.y_hotspot;
-        Display_XPMFile(xpm_ReadAttribs.width, xpm_ReadAttribs.height);
-      }
-      else if (successFormat == FORMAT_XBM)
-      {
-        X_Hot = x_hot;
-        Y_Hot = y_hot;
-        Display_XBMFile(width_ret, height_ret);
-      }
+static void Do_DropOp(void) {
+        if (successFormat == FORMAT_XPM) {
+                X_Hot = xpm_ReadAttribs.x_hotspot;
+                Y_Hot = xpm_ReadAttribs.y_hotspot;
+                Display_XPMFile(xpm_ReadAttribs.width, xpm_ReadAttribs.height);
+        } else if (successFormat == FORMAT_XBM) {
+                X_Hot = x_hot;
+                Y_Hot = y_hot;
+                Display_XBMFile(width_ret, height_ret);
+        }
 
-      Dirty = False;
+        Dirty = False;
 }
 
 /***************************************************************************
@@ -940,46 +870,37 @@ Do_DropOp(void)
  *                                                                         *
  ***************************************************************************/
 
-void
-Do_Paste(
-        int x,
-        int y )
-{
-  XImage *color_img, *mono_img;
+void Do_Paste(int x, int y) {
+        XImage *color_img, *mono_img;
 
-  if (GraphicsOp == S_PASTE) {
-    color_img = CutCopy;
-    mono_img  = CutCopy_mono;
-   }
-  else if (GraphicsOp == S_ROTATE) {
-    color_img = Rotate;
-    mono_img  = Rotate_mono;
-   }
-  else {
-    color_img = Scale;
-    mono_img  = Scale_mono;
-   }
+        if (GraphicsOp == S_PASTE) {
+                color_img = CutCopy;
+                mono_img = CutCopy_mono;
+        } else if (GraphicsOp == S_ROTATE) {
+                color_img = Rotate;
+                mono_img = Rotate_mono;
+        } else {
+                color_img = Scale;
+                mono_img = Scale_mono;
+        }
 
-  if (GraphicsOp == S_PASTE)
-  {
-    GraphicsOp = S_WAIT_RELEASE;
-  }
-  else
-  {
-    GraphicsOp = Backup_G_Op;
-    if (Backup_G_Op == SELECT)
-      Start_HotBox(CONTINUE);
-    Backup_G_Op = 0;
-  }
+        if (GraphicsOp == S_PASTE) {
+                GraphicsOp = S_WAIT_RELEASE;
+        } else {
+                GraphicsOp = Backup_G_Op;
+                if (Backup_G_Op == SELECT)
+                        Start_HotBox(CONTINUE);
+                Backup_G_Op = 0;
+        }
 
-  XPutImage(dpy, color_icon, Color_gc, color_img, 0, 0, x, y,
-  color_img->width, color_img->height);
-  XPutImage(dpy, mono_icon, Mono_gc, mono_img, 0, 0, x, y,
-  mono_img->width, mono_img->height);
-  XCopyArea(dpy, color_icon, XtWindow(iconImage), Color_gc,
-  x, y, color_img->width, color_img->height, x, y);
-  XCopyArea(dpy, mono_icon, XtWindow(monoImage), Mono_gc,
-  x, y, mono_img->width, mono_img->height, x, y);
-  Transfer_Back_Image(x, y, x+color_img->width, y+color_img->height, FILL);
+        XPutImage(dpy, color_icon, Color_gc, color_img, 0, 0, x, y,
+                  color_img->width, color_img->height);
+        XPutImage(dpy, mono_icon, Mono_gc, mono_img, 0, 0, x, y,
+                  mono_img->width, mono_img->height);
+        XCopyArea(dpy, color_icon, XtWindow(iconImage), Color_gc, x, y,
+                  color_img->width, color_img->height, x, y);
+        XCopyArea(dpy, mono_icon, XtWindow(monoImage), Mono_gc, x, y,
+                  mono_img->width, mono_img->height, x, y);
+        Transfer_Back_Image(x, y, x + color_img->width, y + color_img->height,
+                            FILL);
 }
-

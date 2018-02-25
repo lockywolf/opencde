@@ -42,22 +42,10 @@
 #ifndef _Dtksh_define_h
 #define _Dtksh_define_h
 
-
-
-extern int do_define( 
-                        int argc,
-                        char **argv) ;
-extern int fdef( 
-                        char *str,
-                        unsigned long *val) ;
-extern int do_deflist( 
-                        int argc,
-                        char **argv) ;
-extern int do_finddef( 
-                        int argc,
-                        char **argv) ;
-
-
+extern int do_define(int argc, char **argv);
+extern int fdef(char *str, unsigned long *val);
+extern int do_deflist(int argc, char **argv);
+extern int do_finddef(int argc, char **argv);
 
 #endif /* _Dtksh_define_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

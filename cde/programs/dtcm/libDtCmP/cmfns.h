@@ -30,7 +30,6 @@
  * (c) Copyright 1993, 1994 Novell, Inc. 				*
  */
 
-
 #ifndef _CMFNS_H
 #define _CMFNS_H
 
@@ -38,8 +37,8 @@
 
 #include "dtfns.h"
 
-#define CMFNS_CALENDAR_SERVICE	"calendar"
-#define CMFNS_CALENDAR_TYPE	"SUNW_fns_calendar"
+#define CMFNS_CALENDAR_SERVICE "calendar"
+#define CMFNS_CALENDAR_TYPE "SUNW_fns_calendar"
 #define CMFNS_CALENDAR_ADDR_TYPE "SUNW_cal_str"
 
 #ifdef FNS_DEMO
@@ -51,10 +50,9 @@ int cmfns_name_from_file(const char *path, char *name, int len);
 
 extern int cmfns_use_fns(Props *);
 extern int cmfns_lookup_calendar(const char *name, char *addr_buf,
-				 int addr_size);
+                                 int addr_size);
 extern int cmfns_register_calendar(const char *name, const char *calendar);
 
 #endif /* FNS */
 
 #endif /* _CMFNS_H */
-

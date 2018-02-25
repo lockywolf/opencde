@@ -28,7 +28,7 @@
  **
  **   Project:     CacheCreeek (Rivers) Project.
  **
- **   
+ **
  **   Description: Private header all Dt error messages defines.
  **
  **
@@ -43,9 +43,8 @@
  **
  ****************************************************************************
  ************************************<+>*************************************/
-#ifndef	_MessagesP_h
-#define	_MessagesP_h
-
+#ifndef _MessagesP_h
+#define _MessagesP_h
 
 /* Quick Help Dialog Error _CoeMessage Variables */
 extern const char _DtMsgQuickHelp_0000[];
@@ -65,13 +64,5 @@ extern const char _DtHelpMsg_0009[];
 extern const char _DtHelpMsg_0010[];
 extern const char _DtHelpMsg_0011[];
 
-
-
 #endif /* _MessagesP_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */
-
-
-
-
-
-

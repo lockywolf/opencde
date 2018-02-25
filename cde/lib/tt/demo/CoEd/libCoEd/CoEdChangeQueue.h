@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: CoEdChangeQueue.h /main/3 1995/10/20 17:06:37 rswiston $ 			 				 */
+/*%%  $XConsortium: CoEdChangeQueue.h /main/3 1995/10/20 17:06:37 rswiston $
+ */
 /* -*-C++-*-
  *
  * CoEdChangeQueue.h
@@ -59,11 +60,11 @@
 #include "CoEdTextChange.h"
 
 class CoEdChangeQueue : private CoEdTextChangeList {
-    public:
-	CoEdChangeQueue();
+      public:
+        CoEdChangeQueue();
 
-	void		insert( CoEdTextChange *change );
-	CoEdTextChange *deQEligibleChng( const CoEdTextVersion &version );
+        void insert(CoEdTextChange *change);
+        CoEdTextChange *deQEligibleChng(const CoEdTextVersion &version);
 };
 
 #endif CoEdChangeQueue_h

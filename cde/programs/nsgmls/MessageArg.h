@@ -40,45 +40,48 @@ namespace SP_NAMESPACE {
 class MessageBuilder;
 
 class SP_API MessageArg {
-public:
-  MessageArg();
-  virtual ~MessageArg();
-  virtual MessageArg *copy() const = 0;
-  virtual void append(MessageBuilder &) const = 0;
+      public:
+        MessageArg();
+        virtual ~MessageArg();
+        virtual MessageArg *copy() const = 0;
+        virtual void append(MessageBuilder &) const = 0;
 };
 
 class SP_API StringMessageArg : public MessageArg {
-public:
-  StringMessageArg(const StringC &);
-  MessageArg *copy() const;
-  void append(MessageBuilder &) const;
-private:
-  StringC s_;
+      public:
+        StringMessageArg(const StringC &);
+        MessageArg *copy() const;
+        void append(MessageBuilder &) const;
+
+      private:
+        StringC s_;
 };
 
 class SP_API NumberMessageArg : public MessageArg {
-public:
-  NumberMessageArg(unsigned long);
-  MessageArg *copy() const;
-  void append(MessageBuilder &) const;
-private:
-  unsigned long n_;
+      public:
+        NumberMessageArg(unsigned long);
+        MessageArg *copy() const;
+        void append(MessageBuilder &) const;
+
+      private:
+        unsigned long n_;
 };
 
 class SP_API OrdinalMessageArg : public MessageArg {
-public:
-  OrdinalMessageArg(unsigned long);
-  MessageArg *copy() const;
-  void append(MessageBuilder &) const;
-private:
-  unsigned long n_;
+      public:
+        OrdinalMessageArg(unsigned long);
+        MessageArg *copy() const;
+        void append(MessageBuilder &) const;
+
+      private:
+        unsigned long n_;
 };
 
 class SP_API OtherMessageArg : public MessageArg {
-  RTTI_CLASS
-public:
-  OtherMessageArg();
-  void append(MessageBuilder &) const;
+        RTTI_CLASS
+      public:
+        OtherMessageArg();
+        void append(MessageBuilder &) const;
 };
 
 #ifdef SP_NAMESPACE

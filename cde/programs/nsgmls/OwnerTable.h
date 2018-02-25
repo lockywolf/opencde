@@ -33,33 +33,34 @@
 namespace SP_NAMESPACE {
 #endif
 
-template<class T, class K, class HF, class KF>
+template <class T, class K, class HF, class KF>
 class OwnerTable : public PointerTable<T *, K, HF, KF> {
-public:
-  OwnerTable() { }
-  ~OwnerTable();
-  void clear();
-  void swap(OwnerTable<T, K, HF, KF> &x) {
-    PointerTable<T *, K, HF, KF>::swap(x);
-  }
-private:
-  OwnerTable(const OwnerTable<T, K, HF, KF> &) {}
-  void operator=(const OwnerTable<T, K, HF, KF> &) {}
+      public:
+        OwnerTable() {}
+        ~OwnerTable();
+        void clear();
+        void swap(OwnerTable<T, K, HF, KF> &x) {
+                PointerTable<T *, K, HF, KF>::swap(x);
+        }
+
+      private:
+        OwnerTable(const OwnerTable<T, K, HF, KF> &) {}
+        void operator=(const OwnerTable<T, K, HF, KF> &) {}
 };
 
-template<class T, class K, class HF, class KF>
+template <class T, class K, class HF, class KF>
 class OwnerTableIter : public PointerTableIter<T *, K, HF, KF> {
-public:
-  OwnerTableIter(const OwnerTable<T, K, HF, KF> &table)
-    : PointerTableIter<T *, K, HF, KF>(table) { }
+      public:
+        OwnerTableIter(const OwnerTable<T, K, HF, KF> &table)
+            : PointerTableIter<T *, K, HF, KF>(table) {}
 };
 
-template<class T, class K, class HF, class KF>
+template <class T, class K, class HF, class KF>
 class CopyOwnerTable : public OwnerTable<T, K, HF, KF> {
-public:
-  CopyOwnerTable() { }
-  CopyOwnerTable(const CopyOwnerTable<T, K, HF, KF> &tab) { *this = tab; }
-  void operator=(const CopyOwnerTable<T, K, HF, KF> &tab);
+      public:
+        CopyOwnerTable() {}
+        CopyOwnerTable(const CopyOwnerTable<T, K, HF, KF> &tab) { *this = tab; }
+        void operator=(const CopyOwnerTable<T, K, HF, KF> &tab);
 };
 
 #ifdef SP_NAMESPACE

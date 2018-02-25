@@ -24,7 +24,8 @@
 **
 **  alarm.h
 **
-**  static char sccsid[] = "@(#)alarm.h 1.8 94/11/07 Copyr 1991 Sun Microsystems, Inc."; 
+**  static char sccsid[] = "@(#)alarm.h 1.8 94/11/07 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $XConsortium: alarm.h /main/3 1995/11/03 10:17:51 rswiston $
 **
@@ -55,13 +56,13 @@
 #include <csa.h>
 #include "ansi_c.h"
 
-extern void compose		P((Calendar*, CSA_reminder_reference *, char**));
-extern void flash_it		P((XtPointer, XtIntervalId*));
-extern void mail_it		P((XtPointer, XtIntervalId*, CSA_reminder_reference *));
-extern void open_it		P((XtPointer, XtIntervalId*, CSA_reminder_reference *));
-extern void postup_show_proc	P((Calendar*, CSA_reminder_reference *));
-extern void reminder_driver	P((XtPointer, XtIntervalId*));
-extern void ring_it		P((XtPointer, XtIntervalId*));
-extern void slp			P((int x));
+extern void compose P((Calendar *, CSA_reminder_reference *, char **));
+extern void flash_it P((XtPointer, XtIntervalId *));
+extern void mail_it P((XtPointer, XtIntervalId *, CSA_reminder_reference *));
+extern void open_it P((XtPointer, XtIntervalId *, CSA_reminder_reference *));
+extern void postup_show_proc P((Calendar *, CSA_reminder_reference *));
+extern void reminder_driver P((XtPointer, XtIntervalId *));
+extern void ring_it P((XtPointer, XtIntervalId *));
+extern void slp P((int x));
 
 #endif

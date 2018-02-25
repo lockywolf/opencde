@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp_msg_context_utils.h /main/3 1995/10/23 10:25:39 rswiston $ 			 				 */
+/*%%  $XConsortium: mp_msg_context_utils.h /main/3 1995/10/23 10:25:39 rswiston
+ * $ 			 				 */
 /*
  *
  * mp_msg_context_utils.h
@@ -38,6 +39,6 @@
 #include <mp/mp_context_utils.h>
 
 class _Tt_msg_context;
-declare_derived_list_of(_Tt_msg_context,_Tt_context)
+declare_derived_list_of(_Tt_msg_context, _Tt_context)
 
-#endif				/* MP_MSG_CONTEXT_UTILS_H */
+#endif /* MP_MSG_CONTEXT_UTILS_H */

@@ -39,88 +39,76 @@
 // position = posn eqop number
 // attribute-selector = attribute eqop string
 
-// log = and | or 
-
+// log = and | or
 
 class Element;
-class Symbol ;
+class Symbol;
 
 enum PQEqOp { PQEqual, PQNotEqual };
 enum PQBoolean { PQFalse, PQTrue };
 enum PQLogOp { PQand, PQor };
 
-class PQExpr
-{
-public:
-  virtual ~PQExpr();
-  virtual PQBoolean evaluate(const Element &) = 0;
+class PQExpr {
+      public:
+        virtual ~PQExpr();
+        virtual PQBoolean evaluate(const Element &) = 0;
 };
 
-class PQNot : public PQExpr
-{
-public:
-  PQNot(PQExpr *);
-  ~PQNot();
-  virtual PQBoolean evaluate(const Element &);
-private:
-  PQExpr	*f_expr;
+class PQNot : public PQExpr {
+      public:
+        PQNot(PQExpr *);
+        ~PQNot();
+        virtual PQBoolean evaluate(const Element &);
+
+      private:
+        PQExpr *f_expr;
 };
 
+class PQPosition : public PQExpr {
+      public:
+        PQPosition(PQEqOp optype, int position);
+        virtual PQBoolean evaluate(const Element &);
 
-class PQPosition : public PQExpr
-{
-public:
-  PQPosition(PQEqOp optype, int position);
-  virtual PQBoolean evaluate(const Element &);
-
-private:
-  PQEqOp	f_optype;
-  int	f_position ;
+      private:
+        PQEqOp f_optype;
+        int f_position;
 };
 
-class PQSibling: public PQExpr
-{
-public:
-  PQSibling(PQEqOp optype, int sibling);
-  virtual PQBoolean evaluate(const Element &);
+class PQSibling : public PQExpr {
+      public:
+        PQSibling(PQEqOp optype, int sibling);
+        virtual PQBoolean evaluate(const Element &);
 
-private:
-  PQEqOp	f_optype;
-  int	f_sibling;
+      private:
+        PQEqOp f_optype;
+        int f_sibling;
 };
 
-class PQAttributeSelector : public PQExpr
-{
-public:
-  PQAttributeSelector(const Symbol &attrname, PQEqOp, const CC_String &string);
-  ~PQAttributeSelector();
-  virtual PQBoolean evaluate(const Element &);
-private:
-  PQEqOp	f_optype ;
-  Symbol	f_attribute;
-  CC_String	f_string ;
+class PQAttributeSelector : public PQExpr {
+      public:
+        PQAttributeSelector(const Symbol &attrname, PQEqOp,
+                            const CC_String &string);
+        ~PQAttributeSelector();
+        virtual PQBoolean evaluate(const Element &);
+
+      private:
+        PQEqOp f_optype;
+        Symbol f_attribute;
+        CC_String f_string;
 };
 
-class PQLogExpr : public PQExpr
-{
-public:
+class PQLogExpr : public PQExpr {
+      public:
+        PQLogExpr(PQExpr *left, PQLogOp op, PQExpr *right);
+        ~PQLogExpr();
 
-  PQLogExpr(PQExpr *left, PQLogOp op, PQExpr *right);
-  ~PQLogExpr();
+        virtual PQBoolean evaluate(const Element &);
 
-  virtual PQBoolean evaluate(const Element &);
-
-private:
-
-  PQLogOp	 f_optype ;
-  PQExpr	*f_left ;
-  PQExpr	*f_right ;
+      private:
+        PQLogOp f_optype;
+        PQExpr *f_left;
+        PQExpr *f_right;
 };
-
-
-
 
 #endif /* _PathQualifier_h */
 /* DO NOT ADD ANY LINES AFTER THIS #endif */
-
-

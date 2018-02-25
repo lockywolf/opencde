@@ -90,7 +90,6 @@ extern int errno;
 #include "FormatSDLI.h"
 #include "StringFuncsI.h"
 
-
 #ifdef NLS16
 #endif
 
@@ -103,10 +102,11 @@ extern int errno;
  * Private variables and defines.
  *
  *****************************************************************************/
-#define	BUFF_SIZE	1024
+#define BUFF_SIZE 1024
 
-static	char	*ScanString = "\n\t";
-static const _FrmtUiInfo defUiInfo = { NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 1, False };
+static char *ScanString = "\n\t";
+static const _FrmtUiInfo defUiInfo = {NULL, NULL, NULL, NULL, NULL,
+                                      NULL, 0,    0,    1,    False};
 
 /******************************************************************************
  *
@@ -126,276 +126,265 @@ static const _FrmtUiInfo defUiInfo = { NULL, NULL, NULL, NULL, NULL, NULL, 0, 0,
  * Purpose:	Take some rich text chunks and turn it into an XmString.
  *
  ******************************************************************************/
-static int
-FormatChunksToXmString(
-    DtHelpDispAreaStruct *pDAS,
-    Boolean		  free_flag,
-    void		**title_chunks,
-    XmString		 *ret_title,
-    XmFontList		 *ret_list,
-    Boolean		 *ret_mod )
-{
-    int			 result = 0;
-    int			 i;
-    long		 j;
-    int			 quarkCount;
-    long		 chunkType;
-    long		 myIdx;
-    _DtCvPointer	 fontPtr;
-    char		*charSet;
-    const char		*strChunk;
-    char		 buffer[16];
-    _DtHelpFontHints		 fontSpecs;
-    XmFontContext	 fontContext;
-    XmString		 partTitle;
-    XmString		 newTitle;
-    XrmQuark		 charSetQuark;
-    XrmName		 myCharSetQuarks[20];
-    XrmName		 xrmName[_CEFontAttrNumber];
-    Boolean		 myMore;
+static int FormatChunksToXmString(DtHelpDispAreaStruct *pDAS, Boolean free_flag,
+                                  void **title_chunks, XmString *ret_title,
+                                  XmFontList *ret_list, Boolean *ret_mod) {
+        int result = 0;
+        int i;
+        long j;
+        int quarkCount;
+        long chunkType;
+        long myIdx;
+        _DtCvPointer fontPtr;
+        char *charSet;
+        const char *strChunk;
+        char buffer[16];
+        _DtHelpFontHints fontSpecs;
+        XmFontContext fontContext;
+        XmString partTitle;
+        XmString newTitle;
+        XrmQuark charSetQuark;
+        XrmName myCharSetQuarks[20];
+        XrmName xrmName[_CEFontAttrNumber];
+        Boolean myMore;
 
-    /*
-     * Initialize the pointers.
-     */
-    *ret_title = NULL;
-    *ret_mod   = False;
-
-    if (title_chunks == NULL)
-	return -1;
-
-    /*
-     * initialize the font context
-     */
-    _DtHelpCeCopyDefFontAttrList(&fontSpecs);
-    if ( NULL != *ret_list )
-      {
-        if (XmFontListInitFontContext (&fontContext, *ret_list) == False)
-            result = -1;
-        else
-          {
-            XFontStruct *myFontStruct;
-            /*
-             * quarkize all the character sets found.
-             */
-            quarkCount = 0;
-            do
-              {
-                myMore = XmFontListGetNextFont (fontContext, &charSet,
-                                                                &myFontStruct);
-                if (myMore)
-                  {
-                    myCharSetQuarks[quarkCount++] =
-                                                XrmStringToQuark (charSet);
-                    XtFree (charSet);
-                  }
-              } while (myMore);
-
-            XmFontListFreeFontContext (fontContext);
-          }
-      } /* if NULL != *ret_list */
-    else
-      { /* if NULL == *ret_list */
-         quarkCount = 0;
-         myCharSetQuarks[0] = 0;
-      }
-
-    /*
-     * Build the XrmString based on the segments.
-     * The format of the returned information is
-     *		'DT_HELP_CE_CHARSET  locale  string'
-     *		'DT_HELP_CE_FONT_PTR fontptr string'
-     *		'DT_HELP_CE_SPC      spc'
-     *		'DT_HELP_CE_STRING   string' - uses last specified
-     *                                         charset/font_ptr.
-     *
-     * The order and manner in which the title_chunks are processed
-     * is known and depended upon in several locations.
-     * Do not change this without changing the other locations.
-     * See the _DtHelpFormatxxx() routines and the ones that
-     * create the title_chunk arrays in FormatSDL.c and FormatCCDF.c
-     */
-    myIdx = __DtHelpDefaultFontIndexGet(pDAS);
-    _DtHelpCopyDefaultList(xrmName);
-    for (i = 0; result == 0 && title_chunks[i] != DT_HELP_CE_END; i++)
-      {
         /*
-         * create a string for the char set and a quark for it.
+         * Initialize the pointers.
          */
-	chunkType = (long) title_chunks[i++];
+        *ret_title = NULL;
+        *ret_mod = False;
+
+        if (title_chunks == NULL)
+                return -1;
 
         /*
-	 * i now points to the first value after the type
-	 */
-	if (chunkType & DT_HELP_CE_CHARSET)
-	  {
-	    char *charSet;
-	    char *lang = (char *) title_chunks[i];
-
-	    /*
-	     * test to see if the locale is in a lang.codeset form
-	     */
-	    if (_DtHelpCeStrchr(lang, ".", 1, &charSet) == 0)
-	      {
-		*charSet = '\0';
-		charSet++;
-	      }
-	    else
-	      {
-		charSet = lang;
-		lang    = NULL;
-	      }
-
-	    /*
-	     * resolve/load the font for the default fonts
-	     */
-	    _DtHelpDAResolveFont(pDAS, lang, charSet, fontSpecs, &fontPtr);
-	    myIdx = (long) fontPtr;
-	    if (lang != NULL)
-	      {
-		charSet--;
-		*charSet = '.';
-	      }
-
-	    if (free_flag)
-	        free(title_chunks[i]);
-
-	    /*
-	     * move the i to point to the string.
-	     */
-	    i++;
-	  }
-	else if (chunkType & DT_HELP_CE_FONT_PTR)
-	  {
-	    /*
-	     * get the default font for the language and code set.
-	     */
-	    (void) __DtHelpFontCharSetQuarkGet(pDAS, (long)title_chunks[i],
-					&xrmName[_DT_HELP_FONT_CHAR_SET]);
-	    (void) __DtHelpFontLangQuarkGet(pDAS, (long)title_chunks[i],
-					&xrmName[_DT_HELP_FONT_LANG_TER]);
-	    (void) __DtHelpFontIndexGet(pDAS, xrmName, &myIdx);
-
-	    /*
-	     * move the i to point to the string.
-	     */
-	    i++;
-	  }
-
-        /*
-	 * the i point spc or string.
-	 */
-	if (chunkType & DT_HELP_CE_SPC)
-	  {
-	    j        = (long) title_chunks[i];
-	    strChunk = _DtHelpDAGetSpcString(pDAS->spc_chars[j].spc_idx);
-	    fontPtr  = pDAS->spc_chars[j].font_ptr;
-
-	    /*
-	     * get the default font for the language and code set.
-	     */
-	    (void) __DtHelpFontCharSetQuarkGet(pDAS, (long)fontPtr,
-					&xrmName[_DT_HELP_FONT_CHAR_SET]);
-	    (void) __DtHelpFontLangQuarkGet(pDAS, (long)fontPtr,
-					&xrmName[_DT_HELP_FONT_LANG_TER]);
-	    (void) __DtHelpFontIndexGet(pDAS, xrmName, &myIdx);
-	  }
-	else /* if (chunkType & _DT_HELP_CE_STRING) */
-	    strChunk = (char *) title_chunks[i];
-
-	snprintf(buffer, 16, "%ld", myIdx);
-	charSetQuark = XrmStringToQuark(buffer);
-
-        j = 0;
-        while (j < quarkCount && myCharSetQuarks[j] != charSetQuark)
-            j++;
-
-        /*
-         * If we didn't find a matching character set,
-         * add it to the list.
+         * initialize the font context
          */
-        if (j >= quarkCount)
-          {
-	    /* Copy the input list so XmFontListAppendEntry can mangle it. */
-	    /* But only do it once! */
-	    if (False == *ret_mod)
-	       *ret_list = XmFontListCopy(*ret_list);
+        _DtHelpCeCopyDefFontAttrList(&fontSpecs);
+        if (NULL != *ret_list) {
+                if (XmFontListInitFontContext(&fontContext, *ret_list) == False)
+                        result = -1;
+                else {
+                        XFontStruct *myFontStruct;
+                        /*
+                         * quarkize all the character sets found.
+                         */
+                        quarkCount = 0;
+                        do {
+                                myMore = XmFontListGetNextFont(
+                                    fontContext, &charSet, &myFontStruct);
+                                if (myMore) {
+                                        myCharSetQuarks[quarkCount++] =
+                                            XrmStringToQuark(charSet);
+                                        XtFree(charSet);
+                                }
+                        } while (myMore);
 
-	    if (myIdx < 0)
-	      {
-		XFontSet fontSet = __DtHelpFontSetGet(pDAS->font_info, myIdx);
-                XmFontListEntry fontEntry;
-
-		fontEntry = XmFontListEntryCreate (buffer,
-						XmFONT_IS_FONTSET,
-						(XtPointer) fontSet);
-		*ret_list = XmFontListAppendEntry (*ret_list, fontEntry);
-		XmFontListEntryFree (&fontEntry);
-	      }
-	    else
-	      {
-		XFontStruct *fontStruct =
-				__DtHelpFontStructGet(pDAS->font_info, myIdx);
-                XmFontListEntry fontEntry;
-
-		fontEntry = XmFontListEntryCreate (buffer,
-						XmFONT_IS_FONT,
-						(XtPointer) fontStruct);
-		*ret_list = XmFontListAppendEntry (*ret_list, fontEntry);
-		XmFontListEntryFree (&fontEntry);
-	      }
-
-           *ret_mod = True;
-            if (*ret_list == NULL)
-                result = -1;
-
-            myCharSetQuarks[quarkCount++] = charSetQuark;
-          }
+                        XmFontListFreeFontContext(fontContext);
+                }
+        }      /* if NULL != *ret_list */
+        else { /* if NULL == *ret_list */
+                quarkCount = 0;
+                myCharSetQuarks[0] = 0;
+        }
 
         /*
-         * add this segment to the XmString.
+         * Build the XrmString based on the segments.
+         * The format of the returned information is
+         *		'DT_HELP_CE_CHARSET  locale  string'
+         *		'DT_HELP_CE_FONT_PTR fontptr string'
+         *		'DT_HELP_CE_SPC      spc'
+         *		'DT_HELP_CE_STRING   string' - uses last specified
+         *                                         charset/font_ptr.
+         *
+         * The order and manner in which the title_chunks are processed
+         * is known and depended upon in several locations.
+         * Do not change this without changing the other locations.
+         * See the _DtHelpFormatxxx() routines and the ones that
+         * create the title_chunk arrays in FormatSDL.c and FormatCCDF.c
          */
-        if (result == 0)
-          {
-            if (*ret_title == NULL)
-                *ret_title = XmStringGenerate ((char *) strChunk, buffer,
-					       XmCHARSET_TEXT, NULL);
-            else
-              {
-                partTitle = XmStringGenerate ((char *) strChunk, buffer,
-					      XmCHARSET_TEXT, NULL);
+        myIdx = __DtHelpDefaultFontIndexGet(pDAS);
+        _DtHelpCopyDefaultList(xrmName);
+        for (i = 0; result == 0 && title_chunks[i] != DT_HELP_CE_END; i++) {
+                /*
+                 * create a string for the char set and a quark for it.
+                 */
+                chunkType = (long)title_chunks[i++];
 
-                newTitle = XmStringConcat (*ret_title, partTitle);
+                /*
+                 * i now points to the first value after the type
+                 */
+                if (chunkType & DT_HELP_CE_CHARSET) {
+                        char *charSet;
+                        char *lang = (char *)title_chunks[i];
 
-                XmStringFree (*ret_title);
-                XmStringFree (partTitle);
-                *ret_title = newTitle;
-              }
+                        /*
+                         * test to see if the locale is in a lang.codeset form
+                         */
+                        if (_DtHelpCeStrchr(lang, ".", 1, &charSet) == 0) {
+                                *charSet = '\0';
+                                charSet++;
+                        } else {
+                                charSet = lang;
+                                lang = NULL;
+                        }
 
-            /*
-             * if a newline was specified,
-             * replace it with a blank.
-             */
-            if (*ret_title != NULL && (chunkType & DT_HELP_CE_NEWLINE))
-              {
-                partTitle = XmStringGenerate (" ", buffer, XmCHARSET_TEXT, NULL);
-                newTitle = XmStringConcat (*ret_title, partTitle);
-                XmStringFree (*ret_title);
-                XmStringFree (partTitle);
-                *ret_title = newTitle;
-              }
+                        /*
+                         * resolve/load the font for the default fonts
+                         */
+                        _DtHelpDAResolveFont(pDAS, lang, charSet, fontSpecs,
+                                             &fontPtr);
+                        myIdx = (long)fontPtr;
+                        if (lang != NULL) {
+                                charSet--;
+                                *charSet = '.';
+                        }
 
-            if (*ret_title == NULL)
-                result = -1;
-          }
+                        if (free_flag)
+                                free(title_chunks[i]);
 
-	if (free_flag && (chunkType & DT_HELP_CE_STRING))
-	    free(title_chunks[i]);
-      }
-    /*
-     * deallocate the memory.
-     */
-    if (free_flag) free(title_chunks);
-    return result;
+                        /*
+                         * move the i to point to the string.
+                         */
+                        i++;
+                } else if (chunkType & DT_HELP_CE_FONT_PTR) {
+                        /*
+                         * get the default font for the language and code set.
+                         */
+                        (void)__DtHelpFontCharSetQuarkGet(
+                            pDAS, (long)title_chunks[i],
+                            &xrmName[_DT_HELP_FONT_CHAR_SET]);
+                        (void)__DtHelpFontLangQuarkGet(
+                            pDAS, (long)title_chunks[i],
+                            &xrmName[_DT_HELP_FONT_LANG_TER]);
+                        (void)__DtHelpFontIndexGet(pDAS, xrmName, &myIdx);
+
+                        /*
+                         * move the i to point to the string.
+                         */
+                        i++;
+                }
+
+                /*
+                 * the i point spc or string.
+                 */
+                if (chunkType & DT_HELP_CE_SPC) {
+                        j = (long)title_chunks[i];
+                        strChunk =
+                            _DtHelpDAGetSpcString(pDAS->spc_chars[j].spc_idx);
+                        fontPtr = pDAS->spc_chars[j].font_ptr;
+
+                        /*
+                         * get the default font for the language and code set.
+                         */
+                        (void)__DtHelpFontCharSetQuarkGet(
+                            pDAS, (long)fontPtr,
+                            &xrmName[_DT_HELP_FONT_CHAR_SET]);
+                        (void)__DtHelpFontLangQuarkGet(
+                            pDAS, (long)fontPtr,
+                            &xrmName[_DT_HELP_FONT_LANG_TER]);
+                        (void)__DtHelpFontIndexGet(pDAS, xrmName, &myIdx);
+                } else /* if (chunkType & _DT_HELP_CE_STRING) */
+                        strChunk = (char *)title_chunks[i];
+
+                snprintf(buffer, 16, "%ld", myIdx);
+                charSetQuark = XrmStringToQuark(buffer);
+
+                j = 0;
+                while (j < quarkCount && myCharSetQuarks[j] != charSetQuark)
+                        j++;
+
+                /*
+                 * If we didn't find a matching character set,
+                 * add it to the list.
+                 */
+                if (j >= quarkCount) {
+                        /* Copy the input list so XmFontListAppendEntry can
+                         * mangle it. */
+                        /* But only do it once! */
+                        if (False == *ret_mod)
+                                *ret_list = XmFontListCopy(*ret_list);
+
+                        if (myIdx < 0) {
+                                XFontSet fontSet =
+                                    __DtHelpFontSetGet(pDAS->font_info, myIdx);
+                                XmFontListEntry fontEntry;
+
+                                fontEntry = XmFontListEntryCreate(
+                                    buffer, XmFONT_IS_FONTSET,
+                                    (XtPointer)fontSet);
+                                *ret_list =
+                                    XmFontListAppendEntry(*ret_list, fontEntry);
+                                XmFontListEntryFree(&fontEntry);
+                        } else {
+                                XFontStruct *fontStruct = __DtHelpFontStructGet(
+                                    pDAS->font_info, myIdx);
+                                XmFontListEntry fontEntry;
+
+                                fontEntry = XmFontListEntryCreate(
+                                    buffer, XmFONT_IS_FONT,
+                                    (XtPointer)fontStruct);
+                                *ret_list =
+                                    XmFontListAppendEntry(*ret_list, fontEntry);
+                                XmFontListEntryFree(&fontEntry);
+                        }
+
+                        *ret_mod = True;
+                        if (*ret_list == NULL)
+                                result = -1;
+
+                        myCharSetQuarks[quarkCount++] = charSetQuark;
+                }
+
+                /*
+                 * add this segment to the XmString.
+                 */
+                if (result == 0) {
+                        if (*ret_title == NULL)
+                                *ret_title =
+                                    XmStringGenerate((char *)strChunk, buffer,
+                                                     XmCHARSET_TEXT, NULL);
+                        else {
+                                partTitle =
+                                    XmStringGenerate((char *)strChunk, buffer,
+                                                     XmCHARSET_TEXT, NULL);
+
+                                newTitle =
+                                    XmStringConcat(*ret_title, partTitle);
+
+                                XmStringFree(*ret_title);
+                                XmStringFree(partTitle);
+                                *ret_title = newTitle;
+                        }
+
+                        /*
+                         * if a newline was specified,
+                         * replace it with a blank.
+                         */
+                        if (*ret_title != NULL &&
+                            (chunkType & DT_HELP_CE_NEWLINE)) {
+                                partTitle = XmStringGenerate(
+                                    " ", buffer, XmCHARSET_TEXT, NULL);
+                                newTitle =
+                                    XmStringConcat(*ret_title, partTitle);
+                                XmStringFree(*ret_title);
+                                XmStringFree(partTitle);
+                                *ret_title = newTitle;
+                        }
+
+                        if (*ret_title == NULL)
+                                result = -1;
+                }
+
+                if (free_flag && (chunkType & DT_HELP_CE_STRING))
+                        free(title_chunks[i]);
+        }
+        /*
+         * deallocate the memory.
+         */
+        if (free_flag)
+                free(title_chunks);
+        return result;
 }
 
 /******************************************************************************
@@ -422,108 +411,98 @@ FormatChunksToXmString(
  *		CEParagraph structures.
  *
  *****************************************************************************/
-int
-_DtHelpFormatAsciiFile(
-	XtPointer	  client_data,
-	char		 *filename,
-	XtPointer	 *ret_handle)
-{
-    int	       myFile;
-    int	       result = -1;
-    _DtHelpFontHints fontAttrs;
-    char       buffer [BUFF_SIZE];
-    BufFilePtr rawInput;
-    XtPointer   varHandle;
-    _DtCvTopicPtr	  topic    = NULL;
-    DtHelpDispAreaStruct *pDAS     = (DtHelpDispAreaStruct *) client_data;
-    _FrmtUiInfo           myUiInfo = defUiInfo;
+int _DtHelpFormatAsciiFile(XtPointer client_data, char *filename,
+                           XtPointer *ret_handle) {
+        int myFile;
+        int result = -1;
+        _DtHelpFontHints fontAttrs;
+        char buffer[BUFF_SIZE];
+        BufFilePtr rawInput;
+        XtPointer varHandle;
+        _DtCvTopicPtr topic = NULL;
+        DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *)client_data;
+        _FrmtUiInfo myUiInfo = defUiInfo;
 
-    /*
-     * check the parameters
-     */
-    if (filename == NULL || ret_handle == NULL)
-      {
-	errno = EINVAL;
-	return -1;
-      }
+        /*
+         * check the parameters
+         */
+        if (filename == NULL || ret_handle == NULL) {
+                errno = EINVAL;
+                return -1;
+        }
 
-    /*
-     * Initialize the pointers, buffers and counters
-     */
-    *ret_handle  = NULL;
+        /*
+         * Initialize the pointers, buffers and counters
+         */
+        *ret_handle = NULL;
 
-    /*
-     * open the file.
-     */
-    myFile = open (filename, O_RDONLY);
-    if (myFile != -1)
-      {
-	/*
-	 * set the information
-	 */
-	rawInput = _DtHelpCeBufFileRdWithFd(myFile);
-	if (rawInput == 0)
-	  {
-	    close (myFile);
-	    return -1;
-	  }
+        /*
+         * open the file.
+         */
+        myFile = open(filename, O_RDONLY);
+        if (myFile != -1) {
+                /*
+                 * set the information
+                 */
+                rawInput = _DtHelpCeBufFileRdWithFd(myFile);
+                if (rawInput == 0) {
+                        close(myFile);
+                        return -1;
+                }
 
-        result = _DtHelpCeReadBuf (rawInput, buffer, BUFF_SIZE);
+                result = _DtHelpCeReadBuf(rawInput, buffer, BUFF_SIZE);
 
-	if (result != -1)
-	  {
-	    _DtHelpCeCopyDefFontAttrList (&fontAttrs);
-	    fontAttrs.spacing = _DtHelpFontSpacingMono;
-	    _DtHelpCeXlateOpToStdLocale(DtLCX_OPER_SETLOCALE,
-				setlocale(LC_CTYPE,NULL), NULL,
-				&(fontAttrs.language), &(fontAttrs.char_set));
+                if (result != -1) {
+                        _DtHelpCeCopyDefFontAttrList(&fontAttrs);
+                        fontAttrs.spacing = _DtHelpFontSpacingMono;
+                        _DtHelpCeXlateOpToStdLocale(
+                            DtLCX_OPER_SETLOCALE, setlocale(LC_CTYPE, NULL),
+                            NULL, &(fontAttrs.language), &(fontAttrs.char_set));
 
-	    /*
-	     * fill out the ui information
-	     */
-	    myUiInfo.load_font    = _DtHelpDAResolveFont;
-	    myUiInfo.client_data  = (_DtCvPointer) pDAS;
-	    myUiInfo.line_width   = pDAS->lineThickness;
-	    myUiInfo.line_height  = pDAS->lineHeight;
-	    myUiInfo.leading      = pDAS->leading;
-	    myUiInfo.avg_char     = (int)(pDAS->charWidth / 10 +
-					((pDAS->charWidth % 10) ? 1 : 0));
-	    myUiInfo.nl_to_space  = pDAS->nl_to_space;
+                        /*
+                         * fill out the ui information
+                         */
+                        myUiInfo.load_font = _DtHelpDAResolveFont;
+                        myUiInfo.client_data = (_DtCvPointer)pDAS;
+                        myUiInfo.line_width = pDAS->lineThickness;
+                        myUiInfo.line_height = pDAS->lineHeight;
+                        myUiInfo.leading = pDAS->leading;
+                        myUiInfo.avg_char =
+                            (int)(pDAS->charWidth / 10 +
+                                  ((pDAS->charWidth % 10) ? 1 : 0));
+                        myUiInfo.nl_to_space = pDAS->nl_to_space;
 
-	    /*
-	     * get the formatting structure.
-	     */
-	    varHandle = __DtHelpCeSetUpVars(fontAttrs.language,
-						fontAttrs.char_set, &myUiInfo);
-	    if (varHandle == NULL)
-	      {
-	        free(fontAttrs.language);
-	        free(fontAttrs.char_set);
-		return -1;
-	      }
+                        /*
+                         * get the formatting structure.
+                         */
+                        varHandle = __DtHelpCeSetUpVars(
+                            fontAttrs.language, fontAttrs.char_set, &myUiInfo);
+                        if (varHandle == NULL) {
+                                free(fontAttrs.language);
+                                free(fontAttrs.char_set);
+                                return -1;
+                        }
 
-	    result = __DtHelpCeProcessString (varHandle, rawInput,
-				_DtCvLITERAL,
-				ScanString, buffer, BUFF_SIZE,
-				0, False, &fontAttrs);
+                        result = __DtHelpCeProcessString(
+                            varHandle, rawInput, _DtCvLITERAL, ScanString,
+                            buffer, BUFF_SIZE, 0, False, &fontAttrs);
 
-	    if (result != -1)
-		result = __DtHelpCeGetParagraphList (varHandle, True,
-						_DtCvLITERAL,
-						&topic);
+                        if (result != -1)
+                                result = __DtHelpCeGetParagraphList(
+                                    varHandle, True, _DtCvLITERAL, &topic);
 
-	    free(fontAttrs.language);
-	    free(fontAttrs.char_set);
-	    free(varHandle);
-	  }
+                        free(fontAttrs.language);
+                        free(fontAttrs.char_set);
+                        free(varHandle);
+                }
 
-	_DtHelpCeBufFileClose(rawInput, True);
-      }
+                _DtHelpCeBufFileClose(rawInput, True);
+        }
 
-    *ret_handle = (XtPointer) topic;
-    return result;
+        *ret_handle = (XtPointer)topic;
+        return result;
 
-}  /* End _DtHelpFormatAsciiFile */
+} /* End _DtHelpFormatAsciiFile */
 
 /*****************************************************************************
  * Function:	int _DtHelpFormatAsciiString (char *input_string,
@@ -544,79 +523,70 @@ _DtHelpFormatAsciiFile(
  *		to force a break in the line.
  *
  *****************************************************************************/
-int
-_DtHelpFormatAsciiString(
-	XtPointer	  client_data,
-	char		 *input_string,
-	XtPointer	 *ret_handle)
-{
-    int      result = -1;
-    _DtHelpFontHints fontAttrs;
-    XtPointer varHandle;
-    _DtCvTopicPtr	  topic    = NULL;
-    DtHelpDispAreaStruct *pDAS     = (DtHelpDispAreaStruct *) client_data;
-    _FrmtUiInfo           myUiInfo = defUiInfo;
+int _DtHelpFormatAsciiString(XtPointer client_data, char *input_string,
+                             XtPointer *ret_handle) {
+        int result = -1;
+        _DtHelpFontHints fontAttrs;
+        XtPointer varHandle;
+        _DtCvTopicPtr topic = NULL;
+        DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *)client_data;
+        _FrmtUiInfo myUiInfo = defUiInfo;
 
-    /*
-     * check the parameters.
-     */
-    if (input_string == NULL || ret_handle == NULL)
-      {
-	errno = EINVAL;
-	return -1;
-      }
+        /*
+         * check the parameters.
+         */
+        if (input_string == NULL || ret_handle == NULL) {
+                errno = EINVAL;
+                return -1;
+        }
 
-    /*
-     * fill out the ui information
-     */
-    myUiInfo.load_font    = _DtHelpDAResolveFont;
-    myUiInfo.client_data  = (_DtCvPointer) pDAS;
-    myUiInfo.line_width   = pDAS->lineThickness;
-    myUiInfo.line_height  = pDAS->lineHeight;
-    myUiInfo.leading      = pDAS->leading;
-    myUiInfo.avg_char     = (int)(pDAS->charWidth / 10 +
-				    ((pDAS->charWidth % 10) ? 1 : 0));
-    myUiInfo.nl_to_space  = pDAS->nl_to_space;
+        /*
+         * fill out the ui information
+         */
+        myUiInfo.load_font = _DtHelpDAResolveFont;
+        myUiInfo.client_data = (_DtCvPointer)pDAS;
+        myUiInfo.line_width = pDAS->lineThickness;
+        myUiInfo.line_height = pDAS->lineHeight;
+        myUiInfo.leading = pDAS->leading;
+        myUiInfo.avg_char =
+            (int)(pDAS->charWidth / 10 + ((pDAS->charWidth % 10) ? 1 : 0));
+        myUiInfo.nl_to_space = pDAS->nl_to_space;
 
-    /*
-     * Get the initialized variables
-     */
-    *ret_handle  = NULL;
+        /*
+         * Get the initialized variables
+         */
+        *ret_handle = NULL;
 
-    _DtHelpCeCopyDefFontAttrList (&fontAttrs);
-    _DtHelpCeXlateOpToStdLocale(DtLCX_OPER_SETLOCALE,setlocale(LC_CTYPE,NULL),
-				NULL, &(fontAttrs.language),
-				&(fontAttrs.char_set));
+        _DtHelpCeCopyDefFontAttrList(&fontAttrs);
+        _DtHelpCeXlateOpToStdLocale(
+            DtLCX_OPER_SETLOCALE, setlocale(LC_CTYPE, NULL), NULL,
+            &(fontAttrs.language), &(fontAttrs.char_set));
 
-    varHandle = __DtHelpCeSetUpVars(fontAttrs.language, fontAttrs.char_set,
-						&myUiInfo);
-    if (varHandle == NULL)
-      {
+        varHandle = __DtHelpCeSetUpVars(fontAttrs.language, fontAttrs.char_set,
+                                        &myUiInfo);
+        if (varHandle == NULL) {
+                free(fontAttrs.language);
+                free(fontAttrs.char_set);
+                return -1;
+        }
+
+        result = __DtHelpCeProcessString(
+            varHandle, NULL, _DtCvLITERAL, ScanString, input_string,
+            strlen(input_string), 0, False, &fontAttrs);
+
+        if (result != -1)
+                result = __DtHelpCeGetParagraphList(varHandle, True,
+                                                    _DtCvLITERAL, &topic);
+
+        *ret_handle = (XtPointer)topic;
+
         free(fontAttrs.language);
         free(fontAttrs.char_set);
-	return -1;
-      }
+        free(varHandle);
 
-    result = __DtHelpCeProcessString (varHandle, NULL,
-				_DtCvLITERAL,
-				ScanString, input_string,
-				strlen(input_string),
-				0, False,
-				&fontAttrs);
+        return result;
 
-    if (result != -1)
-	result = __DtHelpCeGetParagraphList (varHandle, True, _DtCvLITERAL,
-								&topic);
-
-    *ret_handle = (XtPointer) topic;
-
-    free(fontAttrs.language);
-    free(fontAttrs.char_set);
-    free(varHandle);
-
-    return result;
-
-}  /* End _DtHelpFormatAsciiString */
+} /* End _DtHelpFormatAsciiString */
 
 /*****************************************************************************
  * Function:	int _DtHelpFormatAsciiStringDynamic (char *input_string,
@@ -637,78 +607,69 @@ _DtHelpFormatAsciiString(
  *		the current paragraph, not a line.
  *
  *****************************************************************************/
-int
-_DtHelpFormatAsciiStringDynamic(
-	XtPointer	  client_data,
-	char		 *input_string,
-	XtPointer	 *ret_handle)
-{
-    int      result = -1;
-    _DtHelpFontHints fontAttrs;
-    XtPointer varHandle;
-    _DtCvTopicPtr	  topic    = NULL;
-    DtHelpDispAreaStruct *pDAS     = (DtHelpDispAreaStruct *) client_data;
-    _FrmtUiInfo           myUiInfo = defUiInfo;
+int _DtHelpFormatAsciiStringDynamic(XtPointer client_data, char *input_string,
+                                    XtPointer *ret_handle) {
+        int result = -1;
+        _DtHelpFontHints fontAttrs;
+        XtPointer varHandle;
+        _DtCvTopicPtr topic = NULL;
+        DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *)client_data;
+        _FrmtUiInfo myUiInfo = defUiInfo;
 
-    /*
-     * check the parameters.
-     */
-    if (input_string == NULL || ret_handle == NULL)
-      {
-	errno = EINVAL;
-	return -1;
-      }
+        /*
+         * check the parameters.
+         */
+        if (input_string == NULL || ret_handle == NULL) {
+                errno = EINVAL;
+                return -1;
+        }
 
-    /*
-     * fill out the ui information
-     */
-    myUiInfo.load_font    = _DtHelpDAResolveFont;
-    myUiInfo.client_data  = (_DtCvPointer) pDAS;
-    myUiInfo.line_width   = pDAS->lineThickness;
-    myUiInfo.line_height  = pDAS->lineHeight;
-    myUiInfo.leading      = pDAS->leading;
-    myUiInfo.avg_char     = (int)(pDAS->charWidth / 10 +
-				    ((pDAS->charWidth % 10) ? 1 : 0));
-    myUiInfo.nl_to_space  = pDAS->nl_to_space;
+        /*
+         * fill out the ui information
+         */
+        myUiInfo.load_font = _DtHelpDAResolveFont;
+        myUiInfo.client_data = (_DtCvPointer)pDAS;
+        myUiInfo.line_width = pDAS->lineThickness;
+        myUiInfo.line_height = pDAS->lineHeight;
+        myUiInfo.leading = pDAS->leading;
+        myUiInfo.avg_char =
+            (int)(pDAS->charWidth / 10 + ((pDAS->charWidth % 10) ? 1 : 0));
+        myUiInfo.nl_to_space = pDAS->nl_to_space;
 
-    /*
-     * Fake the flag and give the string as the input buffer.
-     */
-    *ret_handle  = NULL;
+        /*
+         * Fake the flag and give the string as the input buffer.
+         */
+        *ret_handle = NULL;
 
-    _DtHelpCeCopyDefFontAttrList (&fontAttrs);
-    _DtHelpCeXlateOpToStdLocale(DtLCX_OPER_SETLOCALE,setlocale(LC_CTYPE,NULL),
-				NULL, &(fontAttrs.language),
-				&(fontAttrs.char_set));
+        _DtHelpCeCopyDefFontAttrList(&fontAttrs);
+        _DtHelpCeXlateOpToStdLocale(
+            DtLCX_OPER_SETLOCALE, setlocale(LC_CTYPE, NULL), NULL,
+            &(fontAttrs.language), &(fontAttrs.char_set));
 
-    varHandle = __DtHelpCeSetUpVars(fontAttrs.language, fontAttrs.char_set,
-						&myUiInfo);
-    if (varHandle == NULL)
-      {
+        varHandle = __DtHelpCeSetUpVars(fontAttrs.language, fontAttrs.char_set,
+                                        &myUiInfo);
+        if (varHandle == NULL) {
+                free(fontAttrs.language);
+                free(fontAttrs.char_set);
+                return -1;
+        }
+
+        result = __DtHelpCeProcessString(
+            varHandle, NULL, _DtCvDYNAMIC, ScanString, input_string,
+            strlen(input_string), 0, True, &fontAttrs);
+
+        if (result != -1)
+                result = __DtHelpCeGetParagraphList(varHandle, False,
+                                                    _DtCvDYNAMIC, &topic);
+        *ret_handle = (XtPointer)topic;
+
         free(fontAttrs.language);
         free(fontAttrs.char_set);
-	return -1;
-      }
+        free(varHandle);
 
-    result = __DtHelpCeProcessString (varHandle, NULL,
-				_DtCvDYNAMIC,
-				ScanString, input_string,
-				strlen(input_string),
-				0, True,
-				&fontAttrs);
+        return result;
 
-    if (result != -1)
-	result = __DtHelpCeGetParagraphList (varHandle, False, _DtCvDYNAMIC,
-								&topic);
-    *ret_handle = (XtPointer) topic;
-
-    free(fontAttrs.language);
-    free(fontAttrs.char_set);
-    free(varHandle);
-
-    return result;
-
-}  /* End _DtHelpFormatAsciiStringDynamic */
+} /* End _DtHelpFormatAsciiStringDynamic */
 
 /******************************************************************************
  * Function:	int _DtHelpFormatTopicTitle (Display *dpy, _XvhVolume volume,
@@ -739,73 +700,67 @@ _DtHelpFormatAsciiStringDynamic(
  *		the correct font with it.
  *
  ******************************************************************************/
-int
-_DtHelpFormatTopicTitle(
-    XtPointer		  client_data,
-    _DtHelpVolumeHdl	  volume_handle,
-    char		 *location_id,
-    XmString		 *ret_title,
-    XmFontList		 *ret_list,
-    Boolean		 *ret_mod )
-{
-    int		 result = -1;
-    void	**titleChunks = NULL;
-    _FrmtUiInfo           myUiInfo = defUiInfo;
-    _DtHelpCeLockInfo	  lockInfo;
-    DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *) client_data;
+int _DtHelpFormatTopicTitle(XtPointer client_data,
+                            _DtHelpVolumeHdl volume_handle, char *location_id,
+                            XmString *ret_title, XmFontList *ret_list,
+                            Boolean *ret_mod) {
+        int result = -1;
+        void **titleChunks = NULL;
+        _FrmtUiInfo myUiInfo = defUiInfo;
+        _DtHelpCeLockInfo lockInfo;
+        DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *)client_data;
 
-    /*
-     * Check the parameters
-     */
-    if (ret_title == NULL || ret_list == NULL || ret_mod == NULL)
-      {
-	errno = EINVAL;
-	return -1;
-      }
+        /*
+         * Check the parameters
+         */
+        if (ret_title == NULL || ret_list == NULL || ret_mod == NULL) {
+                errno = EINVAL;
+                return -1;
+        }
 
-    /*
-     * lock the volume
-     */
-    if (_DtHelpCeLockVolume(volume_handle, &lockInfo) != 0)
-	return -1;
+        /*
+         * lock the volume
+         */
+        if (_DtHelpCeLockVolume(volume_handle, &lockInfo) != 0)
+                return -1;
 
-    /*
-     * set up my UI information
-     */
-    myUiInfo.load_graphic = _DtHelpDALoadGraphic;
-    myUiInfo.resolve_spc  = _DtHelpDAResolveSpc;
-    myUiInfo.load_font    = _DtHelpDAResolveFont;
-    myUiInfo.exec_filter  = pDAS->exec_filter;
-    myUiInfo.destroy_region = _DtHelpDADestroyRegion;
-    myUiInfo.client_data  = (_DtCvPointer) pDAS;
-    /* since we're going for chunks, set avg_char width to 1 */
-    myUiInfo.line_width   = 0;
-    myUiInfo.line_height  = 0;
-    myUiInfo.leading      = 0;
-    myUiInfo.avg_char     = 1;
-    myUiInfo.nl_to_space  = pDAS->nl_to_space;
+        /*
+         * set up my UI information
+         */
+        myUiInfo.load_graphic = _DtHelpDALoadGraphic;
+        myUiInfo.resolve_spc = _DtHelpDAResolveSpc;
+        myUiInfo.load_font = _DtHelpDAResolveFont;
+        myUiInfo.exec_filter = pDAS->exec_filter;
+        myUiInfo.destroy_region = _DtHelpDADestroyRegion;
+        myUiInfo.client_data = (_DtCvPointer)pDAS;
+        /* since we're going for chunks, set avg_char width to 1 */
+        myUiInfo.line_width = 0;
+        myUiInfo.line_height = 0;
+        myUiInfo.leading = 0;
+        myUiInfo.avg_char = 1;
+        myUiInfo.nl_to_space = pDAS->nl_to_space;
 
-    /*
-     * Get the title and charsets associated with the title segments.
-     * The format of the returned information is
-     *		[type,charset/fontptr,]type,string/spc
-     */
-    result = _DtHelpCeGetVolumeFlag(volume_handle);
-    _DtHelpProcessLock();
-    if (result == 1)
-        result = _DtHelpCeGetSdlTitleChunks(volume_handle, location_id,
-				&myUiInfo, &titleChunks);
-    else if (result == 0)
-        result = _DtHelpCeGetCcdfTitleChunks( volume_handle, location_id,
-				&myUiInfo, &titleChunks);
-    _DtHelpProcessUnlock();
-    if (result != -1)
-        result = FormatChunksToXmString(pDAS, True, titleChunks,
-						ret_title, ret_list, ret_mod);
-    _DtHelpCeUnlockVolume(lockInfo);
-    return result;
+        /*
+         * Get the title and charsets associated with the title segments.
+         * The format of the returned information is
+         *		[type,charset/fontptr,]type,string/spc
+         */
+        result = _DtHelpCeGetVolumeFlag(volume_handle);
+        _DtHelpProcessLock();
+        if (result == 1)
+                result = _DtHelpCeGetSdlTitleChunks(volume_handle, location_id,
+                                                    &myUiInfo, &titleChunks);
+        else if (result == 0)
+                result = _DtHelpCeGetCcdfTitleChunks(volume_handle, location_id,
+                                                     &myUiInfo, &titleChunks);
+        _DtHelpProcessUnlock();
+        if (result != -1)
+                result = FormatChunksToXmString(pDAS, True, titleChunks,
+                                                ret_title, ret_list, ret_mod);
+        _DtHelpCeUnlockVolume(lockInfo);
+        return result;
 
-}  /* End _DtHelpFormatTopicTitle */
+} /* End _DtHelpFormatTopicTitle */
 
 /******************************************************************************
  * Function:	int _DtHelpFormatVolumeTitle (DtHelpDispAreaStruct *pDAS,
@@ -831,75 +786,68 @@ _DtHelpFormatTopicTitle(
  *		the correct font with it.
  *
  ******************************************************************************/
-int
-_DtHelpFormatVolumeTitle(
-    XtPointer		  client_data,
-    _DtHelpVolumeHdl	  volume_handle,
-    XmString		 *ret_title,
-    XmFontList		 *ret_list,
-    Boolean		 *ret_mod )
-{
-    int		 result = -1;
-    void	**titleChunks = NULL;
-    _FrmtUiInfo           myUiInfo = defUiInfo;
-    _DtHelpCeLockInfo lockInfo;
-    DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *) client_data;
+int _DtHelpFormatVolumeTitle(XtPointer client_data,
+                             _DtHelpVolumeHdl volume_handle,
+                             XmString *ret_title, XmFontList *ret_list,
+                             Boolean *ret_mod) {
+        int result = -1;
+        void **titleChunks = NULL;
+        _FrmtUiInfo myUiInfo = defUiInfo;
+        _DtHelpCeLockInfo lockInfo;
+        DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *)client_data;
 
-    /*
-     * Check the parameters
-     */
-    if (ret_title == NULL || ret_list == NULL || ret_mod == NULL)
-      {
-	errno = EINVAL;
-	return -1;
-      }
+        /*
+         * Check the parameters
+         */
+        if (ret_title == NULL || ret_list == NULL || ret_mod == NULL) {
+                errno = EINVAL;
+                return -1;
+        }
 
-    /*
-     * lock the volume
-     */
-    *ret_title = NULL;
-    if (_DtHelpCeLockVolume(volume_handle, &lockInfo) != 0)
-	return -1;
+        /*
+         * lock the volume
+         */
+        *ret_title = NULL;
+        if (_DtHelpCeLockVolume(volume_handle, &lockInfo) != 0)
+                return -1;
 
-    /*
-     * set up my UI information
-     */
-    myUiInfo.load_graphic = _DtHelpDALoadGraphic;
-    myUiInfo.resolve_spc  = _DtHelpDAResolveSpc;
-    myUiInfo.load_font    = _DtHelpDAResolveFont;
-    myUiInfo.exec_filter  = pDAS->exec_filter;
-    myUiInfo.destroy_region = _DtHelpDADestroyRegion;
-    myUiInfo.client_data  = (_DtCvPointer) pDAS;
-    /* since we're going for chunks, set avg_char width to 1 */
-    myUiInfo.line_width   = 0;
-    myUiInfo.line_height  = 0;
-    myUiInfo.leading      = 0;
-    myUiInfo.avg_char     = 1;
-    myUiInfo.nl_to_space  = pDAS->nl_to_space;
+        /*
+         * set up my UI information
+         */
+        myUiInfo.load_graphic = _DtHelpDALoadGraphic;
+        myUiInfo.resolve_spc = _DtHelpDAResolveSpc;
+        myUiInfo.load_font = _DtHelpDAResolveFont;
+        myUiInfo.exec_filter = pDAS->exec_filter;
+        myUiInfo.destroy_region = _DtHelpDADestroyRegion;
+        myUiInfo.client_data = (_DtCvPointer)pDAS;
+        /* since we're going for chunks, set avg_char width to 1 */
+        myUiInfo.line_width = 0;
+        myUiInfo.line_height = 0;
+        myUiInfo.leading = 0;
+        myUiInfo.avg_char = 1;
+        myUiInfo.nl_to_space = pDAS->nl_to_space;
 
-    /*
-     * Get the title and charsets associated with the volume title.
-     * The format of the returned information is
-     *		[type,charset/fontptr,]type,string/spc
-     */
-    result = _DtHelpCeGetVolumeFlag(volume_handle);
-    _DtHelpProcessLock();
-    if (result == 1)
-        result = _DtHelpCeGetSdlVolTitleChunks(volume_handle, &myUiInfo,
-				&titleChunks);
-    else if (result == 0)
-        result = _DtHelpCeGetCcdfVolTitleChunks(
-				(_DtHelpVolume) volume_handle,
-				&myUiInfo,
-				&titleChunks);
-    _DtHelpProcessUnlock();
-    if (result != -1)
-        result = FormatChunksToXmString(pDAS, True, titleChunks,
-						ret_title, ret_list, ret_mod);
-    _DtHelpCeUnlockVolume(lockInfo);
-    return result;
+        /*
+         * Get the title and charsets associated with the volume title.
+         * The format of the returned information is
+         *		[type,charset/fontptr,]type,string/spc
+         */
+        result = _DtHelpCeGetVolumeFlag(volume_handle);
+        _DtHelpProcessLock();
+        if (result == 1)
+                result = _DtHelpCeGetSdlVolTitleChunks(volume_handle, &myUiInfo,
+                                                       &titleChunks);
+        else if (result == 0)
+                result = _DtHelpCeGetCcdfVolTitleChunks(
+                    (_DtHelpVolume)volume_handle, &myUiInfo, &titleChunks);
+        _DtHelpProcessUnlock();
+        if (result != -1)
+                result = FormatChunksToXmString(pDAS, True, titleChunks,
+                                                ret_title, ret_list, ret_mod);
+        _DtHelpCeUnlockVolume(lockInfo);
+        return result;
 
-}  /* End _DtHelpFormatVolumeTitle */
+} /* End _DtHelpFormatVolumeTitle */
 
 /******************************************************************************
  * Function:	int _DtHelpFormatIndexEntries (DtHelpDispAreaStruct *pDAS,
@@ -927,78 +875,73 @@ _DtHelpFormatVolumeTitle(
  *		the correct font with it.
  *
  ******************************************************************************/
-int
-_DtHelpFormatIndexEntries(
-    XtPointer		  client_data,
-    _DtHelpVolumeHdl	  volume_handle,
-    int			 *ret_cnt,
-    XmString		**ret_words,
-    XmFontList		 *ret_list,
-    Boolean		 *ret_mod )
-{
-    int		  i;
-    int		  result = -1;
-    void	 *titleChunks[4];
-    char	 *charSet;
-    char	**keyWords;
-    Boolean       myMod = False;
-    XmFontList    oldList;
-    DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *) client_data;
+int _DtHelpFormatIndexEntries(XtPointer client_data,
+                              _DtHelpVolumeHdl volume_handle, int *ret_cnt,
+                              XmString **ret_words, XmFontList *ret_list,
+                              Boolean *ret_mod) {
+        int i;
+        int result = -1;
+        void *titleChunks[4];
+        char *charSet;
+        char **keyWords;
+        Boolean myMod = False;
+        XmFontList oldList;
+        DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *)client_data;
 
-    /*
-     * Check the parameters
-     */
-    if (ret_words == NULL || ret_list == NULL || ret_mod == NULL)
-      {
-	errno = EINVAL;
-	return -1;
-      }
+        /*
+         * Check the parameters
+         */
+        if (ret_words == NULL || ret_list == NULL || ret_mod == NULL) {
+                errno = EINVAL;
+                return -1;
+        }
 
-    *ret_mod = False;
+        *ret_mod = False;
 
-    charSet = _DtHelpGetVolumeLocale(volume_handle);
-    if (charSet != NULL)
-      {
-	*ret_cnt = _DtHelpCeGetKeywordList(volume_handle, &keyWords);
-	if (*ret_cnt > 0)
-	  {
+        charSet = _DtHelpGetVolumeLocale(volume_handle);
+        if (charSet != NULL) {
+                *ret_cnt = _DtHelpCeGetKeywordList(volume_handle, &keyWords);
+                if (*ret_cnt > 0) {
 
-	    *ret_words = (XmString *) malloc (sizeof(XmString) * (*ret_cnt+1));
-	    if (*ret_words == NULL)
-		return -1;
+                        *ret_words = (XmString *)malloc(sizeof(XmString) *
+                                                        (*ret_cnt + 1));
+                        if (*ret_words == NULL)
+                                return -1;
 
-            /* the order of the string ptr and charset ptr in the titleChunks
-               is determined by the order of the if(..) tests on the
-               flags and subsequent processing in FormatChunksToXmString() */
-	    titleChunks[0] = (void *) (DT_HELP_CE_STRING | DT_HELP_CE_CHARSET);
-	    titleChunks[1] = (void *) charSet;
-	    titleChunks[3] = (void *) DT_HELP_CE_END;
-	    for (i = 0, result = 0; result == 0 && i < *ret_cnt; i++)
-	      {
-		oldList        = *ret_list;
-		titleChunks[2] = (void *) keyWords[i];
-		result = FormatChunksToXmString(pDAS, False, titleChunks,
-				&(*ret_words)[i], ret_list, &myMod);
-		if (myMod == True)
-		  {
-		    /*
-		     * if the list has been modified before,
-		     * free the previously modified list.
-		     */
-		    if (True == *ret_mod)
-			XmFontListFree(oldList);
+                        /* the order of the string ptr and charset ptr in the
+                           titleChunks is determined by the order of the if(..)
+                           tests on the flags and subsequent processing in
+                           FormatChunksToXmString() */
+                        titleChunks[0] =
+                            (void *)(DT_HELP_CE_STRING | DT_HELP_CE_CHARSET);
+                        titleChunks[1] = (void *)charSet;
+                        titleChunks[3] = (void *)DT_HELP_CE_END;
+                        for (i = 0, result = 0; result == 0 && i < *ret_cnt;
+                             i++) {
+                                oldList = *ret_list;
+                                titleChunks[2] = (void *)keyWords[i];
+                                result = FormatChunksToXmString(
+                                    pDAS, False, titleChunks, &(*ret_words)[i],
+                                    ret_list, &myMod);
+                                if (myMod == True) {
+                                        /*
+                                         * if the list has been modified before,
+                                         * free the previously modified list.
+                                         */
+                                        if (True == *ret_mod)
+                                                XmFontListFree(oldList);
 
-		    *ret_mod = True;
-		  }
-	      }
-            (*ret_words)[i] = NULL;
-	  }
-	free(charSet);
-      }
+                                        *ret_mod = True;
+                                }
+                        }
+                        (*ret_words)[i] = NULL;
+                }
+                free(charSet);
+        }
 
-    return result;
+        return result;
 
-}  /* End _DtHelpFormatIndexEntries */
+} /* End _DtHelpFormatIndexEntries */
 
 /******************************************************************************
  * Function:	int _DtHelpFormatTopic (
@@ -1031,75 +974,68 @@ _DtHelpFormatIndexEntries(
  * Purpose:	_DtHelpParseTopic accesses and parses Help topics.
  *
  ******************************************************************************/
-int
-_DtHelpFormatTopic(
-	XtPointer	  client_data,
-	_DtHelpVolumeHdl  volume,
-	char		 *id_string,
-	Boolean		  look_at_id,
-	XtPointer	 *ret_handle )
-{
-    char  *filename = NULL;
-    int    offset;
-    int    result = -2;
-    _DtHelpCeLockInfo   lockInfo;
-    _FrmtUiInfo           myUiInfo = defUiInfo;
-    DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *) client_data;
-    _DtCvTopicInfo	*topic;
+int _DtHelpFormatTopic(XtPointer client_data, _DtHelpVolumeHdl volume,
+                       char *id_string, Boolean look_at_id,
+                       XtPointer *ret_handle) {
+        char *filename = NULL;
+        int offset;
+        int result = -2;
+        _DtHelpCeLockInfo lockInfo;
+        _FrmtUiInfo myUiInfo = defUiInfo;
+        DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *)client_data;
+        _DtCvTopicInfo *topic;
 
-    if (_DtHelpCeLockVolume(volume, &lockInfo) != 0)
-	return -1;
+        if (_DtHelpCeLockVolume(volume, &lockInfo) != 0)
+                return -1;
 
-    if (_DtHelpCeFindId(volume,id_string,lockInfo.fd,&filename,&offset)==True)
-      {
-	if (look_at_id == False)
-	    id_string = NULL;
+        if (_DtHelpCeFindId(volume, id_string, lockInfo.fd, &filename,
+                            &offset) == True) {
+                if (look_at_id == False)
+                        id_string = NULL;
 
-	myUiInfo.load_graphic = _DtHelpDALoadGraphic;
-	myUiInfo.resolve_spc  = _DtHelpDAResolveSpc;
-	myUiInfo.load_font    = _DtHelpDAResolveFont;
-	myUiInfo.exec_filter  = pDAS->exec_filter;
-        myUiInfo.destroy_region = _DtHelpDADestroyRegion;
-	myUiInfo.client_data  = (_DtCvPointer) pDAS;
-        myUiInfo.line_width   = pDAS->lineThickness;
-        myUiInfo.line_height  = pDAS->lineHeight;
-        myUiInfo.leading      = pDAS->leading;
-	myUiInfo.avg_char     = (int)(pDAS->charWidth / 10 +
-					((pDAS->charWidth % 10) ? 1 : 0));
-        myUiInfo.nl_to_space  = pDAS->nl_to_space;
+                myUiInfo.load_graphic = _DtHelpDALoadGraphic;
+                myUiInfo.resolve_spc = _DtHelpDAResolveSpc;
+                myUiInfo.load_font = _DtHelpDAResolveFont;
+                myUiInfo.exec_filter = pDAS->exec_filter;
+                myUiInfo.destroy_region = _DtHelpDADestroyRegion;
+                myUiInfo.client_data = (_DtCvPointer)pDAS;
+                myUiInfo.line_width = pDAS->lineThickness;
+                myUiInfo.line_height = pDAS->lineHeight;
+                myUiInfo.leading = pDAS->leading;
+                myUiInfo.avg_char = (int)(pDAS->charWidth / 10 +
+                                          ((pDAS->charWidth % 10) ? 1 : 0));
+                myUiInfo.nl_to_space = pDAS->nl_to_space;
 
-	result = _DtHelpCeGetVolumeFlag(volume);
-	_DtHelpProcessLock();
-        if (result == 1)
-            result = _DtHelpCeParseSdlTopic(volume,
-						&myUiInfo,
-						lockInfo.fd, offset,
-						id_string, True, &topic);
-        else if (result == 0)
-            result = _DtHelpCeFrmtCcdfTopic((_DtHelpVolume) volume,
-						filename, offset,
-						id_string,
-						&myUiInfo, &topic);
-	else {
-	    fprintf(stderr, "DtHelp: Invalid volume flag, aborting");
-	    exit(1);
-	}
+                result = _DtHelpCeGetVolumeFlag(volume);
+                _DtHelpProcessLock();
+                if (result == 1)
+                        result = _DtHelpCeParseSdlTopic(
+                            volume, &myUiInfo, lockInfo.fd, offset, id_string,
+                            True, &topic);
+                else if (result == 0)
+                        result = _DtHelpCeFrmtCcdfTopic(
+                            (_DtHelpVolume)volume, filename, offset, id_string,
+                            &myUiInfo, &topic);
+                else {
+                        fprintf(stderr,
+                                "DtHelp: Invalid volume flag, aborting");
+                        exit(1);
+                }
 
-	_DtHelpProcessUnlock();
-	*ret_handle = (XtPointer) topic;
-	if (result != 0)
-	    result = -3;
+                _DtHelpProcessUnlock();
+                *ret_handle = (XtPointer)topic;
+                if (result != 0)
+                        result = -3;
 
-	if (filename != NULL)
-	    free(filename);
-      }
+                if (filename != NULL)
+                        free(filename);
+        }
 
-    _DtHelpCeUnlockVolume(lockInfo);
+        _DtHelpCeUnlockVolume(lockInfo);
 
-    return result;
+        return result;
 
-}  /* End _DtHelpFormatTopic */
-
+} /* End _DtHelpFormatTopic */
 
 /******************************************************************************
  * Function:	int _DtHelpGetAsciiVolumeTitle (
@@ -1120,48 +1056,42 @@ _DtHelpFormatTopic(
  * Purpose:	Get the title of a volume.
  *
  ******************************************************************************/
-int
-_DtHelpGetAsciiVolumeTitle (
-     XtPointer		  client_data,
-    _DtHelpVolumeHdl	  volume,
-    char		**ret_title)
-{
-    int			  result;
-    _FrmtUiInfo           myUiInfo = defUiInfo;
-    DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *) client_data;
+int _DtHelpGetAsciiVolumeTitle(XtPointer client_data, _DtHelpVolumeHdl volume,
+                               char **ret_title) {
+        int result;
+        _FrmtUiInfo myUiInfo = defUiInfo;
+        DtHelpDispAreaStruct *pDAS = (DtHelpDispAreaStruct *)client_data;
 
-    /*
-     * What type of volume is it?
-     */
-    result = _DtHelpCeGetVolumeFlag(volume);
-    if (1 == result)
-      {
         /*
-         * set up my UI information
+         * What type of volume is it?
          */
-        myUiInfo.load_graphic = _DtHelpDALoadGraphic;
-        myUiInfo.resolve_spc  = _DtHelpDAResolveSpc;
-        myUiInfo.load_font    = _DtHelpDAResolveFont;
-        myUiInfo.exec_filter  = pDAS->exec_filter;
-        myUiInfo.destroy_region = _DtHelpDADestroyRegion;
-        myUiInfo.client_data  = (_DtCvPointer) pDAS;
-        /* since we're going for a string, set avg_char width to 1 */
-        myUiInfo.line_width   = 0;
-        myUiInfo.line_height  = 0;
-        myUiInfo.leading      = 0;
-        myUiInfo.avg_char     = 1;
-        myUiInfo.nl_to_space  = pDAS->nl_to_space;
+        result = _DtHelpCeGetVolumeFlag(volume);
+        if (1 == result) {
+                /*
+                 * set up my UI information
+                 */
+                myUiInfo.load_graphic = _DtHelpDALoadGraphic;
+                myUiInfo.resolve_spc = _DtHelpDAResolveSpc;
+                myUiInfo.load_font = _DtHelpDAResolveFont;
+                myUiInfo.exec_filter = pDAS->exec_filter;
+                myUiInfo.destroy_region = _DtHelpDADestroyRegion;
+                myUiInfo.client_data = (_DtCvPointer)pDAS;
+                /* since we're going for a string, set avg_char width to 1 */
+                myUiInfo.line_width = 0;
+                myUiInfo.line_height = 0;
+                myUiInfo.leading = 0;
+                myUiInfo.avg_char = 1;
+                myUiInfo.nl_to_space = pDAS->nl_to_space;
 
-	_DtHelpProcessLock();
-        result = _DtHelpCeFrmtSDLVolTitleToAscii(volume, &myUiInfo, ret_title);
-      }
-    else if (0 == result)
-      {
-	_DtHelpProcessLock();
-        result = _DtHelpCeGetCcdfVolumeTitle(volume, ret_title);
-      }
-    _DtHelpProcessUnlock();
-    return result;
+                _DtHelpProcessLock();
+                result = _DtHelpCeFrmtSDLVolTitleToAscii(volume, &myUiInfo,
+                                                         ret_title);
+        } else if (0 == result) {
+                _DtHelpProcessLock();
+                result = _DtHelpCeGetCcdfVolumeTitle(volume, ret_title);
+        }
+        _DtHelpProcessUnlock();
+        return result;
 }
 
 /*****************************************************************************
@@ -1178,79 +1108,68 @@ _DtHelpGetAsciiVolumeTitle (
  * Purpose:
  *
  *****************************************************************************/
-int
-_DtHelpFormatToc (
-    DtHelpDispAreaStruct	*pDAS,
-    _DtHelpVolumeHdl		 volume,
-    char		         *id,
-    char			 **ret_id,
-    XtPointer			 *ret_handle)
-{
+int _DtHelpFormatToc(DtHelpDispAreaStruct *pDAS, _DtHelpVolumeHdl volume,
+                     char *id, char **ret_id, XtPointer *ret_handle) {
 
-    int             result   = 0;
-    _DtCvTopicPtr    topic;
-    _DtHelpCeLockInfo lockInfo;
+        int result = 0;
+        _DtCvTopicPtr topic;
+        _DtHelpCeLockInfo lockInfo;
 
-    if (volume == NULL || id == NULL)
-	return -1;
+        if (volume == NULL || id == NULL)
+                return -1;
 
-    /*
-     * This becomes my volume; want to ensure that it doesn't
-     * get closed out from under me, so tell the system that
-     * i'm using it.
-     */
-    if (_DtHelpCeLockVolume(volume, &lockInfo) != 0)
-	return -1;
+        /*
+         * This becomes my volume; want to ensure that it doesn't
+         * get closed out from under me, so tell the system that
+         * i'm using it.
+         */
+        if (_DtHelpCeLockVolume(volume, &lockInfo) != 0)
+                return -1;
 
+        result = _DtHelpCeMapTargetToId(volume, id, *ret_id);
 
-    result = _DtHelpCeMapTargetToId(volume, id, *ret_id);
+        if (result == 0) {
+                _FrmtUiInfo myUiInfo = defUiInfo;
 
-    if (result == 0)
-      {
-        _FrmtUiInfo  myUiInfo = defUiInfo;
+                myUiInfo.client_data = (XtPointer)pDAS;
+                myUiInfo.load_graphic = _DtHelpDALoadGraphic;
+                myUiInfo.resolve_spc = _DtHelpDAResolveSpc;
+                myUiInfo.load_font = _DtHelpDAResolveFont;
+                myUiInfo.exec_filter = pDAS->exec_filter;
+                myUiInfo.destroy_region = _DtHelpDADestroyRegion;
+                myUiInfo.client_data = (_DtCvPointer)pDAS;
+                myUiInfo.line_width = pDAS->lineThickness;
+                myUiInfo.line_height = pDAS->lineHeight;
+                myUiInfo.leading = pDAS->leading;
+                myUiInfo.avg_char = (int)(pDAS->charWidth / 10 +
+                                          ((pDAS->charWidth % 10) ? 1 : 0));
+                myUiInfo.nl_to_space = pDAS->nl_to_space;
 
-	myUiInfo.client_data  = (XtPointer) pDAS;
-	myUiInfo.load_graphic = _DtHelpDALoadGraphic;
-	myUiInfo.resolve_spc  = _DtHelpDAResolveSpc;
-	myUiInfo.load_font    = _DtHelpDAResolveFont;
-	myUiInfo.exec_filter  = pDAS->exec_filter;
-        myUiInfo.destroy_region = _DtHelpDADestroyRegion;
-	myUiInfo.client_data  = (_DtCvPointer) pDAS;
-        myUiInfo.line_width   = pDAS->lineThickness;
-        myUiInfo.line_height  = pDAS->lineHeight;
-        myUiInfo.leading      = pDAS->leading;
-	myUiInfo.avg_char     = (int)(pDAS->charWidth / 10 +
-					((pDAS->charWidth % 10) ? 1 : 0));
-        myUiInfo.nl_to_space  = pDAS->nl_to_space;
+                result = _DtHelpCeGetVolumeFlag(volume);
+                _DtHelpProcessLock();
+                if (result == 1)
+                        result = _DtHelpCeFrmtSdlPathAndChildren(
+                            volume, &myUiInfo, lockInfo.fd, *ret_id, &topic);
+                else if (result == 0)
+                        result = _DtHelpCeFrmtCcdfPathAndChildren(
+                            volume, *ret_id, &myUiInfo, &topic);
+                else {
+                        fprintf(stderr,
+                                "DtHelp: Invalid volume flag, aborting");
+                        exit(1);
+                }
 
+                _DtHelpProcessUnlock();
+                *ret_handle = (XtPointer)topic;
+        }
+        /*
+         * didn't successfully format a path, so close my copy
+         * of the volume.
+         */
+        else
+                _DtHelpCloseVolume(volume);
 
-	result = _DtHelpCeGetVolumeFlag(volume);
-	_DtHelpProcessLock();
-        if (result == 1)
-	    result = _DtHelpCeFrmtSdlPathAndChildren(volume,
-							&myUiInfo,
-							lockInfo.fd,
-							*ret_id, &topic);
-        else if (result == 0)
-	    result = _DtHelpCeFrmtCcdfPathAndChildren(volume,
-							*ret_id,
-							&myUiInfo, &topic);
-	else {
-	    fprintf(stderr, "DtHelp: Invalid volume flag, aborting");
-	    exit(1);
-	}
-
-	_DtHelpProcessUnlock();
-	*ret_handle = (XtPointer) topic;
-      }
-    /*
-     * didn't successfully format a path, so close my copy
-     * of the volume.
-     */
-    else
-        _DtHelpCloseVolume (volume);
-
-    _DtHelpCeUnlockVolume(lockInfo);
-    return result;
+        _DtHelpCeUnlockVolume(lockInfo);
+        return result;
 
 } /* End _DtHelpFormatToc */

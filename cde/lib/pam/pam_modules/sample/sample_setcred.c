@@ -27,28 +27,22 @@
  * All rights reserved.
  */
 
-#ident  "@(#)sample_setcred.c 1.9     96/01/12 SMI"
+#ident "@(#)sample_setcred.c 1.9     96/01/12 SMI"
 
 #include <libintl.h>
 #include <security/pam_appl.h>
 #include <security/pam_modules.h>
 
-#define	PAMTXD	"SUNW_OST_SYSOSPAM"
+#define PAMTXD "SUNW_OST_SYSOSPAM"
 
 /*
  * pam_sm_setcred
  */
-int
-pam_sm_setcred(
-	pam_handle_t *pamh,
-	int   flags,
-	int	argc,
-	const char **argv)
-{
+int pam_sm_setcred(pam_handle_t *pamh, int flags, int argc, const char **argv) {
 
-	/*
-	 * Set the credentials
-	 */
+        /*
+         * Set the credentials
+         */
 
-	return (PAM_SUCCESS);
+        return (PAM_SUCCESS);
 }

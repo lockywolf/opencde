@@ -55,8 +55,8 @@ typedef struct {
     
     /*** DTB_USER_CODE_START vvv Add structure fields below vvv ***/
 
-    Boolean     use_small_drag_cursor;  /* Workaround for HP cursor bug */
-    Boolean     implied_apply;
+        Boolean use_small_drag_cursor; /* Workaround for HP cursor bug */
+        Boolean implied_apply;
 
     /*** DTB_USER_CODE_END   ^^^ Add structure fields above ^^^ ***/
 } DtbAppResourceRec;

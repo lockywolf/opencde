@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: tt_base64.h /main/4 1996/07/30 17:41:55 barstow $ 			 				 */
+/*%%  $XConsortium: tt_base64.h /main/4 1996/07/30 17:41:55 barstow $
+ */
 /*
  *
  * tt_base64.h
@@ -49,4 +50,3 @@ _Tt_string _tt_base64_encode(unsigned long n);
 #endif /* __osf__ */
 
 #endif /* _TT_BASE64_H */
-

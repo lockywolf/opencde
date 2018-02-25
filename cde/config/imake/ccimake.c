@@ -43,14 +43,14 @@ in this Software without prior written authorization from The Open Group .
 
 */
 
-/* 
- * Warning:  This file must be kept as simple as posible so that it can 
+/*
+ * Warning:  This file must be kept as simple as posible so that it can
  * compile without any special flags on all systems.  Do not touch it unless
  * you *really* know what you're doing.  Make changes in imakemdep.h, not here.
  */
 
-#define CCIMAKE			/* only get imake_ccflags definitions */
-#include "imakemdep.h"		/* things to set when porting imake */
+#define CCIMAKE        /* only get imake_ccflags definitions */
+#include "imakemdep.h" /* things to set when porting imake */
 
 #ifndef imake_ccflags
 #define imake_ccflags "-O"
@@ -59,9 +59,7 @@ in this Software without prior written authorization from The Open Group .
 #include <stdlib.h>
 #include <unistd.h>
 
-int main(void)
-{
-	ssize_t ret = write(1, imake_ccflags, sizeof(imake_ccflags) - 1);
-	return EXIT_SUCCESS;
+int main(void) {
+        ssize_t ret = write(1, imake_ccflags, sizeof(imake_ccflags) - 1);
+        return EXIT_SUCCESS;
 }
-

@@ -40,7 +40,7 @@
  **   Session Restoration for the session manager
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -48,32 +48,28 @@
  ************************************<+>*************************************/
 #ifndef _srvpalette_h
 #define _srvpalette_h
- 
-/* 
- *  #include statements 
+
+/*
+ *  #include statements
  */
 
-
-/* 
- *  #define statements 
+/*
+ *  #define statements
  */
 
-/* 
- * typedef statements 
+/*
+ * typedef statements
  */
 /*
- *  External variables  
+ *  External variables
  */
 
-
-/*  
- *  External Interface  
+/*
+ *  External Interface
  */
 
-
-extern int InitializeDtcolor( Display *, short ) ;
-extern int CheckMonitor( Display *) ;
-
+extern int InitializeDtcolor(Display *, short);
+extern int CheckMonitor(Display *);
 
 #endif /*_srvpalette_h*/
 /* DON'T ADD ANYTHING AFTER THIS #endif */

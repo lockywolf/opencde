@@ -42,10 +42,10 @@
  * 	unless an extension is already provided in the name.
  * 	Moves the concatenated string to the passed buffer.
  * 2. Checks for filename buffer overflow.
- * 
+ *
  * replace_ext:
  * Same thing, except that if a dotted extension is already
- * provided, it REPLACES the last extension with the passed one. 
+ * provided, it REPLACES the last extension with the passed one.
  *
  * $Log$
  * Revision 2.2  1995/10/25  22:25:29  miker
@@ -62,67 +62,67 @@
 /*	               append_ext			*/
 /*							*/
 /********************************************************/
-void append_ext(char *buffer,		/* output assy area */
-		int  buflen,		/* length of buffer */
-		char *fname,		/* input prefix (file name) */
-		char *fext)		/* input suffix (file ext .XXX) */
+void append_ext(char *buffer, /* output assy area */
+                int buflen,   /* length of buffer */
+                char *fname,  /* input prefix (file name) */
+                char *fext)   /* input suffix (file ext .XXX) */
 {
-    char	*endptr, *slashptr, *dotptr;
+        char *endptr, *slashptr, *dotptr;
 
-    strncpy (buffer, fname, buflen);
-    *(buffer + buflen - 5) = '\0';	/* room for ".xxx" at end */
+        strncpy(buffer, fname, buflen);
+        *(buffer + buflen - 5) = '\0'; /* room for ".xxx" at end */
 
-    /* Look for FINAL dot and FINAL slash (directory delim) */
-    dotptr = slashptr = NULL;
-    for (endptr = buffer;  *endptr != 0;  endptr++) {
-	if (*endptr == LOCAL_SLASH)
-	    slashptr = endptr;
-	else if (*endptr == '.')
-	    dotptr = endptr;
-    }
+        /* Look for FINAL dot and FINAL slash (directory delim) */
+        dotptr = slashptr = NULL;
+        for (endptr = buffer; *endptr != 0; endptr++) {
+                if (*endptr == LOCAL_SLASH)
+                        slashptr = endptr;
+                else if (*endptr == '.')
+                        dotptr = endptr;
+        }
 
-    /* If extension already exists (ie there's a dot in the name),
-     * and its past any dir delim, if any,
-     * return immediately:  the dot is a valid extension marker.
-     */
-    if (dotptr) {	/* extension already exists */
-	if (slashptr == NULL)
-	    return;
-	else if (slashptr < dotptr)
-	    return;
-    }
+        /* If extension already exists (ie there's a dot in the name),
+         * and its past any dir delim, if any,
+         * return immediately:  the dot is a valid extension marker.
+         */
+        if (dotptr) { /* extension already exists */
+                if (slashptr == NULL)
+                        return;
+                else if (slashptr < dotptr)
+                        return;
+        }
 
-    /* Extension does not exist or its in earlier dir name */
-    strcpy (endptr, fext);
-    return;
+        /* Extension does not exist or its in earlier dir name */
+        strcpy(endptr, fext);
+        return;
 } /* append_ext() */
-
 
 /********************************************************/
 /*							*/
 /*	              replace_ext			*/
 /*							*/
 /********************************************************/
-void	replace_ext (char *buffer,	/* output assy area */
-		int  buflen,		/* length of buffer */
-		char *fname,		/* input prefix (file name) */
-		char *fext)		/* input suffix (file ext .XXX) */
+void replace_ext(char *buffer, /* output assy area */
+                 int buflen,   /* length of buffer */
+                 char *fname,  /* input prefix (file name) */
+                 char *fext)   /* input suffix (file ext .XXX) */
 {
-    int		fnamelen;
-    char	*targ;
+        int fnamelen;
+        char *targ;
 
-    strncpy(buffer, fname, buflen - 1);
-    *(buffer + buflen - 1) = '\0';		/* just in case */
-    fnamelen = strlen(buffer);
-    if ((targ = strrchr(buffer, '.')) == NULL) {
-	strncpy (buffer + fnamelen, fext, buflen - fnamelen - 1);
-	*(buffer + buflen - 1) = '\0';	/* again just in case */
-    }
-    else {
-	while (*targ != 0 && *fext != 0) *targ++ = *fext++;
-	if (*fext == 0) *targ = 0;
-    }
-    return;
+        strncpy(buffer, fname, buflen - 1);
+        *(buffer + buflen - 1) = '\0'; /* just in case */
+        fnamelen = strlen(buffer);
+        if ((targ = strrchr(buffer, '.')) == NULL) {
+                strncpy(buffer + fnamelen, fext, buflen - fnamelen - 1);
+                *(buffer + buflen - 1) = '\0'; /* again just in case */
+        } else {
+                while (*targ != 0 && *fext != 0)
+                        *targ++ = *fext++;
+                if (*fext == 0)
+                        *targ = 0;
+        }
+        return;
 } /* replace_ext() */
 
 /*************************** APNDEXT.C ****************************/

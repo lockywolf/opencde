@@ -26,7 +26,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -67,7 +67,7 @@
  * A | B:  Union of truth tables:  the 192 permutes 1,2,3, 5,6,7, 9,10,11...
  * ~B:     Complement of truth table, U - B: the 128 chars 0, 1, 4, 5, ...,
  * 	   ie every bitvector permutation NOT in B.
- * 
+ *
  * The zero permute (all bits zero) refers to the entire
  * balance of the database containing none of the query stems.
  * Needless to say searches with the zero permute in their
@@ -89,14 +89,14 @@
  * If 'stemno' >= 0 it points to the word in usrblk.stems to which
  * it applies.  Stemno == -1 means truth table is not directly
  * associated with a word in usrblk.stems.
- * 
+ *
  * $Log$
  * Revision 1.1  1996/03/05  15:52:06  miker
  * Initial revision
  *
  */
 
-#define COLLOC_STEM_FORMAT	"@%02d%02d%d"
+#define COLLOC_STEM_FORMAT "@%02d%02d%d"
 
 /****************************************/
 /*					*/
@@ -105,33 +105,33 @@
 /****************************************/
 /* Truth table returned from boolean_parse() */
 typedef struct tttag {
-    struct tttag   *next;
-    int		   stemno;	/* -1 means not assoc with stems[] array */
-    int		   pmsz;	/* number of bytes in permutes array */
-    unsigned char  *permutes;	/* array of bit vector permutations */
-    }	TRUTHTAB;
+        struct tttag *next;
+        int stemno;              /* -1 means not assoc with stems[] array */
+        int pmsz;                /* number of bytes in permutes array */
+        unsigned char *permutes; /* array of bit vector permutations */
+} TRUTHTAB;
 
 /****************************************/
 /*					*/
 /*		 Globals		*/
 /*					*/
 /****************************************/
-extern int	qry_has_no_NOTs;
-extern int	qry_is_all_ANDs;
-extern int	parser_invalid_wordcount;
-extern TRUTHTAB	final_truthtab;
+extern int qry_has_no_NOTs;
+extern int qry_is_all_ANDs;
+extern int parser_invalid_wordcount;
+extern TRUTHTAB final_truthtab;
 
 /****************************************/
 /*					*/
 /*	    Function Prototypes		*/
 /*					*/
 /****************************************/
-extern void	add_syntax_errmsg (int msgno);
-extern TRUTHTAB	*boolyac_AND (TRUTHTAB *tt1, TRUTHTAB *tt2);
-extern TRUTHTAB	*boolyac_COLLOC (TRUTHTAB *tt1, int colval, TRUTHTAB *tt2);
-extern TRUTHTAB	*boolyac_NOT (TRUTHTAB *tt1);
-extern TRUTHTAB	*boolyac_OR (TRUTHTAB *tt1, TRUTHTAB *tt2);
-extern TRUTHTAB *copy_final_truthtab (TRUTHTAB *tt);
+extern void add_syntax_errmsg(int msgno);
+extern TRUTHTAB *boolyac_AND(TRUTHTAB *tt1, TRUTHTAB *tt2);
+extern TRUTHTAB *boolyac_COLLOC(TRUTHTAB *tt1, int colval, TRUTHTAB *tt2);
+extern TRUTHTAB *boolyac_NOT(TRUTHTAB *tt1);
+extern TRUTHTAB *boolyac_OR(TRUTHTAB *tt1, TRUTHTAB *tt2);
+extern TRUTHTAB *copy_final_truthtab(TRUTHTAB *tt);
 
 /******************** BOOLPARS.H *********************/
 #endif /* _boolpars_h */

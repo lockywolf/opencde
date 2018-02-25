@@ -31,15 +31,14 @@ class ExprList;
 class Token;
 
 class Concat : public OL_Data {
-  
-friend class FirstOf;  
-friend class OL_Data;  
 
-protected:
-  Concat( const Token &t, ExprList *elist, ActionType mode );
-  void markup( const Token &t ) { OL_Data::markup(t); }
-  void data( const char *str, size_t sz ) { OL_Data::data(str, sz); }
+        friend class FirstOf;
+        friend class OL_Data;
 
+      protected:
+        Concat(const Token &t, ExprList *elist, ActionType mode);
+        void markup(const Token &t) { OL_Data::markup(t); }
+        void data(const char *str, size_t sz) { OL_Data::data(str, sz); }
 };
 
 #endif

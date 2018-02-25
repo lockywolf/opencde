@@ -38,9 +38,9 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API ConsoleOutput {
-public:
-  // Returns null if fd is not a console.
-  static OutputCharStream *makeOutputCharStream(int fd);
+      public:
+        // Returns null if fd is not a console.
+        static OutputCharStream *makeOutputCharStream(int fd);
 };
 
 #ifdef SP_NAMESPACE

@@ -31,12 +31,12 @@
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
 
-#ifndef	_Dt_TermLineData_h
-#define	_Dt_TermLineData_h
+#ifndef _Dt_TermLineData_h
+#define _Dt_TermLineData_h
 
 #include "TermPrimLineFont.h"
 
 extern int _DtTermNumGlyphs;
 extern GlyphInfoRec _DtTermGlyphs[];
 
-#endif	/* _Dt_TermLineData_h */
+#endif /* _Dt_TermLineData_h */

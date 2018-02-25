@@ -28,26 +28,23 @@
 #include "utility/c_filebuf.h"
 #include "utility/c_iostream.h"
 
-class fstream : public iostream
-{
-public:
-   fstream ();
-   fstream (int fd);
-   fstream (const char* name, int mode, int protect = 0644);
+class fstream : public iostream {
+      public:
+        fstream();
+        fstream(int fd);
+        fstream(const char *name, int mode, int protect = 0644);
 
-   ~fstream();
+        ~fstream();
 
-   void open(const char* name, int mode, int protect = 0644);
+        void open(const char *name, int mode, int protect = 0644);
 
-   void close();
+        void close();
 
-   filebuf* rdbuf();
-
+        filebuf *rdbuf();
 };
 
 extern fstream xcout;
 extern fstream xcerr;
 extern fstream xcin;
-
 
 #endif

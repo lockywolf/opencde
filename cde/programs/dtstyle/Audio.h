@@ -32,7 +32,7 @@
  **  file
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -43,12 +43,9 @@
 
 /* External Interface */
 
-
-extern void popup_audioBB( Widget shell) ;
-extern void restoreAudio( Widget shell, XrmDatabase db) ;
-extern void saveAudio( int fd) ;
-
-
+extern void popup_audioBB(Widget shell);
+extern void restoreAudio(Widget shell, XrmDatabase db);
+extern void saveAudio(int fd);
 
 #endif /* _audio_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

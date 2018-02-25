@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp_s_message_utils.h /main/3 1995/10/23 11:56:19 rswiston $ 			 				 */
+/*%%  $XConsortium: mp_s_message_utils.h /main/3 1995/10/23 11:56:19 rswiston $
+ */
 /*
  *
  * mp_s_message_utils.h
@@ -37,5 +38,5 @@
 #define MP_S_MESSAGE_UTILS_H
 #include <mp/mp_message_utils.h>
 
-declare_derived_list_of(_Tt_s_message,_Tt_message)     
-#endif				/* MP_S_MESSAGE_UTILS_H */
+declare_derived_list_of(_Tt_s_message, _Tt_message)
+#endif /* MP_S_MESSAGE_UTILS_H */

@@ -41,10 +41,10 @@
  **
  **
  *******************************************************************
- **  (c) Copyright Hewlett-Packard Company, 1990.  All rights are  
- **  reserved.  Copying or other reproduction of this program      
- **  except for archival purposes is prohibited without prior      
- **  written consent of Hewlett-Packard Company.                     
+ **  (c) Copyright Hewlett-Packard Company, 1990.  All rights are
+ **  reserved.  Copying or other reproduction of this program
+ **  except for archival purposes is prohibited without prior
+ **  written consent of Hewlett-Packard Company.
  ********************************************************************
  **
  **
@@ -81,7 +81,6 @@ char SmNmergeXdefaults[] = "mergeXdefaults";
 char SmNnumSessionsBackedup[] = "numSessionsBackedup";
 char SmNignoreEnvironment[] = "ignoreEnvironment";
 char SmNxineramaPreferredScreen[] = "xineramaPreferredScreen";
-
 
 /* Resource names for settings information */
 
@@ -151,7 +150,7 @@ char SmCkeyClick[] = "KeyClickPercent";
 char SmCbellPercent[] = "BellPercent";
 char SmCbellPitch[] = "BellPitch";
 char SmCbellDuration[] = "BellDuration";
-char SmCledMask[] ="LedMask";
+char SmCledMask[] = "LedMask";
 char SmCglobalRepeats[] = "GlobalAutoRepeats";
 char SmCautoRepeats[] = "AutoRepeats";
 char SmCaccelNum[] = "AccelNum";
@@ -176,7 +175,6 @@ char SmCshutDownMode[] = "ShutDownMode";
 char SmCdisplayResolution[] = "DisplayResolution";
 char SmCsessionLang[] = "SessionLanguage";
 
-
 /*************************************<->*************************************
  *
  *  Session manager resource converter names ...
@@ -188,7 +186,6 @@ char SmCsessionLang[] = "SessionLanguage";
  *************************************<->***********************************/
 
 char SmRContManagement[] = "ContManagement";
-
 
 /* from Sm.h */
 
@@ -223,16 +220,15 @@ char SM_SCREEN_SAVER_NAME[] = "screensaver";
 /*
  * Strings for the XSMP
  */
-char SM_SESSION_MANAGER[] 	= "SESSION_MANAGER";
-char SM_VENDOR_NAME[]		= "DtSession";
-char SM_RELEASE_NAME[]		= "1.0";
-char SM_CLIENT_ID[]		= "SM_CLIENT_ID";
+char SM_SESSION_MANAGER[] = "SESSION_MANAGER";
+char SM_VENDOR_NAME[] = "DtSession";
+char SM_RELEASE_NAME[] = "1.0";
+char SM_CLIENT_ID[] = "SM_CLIENT_ID";
 
 /*
  * ToolTalk operation names
  */
-char SM_DISPLAY_LOCK[]		= "Display_Lock";
-char SM_XSESSION_EXIT[]		= "XSession_Exit";
-char SM_RESOURCES_RELOAD[] 	= "Resources_Reload";
-char SM_SAVE_SESSION[]		= "Save_Session";
-
+char SM_DISPLAY_LOCK[] = "Display_Lock";
+char SM_XSESSION_EXIT[] = "XSession_Exit";
+char SM_RESOURCES_RELOAD[] = "Resources_Reload";
+char SM_SAVE_SESSION[] = "Save_Session";

@@ -41,19 +41,18 @@
 
 #include "dtscreen.h"
 
-#if !defined(_AIX) && !defined(hpV4) && !defined(linux) && !defined(sun) && !defined(CSRG_BASED)
-int
-usleep(unsigned long usec)
-{
+#if !defined(_AIX) && !defined(hpV4) && !defined(linux) && !defined(sun) &&    \
+    !defined(CSRG_BASED)
+int usleep(unsigned long usec) {
 #ifdef SYSV
-    poll((struct poll *) 0, (size_t) 0, usec / 1000);	/* ms resolution */
+        poll((struct poll *)0, (size_t)0, usec / 1000); /* ms resolution */
 #else
-    struct timeval timeout;
-    timeout.tv_usec = usec % (unsigned long) 1000000;
-    timeout.tv_sec = usec / (unsigned long) 1000000;
-    select(0, (void *) 0, (void *) 0, (void *) 0, &timeout);
+        struct timeval timeout;
+        timeout.tv_usec = usec % (unsigned long)1000000;
+        timeout.tv_sec = usec / (unsigned long)1000000;
+        select(0, (void *)0, (void *)0, (void *)0, &timeout);
 #endif
-    return 0;
+        return 0;
 }
 #endif /* !_AIX && !hpV4*/
 
@@ -61,11 +60,9 @@ usleep(unsigned long usec)
  * returns the number of seconds since 01-Jan-70.
  * This is used to control rate and timeout in many of the animations.
  */
-long
-seconds(void)
-{
-    struct timeval now;
+long seconds(void) {
+        struct timeval now;
 
-    gettimeofday(&now, (struct timezone *) 0);
-    return now.tv_sec;
+        gettimeofday(&now, (struct timezone *)0);
+        return now.tv_sec;
 }

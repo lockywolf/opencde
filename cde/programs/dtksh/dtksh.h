@@ -37,22 +37,21 @@
 #include "nval.h"
 #endif
 
-#define SUCCESS		0
-#define FAIL		(-1)
+#define SUCCESS 0
+#define FAIL (-1)
 
 /* bits for the flags field of wtab_t */
 
-#define F_CHILD		1
-#define F_TOPLEVEL	2
+#define F_CHILD 1
+#define F_TOPLEVEL 2
 
 /*
  * Table types
  */
-#define TAB_EMPTY	0
-#define TAB_FIELDS	1
-#define TAB_ITEMS	2
-#define TAB_WIDGET	3
-
+#define TAB_EMPTY 0
+#define TAB_FIELDS 1
+#define TAB_ITEMS 2
+#define TAB_WIDGET 3
 
 /*
  * Widget entry states
@@ -60,101 +59,101 @@
 #define DT_PENDING_DESTROY 0x01
 
 typedef struct {
-	char *name;
-	char *class;
-	char *type;
-	int size;
+        char *name;
+        char *class;
+        char *type;
+        int size;
 } resfixup_t;
 
 typedef struct {
-   char * callbackName;
-   void * discipline;
+        char *callbackName;
+        void *discipline;
 } discInfo;
 
 typedef struct {
-	char *cname;
-	WidgetClass class;	/* Class record */
-	resfixup_t  *resfix;   /* fixup list for resources */
-	resfixup_t  *confix;   /* fixup list for constraint resources */
-	discInfo * disciplines;  /* Callback data environment disciplines */
-	char	*res;	/* Hashed list of resources */
-	char	*con;	/* Hashed list of constraint resources */
+        char *cname;
+        WidgetClass class;     /* Class record */
+        resfixup_t *resfix;    /* fixup list for resources */
+        resfixup_t *confix;    /* fixup list for constraint resources */
+        discInfo *disciplines; /* Callback data environment disciplines */
+        char *res;             /* Hashed list of resources */
+        char *con;             /* Hashed list of constraint resources */
 } classtab_t;
 
 typedef struct wtab {
-	int    type;		/* entry type (TAB_) */
-	int    size;		/* entry size */
-	Widget w;		/* widget pointer */ 
-	char   *wname;		/* name of widget */
-	char   *widid;		/* id of widget */
-	classtab_t   *wclass;	/* widget's class */
-	struct wtab *parent;	/* pointer to widget's parent wtab_t */
-	char *envar;		/* initial environment variable user gave */
-	unsigned char mask;	/* keeps track of state; i.e. pending destroy */
-	XtPointer info;	/* some widgets use this for any other info */
+        int type;            /* entry type (TAB_) */
+        int size;            /* entry size */
+        Widget w;            /* widget pointer */
+        char *wname;         /* name of widget */
+        char *widid;         /* id of widget */
+        classtab_t *wclass;  /* widget's class */
+        struct wtab *parent; /* pointer to widget's parent wtab_t */
+        char *envar;         /* initial environment variable user gave */
+        unsigned char mask;  /* keeps track of state; i.e. pending destroy */
+        XtPointer info;      /* some widgets use this for any other info */
 } wtab_t;
 
 typedef struct {
-	char *ksh_cmd;
-	wtab_t *w;
-	char *cbname;
-	int refCount;
-	Atom propAtom;
-	XtPointer handle;
+        char *ksh_cmd;
+        wtab_t *w;
+        char *cbname;
+        int refCount;
+        Atom propAtom;
+        XtPointer handle;
 } dtksh_client_data_t;
 
 typedef struct {
-	char *ksh_cmd;
-	wtab_t *w;
+        char *ksh_cmd;
+        wtab_t *w;
         EventMask eventMask;
-	Boolean nonMaskable;
+        Boolean nonMaskable;
 } dtksh_event_handler_data_t;
 
 typedef struct {
-	char *name;
-	EventMask mask;
+        char *name;
+        EventMask mask;
 } EventMaskTable;
 
 typedef struct {
-	char *name;
-	int value;
+        char *name;
+        int value;
 } MWMTable;
 
 #define LINESIZE 1024
 
 /* Input buffer modes */
-#define LINE_INPUT_MODE             (1<<0)
-#define RAW_INPUT_MODE              (1<<1)
-#define INPUT_SOURCE_BUSY           (1<<2)
-#define INPUT_SOURCE_PENDING_DELETE (1<<3)
+#define LINE_INPUT_MODE (1 << 0)
+#define RAW_INPUT_MODE (1 << 1)
+#define INPUT_SOURCE_BUSY (1 << 2)
+#define INPUT_SOURCE_PENDING_DELETE (1 << 3)
 
 typedef struct {
-	int   fd;		/* the input source */
-	char *lnbuf;          	/* a line being built */
-	int   lnbufsize;	/* size of line buffer */
-	int   lnend;		/* current end of the line */
-	char *cmd;		/* the ksh command to execute given the line */
-	unsigned char flags;    /* mode flags */
-	char  lastCharIsBackslash;  /* Used during backslash processing */
-	char  lineWasTouched;   /* Empty line, but had a backslash */
+        int fd;              /* the input source */
+        char *lnbuf;         /* a line being built */
+        int lnbufsize;       /* size of line buffer */
+        int lnend;           /* current end of the line */
+        char *cmd;           /* the ksh command to execute given the line */
+        unsigned char flags; /* mode flags */
+        char lastCharIsBackslash; /* Used during backslash processing */
+        char lineWasTouched;      /* Empty line, but had a backslash */
 } inputrec_t;
 
 #ifndef CONSTCHAR
 #define CONSTCHAR (const char *)
 #endif
 
-#define PRINTER_INFO_PROC    0
-#define SELECT_FILE_PROC     1
-#define SELECT_PRINTER_PROC  2
-#define SETUP_PROC           3
-#define VERIFY_PRINTER_PROC  4
+#define PRINTER_INFO_PROC 0
+#define SELECT_FILE_PROC 1
+#define SELECT_PRINTER_PROC 2
+#define SETUP_PROC 3
+#define VERIFY_PRINTER_PROC 4
 
 typedef struct {
-	String printerInfoProcCommand;
-	String selectFileProcCommand;
-	String selectPrinterProcCommand;
-	String setupProcCommand;
-	String verifyPrinterProcCommand;
+        String printerInfoProcCommand;
+        String selectFileProcCommand;
+        String selectPrinterProcCommand;
+        String setupProcCommand;
+        String verifyPrinterProcCommand;
 } ProcInfo_t;
 
 #endif /* _Dtksh_dtksh_h */

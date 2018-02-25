@@ -38,16 +38,12 @@
  ************************************<+>*************************************/
 
 struct PStackRec {
-    int size;
-    int count;
-    void **items;
+        int size;
+        int count;
+        void **items;
 };
 
 typedef struct PStackRec *PStack;
-
-
-
-
 
 /*****************************************************************************
  * Function:	    PStack PStackCreate();
@@ -56,12 +52,11 @@ typedef struct PStackRec *PStack;
  *
  * Return Value:    PStack.
  *
- * Purpose:         Generates a PStack structure and returns it to the 
+ * Purpose:         Generates a PStack structure and returns it to the
  *                  caller.
  *
  *****************************************************************************/
 extern PStack PStackCreate();
-
 
 /*****************************************************************************
  * Function:	    PStack PStackDestroy();
@@ -73,9 +68,7 @@ extern PStack PStackCreate();
  * Purpose:         Destroys a PStack structure.
  *
  *****************************************************************************/
-extern void PStackDestroy(
-     PStack stack);
-
+extern void PStackDestroy(PStack stack);
 
 /*****************************************************************************
  * Function:	    PStack PStackPush();
@@ -88,10 +81,7 @@ extern void PStackDestroy(
  * Purpose:         Pushes a PStack structure on the current stack.
  *
  *****************************************************************************/
-extern void PStackPush(
-     PStack stack,
-     void *ptr);
-
+extern void PStackPush(PStack stack, void *ptr);
 
 /*****************************************************************************
  * Function:	    PStack *PStackPeek();
@@ -103,9 +93,7 @@ extern void PStackPush(
  * Purpose:         Gets a PStack.
  *
  *****************************************************************************/
-extern void *PStackPeek(
-     PStack stack);
-
+extern void *PStackPeek(PStack stack);
 
 /*****************************************************************************
  * Function:	    PStack *PStackPop();
@@ -117,23 +105,4 @@ extern void *PStackPeek(
  * Purpose:         Pops the top element off the stack
  *
  *****************************************************************************/
-extern void *PStackPop(
-     PStack stack);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+extern void *PStackPop(PStack stack);

@@ -48,7 +48,8 @@
  */
 
 #ifndef lint
-static  char sccsid[] = "@(#)cm_lookup.c 1.30 95/03/08 Copyr 1993 Sun Microsystems, Inc.";
+static char sccsid[] =
+    "@(#)cm_lookup.c 1.30 95/03/08 Copyr 1993 Sun Microsystems, Inc.";
 #endif
 
 #include <EUSCompat.h>
@@ -73,115 +74,115 @@ static  char sccsid[] = "@(#)cm_lookup.c 1.30 95/03/08 Copyr 1993 Sun Microsyste
 #include <Dt/EnvControlP.h>
 
 #if !defined(NL_CAT_LOCALE)
-#define NL_CAT_LOCALE       0
+#define NL_CAT_LOCALE 0
 #endif
 
 int debug = 0;
-static char cm_target[256] = "";	/* target for table (user@host) */
-static char cm_date[256] = "";		/* appointment date */
-static char cm_view[16] = "";		/* view span (day,week,month) */
-static nl_catd	DT_catd;
+static char cm_target[256] = ""; /* target for table (user@host) */
+static char cm_date[256] = "";   /* appointment date */
+static char cm_view[16] = "";    /* view span (day,week,month) */
+static nl_catd DT_catd;
 
-static char**
-grab(char**argv,				/* command line arguments */
-    char *buf,				/* buffer for keyed data */
-    int buf_size,
-    char stop_key)
-{
-	if (!argv || !*argv) return(argv);
-	cm_strlcpy (buf, *argv++, buf_size);
-	while(argv && *argv) {
-		if (*(*argv) == stop_key) break;
-		cm_strlcat(buf, " ", buf_size);
-		cm_strlcat(buf, *argv++, buf_size);
-	}
-	argv--;
-	return(argv);
+static char **grab(char **argv, /* command line arguments */
+                   char *buf,   /* buffer for keyed data */
+                   int buf_size, char stop_key) {
+        if (!argv || !*argv)
+                return (argv);
+        cm_strlcpy(buf, *argv++, buf_size);
+        while (argv && *argv) {
+                if (*(*argv) == stop_key)
+                        break;
+                cm_strlcat(buf, " ", buf_size);
+                cm_strlcat(buf, *argv++, buf_size);
+        }
+        argv--;
+        return (argv);
 }
 
-static void
-cm_args(int argc, char **argv)
-{
+static void cm_args(int argc, char **argv) {
 
-	while (++argv && *argv) {
-		switch(*(*argv+1)) {
-		case 't':
-		case 'c':
-			argv = grab(++argv, cm_target, 256, '-');
-			break;
-		case 'd':
-			argv = grab(++argv, cm_date, 256, '-');
-			break;
-		case 'v':
-			argv = grab(++argv, cm_view, 16, '-');
-			break;
-		default:
-			fprintf(stderr, "%s", catgets(DT_catd, 1, 207, "Usage:\n\tdtcm_lookup [ -c calendar ][ -d <mm/dd/yy> ] [ -v view ]\n"));
-			exit(1);
-		}
-	}
+        while (++argv && *argv) {
+                switch (*(*argv + 1)) {
+                case 't':
+                case 'c':
+                        argv = grab(++argv, cm_target, 256, '-');
+                        break;
+                case 'd':
+                        argv = grab(++argv, cm_date, 256, '-');
+                        break;
+                case 'v':
+                        argv = grab(++argv, cm_view, 16, '-');
+                        break;
+                default:
+                        fprintf(stderr, "%s",
+                                catgets(DT_catd, 1, 207,
+                                        "Usage:\n\tdtcm_lookup [ -c calendar "
+                                        "][ -d <mm/dd/yy> ] [ -v view ]\n"));
+                        exit(1);
+                }
+        }
 }
 
-int main(int argc, char **argv)
-{
-	int		cnt;
-	char		*target = NULL, *date = NULL, *view = NULL,
-			*uname, *loc;
-	Props		*p = NULL;
-	CSA_session_handle	c_handle;
-	CSA_entry_handle	*list;
-	CSA_return_code		stat;
-	CSA_calendar_user	csa_user;
-	int			version;
+int main(int argc, char **argv) {
+        int cnt;
+        char *target = NULL, *date = NULL, *view = NULL, *uname, *loc;
+        Props *p = NULL;
+        CSA_session_handle c_handle;
+        CSA_entry_handle *list;
+        CSA_return_code stat;
+        CSA_calendar_user csa_user;
+        int version;
 #ifdef FNS
-	char		buf[256];
+        char buf[256];
 #endif
 
-	init_time();
-	_DtEnvControl(DT_ENV_SET); /* set up environment variables */
-	setlocale(LC_ALL, "");
-	DT_catd = catopen(DTCM_CAT, NL_CAT_LOCALE);
-	cm_tty_load_props(&p);
-	cm_args(argc,argv);		/* parse command line */
+        init_time();
+        _DtEnvControl(DT_ENV_SET); /* set up environment variables */
+        setlocale(LC_ALL, "");
+        DT_catd = catopen(DTCM_CAT, NL_CAT_LOCALE);
+        cm_tty_load_props(&p);
+        cm_args(argc, argv); /* parse command line */
 
-	target = (cm_strlen(cm_target)) ? cm_target : cm_get_credentials();
+        target = (cm_strlen(cm_target)) ? cm_target : cm_get_credentials();
 #ifdef FNS
-	dtfns_init();
-	if (cmfns_use_fns(p)) {
-		cmfns_lookup_calendar(target, buf, sizeof(buf));
-		target = buf;
-	}
+        dtfns_init();
+        if (cmfns_use_fns(p)) {
+                cmfns_lookup_calendar(target, buf, sizeof(buf));
+                target = buf;
+        }
 #endif
-	uname = cm_target2name(target);
-	loc = cm_target2location(target);
+        uname = cm_target2name(target);
+        loc = cm_target2location(target);
 
-	csa_user.user_name = target;
-	csa_user.user_type = 0;
-	csa_user.calendar_user_extensions = NULL;
-	csa_user.calendar_address = target;
-	stat = csa_logon(NULL, &csa_user, NULL, NULL, NULL, &c_handle, NULL);
+        csa_user.user_name = target;
+        csa_user.user_type = 0;
+        csa_user.calendar_user_extensions = NULL;
+        csa_user.calendar_address = target;
+        stat = csa_logon(NULL, &csa_user, NULL, NULL, NULL, &c_handle, NULL);
 
-	if (stat != CSA_SUCCESS) {
-		char *format = cm_strdup(catgets(DT_catd, 1, 208,
-				   "\nCould not open calendar \"%s\"\n"));
-		fprintf(stderr, format,
-			target ? target : catgets(DT_catd, 1, 209, "UNKNOWN"));
-		free(format);
-		free(uname);
-		free(loc);
-		exit(1);
-	}
-	version = get_data_version(c_handle);
-	if (cm_strlen(cm_date)) date = cm_date;
-	if (cm_strlen(cm_view)) view = cm_view;
+        if (stat != CSA_SUCCESS) {
+                char *format = cm_strdup(catgets(
+                    DT_catd, 1, 208, "\nCould not open calendar \"%s\"\n"));
+                fprintf(stderr, format,
+                        target ? target : catgets(DT_catd, 1, 209, "UNKNOWN"));
+                free(format);
+                free(uname);
+                free(loc);
+                exit(1);
+        }
+        version = get_data_version(c_handle);
+        if (cm_strlen(cm_date))
+                date = cm_date;
+        if (cm_strlen(cm_view))
+                view = cm_view;
 
-	if ((cnt = cm_tty_lookup(DT_catd, c_handle, version, date, view,
-				 &list, p)) > 0)
-		csa_free(list);
-	csa_logoff(c_handle, NULL);
-	props_clean_up(p);
-	free(p);
-	free(uname);
-	free(loc);
-	return 0;
+        if ((cnt = cm_tty_lookup(DT_catd, c_handle, version, date, view, &list,
+                                 p)) > 0)
+                csa_free(list);
+        csa_logoff(c_handle, NULL);
+        props_clean_up(p);
+        free(p);
+        free(uname);
+        free(loc);
+        return 0;
 }

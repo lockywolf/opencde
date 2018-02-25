@@ -21,7 +21,7 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $XConsortium: DndDrop.c /main/6 1996/09/27 19:00:45 drk $ */
- /*********************************************************************
+/*********************************************************************
  *
  *	File:		DndDrop.c
  *
@@ -32,7 +32,7 @@
  *+SNOTICE
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -54,64 +54,62 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdint.h>
-#include <X11/Intrinsic.h> 
-#include <Xm/AtomMgr.h> 
+#include <X11/Intrinsic.h>
+#include <Xm/AtomMgr.h>
 #include <Xm/DragDrop.h>
-#include <Xm/DropSMgr.h> 
-#include <Xm/DropTrans.h> 
+#include <Xm/DropSMgr.h>
+#include <Xm/DropTrans.h>
 #include "Dnd.h"
 #include "DndP.h"
 #include "DtSvcLock.h"
 
-/* 
+/*
  * Drop Receiver Callbacks
  */
 
-static void		dndDropProc(Widget, XtPointer, XtPointer);
-static void 		dndTransferStart(Widget, XmDropProcCallbackStruct*, 
-				DtDropInfo*, DtDndTransfer*, Atom*, Cardinal);
-static void		dndTransferProc(Widget, XtPointer, Atom*, Atom*, 
-				XtPointer, unsigned long*, int*);
-static void		dndAppTransfer(Widget, DtDropInfo*);
-static void		dndDropAnimateCallback(Widget, XtPointer, XtPointer);
+static void dndDropProc(Widget, XtPointer, XtPointer);
+static void dndTransferStart(Widget, XmDropProcCallbackStruct *, DtDropInfo *,
+                             DtDndTransfer *, Atom *, Cardinal);
+static void dndTransferProc(Widget, XtPointer, Atom *, Atom *, XtPointer,
+                            unsigned long *, int *);
+static void dndAppTransfer(Widget, DtDropInfo *);
+static void dndDropAnimateCallback(Widget, XtPointer, XtPointer);
 
 /*
  * Drop Support Functions
  */
 
-static  void		dndDropSiteDestroy(Widget, XtPointer, XtPointer);
-static 	XID		dndGetContextXID(Display*);
-static 	Boolean		dndSaveDropInfo(Display*, Widget, DtDropInfo*);
-static 	DtDropInfo *	dndFindDropInfo(Display*, Widget);
-static	void		dndTransferStartFailed(Widget);
-static	void		dndTransferFail(DtDropInfo*, Widget);
- 
+static void dndDropSiteDestroy(Widget, XtPointer, XtPointer);
+static XID dndGetContextXID(Display *);
+static Boolean dndSaveDropInfo(Display *, Widget, DtDropInfo *);
+static DtDropInfo *dndFindDropInfo(Display *, Widget);
+static void dndTransferStartFailed(Widget);
+static void dndTransferFail(DtDropInfo *, Widget);
+
 /*
  * Drop Register Resources
  */
 
 typedef struct {
-	XtCallbackList	dropAnimateCallback;
-	Boolean		preserveRegistration;
-	Boolean		registerChildren;
-	Boolean		textIsBuffer;
+        XtCallbackList dropAnimateCallback;
+        Boolean preserveRegistration;
+        Boolean registerChildren;
+        Boolean textIsBuffer;
 } DropSettings;
 
-#define Offset(field)	XtOffsetOf(DropSettings, field)
+#define Offset(field) XtOffsetOf(DropSettings, field)
 
 static XtResource dropResources[] = {
-      { DtNdropAnimateCallback, DtCDropAnimateCallback, 
-	XtRCallback, sizeof(XtCallbackList), Offset(dropAnimateCallback), 
-	XtRImmediate, (XtPointer)NULL },
-      { DtNpreserveRegistration, DtCPreserveRegistration, 
-	XtRBoolean, sizeof(Boolean), Offset(preserveRegistration), 
-	XtRImmediate, (XtPointer)True },
-      { DtNregisterChildren, DtCRegisterChildren, 
-	XtRBoolean, sizeof(Boolean), Offset(registerChildren), 
-	XtRImmediate, (XtPointer)False },
-      { DtNtextIsBuffer, DtCTextIsBuffer, 
-	XtRBoolean, sizeof(Boolean), Offset(textIsBuffer), 
-	XtRImmediate, (XtPointer)False },
+    {DtNdropAnimateCallback, DtCDropAnimateCallback, XtRCallback,
+     sizeof(XtCallbackList), Offset(dropAnimateCallback), XtRImmediate,
+     (XtPointer)NULL},
+    {DtNpreserveRegistration, DtCPreserveRegistration, XtRBoolean,
+     sizeof(Boolean), Offset(preserveRegistration), XtRImmediate,
+     (XtPointer)True},
+    {DtNregisterChildren, DtCRegisterChildren, XtRBoolean, sizeof(Boolean),
+     Offset(registerChildren), XtRImmediate, (XtPointer)False},
+    {DtNtextIsBuffer, DtCTextIsBuffer, XtRBoolean, sizeof(Boolean),
+     Offset(textIsBuffer), XtRImmediate, (XtPointer)False},
 };
 
 #undef Offset
@@ -122,33 +120,28 @@ static XtResource dropResources[] = {
  *	Drop Site Registration - varargs version
  */
 
-void
-DtDndVaDropRegister(
-	Widget		dropReceiver,
-	DtDndProtocol	protocols,
-	unsigned char	operations,
-	XtCallbackList	transferCallback,
-	...)
-{
-	va_list		vaList;
-	ArgList		argList;
-	Cardinal	argCount;
-	_DtSvcWidgetToAppContext(dropReceiver);
+void DtDndVaDropRegister(Widget dropReceiver, DtDndProtocol protocols,
+                         unsigned char operations,
+                         XtCallbackList transferCallback, ...) {
+        va_list vaList;
+        ArgList argList;
+        Cardinal argCount;
+        _DtSvcWidgetToAppContext(dropReceiver);
 
-	_DtSvcAppLock(app);
-	va_start(vaList, transferCallback);
-	argCount = _DtDndCountVarArgs(vaList);
-	va_end(vaList);
+        _DtSvcAppLock(app);
+        va_start(vaList, transferCallback);
+        argCount = _DtDndCountVarArgs(vaList);
+        va_end(vaList);
 
-	va_start(vaList, transferCallback);
-	_DtDndArgListFromVarArgs(vaList, argCount, &argList, &argCount);
-	va_end(vaList);
+        va_start(vaList, transferCallback);
+        _DtDndArgListFromVarArgs(vaList, argCount, &argList, &argCount);
+        va_end(vaList);
 
-	DtDndDropRegister(dropReceiver, protocols, operations, 
-				transferCallback, argList, argCount);
+        DtDndDropRegister(dropReceiver, protocols, operations, transferCallback,
+                          argList, argCount);
 
-	XtFree((char *)argList);
-	_DtSvcAppUnlock(app);
+        XtFree((char *)argList);
+        _DtSvcAppUnlock(app);
 }
 
 /*
@@ -157,212 +150,214 @@ DtDndVaDropRegister(
  *	Drop Site Registration - arglist version
  */
 
-void
-DtDndDropRegister(
-	Widget		dropReceiver,
-	DtDndProtocol	protocols,
-	unsigned char	operations,
-	XtCallbackList	dropTransferCallback,
-	ArgList		argList,
-	Cardinal	argCount)
-{
-	Display *	display		= XtDisplayOfObject(dropReceiver);
-	DropSettings	settings;
-	DtDropInfo *	dtDropInfo;
-        DtDropSiteInfo* dsInfo = NULL;
-	DtDndTransfer *	transfers;
-	Cardinal	numTransfers;
-	Atom	        *importTargets;
-	Cardinal	numImportTargets;
-	unsigned char	mergedOperations;
-	Arg *		args;
-	int		ii, jj, kk, nn;
-	_DtSvcWidgetToAppContext(dropReceiver);
+void DtDndDropRegister(Widget dropReceiver, DtDndProtocol protocols,
+                       unsigned char operations,
+                       XtCallbackList dropTransferCallback, ArgList argList,
+                       Cardinal argCount) {
+        Display *display = XtDisplayOfObject(dropReceiver);
+        DropSettings settings;
+        DtDropInfo *dtDropInfo;
+        DtDropSiteInfo *dsInfo = NULL;
+        DtDndTransfer *transfers;
+        Cardinal numTransfers;
+        Atom *importTargets;
+        Cardinal numImportTargets;
+        unsigned char mergedOperations;
+        Arg *args;
+        int ii, jj, kk, nn;
+        _DtSvcWidgetToAppContext(dropReceiver);
 
-	_DtSvcAppLock(app);
+        _DtSvcAppLock(app);
 
-	/*
-	 * Reject a noop registration
-	 */
-	if (protocols == DtDND_NOOP_TRANSFER) {
-	        _DtSvcAppUnlock(app);
-		return;
-	}
+        /*
+         * Reject a noop registration
+         */
+        if (protocols == DtDND_NOOP_TRANSFER) {
+                _DtSvcAppUnlock(app);
+                return;
+        }
 
-	/*
+        /*
          * Parse resources into dropResources
          */
-	XtGetSubresources(dropReceiver, &settings,
-				(String)NULL, (String)NULL,
-				dropResources, XtNumber(dropResources),
-				argList, argCount);
-	/*
-	 * Initialize DropInfo
-	 */
+        XtGetSubresources(dropReceiver, &settings, (String)NULL, (String)NULL,
+                          dropResources, XtNumber(dropResources), argList,
+                          argCount);
+        /*
+         * Initialize DropInfo
+         */
 
-	dtDropInfo = (DtDropInfo *) XtMalloc(sizeof(DtDropInfo));
+        dtDropInfo = (DtDropInfo *)XtMalloc(sizeof(DtDropInfo));
 
-	dtDropInfo->dropReceiver 		= dropReceiver;
-	dtDropInfo->protocols 			= protocols;
-	dtDropInfo->operations 			= operations;
-	dtDropInfo->textIsBuffer 		= settings.textIsBuffer;
-	dtDropInfo->dropSiteInfo		= NULL;
-	dtDropInfo->transferInfo		= NULL;
-	dtDropInfo->status 			= DtDND_SUCCESS;
+        dtDropInfo->dropReceiver = dropReceiver;
+        dtDropInfo->protocols = protocols;
+        dtDropInfo->operations = operations;
+        dtDropInfo->textIsBuffer = settings.textIsBuffer;
+        dtDropInfo->dropSiteInfo = NULL;
+        dtDropInfo->transferInfo = NULL;
+        dtDropInfo->status = DtDND_SUCCESS;
 
-	dtDropInfo->dropTransferCallback 
-			= _DtDndCopyCallbackList(dropTransferCallback);
-	dtDropInfo->dropAnimateCallback
-			= _DtDndCopyCallbackList(settings.dropAnimateCallback);
+        dtDropInfo->dropTransferCallback =
+            _DtDndCopyCallbackList(dropTransferCallback);
+        dtDropInfo->dropAnimateCallback =
+            _DtDndCopyCallbackList(settings.dropAnimateCallback);
 
-	/*
-	 * Initialize Transfer Methods
-	 */
+        /*
+         * Initialize Transfer Methods
+         */
 
-	transfers = _DtDndCreateImportTransfers(dtDropInfo, &numTransfers);
+        transfers = _DtDndCreateImportTransfers(dtDropInfo, &numTransfers);
 
-	dtDropInfo->transfers		= transfers;
-	dtDropInfo->numTransfers	= numTransfers;
+        dtDropInfo->transfers = transfers;
+        dtDropInfo->numTransfers = numTransfers;
 
 #ifdef DEBUG
-	printf("DtDndDropRegister: registering widget 0x%p\n", dropReceiver);
-	_DtDndPrintTransfers(display,transfers,numTransfers);
+        printf("DtDndDropRegister: registering widget 0x%p\n", dropReceiver);
+        _DtDndPrintTransfers(display, transfers, numTransfers);
 #endif
 
-	/*
-	 * Preserve existing drop registration info if requested
-	 */
+        /*
+         * Preserve existing drop registration info if requested
+         */
 
-	if (settings.preserveRegistration) {
-		Arg		pArgs[4];
+        if (settings.preserveRegistration) {
+                Arg pArgs[4];
 
-		dsInfo = (DtDropSiteInfo *)XtMalloc(sizeof(DtDropSiteInfo));
+                dsInfo = (DtDropSiteInfo *)XtMalloc(sizeof(DtDropSiteInfo));
 
-		dsInfo->dropProc 		= (XtCallbackProc)NULL;
-		dsInfo->operations		= XmDROP_NOOP;
-		dsInfo->importTargets		= NULL;
-		dsInfo->numImportTargets	= 0;
+                dsInfo->dropProc = (XtCallbackProc)NULL;
+                dsInfo->operations = XmDROP_NOOP;
+                dsInfo->importTargets = NULL;
+                dsInfo->numImportTargets = 0;
 
-		nn = 0;
+                nn = 0;
 
-		XtSetArg(pArgs[nn], XmNimportTargets,
-				&(dsInfo->importTargets));		nn++;
-		XtSetArg(pArgs[nn], XmNdropSiteOperations,
-				&(dsInfo->operations));			nn++;
-		XtSetArg(pArgs[nn], XmNnumImportTargets,
-				&(dsInfo->numImportTargets));		nn++;
-		XtSetArg(pArgs[nn], XmNdropProc,
-				&(dsInfo->dropProc));			nn++;
+                XtSetArg(pArgs[nn], XmNimportTargets, &(dsInfo->importTargets));
+                nn++;
+                XtSetArg(pArgs[nn], XmNdropSiteOperations,
+                         &(dsInfo->operations));
+                nn++;
+                XtSetArg(pArgs[nn], XmNnumImportTargets,
+                         &(dsInfo->numImportTargets));
+                nn++;
+                XtSetArg(pArgs[nn], XmNdropProc, &(dsInfo->dropProc));
+                nn++;
 
-		XmDropSiteRetrieve(dropReceiver, pArgs, nn);
+                XmDropSiteRetrieve(dropReceiver, pArgs, nn);
 
-		if ( (dsInfo->dropProc != NULL) && 
-		     (dsInfo->numImportTargets > 0)  &&
-		     (dsInfo->operations != XmDROP_NOOP) ){
+                if ((dsInfo->dropProc != NULL) &&
+                    (dsInfo->numImportTargets > 0) &&
+                    (dsInfo->operations != XmDROP_NOOP)) {
 
-			dtDropInfo->dropSiteInfo = dsInfo;
-		} else {
-			XtFree((char *)dsInfo);
-			dsInfo = NULL;
-		}
-	}
-	
-	/*
-	 * Create list of import targets based on the requested transfer
-	 * protocols and any preserved drop site registration.
-	 */
+                        dtDropInfo->dropSiteInfo = dsInfo;
+                } else {
+                        XtFree((char *)dsInfo);
+                        dsInfo = NULL;
+                }
+        }
 
-	numImportTargets = 0;
+        /*
+         * Create list of import targets based on the requested transfer
+         * protocols and any preserved drop site registration.
+         */
 
-	for (ii = 0; ii < numTransfers; ii++) {
-		numImportTargets += transfers[ii].numTargets;
-	}
+        numImportTargets = 0;
 
-	if (dsInfo != NULL) { 
-		numImportTargets += dsInfo->numImportTargets;
-	}
+        for (ii = 0; ii < numTransfers; ii++) {
+                numImportTargets += transfers[ii].numTargets;
+        }
 
-	importTargets = (Atom *) XtMalloc(numImportTargets * sizeof(Atom));
+        if (dsInfo != NULL) {
+                numImportTargets += dsInfo->numImportTargets;
+        }
 
-	kk = 0;
-	for (ii = 0; ii < numTransfers; ii++) {
-		for (jj = 0; jj < transfers[ii].numTargets; jj++) {
-			importTargets[kk++] = transfers[ii].targets[jj];
-		}
-	}
+        importTargets = (Atom *)XtMalloc(numImportTargets * sizeof(Atom));
 
-	if (dsInfo != NULL) {
-		for (jj = 0; jj < dsInfo->numImportTargets; jj++) {
-			importTargets[kk++] = dsInfo->importTargets[jj];
-		}
-	}
+        kk = 0;
+        for (ii = 0; ii < numTransfers; ii++) {
+                for (jj = 0; jj < transfers[ii].numTargets; jj++) {
+                        importTargets[kk++] = transfers[ii].targets[jj];
+                }
+        }
+
+        if (dsInfo != NULL) {
+                for (jj = 0; jj < dsInfo->numImportTargets; jj++) {
+                        importTargets[kk++] = dsInfo->importTargets[jj];
+                }
+        }
 
         /*
          * Merge operations
          */
- 
-	if (dsInfo != NULL) {
-        	mergedOperations = dsInfo->operations | operations;
-	} else {
-        	mergedOperations = operations;
-	}
 
-	/*
-	 * Create an argument list
-	 */
+        if (dsInfo != NULL) {
+                mergedOperations = dsInfo->operations | operations;
+        } else {
+                mergedOperations = operations;
+        }
 
-#define NUM_DROP_ARGS	5
-        args = (Arg *) XtMalloc(sizeof(Arg) * (NUM_DROP_ARGS + argCount));
-#undef  NUM_DROP_ARGS
+                /*
+                 * Create an argument list
+                 */
 
-	/*
-	 * Copy in passed arguments
-	 */
+#define NUM_DROP_ARGS 5
+        args = (Arg *)XtMalloc(sizeof(Arg) * (NUM_DROP_ARGS + argCount));
+#undef NUM_DROP_ARGS
 
-	nn = 0;
+        /*
+         * Copy in passed arguments
+         */
 
-	for (ii = 0; ii < argCount; ii++) {
-		XtSetArg(args[nn], argList[ii].name, argList[ii].value); nn++;
-	}
+        nn = 0;
 
-	/*
-	 * Set argument list for drop site registration
-	 */
+        for (ii = 0; ii < argCount; ii++) {
+                XtSetArg(args[nn], argList[ii].name, argList[ii].value);
+                nn++;
+        }
 
-	XtSetArg(args[nn], XmNimportTargets,      importTargets);    nn++;
-	XtSetArg(args[nn], XmNnumImportTargets,   numImportTargets); nn++;
-	XtSetArg(args[nn], XmNdropSiteOperations, mergedOperations);	   nn++;
-	XtSetArg(args[nn], XmNdropProc, 	  dndDropProc);  	   nn++;
+        /*
+         * Set argument list for drop site registration
+         */
 
-	if (settings.registerChildren) {
-	       XtSetArg(args[nn], XmNdropSiteType, XmDROP_SITE_COMPOSITE); nn++;
-	}
+        XtSetArg(args[nn], XmNimportTargets, importTargets);
+        nn++;
+        XtSetArg(args[nn], XmNnumImportTargets, numImportTargets);
+        nn++;
+        XtSetArg(args[nn], XmNdropSiteOperations, mergedOperations);
+        nn++;
+        XtSetArg(args[nn], XmNdropProc, dndDropProc);
+        nn++;
 
-	/*
-	 * Register the drop site
-	 */
+        if (settings.registerChildren) {
+                XtSetArg(args[nn], XmNdropSiteType, XmDROP_SITE_COMPOSITE);
+                nn++;
+        }
 
-	if (dsInfo != NULL) {
-		XmDropSiteUnregister(dropReceiver);
-		XmDropSiteRegister(dropReceiver, args, nn);
-	} else {
-		XmDropSiteRegister(dropReceiver, args, nn);
-	}
+        /*
+         * Register the drop site
+         */
 
-	/*
-	 * Add a destroy callback to unregister the drop site
-	 * Store the dropInfo using the dropReceiver as the context
-	 * Free locally allocated memory
-	 */
+        if (dsInfo != NULL) {
+                XmDropSiteUnregister(dropReceiver);
+                XmDropSiteRegister(dropReceiver, args, nn);
+        } else {
+                XmDropSiteRegister(dropReceiver, args, nn);
+        }
 
-	XtAddCallback(dropReceiver, XtNdestroyCallback, 
-			dndDropSiteDestroy, NULL);
+        /*
+         * Add a destroy callback to unregister the drop site
+         * Store the dropInfo using the dropReceiver as the context
+         * Free locally allocated memory
+         */
 
-	(void)dndSaveDropInfo(display, dropReceiver, dtDropInfo);
+        XtAddCallback(dropReceiver, XtNdestroyCallback, dndDropSiteDestroy,
+                      NULL);
 
-	XtFree((char *)importTargets);
-	XtFree((char *)args);
-	_DtSvcAppUnlock(app);
+        (void)dndSaveDropInfo(display, dropReceiver, dtDropInfo);
+
+        XtFree((char *)importTargets);
+        XtFree((char *)args);
+        _DtSvcAppUnlock(app);
 }
 
 /*
@@ -370,75 +365,72 @@ DtDndDropRegister(
  *
  *	Unregister the drop site
  */
-void
-DtDndDropUnregister(
-	Widget		dropReceiver)
-{
-	Display	       *display 	= XtDisplayOfObject(dropReceiver);
-	DtDropInfo     *dtDropInfo;
-	DtDropSiteInfo *dsInfo;
-	_DtSvcWidgetToAppContext(dropReceiver);
+void DtDndDropUnregister(Widget dropReceiver) {
+        Display *display = XtDisplayOfObject(dropReceiver);
+        DtDropInfo *dtDropInfo;
+        DtDropSiteInfo *dsInfo;
+        _DtSvcWidgetToAppContext(dropReceiver);
 
-	_DtSvcAppLock(app);
+        _DtSvcAppLock(app);
 
-	/*
-	 * Retrieve dropInfo.  If there isn't one then the drop site
-	 * was not registered by DtDndDropRegister() so return.
-	 */
-
-	if ((dtDropInfo = dndFindDropInfo(display, dropReceiver)) == NULL) {
-	        _DtSvcAppUnlock(app);
-		return;
-	}
-	dsInfo = dtDropInfo->dropSiteInfo;
-
-	/*
-	 * Unregister the drop site
-	 */
-
-	XmDropSiteUnregister(dropReceiver);
-
-	/*
-	 * If we have preserved drop site registration
-	 * then restore the drop site to it's original state.
-	 */
-
-	if (dsInfo != NULL) {
-        	Arg             args[4];
-		Cardinal	nn = 0;
- 
-		XtSetArg(args[nn], XmNimportTargets, 
-			dsInfo->importTargets);	 		nn++;
-		XtSetArg(args[nn], XmNnumImportTargets,
-			dsInfo->numImportTargets);	 	nn++;
-		XtSetArg(args[nn], XmNdropProc,
-			dsInfo->dropProc);		 	nn++;
-		XtSetArg(args[nn], XmNdropSiteOperations,
-			dsInfo->operations);		 	nn++;
-
-		XmDropSiteRegister(dropReceiver, args, nn);
-
-		XtFree((char *)dsInfo);
-	}
- 
         /*
-	 * Free callback, context and memory associated with DtDndDropRegister
-	 */
+         * Retrieve dropInfo.  If there isn't one then the drop site
+         * was not registered by DtDndDropRegister() so return.
+         */
 
-	XtRemoveCallback(dropReceiver, XtNdestroyCallback, 
-			dndDropSiteDestroy, NULL);
+        if ((dtDropInfo = dndFindDropInfo(display, dropReceiver)) == NULL) {
+                _DtSvcAppUnlock(app);
+                return;
+        }
+        dsInfo = dtDropInfo->dropSiteInfo;
 
-	XDeleteContext(display, dndGetContextXID(display), 
-		(XContext)(intptr_t)dropReceiver);
+        /*
+         * Unregister the drop site
+         */
 
-	_DtDndDestroyTransfers(dtDropInfo->transfers, dtDropInfo->numTransfers);
+        XmDropSiteUnregister(dropReceiver);
 
-	XtFree((char *)dtDropInfo->dropTransferCallback);
-	XtFree((char *)dtDropInfo->dropAnimateCallback);
-	XtFree((char *)dtDropInfo);
-	_DtSvcAppUnlock(app);
+        /*
+         * If we have preserved drop site registration
+         * then restore the drop site to it's original state.
+         */
+
+        if (dsInfo != NULL) {
+                Arg args[4];
+                Cardinal nn = 0;
+
+                XtSetArg(args[nn], XmNimportTargets, dsInfo->importTargets);
+                nn++;
+                XtSetArg(args[nn], XmNnumImportTargets,
+                         dsInfo->numImportTargets);
+                nn++;
+                XtSetArg(args[nn], XmNdropProc, dsInfo->dropProc);
+                nn++;
+                XtSetArg(args[nn], XmNdropSiteOperations, dsInfo->operations);
+                nn++;
+
+                XmDropSiteRegister(dropReceiver, args, nn);
+
+                XtFree((char *)dsInfo);
+        }
+
+        /*
+         * Free callback, context and memory associated with DtDndDropRegister
+         */
+
+        XtRemoveCallback(dropReceiver, XtNdestroyCallback, dndDropSiteDestroy,
+                         NULL);
+
+        XDeleteContext(display, dndGetContextXID(display),
+                       (XContext)(intptr_t)dropReceiver);
+
+        _DtDndDestroyTransfers(dtDropInfo->transfers, dtDropInfo->numTransfers);
+
+        XtFree((char *)dtDropInfo->dropTransferCallback);
+        XtFree((char *)dtDropInfo->dropAnimateCallback);
+        XtFree((char *)dtDropInfo);
+        _DtSvcAppUnlock(app);
 }
-
 
 /*********************************************************************
  *
@@ -446,121 +438,114 @@ DtDndDropUnregister(
  *
  *********************************************************************/
 
-
 /*
  * dndDropProc
  *
  * 	Determine transfer target and operation and initiate transfer.
  */
-static void
-dndDropProc(
-	Widget		dropReceiver,
-	XtPointer	clientData,
-	XtPointer	callData)
-{
-	XmDropProcCallbackStruct *xmDropInfo =
-			(XmDropProcCallbackStruct *) callData;
-	Display	*	display 	= XtDisplayOfObject(dropReceiver);
-	Boolean		compatible;
-	Atom *		exportTargets	 = NULL;
-	Cardinal	numExportTargets = 0;
-	DtDropInfo *	dtDropInfo;
-	DtDropSiteInfo* dsInfo;
-	DtDndTransfer *	transfer;
- 
-	/*
-	 * Reject invalid drops
-	 */
+static void dndDropProc(Widget dropReceiver, XtPointer clientData,
+                        XtPointer callData) {
+        XmDropProcCallbackStruct *xmDropInfo =
+            (XmDropProcCallbackStruct *)callData;
+        Display *display = XtDisplayOfObject(dropReceiver);
+        Boolean compatible;
+        Atom *exportTargets = NULL;
+        Cardinal numExportTargets = 0;
+        DtDropInfo *dtDropInfo;
+        DtDropSiteInfo *dsInfo;
+        DtDndTransfer *transfer;
 
-	if ( (xmDropInfo->dropSiteStatus != XmDROP_SITE_VALID) || 
-	     (xmDropInfo->operation == XmDROP_NOOP) || 
-	     (xmDropInfo->dropAction != XmDROP) ) {
+        /*
+         * Reject invalid drops
+         */
+
+        if ((xmDropInfo->dropSiteStatus != XmDROP_SITE_VALID) ||
+            (xmDropInfo->operation == XmDROP_NOOP) ||
+            (xmDropInfo->dropAction != XmDROP)) {
 
 #ifdef DEBUG
-		printf("dndDropProc: failed drop status or operation\n");
+                printf("dndDropProc: failed drop status or operation\n");
 #endif
-		dndTransferStartFailed(xmDropInfo->dragContext);
-		return;
-	}
+                dndTransferStartFailed(xmDropInfo->dragContext);
+                return;
+        }
 
-	/*
-	 * Get the cached DropInfo
-	 */
+        /*
+         * Get the cached DropInfo
+         */
 
-	if ((dtDropInfo = dndFindDropInfo(display, dropReceiver)) == NULL) {
-		dndTransferStartFailed(xmDropInfo->dragContext);
-		return;
-	}
+        if ((dtDropInfo = dndFindDropInfo(display, dropReceiver)) == NULL) {
+                dndTransferStartFailed(xmDropInfo->dragContext);
+                return;
+        }
 
-	/*
-	 * Get the export targets from the dragContext
-	 */
+        /*
+         * Get the export targets from the dragContext
+         */
 
-	XtVaGetValues(xmDropInfo->dragContext,
-		XmNexportTargets, &exportTargets,
-		XmNnumExportTargets, &numExportTargets,
-		NULL);
+        XtVaGetValues(xmDropInfo->dragContext, XmNexportTargets, &exportTargets,
+                      XmNnumExportTargets, &numExportTargets, NULL);
 
-	if (exportTargets == NULL) {
-		dndTransferStartFailed(xmDropInfo->dragContext);
-		dtDropInfo->status = DtDND_FAILURE;
-		return;
-	}
+        if (exportTargets == NULL) {
+                dndTransferStartFailed(xmDropInfo->dragContext);
+                dtDropInfo->status = DtDND_FAILURE;
+                return;
+        }
 
 #ifdef DEBUG
-	printf("dndDropProc: Export Targets: ");
-	_DtDndPrintTargets(display,exportTargets,numExportTargets);
+        printf("dndDropProc: Export Targets: ");
+        _DtDndPrintTargets(display, exportTargets, numExportTargets);
 #endif
 
-	/*
-	 * Search the DnD protocol import targets list to see
-	 * if it's a target we handle.  If it is then start our transfer.
-	 */
+        /*
+         * Search the DnD protocol import targets list to see
+         * if it's a target we handle.  If it is then start our transfer.
+         */
 
-	transfer = _DtDndTransferFromTargets(
-			dtDropInfo->transfers, dtDropInfo->numTransfers,
-			exportTargets, numExportTargets);
+        transfer = _DtDndTransferFromTargets(dtDropInfo->transfers,
+                                             dtDropInfo->numTransfers,
+                                             exportTargets, numExportTargets);
 
-	if (transfer != NULL) {
+        if (transfer != NULL) {
 
-		dndTransferStart(dropReceiver, xmDropInfo, dtDropInfo,
-			transfer, exportTargets, numExportTargets);
-		return;
-	}
+                dndTransferStart(dropReceiver, xmDropInfo, dtDropInfo, transfer,
+                                 exportTargets, numExportTargets);
+                return;
+        }
 
-	/*
-	 * If there isn't any alternate drop registration
-	 * then fail the transfer
-	 */
+        /*
+         * If there isn't any alternate drop registration
+         * then fail the transfer
+         */
 
-	dsInfo = dtDropInfo->dropSiteInfo;
+        dsInfo = dtDropInfo->dropSiteInfo;
 
-	if (dsInfo == NULL) {
-		dndTransferStartFailed(xmDropInfo->dragContext);
-		dtDropInfo->status = DtDND_FAILURE;
-		return;
-	}
+        if (dsInfo == NULL) {
+                dndTransferStartFailed(xmDropInfo->dragContext);
+                dtDropInfo->status = DtDND_FAILURE;
+                return;
+        }
 
-	/*
-	 * Determine if the exportTargets are compatible with
-	 * the alternate drop registration targets
-	 * If they are not compatible then fail the transfer
-	 * Otherwise call the original dropProc.
-	 */
+        /*
+         * Determine if the exportTargets are compatible with
+         * the alternate drop registration targets
+         * If they are not compatible then fail the transfer
+         * Otherwise call the original dropProc.
+         */
 
-	compatible = XmTargetsAreCompatible(display,
-			dsInfo->importTargets, dsInfo->numImportTargets,
-			exportTargets, numExportTargets);
+        compatible = XmTargetsAreCompatible(display, dsInfo->importTargets,
+                                            dsInfo->numImportTargets,
+                                            exportTargets, numExportTargets);
 
-	if (!compatible) {
-		dndTransferStartFailed(xmDropInfo->dragContext);
-		dtDropInfo->status = DtDND_FAILURE;
-		return;
-	}
+        if (!compatible) {
+                dndTransferStartFailed(xmDropInfo->dragContext);
+                dtDropInfo->status = DtDND_FAILURE;
+                return;
+        }
 
-	if (dsInfo->dropProc != NULL) {
-		(*(dsInfo->dropProc))(dropReceiver, clientData, callData);
-	}
+        if (dsInfo->dropProc != NULL) {
+                (*(dsInfo->dropProc))(dropReceiver, clientData, callData);
+        }
 }
 
 /*
@@ -569,171 +554,170 @@ dndDropProc(
  *	Start the transfer using protocol specific transfer entries
  *
  */
-static void
-dndTransferStart(
-	Widget		dropReceiver,
-	XmDropProcCallbackStruct *xmDropInfo,
-	DtDropInfo *	dtDropInfo,
-	DtDndTransfer *	transfer,
-	Atom *		exportTargets,
-	Cardinal	numExportTargets)
-{
-        XtCallbackRec	dropAnimateCbRec[] = { {dndDropAnimateCallback,
-							NULL}, {NULL, NULL} };
-	Display	*	display 	   = XtDisplayOfObject(dropReceiver);
-	DtDndContext *	dropData;
-	DtTransferInfo *transferInfo;
-	Atom *		transferTargets;
-	Cardinal	numTransferTargets;
-	Boolean		owCompat;
-	XmDropTransferEntryRec * transferEntries;
-	Cardinal	numTransferEntries;
-	int		posOffsetX, posOffsetY;
-	Boolean		status;
-	Arg		args[10];
-	Cardinal	ii, nn;
+static void dndTransferStart(Widget dropReceiver,
+                             XmDropProcCallbackStruct *xmDropInfo,
+                             DtDropInfo *dtDropInfo, DtDndTransfer *transfer,
+                             Atom *exportTargets, Cardinal numExportTargets) {
+        XtCallbackRec dropAnimateCbRec[] = {{dndDropAnimateCallback, NULL},
+                                            {NULL, NULL}};
+        Display *display = XtDisplayOfObject(dropReceiver);
+        DtDndContext *dropData;
+        DtTransferInfo *transferInfo;
+        Atom *transferTargets;
+        Cardinal numTransferTargets;
+        Boolean owCompat;
+        XmDropTransferEntryRec *transferEntries;
+        Cardinal numTransferEntries;
+        int posOffsetX, posOffsetY;
+        Boolean status;
+        Arg args[10];
+        Cardinal ii, nn;
 
 #ifdef DEBUG
-	printf("dndTransferStart: transfer method = %s\n",
-					transfer->methods->name);
+        printf("dndTransferStart: transfer method = %s\n",
+               transfer->methods->name);
 #endif
-	/*
-	 * If the operation is a move but not registered for a move
-	 * then force it to a copy drop.
-	 */
+        /*
+         * If the operation is a move but not registered for a move
+         * then force it to a copy drop.
+         */
 
-	if ((xmDropInfo->operation == XmDROP_MOVE) && 
-	   !(dtDropInfo->operations & XmDROP_MOVE)) {
-		xmDropInfo->operation = XmDROP_COPY;
-	}
+        if ((xmDropInfo->operation == XmDROP_MOVE) &&
+            !(dtDropInfo->operations & XmDROP_MOVE)) {
+                xmDropInfo->operation = XmDROP_COPY;
+        }
 
-	/*
-	 * Determine icon adjustment to drop position
-	 */
+        /*
+         * Determine icon adjustment to drop position
+         */
 
-	_DtDndGetIconOffset(xmDropInfo->dragContext,
-			transfer->methods->sourceType,
-			&posOffsetX, &posOffsetY);
+        _DtDndGetIconOffset(xmDropInfo->dragContext,
+                            transfer->methods->sourceType, &posOffsetX,
+                            &posOffsetY);
 
-	/*
-	 * Initialize drop transfer info
-	 */
+        /*
+         * Initialize drop transfer info
+         */
 
-	transferInfo = (DtTransferInfo *)XtMalloc(sizeof(DtTransferInfo));
+        transferInfo = (DtTransferInfo *)XtMalloc(sizeof(DtTransferInfo));
 
-	transferInfo->dragContext		= xmDropInfo->dragContext;
-	transferInfo->protocol			= transfer->methods->protocol;
-	transferInfo->operation			= xmDropInfo->operation;
-	transferInfo->methods			= transfer->methods;
-	transferInfo->transferTargets		= NULL;
-	transferInfo->numTransferTargets	= 0;
-	transferInfo->currentTransfer		= 0;
-	transferInfo->appTransferCalled		= False;
-	transferInfo->event			= xmDropInfo->event;
-	transferInfo->x				= xmDropInfo->x + posOffsetX;
-	transferInfo->y				= xmDropInfo->y + posOffsetY;
-	transferInfo->clientData		= NULL;
+        transferInfo->dragContext = xmDropInfo->dragContext;
+        transferInfo->protocol = transfer->methods->protocol;
+        transferInfo->operation = xmDropInfo->operation;
+        transferInfo->methods = transfer->methods;
+        transferInfo->transferTargets = NULL;
+        transferInfo->numTransferTargets = 0;
+        transferInfo->currentTransfer = 0;
+        transferInfo->appTransferCalled = False;
+        transferInfo->event = xmDropInfo->event;
+        transferInfo->x = xmDropInfo->x + posOffsetX;
+        transferInfo->y = xmDropInfo->y + posOffsetY;
+        transferInfo->clientData = NULL;
 
-	/*
-	 * Initialize drop data
-	 */
+        /*
+         * Initialize drop data
+         */
 
-	dropData = (DtDndContext *)XtCalloc(1,sizeof(DtDndContext));
+        dropData = (DtDndContext *)XtCalloc(1, sizeof(DtDndContext));
 
-	dropData->protocol		= transferInfo->protocol;
+        dropData->protocol = transferInfo->protocol;
 
-	/*
-	 * Initialize drop transfer fields of DtDropInfo
-	 */
+        /*
+         * Initialize drop transfer fields of DtDropInfo
+         */
 
-	dtDropInfo->transferInfo	= transferInfo;
-	dtDropInfo->dropData 		= dropData;
-	dtDropInfo->status 		= DtDND_SUCCESS;
+        dtDropInfo->transferInfo = transferInfo;
+        dtDropInfo->dropData = dropData;
+        dtDropInfo->status = DtDND_SUCCESS;
 
-	/* 
-	 * Get protocol specific transfer targets 
-	 */
+        /*
+         * Get protocol specific transfer targets
+         */
 
-	(*transferInfo->methods->transferTargets)(dtDropInfo,
-			exportTargets, numExportTargets,
-			&transferTargets, &numTransferTargets);
+        (*transferInfo->methods->transferTargets)(
+            dtDropInfo, exportTargets, numExportTargets, &transferTargets,
+            &numTransferTargets);
 
-	if (transferTargets == NULL) {
+        if (transferTargets == NULL) {
 
-		XtFree((char *)dtDropInfo->transferInfo);
-		XtFree((char *)dtDropInfo->dropData);
+                XtFree((char *)dtDropInfo->transferInfo);
+                XtFree((char *)dtDropInfo->dropData);
 
-		dtDropInfo->transferInfo	= NULL;
-		dtDropInfo->dropData 		= NULL;
-		dtDropInfo->status 		= DtDND_FAILURE;
+                dtDropInfo->transferInfo = NULL;
+                dtDropInfo->dropData = NULL;
+                dtDropInfo->status = DtDND_FAILURE;
 
-		dndTransferStartFailed(xmDropInfo->dragContext);
-		return;
-	}
+                dndTransferStartFailed(xmDropInfo->dragContext);
+                return;
+        }
 
-	/*
-	 * Convert _SUN_ENUMERATION_COUNT if available
-	 * Insert into transfer targets list
-	 */
-	owCompat = XmTargetsAreCompatible(display, 
-			exportTargets, numExportTargets,
-			&XA_SUN_ENUM_COUNT, 1);
+        /*
+         * Convert _SUN_ENUMERATION_COUNT if available
+         * Insert into transfer targets list
+         */
+        owCompat = XmTargetsAreCompatible(
+            display, exportTargets, numExportTargets, &XA_SUN_ENUM_COUNT, 1);
 
-	if (owCompat) {
-		Cardinal	jj, numTargets;
-		Atom		*targets;
+        if (owCompat) {
+                Cardinal jj, numTargets;
+                Atom *targets;
 
-		numTargets 	= numTransferTargets + 1;
-		targets 	= (Atom *)XtMalloc(numTargets * sizeof(Atom));
+                numTargets = numTransferTargets + 1;
+                targets = (Atom *)XtMalloc(numTargets * sizeof(Atom));
 
-		jj = 0;
-		targets[jj++] = XA_SUN_ENUM_COUNT;
+                jj = 0;
+                targets[jj++] = XA_SUN_ENUM_COUNT;
 
-		for (ii = 0; ii < numTransferTargets; ii++, jj++) {
-			targets[jj] = transferTargets[ii];
-		}
+                for (ii = 0; ii < numTransferTargets; ii++, jj++) {
+                        targets[jj] = transferTargets[ii];
+                }
 
-		XtFree((char *)transferTargets);
+                XtFree((char *)transferTargets);
 
-		transferTargets		= targets;
-		numTransferTargets 	= numTargets;
-	}
+                transferTargets = targets;
+                numTransferTargets = numTargets;
+        }
 
-	/*
- 	 * Create a transfer entries list from the transfer targets
-	 */
+        /*
+         * Create a transfer entries list from the transfer targets
+         */
 
-	numTransferEntries = numTransferTargets;
-	transferEntries = (XmDropTransferEntryRec *)
-		XtMalloc(numTransferEntries * sizeof(XmDropTransferEntryRec));
+        numTransferEntries = numTransferTargets;
+        transferEntries = (XmDropTransferEntryRec *)XtMalloc(
+            numTransferEntries * sizeof(XmDropTransferEntryRec));
 
-	for (ii = 0; ii < numTransferEntries; ii++) {
-		transferEntries[ii].target	= transferTargets[ii];
-		transferEntries[ii].client_data	= (XtPointer)dtDropInfo;
-	}
+        for (ii = 0; ii < numTransferEntries; ii++) {
+                transferEntries[ii].target = transferTargets[ii];
+                transferEntries[ii].client_data = (XtPointer)dtDropInfo;
+        }
 
-	transferInfo->transferTargets		= transferTargets;
-	transferInfo->numTransferTargets	= numTransferTargets;
+        transferInfo->transferTargets = transferTargets;
+        transferInfo->numTransferTargets = numTransferTargets;
 
 #ifdef DEBUG
-	printf("Requesting transfers: ");
-	_DtDndPrintTargets(display,transferTargets,numTransferTargets);
+        printf("Requesting transfers: ");
+        _DtDndPrintTargets(display, transferTargets, numTransferTargets);
 #endif
 
-	/*
-	 * Start the drop transfer
-	 */
+        /*
+         * Start the drop transfer
+         */
 
-	dropAnimateCbRec[0].closure = (XtPointer) dtDropInfo;
-	transferInfo->dropAnimateCallback
-			= _DtDndCopyCallbackList(dropAnimateCbRec);
-	nn = 0;
-	XtSetArg(args[nn], XmNdropTransfers, 	transferEntries); nn++;
-	XtSetArg(args[nn], XmNnumDropTransfers,	numTransferEntries);nn++;
-	XtSetArg(args[nn], XmNtransferProc, 	dndTransferProc); nn++;
-	XtSetArg(args[nn], XmNdestroyCallback, 	transferInfo->dropAnimateCallback); nn++;
+        dropAnimateCbRec[0].closure = (XtPointer)dtDropInfo;
+        transferInfo->dropAnimateCallback =
+            _DtDndCopyCallbackList(dropAnimateCbRec);
+        nn = 0;
+        XtSetArg(args[nn], XmNdropTransfers, transferEntries);
+        nn++;
+        XtSetArg(args[nn], XmNnumDropTransfers, numTransferEntries);
+        nn++;
+        XtSetArg(args[nn], XmNtransferProc, dndTransferProc);
+        nn++;
+        XtSetArg(args[nn], XmNdestroyCallback,
+                 transferInfo->dropAnimateCallback);
+        nn++;
 
-	(void)XmDropTransferStart(xmDropInfo->dragContext, args, nn);
+        (void)XmDropTransferStart(xmDropInfo->dragContext, args, nn);
 
         XtFree((char *)transferEntries);
 }
@@ -743,107 +727,103 @@ dndTransferStart(
  *
  * 	Process the transfers
  */
-static void
-dndTransferProc(
-	Widget		dropTransfer,
-	XtPointer	clientData,
-	Atom *		selection,
-	Atom *		type,
-	XtPointer	value,
-	unsigned long *	length,
-	int *		format)
-{
-	DtDropInfo *	dtDropInfo 	= (DtDropInfo *)clientData;
-	DtTransferInfo *transferInfo	= dtDropInfo->transferInfo;
-	int		index;
-	Atom		target;
+static void dndTransferProc(Widget dropTransfer, XtPointer clientData,
+                            Atom *selection, Atom *type, XtPointer value,
+                            unsigned long *length, int *format) {
+        DtDropInfo *dtDropInfo = (DtDropInfo *)clientData;
+        DtTransferInfo *transferInfo = dtDropInfo->transferInfo;
+        int index;
+        Atom target;
 
-	/*
-	 * Ignore if no dtDropInfo or failed transfer
-	 * Ignore null transfer (which are responses to DELETE)
-	 */
+        /*
+         * Ignore if no dtDropInfo or failed transfer
+         * Ignore null transfer (which are responses to DELETE)
+         */
 
-	if (value == NULL || dtDropInfo == NULL || 
-	    dtDropInfo->status == DtDND_FAILURE) {
-		dndTransferFail(dtDropInfo, dropTransfer);
-		XtFree(value);
-		return;
-	} else if (*type == XA_NULL) {
-		XtFree(value);
-		return;
-	}
+        if (value == NULL || dtDropInfo == NULL ||
+            dtDropInfo->status == DtDND_FAILURE) {
+                dndTransferFail(dtDropInfo, dropTransfer);
+                XtFree(value);
+                return;
+        } else if (*type == XA_NULL) {
+                XtFree(value);
+                return;
+        }
 
-	/*
-	 * Determine current transfer target
-	 */
+        /*
+         * Determine current transfer target
+         */
 
-	index = transferInfo->currentTransfer;
-	
-	if (index < transferInfo->numTransferTargets) {
-		target = transferInfo->transferTargets[index];
-	} else {
-		target = None;
-	}
-	transferInfo->currentTransfer++;
+        index = transferInfo->currentTransfer;
+
+        if (index < transferInfo->numTransferTargets) {
+                target = transferInfo->transferTargets[index];
+        } else {
+                target = None;
+        }
+        transferInfo->currentTransfer++;
 
 #ifdef DEBUG
-	{
-	Display *display = XtDisplayOfObject(dropTransfer);
-	char *targetname = XGetAtomName(display,target);
-	char *typename   = XGetAtomName(display,*type);
-	printf("dndTransferProc: target = %s type = %s fmt = %d len = %ld\n",
-			(targetname ? targetname : "Null"), 
-			(typename ? typename : "Null"),
-			 *format, *length);
-	if (targetname) XFree(targetname);
-	if (typename) XFree(typename);
-	}
+        {
+                Display *display = XtDisplayOfObject(dropTransfer);
+                char *targetname = XGetAtomName(display, target);
+                char *typename = XGetAtomName(display, *type);
+                printf("dndTransferProc: target = %s type = %s fmt = %d len = "
+                       "%ld\n",
+                       (targetname ? targetname : "Null"),
+                       (typename ? typename : "Null"), *format, *length);
+                if (targetname)
+                        XFree(targetname);
+                if (typename)
+                        XFree(typename);
+        }
 #endif
 
-	/*
-	 * Handle _SUN_ENUMERATION_COUNT request; reject multiple items
-	 */
-	if (target == XA_SUN_ENUM_COUNT) {
-		int *	enumCount = (int *)value;
-		if (enumCount[0] > 1) {
-			dndTransferFail(dtDropInfo, dropTransfer);
-		}
-		XtFree(value);
-		return;
-	}
+        /*
+         * Handle _SUN_ENUMERATION_COUNT request; reject multiple items
+         */
+        if (target == XA_SUN_ENUM_COUNT) {
+                int *enumCount = (int *)value;
+                if (enumCount[0] > 1) {
+                        dndTransferFail(dtDropInfo, dropTransfer);
+                }
+                XtFree(value);
+                return;
+        }
 
-	/*
-	 * Invoke protocol specific transfer proc
-	 */
+        /*
+         * Invoke protocol specific transfer proc
+         */
 
-	(*transferInfo->methods->transfer)( dropTransfer, dtDropInfo, 
-		selection, &target, type, value, length, format);
+        (*transferInfo->methods->transfer)(dropTransfer, dtDropInfo, selection,
+                                           &target, type, value, length,
+                                           format);
 
-	/*
-	 * If the transfer failed, set up to terminate unsuccessfully
-	 */
+        /*
+         * If the transfer failed, set up to terminate unsuccessfully
+         */
 
-	if (dtDropInfo->status == DtDND_FAILURE) {
-		dndTransferFail(dtDropInfo, dropTransfer);
-		return;
-	}
+        if (dtDropInfo->status == DtDND_FAILURE) {
+                dndTransferFail(dtDropInfo, dropTransfer);
+                return;
+        }
 
-	/*
-	 * If the transfers are complete;
-	 * If the dropData isn't ready then fail the transfer
-	 * Otherwise call the application transfer callback
-	 */
+        /*
+         * If the transfers are complete;
+         * If the dropData isn't ready then fail the transfer
+         * Otherwise call the application transfer callback
+         */
 
-	if (transferInfo->currentTransfer == transferInfo->numTransferTargets) {
+        if (transferInfo->currentTransfer == transferInfo->numTransferTargets) {
 
-		if (dtDropInfo->dropData->numItems == 0) {
-			dndTransferFail(dtDropInfo, dropTransfer);
-			return;
-		} else if (!transferInfo->appTransferCalled) {
-			dndAppTransfer(dropTransfer, dtDropInfo);
-			transferInfo->appTransferCalled = True;
-		}
-	}
+                if (dtDropInfo->dropData->numItems == 0) {
+                        dndTransferFail(dtDropInfo, dropTransfer);
+                        return;
+                } else if (!transferInfo->appTransferCalled) {
+                        dndAppTransfer(dropTransfer, dtDropInfo);
+                        transferInfo->appTransferCalled = True;
+                }
+        }
 }
 
 /*
@@ -851,73 +831,69 @@ dndTransferProc(
  *
  *	 Call the application transfer callback
  */
-static void
-dndAppTransfer(
-	Widget		dropTransfer,
-	DtDropInfo *	dtDropInfo)
-{
-	DtTransferInfo *transferInfo 	= dtDropInfo->transferInfo;
-	DtDndTransferCallbackStruct	transferCallData;
+static void dndAppTransfer(Widget dropTransfer, DtDropInfo *dtDropInfo) {
+        DtTransferInfo *transferInfo = dtDropInfo->transferInfo;
+        DtDndTransferCallbackStruct transferCallData;
 
-	/*
-	 * If the transfer failed or there isn't a callback simply return
-	 */
+        /*
+         * If the transfer failed or there isn't a callback simply return
+         */
 
-	if (dtDropInfo->status == DtDND_FAILURE ||
-	    dtDropInfo->dropTransferCallback == NULL) {
-		return;
-	}
+        if (dtDropInfo->status == DtDND_FAILURE ||
+            dtDropInfo->dropTransferCallback == NULL) {
+                return;
+        }
 
-	/*
-	 * Fill in the callback structure and call the
- 	 * application-defined dropTransferCallback.
-	 */
+        /*
+         * Fill in the callback structure and call the
+         * application-defined dropTransferCallback.
+         */
 
-	transferCallData.reason		= DtCR_DND_TRANSFER_DATA;
-	transferCallData.event		= transferInfo->event;
-	transferCallData.x		= transferInfo->x;
-	transferCallData.y		= transferInfo->y;
-	transferCallData.operation	= transferInfo->operation;
-	transferCallData.dropData	= dtDropInfo->dropData;
-	transferCallData.dragContext	= transferInfo->dragContext;
-	transferCallData.status		= DtDND_SUCCESS;
+        transferCallData.reason = DtCR_DND_TRANSFER_DATA;
+        transferCallData.event = transferInfo->event;
+        transferCallData.x = transferInfo->x;
+        transferCallData.y = transferInfo->y;
+        transferCallData.operation = transferInfo->operation;
+        transferCallData.dropData = dtDropInfo->dropData;
+        transferCallData.dragContext = transferInfo->dragContext;
+        transferCallData.status = DtDND_SUCCESS;
 
-	if (transferInfo->operation == XmDROP_MOVE) {
-		transferCallData.completeMove = True;
-	} else {
-		transferCallData.completeMove = False;
-	}
+        if (transferInfo->operation == XmDROP_MOVE) {
+                transferCallData.completeMove = True;
+        } else {
+                transferCallData.completeMove = False;
+        }
 
-	_DtDndCallCallbackList(dtDropInfo->dropReceiver, 
-		dtDropInfo->dropTransferCallback, 
-		(XtPointer)&transferCallData);
+        _DtDndCallCallbackList(dtDropInfo->dropReceiver,
+                               dtDropInfo->dropTransferCallback,
+                               (XtPointer)&transferCallData);
 
-	dtDropInfo->status = transferCallData.status;
+        dtDropInfo->status = transferCallData.status;
 
-	/*
-	 * If the app requests it then fail the transfer
-	 */
-	if (transferCallData.status == DtDND_FAILURE) {
-		dndTransferFail(dtDropInfo, dropTransfer);
-		return;
-	}
+        /*
+         * If the app requests it then fail the transfer
+         */
+        if (transferCallData.status == DtDND_FAILURE) {
+                dndTransferFail(dtDropInfo, dropTransfer);
+                return;
+        }
 
-	/*
-	 * If the transfer succeeded and this is a move operation
-	 * then transfer DELETE to delete the original.
-	 */
+        /*
+         * If the transfer succeeded and this is a move operation
+         * then transfer DELETE to delete the original.
+         */
 
-	if (transferCallData.status == DtDND_SUCCESS &&
-	    transferCallData.completeMove &&
-	    transferInfo->operation == XmDROP_MOVE) {
+        if (transferCallData.status == DtDND_SUCCESS &&
+            transferCallData.completeMove &&
+            transferInfo->operation == XmDROP_MOVE) {
 
-		XmDropTransferEntryRec	transferEntries[1];
+                XmDropTransferEntryRec transferEntries[1];
 
-		transferEntries[0].target	= XA_DELETE;
-		transferEntries[0].client_data	= (XtPointer)dtDropInfo;
+                transferEntries[0].target = XA_DELETE;
+                transferEntries[0].client_data = (XtPointer)dtDropInfo;
 
-		XmDropTransferAdd(dropTransfer, transferEntries, 1);
-	}
+                XmDropTransferAdd(dropTransfer, transferEntries, 1);
+        }
 }
 
 /*
@@ -925,52 +901,48 @@ dndAppTransfer(
  *
  * 	Call the application dropAnimateCallback
  */
-static void
-dndDropAnimateCallback(
-	Widget		dropTransfer,
-	XtPointer	clientData,
-	XtPointer	callData)
-{
-	DtDropInfo *	dtDropInfo 	= (DtDropInfo *)clientData;
-	DtTransferInfo *transferInfo	= dtDropInfo->transferInfo;
-	DtDndDropAnimateCallbackStruct	dropAnimateCallData;
+static void dndDropAnimateCallback(Widget dropTransfer, XtPointer clientData,
+                                   XtPointer callData) {
+        DtDropInfo *dtDropInfo = (DtDropInfo *)clientData;
+        DtTransferInfo *transferInfo = dtDropInfo->transferInfo;
+        DtDndDropAnimateCallbackStruct dropAnimateCallData;
 
-	/*
-	 * Fill in the callback structure and call the
- 	 * application-defined dropAnimateCallback.
-	 */
+        /*
+         * Fill in the callback structure and call the
+         * application-defined dropAnimateCallback.
+         */
 
-	if (dtDropInfo->status == DtDND_SUCCESS &&
-	    dtDropInfo->dropAnimateCallback != NULL) {
+        if (dtDropInfo->status == DtDND_SUCCESS &&
+            dtDropInfo->dropAnimateCallback != NULL) {
 
-		dropAnimateCallData.reason	= DtCR_DND_DROP_ANIMATE;
-		dropAnimateCallData.event     	= transferInfo->event;
-		dropAnimateCallData.x		= transferInfo->x;
-		dropAnimateCallData.y		= transferInfo->y;
-		dropAnimateCallData.operation	= transferInfo->operation;
-		dropAnimateCallData.dropData	= dtDropInfo->dropData;
+                dropAnimateCallData.reason = DtCR_DND_DROP_ANIMATE;
+                dropAnimateCallData.event = transferInfo->event;
+                dropAnimateCallData.x = transferInfo->x;
+                dropAnimateCallData.y = transferInfo->y;
+                dropAnimateCallData.operation = transferInfo->operation;
+                dropAnimateCallData.dropData = dtDropInfo->dropData;
 
-		_DtDndCallCallbackList(dtDropInfo->dropReceiver, 
-			dtDropInfo->dropAnimateCallback, 
-			(XtPointer)&dropAnimateCallData);
-	}
+                _DtDndCallCallbackList(dtDropInfo->dropReceiver,
+                                       dtDropInfo->dropAnimateCallback,
+                                       (XtPointer)&dropAnimateCallData);
+        }
 
-	/*
-	 * Invoke the protocol specific transfer finish proc
-	 */
+        /*
+         * Invoke the protocol specific transfer finish proc
+         */
 
-	(*transferInfo->methods->transferFinish)(dtDropInfo);
+        (*transferInfo->methods->transferFinish)(dtDropInfo);
 
-	/*
-	 * Free transfer created memory 
-	 */
-	XtFree((char *)dtDropInfo->transferInfo->transferTargets);
-	XtFree((char *)dtDropInfo->transferInfo->dropAnimateCallback); 
-	XtFree((char *)dtDropInfo->transferInfo);
-	XtFree((char *)dtDropInfo->dropData);
-	
-	dtDropInfo->transferInfo 	= NULL;
-	dtDropInfo->dropData 		= NULL;
+        /*
+         * Free transfer created memory
+         */
+        XtFree((char *)dtDropInfo->transferInfo->transferTargets);
+        XtFree((char *)dtDropInfo->transferInfo->dropAnimateCallback);
+        XtFree((char *)dtDropInfo->transferInfo);
+        XtFree((char *)dtDropInfo->dropData);
+
+        dtDropInfo->transferInfo = NULL;
+        dtDropInfo->dropData = NULL;
 }
 
 /*
@@ -978,33 +950,26 @@ dndDropAnimateCallback(
  *
  * Destroy callback unregisters the widget being destroyed as a drop site
  */
-static void
-dndDropSiteDestroy(
-	Widget		widget,
-	XtPointer	clientData,
-	XtPointer	callData)
-{
-	DtDndDropUnregister(widget);
+static void dndDropSiteDestroy(Widget widget, XtPointer clientData,
+                               XtPointer callData) {
+        DtDndDropUnregister(widget);
 }
-	
+
 /*
  * dndGetContextXID
  *
  *	Returns a pixmap to use as the XID for Save/Find Context
  */
-static XID
-dndGetContextXID(
-	Display *	display)
-{
+static XID dndGetContextXID(Display *display) {
         static XID contextXID;
 
-	_DtSvcProcessLock();
-	if (contextXID == 0) {
-		contextXID = XCreatePixmap(display, 
-					DefaultRootWindow(display), 1, 1, 1);
-	}
-	_DtSvcProcessUnlock();
-	return contextXID;
+        _DtSvcProcessLock();
+        if (contextXID == 0) {
+                contextXID =
+                    XCreatePixmap(display, DefaultRootWindow(display), 1, 1, 1);
+        }
+        _DtSvcProcessUnlock();
+        return contextXID;
 }
 
 /*
@@ -1012,18 +977,15 @@ dndGetContextXID(
  *
  *	Saves the DtDropInfo relative to the dropReceiver
  */
-static Boolean 		
-dndSaveDropInfo(
-	Display *	display,
-	Widget		dropReceiver,
-	DtDropInfo *	dtDropInfo)
-{
-	int		status;
+static Boolean dndSaveDropInfo(Display *display, Widget dropReceiver,
+                               DtDropInfo *dtDropInfo) {
+        int status;
 
-	status = XSaveContext(display, dndGetContextXID(display),
-		(XContext)(intptr_t)dropReceiver, (XPointer)dtDropInfo);
+        status = XSaveContext(display, dndGetContextXID(display),
+                              (XContext)(intptr_t)dropReceiver,
+                              (XPointer)dtDropInfo);
 
-	return (status == 0);
+        return (status == 0);
 }
 
 /*
@@ -1031,21 +993,18 @@ dndSaveDropInfo(
  *
  *	Finds the DtDropInfo saved relative to the dropReceiver
  */
-static DtDropInfo *
-dndFindDropInfo(
-	Display *	display,
-	Widget		dropReceiver)
-{
-	int		status;
-	DtDropInfo *	dtDropInfo;
+static DtDropInfo *dndFindDropInfo(Display *display, Widget dropReceiver) {
+        int status;
+        DtDropInfo *dtDropInfo;
 
-	status = XFindContext(display, dndGetContextXID(display), 
-		(XContext)(intptr_t)dropReceiver, (XPointer *)&dtDropInfo);
+        status = XFindContext(display, dndGetContextXID(display),
+                              (XContext)(intptr_t)dropReceiver,
+                              (XPointer *)&dtDropInfo);
 
-	if (status != 0)
-		dtDropInfo = (DtDropInfo *)NULL;
-	
-	return dtDropInfo;
+        if (status != 0)
+                dtDropInfo = (DtDropInfo *)NULL;
+
+        return dtDropInfo;
 }
 
 /*
@@ -1054,17 +1013,16 @@ dndFindDropInfo(
  * 	Fail the transfer by starting a 'failure' transfer
  *	Calls XmDropTransferStart()
  */
-static void
-dndTransferStartFailed(
-	Widget	dragContext)
-{
-	Arg 	args[2];
-	int 	nn = 0;
+static void dndTransferStartFailed(Widget dragContext) {
+        Arg args[2];
+        int nn = 0;
 
-	XtSetArg(args[nn], XmNtransferStatus, XmTRANSFER_FAILURE); nn++;
-	XtSetArg(args[nn], XmNnumDropTransfers, 0); nn++;
+        XtSetArg(args[nn], XmNtransferStatus, XmTRANSFER_FAILURE);
+        nn++;
+        XtSetArg(args[nn], XmNnumDropTransfers, 0);
+        nn++;
 
-	XmDropTransferStart(dragContext, args, nn);
+        XmDropTransferStart(dragContext, args, nn);
 }
 
 /*
@@ -1073,17 +1031,10 @@ dndTransferStartFailed(
  * 	Fail the transfer by setting the dropTransfer widget to failure
  *	Assumes XmDropTransferStart() already called.
  */
-static void
-dndTransferFail(
-	DtDropInfo *	dtDropInfo,
-	Widget		dropTransfer)
-{
-	if (dtDropInfo)
-		dtDropInfo->status = DtDND_FAILURE;
+static void dndTransferFail(DtDropInfo *dtDropInfo, Widget dropTransfer) {
+        if (dtDropInfo)
+                dtDropInfo->status = DtDND_FAILURE;
 
-	XtVaSetValues(dropTransfer,
-		XmNtransferStatus,	XmTRANSFER_FAILURE,
-		XmNnumDropTransfers,	0,
-		NULL);
+        XtVaSetValues(dropTransfer, XmNtransferStatus, XmTRANSFER_FAILURE,
+                      XmNnumDropTransfers, 0, NULL);
 }
-

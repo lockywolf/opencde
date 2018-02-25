@@ -41,34 +41,33 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API ArcDirector {
-public:
-  virtual EventHandler *arcEventHandler(const Notation *,
-					const Vector<StringC> &,
-					const SubstTable<Char> *) = 0;
+      public:
+        virtual EventHandler *arcEventHandler(const Notation *,
+                                              const Vector<StringC> &,
+                                              const SubstTable<Char> *) = 0;
 };
 
 class SP_API SelectOneArcDirector : public ArcDirector, public Messenger {
-public:
-  SelectOneArcDirector(const Vector<StringC> &select, EventHandler &eh)
-    : select_(select), eh_(&eh) { }
-  EventHandler *arcEventHandler(const Notation *,
-				const Vector<StringC> &,
-				const SubstTable<Char> *);
-  void dispatchMessage(const Message &);
-  void dispatchMessage(Message &);
-private:
-  Vector<StringC> select_;
-  EventHandler *eh_;
+      public:
+        SelectOneArcDirector(const Vector<StringC> &select, EventHandler &eh)
+            : select_(select), eh_(&eh) {}
+        EventHandler *arcEventHandler(const Notation *, const Vector<StringC> &,
+                                      const SubstTable<Char> *);
+        void dispatchMessage(const Message &);
+        void dispatchMessage(Message &);
+
+      private:
+        Vector<StringC> select_;
+        EventHandler *eh_;
 };
 
 class SP_API ArcEngine {
-public:
-  static void parseAll(SgmlParser &,
-		       Messenger &,
-		       ArcDirector &,
-		       SP_CONST SP_VOLATILE sig_atomic_t *cancelPtr = 0);
-private:
-  ArcEngine();
+      public:
+        static void parseAll(SgmlParser &, Messenger &, ArcDirector &,
+                             SP_CONST SP_VOLATILE sig_atomic_t *cancelPtr = 0);
+
+      private:
+        ArcEngine();
 };
 
 #ifdef SP_NAMESPACE

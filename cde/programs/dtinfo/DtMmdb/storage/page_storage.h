@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,9 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
 
 #ifndef _page_storage_h
 #define _page_storage_h 1
@@ -66,50 +65,46 @@ enum direction { positive, negative };
 
 class page;
 
-class str_index_record_t : public root
-{
+class str_index_record_t : public root {
 
-public:
-   int str_offset;
-   mmdb_pos_t loc;
+      public:
+        int str_offset;
+        mmdb_pos_t loc;
 
-   str_index_record_t(int offset, mmdb_pos_t lc = 0);
-   virtual ~str_index_record_t() {};
+        str_index_record_t(int offset, mmdb_pos_t lc = 0);
+        virtual ~str_index_record_t(){};
 };
 
-void delete_str_index_record(const void* str_index_record_ptr);
+void delete_str_index_record(const void *str_index_record_ptr);
 
-typedef str_index_record_t* str_index_record_tPtr;
+typedef str_index_record_t *str_index_record_tPtr;
 
 ////////////////////////////////////////////
 ////////////////////////////////////////////
-class store_trans
-{
+class store_trans {
 
-protected:
-   enum trans_t { ENABLED, DISABLED };
+      protected:
+        enum trans_t { ENABLED, DISABLED };
 
-   char* path;
-   char* name;
+        char *path;
+        char *name;
 
-   trans_t status;
-   unixf_storage* log_store;
-   imp_die* log_index;
-   int max_pages;
-   int page_sz;
+        trans_t status;
+        unixf_storage *log_store;
+        imp_die *log_index;
+        int max_pages;
+        int page_sz;
 
-public:
-   store_trans(char* path, char*name, int page_sz); 
-   ~store_trans();
+      public:
+        store_trans(char *path, char *name, int page_sz);
+        ~store_trans();
 
-   void init(rep_policy*);
-   void quit();
+        void init(rep_policy *);
+        void quit();
 
-   void set_max_pages(int max_pgs) {
-      max_pages = max_pgs;
-   };
+        void set_max_pages(int max_pgs) { max_pages = max_pgs; };
 
-   friend class page_storage;
+        friend class page_storage;
 };
 
 /******************************************************/
@@ -120,134 +115,131 @@ public:
 #define f_global_pcache (*f_global_pcache_ptr)
 #endif
 
+class page_storage : public abs_storage {
 
-class page_storage : public abs_storage 
-{
+      protected:
+        store_trans trans_info;
 
-protected:
-   store_trans trans_info;
+        int page_sz; // page size
 
-   int page_sz ;           // page size
-
-   static int dv_sz ;
-   static int abs_off ;
+        static int dv_sz;
+        static int abs_off;
 
 #ifndef C_API
-   static page_cache_global_part f_global_pcache;
+        static page_cache_global_part f_global_pcache;
 #else
-   static page_cache_global_part* f_global_pcache_ptr;
+        static page_cache_global_part *f_global_pcache_ptr;
 #endif
 
-   page_cache_local_part f_local_pcache;
+        page_cache_local_part f_local_pcache;
 
-   int total_pages;
+        int total_pages;
 
-// byte order 
-   int v_server_order;
-   int v_db_order;
+        // byte order
+        int v_server_order;
+        int v_db_order;
 
-   buffer* v_buf; 	   // aux. buf.
+        buffer *v_buf; // aux. buf.
 
-   int pagings ;
-   int total_page_access;
+        int pagings;
+        int total_page_access;
 
-protected:
+      protected:
+        Boolean seek_loc_negative(mmdb_pos_t &loc, int smd);
+        Boolean seek_loc_positive(mmdb_pos_t &loc, int smd);
 
-   Boolean seek_loc_negative(mmdb_pos_t& loc, int smd);
-   Boolean seek_loc_positive(mmdb_pos_t& loc, int smd);
+      public:
+        page_storage(
+            char *path, char *name, unixf_storage *store, int page_sz = PAGSIZ,
+            int num_cached_pages = NUM_PAGES,
+            mmdb_byte_order_t db_order_when_create_store = mmdb_big_endian);
+        virtual ~page_storage();
 
-public:
-   page_storage(char* path, char* name,
-                unixf_storage* store, 
-                int page_sz = PAGSIZ, 
-                int num_cached_pages = NUM_PAGES,
-		mmdb_byte_order_t db_order_when_create_store = mmdb_big_endian
-               );
-   virtual ~page_storage();
+        void remove(); // remove all pages in the store
 
-   void remove(); // remove all pages in the store
+        void sync();
+        void sync(int pagenum);
+        void sync(page *);
 
-   void sync();
-   void sync(int pagenum);
-   void sync(page*);
+        void begin_trans();
+        void commit_trans();
+        void roll_back();
+        void save_to_log(page *page_ptr);
 
-   void begin_trans();
-   void commit_trans();
-   void roll_back();
-   void save_to_log(page* page_ptr);
+        // get server and db order
+        int server_order() { return v_server_order; };
+        int db_order() { return v_db_order; };
 
-// get server and db order
-   int server_order() { return v_server_order; } ;
-   int db_order() { return v_db_order; };
+        // i/o functions
+        int readString(mmdb_pos_t loc, char *base, int len, int str_offset = 0);
+        int get_str_ptr(mmdb_pos_t loc, char *&, int &len);
 
+        int updateString(mmdb_pos_t loc, const char *base, int len,
+                         int string_ofst = 0, Boolean flush = false);
+        int deleteString(mmdb_pos_t loc, Boolean flush = false);
+        int insertString(mmdb_pos_t &loc, const char *base, int len,
+                         Boolean flush = false);
+        int allocString(mmdb_pos_t &loc, int len, char *&, int mode = 0);
+        int appendString(mmdb_pos_t loc, const char *, int len,
+                         Boolean flush_opt = false);
 
-// i/o functions
-   int readString (mmdb_pos_t loc, char* base, int len, int str_offset = 0); 
-   int get_str_ptr(mmdb_pos_t loc, char*&, int& len) ;
+        int set_page_dirty(mmdb_pos_t loc);
 
-   int updateString(mmdb_pos_t loc, const char* base, int len, int string_ofst = 0, Boolean flush = false);
-   int deleteString (mmdb_pos_t loc, Boolean flush = false);
-   int insertString(mmdb_pos_t& loc, const char* base, int len, Boolean flush = false);
-   int allocString (mmdb_pos_t& loc, int len, char*&, int mode = 0);
-   int appendString(mmdb_pos_t loc, const char*, int len, Boolean flush_opt = false);
+        // iteration functions
+        typedef enum access { READ, WRITE } access_t;
+        int first() const; // first page's index in the store
+        page *operator()(int page_num, enum access intent); // get the page
+        void next(int &) const; // next page's index.
 
-   int set_page_dirty(mmdb_pos_t loc);
+        // format the store to contain extra empty 'pages' pages
+        int add_page_frames(int pages);
 
-// iteration functions
-   typedef enum access { READ, WRITE } access_t;
-   int first() const;             // first page's index in the store
-   page* operator()(int page_num, enum access intent) ;    //get the page
-   void next(int&) const;         // next page's index. 
+        // get locs of the pieces that a long string is broken into
+        // The array should be deleted after use.
+        int get_str_locs(mmdb_pos_t str_loc, str_index_record_tPtr *&locs,
+                         int &vector_leng);
 
+        // seek loc to (loc +/- 1) position
+        Boolean seek_loc(mmdb_pos_t &loc, const direction = positive,
+                         int = spointer_t::FIRST_RECD);
+        mmdb_pos_t first_loc(); // return first loc in the store
+        mmdb_pos_t last_loc();  // return last loc in the store
 
-// format the store to contain extra empty 'pages' pages
-   int add_page_frames(int pages);   
+        // store status query functions
+        int page_size() { return page_sz; };
 
+        //
+        void set_page_size(int pgsz) { page_sz = pgsz; };
 
-// get locs of the pieces that a long string is broken into
-// The array should be deleted after use.
-   int get_str_locs(mmdb_pos_t str_loc, str_index_record_tPtr*& locs, int& vector_leng);
+        // how many pages in total in the store
+        int pages() const { return total_pages; };
 
-// seek loc to (loc +/- 1) position 
-   Boolean seek_loc(mmdb_pos_t& loc, const direction = positive, int = spointer_t::FIRST_RECD );
-   mmdb_pos_t first_loc(); // return first loc in the store
-   mmdb_pos_t last_loc(); // return last loc in the store
+        // paging counting function
+        void reset_paging_count();
+        int paging_count() const;
 
-// store status query functions
-   int page_size() { return page_sz; }; 
+        Boolean io_mode(int mode);
 
-//
-   void set_page_size(int pgsz) { page_sz = pgsz; }; 
+        // return an aux. buf.
+        buffer &aux_buf();
 
-// how many pages in total in the store
-   int pages() const { return total_pages; }; 
+        // printing functions
+        virtual io_status asciiOut(ostream &);
 
-// paging counting function
-   void reset_paging_count();
-   int paging_count() const;
+        friend void close_file(const void *);
+        friend void remove_from_global_cache(const void *);
 
-   Boolean io_mode(int mode) ;
-
-// return an aux. buf.
-   buffer& aux_buf();
-
-// printing functions
-   virtual io_status asciiOut(ostream&) ;
- 
-   friend void close_file(const void*);
-   friend void remove_from_global_cache(const void*);
-
-   friend class storage_mgr_t;
-   friend class handler;
-   friend class page_cache_local_part;
-   friend class page_cache_global_part;
+        friend class storage_mgr_t;
+        friend class handler;
+        friend class page_cache_local_part;
+        friend class page_cache_global_part;
 
 #ifdef C_API
-   friend void initialize_MMDB();
-   friend void quit_MMDB();
+        friend void initialize_MMDB();
+        friend void quit_MMDB();
 #endif
 };
 
-typedef page_storage* page_storagePtr;
+typedef page_storage *page_storagePtr;
 
 #endif

@@ -63,80 +63,56 @@
 
 #include <X11/Intrinsic.h>
 
-typedef struct _XM_CONFIG_INFO_REC    XmConfigInfoRec;
-typedef struct _XM_CONFIG_INFO_REC    *XmConfigInfo;
+typedef struct _XM_CONFIG_INFO_REC XmConfigInfoRec;
+typedef struct _XM_CONFIG_INFO_REC *XmConfigInfo;
 
 /*
  * define types for Xm-Configure object "methods"
  */
-typedef int    	(*XmConfigProc) (
-    ABObj 	obj
-);
+typedef int (*XmConfigProc)(ABObj obj);
 
-typedef BOOL    (*XmConfigIsaFunc) (
-    ABObj	obj
-);
+typedef BOOL (*XmConfigIsaFunc)(ABObj obj);
 
-typedef ABObj	(*XmConfigGetObjProc) (
-    ABObj	obj,
-    AB_CFG_OBJ_TYPE type
-);
+typedef ABObj (*XmConfigGetObjProc)(ABObj obj, AB_CFG_OBJ_TYPE type);
 
 /*
  * XmConfigInfo Structure - one for each type of object supported
  */
 typedef struct _XM_CONFIG_INFO_REC {
-    /* Methods...*/
-    XmConfigProc  	xmconfig;      /* configures obj hierarchy */
-    XmConfigGetObjProc  get_config_obj;/* returns config obj       */ 
-    XmConfigIsaFunc     is_a_test;     /* "is a" test              */
+        /* Methods...*/
+        XmConfigProc xmconfig;             /* configures obj hierarchy */
+        XmConfigGetObjProc get_config_obj; /* returns config obj       */
+        XmConfigIsaFunc is_a_test;         /* "is a" test              */
 } XM_CONFIG_INFO_REC;
 
-
-
-/* Function to initialize XmConfigInfo for all AB object types 
+/* Function to initialize XmConfigInfo for all AB object types
  */
-extern int	abxm_init_obj_config_info(
-		);
+extern int abxm_init_obj_config_info();
 
-/* Function to register XmConfigInfo for a single object type 
+/* Function to register XmConfigInfo for a single object type
  */
-extern void    	abxm_register_config_info(
-            	    XmConfigInfo cfginfo
-        	);
+extern void abxm_register_config_info(XmConfigInfo cfginfo);
 
-/* Function which returns XmConfigInfo ptr for an object 
+/* Function which returns XmConfigInfo ptr for an object
  */
-extern XmConfigInfo 
-		abxm_get_config_info(
-            	    ABObj        obj
-        	);
+extern XmConfigInfo abxm_get_config_info(ABObj obj);
 
-/* Function which XmConfigures an object 
+/* Function which XmConfigures an object
  */
-extern int    	abxm_configure_obj(
-            	    ABObj        obj
-        	);
+extern int abxm_configure_obj(ABObj obj);
 
-/* Function which XmConfigures an entire tree 
+/* Function which XmConfigures an entire tree
  */
-extern int	abxm_configure_tree(
-		    ABObj	root
-		);
+extern int abxm_configure_tree(ABObj root);
 
-/* Function which re-configures attachments after 
- * objects have been xmconfigured 
- */ 
-extern int      abxm_configure_attachments( 
-                    ABObj       obj 
-                ); 
+/* Function which re-configures attachments after
+ * objects have been xmconfigured
+ */
+extern int abxm_configure_attachments(ABObj obj);
 
 /* Function which returns the correct Composite SubObj corresponding
  * to 'type'.
  */
-extern ABObj	abxm_get_config_obj(
-		    ABObj	obj,
-		    AB_CFG_OBJ_TYPE type
-		);
+extern ABObj abxm_get_config_obj(ABObj obj, AB_CFG_OBJ_TYPE type);
 
 #endif /* _ABXM_CONFIG_H_ */

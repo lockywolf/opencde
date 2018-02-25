@@ -37,36 +37,31 @@
 #include "rerule.h"
 #include "repeat.h"
 
-extern _DtCmsComparisonResult _DtCmsCompareEntry P((
-				cms_key *key,
-				caddr_t data));
+extern _DtCmsComparisonResult _DtCmsCompareEntry P((cms_key * key,
+                                                    caddr_t data));
 
-extern _DtCmsComparisonResult _DtCmsCompareRptEntry P((
-				cms_key *key,
-				caddr_t data));
+extern _DtCmsComparisonResult _DtCmsCompareRptEntry P((cms_key * key,
+                                                       caddr_t data));
 
 extern caddr_t _DtCmsGetEntryKey P((caddr_t data));
 
-extern CSA_return_code _DtCmsSetLastUpdate P((cms_entry *entry));
+extern CSA_return_code _DtCmsSetLastUpdate P((cms_entry * entry));
 
-extern void _DtCmsConvertToOnetime P((cms_entry *entry, RepeatEvent *re));
+extern void _DtCmsConvertToOnetime P((cms_entry * entry, RepeatEvent *re));
 
-extern int _DtCmsGetDuration P((cms_entry *eptr));
+extern int _DtCmsGetDuration P((cms_entry * eptr));
 
-extern CSA_return_code _DtCmsCheckInitialAttributes P((cms_entry *entry));
+extern CSA_return_code _DtCmsCheckInitialAttributes P((cms_entry * entry));
 
-extern CSA_return_code _DtCmsCheckStartEndTime P((cms_entry *entry));
+extern CSA_return_code _DtCmsCheckStartEndTime P((cms_entry * entry));
 
-extern void _DtCmsCleanupExceptionDates P((cms_entry *newe, long ftick));
+extern void _DtCmsCleanupExceptionDates P((cms_entry * newe, long ftick));
 
-extern int _DtCmsNumberExceptionDates P((cms_entry *entry));
+extern int _DtCmsNumberExceptionDates P((cms_entry * entry));
 
-extern CSA_return_code _DtCmsUpdateDurationInRule P((
-				cms_entry	*entry,
-				uint		remain));
+extern CSA_return_code _DtCmsUpdateDurationInRule P((cms_entry * entry,
+                                                     uint remain));
 
-extern CSA_return_code _DtCmsAddEndDateToRule P((
-				cms_attribute	*attr,
-				RepeatEvent	*re,
-				long		time));
+extern CSA_return_code _DtCmsAddEndDateToRule P((cms_attribute * attr,
+                                                 RepeatEvent *re, long time));
 #endif

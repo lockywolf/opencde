@@ -26,7 +26,7 @@
  * @(#)abuil_print.h	1.9 25 Aug 1994	cose/unity1/cde_app_builder/src/libABil
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -46,9 +46,6 @@
  */
 #include <ab_private/obj.h>
 
-extern void		abuil_obj_print_uil(
-			    FILE	*fp,
-			    ABObjPtr	ab_project
-			);
+extern void abuil_obj_print_uil(FILE *fp, ABObjPtr ab_project);
 
-#endif	/* _ABIL_PRINT_UIL_H */
+#endif /* _ABIL_PRINT_UIL_H */

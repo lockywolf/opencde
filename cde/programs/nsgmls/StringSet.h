@@ -37,27 +37,24 @@ namespace SP_NAMESPACE {
 #endif
 
 class StringSetKey {
-public:
-  static inline const StringC &key(const StringC &str) { return str; }
+      public:
+        static inline const StringC &key(const StringC &str) { return str; }
 };
 
 class StringSet {
-public:
-  StringSet();
-  Boolean add(const StringC &);	// return 1 if already there
-  void swap(StringSet &);
-  void clear();
-private:
-  StringSet(const StringSet &);	// undefined
-  void operator=(const StringSet &); // undefined
-  OwnerTable<StringC, StringC, Hash, StringSetKey> table_;
+      public:
+        StringSet();
+        Boolean add(const StringC &); // return 1 if already there
+        void swap(StringSet &);
+        void clear();
+
+      private:
+        StringSet(const StringSet &);      // undefined
+        void operator=(const StringSet &); // undefined
+        OwnerTable<StringC, StringC, Hash, StringSetKey> table_;
 };
 
-inline
-void StringSet::clear()
-{
-  table_.clear();
-}
+inline void StringSet::clear() { table_.clear(); }
 
 #ifdef SP_NAMESPACE
 }

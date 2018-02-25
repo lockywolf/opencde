@@ -27,7 +27,7 @@
  * (c) Copyright 1993,1994,1996 Hewlett-Packard Company.
  * (c) Copyright 1993,1994,1996 International Business Machines Corp.
  * (c) Copyright 1993,1994,1996 Sun Microsystems, Inc.
- * (c) Copyright 1993,1994,1996 Novell, Inc. 
+ * (c) Copyright 1993,1994,1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -46,10 +46,9 @@
 extern "C" {
 #endif
 
-#ifdef	__cplusplus
-extern char *pathcollapse(const char *src, 
-			  char *dst = NULL, 
-			  boolean show_dir = FALSE);
+#ifdef __cplusplus
+extern char *pathcollapse(const char *src, char *dst = NULL,
+                          boolean show_dir = FALSE);
 #elif defined(__STDC__)
 extern char *pathcollapse(const char *src, char *dst, boolean show_dir);
 #else /* old-style C */

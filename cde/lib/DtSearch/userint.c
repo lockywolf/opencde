@@ -38,19 +38,19 @@
 /******************** USERINT.C *************************
  * $XConsortium: userint.c /main/5 1996/05/07 13:49:00 drk $
  * April 1992.
- * 
+ *
  * Init_user_interrupt() initializes interrupt handler.
- * 
+ *
  * User_interrupt() returns TRUE if any of several signals
  * has been received anytime since initialization or last call.
  * These occur when user pushes CTRL-C, CTRL-BREAK,
  * or when process is killed by external process.
  * It's usually called in a major loop in a program at a place
- * where it is convenient to allow a graceful exit.  
+ * where it is convenient to allow a graceful exit.
  * SIGHUP is not trapped because this module is only used in
  * offline programs and users often want to nohup their
  * offline scripts.
- * 
+ *
  * Replaces quit_escape() after version 4.0 because
  * quit_escape() only worked on dos platform because of
  * the dependency on conio/curses functions.
@@ -77,8 +77,7 @@
 
 /***********#define INCLUDE_MAIN******************/
 
-
-volatile int	shutdown_now = 0;	/* i.e. FALSE */
+volatile int shutdown_now = 0; /* i.e. FALSE */
 
 /************************************************/
 /*						*/
@@ -86,10 +85,9 @@ volatile int	shutdown_now = 0;	/* i.e. FALSE */
 /*						*/
 /************************************************/
 /* interrupt handler for termination signals */
-static void     flag_shutdown (int sig)
-{
-    shutdown_now = sig;
-    return;
+static void flag_shutdown(int sig) {
+        shutdown_now = sig;
+        return;
 }
 
 /************************************************/
@@ -97,49 +95,44 @@ static void     flag_shutdown (int sig)
 /*		init_user_interrupt		*/
 /*						*/
 /************************************************/
-void            init_user_interrupt (void)
-{
-    signal (SIGINT, flag_shutdown);	/* interrupt (ctrl-c) */
-    signal (SIGQUIT, flag_shutdown);	/* quit (ctrl-d) */
-    signal (SIGTRAP, flag_shutdown);	/* trace trap */
-    signal (SIGKILL, flag_shutdown);	/* kill -9, cannot be trapped */
-    signal (SIGALRM, flag_shutdown);	/* called alarm() polling timer */
-    signal (SIGTERM, flag_shutdown);	/* kill [-15], sfwr terminate */
+void init_user_interrupt(void) {
+        signal(SIGINT, flag_shutdown);  /* interrupt (ctrl-c) */
+        signal(SIGQUIT, flag_shutdown); /* quit (ctrl-d) */
+        signal(SIGTRAP, flag_shutdown); /* trace trap */
+        signal(SIGKILL, flag_shutdown); /* kill -9, cannot be trapped */
+        signal(SIGALRM, flag_shutdown); /* called alarm() polling timer */
+        signal(SIGTERM, flag_shutdown); /* kill [-15], sfwr terminate */
 #ifdef SIGPWR
-    signal (SIGPWR, flag_shutdown);	/* power failure imminent */
+        signal(SIGPWR, flag_shutdown); /* power failure imminent */
 #endif
-    signal (SIGUSR1, flag_shutdown);	/* kill -30, "pings" OE */
+        signal(SIGUSR1, flag_shutdown); /* kill -30, "pings" OE */
 #ifdef _AIX
-    signal (SIGXCPU, flag_shutdown);	/* cpu time limit exceeded */
-    signal (SIGDANGER, flag_shutdown);	/* out of paging space,
-					 * crash immin */
+        signal(SIGXCPU, flag_shutdown);   /* cpu time limit exceeded */
+        signal(SIGDANGER, flag_shutdown); /* out of paging space,
+                                           * crash immin */
 #endif
-    return;
-}  /* init_user_interrupt() */
+        return;
+} /* init_user_interrupt() */
 
 /************************************************/
 /*						*/
 /*		  user_interrupt		*/
 /*						*/
 /************************************************/
-int             user_interrupt (void)
-{ return shutdown_now; }
-
-
+int user_interrupt(void) { return shutdown_now; }
 
 #ifdef INCLUDE_MAIN
 /******************** main for testing ****************************/
-main ()
-{
-    int             done = FALSE;
-    int             i = 0;
+main() {
+        int done = FALSE;
+        int i = 0;
 
-    init_user_interrupt ();
-    while (!user_interrupt ())
-	printf ("\r%5d: Push CTRL-C or CTRL-BREAK to exit... ", ++i);
-    printf ("\nWhew!  Thank-you.\n");
-    return;
-}  /* main() */
+        init_user_interrupt();
+        while (!user_interrupt())
+                printf("\r%5d: Push CTRL-C or CTRL-BREAK to exit... ", ++i);
+        printf("\nWhew!  Thank-you.\n");
+        return;
+} /* main() */
 
 #endif
 

@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: tt_client_isam_key_descriptor_utils.h /main/3 1995/10/23 10:00:04 rswiston $ 			 				 */
+/*%%  $XConsortium: tt_client_isam_key_descriptor_utils.h /main/3 1995/10/23
+ * 10:00:04 rswiston $ 			 				 */
 /*
  * tt_client_isam_key_descriptor_utils.h - Declares the
  * _Tt_client_isam_key_descriptor class utilities.

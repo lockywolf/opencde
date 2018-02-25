@@ -62,7 +62,6 @@
  *Hitachi, Ltd., 6, Kanda Surugadai 4-Chome, Chiyoda-ku, Tokyo 101, Japan
  */
 
-
 #include <errno.h>
 #include <pwd.h>
 #include <stdio.h>
@@ -84,15 +83,12 @@
 
 #include "dtpad.h"
 
-static void	_pjCreatePrintShell(PrintJob *pJob);
-static void	_pjCreateOutputWidgets(PrintJob *pJob);
-static void	_pjDoPrint(PrintJob*);
-static void	_pjUpdatePageHeaders(
-				PrintJob*,
-				PrintStringTypeEnum,
-				PrintStringTypeEnum,
-				PrintStringTypeEnum,
-				PrintStringTypeEnum);
+static void _pjCreatePrintShell(PrintJob *pJob);
+static void _pjCreateOutputWidgets(PrintJob *pJob);
+static void _pjDoPrint(PrintJob *);
+static void _pjUpdatePageHeaders(PrintJob *, PrintStringTypeEnum,
+                                 PrintStringTypeEnum, PrintStringTypeEnum,
+                                 PrintStringTypeEnum);
 #if 0 && defined(PRINTING_SUPPORTED)
 static void	_pjFinishedPrintToFile(
 				Display*,
@@ -100,283 +96,236 @@ static void	_pjFinishedPrintToFile(
 				XPGetDocStatus,
 				XPointer);
 #endif /* PRINTING_SUPPORTED */
-static char *	_pjGetPageHeaderString(PrintJob*, PrintStringTypeEnum);
+static char *_pjGetPageHeaderString(PrintJob *, PrintStringTypeEnum);
 
-static void	_pjCancelCB (Widget, XtPointer client_data, XtPointer);
-static void	_pjCloseDisplayCB (Widget, XtPointer client_data, XtPointer);
-static void	_pjPdmSetupCB (Widget, XtPointer client_data, XtPointer);
-static void	_pjPdmNotificationCB (Widget, XtPointer client_data, XtPointer);
-static void	_pjPrintCB (Widget, XtPointer client_data, XtPointer);
-static void	_pjPrintOnePageCB(Widget, XtPointer, XtPointer);
+static void _pjCancelCB(Widget, XtPointer client_data, XtPointer);
+static void _pjCloseDisplayCB(Widget, XtPointer client_data, XtPointer);
+static void _pjPdmSetupCB(Widget, XtPointer client_data, XtPointer);
+static void _pjPdmNotificationCB(Widget, XtPointer client_data, XtPointer);
+static void _pjPrintCB(Widget, XtPointer client_data, XtPointer);
+static void _pjPrintOnePageCB(Widget, XtPointer, XtPointer);
 
-static void	_pjRegisterActivePrintDisplay(Display*);
-static void	_pjUnregisterActivePrintDisplay(Display*);
+static void _pjRegisterActivePrintDisplay(Display *);
+static void _pjUnregisterActivePrintDisplay(Display *);
 
-static Display	*_pjErrorPrintDisplay = NULL;
-static Display	**_pjActivePrintDisplay = NULL;
-static int	_pjMaxActivePrintDisplay = 0;
+static Display *_pjErrorPrintDisplay = NULL;
+static Display **_pjActivePrintDisplay = NULL;
+static int _pjMaxActivePrintDisplay = 0;
 
 /************************************************************************
  * PrintJobCreate
  *	Creates a new print job for the specified document file.
  ************************************************************************/
-PrintJob *
-PrintJobCreate(
-	char *documentName,
-	char *tempFileName,
-	Boolean silent,
-	Editor *pPad
-	)
-{
-    PrintJob *pJob;
+PrintJob *PrintJobCreate(char *documentName, char *tempFileName, Boolean silent,
+                         Editor *pPad) {
+        PrintJob *pJob;
 
-    pJob = (PrintJob *) XtMalloc( sizeof(PrintJob) );
-    memset(pJob, 0, sizeof(PrintJob));
+        pJob = (PrintJob *)XtMalloc(sizeof(PrintJob));
+        memset(pJob, 0, sizeof(PrintJob));
 
-    pJob->pPad = pPad;
-    pJob->parentShell = pPad->app_shell;
-    pJob->documentName = strdup(documentName);
-    pJob->tempFileName = strdup(tempFileName);
-    pJob->silent = silent;
+        pJob->pPad = pPad;
+        pJob->parentShell = pPad->app_shell;
+        pJob->documentName = strdup(documentName);
+        pJob->tempFileName = strdup(tempFileName);
+        pJob->silent = silent;
 
-    pJob->pOutput = NULL;
-    pJob->pSetup = NULL;
-    pJob->pShell = NULL;
-    pJob->printData = (DtPrintSetupData*) XtMalloc(sizeof(DtPrintSetupData));
-    memset(pJob->printData, 0, sizeof(DtPrintSetupData));
+        pJob->pOutput = NULL;
+        pJob->pSetup = NULL;
+        pJob->pShell = NULL;
+        pJob->printData =
+            (DtPrintSetupData *)XtMalloc(sizeof(DtPrintSetupData));
+        memset(pJob->printData, 0, sizeof(DtPrintSetupData));
 
-    pJob->npagesDone = 0;
-    pJob->npagesTotal = 0;
+        pJob->npagesDone = 0;
+        pJob->npagesTotal = 0;
 
-    pJob->nextpageShell = NULL;
-    pJob->nextpageButton = NULL;
+        pJob->nextpageShell = NULL;
+        pJob->nextpageButton = NULL;
 
-    return pJob;
+        return pJob;
 }
 
 /************************************************************************
  * PrintJobDestroy
  *	Destroys the specified PrintJob.
  ************************************************************************/
-void
-PrintJobDestroy(PrintJob *pJob)
-{
-    if (pJob == NULL)
-      return;
+void PrintJobDestroy(PrintJob *pJob) {
+        if (pJob == NULL)
+                return;
 
-    if (pJob->pPad)
-    {
-	pJob->pPad->numPendingTasks--;
-        ClearStatusMessage(pJob->pPad);
-        XtSetSensitive(pJob->pPad->fileStuff.fileWidgets.printBtn, True);
-        /*
-        XtSetSensitive(pJob->pPad->fileStuff.fileWidgets.silentPrintBtn, True);
-        */
-    }
-    if (pJob->documentName != NULL)
-    {
-        free((char*) pJob->documentName);
-	pJob->documentName = NULL;
-    }
-    if (pJob->tempFileName != NULL)
-    {
-        free((char*) pJob->tempFileName);
-	pJob->tempFileName = NULL;
-    }
-    if (pJob->pOutput != NULL)
-    {
-        PrintOutputDestroy(pJob->pOutput);
-	pJob->pOutput = NULL;
-    }
-    if (pJob->pShell != NULL)
-    {
-        _pjRegisterActivePrintDisplay(XtDisplay(pJob->pShell));
-	if (XtDisplay(pJob->pShell) == PrintJobGetErrorPrintDisplay())
-	{
-	    char *errMsg;
+        if (pJob->pPad) {
+                pJob->pPad->numPendingTasks--;
+                ClearStatusMessage(pJob->pPad);
+                XtSetSensitive(pJob->pPad->fileStuff.fileWidgets.printBtn,
+                               True);
+                /*
+                XtSetSensitive(pJob->pPad->fileStuff.fileWidgets.silentPrintBtn,
+                True);
+                */
+        }
+        if (pJob->documentName != NULL) {
+                free((char *)pJob->documentName);
+                pJob->documentName = NULL;
+        }
+        if (pJob->tempFileName != NULL) {
+                free((char *)pJob->tempFileName);
+                pJob->tempFileName = NULL;
+        }
+        if (pJob->pOutput != NULL) {
+                PrintOutputDestroy(pJob->pOutput);
+                pJob->pOutput = NULL;
+        }
+        if (pJob->pShell != NULL) {
+                _pjRegisterActivePrintDisplay(XtDisplay(pJob->pShell));
+                if (XtDisplay(pJob->pShell) == PrintJobGetErrorPrintDisplay()) {
+                        char *errMsg;
 
-	    /*
-	     * Need to display an error dialog;
-	     */
-	    errMsg =
-	      GETMESSAGE(
-		14, 24,
-		"The X Print Server is temporarily out of resources.");
+                        /*
+                         * Need to display an error dialog;
+                         */
+                        errMsg = GETMESSAGE(14, 24,
+                                            "The X Print Server is temporarily "
+                                            "out of resources.");
 
-	    Warning(pJob->pPad, (char *) errMsg, XmDIALOG_ERROR);
-	    PrintJobSetErrorPrintDisplay(NULL);
-	}
+                        Warning(pJob->pPad, (char *)errMsg, XmDIALOG_ERROR);
+                        PrintJobSetErrorPrintDisplay(NULL);
+                }
 
-        XtDestroyWidget(pJob->pShell);
-	pJob->pShell = NULL;
-    }
-    if (pJob->pSetup != NULL)
-    {
-        PrintSetupDestroy(pJob->pSetup);
-	pJob->pSetup = NULL;
-    }
-    if (pJob->printData)
-    {
-        DtPrintFreeSetupData(pJob->printData);
-        XtFree((XtPointer) pJob->printData);
-	pJob->printData = NULL;
-    }
-    if (pJob->nextpageShell)
-    {
-        XtDestroyWidget(pJob->nextpageShell);
-	pJob->nextpageShell = NULL;
-    }
+                XtDestroyWidget(pJob->pShell);
+                pJob->pShell = NULL;
+        }
+        if (pJob->pSetup != NULL) {
+                PrintSetupDestroy(pJob->pSetup);
+                pJob->pSetup = NULL;
+        }
+        if (pJob->printData) {
+                DtPrintFreeSetupData(pJob->printData);
+                XtFree((XtPointer)pJob->printData);
+                pJob->printData = NULL;
+        }
+        if (pJob->nextpageShell) {
+                XtDestroyWidget(pJob->nextpageShell);
+                pJob->nextpageShell = NULL;
+        }
 
-    XtFree((char *) pJob);
+        XtFree((char *)pJob);
 }
 
 /************************************************************************
  * PrintJobExecute
  *	Executes the specified PrintJob
  ************************************************************************/
-void
-PrintJobExecute(PrintJob *pJob)
-{
-    if (pJob == NULL) return;
+void PrintJobExecute(PrintJob *pJob) {
+        if (pJob == NULL)
+                return;
 
-    pJob->pSetup = PrintSetupCreate(
-				pJob->parentShell,
-				pJob->documentName,
-				pJob->pPad->xrdb.wordWrap,
-				pJob->pPad,
-				(XtCallbackProc) _pjCancelCB, pJob,
-				(XtCallbackProc) _pjCloseDisplayCB, pJob,
-				(XtCallbackProc) _pjPrintCB, pJob,
-				(XtCallbackProc) _pjPdmSetupCB, pJob);
-    if (pJob->silent)
-    {
-	/*
-	 * The DtPrintSetupDialog will display itself automatically
-	 * along with an error message in the event of an error.
-	 */
-        if (FALSE == PrintSetupGetDefaultPrintData(
-						pJob->pSetup,
-						pJob->printData))
-	  return;
+        pJob->pSetup = PrintSetupCreate(
+            pJob->parentShell, pJob->documentName, pJob->pPad->xrdb.wordWrap,
+            pJob->pPad, (XtCallbackProc)_pjCancelCB, pJob,
+            (XtCallbackProc)_pjCloseDisplayCB, pJob, (XtCallbackProc)_pjPrintCB,
+            pJob, (XtCallbackProc)_pjPdmSetupCB, pJob);
+        if (pJob->silent) {
+                /*
+                 * The DtPrintSetupDialog will display itself automatically
+                 * along with an error message in the event of an error.
+                 */
+                if (FALSE == PrintSetupGetDefaultPrintData(pJob->pSetup,
+                                                           pJob->printData))
+                        return;
 
-        _pjCreatePrintShell(pJob);
-        _pjDoPrint(pJob);
-    }
-    else
-      PrintSetupDisplay(pJob->pSetup);
+                _pjCreatePrintShell(pJob);
+                _pjDoPrint(pJob);
+        } else
+                PrintSetupDisplay(pJob->pSetup);
 }
 
 /************************************************************************
  * PrintJobCancel
  *	Cancels and deletes the specified print job.
  ************************************************************************/
-void
-PrintJobCancel(PrintJob *pJob)
-{
-    PrintJobDestroy(pJob);
-}
-
+void PrintJobCancel(PrintJob *pJob) { PrintJobDestroy(pJob); }
 
 /************************************************************************
  * PrintJobGetErrorPrintDisplay
  *	Returns the last print display on which an error occured.
  ************************************************************************/
-Display *
-PrintJobGetErrorPrintDisplay()
-{
-    return _pjErrorPrintDisplay;
-}
+Display *PrintJobGetErrorPrintDisplay() { return _pjErrorPrintDisplay; }
 
 /************************************************************************
  * PrintJobSetErrorPrintDisplay
  *	Save a pointer to the print display on which an error occured.
  ************************************************************************/
-void
-PrintJobSetErrorPrintDisplay(Display *display)
-{
-    _pjErrorPrintDisplay = display;
+void PrintJobSetErrorPrintDisplay(Display *display) {
+        _pjErrorPrintDisplay = display;
 }
 
 /************************************************************************
  * PrintJobIsActivePrintDisplay
  *	Save a pointer to the print display on which an error occured.
  ************************************************************************/
-Boolean
-PrintJobIsActivePrintDisplay(Display *display)
-{
-    int i;
+Boolean PrintJobIsActivePrintDisplay(Display *display) {
+        int i;
 
-    for (i = 0; i < _pjMaxActivePrintDisplay; i++)
-      if (display == _pjActivePrintDisplay[i])
-	return True;
+        for (i = 0; i < _pjMaxActivePrintDisplay; i++)
+                if (display == _pjActivePrintDisplay[i])
+                        return True;
 
-    return False;
+        return False;
 }
 
 /************************************************************************
  * _pjRegisterActivePrintDisplay
  *	Save the Display pointer for an active print display connection
  ************************************************************************/
-static void
-_pjRegisterActivePrintDisplay(Display *display)
-{
-    size_t size;
-    int i;
+static void _pjRegisterActivePrintDisplay(Display *display) {
+        size_t size;
+        int i;
 
-    if (0 == _pjMaxActivePrintDisplay)
-    {
-	_pjMaxActivePrintDisplay = 10;
-	size = _pjMaxActivePrintDisplay * sizeof(Display*);
-	_pjActivePrintDisplay = (Display**) malloc(size);
-        memset((char*) _pjActivePrintDisplay, 0, size);
-    }
+        if (0 == _pjMaxActivePrintDisplay) {
+                _pjMaxActivePrintDisplay = 10;
+                size = _pjMaxActivePrintDisplay * sizeof(Display *);
+                _pjActivePrintDisplay = (Display **)malloc(size);
+                memset((char *)_pjActivePrintDisplay, 0, size);
+        }
 
-    for (i = 0; i < _pjMaxActivePrintDisplay; i++)
-    {
-	if (NULL == _pjActivePrintDisplay[i])
-	{
-	    _pjActivePrintDisplay[i] = display;
-	    return;
-	}
-    }
+        for (i = 0; i < _pjMaxActivePrintDisplay; i++) {
+                if (NULL == _pjActivePrintDisplay[i]) {
+                        _pjActivePrintDisplay[i] = display;
+                        return;
+                }
+        }
 
-    size = _pjMaxActivePrintDisplay * sizeof(Display*);
-    _pjActivePrintDisplay =
-	(Display**) realloc((void*) _pjActivePrintDisplay, 2*size);
-    memset((char*) (_pjActivePrintDisplay + size), 0, size);
-    _pjActivePrintDisplay[_pjMaxActivePrintDisplay] = display;
-    _pjMaxActivePrintDisplay *= 2;
+        size = _pjMaxActivePrintDisplay * sizeof(Display *);
+        _pjActivePrintDisplay =
+            (Display **)realloc((void *)_pjActivePrintDisplay, 2 * size);
+        memset((char *)(_pjActivePrintDisplay + size), 0, size);
+        _pjActivePrintDisplay[_pjMaxActivePrintDisplay] = display;
+        _pjMaxActivePrintDisplay *= 2;
 }
 
 /************************************************************************
  * _pjUnregisterActivePrintDisplay
  *	Delete the Display pointer for an active print display connection
  ************************************************************************/
-static void
-_pjUnregisterActivePrintDisplay(Display *display)
-{
-    int i;
+static void _pjUnregisterActivePrintDisplay(Display *display) {
+        int i;
 
-    for (i = 0; i < _pjMaxActivePrintDisplay; i++)
-      if (display == _pjActivePrintDisplay[i])
-	_pjActivePrintDisplay[i] = NULL;
+        for (i = 0; i < _pjMaxActivePrintDisplay; i++)
+                if (display == _pjActivePrintDisplay[i])
+                        _pjActivePrintDisplay[i] = NULL;
 }
-
 
 /************************************************************************
  * _pjCreatePrintShell
  *      Creates the print shell (XmPrintShell or XmDialogShell) to control
  *	printing.
  ************************************************************************/
-static void
-_pjCreatePrintShell(PrintJob *pJob)
-{
-    DtPrintSetupData    *psd = NULL;
+static void _pjCreatePrintShell(PrintJob *pJob) {
+        DtPrintSetupData *psd = NULL;
 
-    if (pJob == NULL ||
-	pJob->pShell != NULL ||
-	pJob->parentShell == NULL ||
-	pJob->pSetup == NULL) return;
+        if (pJob == NULL || pJob->pShell != NULL || pJob->parentShell == NULL ||
+            pJob->pSetup == NULL)
+                return;
 
 #if 0 && defined(PRINTING_SUPPORTED)
     
@@ -446,11 +395,8 @@ _pjCreatePrintShell(PrintJob *pJob)
 #endif
 
     if (pJob->pShell == NULL) return;
-#endif  /* PRINTING_SUPPORTED */
-
+#endif /* PRINTING_SUPPORTED */
 }
-
-
 
 /************************************************************************
  * _pjCreateOutputWidgets
@@ -459,129 +405,121 @@ _pjCreatePrintShell(PrintJob *pJob)
  *      Initializes the mailbox to iterate through the messages.
  *      Calls spoolOne to send a print job to the Xp server.
  ************************************************************************/
-static void
-_pjCreateOutputWidgets(PrintJob *pJob)
-{
-    DtEditorErrorCode	errorCode;
-    Boolean		parseError;
-    DtPrintSetupData    *psd = NULL;
-    int                 save_data;
+static void _pjCreateOutputWidgets(PrintJob *pJob) {
+        DtEditorErrorCode errorCode;
+        Boolean parseError;
+        DtPrintSetupData *psd = NULL;
+        int save_data;
 
-    /*
-     * Notify the user that we're printing
-     */
-    /* TBD:  Is there a status bar on pPad? */
+        /*
+         * Notify the user that we're printing
+         */
+        /* TBD:  Is there a status bar on pPad? */
 
-    if (pJob->pShell == NULL)
-    {
-        {/* TBD error dialog */}
-        PrintJobDestroy(pJob);
-        return;
-    }
+        if (pJob->pShell == NULL) {
+                { /* TBD error dialog */
+                }
+                PrintJobDestroy(pJob);
+                return;
+        }
 
-    pJob->pOutput = PrintOutputCreate(pJob->pShell);
-    PrintOutputSetWordWrap(pJob->pOutput, PrintSetupUseWordWrap(pJob->pSetup));
-    PrintOutputSetPageMargins(
-	pJob->pOutput,
-        PrintSetupGetMarginSpec(pJob->pSetup, DTPRINT_OPTION_MARGIN_TOP),
-        PrintSetupGetMarginSpec(pJob->pSetup, DTPRINT_OPTION_MARGIN_RIGHT),
-        PrintSetupGetMarginSpec(pJob->pSetup, DTPRINT_OPTION_MARGIN_BOTTOM),
-        PrintSetupGetMarginSpec(pJob->pSetup, DTPRINT_OPTION_MARGIN_LEFT),
-        &parseError
-        );
-    if (parseError)
-    {
-	/*
-	 * Display an error dialog.
-        DtMailGenDialog *genDialog = new DtMailGenDialog(
-                                                        "Dialog",
-                                                        _parent->baseWidget());
-	 */
-        char    *i18nMsg;
-        char	*errMsg;
+        pJob->pOutput = PrintOutputCreate(pJob->pShell);
+        PrintOutputSetWordWrap(pJob->pOutput,
+                               PrintSetupUseWordWrap(pJob->pSetup));
+        PrintOutputSetPageMargins(
+            pJob->pOutput,
+            PrintSetupGetMarginSpec(pJob->pSetup, DTPRINT_OPTION_MARGIN_TOP),
+            PrintSetupGetMarginSpec(pJob->pSetup, DTPRINT_OPTION_MARGIN_RIGHT),
+            PrintSetupGetMarginSpec(pJob->pSetup, DTPRINT_OPTION_MARGIN_BOTTOM),
+            PrintSetupGetMarginSpec(pJob->pSetup, DTPRINT_OPTION_MARGIN_LEFT),
+            &parseError);
+        if (parseError) {
+                /*
+                 * Display an error dialog.
+                DtMailGenDialog *genDialog = new DtMailGenDialog(
+                                                                "Dialog",
+                                                                _parent->baseWidget());
+                 */
+                char *i18nMsg;
+                char *errMsg;
 
-        i18nMsg = GETMESSAGE(
-                        14, 1,
-                        "One of the following margin specifiers \n has incorrect syntax: \n %s \n %s \n %s \n %s \nContinue using default margins?"
-                        );
+                i18nMsg = GETMESSAGE(
+                    14, 1,
+                    "One of the following margin specifiers \n has "
+                    "incorrect syntax: \n %s \n %s \n %s \n %s \nContinue "
+                    "using default margins?");
 
-        errMsg = (char *) XtMalloc(1024);
-        sprintf(
-	    errMsg,
-	    i18nMsg,
-	    PrintSetupGetMarginSpec(pJob->pSetup, DTPRINT_OPTION_MARGIN_TOP),
-	    PrintSetupGetMarginSpec(pJob->pSetup, DTPRINT_OPTION_MARGIN_RIGHT),
-	    PrintSetupGetMarginSpec(pJob->pSetup, DTPRINT_OPTION_MARGIN_BOTTOM),
-	    PrintSetupGetMarginSpec(pJob->pSetup, DTPRINT_OPTION_MARGIN_LEFT)
-	    );
+                errMsg = (char *)XtMalloc(1024);
+                sprintf(errMsg, i18nMsg,
+                        PrintSetupGetMarginSpec(pJob->pSetup,
+                                                DTPRINT_OPTION_MARGIN_TOP),
+                        PrintSetupGetMarginSpec(pJob->pSetup,
+                                                DTPRINT_OPTION_MARGIN_RIGHT),
+                        PrintSetupGetMarginSpec(pJob->pSetup,
+                                                DTPRINT_OPTION_MARGIN_BOTTOM),
+                        PrintSetupGetMarginSpec(pJob->pSetup,
+                                                DTPRINT_OPTION_MARGIN_LEFT));
 
-	Warning(pJob->pPad, (char *) errMsg, XmDIALOG_WARNING);
-        XtFree(errMsg);
-    }
+                Warning(pJob->pPad, (char *)errMsg, XmDIALOG_WARNING);
+                XtFree(errMsg);
+        }
 
-    /*
-     * Load the file
-     */
-    errorCode = PrintOutputLoadFile(pJob->pOutput, pJob->tempFileName);
-    switch (errorCode)
-    {
-	case DtEDITOR_NO_ERRORS:
-	case DtEDITOR_READ_ONLY_FILE:
-	    break;
-	case DtEDITOR_NONEXISTENT_FILE:
-	    Warning(
-		pJob->pPad,
-		(char *) GETMESSAGE(14, 2, "File does not exist."),
-		XmDIALOG_WARNING);
-	    break;
-	case DtEDITOR_DIRECTORY:
-	    Warning(
-		pJob->pPad,
-		(char *) GETMESSAGE(14, 3, "Specified file is a directory."),
-		XmDIALOG_WARNING);
-	    break;
-	case DtEDITOR_CHAR_SPECIAL_FILE:
-	case DtEDITOR_BLOCK_MODE_FILE:
-	    Warning(
-		pJob->pPad,
-		(char *) GETMESSAGE(14, 4, "File type error."),
-		XmDIALOG_WARNING);
-	    break;
-	case DtEDITOR_NULLS_REMOVED:
-	    Warning(
-		pJob->pPad,
-		(char *) GETMESSAGE(14, 5, "File contains NULL characters."),
-		XmDIALOG_WARNING);
-	    break;
-	case DtEDITOR_INSUFFICIENT_MEMORY:
-	    Warning(
-		pJob->pPad,
-		(char*)
-		GETMESSAGE(14, 6, "Unable to load file (insufficient memory)."),
-		XmDIALOG_ERROR);
-		break;
-	case DtEDITOR_NO_FILE_ACCESS:
-	case DtEDITOR_UNREADABLE_FILE:
-	default:
-	    Warning(
-		pJob->pPad,
-		(char *)
-		GETMESSAGE(14, 7, "File does not have read permissions"),
-		XmDIALOG_WARNING);
-	    break;
-    }
+        /*
+         * Load the file
+         */
+        errorCode = PrintOutputLoadFile(pJob->pOutput, pJob->tempFileName);
+        switch (errorCode) {
+        case DtEDITOR_NO_ERRORS:
+        case DtEDITOR_READ_ONLY_FILE:
+                break;
+        case DtEDITOR_NONEXISTENT_FILE:
+                Warning(pJob->pPad,
+                        (char *)GETMESSAGE(14, 2, "File does not exist."),
+                        XmDIALOG_WARNING);
+                break;
+        case DtEDITOR_DIRECTORY:
+                Warning(
+                    pJob->pPad,
+                    (char *)GETMESSAGE(14, 3, "Specified file is a directory."),
+                    XmDIALOG_WARNING);
+                break;
+        case DtEDITOR_CHAR_SPECIAL_FILE:
+        case DtEDITOR_BLOCK_MODE_FILE:
+                Warning(pJob->pPad,
+                        (char *)GETMESSAGE(14, 4, "File type error."),
+                        XmDIALOG_WARNING);
+                break;
+        case DtEDITOR_NULLS_REMOVED:
+                Warning(
+                    pJob->pPad,
+                    (char *)GETMESSAGE(14, 5, "File contains NULL characters."),
+                    XmDIALOG_WARNING);
+                break;
+        case DtEDITOR_INSUFFICIENT_MEMORY:
+                Warning(
+                    pJob->pPad,
+                    (char *)GETMESSAGE(
+                        14, 6, "Unable to load file (insufficient memory)."),
+                    XmDIALOG_ERROR);
+                break;
+        case DtEDITOR_NO_FILE_ACCESS:
+        case DtEDITOR_UNREADABLE_FILE:
+        default:
+                Warning(pJob->pPad,
+                        (char *)GETMESSAGE(
+                            14, 7, "File does not have read permissions"),
+                        XmDIALOG_WARNING);
+                break;
+        }
 
-    XtRealizeWidget( pJob->pShell );
+        XtRealizeWidget(pJob->pShell);
 
-    PrintOutputFirstPage(pJob->pOutput);
-    pJob->npagesTotal = PrintOutputGetNumLines(pJob->pOutput) +
-    			PrintOutputGetLinesPerPage(pJob->pOutput) - 1;
-    pJob->npagesTotal /= PrintOutputGetLinesPerPage(pJob->pOutput);
-    pJob->npagesDone = 0;
+        PrintOutputFirstPage(pJob->pOutput);
+        pJob->npagesTotal = PrintOutputGetNumLines(pJob->pOutput) +
+                            PrintOutputGetLinesPerPage(pJob->pOutput) - 1;
+        pJob->npagesTotal /= PrintOutputGetLinesPerPage(pJob->pOutput);
+        pJob->npagesDone = 0;
 }
-
-
-
 
 /************************************************************************
  * _pjDoPrint
@@ -590,9 +528,7 @@ _pjCreateOutputWidgets(PrintJob *pJob)
  *      Initializes the mailbox to iterate through the messages.
  *      Calls spoolOne to send a print job to the Xp server.
  ************************************************************************/
-static void
-_pjDoPrint(PrintJob *pJob)
-{
+static void _pjDoPrint(PrintJob *pJob) {
 #if 0 && defined(PRINTING_SUPPORTED)
 
     static char		buf[1024];
@@ -661,135 +597,113 @@ _pjDoPrint(PrintJob *pJob)
         }
     }
 #endif
-#endif  /* PRINTING_SUPPORTED */
-
-
+#endif /* PRINTING_SUPPORTED */
 }
 
 /************************************************************************
  * _pjUpdatePageHeaders
- *	Configures the header and footer string in the PrintOutput. 
+ *	Configures the header and footer string in the PrintOutput.
  ************************************************************************/
-static void
-_pjUpdatePageHeaders(
-		PrintJob		*pJob,
-		PrintStringTypeEnum	hl_type,
-		PrintStringTypeEnum	hr_type,
-		PrintStringTypeEnum	fl_type,
-		PrintStringTypeEnum	fr_type
-		)
-{
-    char *hl_string,
-         *hr_string,
-         *fl_string,
-         *fr_string;
+static void _pjUpdatePageHeaders(PrintJob *pJob, PrintStringTypeEnum hl_type,
+                                 PrintStringTypeEnum hr_type,
+                                 PrintStringTypeEnum fl_type,
+                                 PrintStringTypeEnum fr_type) {
+        char *hl_string, *hr_string, *fl_string, *fr_string;
 
-    if (pJob == (PrintJob *) NULL) return;
+        if (pJob == (PrintJob *)NULL)
+                return;
 
-    hl_string = _pjGetPageHeaderString(pJob, hl_type);
-    hr_string = _pjGetPageHeaderString(pJob, hr_type);
-    fl_string = _pjGetPageHeaderString(pJob, fl_type);
-    fr_string = _pjGetPageHeaderString(pJob, fr_type);
+        hl_string = _pjGetPageHeaderString(pJob, hl_type);
+        hr_string = _pjGetPageHeaderString(pJob, hr_type);
+        fl_string = _pjGetPageHeaderString(pJob, fl_type);
+        fr_string = _pjGetPageHeaderString(pJob, fr_type);
 
-    if (PRINT_NONE_STRING_TYPE_ENUM == hl_type &&
-	PRINT_NONE_STRING_TYPE_ENUM == hr_type)
-      PrintOutputHideHeaders(pJob->pOutput);
-    else
-      PrintOutputShowHeaders(pJob->pOutput);
+        if (PRINT_NONE_STRING_TYPE_ENUM == hl_type &&
+            PRINT_NONE_STRING_TYPE_ENUM == hr_type)
+                PrintOutputHideHeaders(pJob->pOutput);
+        else
+                PrintOutputShowHeaders(pJob->pOutput);
 
-    if (PRINT_NONE_STRING_TYPE_ENUM == fl_type &&
-	PRINT_NONE_STRING_TYPE_ENUM == fr_type)
-      PrintOutputHideFooters(pJob->pOutput);
-    else
-      PrintOutputShowFooters(pJob->pOutput);
+        if (PRINT_NONE_STRING_TYPE_ENUM == fl_type &&
+            PRINT_NONE_STRING_TYPE_ENUM == fr_type)
+                PrintOutputHideFooters(pJob->pOutput);
+        else
+                PrintOutputShowFooters(pJob->pOutput);
 
-
-    PrintOutputSetHdrFtrStrings(
-				pJob->pOutput,
-                                hl_string,
-                                hr_string,
-                                fl_string,
-                                fr_string
-				);
-    free(hl_string);
-    free(hr_string);
-    free(fl_string);
-    free(fr_string);
+        PrintOutputSetHdrFtrStrings(pJob->pOutput, hl_string, hr_string,
+                                    fl_string, fr_string);
+        free(hl_string);
+        free(hr_string);
+        free(fl_string);
+        free(fr_string);
 }
 
 /************************************************************************
  * _pjGetPageHeaderString
  *	Returns a header and footer string of the specified type.
  ************************************************************************/
-static char *
-_pjGetPageHeaderString(PrintJob *pJob, PrintStringTypeEnum type)
-{
-    char *format,
-         *buf = (char *) NULL;
+static char *_pjGetPageHeaderString(PrintJob *pJob, PrintStringTypeEnum type) {
+        char *format, *buf = (char *)NULL;
 
-    switch (type)
-    {
+        switch (type) {
         case PRINT_NONE_STRING_TYPE_ENUM:
-            buf = strdup(" ");
-            break;
-        case PRINT_DATE_STRING_TYPE_ENUM:
-            {
-		time_t	clock;
-                char    *date;
+                buf = strdup(" ");
+                break;
+        case PRINT_DATE_STRING_TYPE_ENUM: {
+                time_t clock;
+                char *date;
 
-		clock = time((time_t*) NULL);
-		date = ctime(&clock);
-		/* Strip off the trailing newline. */
-		date[strlen(date)-1] = '\0';
+                clock = time((time_t *)NULL);
+                date = ctime(&clock);
+                /* Strip off the trailing newline. */
+                date[strlen(date) - 1] = '\0';
                 format = GETMESSAGE(14, 8, "Date:  %s");
-                buf = (char *) malloc(strlen(format) + strlen(date) + 1);
-                if (buf != (char *) NULL)
-                  sprintf(buf, format, date);
-            }
-            break;
-        case PRINT_DOCNAME_STRING_TYPE_ENUM:
-            {
-                unsigned	buflen;
+                buf = (char *)malloc(strlen(format) + strlen(date) + 1);
+                if (buf != (char *)NULL)
+                        sprintf(buf, format, date);
+        } break;
+        case PRINT_DOCNAME_STRING_TYPE_ENUM: {
+                unsigned buflen;
 
                 format = GETMESSAGE(14, 9, "Document:  %s");
                 buflen = strlen(format) + strlen(pJob->documentName) + 1;
-                buf = (char *) malloc(buflen);
-                if (buf != (char *) NULL)
-                  sprintf(buf, format, pJob->documentName);
-            }
-            break;
+                buf = (char *)malloc(buflen);
+                if (buf != (char *)NULL)
+                        sprintf(buf, format, pJob->documentName);
+        } break;
         case PRINT_PAGE_NUMBER_STRING_TYPE_ENUM:
-	    /*
-             * Allocate space for the format and the translated page number.
-             */
-            {
-                format = GETMESSAGE(14, 10, "Page %d of %d");
-                buf = (char *) malloc(strlen(format) + 16);
-                if (buf != (char *) NULL)
-                  sprintf(buf, format, pJob->npagesDone, pJob->npagesTotal);
-            }
-            break;
+                /*
+                 * Allocate space for the format and the translated page number.
+                 */
+                {
+                        format = GETMESSAGE(14, 10, "Page %d of %d");
+                        buf = (char *)malloc(strlen(format) + 16);
+                        if (buf != (char *)NULL)
+                                sprintf(buf, format, pJob->npagesDone,
+                                        pJob->npagesTotal);
+                }
+                break;
         case PRINT_USER_NAME_STRING_TYPE_ENUM:
-            /*
-             * Allocate space for the format and the username.
-             */
-            {
-		struct passwd	*pw;
+                /*
+                 * Allocate space for the format and the username.
+                 */
+                {
+                        struct passwd *pw;
 
-                format = GETMESSAGE(14, 11, "Document For:  %s");
-		pw = getpwuid(getuid());
-	        buf = (char *) malloc(strlen(format) + strlen(pw->pw_name) + 1);
-	        if (buf != (char *) NULL)
-	          sprintf(buf, format, pw->pw_name);
-            }
-            break;
+                        format = GETMESSAGE(14, 11, "Document For:  %s");
+                        pw = getpwuid(getuid());
+                        buf = (char *)malloc(strlen(format) +
+                                             strlen(pw->pw_name) + 1);
+                        if (buf != (char *)NULL)
+                                sprintf(buf, format, pw->pw_name);
+                }
+                break;
         default:
-            buf = strdup("DEFAULT not impld");
-            break;
-    }
-    return buf;
+                buf = strdup("DEFAULT not impld");
+                break;
+        }
+        return buf;
 }
-
 
 /*
  *
@@ -831,19 +745,17 @@ static void _pjFinishedPrintToFile(
 }
 #endif /* PRINTING_SUPPORTED */
 
-
 /*
  * Name: _pjCancelCB
  * Description:
  *      An XtCallbackProc which can be added to the callback list of
  *      a widget to cancel the print job passed back as client_data.
  */
-static void
-_pjCancelCB (Widget widget, XtPointer client_data, XtPointer call_data)
-{
-    PrintJob *pJob = (PrintJob *) client_data;
+static void _pjCancelCB(Widget widget, XtPointer client_data,
+                        XtPointer call_data) {
+        PrintJob *pJob = (PrintJob *)client_data;
 
-    PrintJobDestroy(pJob);
+        PrintJobDestroy(pJob);
 }
 
 /*
@@ -852,18 +764,17 @@ _pjCancelCB (Widget widget, XtPointer client_data, XtPointer call_data)
  *      An XtCallbackProc which can be added to the callback list of
  *      a widget to cancel the print job passed back as client_data.
  */
-static void
-_pjCloseDisplayCB (Widget widget, XtPointer client_data, XtPointer call_data)
-{
-    PrintJob *pJob = (PrintJob *) client_data;
-    DtPrintSetupCallbackStruct *pbs = (DtPrintSetupCallbackStruct *) call_data;
+static void _pjCloseDisplayCB(Widget widget, XtPointer client_data,
+                              XtPointer call_data) {
+        PrintJob *pJob = (PrintJob *)client_data;
+        DtPrintSetupCallbackStruct *pbs =
+            (DtPrintSetupCallbackStruct *)call_data;
 
-    if (pJob->pShell != NULL)
-    {
-	XtDestroyWidget(pJob->pShell);
-	pJob->pShell = NULL;
-    }
-    DtPrintFreeSetupData(pJob->printData);
+        if (pJob->pShell != NULL) {
+                XtDestroyWidget(pJob->pShell);
+                pJob->pShell = NULL;
+        }
+        DtPrintFreeSetupData(pJob->printData);
 }
 
 /*
@@ -872,17 +783,16 @@ _pjCloseDisplayCB (Widget widget, XtPointer client_data, XtPointer call_data)
  *      An XtCallbackProc which can be added to the callback list of
  *      a widget to execute the print job passed back as client_data.
  */
-static void
-_pjPrintCB (Widget widget, XtPointer client_data, XtPointer call_data)
-{
-    PrintJob *pJob = (PrintJob *) client_data;
-    DtPrintSetupCallbackStruct *pbs = (DtPrintSetupCallbackStruct *) call_data;
+static void _pjPrintCB(Widget widget, XtPointer client_data,
+                       XtPointer call_data) {
+        PrintJob *pJob = (PrintJob *)client_data;
+        DtPrintSetupCallbackStruct *pbs =
+            (DtPrintSetupCallbackStruct *)call_data;
 
-    DtPrintCopySetupData(pJob->printData, pbs->print_data);
-    _pjCreatePrintShell(pJob);
-    _pjDoPrint(pJob);
+        DtPrintCopySetupData(pJob->printData, pbs->print_data);
+        _pjCreatePrintShell(pJob);
+        _pjDoPrint(pJob);
 }
-
 
 /*
  * Name: _pjPdmSetupCB
@@ -890,9 +800,8 @@ _pjPrintCB (Widget widget, XtPointer client_data, XtPointer call_data)
  *      An XtCallbackProc which can be added to the callback list of
  *      a widget to popup the PDM for the print job.
  */
-static void
-_pjPdmSetupCB(Widget print_setup, XtPointer client_data, XtPointer call_data)
-{
+static void _pjPdmSetupCB(Widget print_setup, XtPointer client_data,
+                          XtPointer call_data) {
 #if 0 && defined(PRINTING_SUPPORTED)
     char	*pname = "_pjPdmSetupCB";
     PrintJob	*pJob = (PrintJob *) client_data;
@@ -915,17 +824,15 @@ _pjPdmSetupCB(Widget print_setup, XtPointer client_data, XtPointer call_data)
 	else
 	  fprintf(stderr, "Internal Error %s:  Missing XmPrintShell.", pname);
     }
-#endif  /* PRINTING_SUPPORTED */
+#endif /* PRINTING_SUPPORTED */
 }
-
 
 /************************************************************************
  * _pjPdmNotificationCB
  *	XmNpdmNotificationCallback for the XmPrintShell
  ************************************************************************/
-static void
-_pjPdmNotificationCB (Widget widget, XtPointer client_data, XtPointer call_data)
-{
+static void _pjPdmNotificationCB(Widget widget, XtPointer client_data,
+                                 XtPointer call_data) {
 #if 0 && defined(PRINTING_SUPPORTED)
     PrintJob			*pJob = (PrintJob*) client_data;
     XmPrintShellCallbackStruct	*pscbs = (XmPrintShellCallbackStruct*)call_data;
@@ -949,22 +856,15 @@ _pjPdmNotificationCB (Widget widget, XtPointer client_data, XtPointer call_data)
 
     if (message != NULL)
       Warning( pJob->pPad, message, XmDIALOG_WARNING);
-#endif  /* PRINTING_SUPPORTED */
+#endif /* PRINTING_SUPPORTED */
 }
-
-
 
 /************************************************************************
  * _pjPrintOnePageCB
  *	XmNpageSetupCallback for the XmPrintShell
  ************************************************************************/
-static void
-_pjPrintOnePageCB(
-		Widget widget,
-		XtPointer client_data,
-		XtPointer call_data
-		)
-{
+static void _pjPrintOnePageCB(Widget widget, XtPointer client_data,
+                              XtPointer call_data) {
 #if 0 && defined(PRINTING_SUPPORTED)
     PrintJob	*pJob = (PrintJob *) client_data;
 

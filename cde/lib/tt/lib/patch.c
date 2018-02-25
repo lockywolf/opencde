@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: patch.c /main/3 1995/10/23 09:49:42 rswiston $ 			 				 */
+/*%%  $XConsortium: patch.c /main/3 1995/10/23 09:49:42 rswiston $
+ */
 /*
  *
  * patch.c

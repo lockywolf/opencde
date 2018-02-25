@@ -21,7 +21,7 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* $XConsortium: panic.c /main/2 1996/08/08 14:42:24 cde-hp $ */
-/* 
+/*
  * panic.c --
  *
  *	Source code for the "panic" library procedure for Tcl;
@@ -39,9 +39,9 @@
 
 #include <stdio.h>
 #ifdef NO_STDLIB_H
-#   include "../compat/stdlib.h"
+#include "../compat/stdlib.h"
 #else
-#   include <stdlib.h>
+#include <stdlib.h>
 #endif
 
 #include "tcl.h"
@@ -51,10 +51,8 @@
  * specific panic procedure.
  */
 
-void (*panicProc) _ANSI_ARGS_(TCL_VARARGS(char *,format)) = NULL;
+void(*panicProc) _ANSI_ARGS_(TCL_VARARGS(char *, format)) = NULL;
 
-
-
 /*
  *----------------------------------------------------------------------
  *
@@ -71,13 +69,10 @@ void (*panicProc) _ANSI_ARGS_(TCL_VARARGS(char *,format)) = NULL;
  *----------------------------------------------------------------------
  */
 
-void
-Tcl_SetPanicProc(proc)
-    void (*proc) _ANSI_ARGS_(TCL_VARARGS(char *,format));
-{
-    panicProc = proc;
-}
-
+void Tcl_SetPanicProc(proc) void(*proc)
+    _ANSI_ARGS_(TCL_VARARGS(char *, format));
+{ panicProc = proc; }
+
 /*
  *----------------------------------------------------------------------
  *
@@ -94,22 +89,22 @@ Tcl_SetPanicProc(proc)
  *----------------------------------------------------------------------
  */
 
-	/* VARARGS ARGSUSED */
-void
-panic(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
-    char *format;		/* Format string, suitable for passing to
-				 * fprintf. */
-    char *arg1, *arg2, *arg3;	/* Additional arguments (variable in number)
-				 * to pass to fprintf. */
-    char *arg4, *arg5, *arg6, *arg7, *arg8;
+/* VARARGS ARGSUSED */
+void panic(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7,
+           arg8) char *format; /* Format string, suitable for passing to
+                                * fprintf. */
+char *arg1, *arg2, *arg3;      /* Additional arguments (variable in number)
+                                * to pass to fprintf. */
+char *arg4, *arg5, *arg6, *arg7, *arg8;
 {
-    if (panicProc != NULL) {
-	(void) (*panicProc)(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
-    } else {
-	(void) fprintf(stderr, format, arg1, arg2, arg3, arg4, arg5, arg6,
-		arg7, arg8);
-	(void) fprintf(stderr, "\n");
-	(void) fflush(stderr);
-	abort();
-    }
+        if (panicProc != NULL) {
+                (void)(*panicProc)(format, arg1, arg2, arg3, arg4, arg5, arg6,
+                                   arg7, arg8);
+        } else {
+                (void)fprintf(stderr, format, arg1, arg2, arg3, arg4, arg5,
+                              arg6, arg7, arg8);
+                (void)fprintf(stderr, "\n");
+                (void)fflush(stderr);
+                abort();
+        }
 }

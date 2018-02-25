@@ -48,34 +48,26 @@ namespace SP_NAMESPACE {
 class ParserState;
 
 class SP_API Notation : public EntityDecl, public Attributed {
-public:
-  Notation(const StringC &,
-	   const ConstPtr<StringResource<Char> > &dtdName,
-	   Boolean dtdIsBase);
-  void setExternalId(const ExternalId &, const Location &);
-  const ExternalId &externalId() const;
-  Boolean defined() const;
-  void generateSystemId(ParserState &);
-  const StringC *systemIdPointer() const;
-  const StringC *publicIdPointer() const;
-private:
-  Notation(const Notation &);	// undefined
-  void operator=(const Notation &); // undefined
-  PackedBoolean defined_;
-  ExternalId externalId_;
+      public:
+        Notation(const StringC &, const ConstPtr<StringResource<Char> > &dtdName,
+                 Boolean dtdIsBase);
+        void setExternalId(const ExternalId &, const Location &);
+        const ExternalId &externalId() const;
+        Boolean defined() const;
+        void generateSystemId(ParserState &);
+        const StringC *systemIdPointer() const;
+        const StringC *publicIdPointer() const;
+
+      private:
+        Notation(const Notation &);       // undefined
+        void operator=(const Notation &); // undefined
+        PackedBoolean defined_;
+        ExternalId externalId_;
 };
 
-inline
-const ExternalId &Notation::externalId() const
-{
-  return externalId_;
-}
+inline const ExternalId &Notation::externalId() const { return externalId_; }
 
-inline
-Boolean Notation::defined() const
-{
-  return defined_;
-}
+inline Boolean Notation::defined() const { return defined_; }
 
 #ifdef SP_NAMESPACE
 }

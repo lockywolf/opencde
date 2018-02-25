@@ -41,29 +41,28 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API EntityApp : public CmdLineApp {
-public:
-  EntityApp();
-  void processOption(AppChar opt, const AppChar *arg);
-  virtual int processSysid(const StringC &) = 0;
-  int processArguments(int argc, AppChar **files);
-  Boolean makeSystemId(int nFiles, AppChar *const *files, StringC &result);
-  Ptr<ExtendEntityManager> &entityManager();
-protected:
-  void clearEntityManager();
-  CharsetInfo systemCharset_;
-private:
-  Vector<const AppChar *> searchDirs_;
-  Vector<const AppChar *> catalogSysids_;
-  Boolean mapCatalogDocument_;
-  Ptr<ExtendEntityManager> entityManager_;
+      public:
+        EntityApp();
+        void processOption(AppChar opt, const AppChar *arg);
+        virtual int processSysid(const StringC &) = 0;
+        int processArguments(int argc, AppChar **files);
+        Boolean makeSystemId(int nFiles, AppChar *const *files,
+                             StringC &result);
+        Ptr<ExtendEntityManager> &entityManager();
+
+      protected:
+        void clearEntityManager();
+        CharsetInfo systemCharset_;
+
+      private:
+        Vector<const AppChar *> searchDirs_;
+        Vector<const AppChar *> catalogSysids_;
+        Boolean mapCatalogDocument_;
+        Ptr<ExtendEntityManager> entityManager_;
 };
 
-inline
-void EntityApp::clearEntityManager()
-{
-  entityManager_.clear();
-}
-    
+inline void EntityApp::clearEntityManager() { entityManager_.clear(); }
+
 #ifdef SP_NAMESPACE
 }
 #endif

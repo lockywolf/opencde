@@ -45,22 +45,13 @@ SOFTWARE.
 
 ******************************************************************/
 
-
 #ifndef _Dtksh_XtCvtrs_h
 #define _Dtksh_XtCvtrs_h
 
+extern Boolean DtkshCvtStringToPixel(Display *dpy, XrmValuePtr args,
+                                     Cardinal *num_args, XrmValuePtr fromVal,
+                                     XrmValuePtr toVal, XtPointer *closure_ret);
+extern void RegisterXtOverrideConverters(void);
+extern Boolean DtCompareISOLatin1(char *first, char *second);
 
-extern Boolean DtkshCvtStringToPixel(
-                        Display *dpy,
-                        XrmValuePtr args,
-                        Cardinal *num_args,
-                        XrmValuePtr fromVal,
-                        XrmValuePtr toVal,
-                        XtPointer *closure_ret) ;
-extern void RegisterXtOverrideConverters( void ) ;
-extern Boolean DtCompareISOLatin1(
-                        char *first,
-                        char *second) ;
-
-
-#endif  /* _Dtksh_XtCvtrs_h */
+#endif /* _Dtksh_XtCvtrs_h */

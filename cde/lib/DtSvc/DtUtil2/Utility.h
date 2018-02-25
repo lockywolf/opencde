@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         Utility.h $XConsortium: Utility.h /main/4 1995/10/26 15:31:55 rswiston $
- * Language:     C
+ * File:         Utility.h $XConsortium: Utility.h /main/4 1995/10/26 15:31:55
+ * rswiston $ Language:     C
  *
  * (c) Copyright 1988, Hewlett-Packard Company, all rights reserved.
  *
@@ -61,8 +61,7 @@
  *                       the string.
  *
  *****************************************************************************/
-extern char **  _DtVectorizeInPlace( char * string, 
-                                     char separator );
+extern char **_DtVectorizeInPlace(char *string, char separator);
 
 /******************************************************************************
  *
@@ -76,8 +75,7 @@ extern char **  _DtVectorizeInPlace( char * string,
  *                   to _DtVectorizeInPlace().
  *
  *****************************************************************************/
-extern void     _DtFreeStringVector( char ** stringVector );
-
+extern void _DtFreeStringVector(char **stringVector);
 
 /*****************************************************************************
  * DtCmd String Utility routines.
@@ -96,7 +94,7 @@ extern void     _DtFreeStringVector( char ** stringVector );
  *   "Whitespace" is a tab or blank character.
  *
  *
- * NOTES: 
+ * NOTES:
  *
  *   -  The space for the "words" is malloc'd and must be free'd by
  *   the caller.
@@ -114,7 +112,6 @@ extern void     _DtFreeStringVector( char ** stringVector );
  *
  *****************************************************************************/
 
-
 /******************************************************************************
  *
  * _DtCmdFreeStringVector - takes an array of pointers to strings and
@@ -129,11 +126,8 @@ extern void     _DtFreeStringVector( char ** stringVector );
  *
  *****************************************************************************/
 
-extern void _DtCmdStringToArrayOfStrings( 
-                        char theString[],
-                        char *theArray[]) ;
-extern void _DtCmdFreeStringVector( 
-                        char **stringv) ;
+extern void _DtCmdStringToArrayOfStrings(char theString[], char *theArray[]);
+extern void _DtCmdFreeStringVector(char **stringv);
 
 #endif /* _Dt_Utility_h */
 

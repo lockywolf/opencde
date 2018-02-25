@@ -48,44 +48,43 @@
 #include "dbtype.h"
 
 /* Get current record type
-*/
-int
-d_crtype(crtype TASK_PARM DBN_PARM)
-int FAR *crtype;
+ */
+int d_crtype(crtype TASK_PARM DBN_PARM) int FAR *crtype;
 TASK_DECL
-DBN_DECL
-{
-   INT crt;
+DBN_DECL {
+        INT crt;
 #ifndef SINGLE_USER
-   int dbopen_sv;
+        int dbopen_sv;
 #endif
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_IO));
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(RECORD_IO));
 
-   if ( ! dbopen ) RETURN( dberr(S_DBOPEN) );
-   
-   if ( ! curr_rec )
-      RETURN( dberr( S_NOCR ) );
+        if (!dbopen)
+                RETURN(dberr(S_DBOPEN));
 
-   /* set up to allow unlocked read */
+        if (!curr_rec)
+                RETURN(dberr(S_NOCR));
+
+                /* set up to allow unlocked read */
 #ifndef SINGLE_USER
-   dbopen_sv = dbopen;
-   dbopen = 2;
+        dbopen_sv = dbopen;
+        dbopen = 2;
 #endif
 
-   /* Read current record */
-   dio_read(curr_rec, (char FAR * FAR *)&crloc, NOPGHOLD);
+        /* Read current record */
+        dio_read(curr_rec, (char FAR *FAR *)&crloc, NOPGHOLD);
 #ifndef SINGLE_USER
-   dbopen = dbopen_sv;
+        dbopen = dbopen_sv;
 #endif
-   if (db_status != S_OKAY)
-      RETURN( db_status );
-   
-   /* Fetch record type from record header */
-   bytecpy(&crt, crloc, sizeof(INT));
-   crt &= ~RLBMASK; /* mask off rlb */
-   *crtype = (int)crt + RECMARK;
+        if (db_status != S_OKAY)
+                RETURN(db_status);
 
-   RETURN( db_status = S_OKAY );
+        /* Fetch record type from record header */
+        bytecpy(&crt, crloc, sizeof(INT));
+        crt &= ~RLBMASK; /* mask off rlb */
+        *crtype = (int)crt + RECMARK;
+
+        RETURN(db_status = S_OKAY);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin crtype.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin crtype.c */

@@ -80,136 +80,77 @@
 #include "help.h"
 #include <Dt/HelpDialog.h>
 
-
 /************************************************************************
  * The following callbacks are set as the 'XmNhelpCallback' for the menu
  * menu bar and for the individual pulldown menus within the menu bar.
  ************************************************************************/
 
-void
-HelpMenubarCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, MENUBAR_HELP,
-			     (char *) NULL);
+void HelpMenubarCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data, MENUBAR_HELP,
+                                 (char *)NULL);
 }
 
-void
-HelpFileCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, FILE_MENU_HELP,
-			     (char *) NULL);
+void HelpFileCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data, FILE_MENU_HELP,
+                                 (char *)NULL);
 }
 
-void
-HelpEditCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, EDIT_MENU_HELP,
-			     (char *) NULL);
+void HelpEditCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data, EDIT_MENU_HELP,
+                                 (char *)NULL);
 }
 
-void
-HelpFormatCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, FORMAT_MENU_HELP,
-			     (char *) NULL);
+void HelpFormatCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data, FORMAT_MENU_HELP,
+                                 (char *)NULL);
 }
 
-void
-HelpOptionsCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data)
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, OPTIONS_MENU_HELP,
-			     (char *) NULL);
+void HelpOptionsCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data, OPTIONS_MENU_HELP,
+                                 (char *)NULL);
 }
 
-void
-HelpHelpCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, HELP_MENU_HELP,
-			     (char *) NULL);
+void HelpHelpCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data, HELP_MENU_HELP,
+                                 (char *)NULL);
 }
-
-
 
 /************************************************************************
  * The following callbacks are set as the 'XmNhelpCallback' on file
  * selection boxes and prompt dialogs relating to the [File] menu.
  ************************************************************************/
 
-void
-HelpOpenDialogCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, FILE_OPEN_DIALOG_HELP,
-			     (char *) NULL);
+void HelpOpenDialogCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data, FILE_OPEN_DIALOG_HELP,
+                                 (char *)NULL);
 }
 
-void
-HelpIncludeDialogCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, FILE_INCLUDE_DIALOG_HELP,
-			     (char *) NULL);
+void HelpIncludeDialogCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                 FILE_INCLUDE_DIALOG_HELP, (char *)NULL);
 }
 
-void
-HelpSaveAsDialogCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    Editor *pPad = (Editor *) client_data;
+void HelpSaveAsDialogCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
 
-    if (pPad->xrdb.nameChange) {
-	SetHelpVolAndDisplayHelp(pPad, FILE_SAVEAS_DIALOG_HELP,
-				 (char *) NULL);
-    } else {
-	SetHelpVolAndDisplayHelp(pPad, FILE_COPYTOFILE_DIALOG_HELP,
-				 (char *) NULL);
-    }
+        if (pPad->xrdb.nameChange) {
+                SetHelpVolAndDisplayHelp(pPad, FILE_SAVEAS_DIALOG_HELP,
+                                         (char *)NULL);
+        } else {
+                SetHelpVolAndDisplayHelp(pPad, FILE_COPYTOFILE_DIALOG_HELP,
+                                         (char *)NULL);
+        }
 }
 
-void
-HelpAskIfSaveDialogCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, FILE_ASKIFSAVE_DIALOG_HELP,
-			     (char *) NULL);
+void HelpAskIfSaveDialogCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                 FILE_ASKIFSAVE_DIALOG_HELP, (char *)NULL);
 }
 
-void
-HelpFileAlreadyExistsCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, FILE_EXISTS_DIALOG_HELP,
-			     (char *) NULL);
+void HelpFileAlreadyExistsCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data, FILE_EXISTS_DIALOG_HELP,
+                                 (char *)NULL);
 }
-
 
 /************************************************************************
  * The following callback is set as the 'XmNhelpCallback' on the DtEditor
@@ -217,172 +158,130 @@ HelpFileAlreadyExistsCB(
  * "Format Settings" dialogs and dialog components.
  ************************************************************************/
 
-void
-HelpEditorWidgetCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
+void HelpEditorWidgetCB(Widget w, caddr_t client_data, caddr_t call_data) {
 
-    DtEditorHelpCallbackStruct *editorHelp = 
-			(DtEditorHelpCallbackStruct *) call_data;
+        DtEditorHelpCallbackStruct *editorHelp =
+            (DtEditorHelpCallbackStruct *)call_data;
 
-    switch (editorHelp->reason) {
+        switch (editorHelp->reason) {
 
-	/* -----> edit area */
-	case DtEDITOR_HELP_EDIT_WINDOW:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     EDIT_AREA_HELP,
-				     (char *) NULL);
-	    break;
+        /* -----> edit area */
+        case DtEDITOR_HELP_EDIT_WINDOW:
+                SetHelpVolAndDisplayHelp((Editor *)client_data, EDIT_AREA_HELP,
+                                         (char *)NULL);
+                break;
 
-	/* -----> status line area and fields */
-	case DtEDITOR_HELP_STATUS_LINE:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     STATUS_LINE_HELP,
-				     (char *) NULL);
-	    break;
-	case DtEDITOR_HELP_STATUS_CURRENT_LINE:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     STATUS_CURRENT_LINE_HELP,
-				     (char *) NULL);
-	    break;
-	case DtEDITOR_HELP_STATUS_TOTAL_LINES:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     STATUS_TOTAL_LINES_HELP,
-				     (char *) NULL);
-	    break;
-	case DtEDITOR_HELP_STATUS_MESSAGE:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     STATUS_MESSAGE_HELP,
-				     (char *) NULL);
-	    break;
-	case DtEDITOR_HELP_STATUS_OVERSTRIKE:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     STATUS_OVERSTRIKE_HELP,
-				     (char *) NULL);
-	    break;
+        /* -----> status line area and fields */
+        case DtEDITOR_HELP_STATUS_LINE:
+                SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                         STATUS_LINE_HELP, (char *)NULL);
+                break;
+        case DtEDITOR_HELP_STATUS_CURRENT_LINE:
+                SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                         STATUS_CURRENT_LINE_HELP,
+                                         (char *)NULL);
+                break;
+        case DtEDITOR_HELP_STATUS_TOTAL_LINES:
+                SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                         STATUS_TOTAL_LINES_HELP, (char *)NULL);
+                break;
+        case DtEDITOR_HELP_STATUS_MESSAGE:
+                SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                         STATUS_MESSAGE_HELP, (char *)NULL);
+                break;
+        case DtEDITOR_HELP_STATUS_OVERSTRIKE:
+                SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                         STATUS_OVERSTRIKE_HELP, (char *)NULL);
+                break;
 
-	/* -----> Format Settings dialog and dialog fields */
-	case DtEDITOR_HELP_FORMAT_DIALOG:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     FORMAT_SETTINGS_HELP,
-				     (char *) NULL);
-	    break;
-	case DtEDITOR_HELP_FORMAT_LEFT_MARGIN:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     FORMAT_LEFT_MARGIN_HELP,
-				     (char *) NULL);
-	    break;
-	case DtEDITOR_HELP_FORMAT_RIGHT_MARGIN:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     FORMAT_RIGHT_MARGIN_HELP,
-				     (char *) NULL);
-	    break;
-	case DtEDITOR_HELP_FORMAT_ALIGNMENT:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     FORMAT_ALIGNMENT_HELP,
-				     (char *) NULL);
-	    break;
+        /* -----> Format Settings dialog and dialog fields */
+        case DtEDITOR_HELP_FORMAT_DIALOG:
+                SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                         FORMAT_SETTINGS_HELP, (char *)NULL);
+                break;
+        case DtEDITOR_HELP_FORMAT_LEFT_MARGIN:
+                SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                         FORMAT_LEFT_MARGIN_HELP, (char *)NULL);
+                break;
+        case DtEDITOR_HELP_FORMAT_RIGHT_MARGIN:
+                SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                         FORMAT_RIGHT_MARGIN_HELP,
+                                         (char *)NULL);
+                break;
+        case DtEDITOR_HELP_FORMAT_ALIGNMENT:
+                SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                         FORMAT_ALIGNMENT_HELP, (char *)NULL);
+                break;
 
-	/* -----> Find/Change dialog and dialog fields */
-	case DtEDITOR_HELP_CHANGE_DIALOG:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     FINDCHANGE_HELP,
-				     (char *) NULL);
-	    break;
-	case DtEDITOR_HELP_CHANGE_FIND:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     FINDCHANGE_FIND_HELP,
-				     (char *) NULL);
-	    break;
-	case DtEDITOR_HELP_CHANGE_CHANGE:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     FINDCHANGE_CHANGETO_HELP,
-				     (char *) NULL);
-	    break;
+        /* -----> Find/Change dialog and dialog fields */
+        case DtEDITOR_HELP_CHANGE_DIALOG:
+                SetHelpVolAndDisplayHelp((Editor *)client_data, FINDCHANGE_HELP,
+                                         (char *)NULL);
+                break;
+        case DtEDITOR_HELP_CHANGE_FIND:
+                SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                         FINDCHANGE_FIND_HELP, (char *)NULL);
+                break;
+        case DtEDITOR_HELP_CHANGE_CHANGE:
+                SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                         FINDCHANGE_CHANGETO_HELP,
+                                         (char *)NULL);
+                break;
 
-	/* -----> Check Spelling dialog and dialog fields */
-	case DtEDITOR_HELP_SPELL_DIALOG:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     SPELL_HELP,
-				     (char *) NULL);
-	    break;
-	case DtEDITOR_HELP_SPELL_MISSPELLED_WORDS:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     SPELL_MISSPELLED_WORDS_HELP,
-				     (char *) NULL);
-	    break;
-	case DtEDITOR_HELP_SPELL_CHANGE:
-	    SetHelpVolAndDisplayHelp((Editor *)client_data,
-				     SPELL_CHANGETO_HELP,
-				     (char *) NULL);
-	    break;
+        /* -----> Check Spelling dialog and dialog fields */
+        case DtEDITOR_HELP_SPELL_DIALOG:
+                SetHelpVolAndDisplayHelp((Editor *)client_data, SPELL_HELP,
+                                         (char *)NULL);
+                break;
+        case DtEDITOR_HELP_SPELL_MISSPELLED_WORDS:
+                SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                         SPELL_MISSPELLED_WORDS_HELP,
+                                         (char *)NULL);
+                break;
+        case DtEDITOR_HELP_SPELL_CHANGE:
+                SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                         SPELL_CHANGETO_HELP, (char *)NULL);
+                break;
 
- 	default:
-	    ;
+        default:;
 
-    } /* switch (editorHelp->reason) */
-
+        } /* switch (editorHelp->reason) */
 }
-
 
 /************************************************************************
  * The following callbacks are set as the 'XmNhelpCallback' on the print
  * setup dialogs accessible from the [File] [Print...] menu button.
  ************************************************************************/
 
-void
-HelpPrintSetupDialogCB(
-        Widget w,
-        XtPointer client_data,
-        XtPointer call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, PRINT_SETUP_DIALOG_HELP,
-			     (char *) NULL);
+void HelpPrintSetupDialogCB(Widget w, XtPointer client_data,
+                            XtPointer call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data, PRINT_SETUP_DIALOG_HELP,
+                                 (char *)NULL);
 }
 
-void
-HelpPrintSetupAppSpecificCB(
-        Widget w,
-        XtPointer client_data,
-        XtPointer call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, PRINT_APP_SPECIFIC_OPTIONS,
-			     (char *) NULL);
+void HelpPrintSetupAppSpecificCB(Widget w, XtPointer client_data,
+                                 XtPointer call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                 PRINT_APP_SPECIFIC_OPTIONS, (char *)NULL);
 }
 
-void
-HelpPrintSetupGenericCB(
-        Widget w,
-        XtPointer client_data,
-        XtPointer call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, PRINT_GENERIC_OPTIONS,
-			     (char *) NULL);
+void HelpPrintSetupGenericCB(Widget w, XtPointer client_data,
+                             XtPointer call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data, PRINT_GENERIC_OPTIONS,
+                                 (char *)NULL);
 }
 
-void
-HelpPrintSetupPageHeadersFootersCB(
-        Widget w,
-        XtPointer client_data,
-        XtPointer call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, PRINT_PAGE_HEADERS_FOOTERS,
-			     (char *) NULL);
+void HelpPrintSetupPageHeadersFootersCB(Widget w, XtPointer client_data,
+                                        XtPointer call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                 PRINT_PAGE_HEADERS_FOOTERS, (char *)NULL);
 }
 
-void
-HelpPrintSetupPageMargins(
-        Widget w,
-        XtPointer client_data,
-        XtPointer call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, PRINT_PAGE_MARGINS,
-			     (char *) NULL);
+void HelpPrintSetupPageMargins(Widget w, XtPointer client_data,
+                               XtPointer call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data, PRINT_PAGE_MARGINS,
+                                 (char *)NULL);
 }
-
-
 
 /************************************************************************
  * The following callbacks are set (in dtpad.c:CreateHelpMenu) as the
@@ -401,126 +300,85 @@ HelpPrintSetupPageMargins(
  *
  ************************************************************************/
 
-void
-HelpOverviewCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, HELP_MENU_OVERVIEW_HELP,
-			     (char *) NULL);
+void HelpOverviewCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data, HELP_MENU_OVERVIEW_HELP,
+                                 (char *)NULL);
 }
 
-void
-HelpTasksCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, HELP_MENU_TASKS_HELP,
-			     (char *) NULL);
+void HelpTasksCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data, HELP_MENU_TASKS_HELP,
+                                 (char *)NULL);
 }
 
-void
-HelpTOCCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, HELP_MENU_TOC_HELP,
-			     (char *) NULL);
+void HelpTOCCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data, HELP_MENU_TOC_HELP,
+                                 (char *)NULL);
 }
 
-void
-HelpReferenceCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, HELP_MENU_REFERENCE_HELP,
-			     (char *) NULL);
+void HelpReferenceCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                 HELP_MENU_REFERENCE_HELP, (char *)NULL);
 }
 
-void
-HelpOnItemCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    Editor *pPad = (Editor *)client_data;
-    Widget widget;
+void HelpOnItemCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        Widget widget;
 
-   switch(DtHelpReturnSelectedWidgetId(pPad->app_shell, (Cursor)NULL, &widget))
-   {
-	/*
-	 * There are additional cases (e.g. user aborts request) but I
-	 * don't feel they warrant an error dialog.
-	 */
-	case DtHELP_SELECT_VALID:
-	    while (!XtIsShell(widget)) {
-		if (XtHasCallbacks(widget, XmNhelpCallback) == XtCallbackHasSome) {
-		    XtCallCallbacks(widget, XmNhelpCallback, (XtPointer)pPad);
-			return;
-		}
-		widget = XtParent(widget);
-	    }
-	    break;
-	case DtHELP_SELECT_INVALID:
-	    Warning(pPad, 
-	      GETMESSAGE(12, 1, "You must select an item within the Text Editor."),
-	    XmDIALOG_INFORMATION);
-	    break;
-    }
+        switch (DtHelpReturnSelectedWidgetId(pPad->app_shell, (Cursor)NULL,
+                                             &widget)) {
+        /*
+         * There are additional cases (e.g. user aborts request) but I
+         * don't feel they warrant an error dialog.
+         */
+        case DtHELP_SELECT_VALID:
+                while (!XtIsShell(widget)) {
+                        if (XtHasCallbacks(widget, XmNhelpCallback) ==
+                            XtCallbackHasSome) {
+                                XtCallCallbacks(widget, XmNhelpCallback,
+                                                (XtPointer)pPad);
+                                return;
+                        }
+                        widget = XtParent(widget);
+                }
+                break;
+        case DtHELP_SELECT_INVALID:
+                Warning(pPad,
+                        GETMESSAGE(
+                            12, 1,
+                            "You must select an item within the Text Editor."),
+                        XmDIALOG_INFORMATION);
+                break;
+        }
 }
 
-void
-HelpUsingHelpCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *)client_data, HELP_MENU_USING_HELP_HELP,
-			     HELP_ON_HELP_VOLUME);
+void HelpUsingHelpCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data,
+                                 HELP_MENU_USING_HELP_HELP,
+                                 HELP_ON_HELP_VOLUME);
 }
 
-void
-HelpAboutCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    SetHelpVolAndDisplayHelp((Editor *) client_data, HELP_MENU_ABOUT_HELP,
-			     (char *) NULL);
+void HelpAboutCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        SetHelpVolAndDisplayHelp((Editor *)client_data, HELP_MENU_ABOUT_HELP,
+                                 (char *)NULL);
 }
-
-
 
 /************************************************************************
  * HelpHyperlinkCB - is the 'DtNhyperLinkCallback' passed to
  *	DtCreateHelpDialog (in CreateHelpDialog).
  ************************************************************************/
-void
-HelpHyperlinkCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    DtHelpDialogCallbackStruct *pHyper = 
-	    (DtHelpDialogCallbackStruct *) call_data;
+void HelpHyperlinkCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        DtHelpDialogCallbackStruct *pHyper =
+            (DtHelpDialogCallbackStruct *)call_data;
 
-    switch(pHyper->hyperType)
-    {
-	case DtHELP_LINK_JUMP_NEW:
-	    DisplayNewHelpWindow((Editor *)client_data, pHyper->helpVolume,
-			pHyper->locationId);
-	    break;
-	default:
-            ;
-	    /* application defined link code goes here */
-    }
+        switch (pHyper->hyperType) {
+        case DtHELP_LINK_JUMP_NEW:
+                DisplayNewHelpWindow((Editor *)client_data, pHyper->helpVolume,
+                                     pHyper->locationId);
+                break;
+        default:;
+                /* application defined link code goes here */
+        }
 }
-
-
 
 /************************************************************************
  * HelpCloseCB - is the 'DtNcloseCallback' passed to DtCreateHelpDialog
@@ -528,31 +386,24 @@ HelpHyperlinkCB(
  *	and uncached.  It checks to see if the referenced dialog is in the
  *	uncached help for the current pad.
  ************************************************************************/
-void
-HelpCloseCB(
-        Widget w,
-        caddr_t client_data,
-        caddr_t call_data )
-{
-    Editor *pPad = (Editor *)client_data;
-    HelpStruct *pHelp;
-    
-    if(w != pPad->MainHelp)
-    {
-        /*
-         * empty for loop just marches pHelp to the right place
-         */
-        for(pHelp = pPad->pHelpCache; 
-	    pHelp != (HelpStruct *)NULL && pHelp->dialog != w;
-	    pHelp = pHelp->pNext)
-	    ;
+void HelpCloseCB(Widget w, caddr_t client_data, caddr_t call_data) {
+        Editor *pPad = (Editor *)client_data;
+        HelpStruct *pHelp;
 
-        if(pHelp != (HelpStruct *)NULL)
-        {
-	    /* this should always happen */
-            pHelp->inUse = False;
+        if (w != pPad->MainHelp) {
+                /*
+                 * empty for loop just marches pHelp to the right place
+                 */
+                for (pHelp = pPad->pHelpCache;
+                     pHelp != (HelpStruct *)NULL && pHelp->dialog != w;
+                     pHelp = pHelp->pNext)
+                        ;
+
+                if (pHelp != (HelpStruct *)NULL) {
+                        /* this should always happen */
+                        pHelp->inUse = False;
+                }
         }
-    }
 
-    XtUnmanageChild(w);
+        XtUnmanageChild(w);
 }

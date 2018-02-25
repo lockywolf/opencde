@@ -28,9 +28,5 @@
 #include "userinc.h"
 #include "globdec.h"
 
-void m_closent(m_ptr)
-  void *m_ptr ;
-  {
-    fclose((FILE *) m_ptr) ;
-    }
-
+void m_closent(m_ptr) void *m_ptr;
+{ fclose((FILE *)m_ptr); }

@@ -41,13 +41,7 @@
 
 #include <include/hpversion.h>
 
-#ifndef	lint
-version_tag("dtfile:        $XConsortium: version.c /main/5 1996/08/30 15:30:40 drk $")
-#endif	/* lint */
-
-
-
-
-
-
-
+#ifndef lint
+version_tag(
+    "dtfile:        $XConsortium: version.c /main/5 1996/08/30 15:30:40 drk $")
+#endif /* lint */

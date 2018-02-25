@@ -33,29 +33,28 @@
 #include "dtd.h"
 #include "parser.h"
 
-m_free(block, msg)
-  char *block ;
-  char *msg ;
-  {
-    free(block) ;
-    fprintf(m_outfile, "%5u:%5u- Freed     %s\n",
-      (unsigned int) ((unsigned long) block >> 16),
-      (unsigned int) block, msg) ;
-    }
+m_free(block, msg) char *block;
+char *msg;
+{
+        free(block);
+        fprintf(m_outfile, "%5u:%5u- Freed     %s\n",
+                (unsigned int)((unsigned long)block >> 16), (unsigned int)block,
+                msg);
+}
 
-char *m_mallocx(size, msg)
-  int size ;
-  char *msg ;
-  {
-    char *p ;
+char *m_mallocx(size, msg) int size;
+char *msg;
+{
+        char *p;
 
-    if (! size) return(NULL) ;
-    p = malloc(size) ;
-    if (! p) {
-      m_err1("Unable to allocate space for %s", msg) ;
-      exit(TRUE) ;
-      }
-    fprintf(m_outfile, "%5u:%5u- Allocated %s\n",
-      (unsigned int) ((unsigned long) p >> 16), (unsigned int) p, msg) ;
-    return(p) ;
-    }
+        if (!size)
+                return (NULL);
+        p = malloc(size);
+        if (!p) {
+                m_err1("Unable to allocate space for %s", msg);
+                exit(TRUE);
+        }
+        fprintf(m_outfile, "%5u:%5u- Allocated %s\n",
+                (unsigned int)((unsigned long)p >> 16), (unsigned int)p, msg);
+        return (p);
+}

@@ -28,7 +28,7 @@
  **
  **   Project:     Display Area library
  **
- **  
+ **
  **   Description: Private header file for macros.
  **
  **
@@ -43,36 +43,22 @@
  **
  ****************************************************************************
  ************************************<+>*************************************/
-#ifndef	_DtHelpI_h
-#define	_DtHelpI_h
-
-
-
-
+#ifndef _DtHelpI_h
+#define _DtHelpI_h
 
 /* <<<<<<<<<<<<<<<<<<< Help Dialog Stuff >>>>>>>>>>>>>>>>>>>>*/
 
-#define VALID_STATUS      0
+#define VALID_STATUS 0
 #define NON_VALID_STATUS -1
-
 
 /* Cleanup Type Defines */
 
-#define DtCLEAN_FOR_DESTROY       1
-#define DtCLEAN_FOR_REUSE         2
-
-
+#define DtCLEAN_FOR_DESTROY 1
+#define DtCLEAN_FOR_REUSE 2
 
 /* Help Volume Search Path Location Environment Variables */
 
-#define DtSYS_FILE_SEARCH_ENV          "DTHELPSEARCHPATH"
-#define DtUSER_FILE_SEARCH_ENV         "DTHELPUSERSEARCHPATH"
-
-
+#define DtSYS_FILE_SEARCH_ENV "DTHELPSEARCHPATH"
+#define DtUSER_FILE_SEARCH_ENV "DTHELPUSERSEARCHPATH"
 
 #endif /* _DtHelpI_h */
-
-
-
-
-

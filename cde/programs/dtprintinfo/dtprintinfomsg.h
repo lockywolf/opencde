@@ -35,8 +35,8 @@ extern "C" {
 #endif
 #endif /* ! USL */
 
-#include <nl_types.h> 
-#include <locale.h> 
+#include <nl_types.h>
+#include <locale.h>
 
 #if defined(USL) || defined(__uxp__)
 #ifdef __cplusplus
@@ -51,15 +51,15 @@ extern nl_catd dtprintinfo_cat;
 
 #ifdef hpux
 extern char *Catgets(nl_catd catd, int set_num, int msg_num, char *s);
-#define MESSAGE(msg) \
-   Catgets(dtprintinfo_cat,DTPRINTER_SET,msg,TXT_DTPRINTER_SET_ ## msg)
+#define MESSAGE(msg)                                                           \
+        Catgets(dtprintinfo_cat, DTPRINTER_SET, msg, TXT_DTPRINTER_SET_##msg)
 #else
-#define MESSAGE(msg) \
-   catgets(dtprintinfo_cat,DTPRINTER_SET,msg,TXT_DTPRINTER_SET_ ## msg)
+#define MESSAGE(msg)                                                           \
+        catgets(dtprintinfo_cat, DTPRINTER_SET, msg, TXT_DTPRINTER_SET_##msg)
 #endif
 
 #ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
 
 #endif /* DTPRINTINFOMSG_H */

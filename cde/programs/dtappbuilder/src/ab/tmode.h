@@ -27,7 +27,7 @@
  * @(#)tmode.h	1.1 15 Jan 1995
  *
  * 	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -40,7 +40,7 @@
  *
  */
 
-/* 
+/*
 ** File: tmode.h - *New* interface into Test Mode
 */
 
@@ -53,16 +53,11 @@
 /*
 ** Entry point into Test Mode
 */
-extern void     tmode_enable(
-                    ABObj     project,
-                    BOOL      test_project
-                );
+extern void tmode_enable(ABObj project, BOOL test_project);
 
 /*
 ** Exit point from Test Mode
 */
-extern void     tmode_disable(
-                    ABObj     project
-                );
+extern void tmode_disable(ABObj project);
 
 #endif /* _AB_TMODE_H */

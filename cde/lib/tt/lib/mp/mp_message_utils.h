@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: mp_message_utils.h /main/3 1995/10/23 10:24:47 rswiston $ 			 				 */
+/*%%  $XConsortium: mp_message_utils.h /main/3 1995/10/23 10:24:47 rswiston $
+ */
 /*
  *
  * mp_message_utils.h
@@ -40,4 +41,4 @@
 
 class _Tt_message;
 declare_list_of(_Tt_message)
-#endif				/* MP_MESSAGE_UTILS_H */
+#endif /* MP_MESSAGE_UTILS_H */

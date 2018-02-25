@@ -43,16 +43,11 @@
 #ifndef _PathAreaI_h
 #define _PathAreaI_h
 
-
-#define DtPATH_LIST_MAX    99
-
-
-
-
+#define DtPATH_LIST_MAX 99
 
 /*****************************************************************************
  * Function:	    void _DtHelpUpdatePathArea(char *locationId,
- *                                 DtHelpDialogWidget nw);  
+ *                                 DtHelpDialogWidget nw);
  *
  *
  * Parameters:      locationId Specifies the ID string for the new topic we
@@ -66,17 +61,11 @@
  *                  dialog based on the new locationId we are about to display.
  *
  *****************************************************************************/
-void _DtHelpUpdatePathArea(
-    char *locationId,
-    DtHelpDialogWidget nw);
-
-
-
-
+void _DtHelpUpdatePathArea(char *locationId, DtHelpDialogWidget nw);
 
 /*****************************************************************************
  * Function:	    void _DtHelpBuildPathArea(Widget parent,
- *                                 DtHelpDialogWidget nw);  
+ *                                 DtHelpDialogWidget nw);
  *
  *
  * Parameters:      parent      Specifies the widget ID of the help dialog you
@@ -85,29 +74,11 @@ void _DtHelpUpdatePathArea(
  *
  * Return Value:    Void.
  *
- * Purpose: 	    Creates/updates the Path Display area on top of the help 
+ * Purpose: 	    Creates/updates the Path Display area on top of the help
  *                  dialog.
  *
  *****************************************************************************/
-extern void _DtHelpBuildPathArea(
-    Widget parent,
-    DtHelpDialogWidget nw);
-
-
-
-
-
+extern void _DtHelpBuildPathArea(Widget parent, DtHelpDialogWidget nw);
 
 #endif /* _PathAreaI_h */
 /* Do not add anything after this endif. */
-
-
-
-
-
-
-
-
-
-
-

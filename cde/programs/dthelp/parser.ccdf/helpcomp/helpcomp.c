@@ -21,7 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /* Copyright 1992     Hewlett-Packard Co. */
-static char *version = "$XConsortium: helpcomp.c /main/3 1995/11/08 11:10:34 rswiston $";
+static char *version =
+    "$XConsortium: helpcomp.c /main/3 1995/11/08 11:10:34 rswiston $";
 
 #include <stdio.h>
 #include <string.h>
@@ -31,80 +32,69 @@ static char *version = "$XConsortium: helpcomp.c /main/3 1995/11/08 11:10:34 rsw
 #include <dirent.h>
 #include <sys/stat.h>
 
-typedef char  LineBuff[BUFSIZ];
-typedef char  FileBuff[BUFSIZ];
+typedef char LineBuff[BUFSIZ];
+typedef char FileBuff[BUFSIZ];
 typedef char *FileName;
 
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
 
-static char     *prog_name;
-static char      fileNamePrefix[] = "hc";
-static FileName  newHvFileName, newHtFileName,
-		 topicFileName, topicZFileName;
-
+static char *prog_name;
+static char fileNamePrefix[] = "hc";
+static FileName newHvFileName, newHtFileName, topicFileName, topicZFileName;
 
 /* issues an error message, cleans up temp files and exits */
-void
-ErrorExit(const char *who, const char *how)
-{
-fprintf(stderr, "%s -> %s: %s\n", prog_name, who, how);
+void ErrorExit(const char *who, const char *how) {
+        fprintf(stderr, "%s -> %s: %s\n", prog_name, who, how);
 
-if (newHvFileName)  unlink(newHvFileName);
-if (newHtFileName)  unlink(newHtFileName);
-if (topicFileName)  unlink(topicFileName);
-if (topicZFileName) unlink(topicZFileName);
+        if (newHvFileName)
+                unlink(newHvFileName);
+        if (newHtFileName)
+                unlink(newHtFileName);
+        if (topicFileName)
+                unlink(topicFileName);
+        if (topicZFileName)
+                unlink(topicZFileName);
 
-exit(1);
+        exit(1);
 }
-
 
 /* converts errno into a string and calls ErrorExit() */
-void
-ErrorIntExit(const char *who, const int how)
-{
-ErrorExit(who, strerror(how));
+void ErrorIntExit(const char *who, const int how) {
+        ErrorExit(who, strerror(how));
 }
-
 
 /* copies a file by name to another file by name */
-int
-CopyFile(const char *toName, const char *fromName)
-{
-int      toFile, fromFile;
-int      bytesRead;
-FileBuff fileBuff;
+int CopyFile(const char *toName, const char *fromName) {
+        int toFile, fromFile;
+        int bytesRead;
+        FileBuff fileBuff;
 
-toFile = open(toName, O_WRONLY|O_CREAT, 0666);
-if (toFile < 0)
-    {
-    ErrorIntExit(toName, errno);
-    }
+        toFile = open(toName, O_WRONLY | O_CREAT, 0666);
+        if (toFile < 0) {
+                ErrorIntExit(toName, errno);
+        }
 
-fromFile = open(fromName, O_RDONLY);
-if (fromFile < 0)
-    {
-    ErrorIntExit(fromName, errno);
-    }
+        fromFile = open(fromName, O_RDONLY);
+        if (fromFile < 0) {
+                ErrorIntExit(fromName, errno);
+        }
 
-while ((bytesRead = read(fromFile, fileBuff, sizeof(fileBuff))) > 0)
-    {
-    if (write(toFile, fileBuff, bytesRead) != bytesRead)
-	{
-	ErrorIntExit(toName, errno);
-	}
-    if (bytesRead < sizeof(fileBuff))
-	break;
-    }
+        while ((bytesRead = read(fromFile, fileBuff, sizeof(fileBuff))) > 0) {
+                if (write(toFile, fileBuff, bytesRead) != bytesRead) {
+                        ErrorIntExit(toName, errno);
+                }
+                if (bytesRead < sizeof(fileBuff))
+                        break;
+        }
 
-close(fromFile);
-close(toFile);
+        close(fromFile);
+        close(toFile);
 
-if (bytesRead < 0)
-    return 1;
+        if (bytesRead < 0)
+                return 1;
 
-return 0;
+        return 0;
 }
-
 
 /*
  * Here's the idea:
@@ -138,342 +128,310 @@ return 0;
  * determined by fstat'ing the open topic file.  The three bytes are
  * computed using div/mod rather than right shift and mask to avoid byte
  * sex problems.
- * 
+ *
  * Append the contents of the topic file to the new .ht file.
  *
  * Continue opening, compressing and appending compressed topic files
  * until a blank line is found in the old .hv file.
  *
  * When the blank line is found, copy the remaining lines of the old .hv
- * file to the new .hv file.  When finished, move the new .hv file to 
+ * file to the new .hv file.  When finished, move the new .hv file to
  * replace the old one.
-*/
-int
-main(int argc, char **argv)
-{
-char         *pc;
-FILE         *oldHvFile, *newHvFile;
-int           oldHtFile,  newHtFile, topicZFile;
-FileName      oldHvFileName;
-LineBuff      lineBuff, string1, string2, lastString2, command;
-FileBuff      fileBuff;
-int           oldOffset, newOffset;
-int           bytesToRead, bytesRead, totalBytes, zFileSize;
-unsigned char zTmp[4];
-int           doBreak, firstPass, result;
-struct stat   statBuf;
+ */
+int main(int argc, char **argv) {
+        char *pc;
+        FILE *oldHvFile, *newHvFile;
+        int oldHtFile, newHtFile, topicZFile;
+        FileName oldHvFileName;
+        LineBuff lineBuff, string1, string2, lastString2, command;
+        FileBuff fileBuff;
+        int oldOffset, newOffset;
+        int bytesToRead, bytesRead, totalBytes, zFileSize;
+        unsigned char zTmp[4];
+        int doBreak, firstPass, result;
+        struct stat statBuf;
 
-pc = strrchr(argv[0], '/');
-if (pc) pc++;
-else pc = argv[0];
-prog_name = malloc(strlen(pc) + 1);
-if (!prog_name)
-    {
-    fprintf(stderr, "%s: could not copy the program name (no memory)", pc);
-    return 1;
-    }
-strcpy(prog_name, pc);
+        pc = strrchr(argv[0], '/');
+        if (pc)
+                pc++;
+        else
+                pc = argv[0];
+        prog_name = malloc(strlen(pc) + 1);
+        if (!prog_name) {
+                fprintf(stderr,
+                        "%s: could not copy the program name (no memory)", pc);
+                return 1;
+        }
+        strcpy(prog_name, pc);
 
-if (argc != 2)
-    {
-    fprintf(stderr, "usage: %s <help volume base name>\n", prog_name);
-    return 1;
-    }
+        if (argc != 2) {
+                fprintf(stderr, "usage: %s <help volume base name>\n",
+                        prog_name);
+                return 1;
+        }
 
-oldHvFileName = malloc(strlen(argv[1]) + 3 + 1); /* add ".hv" and null */
-if (!oldHvFileName)
-    {
-    ErrorExit("malloc", "could not create a temporary file name");
-    }
-strcpy(oldHvFileName, argv[1]);
-strcat(oldHvFileName, ".hv");
-oldHvFile = fopen(oldHvFileName, "r");
-if (!oldHvFile)
-    {
-    ErrorIntExit(oldHvFileName, errno);
-    }
+        oldHvFileName =
+            malloc(strlen(argv[1]) + 3 + 1); /* add ".hv" and null */
+        if (!oldHvFileName) {
+                ErrorExit("malloc", "could not create a temporary file name");
+        }
+        strcpy(oldHvFileName, argv[1]);
+        strcat(oldHvFileName, ".hv");
+        oldHvFile = fopen(oldHvFileName, "r");
+        if (!oldHvFile) {
+                ErrorIntExit(oldHvFileName, errno);
+        }
 
-newHvFileName = tempnam(NULL, fileNamePrefix);
-if (!newHvFileName)
-    {
-    ErrorExit("tempnam", "could not create a temporary file name");
-    }
-newHvFile = fopen(newHvFileName, "w");
-if (!newHvFile)
-    {
-    ErrorIntExit(newHvFileName, errno);
-    }
+        newHvFileName = tempnam(NULL, fileNamePrefix);
+        if (!newHvFileName) {
+                ErrorExit("tempnam", "could not create a temporary file name");
+        }
+        newHvFile = fopen(newHvFileName, "w");
+        if (!newHvFile) {
+                ErrorIntExit(newHvFileName, errno);
+        }
 
-do  {
-    if (!fgets(lineBuff, sizeof(lineBuff), oldHvFile))
-	{
-	ErrorExit(oldHvFileName, "premature end of input file");
-	}
-    fputs(lineBuff, newHvFile);
-    }
-while (strncmp(lineBuff, "# Topic Locations", sizeof("# Topic Locations") - 1));
+        do {
+                if (!fgets(lineBuff, sizeof(lineBuff), oldHvFile)) {
+                        ErrorExit(oldHvFileName, "premature end of input file");
+                }
+                fputs(lineBuff, newHvFile);
+        } while (strncmp(lineBuff, "# Topic Locations",
+                         sizeof("# Topic Locations") - 1));
 
+        firstPass = 1;
 
-firstPass = 1;
+        topicFileName = tempnam(NULL, fileNamePrefix);
+        if (!topicFileName) {
+                ErrorExit("tempnam", "could not create a temporary file name");
+        }
+        strcpy(command, "compress ");
+        strcat(command, topicFileName);
 
-topicFileName = tempnam(NULL, fileNamePrefix);
-if (!topicFileName)
-    {
-    ErrorExit("tempnam", "could not create a temporary file name");
-    }
-strcpy(command, "compress ");
-strcat(command, topicFileName);
+        topicZFileName =
+            malloc(strlen(topicFileName) + 2 + 1); /* add ".Z" and null */
+        if (!topicZFileName) {
+                ErrorExit("malloc", "could not create a temporary file name");
+        }
+        strcpy(topicZFileName, topicFileName);
+        strcat(topicZFileName, ".Z");
 
-topicZFileName = malloc(strlen(topicFileName) + 2 + 1); /* add ".Z" and null */
-if (!topicZFileName)
-    {
-    ErrorExit("malloc", "could not create a temporary file name");
-    }
-strcpy(topicZFileName, topicFileName);
-strcat(topicZFileName, ".Z");
+        newHtFileName = tempnam(NULL, fileNamePrefix);
+        if (!newHtFileName) {
+                ErrorExit("tempnam", "could not create a temporary file name");
+        }
+        newHtFile = open(newHtFileName, O_WRONLY | O_CREAT, 0666);
+        if (!newHtFile) {
+                ErrorIntExit(newHtFileName, errno);
+        }
+        totalBytes = 0;
 
-newHtFileName = tempnam(NULL, fileNamePrefix);
-if (!newHtFileName)
-    {
-    ErrorExit("tempnam", "could not create a temporary file name");
-    }
-newHtFile = open(newHtFileName, O_WRONLY|O_CREAT, 0666);
-if (!newHtFile)
-    {
-    ErrorIntExit(newHtFileName, errno);
-    }
-totalBytes = 0;
+        doBreak = 0;
+        result = 0;
+        while (1) {
+                if (!fgets(lineBuff, sizeof(lineBuff), oldHvFile)) {
+                        ErrorExit(oldHvFileName, "premature end of input file");
+                }
+                if (*lineBuff != '\n') {
+                        char *pc;
 
-doBreak = 0;
-result  = 0;
-while (1)
-    {
-    if (!fgets(lineBuff, sizeof(lineBuff), oldHvFile))
-	{
-	ErrorExit(oldHvFileName, "premature end of input file");
-	}
-    if (*lineBuff != '\n')
-	{
-	char *pc;
+                        fputs(lineBuff, newHvFile);
+                        sscanf(lineBuff, "%s %s", string1, string2);
+                        pc = strrchr(string1, '.');
+                        if (!pc || (strcmp(pc, ".filename:") != 0))
+                                continue;
+                        if (firstPass) {
+                                firstPass = 0;
+                                oldOffset = 0;
+                                strcpy(lastString2, string2);
+                                if ((oldHtFile = open(string2, O_RDONLY)) < 0) {
+                                        ErrorIntExit(string2, errno);
+                                }
+                        }
+                } else {
+                        doBreak = 1;
+                        string2[0] = 0;
+                }
+                if (strcmp(string2, lastString2) != 0) {
+                        topicZFile =
+                            open(topicFileName, O_WRONLY | O_CREAT, 0666);
+                        if (topicZFile < 0) {
+                                ErrorIntExit(topicFileName, errno);
+                        }
+                        while (bytesRead = read(oldHtFile, fileBuff,
+                                                sizeof(fileBuff))) {
+                                if (write(topicZFile, fileBuff, bytesRead) !=
+                                    bytesRead) {
+                                        ErrorIntExit(string2, errno);
+                                }
+                                if (bytesRead < sizeof(fileBuff))
+                                        break;
+                        }
+                        close(topicZFile);
+                        system(command);
 
-	fputs(lineBuff, newHvFile);
-	sscanf(lineBuff, "%s %s", string1, string2);
-	pc = strrchr(string1, '.');
-	if (!pc || (strcmp(pc, ".filename:") != 0))
-	    continue;
-	if (firstPass)
-	    {
-	    firstPass = 0;
-	    oldOffset = 0;
-	    strcpy(lastString2, string2);
-	    if ((oldHtFile = open(string2, O_RDONLY)) < 0)
-		{
-		ErrorIntExit(string2, errno);
-		}
-	    }
-	}
-    else
-	{
-	doBreak = 1;
-	string2[0] = 0;
-	}
-    if (strcmp(string2, lastString2) != 0)
-	{
-	topicZFile = open(topicFileName, O_WRONLY|O_CREAT, 0666);
-	if (topicZFile < 0)
-	    {
-	    ErrorIntExit(topicFileName, errno);
-	    }
-	while (bytesRead = read(oldHtFile, fileBuff, sizeof(fileBuff)))
-	    {
-	    if (write(topicZFile, fileBuff, bytesRead) != bytesRead)
-		{
-		ErrorIntExit(string2, errno);
-		}
-	    if (bytesRead < sizeof(fileBuff))
-		break;
-	    }
-	close(topicZFile);
-	system(command);
+                        zTmp[0] = 0;
+                        if ((topicZFile = open(topicZFileName, O_RDONLY)) < 0) {
+                                zTmp[0] = ~0;
+                                topicZFile = open(topicFileName, O_RDONLY);
+                        }
+                        if (topicZFile < 0) {
+                                char *who;
 
-	zTmp[0] = 0;
-	if ((topicZFile = open(topicZFileName, O_RDONLY)) < 0)
-	    {
-	    zTmp[0] = ~0;
-	    topicZFile = open(topicFileName, O_RDONLY);
-	    }
-	if (topicZFile < 0)
-	    {
-	    char *who;
+                                who = (char *)malloc(strlen(topicFileName) +
+                                                     strlen(topicZFileName) +
+                                                     sizeof(" or "));
+                                strcpy(who, topicFileName);
+                                strcat(who, " or ");
+                                strcat(who, topicZFileName);
+                                ErrorIntExit(who, errno);
+                        }
 
-	    who = (char *) malloc(strlen(topicFileName)  +
-				  strlen(topicZFileName) +
-				  sizeof(" or "));
-	    strcpy(who, topicFileName);
-	    strcat(who, " or ");
-	    strcat(who, topicZFileName);
-	    ErrorIntExit(who, errno);
-	    }
+                        if (fstat(topicZFile, &statBuf) < 0) {
+                                ErrorIntExit(topicZFileName, errno);
+                        }
 
-	if (fstat(topicZFile, &statBuf) < 0)
-	    {
-	    ErrorIntExit(topicZFileName, errno);
-	    }
+                        zFileSize = statBuf.st_size;
 
-	zFileSize = statBuf.st_size;
+                        zTmp[3] = zFileSize % 256;
+                        zFileSize /= 256;
+                        zTmp[2] = zFileSize % 256;
+                        zFileSize /= 256;
+                        zTmp[1] = zFileSize % 256;
+                        if (write(newHtFile, zTmp, 4) != 4) {
+                                ErrorIntExit(newHtFileName, errno);
+                        }
 
-	zTmp[3] = zFileSize % 256;
-	zFileSize /= 256;
-	zTmp[2] = zFileSize % 256;
-	zFileSize /= 256;
-	zTmp[1] = zFileSize % 256;
-	if (write(newHtFile, zTmp, 4) != 4)
-	    {
-	    ErrorIntExit(newHtFileName, errno);
-	    }
+                        while (bytesRead = read(topicZFile, fileBuff,
+                                                sizeof(fileBuff))) {
+                                if (write(newHtFile, fileBuff, bytesRead) !=
+                                    bytesRead) {
+                                        ErrorIntExit(string2, errno);
+                                }
+                                if (bytesRead < sizeof(fileBuff))
+                                        break;
+                        }
+                        close(topicZFile);
+                        unlink(topicFileName);
+                        unlink(topicZFileName);
 
-	while (bytesRead = read(topicZFile, fileBuff, sizeof(fileBuff)))
-	    {
-	    if (write(newHtFile, fileBuff, bytesRead) != bytesRead)
-		{
-		ErrorIntExit(string2, errno);
-		}
-	    if (bytesRead < sizeof(fileBuff))
-		break;
-	    }
-	close(topicZFile);
-	unlink(topicFileName);
-	unlink(topicZFileName);
+                        unlink(lastString2);
+                        result = CopyFile(lastString2, newHtFileName);
+                        unlink(newHtFileName);
 
-	unlink(lastString2);
-	result = CopyFile(lastString2, newHtFileName);
-	unlink(newHtFileName);
+                        if (doBreak || result)
+                                break;
 
-	if (doBreak || result)
-	    break;
+                        newHtFile =
+                            open(newHtFileName, O_WRONLY | O_CREAT, 0666);
+                        if (!newHtFile) {
+                                ErrorIntExit(newHtFileName, errno);
+                        }
+                        totalBytes = 0;
 
-	newHtFile = open(newHtFileName, O_WRONLY|O_CREAT, 0666);
-	if (!newHtFile)
-	    {
-	    ErrorIntExit(newHtFileName, errno);
-	    }
-	totalBytes = 0;
+                        strcpy(lastString2, string2);
+                        oldOffset = 0;
+                        if ((oldHtFile = open(string2, O_RDONLY)) < 0) {
+                                ErrorIntExit(string2, errno);
+                        }
+                }
+                if (!fgets(lineBuff, sizeof(lineBuff), oldHvFile)) {
+                        ErrorIntExit(oldHvFileName, errno);
+                }
+                sscanf(lineBuff, "%s %d", string1, &newOffset);
+                if (newOffset != oldOffset) {
+                        bytesToRead = newOffset - oldOffset;
+                        topicZFile =
+                            open(topicFileName, O_WRONLY | O_CREAT, 0666);
+                        if (topicZFile < 0) {
+                                ErrorIntExit(topicFileName, errno);
+                        }
+                        while (bytesRead =
+                                   read(oldHtFile, fileBuff,
+                                        MIN(bytesToRead, sizeof(fileBuff)))) {
+                                if (write(topicZFile, fileBuff, bytesRead) !=
+                                    bytesRead) {
+                                        ErrorIntExit(topicFileName, errno);
+                                }
+                                if ((bytesToRead -= bytesRead) == 0)
+                                        break;
+                        }
+                        close(topicZFile);
+                        system(command);
 
-	strcpy(lastString2, string2);
-	oldOffset = 0;
-	if ((oldHtFile = open(string2, O_RDONLY)) < 0)
-	    {
-	    ErrorIntExit(string2, errno);
-	    }
-	}
-    if (!fgets(lineBuff, sizeof(lineBuff), oldHvFile))
-	{
-	ErrorIntExit(oldHvFileName, errno);
-	}
-    sscanf(lineBuff, "%s %d", string1, &newOffset);
-    if (newOffset != oldOffset)
-	{
-	bytesToRead = newOffset - oldOffset;
-	topicZFile = open(topicFileName, O_WRONLY|O_CREAT, 0666);
-	if (topicZFile < 0)
-	    {
-	    ErrorIntExit(topicFileName, errno);
-	    }
-	while (bytesRead = read(oldHtFile,
-				fileBuff,
-				MIN(bytesToRead, sizeof(fileBuff))))
-	    {
-	    if (write(topicZFile, fileBuff, bytesRead) != bytesRead)
-		{
-		ErrorIntExit(topicFileName, errno);
-		}
-	    if ((bytesToRead -= bytesRead) == 0)
-		break;
-	    }
-	close(topicZFile);
-	system(command);
+                        zTmp[0] = 0;
+                        if ((topicZFile = open(topicZFileName, O_RDONLY)) < 0) {
+                                zTmp[0] = ~0;
+                                topicZFile = open(topicFileName, O_RDONLY);
+                        }
+                        if (topicZFile < 0) {
+                                char *who;
 
-	zTmp[0] = 0;
-	if ((topicZFile = open(topicZFileName, O_RDONLY)) < 0)
-	    {
-	    zTmp[0] = ~0;
-	    topicZFile = open(topicFileName, O_RDONLY);
-	    }
-	if (topicZFile < 0)
-	    {
-	    char *who;
+                                who = (char *)malloc(strlen(topicFileName) +
+                                                     strlen(topicZFileName) +
+                                                     sizeof(" or "));
+                                strcpy(who, topicFileName);
+                                strcat(who, " or ");
+                                strcat(who, topicZFileName);
+                                ErrorIntExit(who, errno);
+                        }
 
-	    who = (char *) malloc(strlen(topicFileName)  +
-				  strlen(topicZFileName) +
-				  sizeof(" or "));
-	    strcpy(who, topicFileName);
-	    strcat(who, " or ");
-	    strcat(who, topicZFileName);
-	    ErrorIntExit(who, errno);
-	    }
+                        if (fstat(topicZFile, &statBuf) < 0) {
+                                ErrorIntExit(topicZFileName, errno);
+                        }
 
-	if (fstat(topicZFile, &statBuf) < 0)
-	    {
-	    ErrorIntExit(topicZFileName, errno);
-	    }
+                        zFileSize = statBuf.st_size;
 
-	zFileSize = statBuf.st_size;
+                        zTmp[3] = zFileSize % 256;
+                        zFileSize /= 256;
+                        zTmp[2] = zFileSize % 256;
+                        zFileSize /= 256;
+                        zTmp[1] = zFileSize % 256;
+                        if (write(newHtFile, zTmp, 4) != 4) {
+                                ErrorIntExit(newHtFileName, errno);
+                        }
 
-	zTmp[3] = zFileSize % 256;
-	zFileSize /= 256;
-	zTmp[2] = zFileSize % 256;
-	zFileSize /= 256;
-	zTmp[1] = zFileSize % 256;
-	if (write(newHtFile, zTmp, 4) != 4)
-	    {
-	    ErrorIntExit(newHtFileName, errno);
-	    }
+                        totalBytes += statBuf.st_size + 4;
 
-	totalBytes += statBuf.st_size + 4;
+                        while (bytesRead = read(topicZFile, fileBuff,
+                                                sizeof(fileBuff))) {
+                                if (write(newHtFile, fileBuff, bytesRead) !=
+                                    bytesRead) {
+                                        ErrorIntExit(newHtFileName, errno);
+                                }
+                                if (bytesRead < sizeof(fileBuff))
+                                        break;
+                        }
+                        close(topicZFile);
+                        unlink(topicFileName);
+                        unlink(topicZFileName);
 
-	while (bytesRead = read(topicZFile, fileBuff, sizeof(fileBuff)))
-	    {
-	    if (write(newHtFile, fileBuff, bytesRead) != bytesRead)
-		{
-		ErrorIntExit(newHtFileName, errno);
-		}
-	    if (bytesRead < sizeof(fileBuff))
-		break;
-	    }
-	close(topicZFile);
-	unlink(topicFileName);
-	unlink(topicZFileName);
+                        fprintf(newHvFile, "%s\t%d\n", string1, totalBytes);
+                        oldOffset = newOffset;
+                } else
+                        fputs(lineBuff, newHvFile);
+        }
 
-	fprintf(newHvFile, "%s\t%d\n", string1, totalBytes);
-	oldOffset = newOffset;
-	}
-    else
-	fputs(lineBuff, newHvFile);
-    }
+        if (result) {
+                ErrorExit(lastString2, "bad file copy");
+        }
 
-if (result)
-    {
-    ErrorExit(lastString2, "bad file copy");
-    }
+        putc('\n', newHvFile);
+        while (!feof(oldHvFile)) {
+                fgets(lineBuff, sizeof(lineBuff), oldHvFile);
+                if (feof(oldHvFile))
+                        break;
+                fputs(lineBuff, newHvFile);
+        }
+        fclose(oldHvFile);
+        fclose(newHvFile);
 
-putc('\n', newHvFile);
-while (!feof(oldHvFile))
-    {
-    fgets(lineBuff, sizeof(lineBuff), oldHvFile);
-    if (feof(oldHvFile))
-	break;
-    fputs(lineBuff, newHvFile);
-    }
-fclose(oldHvFile);
-fclose(newHvFile);
+        unlink(oldHvFileName);
+        result = CopyFile(oldHvFileName, newHvFileName);
+        if (result) {
+                ErrorExit(oldHvFileName, "bad file copy");
+        }
+        unlink(newHvFileName);
 
-unlink(oldHvFileName);
-result = CopyFile(oldHvFileName, newHvFileName);
-if (result)
-    {
-    ErrorExit(oldHvFileName, "bad file copy");
-    }
-unlink(newHvFileName);
-
-return 0;
+        return 0;
 }

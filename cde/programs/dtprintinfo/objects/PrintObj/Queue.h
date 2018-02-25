@@ -56,56 +56,53 @@ extern const char *GET_DEVICE_STATUS;
 
 class Queue : public BaseObj {
 
-   friend int Start(BaseObj *, char **output, BaseObj *requestor);
-   friend int Stop(BaseObj *, char **output, BaseObj *requestor);
+        friend int Start(BaseObj *, char **output, BaseObj *requestor);
+        friend int Stop(BaseObj *, char **output, BaseObj *requestor);
 #ifndef aix
-   friend int StartPrint(BaseObj *, char **output, BaseObj *requestor);
-   friend int StopPrint(BaseObj *, char **output, BaseObj *requestor);
+        friend int StartPrint(BaseObj *, char **output, BaseObj *requestor);
+        friend int StopPrint(BaseObj *, char **output, BaseObj *requestor);
 #endif
 
- protected:
-
-   static int Start(BaseObj *, char **output, BaseObj *requestor);
-   static int Stop(BaseObj *, char **output, BaseObj *requestor);
+      protected:
+        static int Start(BaseObj *, char **output, BaseObj *requestor);
+        static int Stop(BaseObj *, char **output, BaseObj *requestor);
 #ifndef aix
-   static int StartPrint(BaseObj *, char **output, BaseObj *requestor);
-   static int StopPrint(BaseObj *, char **output, BaseObj *requestor);
+        static int StartPrint(BaseObj *, char **output, BaseObj *requestor);
+        static int StopPrint(BaseObj *, char **output, BaseObj *requestor);
 #endif
 
-   boolean _loaded_attributes;
+        boolean _loaded_attributes;
 
-   void InitChildren();
-   void LoadAttributes(int numAttributes, Attribute **attributes);
-   void ParseOutput(char *, int);
+        void InitChildren();
+        void LoadAttributes(int numAttributes, Attribute **attributes);
+        void ParseOutput(char *, int);
 
-   void ProcessJobs(char *jobs = NULL);
+        void ProcessJobs(char *jobs = NULL);
 
-   boolean is_remote;
-   boolean remote_up;
+        boolean is_remote;
+        boolean remote_up;
 #ifdef aix
-   char **local_devices;
-   int n_devices;
+        char **local_devices;
+        int n_devices;
 #endif
-   char *remote_server;
-   char *remote_printer;
+        char *remote_server;
+        char *remote_printer;
 
- public:
+      public:
+        Queue(BaseObj *parent, char *name);
+        virtual ~Queue();
 
-   Queue(BaseObj *parent, char *name);
-   virtual ~Queue();
-
-   const char *Server();
-   const char *RemotePrinter();
+        const char *Server();
+        const char *RemotePrinter();
 #ifdef aix
-   char *Device(int index = 0);
-   int NumberDevices();
+        char *Device(int index = 0);
+        int NumberDevices();
 #endif
-   boolean IsRemote();
-   boolean RemoteUp() { return remote_up; }
-   void ParseRemoteStatus(char *output);
+        boolean IsRemote();
+        boolean RemoteUp() { return remote_up; }
+        void ParseRemoteStatus(char *output);
 
-   virtual const char *const ObjectClassName() { return QUEUE; }
-
+        virtual const char *const ObjectClassName() { return QUEUE; }
 };
 
 #endif // QUEUE_H

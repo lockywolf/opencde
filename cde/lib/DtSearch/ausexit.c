@@ -70,7 +70,7 @@
  * If austext_exit_comm is not NULL, then current process
  * is communicating to a remote process over a network.
  * The function is in a local communications package and
- * should be called to gracefully shutdown local child/parent 
+ * should be called to gracefully shutdown local child/parent
  * processes and daemons and allow a message to be sent to
  * the remote process to do the same.
  *
@@ -97,37 +97,35 @@
 #include <stdlib.h>
 #include "Search.h"
 
-void	(*austext_exit_first) (int) =	NULL;
-void	(*austext_exit_dbms) (int) =	NULL;
-void	(*austext_exit_comm) (int) =	NULL;
-void	(*austext_exit_endwin) (int) =	NULL;
-void	(*austext_exit_mem) (int) =	NULL;
-void	(*austext_exit_user) (int) =	NULL;
-void	(*austext_exit_last) (int) =	NULL;
-
+void (*austext_exit_first)(int) = NULL;
+void (*austext_exit_dbms)(int) = NULL;
+void (*austext_exit_comm)(int) = NULL;
+void (*austext_exit_endwin)(int) = NULL;
+void (*austext_exit_mem)(int) = NULL;
+void (*austext_exit_user)(int) = NULL;
+void (*austext_exit_last)(int) = NULL;
 
 /****************************************/
 /*					*/
 /*		DtSearchExit		*/
 /*					*/
 /****************************************/
-void	DtSearchExit (int return_code)
-{
-    if (austext_exit_first != NULL)
-	austext_exit_first (return_code);
-    if (austext_exit_dbms != NULL)
-	austext_exit_dbms (return_code);
-    if (austext_exit_comm != NULL)
-	austext_exit_comm (return_code);
-    if (austext_exit_endwin != NULL)
-	austext_exit_endwin (return_code);
-    if (austext_exit_mem != NULL)
-	austext_exit_mem (return_code);
-    if (austext_exit_user != NULL)
-	austext_exit_user (return_code);
-    if (austext_exit_last != NULL)
-	austext_exit_last (return_code);
-    exit (return_code);
+void DtSearchExit(int return_code) {
+        if (austext_exit_first != NULL)
+                austext_exit_first(return_code);
+        if (austext_exit_dbms != NULL)
+                austext_exit_dbms(return_code);
+        if (austext_exit_comm != NULL)
+                austext_exit_comm(return_code);
+        if (austext_exit_endwin != NULL)
+                austext_exit_endwin(return_code);
+        if (austext_exit_mem != NULL)
+                austext_exit_mem(return_code);
+        if (austext_exit_user != NULL)
+                austext_exit_user(return_code);
+        if (austext_exit_last != NULL)
+                austext_exit_last(return_code);
+        exit(return_code);
 }
 
 /****************************************/
@@ -135,16 +133,15 @@ void	DtSearchExit (int return_code)
 /*	    DtSearchAddUserExit		*/
 /*					*/
 /****************************************/
-void    DtSearchAddUserExit (void (*user_exit)(int))
-{ austext_exit_user = user_exit; }
-
+void DtSearchAddUserExit(void (*user_exit)(int)) {
+        austext_exit_user = user_exit;
+}
 
 /****************************************/
 /*					*/
 /*	  DtSearchRemoveUserExit	*/
 /*					*/
 /****************************************/
-void    DtSearchRemoveUserExit (void)
-{ austext_exit_user = NULL; }
+void DtSearchRemoveUserExit(void) { austext_exit_user = NULL; }
 
 /********************* AUSEXIT.C ************************/

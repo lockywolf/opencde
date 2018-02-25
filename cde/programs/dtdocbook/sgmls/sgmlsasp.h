@@ -44,6 +44,6 @@
 #define VP(parms) P(parms)
 #endif
 
-NO_RETURN void error VP((char *,...));
+NO_RETURN void error VP((char *, ...));
 
 extern int fold_general_names;

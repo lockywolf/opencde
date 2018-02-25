@@ -41,10 +41,10 @@
  **
  **
  *******************************************************************
- **  (c) Copyright Hewlett-Packard Company, 1990.  All rights are  
- **  reserved.  Copying or other reproduction of this program      
- **  except for archival purposes is prohibited without prior      
- **  written consent of Hewlett-Packard Company.                     
+ **  (c) Copyright Hewlett-Packard Company, 1990.  All rights are
+ **  reserved.  Copying or other reproduction of this program
+ **  except for archival purposes is prohibited without prior
+ **  written consent of Hewlett-Packard Company.
  ********************************************************************
  **
  **
@@ -52,13 +52,13 @@
  *****************************************************************************
  *************************************<+>*************************************/
 
-#ifndef _smresource_h 
+#ifndef _smresource_h
 #define _smresource_h
 
 /*
  * Default resource valuse
  */
-#define DEFAULT_NUM_SESSIONS_BACKED_UP		2
+#define DEFAULT_NUM_SESSIONS_BACKED_UP 2
 
 /*
  * Global resource names
@@ -88,8 +88,8 @@ extern char SmNnumSessionsBackedup[];
 extern char SmNignoreEnvironment[];
 extern char SmNxineramaPreferredScreen[];
 
-/* 
- * Resource names for settings information 
+/*
+ * Resource names for settings information
  */
 extern char SmNkeyClick[];
 extern char SmNbellPercent[];
@@ -149,7 +149,6 @@ extern char SmCmergeXdefaults[];
 extern char SmCnumSessionsBackedup[];
 extern char SmCignoreEnvironment[];
 extern char SmCxineramaPreferredScreen[];
-
 
 /*
  * Class names for session settings information

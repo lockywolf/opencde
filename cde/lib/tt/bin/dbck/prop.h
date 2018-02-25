@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: prop.h /main/3 1995/10/20 16:26:11 rswiston $ 			 				 */
+/*%%  $XConsortium: prop.h /main/3 1995/10/20 16:26:11 rswiston $
+ */
 /*
  *
  * prop.h
@@ -48,22 +49,21 @@
 #include "util/tt_table.h"
 #include "util/tt_string.h"
 
-declare_list_of(Prop)
-declare_table_of(Prop)
+declare_list_of(Prop) declare_table_of(Prop)
 
-class Prop : public _Tt_object {
+    class Prop : public _Tt_object {
       public:
         Prop(){};
-	Prop(_Tt_string propname);
-	~Prop() {};
-	virtual void print(FILE * f) const;
-	_Tt_string	&name() { /* key access for table package */
-		return _name;
-	}
-	_Tt_string		_name;
-	_Tt_string_list_ptr	_values;
+        Prop(_Tt_string propname);
+        ~Prop(){};
+        virtual void print(FILE *f) const;
+        _Tt_string &name() { /* key access for table package */
+                return _name;
+        }
+        _Tt_string _name;
+        _Tt_string_list_ptr _values;
 };
-	
+
 _Tt_string _tt_prop_name(_Tt_object_ptr &o);
 
 #endif /* _SPEC_H */

@@ -36,10 +36,7 @@
 #include "cm.h"
 #include "nametbl.h"
 
-extern boolean_t _DtCmsMatchAttributes P((
-			cms_entry *entry,
-			uint num_attrs,
-			cms_attribute *attrs,
-			CSA_enum *ops));
+extern boolean_t _DtCmsMatchAttributes P((cms_entry * entry, uint num_attrs,
+                                          cms_attribute *attrs, CSA_enum *ops));
 
 #endif

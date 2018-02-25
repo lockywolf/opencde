@@ -31,14 +31,14 @@
  * (c) Copyright 1996 Hitachi.						*
  */
 
-#ifndef	_Dt_Lock_h
-#define	_Dt_Lock_h
+#ifndef _Dt_Lock_h
+#define _Dt_Lock_h
 
 /********    Conditionally defined macros for thread_safe DtHelp ******/
 #ifdef XTHREADS
-#define _DtHelpWidgetToAppContext(w) \
+#define _DtHelpWidgetToAppContext(w)                                           \
         XtAppContext app = XtWidgetToApplicationContext(w)
-#define _DtHelpDisplayToAppContext(d) \
+#define _DtHelpDisplayToAppContext(d)                                          \
         XtAppContext app = XtDisplayToApplicationContext(d)
 #define _DtHelpAppLock(app) XtAppLock(app)
 #define _DtHelpAppUnlock(app) XtAppUnlock(app)
@@ -53,5 +53,5 @@
 #define _DtHelpProcessUnlock()
 #endif /* XTHREADS */
 
-#endif	/* _Dt_Lock_h */
+#endif /* _Dt_Lock_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif... */

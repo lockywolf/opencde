@@ -24,7 +24,8 @@
 **
 **  gettext.h
 **
-**  static char sccsid[] = "@(#)gettext.h 1.5 94/11/07 Copyr 1991 Sun Microsystems, Inc."; 
+**  static char sccsid[] = "@(#)gettext.h 1.5 94/11/07 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $XConsortium: gettext.h /main/3 1995/11/03 10:27:24 rswiston $
 **

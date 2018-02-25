@@ -53,5 +53,4 @@
  */
 #include <fcntl.h>
 
-int     db_oflag =     O_RDWR;
-
+int db_oflag = O_RDWR;

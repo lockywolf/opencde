@@ -56,21 +56,23 @@
  *	@(#)cdefs.h	8.1 (Berkeley) 6/2/93
  */
 
-#ifndef	_CDEFS_H_
-#define	_CDEFS_H_
+#ifndef _CDEFS_H_
+#define _CDEFS_H_
 
 #if defined(__cplusplus)
-#ifndef	__BEGIN_DECLS
-#define	__BEGIN_DECLS	extern "C" {
+#ifndef __BEGIN_DECLS
+#define __BEGIN_DECLS extern "C" {
 #endif
-#ifndef	__END_DECLS
-#define	__END_DECLS	};
+#ifndef __END_DECLS
+#define __END_DECLS                                                            \
+        }                                                                      \
+        ;
 #endif
 #else
-#undef	__BEGIN_DECLS
-#define	__BEGIN_DECLS
-#undef	__END_DECLS
-#define	__END_DECLS
+#undef __BEGIN_DECLS
+#define __BEGIN_DECLS
+#undef __END_DECLS
+#define __END_DECLS
 #endif
 
 /*
@@ -81,36 +83,36 @@
  * strings produced by the __STRING macro, but this only works with ANSI C.
  */
 #if defined(__STDC__) || defined(__cplusplus)
-#ifdef  __P
-#undef  __P
+#ifdef __P
+#undef __P
 #endif
-#define	__P(protos)	protos		/* full-blown ANSI C */
+#define __P(protos) protos /* full-blown ANSI C */
 #ifndef __CONCAT
-#define	__CONCAT(x,y)	x ## y
+#define __CONCAT(x, y) x##y
 #endif
-#define	__STRING(x)	#x
+#define __STRING(x) #x
 
-#else	/* !(__STDC__ || __cplusplus) */
-#ifdef  __P
-#undef  __P
+#else /* !(__STDC__ || __cplusplus) */
+#ifdef __P
+#undef __P
 #endif
-#define	__P(protos)	()		/* traditional C preprocessor */
-#define	__CONCAT(x,y)	x/**/y
-#define	__STRING(x)	"x"
+#define __P(protos) () /* traditional C preprocessor */
+#define __CONCAT(x, y) x /**/ y
+#define __STRING(x) "x"
 
 #ifdef __GNUC__
-#define	const		__const		/* GCC: ANSI C with -traditional */
-#define	inline		__inline
-#define	signed		__signed
-#define	volatile	__volatile
+#define const __const /* GCC: ANSI C with -traditional */
+#define inline __inline
+#define signed __signed
+#define volatile __volatile
 
-#else	/* !__GNUC__ */
-#define	const				/* delete ANSI C keywords */
-#define	inline
-#define	signed
-#define	volatile
-#endif	/* !__GNUC__ */
-#endif	/* !(__STDC__ || __cplusplus) */
+#else         /* !__GNUC__ */
+#define const /* delete ANSI C keywords */
+#define inline
+#define signed
+#define volatile
+#endif /* !__GNUC__ */
+#endif /* !(__STDC__ || __cplusplus) */
 
 /*
  * GCC has extensions for declaring functions as `pure' (always returns
@@ -121,7 +123,7 @@
  * define them only if compiling without this.
  */
 #if defined(__GNUC__) && !defined(__STRICT_ANSI__)
-#undef  __dead
+#undef __dead
 #define __dead __volatile
 #ifndef __pure
 #define __pure __const

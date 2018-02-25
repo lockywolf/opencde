@@ -40,27 +40,25 @@ class DtProps;
 extern const char *PROPS_PRINTJOB_ID;
 extern const char *PRINTJOB_ID;
 
-class DtPrtJobIcon : public IconObj 
-{
+class DtPrtJobIcon : public IconObj {
 
-   DtMainW *mainw;
-   DtProps *props;
-   PrintJob *print_job;
-   char job_number[10];
+        DtMainW *mainw;
+        DtProps *props;
+        PrintJob *print_job;
+        char job_number[10];
 
-   boolean HandleHelpRequest();
-   void NotifyVisiblity(BaseUI *);
+        boolean HandleHelpRequest();
+        void NotifyVisiblity(BaseUI *);
 
- public:
-   DtPrtJobIcon(DtMainW *, AnyUI *parent, PrintJob *printJob,
-		int SequenceNumber);
-   ~DtPrtJobIcon();
+      public:
+        DtPrtJobIcon(DtMainW *, AnyUI *parent, PrintJob *printJob,
+                     int SequenceNumber);
+        ~DtPrtJobIcon();
 
-   void DisplayProps();
-   void PrintJobObj(PrintJob *printJob);
-   PrintJob *PrintJobObj() { return print_job; }
-   const char *JobNumber() { return job_number; }
-
+        void DisplayProps();
+        void PrintJobObj(PrintJob *printJob);
+        PrintJob *PrintJobObj() { return print_job; }
+        const char *JobNumber() { return job_number; }
 };
 
 #endif // DTPRTJOBICON_H

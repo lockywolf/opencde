@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: tttk2free.h /main/3 1995/10/23 10:33:17 rswiston $ 			 				 */
+/*%%  $XConsortium: tttk2free.h /main/3 1995/10/23 10:33:17 rswiston $
+ */
 /*
  * @(#)tttk2free.h	1.3 93/09/07
  *
@@ -55,40 +56,24 @@
 // This class actually uses ttDtDestroy() instead of tt_message_destroy().
 //
 class _TttkItem2Free : public _Tt_allocated {
-    public:
-				_TttkItem2Free();
-				_TttkItem2Free(
-					Tt_message msg
-				);
-				_TttkItem2Free(
-					Tt_pattern pat
-				);
-				_TttkItem2Free(
-					caddr_t    ptr
-				);
-				~_TttkItem2Free();
+      public:
+        _TttkItem2Free();
+        _TttkItem2Free(Tt_message msg);
+        _TttkItem2Free(Tt_pattern pat);
+        _TttkItem2Free(caddr_t ptr);
+        ~_TttkItem2Free();
 
-	Tt_message		operator =(
-					Tt_message msg
-				);
-	Tt_pattern		operator =(
-					Tt_pattern pat
-				);
-	caddr_t			operator =(
-					caddr_t    ptr
-				);
-    private:
-	enum {
-		NoItem,
-		Message,
-		Pattern,
-		Pointer
-	}			_type;
-	union {
-		Tt_message	_msg;
-		Tt_pattern	_pat;
-		caddr_t		_ptr;
-	};
+        Tt_message operator=(Tt_message msg);
+        Tt_pattern operator=(Tt_pattern pat);
+        caddr_t operator=(caddr_t ptr);
+
+      private:
+        enum { NoItem, Message, Pattern, Pointer } _type;
+        union {
+                Tt_message _msg;
+                Tt_pattern _pat;
+                caddr_t _ptr;
+        };
 };
 
 //
@@ -102,34 +87,25 @@ class _TttkItem2Free : public _Tt_allocated {
 // Overflow items are ignored, and are thus potential memory leaks.
 //
 class _TttkList2Free : public _Tt_allocated {
-    public:
-			_TttkList2Free(
-				unsigned int maxElems
-			);
-			~_TttkList2Free();
+      public:
+        _TttkList2Free(unsigned int maxElems);
+        ~_TttkList2Free();
 
-	Tt_message	operator +=(
-				Tt_message   msg2Destroy
-			);
-	Tt_pattern	operator +=(
-				Tt_pattern   pat2Destroy
-			);
-	caddr_t		operator +=(
-				caddr_t	     ptr2tt_free
-			);
-	void		flush();
-    private:
-	void		_destruct();
-	_TttkItem2Free  &_item(
-				int	     i
-			);
+        Tt_message operator+=(Tt_message msg2Destroy);
+        Tt_pattern operator+=(Tt_pattern pat2Destroy);
+        caddr_t operator+=(caddr_t ptr2tt_free);
+        void flush();
 
-	unsigned int	_num;
-	unsigned int	_max;
+      private:
+        void _destruct();
+        _TttkItem2Free &_item(int i);
+
+        unsigned int _num;
+        unsigned int _max;
 #ifdef OPT_VECNEW
-	_TttkItem2Free  *_items;
+        _TttkItem2Free *_items;
 #else
-	_TttkItem2Free **_items;
+        _TttkItem2Free **_items;
 #endif
 };
 

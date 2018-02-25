@@ -31,7 +31,7 @@
 #define _CMNCBS_H_INCLUDED
 
 #ifndef STORAGECLASS
-#ifdef  NOEXTERN
+#ifdef NOEXTERN
 #define STORAGECLASS
 #else
 #define STORAGECLASS extern
@@ -44,12 +44,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-void activateCB_open_FindSet (Widget,XtPointer,XmFileSelectionBoxCallbackStruct *);
-void activateCB_edit_icon (Widget,XtPointer,XmPushButtonCallbackStruct *);
-void DisplayHelpDialog (Widget, XtPointer, XtPointer);
-void helpCB_general (Widget, XtPointer, XtPointer);
-void createCB_IconGadget(Widget wid, Boolean bActionIcons, enum icon_size_range IconSize);
-
-
+void activateCB_open_FindSet(Widget, XtPointer,
+                             XmFileSelectionBoxCallbackStruct *);
+void activateCB_edit_icon(Widget, XtPointer, XmPushButtonCallbackStruct *);
+void DisplayHelpDialog(Widget, XtPointer, XtPointer);
+void helpCB_general(Widget, XtPointer, XtPointer);
+void createCB_IconGadget(Widget wid, Boolean bActionIcons,
+                         enum icon_size_range IconSize);
 
 #endif /* _CMNCBS_H_INCLUDED */

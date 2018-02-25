@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,10 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
-
 
 #ifndef _chunks_index_h
 #define _chunks_index_h 1
@@ -56,24 +54,22 @@
 #include "storage/page_storage.h"
 #include "dstr/bset.h"
 
-class chunks_index 
-{
+class chunks_index {
 
-public:
-   chunks_index(abs_storage* store, mmdb_pos_t loc);
-   virtual ~chunks_index() ;
+      public:
+        chunks_index(abs_storage *store, mmdb_pos_t loc);
+        virtual ~chunks_index();
 
-   str_index_record_t* chunk_location( int offset );
+        str_index_record_t *chunk_location(int offset);
 
-protected:
-   Boolean binary_insert(str_index_record_tPtr* vector,
-                         int left, int right);
+      protected:
+        Boolean binary_insert(str_index_record_tPtr *vector, int left,
+                              int right);
 
-protected:
-   bset v_index_imp;
-   abs_storage* v_storage_ptr;
-   mmdb_pos_t v_initial_loc;
-
+      protected:
+        bset v_index_imp;
+        abs_storage *v_storage_ptr;
+        mmdb_pos_t v_initial_loc;
 };
 
 #endif

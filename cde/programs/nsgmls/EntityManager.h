@@ -47,18 +47,16 @@ class CharsetInfo;
 class InputSource;
 
 class SP_API EntityManager : public Resource {
-public:
-  virtual ~EntityManager();
-  virtual InputSource *open(const StringC &sysid,
-			    const CharsetInfo &,
-			    InputSourceOrigin *,
-			    Boolean mayRewind,
-			    Messenger &) = 0;
-  // Make a catalog for a document or subdocument with specified
-  // system identifier.
-  // The catalog can cause the system identifier to be replaced.
-  virtual ConstPtr<EntityCatalog>
-    makeCatalog(StringC &systemId, const CharsetInfo &, Messenger &) = 0;
+      public:
+        virtual ~EntityManager();
+        virtual InputSource *open(const StringC &sysid, const CharsetInfo &,
+                                  InputSourceOrigin *, Boolean mayRewind,
+                                  Messenger &) = 0;
+        // Make a catalog for a document or subdocument with specified
+        // system identifier.
+        // The catalog can cause the system identifier to be replaced.
+        virtual ConstPtr<EntityCatalog>
+        makeCatalog(StringC &systemId, const CharsetInfo &, Messenger &) = 0;
 };
 
 #ifdef SP_NAMESPACE

@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,46 +44,36 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
 
 #ifndef _pref_base_h
 #define _pref_base_h 1
 
 #include "oliasdb/user_base.h"
 
-
 /*************************************/
 // The pref_base class
 /*************************************/
 
-class pref_base : public user_base
-{
+class pref_base : public user_base {
 
-public:
+      public:
+        pref_base(const char *base_dir, const char *base_name,
+                  const char *base_desc,
+                  user_base::rw_flag_t = pref_base::READ);
+        pref_base(user_base::rw_flag_t = pref_base::READ);
+        virtual ~pref_base();
 
-   pref_base(const char* base_dir, 
-             const char* base_name, 
-             const char* base_desc,
-             user_base::rw_flag_t = pref_base::READ
-            );
-   pref_base(user_base::rw_flag_t = pref_base::READ);
-   virtual ~pref_base();
+      protected:
+      protected:
+        cset_handler *pref_set_hd;
 
-protected:
-
-
-protected:
-
-   cset_handler* pref_set_hd;
-
-   friend class user_config_smart_ptr;
-   friend class pref_smart_ptr;
-   friend class pref_hd;
+        friend class user_config_smart_ptr;
+        friend class pref_smart_ptr;
+        friend class pref_hd;
 };
 
-typedef pref_base* pref_basePtr;
-
+typedef pref_base *pref_basePtr;
 
 #endif

@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,10 +44,8 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
-
 
 #ifndef _btree_index_h
 #define _btree_index_h 1
@@ -55,22 +53,20 @@
 #include "index/dyn_index.h"
 #include "btree/mmdb_btree.h"
 
-class btree_index : public dyn_index
-{
+class btree_index : public dyn_index {
 
-public:
-   btree_index();
-   virtual ~btree_index();
+      public:
+        btree_index();
+        virtual ~btree_index();
 
-//init run time data members
-   Boolean init_data_member( inv_lists_handler*, const char* btree_store );
+        // init run time data members
+        Boolean init_data_member(inv_lists_handler *, const char *btree_store);
 
-   size_t handler_to_inv_idx(const handler& query);
+        size_t handler_to_inv_idx(const handler &query);
 
-   MMDB_SIGNATURES(btree_index);
+        MMDB_SIGNATURES(btree_index);
 };
 
-   
 HANDLER_SIGNATURES(btree_index)
 
 #endif

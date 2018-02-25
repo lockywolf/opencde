@@ -45,46 +45,17 @@
 extern int Pr_tmpnonames;
 extern int _Delim;
 
-
-
-extern int (*find_special( 
-                        int type,
-                        char *name))() ;
-extern int set_special( 
-                        char *name,
-                        int (*free)(),
-                        int (*parse)(),
-                        int (*print)()) ;
-extern int xk_parse( 
-                        memtbl_t *tbl,
-                        char **buf,
-                        char *p,
-                        int nptr,
-                        int sub,
-                        void *pass,
-                        memtbl_t *(*tbl_find)()) ;
-extern int xk_get_delim( 
-                        memtbl_t *tbl,
-                        char *p) ;
-extern int xk_get_pardelim( 
-                        memtbl_t *tbl,
-                        char *p) ;
-extern int xk_print( 
-                        memtbl_t *tbl,
-                        char **buf,
-                        char *p,
-                        int nptr,
-                        int sub,
-                        void *pass,
-                        memtbl_t *(*tbl_find)()) ;
-extern int xk_free( 
-                        memtbl_t *tbl,
-                        char *p,
-                        int nptr,
-                        int sub,
-                        memtbl_t *(*tbl_find)()) ;
-
-
+extern int (*find_special(int type, char *name))();
+extern int set_special(char *name, int (*free)(), int (*parse)(),
+                       int (*print)());
+extern int xk_parse(memtbl_t *tbl, char **buf, char *p, int nptr, int sub,
+                    void *pass, memtbl_t *(*tbl_find)());
+extern int xk_get_delim(memtbl_t *tbl, char *p);
+extern int xk_get_pardelim(memtbl_t *tbl, char *p);
+extern int xk_print(memtbl_t *tbl, char **buf, char *p, int nptr, int sub,
+                    void *pass, memtbl_t *(*tbl_find)());
+extern int xk_free(memtbl_t *tbl, char *p, int nptr, int sub,
+                   memtbl_t *(*tbl_find)());
 
 #endif /* _Dtksh_exksh_tbls_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

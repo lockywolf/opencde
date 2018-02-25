@@ -26,7 +26,6 @@
 
 #ifndef CDE_NEXT
 
-
 #else
 #include "dti_cc/CC_Dlist.h"
 #include "dti_cc/cc_hdict.h"
@@ -45,132 +44,125 @@ class FeatureSet;
 #define OP_MANY "*"
 typedef unsigned int LetterType;
 
-class EncodedPath 
-{
-   int f_size;
-   int f_patternSize;
-   LetterType* f_array;
+class EncodedPath {
+        int f_size;
+        int f_patternSize;
+        LetterType *f_array;
 
-   hashTable<LetterType, BitVector> f_SVectors;
+        hashTable<LetterType, BitVector> f_SVectors;
 
-   LetterType f_wildCard;
-   LetterType f_unlimitedWildCard;
+        LetterType f_wildCard;
+        LetterType f_unlimitedWildCard;
 
-   BitVector* f_copyOfS; // copy of S vector, used in match()
+        BitVector *f_copyOfS; // copy of S vector, used in match()
 
-public:
-   EncodedPath(SSPath* p, unsigned int asPattern = false);
-   ~EncodedPath();
+      public:
+        EncodedPath(SSPath *p, unsigned int asPattern = false);
+        ~EncodedPath();
 
-   int length() { return f_size; };
-   int patternLength() { return f_patternSize; };
+        int length() { return f_size; };
+        int patternLength() { return f_patternSize; };
 
-   unsigned int match(EncodedPath& p, SSPath* Pattern, SSPath* Elements);
-}
-;
-
-class basePathFeature 
-{
-
-protected:
-  SSPath* f_path;
-   FeatureSet* f_featureSet;
-
-public:
-
-   basePathFeature(SSPath* p=0, FeatureSet* f=0): 
-	f_path(p), f_featureSet(f) {};
-   ~basePathFeature();
-
-   unsigned int operator==(const basePathFeature&) const;
-
-   SSPath* path() { return f_path; };
-   FeatureSet* featureSet() { return f_featureSet; };
-
-   void setPath(SSPath* p) { f_path = p; };
-   void setFeatureSet(FeatureSet* fs) { f_featureSet = fs; };
+        unsigned int match(EncodedPath &p, SSPath *Pattern, SSPath *Elements);
 };
 
-class PathFeature : public basePathFeature
-{
-   unsigned int f_id;
-   EncodedPath* f_encodedPath;
+class basePathFeature {
 
-public:
-   PathFeature(SSPath* p,FeatureSet* f,EncodedPath* e=0, unsigned int id=0): 
-      basePathFeature(p, f), f_id(id), f_encodedPath(e) {};
-   ~PathFeature();
+      protected:
+        SSPath *f_path;
+        FeatureSet *f_featureSet;
 
-   EncodedPath* encodedPath() { return f_encodedPath; };
-   unsigned int id() { return f_id; };
+      public:
+        basePathFeature(SSPath *p = 0, FeatureSet *f = 0)
+            : f_path(p), f_featureSet(f){};
+        ~basePathFeature();
 
-   void setEncodedPath(EncodedPath* e) { f_encodedPath = e; };
-   void setID(int x) { f_id = x; };
+        unsigned int operator==(const basePathFeature &) const;
 
-   unsigned int operator==(const PathFeature&) const;
+        SSPath *path() { return f_path; };
+        FeatureSet *featureSet() { return f_featureSet; };
 
-   unsigned int match(SSPath& p);
+        void setPath(SSPath *p) { f_path = p; };
+        void setFeatureSet(FeatureSet *fs) { f_featureSet = fs; };
 };
 
-class PathFeatureList : public CC_TPtrDlist<PathFeature> 
-{
+class PathFeature : public basePathFeature {
+        unsigned int f_id;
+        EncodedPath *f_encodedPath;
 
-public:
-   PathFeatureList() {};
-   virtual ~PathFeatureList();
+      public:
+        PathFeature(SSPath *p, FeatureSet *f, EncodedPath *e = 0,
+                    unsigned int id = 0)
+            : basePathFeature(p, f), f_id(id), f_encodedPath(e){};
+        ~PathFeature();
 
-   void appendList(PathFeatureList&);
+        EncodedPath *encodedPath() { return f_encodedPath; };
+        unsigned int id() { return f_id; };
+
+        void setEncodedPath(EncodedPath *e) { f_encodedPath = e; };
+        void setID(int x) { f_id = x; };
+
+        unsigned int operator==(const PathFeature &) const;
+
+        unsigned int match(SSPath &p);
+};
+
+class PathFeatureList : public CC_TPtrDlist<PathFeature> {
+
+      public:
+        PathFeatureList(){};
+        virtual ~PathFeatureList();
+
+        void appendList(PathFeatureList &);
 };
 
 typedef CC_TPtrDlistIterator<PathFeature> PathFeatureListIterator;
 
-
 // /////////////////////////////////////////////////////////////////////////
-// 
+//
 // 	class PathTable
 //
 // /////////////////////////////////////////////////////////////////////////
 
-typedef CC_TPtrDlist<PathFeature>* CC_TPtrDlist_PathFeature_Ptr_T;
+typedef CC_TPtrDlist<PathFeature> *CC_TPtrDlist_PathFeature_Ptr_T;
 
-class PathTable
-{
-public:
-  PathTable();
-  ~PathTable();
+class PathTable {
+      public:
+        PathTable();
+        ~PathTable();
 
-// add a path and associated raw feature set 
-// this should only be called by the style sheet parser to build this internal
-// table  
-//
-// Assume that the paths are passed in in left to right order. i.e., 
-// in the order   
-//       "TITLE SECTION" 
-//       "TITLE CHAPTER" 
-// with the example shown above.
-//
-  //void addPathFeatureSet(Path*, FeatureSet *rawFeatureSet);
-  void addPathFeatureSet(PathFeature*);
+        // add a path and associated raw feature set
+        // this should only be called by the style sheet parser to build this
+        // internal table
+        //
+        // Assume that the paths are passed in in left to right order. i.e.,
+        // in the order
+        //       "TITLE SECTION"
+        //       "TITLE CHAPTER"
+        // with the example shown above.
+        //
+        // void addPathFeatureSet(Path*, FeatureSet *rawFeatureSet);
+        void addPathFeatureSet(PathFeature *);
 
-// returns a NULL value if no feature set is available at this point
-// this "new"s a new feature set, and the caller is responsible for
-// deleting the object
-  FeatureSet* getFeatureSet(SSPath&);
+        // returns a NULL value if no feature set is available at this point
+        // this "new"s a new feature set, and the caller is responsible for
+        // deleting the object
+        FeatureSet *getFeatureSet(SSPath &);
 
-  friend ostream& operator<<(ostream&, PathTable&);
+        friend ostream &operator<<(ostream &, PathTable &);
 
-private:
-  CC_TPtrDlist<PathFeature> f_pathFeatureList;
-  CC_TPtrDlist_PathFeature_Ptr_T *f_lastSymIndex;
-  unsigned int		    f_lastSymIndexCount ;
+      private:
+        CC_TPtrDlist<PathFeature> f_pathFeatureList;
+        CC_TPtrDlist_PathFeature_Ptr_T *f_lastSymIndex;
+        unsigned int f_lastSymIndexCount;
 
-private:
-  void initLastSymIndex();
-  unsigned int findIndex(SSPath&);
-  FeatureSet* getFeatureSet(int bucketIndex, SSPath&, int& pathId);
+      private:
+        void initLastSymIndex();
+        unsigned int findIndex(SSPath &);
+        FeatureSet *getFeatureSet(int bucketIndex, SSPath &, int &pathId);
 };
 
-extern PathTable* gPathTab;
+extern PathTable *gPathTab;
 
 #endif /* _PathTable_h */
 /* DO NOT ADD ANY LINES AFTER THIS #endif */

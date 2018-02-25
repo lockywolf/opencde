@@ -48,36 +48,36 @@
 #include "dbtype.h"
 
 /* Set current member to current member
-*/
-int
-d_setmm(sett, sets TASK_PARM DBN_PARM)
-int sett;   /* set table entry number of target member */
-int sets;   /* set table entry number of source member */
+ */
+int d_setmm(sett, sets TASK_PARM DBN_PARM) int sett; /* set table entry number
+                                                        of target member */
+int sets; /* set table entry number of source member */
 TASK_DECL
-DBN_DECL    /* database number */
+DBN_DECL /* database number */
 {
-   int cmtype; /* current member type */
-   register int mem;
-   SET_ENTRY FAR *set_ptr;
-   register MEMBER_ENTRY FAR *mem_ptr;
-   int memtot;
+        int cmtype; /* current member type */
+        register int mem;
+        SET_ENTRY FAR *set_ptr;
+        register MEMBER_ENTRY FAR *mem_ptr;
+        int memtot;
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_IO));
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_IO));
 
-   if ((d_cmtype(sets, &cmtype TASK_PARM DBN_PARM) != S_OKAY) ||
-       (nset_check(sett, &sett, (SET_ENTRY FAR * FAR *)&set_ptr) != S_OKAY))
-      RETURN( db_status );
+        if ((d_cmtype(sets, &cmtype TASK_PARM DBN_PARM) != S_OKAY) ||
+            (nset_check(sett, &sett, (SET_ENTRY FAR * FAR *)&set_ptr) !=
+             S_OKAY))
+                RETURN(db_status);
 
-   cmtype += NUM2INT(-RECMARK, rt_offset);
-   sets += NUM2INT(-SETMARK, st_offset);
+        cmtype += NUM2INT(-RECMARK, rt_offset);
+        sets += NUM2INT(-SETMARK, st_offset);
 
-   for (mem = set_ptr->st_members, memtot = mem + set_ptr->st_memtot,
-						mem_ptr = &member_table[mem];
-	mem < memtot;
-	++mem, ++mem_ptr) {
-      if (mem_ptr->mt_record == cmtype)
-	 RETURN( r_smem(&curr_mem[sets], sett) );
-   }
-   RETURN( dberr( S_INVMEM ) );
+        for (mem = set_ptr->st_members, memtot = mem + set_ptr->st_memtot,
+            mem_ptr = &member_table[mem];
+             mem < memtot; ++mem, ++mem_ptr) {
+                if (mem_ptr->mt_record == cmtype)
+                        RETURN(r_smem(&curr_mem[sets], sett));
+        }
+        RETURN(dberr(S_INVMEM));
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin setmm.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin setmm.c */

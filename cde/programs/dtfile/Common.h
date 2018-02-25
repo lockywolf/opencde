@@ -42,39 +42,32 @@
 #define _Common_h
 
 /* Buffer type - Used to store buffer drag-n-drop info */
-typedef struct
-{
-  void * buf_ptr;
-  int    size;
+typedef struct {
+        void *buf_ptr;
+        int size;
 } BufferInfo;
 
 /* Pixmap Data structure */
-typedef struct
-{
-   int   size;
-   char *hostPrefix;
-   char *instanceIconName;
-   char *iconName;
-   char *iconFileName;
+typedef struct {
+        int size;
+        char *hostPrefix;
+        char *instanceIconName;
+        char *iconName;
+        char *iconFileName;
 } PixmapData;
 
 typedef struct _TypesToggleInfo {
-   String name;
-   Boolean  selected;
+        String name;
+        Boolean selected;
 } TypesToggleInfo, *TypesToggleInfoPtr;
-
 
 #define XmROfft "Offt"
 
 /********    Public Function Declarations    ********/
 
-extern void CvtStringToStringList( 
-                        String string,
-                        String **listPtr,
-                        int *countPtr) ;
-extern String CvtStringListToString( 
-                        String *list,
-                        int count) ;
+extern void CvtStringToStringList(String string, String **listPtr,
+                                  int *countPtr);
+extern String CvtStringListToString(String *list, int count);
 
 /********    End Public Function Declarations    ********/
 

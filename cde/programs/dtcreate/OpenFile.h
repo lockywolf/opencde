@@ -30,7 +30,6 @@
 #ifndef _OPENFILE_H_INCLUDED
 #define _OPENFILE_H_INCLUDED
 
-
 #include <stdio.h>
 #include <Xm/Xm.h>
 #include <Xm/MwmUtil.h>
@@ -53,24 +52,20 @@
        corresponding entry in the context structure.
 ******************************************************************************/
 
-typedef struct
-{
-        Widget  UxOpenFile;
+typedef struct {
+        Widget UxOpenFile;
 } _UxCOpenFile;
 
 #ifdef CONTEXT_MACRO_ACCESS
-static _UxCOpenFile            *UxOpenFileContext;
-#define OpenFile                UxOpenFileContext->UxOpenFile
+static _UxCOpenFile *UxOpenFileContext;
+#define OpenFile UxOpenFileContext->UxOpenFile
 
 #endif /* CONTEXT_MACRO_ACCESS */
-
 
 /*******************************************************************************
        Declarations of global functions.
 *******************************************************************************/
 
+Widget create_OpenFile(void);
 
-Widget  create_OpenFile(void);
-
-
-#endif  /* _OPENFILE_H_INCLUDED */
+#endif /* _OPENFILE_H_INCLUDED */

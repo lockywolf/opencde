@@ -24,7 +24,8 @@
 /*%%  (c) Copyright 1993, 1994 International Business Machines Corp.	 */
 /*%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			 */
 /*%%  (c) Copyright 1993, 1994 Novell, Inc. 				 */
-/*%%  $XConsortium: iscntl.c /main/3 1995/10/23 11:36:59 rswiston $ 			 				 */
+/*%%  $XConsortium: iscntl.c /main/3 1995/10/23 11:36:59 rswiston $
+ */
 #ifndef lint
 static char sccsid[] = "@(#)iscntl.c	1.8 94/11/17";
 #endif
@@ -45,7 +46,6 @@ static char sccsid[] = "@(#)iscntl.c	1.8 94/11/17";
 #include <varargs.h>
 #endif
 #include "isam_impl.h"
-
 
 /*
  * err =  iscntl(isfd, args)
@@ -77,63 +77,60 @@ static char sccsid[] = "@(#)iscntl.c	1.8 94/11/17";
  *
  */
 
-typedef int (* intfunc)();
+typedef int (*intfunc)();
 
 #if defined(linux) || defined(CSRG_BASED) || defined(sun)
-int 
-iscntl(int isfd, int func, ...)
+int iscntl(int isfd, int func, ...)
 #else
-int 
-iscntl(isfd, func, va_alist)
-    int			isfd;
-    int			func;
-    va_dcl
+int iscntl(isfd, func, va_alist) int isfd;
+int func;
+va_dcl
 #endif
 {
-    extern int		(*_isfatal_error_set_func())();
-    va_list		pvar;
-    int			ret;
+        extern int (*_isfatal_error_set_func())();
+        va_list pvar;
+        int ret;
 
 #if defined(linux) || defined(CSRG_BASED) || defined(sun)
-    va_start(pvar, func);
+        va_start(pvar, func);
 #else
-    va_start(pvar);
+        va_start(pvar);
 #endif
-    switch (func) {
+        switch (func) {
 
-	  case ISCNTL_MASKSIGNALS:
-	    ret =  _issignals_cntl(va_arg(pvar, int));
-	    break;
+        case ISCNTL_MASKSIGNALS:
+                ret = _issignals_cntl(va_arg(pvar, int));
+                break;
 
-	  case ISCNTL_FATAL:
-	    ret =  (int)_isfatal_error_set_func(va_arg(pvar,  intfunc));
-	    break;
+        case ISCNTL_FATAL:
+                ret = (int)_isfatal_error_set_func(va_arg(pvar, intfunc));
+                break;
 
-	  case ISCNTL_FDLIMIT_SET:
-	    ret =  _watchfd_max_set(va_arg(pvar, int));
-	    break;
+        case ISCNTL_FDLIMIT_SET:
+                ret = _watchfd_max_set(va_arg(pvar, int));
+                break;
 
-	  case ISCNTL_FDLIMIT_GET:
-	    ret =  _watchfd_max_get();
-	    break;
+        case ISCNTL_FDLIMIT_GET:
+                ret = _watchfd_max_get();
+                break;
 
-	  case ISCNTL_APPLMAGIC_WRITE:
-	    ret =  _isapplmw(isfd, (va_arg(pvar, char *)));
-	    break;
+        case ISCNTL_APPLMAGIC_WRITE:
+                ret = _isapplmw(isfd, (va_arg(pvar, char *)));
+                break;
 
-	  case ISCNTL_APPLMAGIC_READ:
-	    ret =  _isapplmr(isfd, (va_arg(pvar, char *)));
-	    break;
+        case ISCNTL_APPLMAGIC_READ:
+                ret = _isapplmr(isfd, (va_arg(pvar, char *)));
+                break;
 
-	  case ISCNTL_FSYNC:
-	    ret = _isfsync(isfd);
-	    break;
+        case ISCNTL_FSYNC:
+                ret = _isfsync(isfd);
+                break;
 
-	  default:
-	    _setiserrno2(EBADARG, '9', '0');
-	    ret =  ISERROR;
-    }
+        default:
+                _setiserrno2(EBADARG, '9', '0');
+                ret = ISERROR;
+        }
 
-    va_end(pvar);
-    return (ret);
+        va_end(pvar);
+        return (ret);
 }

@@ -48,41 +48,20 @@ extern "C" {
 /*****************************************************************************
  *              Semi Public Routines
  *****************************************************************************/
-extern	void	_DtHelpActivateLink (
-			Widget		widget,
-			XEvent		*event,
-			String		*params,
-			Cardinal	*num_params);
-extern	void	_DtHelpCopyAction (
-			Widget		widget,
-			XEvent		*event,
-			String		*params,
-			Cardinal	*num_params);
-extern	void	_DtHelpDeSelectAll (
-			Widget		widget,
-			XEvent		*event,
-			String		*params,
-			Cardinal	*num_params);
-extern	void	_DtHelpNextLink (
-			Widget		widget,
-			XEvent		*event,
-			String		*params,
-			Cardinal	*num_params);
-extern	void	_DtHelpPageLeftOrRight (
-			Widget		widget,
-			XEvent		*event,
-			String		*params,
-			Cardinal	*num_params);
-extern	void	_DtHelpPageUpOrDown (
-			Widget		widget,
-			XEvent		*event,
-			String		*params,
-			Cardinal	*num_params);
-extern	void	_DtHelpSelectAll (
-			Widget		widget,
-			XEvent		*event,
-			String		*params,
-			Cardinal	*num_params);
+extern void _DtHelpActivateLink(Widget widget, XEvent *event, String *params,
+                                Cardinal *num_params);
+extern void _DtHelpCopyAction(Widget widget, XEvent *event, String *params,
+                              Cardinal *num_params);
+extern void _DtHelpDeSelectAll(Widget widget, XEvent *event, String *params,
+                               Cardinal *num_params);
+extern void _DtHelpNextLink(Widget widget, XEvent *event, String *params,
+                            Cardinal *num_params);
+extern void _DtHelpPageLeftOrRight(Widget widget, XEvent *event, String *params,
+                                   Cardinal *num_params);
+extern void _DtHelpPageUpOrDown(Widget widget, XEvent *event, String *params,
+                                Cardinal *num_params);
+extern void _DtHelpSelectAll(Widget widget, XEvent *event, String *params,
+                             Cardinal *num_params);
 
 #ifdef __cplusplus
 }

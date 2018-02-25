@@ -27,7 +27,7 @@
  * (c) Copyright 1993,1994,1996 Hewlett-Packard Company.
  * (c) Copyright 1993,1994,1996 International Business Machines Corp.
  * (c) Copyright 1993,1994,1996 Sun Microsystems, Inc.
- * (c) Copyright 1993,1994,1996 Novell, Inc. 
+ * (c) Copyright 1993,1994,1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -53,17 +53,18 @@ typedef void (*privbuf_func)(void *v);
 // they have both internal and external linkage.
 #else
 inline static void *operator new(size_t size) { return malloc((unsigned)size); }
-inline static void operator delete(void *p) { if (p) free((char*)p); }
+inline static void operator delete(void *p) {
+        if (p)
+                free((char *)p);
+}
 #endif
 
 #include <codelibs/dynarray.h>
 declare_array(privbuf_charbuf, char, 128)
-declare_array(privbuf_strvec, char*, 128)
-struct privbuf_buffer
-{
-    privbuf_func func;
-    privbuf_charbuf buf;
-    privbuf_strvec vec;
+    declare_array(privbuf_strvec, char *, 128) struct privbuf_buffer {
+        privbuf_func func;
+        privbuf_charbuf buf;
+        privbuf_strvec vec;
 };
 extern void privbuf_freeprivbuf(void *buf);
 extern privbuf_buffer *privbuf_allocprivbuf();
@@ -72,7 +73,7 @@ extern privbuf_buffer *privbuf_allocprivbuf();
 
 #ifdef __cplusplus
 extern "C" {
-    void privbuf_release(void **var);
+void privbuf_release(void **var);
 }
 #else
 extern void privbuf_release();

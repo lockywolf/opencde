@@ -27,66 +27,50 @@
 #include "Exceptions.hh"
 #include "CC_Slist.h"
 
-template <class T> class Stack: public Destructable
-{
+template <class T> class Stack : public Destructable {
 
-public:
-  /* This is a value stack, ie an assignment operator for T is assumed */
-  Stack ()
-  {
-    Items = new CC_TValSlist<T>();
-  }
-  
-  ~Stack ()
-  {
-    delete Items;
-  }
+      public:
+        /* This is a value stack, ie an assignment operator for T is assumed */
+        Stack() { Items = new CC_TValSlist<T>(); }
 
-public:
-  T	pop ()
-  {
-    CC_Link<T> *last_elem = (CC_Link<T> *)Items->removeLast();
+        ~Stack() { delete Items; }
 
-    if ( !last_elem ) {
-      throw (Exception());
-    }
+      public:
+        T pop() {
+                CC_Link<T> *last_elem = (CC_Link<T> *)Items->removeLast();
 
-    T *ret = last_elem->f_element;
-    delete last_elem;
+                if (!last_elem) {
+                        throw(Exception());
+                }
 
-    T ret_value = *ret;
-    delete ret;
+                T *ret = last_elem->f_element;
+                delete last_elem;
 
-    return(ret_value);
-  }
+                T ret_value = *ret;
+                delete ret;
 
-  void	push (const T newItem)
-  {
-    Items->append ( newItem );
-  }
+                return (ret_value);
+        }
 
-  T&	top () const
-  {
-    CC_Link<T> *last_elem = (CC_Link<T> *)Items->last();
-    if ( !last_elem ) {
-      throw(Exception());
-    }
+        void push(const T newItem) { Items->append(newItem); }
 
-    return ( *last_elem->f_element );
-  }
+        T &top() const {
+                CC_Link<T> *last_elem = (CC_Link<T> *)Items->last();
+                if (!last_elem) {
+                        throw(Exception());
+                }
 
-  int   entries() const
-  { 
-    return( Items->entries() );  //ie no. of elements in the stack
-  }
+                return (*last_elem->f_element);
+        }
 
-  int     empty() const {
-    return( Items->entries() == 0 );
-  }
+        int entries() const {
+                return (Items->entries()); // ie no. of elements in the stack
+        }
 
-private:
-  CC_TValSlist<T> *Items;
+        int empty() const { return (Items->entries() == 0); }
 
+      private:
+        CC_TValSlist<T> *Items;
 };
 
 #endif

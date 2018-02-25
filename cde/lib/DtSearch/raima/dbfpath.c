@@ -48,22 +48,20 @@
 #include "dbtype.h"
 
 /* Set Database Files Path
-*/
-int
-d_dbfpath(path TASK_PARM)
-CONST char FAR *path;
-TASK_DECL
-{
-   DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(LOCK_NONE));
+ */
+int d_dbfpath(path TASK_PARM) CONST char FAR *path;
+TASK_DECL {
+        DB_ENTER(NO_DB_ID TASK_ID LOCK_SET(LOCK_NONE));
 
-   if (dbopen)
-      dberr(S_DBOPEN);
-   else if (strlen(path) >= FILENMLEN - 1)
-      dberr(S_NAMELEN);
-   else {
-      strcpy(dbfpath, path);
-      db_status = S_OKAY;
-   }
-   RETURN( db_status );
+        if (dbopen)
+                dberr(S_DBOPEN);
+        else if (strlen(path) >= FILENMLEN - 1)
+                dberr(S_NAMELEN);
+        else {
+                strcpy(dbfpath, path);
+                db_status = S_OKAY;
+        }
+        RETURN(db_status);
 }
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin dbfpath.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin dbfpath.c */

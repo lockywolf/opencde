@@ -47,34 +47,31 @@
 #include "vista.h"
 #include "dbtype.h"
 
-
-#ifndef	 NO_TIMESTAMP
+#ifndef NO_TIMESTAMP
 /* Set timestamp of current owner
-*/
-d_stsco(set, timestamp TASK_PARM DBN_PARM)
-int set;
+ */
+d_stsco(set, timestamp TASK_PARM DBN_PARM) int set;
 ULONG timestamp;
 TASK_DECL
-DBN_DECL
-{
-   SET_ENTRY FAR *set_ptr;
+DBN_DECL {
+        SET_ENTRY FAR *set_ptr;
 
-   DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_NOIO));
+        DB_ENTER(DB_ID TASK_ID LOCK_SET(SET_NOIO));
 
-   if (nset_check(set, &set, (SET_ENTRY FAR * FAR *)&set_ptr) != S_OKAY)
-      RETURN( db_status );
+        if (nset_check(set, &set, (SET_ENTRY FAR * FAR *)&set_ptr) != S_OKAY)
+                RETURN(db_status);
 
-   /* make sure we have a current owner */
-   if ( curr_own[set] ) {
-      if ( db_tsrecs )
-	 co_time[set] = timestamp;
-      else
-	 dberr(S_TIMESTAMP);
-   }
-   else
-      dberr(S_NOCO);
+        /* make sure we have a current owner */
+        if (curr_own[set]) {
+                if (db_tsrecs)
+                        co_time[set] = timestamp;
+                else
+                        dberr(S_TIMESTAMP);
+        } else
+                dberr(S_NOCO);
 
-   RETURN( db_status );
+        RETURN(db_status);
 }
 #endif
-/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC -f/usr/users/master/config/nonwin stsco.c */
+/* vpp -nOS2 -dUNIX -nBSD -nVANILLA_BSD -nVMS -nMEMLOCK -nWINDOWS -nFAR_ALLOC
+ * -f/usr/users/master/config/nonwin stsco.c */

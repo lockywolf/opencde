@@ -28,14 +28,13 @@
 #include "oliasdb/mmdb.h"
 #include "oliasdb/DtMmdb.h"
 
-extern OLIAS_DB* mmdb_ptr;
-extern info_base* getBookCase(int);
-extern oid_t* getPrimiaryOid(DtMmdbInfoRequest* x);
-extern oid_t* getSecondaryOid(DtMmdbInfoRequest* x);
-extern int getSeqNum(DtMmdbInfoRequest* x);
-extern const char* getLocator(DtMmdbInfoRequest* x);
-extern DtMmdbHandle* newDtMmdbHandle(const oid_t& x);
-extern DtMmdbGraphicInfo* newDtMmdbGraphicInfo();
-
+extern OLIAS_DB *mmdb_ptr;
+extern info_base *getBookCase(int);
+extern oid_t *getPrimiaryOid(DtMmdbInfoRequest *x);
+extern oid_t *getSecondaryOid(DtMmdbInfoRequest *x);
+extern int getSeqNum(DtMmdbInfoRequest *x);
+extern const char *getLocator(DtMmdbInfoRequest *x);
+extern DtMmdbHandle *newDtMmdbHandle(const oid_t &x);
+extern DtMmdbGraphicInfo *newDtMmdbGraphicInfo();
 
 #endif

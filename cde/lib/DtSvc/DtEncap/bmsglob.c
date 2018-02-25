@@ -21,8 +21,8 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 /*
- * File:         bmsglob.c $XConsortium: bmsglob.c /main/4 1996/06/21 17:35:08 ageorge $
- * Language:     C
+ * File:         bmsglob.c $XConsortium: bmsglob.c /main/4 1996/06/21 17:35:08
+ * ageorge $ Language:     C
  *
  * (c) Copyright 1990, Hewlett-Packard Company, all rights reserved.
  *
@@ -45,25 +45,25 @@ char *XeToolClass = NULL;
 /* --------- */
 /* context.c */
 /* --------- */
-XeString        XeProgName = (XeString) "<unknown program name>";
+XeString XeProgName = (XeString) "<unknown program name>";
 
 /*-------------- */
 /* SPC/spc-obj.c */
 /*-------------- */
-int SPC_Initialized=FALSE;
+int SPC_Initialized = FALSE;
 
 /*-------------- */
 /* SPC/spc-error.c */
 /*-------------- */
 int XeSPCErrorNumber = 0;
-FILE *spc_logF = (FILE*)NULL;
+FILE *spc_logF = (FILE *)NULL;
 
 /*-------------- */
 /* SPC/spc-env.c */
 /*-------------- */
-XeString spc_user_environment_file=XeString_NULL;
+XeString spc_user_environment_file = XeString_NULL;
 
 /*-------------- */
 /* SPC/spc-proto.c */
 /*-------------- */
-FILE *SPC_Print_Protocol = (FILE*)NULL;
+FILE *SPC_Print_Protocol = (FILE *)NULL;

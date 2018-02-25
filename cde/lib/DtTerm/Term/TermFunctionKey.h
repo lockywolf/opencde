@@ -31,52 +31,33 @@
  * (c) Copyright 1993, 1994 Novell, Inc.                                *
  */
 
-#ifndef	_Dt_TermFunctionKey_h
+#ifndef _Dt_TermFunctionKey_h
 #define _Dt_TermFunctionKey_h
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 extern "C" {
-#endif	/* __cplusplus */
-
+#endif /* __cplusplus */
 
 /* _DtTermFunctionKeyExecute(): This action is invoked via an action when
  * a function key F1..F32 is depressed...
  */
-extern void _DtTermFunctionKeyExecute(
-	Widget		  w,
-	short		  keyNumber,
-	Boolean		  shift
-);
+extern void _DtTermFunctionKeyExecute(Widget w, short keyNumber, Boolean shift);
+
+extern void _DtTermFunctionKeyUserKeyExecute(Widget w, short keyno,
+                                             Boolean shift);
 
 extern void
-_DtTermFunctionKeyUserKeyExecute(
-    Widget                w,
-    short                 keyno,
-    Boolean               shift
-);
+_DtTermFunctionKeyStringStore(/* store the label for the given key number
+                               */
+                              Widget w, int keyno, char *string);
 
-extern void
-_DtTermFunctionKeyStringStore(       /* store the label for the given key number
- */
-     Widget w,
-     int  keyno,
-     char *string
-);
+extern void _DtTermFunctionKeyClear(Widget w);
 
+extern void _DtTermFunctionKeyInit(Widget w);
 
-extern void
-_DtTermFunctionKeyClear(
-    Widget   w
-);
-
-
-extern void _DtTermFunctionKeyInit(
-   Widget w
-);
-
-#ifdef	__cplusplus
+#ifdef __cplusplus
 } /* close scope of 'extern "C"'.... */
-#endif	/* __cplusplus */
+#endif /* __cplusplus */
 
 /* DONT'T ADD ANYTHING AFTER THIS #endif... */
-#endif	/* _Dt_TermFunctionKey_h */
+#endif /* _Dt_TermFunctionKey_h */

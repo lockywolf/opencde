@@ -31,28 +31,29 @@
 #endif
 #include "basic.h"
 
-extern FILE *m_errfile ;
+extern FILE *m_errfile;
 
 void m_exit(
 #if defined(M_PROTO)
-  int status
+    int status
 #endif
-  ) ;
+);
 
 void m_openchk(
 #if defined(M_PROTO)
-  FILE **ptr, char *name, char *mode
+    FILE **ptr, char *name, char *mode
 #endif
-  ) ;
+);
 
 /* Open a file and check that the open succeeded */
-void m_openchk(ptr, name, mode)
-  FILE **ptr ;
-  char *name, *mode ;
-  {
-    *ptr = fopen(name, mode) ;
-    if (*ptr) return ;
-    fprintf(stderr, "Unable to open %s\n", name) ;
-    if (m_errfile) fprintf(m_errfile, "Unable to open %s\n", name) ;
-    m_exit(TRUE) ;
-    }
+void m_openchk(ptr, name, mode) FILE **ptr;
+char *name, *mode;
+{
+        *ptr = fopen(name, mode);
+        if (*ptr)
+                return;
+        fprintf(stderr, "Unable to open %s\n", name);
+        if (m_errfile)
+                fprintf(m_errfile, "Unable to open %s\n", name);
+        m_exit(TRUE);
+}

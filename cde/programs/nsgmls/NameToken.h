@@ -35,9 +35,9 @@ namespace SP_NAMESPACE {
 #endif
 
 struct NameToken {
-  StringC name;
-  StringC origName;
-  Location loc;
+        StringC name;
+        StringC origName;
+        Location loc;
 };
 
 #ifdef SP_NAMESPACE

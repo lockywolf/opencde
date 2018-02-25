@@ -26,7 +26,7 @@
  *	$TOG: ViewMsgDialog.h /main/5 1998/01/28 18:36:00 mgreess $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -60,128 +60,120 @@
 #include "RoamCmds.h"
 #include <DtMail/DtMailError.hh>
 
-
 // Forward declarations
 
 class Cmd;
 class RoamMenuWindow;
 
-
 class ViewMsgDialog : public DialogShell, public AbstractEditorParent {
 
-  public:
-    
-    ViewMsgDialog(RoamMenuWindow*, WidgetClass wc=xmDialogShellWidgetClass);
-    virtual ~ViewMsgDialog();
-    
-    virtual void initialize();
-    virtual void quit();
+      public:
+        ViewMsgDialog(RoamMenuWindow *,
+                      WidgetClass wc = xmDialogShellWidgetClass);
+        virtual ~ViewMsgDialog();
 
-    virtual const char *const className () { return "ViewMsg"; }
-    void propsChanged(void);
+        virtual void initialize();
+        virtual void quit();
 
-// Accessors
-    
+        virtual const char *const className() { return "ViewMsg"; }
+        void propsChanged(void);
 
-//  AttachArea	*attachArea(){ return _attach; }
-    DtMailMessageHandle msgno() { return _msgno; }
-    RoamMenuWindow *parent() { return _parent; };	 
-    void attachmentFeedback(Boolean);   
+        // Accessors
 
-// Mutators
-    void msgno( DtMailMessageHandle msg_num ) { _msgno=msg_num; }
-    void append(const char *, const unsigned long);
-    void text(const char *, const unsigned long);
-    
-    void popped_down();
-    void popped_up();
-    
-// SR - Added methods below
+        //  AttachArea	*attachArea(){ return _attach; }
+        DtMailMessageHandle msgno() { return _msgno; }
+        RoamMenuWindow *parent() { return _parent; };
+        void attachmentFeedback(Boolean);
 
-    void raise();
-    DtMailEditor* get_editor();
+        // Mutators
+        void msgno(DtMailMessageHandle msg_num) { _msgno = msg_num; }
+        void append(const char *, const unsigned long);
+        void text(const char *, const unsigned long);
 
-    DtMailGenDialog *genDialog() { return _genDialog; }
+        void popped_down();
+        void popped_up();
 
-    void    auto_show_cursor_off();
-    void    auto_show_cursor_restore();
-    void    set_to_top();
+        // SR - Added methods below
 
-  // SR - Text-selection callbacks.
+        void raise();
+        DtMailEditor *get_editor();
 
-    virtual void text_selected();
-    virtual void text_unselected();
+        DtMailGenDialog *genDialog() { return _genDialog; }
 
-    void	attachment_selected();
-    void	all_attachments_deselected();
-    void	all_attachments_selected();
-    void	selectAllAttachments();
-    void	add_att(char *) { ; }
-    void	add_att(char *, DtMailBuffer) { ; }
-    void	add_att(DtMailBuffer) { ; }
+        void auto_show_cursor_off();
+        void auto_show_cursor_restore();
+        void set_to_top();
 
-    void	save_selected_attachment(char *);	
+        // SR - Text-selection callbacks.
 
-    void	showAttachArea();
-    void	hideAttachArea();
+        virtual void text_selected();
+        virtual void text_unselected();
 
-    void	activate_default_attach_menu();
-    void	deactivate_default_attach_menu();
+        void attachment_selected();
+        void all_attachments_deselected();
+        void all_attachments_selected();
+        void selectAllAttachments();
+        void add_att(char *) { ; }
+        void add_att(char *, DtMailBuffer) { ; }
+        void add_att(DtMailBuffer) { ; }
 
-    void	addAttachmentActions(
-				    char **,
-				    int
-		);
-    void	removeAttachmentActions();
-    void	invokeAttachmentAction(int);	  	
+        void save_selected_attachment(char *);
 
-    virtual void manage();
+        void showAttachArea();
+        void hideAttachArea();
 
-    static void save_attachment_callback( void *, char *);    
+        void activate_default_attach_menu();
+        void deactivate_default_attach_menu();
 
-  protected:
+        void addAttachmentActions(char **, int);
+        void removeAttachmentActions();
+        void invokeAttachmentAction(int);
 
-    void createMenuPanes();
-    Widget createWorkArea( Widget );  
-  
-    void	construct_edit_menu();
-    void	construct_attachment_menu();
-    void	construct_attachment_popup(void);
-    void	construct_text_popup(void);
-    void  construct_help_menu();
+        virtual void manage();
 
-  private:
+        static void save_attachment_callback(void *, char *);
 
-    RoamMenuWindow *_parent;	
-    Widget _workArea;
-    Widget _main;
+      protected:
+        void createMenuPanes();
+        Widget createWorkArea(Widget);
 
-    MenuBar *_menuBar;
-    DtMailGenDialog *_genDialog;
+        void construct_edit_menu();
+        void construct_attachment_menu();
+        void construct_attachment_popup(void);
+        void construct_text_popup(void);
+        void construct_help_menu();
 
-    Cmd*  _edit_copy;
-    Cmd*  _edit_select_all;
+      private:
+        RoamMenuWindow *_parent;
+        Widget _workArea;
+        Widget _main;
 
-    // Attachment
-    Widget   _attachmentMenu;
-    CmdList *_attachmentActionsList;
-    CmdList *_attachmentMenuList;
-    CmdList *_attachmentPopupMenuList;
-    CmdList *_textPopupMenuList;
-    Cmd*  _attach_save_as;
-    Cmd*  _attach_select_all;
+        MenuBar *_menuBar;
+        DtMailGenDialog *_genDialog;
 
-    // Help Menu
-    Cmd *_overview;
-    Cmd *_tasks;
-    Cmd *_reference;
-    Cmd *_on_item;
-    Cmd *_using_help;
-    Cmd *_about_mailer;
+        Cmd *_edit_copy;
+        Cmd *_edit_select_all;
 
-    Widget _text;
-    DtMailEditor *my_editor;
-    DtMailMessageHandle	_msgno;
+        // Attachment
+        Widget _attachmentMenu;
+        CmdList *_attachmentActionsList;
+        CmdList *_attachmentMenuList;
+        CmdList *_attachmentPopupMenuList;
+        CmdList *_textPopupMenuList;
+        Cmd *_attach_save_as;
+        Cmd *_attach_select_all;
+
+        // Help Menu
+        Cmd *_overview;
+        Cmd *_tasks;
+        Cmd *_reference;
+        Cmd *_on_item;
+        Cmd *_using_help;
+        Cmd *_about_mailer;
+
+        Widget _text;
+        DtMailEditor *my_editor;
+        DtMailMessageHandle _msgno;
 };
 
 #endif

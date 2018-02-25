@@ -40,7 +40,7 @@
  **   needed for Communication for the session manager
  **
  **
- **  (c) Copyright Hewlett-Packard Company, 1990.  
+ **  (c) Copyright Hewlett-Packard Company, 1990.
  **
  **
  **
@@ -48,36 +48,35 @@
  ************************************<+>*************************************/
 #ifndef _smcommun_h
 #define _smcommun_h
- 
-/* 
- *  #include statements 
- */
 
-
-/* 
- *  #define statements 
- */
-
-/* 
- * typedef statements 
+/*
+ *  #include statements
  */
 
 /*
- *  External variables  
+ *  #define statements
+ */
+
+/*
+ * typedef statements
+ */
+
+/*
+ *  External variables
  */
 extern char SM_DISPLAY_LOCK[];
 extern char SM_XSESSION_EXIT[];
 extern char SM_RESOURCES_RELOAD[];
 extern char SM_SAVE_SESSION[];
 
-/*  
- *  External Interface  
+/*
+ *  External Interface
  */
-extern void StartMsgServer(void) ;
+extern void StartMsgServer(void);
 extern void ProcessClientMessage(XEvent *);
 extern void ProcessScreenSaverMessage(XEvent *);
-extern void RestoreDefaults(Atom) ;
-extern void ProcessPropertyNotify(XEvent *) ;
+extern void RestoreDefaults(Atom);
+extern void ProcessPropertyNotify(XEvent *);
 extern void ProcessReloadActionsDatabase(void);
 extern void ProcessEvent(Widget, XtPointer, XEvent *, Boolean *);
 

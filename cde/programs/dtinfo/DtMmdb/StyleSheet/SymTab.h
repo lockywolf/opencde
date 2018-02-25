@@ -26,7 +26,6 @@
 
 #ifndef CDE_NEXT
 
-
 #else
 #include "dti_cc/CC_String.h"
 #include "dti_cc/cc_hdict.h"
@@ -39,9 +38,9 @@ using namespace std;
 
 /* **************************************************************
  Creating a Symbol Table Class
- 
+
  Symbol Table has one user function, intern, which returns a
- reference to a Symbol  
+ reference to a Symbol
 
 
  A Symbol can be compared to other symbols using the == operator.
@@ -50,8 +49,7 @@ using namespace std;
 
  * ************************************************************** */
 
-
-// forward declarations 
+// forward declarations
 class Symbol;
 
 /* -------- class SymbolName -------- */
@@ -59,96 +57,84 @@ class Symbol;
 
 // should be privately inherited with a few promotions
 
-class SymbolName : public CC_String
-{
-public:
-  SymbolName(const char *);
-  unsigned int operator==(const SymbolName &);
-  ostream &print(ostream &) const ;
+class SymbolName : public CC_String {
+      public:
+        SymbolName(const char *);
+        unsigned int operator==(const SymbolName &);
+        ostream &print(ostream &) const;
 };
-
-
-
-
 
 /* **************************************************************
  SymbolTable derives privately from RWTPtrHashSet so only the
  SymbolTable has access to internal operations
  * ************************************************************** */
 
-class SymbolTable : private hashTable<SymbolName, unsigned int>
-{
-public:
-  SymbolTable();
-  ~SymbolTable();
+class SymbolTable : private hashTable<SymbolName, unsigned int> {
+      public:
+        SymbolTable();
+        ~SymbolTable();
 
-  // intern creates symbol if necessary
-  const Symbol intern(const char *name, unsigned int createId = false) ;
+        // intern creates symbol if necessary
+        const Symbol intern(const char *name, unsigned int createId = false);
 
-  ostream &print(ostream &) const ;
+        ostream &print(ostream &) const;
 
-  unsigned int IdsAssigned() { 
-    return f_IDsAssigned;
-  };
+        unsigned int IdsAssigned() { return f_IDsAssigned; };
 
-  unsigned int wildCardId() { return f_wildCardId; };
-  unsigned int unlimitedWildCardId() { return f_unlimitedWildCardId; };
+        unsigned int wildCardId() { return f_wildCardId; };
+        unsigned int unlimitedWildCardId() { return f_unlimitedWildCardId; };
 
-private:
-  static unsigned hashsym(const SymbolName &);
+      private:
+        static unsigned hashsym(const SymbolName &);
 
-  unsigned int f_wildCardId;
-  unsigned int f_unlimitedWildCardId;
+        unsigned int f_wildCardId;
+        unsigned int f_unlimitedWildCardId;
 
-  unsigned int f_IDsAssigned;
-
+        unsigned int f_IDsAssigned;
 };
-
 
 /* **************************************************************
  * class Symbol
  * ************************************************************** */
 
-class Symbol  
-{
-public:
-  // constructor 
-  Symbol(const Symbol &);
+class Symbol {
+      public:
+        // constructor
+        Symbol(const Symbol &);
 
-  // assignment 
-  Symbol operator=(const Symbol &other) ;
+        // assignment
+        Symbol operator=(const Symbol &other);
 
-  const char *name() const;
-  unsigned int operator==(const Symbol &) const; /* identity operator */
+        const char *name() const;
+        unsigned int operator==(const Symbol &) const; /* identity operator */
 
-  // some methods need to be public
+        // some methods need to be public
 
-  ostream &print(ostream &) const ;
+        ostream &print(ostream &) const;
 
-  // for path table 
-  unsigned int hash() const	{ return f_name->hash(); }
-  unsigned int id() const	{ return f_id; }
+        // for path table
+        unsigned int hash() const { return f_name->hash(); }
+        unsigned int id() const { return f_id; }
 
-protected:
-  // alternate constructor 
-  // only SymbolTable::intern can create these 
-  Symbol(const SymbolName *name, unsigned int);
+      protected:
+        // alternate constructor
+        // only SymbolTable::intern can create these
+        Symbol(const SymbolName *name, unsigned int);
 
-friend const Symbol SymbolTable::intern(const char *, unsigned int assignId);
+        friend const Symbol SymbolTable::intern(const char *,
+                                                unsigned int assignId);
 
-private:  
-  const SymbolName    *f_name ;	/* never delete this */
-  unsigned int 	      f_id;
+      private:
+        const SymbolName *f_name; /* never delete this */
+        unsigned int f_id;
 };
-
 
 /* **************************************************************
  * external declarations
  * ************************************************************** */
 
-ostream &operator<<(ostream &, const Symbol&);
-ostream &operator<<(ostream &, const SymbolTable&);
-
+ostream &operator<<(ostream &, const Symbol &);
+ostream &operator<<(ostream &, const SymbolTable &);
 
 #endif /* _SymTab_h */
 /* DO NOT ADD ANY LINES AFTER THIS #endif */

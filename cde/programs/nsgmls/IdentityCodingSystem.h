@@ -34,11 +34,11 @@ namespace SP_NAMESPACE {
 #endif
 
 class SP_API IdentityCodingSystem : public CodingSystem {
-public:
-  IdentityCodingSystem();			       
-  Decoder *makeDecoder() const;
-  Encoder *makeEncoder() const;
-  Boolean isIdentity() const;
+      public:
+        IdentityCodingSystem();
+        Decoder *makeDecoder() const;
+        Encoder *makeEncoder() const;
+        Boolean isIdentity() const;
 };
 
 #ifdef SP_NAMESPACE

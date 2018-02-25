@@ -53,15 +53,13 @@
  * Initial release as separate module.
  */
 #include <string.h>
-char	*ensure_end_slash (char *pathstr)
-{
-    char	*cptr = pathstr + strlen(pathstr) - 1;
-    if (*pathstr == 0)
-	return pathstr;
-    if (*cptr++ != '/') {
-	*cptr++ = '/';
-	*cptr = 0;
-	}
-    return cptr;
+char *ensure_end_slash(char *pathstr) {
+        char *cptr = pathstr + strlen(pathstr) - 1;
+        if (*pathstr == 0)
+                return pathstr;
+        if (*cptr++ != '/') {
+                *cptr++ = '/';
+                *cptr = 0;
+        }
+        return cptr;
 }
-

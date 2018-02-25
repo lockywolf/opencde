@@ -24,7 +24,8 @@
 **
 **  timezone.h
 **
-**  static char sccsid[] = "@(#)timezone.h 1.4 94/11/07 Copyr 1991 Sun Microsystems, Inc.";
+**  static char sccsid[] = "@(#)timezone.h 1.4 94/11/07 Copyr 1991 Sun
+*Microsystems, Inc.";
 **
 **  $TOG: timezone.h /main/4 1999/07/01 16:37:08 mgreess $
 **
@@ -52,28 +53,28 @@
 #ifndef _TIMEZONE_H
 #define _TIMEZONE_H
 
-typedef enum {mytime, customtime} Timezonetype;
+typedef enum { mytime, customtime } Timezonetype;
 typedef struct {
-	Widget          	frame;
-	Widget          	form;
-	Widget			timezone_rc_mgr;
-	Widget			mytime;
-	Widget			customtime;
-	Widget			gmtlabel;
-	Widget			gmtcombo;
-	Widget			hourlabel;
-	Widget			cancelbutton;
-	Widget			helpbutton;
-	Widget			okbutton;
-	Widget			applybutton;
-	Widget			timezone_message;
-	Timezonetype		timezone_type;
-	Timezonetype		edit_timezone_type;
-	char			mytimezone[BUFSIZ];
-	char			gmttimezone[BUFSIZ];
-}Timezone;
+        Widget frame;
+        Widget form;
+        Widget timezone_rc_mgr;
+        Widget mytime;
+        Widget customtime;
+        Widget gmtlabel;
+        Widget gmtcombo;
+        Widget hourlabel;
+        Widget cancelbutton;
+        Widget helpbutton;
+        Widget okbutton;
+        Widget applybutton;
+        Widget timezone_message;
+        Timezonetype timezone_type;
+        Timezonetype edit_timezone_type;
+        char mytimezone[BUFSIZ];
+        char gmttimezone[BUFSIZ];
+} Timezone;
 
-extern caddr_t	make_timezone	P((Calendar*));
-extern void	refresh_timezone P((Timezone*));
+extern caddr_t make_timezone P((Calendar *));
+extern void refresh_timezone P((Timezone *));
 
 #endif

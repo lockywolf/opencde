@@ -37,20 +37,15 @@
 extern "C" {
 #endif
 
-
 /*
  * Functions
  */
 
-extern Boolean DtSessionSavePath(
-		Widget		widget,
-		char		**save_path,
-		char		**save_file);
+extern Boolean DtSessionSavePath(Widget widget, char **save_path,
+                                 char **save_file);
 
-extern Boolean DtSessionRestorePath(
-		Widget		widget,
-		char		**restore_path,
-		char		*restore_file);
+extern Boolean DtSessionRestorePath(Widget widget, char **restore_path,
+                                    char *restore_file);
 
 #ifdef __cplusplus
 }

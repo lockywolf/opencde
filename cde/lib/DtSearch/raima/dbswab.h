@@ -63,42 +63,42 @@
  *
  * $Log$
  */
-#ifndef	_H_DBSWAB
-#define	_H_DBSWAB
+#ifndef _H_DBSWAB
+#define _H_DBSWAB
 
 #include <sys/types.h>
 #include <netinet/in.h>
 
 /* Record number for OR_MISCREC DtSearch record */
-#define MISCREC_RECNO	3
+#define MISCREC_RECNO 3
 
 /* Direction of io to indicate correct byte swap function.
  * HTON is host to network, internal RAM to external database file.
  * NTOH is network to host, file to RAM.
  */
-typedef enum {HTON=1, NTOH} SWABDIR;
+typedef enum { HTON = 1, NTOH } SWABDIR;
 
-extern void	swab_page (char *pgbuf, FILE_ENTRY *file_ptr, SWABDIR direction);
+extern void swab_page(char *pgbuf, FILE_ENTRY *file_ptr, SWABDIR direction);
 
-#ifdef BYTE_SWAP  /* ie (BYTE_ORDER != BIG_ENDIAN) */
+#ifdef BYTE_SWAP /* ie (BYTE_ORDER != BIG_ENDIAN) */
 
-#define HTONL(x)	x = htonl(x)
-#define HTONS(x)	x = htons(x)
-#define NTOHL(x)	x = ntohl(x)
-#define NTOHS(x)	x = ntohs(x)
+#define HTONL(x) x = htonl(x)
+#define HTONS(x) x = htons(x)
+#define NTOHL(x) x = ntohl(x)
+#define NTOHS(x) x = ntohs(x)
 
-#else	/* !BYTE_SWAP, ie (BYTE_ORDER == BIG_ENDIAN) */
+#else /* !BYTE_SWAP, ie (BYTE_ORDER == BIG_ENDIAN) */
 
 #define HTONL(x)
 #define HTONS(x)
 #define NTOHL(x)
 #define NTOHS(x)
 
-#endif	/* BYTE_SWAP */
+#endif /* BYTE_SWAP */
 
 /******** debug stuff *******/
-extern char	*debug_keyslot_ptr;
-extern void	snap_dump (char *label, void *ptr, int len);
+extern char *debug_keyslot_ptr;
+extern void snap_dump(char *label, void *ptr, int len);
 
 /********************* DBSWAB.H **********************************/
-#endif	/* _H_DBSWAB */
+#endif /* _H_DBSWAB */

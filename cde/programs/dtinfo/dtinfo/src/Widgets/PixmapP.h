@@ -29,27 +29,27 @@
 #include "Pixmap.h"
 
 typedef struct {
-  int		ignore ;
+        int ignore;
 } PixmapClassPart;
 
 typedef struct _PixmapClassRec {
-    CoreClassPart	core_class;
-    PixmapClassPart	pixmap_class;
+        CoreClassPart core_class;
+        PixmapClassPart pixmap_class;
 } PixmapClassRec;
 
 extern PixmapClassRec pixmapClassRec;
 
 typedef struct {
-  Pixmap	pixmap ;
-  /* private */
-  GC		gc ;
-  Dimension	width ;
-  Dimension	height ;
+        Pixmap pixmap;
+        /* private */
+        GC gc;
+        Dimension width;
+        Dimension height;
 } PixmapPart;
 
 typedef struct _PixmapRec {
-    CorePart	core;
-    PixmapPart	pixmap;
+        CorePart core;
+        PixmapPart pixmap;
 } PixmapRec;
 
-#endif 
+#endif

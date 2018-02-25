@@ -20,16 +20,17 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* 
- * (c) Copyright 1989, 1990, 1991, 1992, 1993, 1994 OPEN SOFTWARE FOUNDATION, INC. 
- * ALL RIGHTS RESERVED 
-*/ 
-/* 
+/*
+ * (c) Copyright 1989, 1990, 1991, 1992, 1993, 1994 OPEN SOFTWARE FOUNDATION,
+ * INC. ALL RIGHTS RESERVED
+ */
+/*
  * Motif Release 1.2.4
-*/ 
+ */
 #ifdef REV_INFO
 #ifndef lint
-static char rcsid[] = "$XConsortium: WmError.c /main/6 1996/10/07 14:27:34 drk $"
+static char rcsid[] =
+    "$XConsortium: WmError.c /main/6 1996/10/07 14:27:34 drk $"
 #endif
 #endif
 /*
@@ -53,37 +54,25 @@ static char rcsid[] = "$XConsortium: WmError.c /main/6 1996/10/07 14:27:34 drk $
 
 #ifdef DEBUG
 
-#define E_MAJOR_CODE		0
-#define E_MINOR_CODE		1
-#define E_RESOURCE_ID		2
-#define E_ERROR_SERIAL		3
-#define E_CURRENT_SERIAL	4
+#define E_MAJOR_CODE 0
+#define E_MINOR_CODE 1
+#define E_RESOURCE_ID 2
+#define E_ERROR_SERIAL 3
+#define E_CURRENT_SERIAL 4
 
-#define NUM_E_STRINGS		5
+#define NUM_E_STRINGS 5
 
-static char *pchErrorFormatNames [NUM_E_STRINGS] = {
-    "MajorCode", 
-    "MinorCode", 
-    "ResourceID", 
-    "ErrorSerial", 
-    "CurrentSerial" 
-};
+    static char *
+    pchErrorFormatNames[NUM_E_STRINGS] = {
+        "MajorCode", "MinorCode", "ResourceID", "ErrorSerial", "CurrentSerial"};
 
-static char *pchDefaultErrorFormat [NUM_E_STRINGS] = {
-    " %d ",
-    " %d ",
-    " %ld ",
-    " %ld ",
-    " %ld "
-};
+static char *pchDefaultErrorFormat[NUM_E_STRINGS] = {" %d ", " %d ", " %ld ",
+                                                     " %ld ", " %ld "};
 
-static char *pchErrorFormat [NUM_E_STRINGS];
+static char *pchErrorFormat[NUM_E_STRINGS];
 
 #endif /* DEBUG */
 
-
-
-
 /*************************************<->*************************************
  *
  *  WmInitErrorHandler (display)
@@ -101,42 +90,39 @@ static char *pchErrorFormat [NUM_E_STRINGS];
  *
  *************************************<->***********************************/
 
-void
-WmInitErrorHandler (Display *display)
-{
+void WmInitErrorHandler(Display *display) {
 #ifdef DEBUG
-    char buffer[BUFSIZ];
-    int i;
+        char buffer[BUFSIZ];
+        int i;
 
-    /*
-     * Fetch the X error format strings from XErrorDB
-     */
-    for (i = 0; i< NUM_E_STRINGS; i++)
-    {
-	XGetErrorDatabaseText (display, "XlibMessage", 
-			       pchErrorFormatNames[i], 
-			       pchDefaultErrorFormat[i], buffer, BUFSIZ);
+        /*
+         * Fetch the X error format strings from XErrorDB
+         */
+        for (i = 0; i < NUM_E_STRINGS; i++) {
+                XGetErrorDatabaseText(display, "XlibMessage",
+                                      pchErrorFormatNames[i],
+                                      pchDefaultErrorFormat[i], buffer, BUFSIZ);
 
-	if ((pchErrorFormat[i] = (char *) XtMalloc (1+strlen(buffer))) == NULL)
-	{
-	    Warning ("Insufficient memory for error message initialization.");
-	    ExitWM (1);
-	}
+                if ((pchErrorFormat[i] =
+                         (char *)XtMalloc(1 + strlen(buffer))) == NULL) {
+                        Warning("Insufficient memory for error message "
+                                "initialization.");
+                        ExitWM(1);
+                }
 
-	strcpy(pchErrorFormat[i], buffer);
-    }
+                strcpy(pchErrorFormat[i], buffer);
+        }
 
 #endif /* DEBUG */
 
-    XSetErrorHandler (WmXErrorHandler);
-    XSetIOErrorHandler (WmXIOErrorHandler);
+        XSetErrorHandler(WmXErrorHandler);
+        XSetIOErrorHandler(WmXIOErrorHandler);
 
-    XtSetWarningHandler (WmXtWarningHandler);
-    XtSetErrorHandler (WmXtErrorHandler);
+        XtSetWarningHandler(WmXtWarningHandler);
+        XtSetErrorHandler(WmXtErrorHandler);
 
 } /* END OF FUNCTION WmInitErrorHandler */
 
-
 /*************************************<->*************************************
  *
  *  WmXErrorHandler (display, errorEvent)
@@ -154,7 +140,7 @@ WmInitErrorHandler (Display *display)
  *
  *  errorEvent = pointer to a block of information describing the error
  *
- * 
+ *
  *  Outputs:
  *  -------
  *  wmGD.errorFlag = set to True
@@ -163,61 +149,55 @@ WmInitErrorHandler (Display *display)
  *
  *************************************<->***********************************/
 
-int
-WmXErrorHandler (Display *display, XErrorEvent *errorEvent)
-{
-    ClientData *pCD;
+int WmXErrorHandler(Display *display, XErrorEvent *errorEvent) {
+        ClientData *pCD;
 
 #ifdef DEBUG
-    char buffer[BUFSIZ];
-    char message[BUFSIZ];
+        char buffer[BUFSIZ];
+        char message[BUFSIZ];
 
-    XGetErrorText (display, errorEvent->error_code, buffer, BUFSIZ);
-    Warning ("X error occurred during window management operation");
-    fprintf (stderr, "Description = '%s'\n  ", buffer);
+        XGetErrorText(display, errorEvent->error_code, buffer, BUFSIZ);
+        Warning("X error occurred during window management operation");
+        fprintf(stderr, "Description = '%s'\n  ", buffer);
 
-    fprintf (stderr, pchErrorFormat[E_MAJOR_CODE], errorEvent->request_code);
-    sprintf(message, "%d", errorEvent->request_code);
-    XGetErrorDatabaseText (display, "XRequest", message, 
-	" ", buffer, BUFSIZ);
-    fprintf (stderr, " (%s)\n  ", buffer);
-    fprintf (stderr, pchErrorFormat[E_MINOR_CODE], errorEvent->minor_code);
-    fprintf (stderr, "\n  ");
-    fprintf (stderr, pchErrorFormat[E_RESOURCE_ID], errorEvent->resourceid);
-    fprintf (stderr, "\n  ");
-    fprintf (stderr, pchErrorFormat[E_ERROR_SERIAL], errorEvent->serial);
-    fprintf (stderr, "\n  ");
-    fprintf (stderr, pchErrorFormat[E_CURRENT_SERIAL], 
-			LastKnownRequestProcessed(display));
-    fprintf (stderr, "\n");
+        fprintf(stderr, pchErrorFormat[E_MAJOR_CODE], errorEvent->request_code);
+        sprintf(message, "%d", errorEvent->request_code);
+        XGetErrorDatabaseText(display, "XRequest", message, " ", buffer,
+                              BUFSIZ);
+        fprintf(stderr, " (%s)\n  ", buffer);
+        fprintf(stderr, pchErrorFormat[E_MINOR_CODE], errorEvent->minor_code);
+        fprintf(stderr, "\n  ");
+        fprintf(stderr, pchErrorFormat[E_RESOURCE_ID], errorEvent->resourceid);
+        fprintf(stderr, "\n  ");
+        fprintf(stderr, pchErrorFormat[E_ERROR_SERIAL], errorEvent->serial);
+        fprintf(stderr, "\n  ");
+        fprintf(stderr, pchErrorFormat[E_CURRENT_SERIAL],
+                LastKnownRequestProcessed(display));
+        fprintf(stderr, "\n");
 #endif /* DEBUG */
 
-    /*
-     * Check for a BadWindow error for a managed window.  If this error
-     * is detected indicate in the client data that the window no longer
-     * exists.
-     */
+        /*
+         * Check for a BadWindow error for a managed window.  If this error
+         * is detected indicate in the client data that the window no longer
+         * exists.
+         */
 
-    if ((errorEvent->error_code == BadWindow) &&
-	!XFindContext (DISPLAY, errorEvent->resourceid, wmGD.windowContextType,
-	     (caddr_t *)&pCD))
-    {
-	if (errorEvent->resourceid == pCD->client)
-	{
-	    pCD->clientFlags |= CLIENT_DESTROYED;
-	}
-    }
+        if ((errorEvent->error_code == BadWindow) &&
+            !XFindContext(DISPLAY, errorEvent->resourceid,
+                          wmGD.windowContextType, (caddr_t *)&pCD)) {
+                if (errorEvent->resourceid == pCD->client) {
+                        pCD->clientFlags |= CLIENT_DESTROYED;
+                }
+        }
 
-    wmGD.errorFlag = True;
-    wmGD.errorResource = errorEvent->resourceid;
-    wmGD.errorRequestCode = errorEvent->request_code;
+        wmGD.errorFlag = True;
+        wmGD.errorResource = errorEvent->resourceid;
+        wmGD.errorRequestCode = errorEvent->request_code;
 
-    return (0);
+        return (0);
 
 } /* END OF FUNCTION WmXErrorHandler */
 
-
-
 /*************************************<->*************************************
  *
  *  WmXIOErrorHandler (display)
@@ -232,25 +212,22 @@ WmXErrorHandler (Display *display, XErrorEvent *errorEvent)
  *  Inputs:
  *  ------
  *  display = X display on which the X IO error occurred
- * 
+ *
  *************************************<->***********************************/
 
-int
-WmXIOErrorHandler (Display *display)
-{
-  char  err[100];
- 
-  sprintf (err, "%s: %s\n", "I/O error on display:", XDisplayString(display));
-  Warning(err);
+int WmXIOErrorHandler(Display *display) {
+        char err[100];
 
-  ExitWM (WM_ERROR_EXIT_VALUE);
+        sprintf(err, "%s: %s\n",
+                "I/O error on display:", XDisplayString(display));
+        Warning(err);
 
-  /*NOTREACHED*/
-  return 1;
+        ExitWM(WM_ERROR_EXIT_VALUE);
+
+        /*NOTREACHED*/
+        return 1;
 } /* END OF FUNCTIONS WmXIOErrorHandler */
 
-
-
 /*************************************<->*************************************
  *
  *  WmXtErrorHandler (message)
@@ -267,17 +244,13 @@ WmXIOErrorHandler (Display *display)
  *
  *************************************<->***********************************/
 
-void
-WmXtErrorHandler (char *message)
-{
+void WmXtErrorHandler(char *message) {
 
-    Warning (message);
-    ExitWM (WM_ERROR_EXIT_VALUE);
+        Warning(message);
+        ExitWM(WM_ERROR_EXIT_VALUE);
 
 } /* END OF FUNCTION WmXtErrorHandler */
 
-
-
 /*************************************<->*************************************
  *
  *  WmXtWarningHandler (message)
@@ -291,20 +264,17 @@ WmXtErrorHandler (char *message)
  *  Inputs:
  *  ------
  *  message = pointer to a warning message
- * 
+ *
  *************************************<->***********************************/
 
-void
-WmXtWarningHandler (char *message)
-{
+void WmXtWarningHandler(char *message) {
 
 #ifdef DEBUG
-    Warning (message);
+        Warning(message);
 #endif /* DEBUG */
 
 } /* END OF FUNCTIONS WmXtWarningHandler */
 
-
 /*************************************<->*************************************
  *
  *  Warning (message)
@@ -318,29 +288,27 @@ WmXtWarningHandler (char *message)
  *  Inputs:
  *  ------
  *  message = pointer to a message string
- * 
+ *
  *************************************<->***********************************/
 
-void
-Warning (char *message)
-{
+void Warning(char *message) {
 #ifdef WSM
-    char pch[MAXWMPATH+1];
+        char pch[MAXWMPATH + 1];
 
-    sprintf (pch, "%s: %s\n", 
-	GETMESSAGE(20, 1, "Workspace Manager"), message);
+        sprintf(pch, "%s: %s\n", GETMESSAGE(20, 1, "Workspace Manager"),
+                message);
 
-    _DtSimpleError (wmGD.mwmName, DtIgnore, NULL, pch, NULL);
-#else /* WSM */
-    fprintf (stderr, "%s: %s\n", wmGD.mwmName, message);
-    fflush (stderr);
+        _DtSimpleError(wmGD.mwmName, DtIgnore, NULL, pch, NULL);
+#else  /* WSM */
+        fprintf(stderr, "%s: %s\n", wmGD.mwmName, message);
+        fflush(stderr);
 #endif /* WSM */
 
 } /* END OF FUNCTION Warning */
 
 #ifdef WSM
 #ifdef DEBUGGER
-
+
 /******************************<->*************************************
  *
  *  PrintFormatted (format, message, message, ...)
@@ -354,19 +322,19 @@ Warning (char *message)
  *  Inputs:
  *  ------
  *  s0-s9 = pointers to message strings
- * 
+ *
  *  Comments:
  *  ------
  *  Caller must provide his/her own argv[0] to this function.
  ******************************<->***********************************/
 
 /*VARARGS1*/
-void
-PrintFormatted(char *f, char *s0, char *s1, char *s2, char *s3, char *s4, char *s5, char *s6, char *s7, char *s8, char *s9)
+void PrintFormatted(char *f, char *s0, char *s1, char *s2, char *s3, char *s4,
+                    char *s5, char *s6, char *s7, char *s8, char *s9)
 /* limit of ten args */
 {
-    fprintf( stderr, f, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9);
-    fflush (stderr);
+        fprintf(stderr, f, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9);
+        fflush(stderr);
 } /* END OF FUNCTION PrintFormatted */
 
 /************************    eof   **************************/

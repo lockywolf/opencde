@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,23 +44,22 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
-
 
 #ifndef _olias_funcs_h
 #define _olias_funcs_h 1
 
 #include "api/info_lib.h"
 
-// without calling connectNodeToDoc(). 
-int _load_mixed_objects_from_cin(info_base*); 
-int _load_mixed_objects(info_base*, istream&); 
+// without calling connectNodeToDoc().
+int _load_mixed_objects_from_cin(info_base *);
+int _load_mixed_objects(info_base *, istream &);
 
 // calling connectNodeToDoc().
-int load_mixed_objects_from_cin(info_base*);
-int load_mixed_objects(info_base*, istream&);
+int load_mixed_objects_from_cin(info_base *);
+int load_mixed_objects(info_base *, istream &);
 
-void connectNodeToDoc(info_lib*); // update doc id fields in all node objects
+void connectNodeToDoc(info_lib *); // update doc id fields in all node objects
 
 #endif

@@ -43,7 +43,6 @@
 #ifndef _DtHelpFormatTermP_h
 #define _DtHelpFormatTermP_h
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -57,44 +56,42 @@ extern "C" {
  * Link Types
  **************************/
 
-#ifndef	CELinkType_Execute
-#define CELinkType_Execute      3
+#ifndef CELinkType_Execute
+#define CELinkType_Execute 3
 #endif
-#ifndef	CELinkType_ManPage
-#define CELinkType_ManPage      4
+#ifndef CELinkType_ManPage
+#define CELinkType_ManPage 4
 #endif
-#ifndef	CELinkType_AppDefine
-#define CELinkType_AppDefine    5
+#ifndef CELinkType_AppDefine
+#define CELinkType_AppDefine 5
 #endif
-#ifndef	CELinkType_SameVolume
-#define CELinkType_SameVolume   6
+#ifndef CELinkType_SameVolume
+#define CELinkType_SameVolume 6
 #endif
-#ifndef	CELinkType_CrossLink
-#define CELinkType_CrossLink    7
+#ifndef CELinkType_CrossLink
+#define CELinkType_CrossLink 7
 #endif
-#ifndef	CELinkType_TextFile
-#define CELinkType_TextFile     8
+#ifndef CELinkType_TextFile
+#define CELinkType_TextFile 8
 #endif
-
 
 /**************************
  * Window Hint Kinds
  **************************/
 
-#ifndef	CEWindowHint_PopupWindow
-#define CEWindowHint_PopupWindow        1
+#ifndef CEWindowHint_PopupWindow
+#define CEWindowHint_PopupWindow 1
 #endif
-#ifndef	CEWindowHint_CurrentWindow
-#define CEWindowHint_CurrentWindow      2
+#ifndef CEWindowHint_CurrentWindow
+#define CEWindowHint_CurrentWindow 2
 #endif
-#ifndef	CEWindowHint_NewWindow
-#define CEWindowHint_NewWindow          3
+#ifndef CEWindowHint_NewWindow
+#define CEWindowHint_NewWindow 3
 #endif
 
 /********    Public Defines Declarations    ********/
 
 /********    Public Structures Declarations    ********/
-
 
 /*****************************************************************************
  * Structure:       DtHelpHyperLines
@@ -103,15 +100,14 @@ extern "C" {
  *                  specification Contains the hypertext link information.
  *                  hyper_type  Specifies the hypertext links type.
  *
- * 
+ *
  *****************************************************************************/
 typedef struct {
-	char	*title;
-	char	*specification;
-	int	 hyper_type;
-	int	 win_hint;
+        char *title;
+        char *specification;
+        int hyper_type;
+        int win_hint;
 } DtHelpHyperLines;
-
 
 /********    Public Function Declarations    ********/
 
@@ -122,18 +118,14 @@ typedef struct {
  *
  *
  * Parameters:      helpList    Specifies the parent widget ID.
- *                  hyperList   Specifies the name of the created dialog 
+ *                  hyperList   Specifies the name of the created dialog
  *
  * Return Value:    void.
  *
  * Purpose: 	    Free up the info gotten by _DtHelpGetTopicData.
  *
  *****************************************************************************/
-extern void _DtHelpFreeTopicData (
-    char           **helpList,
-    DtHelpHyperLines   *hyperList);
-
-
+extern void _DtHelpFreeTopicData(char **helpList, DtHelpHyperLines *hyperList);
 
 /*****************************************************************************
  * Function:	      extern int _DtHelpGetTopicData(
@@ -143,24 +135,19 @@ extern void _DtHelpFreeTopicData (
  *                                      char ***helpList,
  *                                      DtHelpHyperLines  **hyperList);
  *
- * Parameters:      
- *                  
+ * Parameters:
  *
- * Return Value:    int value, -1 implies that the function call failed, a 
+ *
+ * Return Value:    int value, -1 implies that the function call failed, a
  *                  value of 0, implies that the call was successful.
  *
  * Purpose: 	    Allows developers to extract semi-formatted ASCII data
- *                  from a Cache Creek help file.  
+ *                  from a Cache Creek help file.
  *
  *****************************************************************************/
-extern int _DtHelpGetTopicData (
-    char *helpVolume,
-    char *locationID,
-    int maxColumns,
-    char ***helpList,
-    DtHelpHyperLines  **hyperList);
-
-
+extern int _DtHelpGetTopicData(char *helpVolume, char *locationID,
+                               int maxColumns, char ***helpList,
+                               DtHelpHyperLines **hyperList);
 
 /*****************************************************************************
  * Function:	      extern int _DtHelpProcessLinkData(
@@ -169,33 +156,28 @@ extern int _DtHelpGetTopicData (
  *                                   char **locationId )
  *
  *
- * Parameters:      
- *                  
+ * Parameters:
  *
- * Return Value:    int value, -1 implies that the function call failed, a 
+ *
+ * Return Value:    int value, -1 implies that the function call failed, a
  *                  value of 0, implies that the call was successful.
  *
  * Purpose: 	    This function is used in conjunction with the
  *                  _DtHelpGetTopicData() function call to provide developers
  *                  with a mechanism in which they can traverse Cache Creek
- *                  hypertext links.  This  call will return the file and 
- *                  locationid information that when used with the 
+ *                  hypertext links.  This  call will return the file and
+ *                  locationid information that when used with the
  *                  DtGetTopicData function will retrrieve the help text
  *                  and new hypertext information associated with the previous
  *                  hypertext link information.
  *
  *****************************************************************************/
-extern int _DtHelpProcessLinkData (
-    char	     *ref_volume,
-    DtHelpHyperLines *hyperLine,
-    char **helpVolume,
-    char **locationId);
-
+extern int _DtHelpProcessLinkData(char *ref_volume, DtHelpHyperLines *hyperLine,
+                                  char **helpVolume, char **locationId);
 
 #ifdef __cplusplus
-}  /* Close scope of 'extern "C"' declaration which encloses file. */
+} /* Close scope of 'extern "C"' declaration which encloses file. */
 #endif
-
 
 #endif /* _DtHelpFormatTermP_h */
 /* DON'T ADD ANYTHING AFTER THIS #endif */

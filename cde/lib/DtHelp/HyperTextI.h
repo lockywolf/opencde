@@ -48,20 +48,12 @@
 /*****************************************************************************
  * Semi-private routines
  *****************************************************************************/
-extern	int	 __DtLinkAddToList (
-			char *link,
-			int   type,
-			char *description);
-extern	void	 __DtLinkRemoveFromList ( int link_index );
-extern	char	*__DtLinkStringReturn ( int link_index );
-extern	int	 __DtLinkTypeReturn ( int link_index );
-extern	void	_DtHelpExecProcedure (
-			XtPointer  client_data,
-			char *cmd );
-extern	void	_DtHelpProcessHyperSelection (
-			XtPointer        client_data,
-			int              downX,
-			int              downY,
-			XEvent		*event );
+extern int __DtLinkAddToList(char *link, int type, char *description);
+extern void __DtLinkRemoveFromList(int link_index);
+extern char *__DtLinkStringReturn(int link_index);
+extern int __DtLinkTypeReturn(int link_index);
+extern void _DtHelpExecProcedure(XtPointer client_data, char *cmd);
+extern void _DtHelpProcessHyperSelection(XtPointer client_data, int downX,
+                                         int downY, XEvent *event);
 
 #endif /* _DtHyperTextI_h */

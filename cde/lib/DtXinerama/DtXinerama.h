@@ -37,16 +37,14 @@
 
 #include <X11/extensions/Xinerama.h>
 
-typedef struct _DtXineramaInfo 
-{
-  int numscreens;	
-  XineramaScreenInfo *ScreenInfo;
+typedef struct _DtXineramaInfo {
+        int numscreens;
+        XineramaScreenInfo *ScreenInfo;
 } DtXineramaInfo_t, *DtXineramaInfoPtr_t;
-
 
 DtXineramaInfo_t *_DtXineramaInit(Display *dpy);
 Bool _DtXineramaGetScreen(DtXineramaInfo_t *, unsigned int screen,
-			  unsigned int *w, unsigned int *h, 
-			  unsigned int *xorg, unsigned int *yorg);
+                          unsigned int *w, unsigned int *h, unsigned int *xorg,
+                          unsigned int *yorg);
 
 #endif /* DTXINERAMA_H_INCLUDED */

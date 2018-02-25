@@ -30,21 +30,18 @@ class OL_Expression;
 
 class ContentType {
 
-friend class OL_Data;
-  
-private:
-  OL_Expression     *exprlist;
+        friend class OL_Data;
 
-protected:
-  void Parse( char *str );
-  ContentType();
-  ~ContentType();
+      private:
+        OL_Expression *exprlist;
 
-public:
-  void init ( OL_Expression *elist );  // Construct a ExprList object 
+      protected:
+        void Parse(char *str);
+        ContentType();
+        ~ContentType();
 
+      public:
+        void init(OL_Expression *elist); // Construct a ExprList object
 };
 
 #endif
-  
-  

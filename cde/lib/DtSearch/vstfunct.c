@@ -58,11 +58,10 @@
 #include "SearchP.h"
 #include "vista.h"
 
-#define	PROGNAME	"VSTFUNCT"
+#define PROGNAME "VSTFUNCT"
 
 static struct or_swordrec Swordbuf;
 static struct or_lwordrec Lwordbuf;
-
 
 /************************/
 /*			*/
@@ -73,23 +72,20 @@ static struct or_lwordrec Lwordbuf;
  * Usually performed prior to vista read or write function.
  * CALLER MUST CHECK DB_STATUS.
  */
-void            find_keyword (char *cur_word, int vista_num)
-{
-    static size_t   len;
-    static long     keyfield;
+void find_keyword(char *cur_word, int vista_num) {
+        static size_t len;
+        static long keyfield;
 
-    len = strlen (cur_word);
-    if (len < sizeof (Swordbuf.or_swordkey))
-	keyfield = OR_SWORDKEY;
-    else if (len < sizeof (Lwordbuf.or_lwordkey))
-	keyfield = OR_LWORDKEY;
-    else
-	keyfield = OR_HWORDKEY;
-    KEYFIND (PROGNAME "24", keyfield, cur_word, vista_num);
-    return;
-}  /* find_keyword() */
-
-
+        len = strlen(cur_word);
+        if (len < sizeof(Swordbuf.or_swordkey))
+                keyfield = OR_SWORDKEY;
+        else if (len < sizeof(Lwordbuf.or_lwordkey))
+                keyfield = OR_LWORDKEY;
+        else
+                keyfield = OR_HWORDKEY;
+        KEYFIND(PROGNAME "24", keyfield, cur_word, vista_num);
+        return;
+} /* find_keyword() */
 
 /********************************/
 /*				*/
@@ -99,43 +95,39 @@ void            find_keyword (char *cur_word, int vista_num)
 /* Performs vista RECREAD on curr word record.
  * CALLER SHOULD CHECK DB_STATUS.
  */
-void            read_wordstr (struct or_hwordrec * glob_word, int vista_num)
-{
-    static size_t   len;
+void read_wordstr(struct or_hwordrec *glob_word, int vista_num) {
+        static size_t len;
 
-    len = strlen (glob_word->or_hwordkey);
-    if (len < sizeof (Swordbuf.or_swordkey)) {
-	RECREAD (PROGNAME "61", &Swordbuf, vista_num);
-	if (db_status != S_OKAY)
-	    return;
-	strncpy (glob_word->or_hwordkey, Swordbuf.or_swordkey,
-	    DtSrMAXWIDTH_HWORD);
-	glob_word->or_hwordkey[DtSrMAXWIDTH_HWORD - 1] = 0;
-	glob_word->or_hwoffset =	ntohl (Swordbuf.or_swoffset);
-	glob_word->or_hwfree =		ntohl (Swordbuf.or_swfree);
-	glob_word->or_hwaddrs =		ntohl (Swordbuf.or_swaddrs);
-    }
-    else if (len < sizeof (Lwordbuf.or_lwordkey)) {
-	RECREAD (PROGNAME "69", &Lwordbuf, vista_num);
-	if (db_status != S_OKAY)
-	    return;
-	strncpy (glob_word->or_hwordkey, Lwordbuf.or_lwordkey,
-	    DtSrMAXWIDTH_HWORD);
-	glob_word->or_hwordkey[DtSrMAXWIDTH_HWORD - 1] = 0;
-	glob_word->or_hwoffset =	ntohl (Lwordbuf.or_lwoffset);
-	glob_word->or_hwfree =		ntohl (Lwordbuf.or_lwfree);
-	glob_word->or_hwaddrs =		ntohl (Lwordbuf.or_lwaddrs);
-    }
-    else {
-	RECREAD (PROGNAME "78", glob_word, vista_num);
-	glob_word->or_hwordkey[DtSrMAXWIDTH_HWORD - 1] = 0;
-	NTOHL (glob_word->or_hwoffset);
-	NTOHL (glob_word->or_hwfree);
-	NTOHL (glob_word->or_hwaddrs);
-    }
-    return;
-}  /* read_wordstr() */
-
+        len = strlen(glob_word->or_hwordkey);
+        if (len < sizeof(Swordbuf.or_swordkey)) {
+                RECREAD(PROGNAME "61", &Swordbuf, vista_num);
+                if (db_status != S_OKAY)
+                        return;
+                strncpy(glob_word->or_hwordkey, Swordbuf.or_swordkey,
+                        DtSrMAXWIDTH_HWORD);
+                glob_word->or_hwordkey[DtSrMAXWIDTH_HWORD - 1] = 0;
+                glob_word->or_hwoffset = ntohl(Swordbuf.or_swoffset);
+                glob_word->or_hwfree = ntohl(Swordbuf.or_swfree);
+                glob_word->or_hwaddrs = ntohl(Swordbuf.or_swaddrs);
+        } else if (len < sizeof(Lwordbuf.or_lwordkey)) {
+                RECREAD(PROGNAME "69", &Lwordbuf, vista_num);
+                if (db_status != S_OKAY)
+                        return;
+                strncpy(glob_word->or_hwordkey, Lwordbuf.or_lwordkey,
+                        DtSrMAXWIDTH_HWORD);
+                glob_word->or_hwordkey[DtSrMAXWIDTH_HWORD - 1] = 0;
+                glob_word->or_hwoffset = ntohl(Lwordbuf.or_lwoffset);
+                glob_word->or_hwfree = ntohl(Lwordbuf.or_lwfree);
+                glob_word->or_hwaddrs = ntohl(Lwordbuf.or_lwaddrs);
+        } else {
+                RECREAD(PROGNAME "78", glob_word, vista_num);
+                glob_word->or_hwordkey[DtSrMAXWIDTH_HWORD - 1] = 0;
+                NTOHL(glob_word->or_hwoffset);
+                NTOHL(glob_word->or_hwfree);
+                NTOHL(glob_word->or_hwaddrs);
+        }
+        return;
+} /* read_wordstr() */
 
 /********************************/
 /*				*/
@@ -145,45 +137,40 @@ void            read_wordstr (struct or_hwordrec * glob_word, int vista_num)
 /* performs vista RECWRITE on curr word record.
  * CALLER MUST CHECK DB_STATUS.
  */
-void            write_wordstr (struct or_hwordrec * glob_word, int vista_num)
-{
-    static size_t   len;
+void write_wordstr(struct or_hwordrec *glob_word, int vista_num) {
+        static size_t len;
 
-    len = strlen (glob_word->or_hwordkey);
+        len = strlen(glob_word->or_hwordkey);
 
-    if (len < sizeof (Swordbuf.or_swordkey)) {
-	strcpy (Swordbuf.or_swordkey, glob_word->or_hwordkey);
-	Swordbuf.or_swoffset =	htonl (glob_word->or_hwoffset);
-	Swordbuf.or_swfree =	htonl (glob_word->or_hwfree);
-	Swordbuf.or_swaddrs =	htonl (glob_word->or_hwaddrs);
-	RECWRITE (PROGNAME "102", &Swordbuf, vista_num);
-    }
-    else if (len < sizeof (Lwordbuf.or_lwordkey)) {
-	strcpy (Lwordbuf.or_lwordkey, glob_word->or_hwordkey);
-	Lwordbuf.or_lwoffset =	htonl (glob_word->or_hwoffset);
-	Lwordbuf.or_lwfree =	htonl (glob_word->or_hwfree);
-	Lwordbuf.or_lwaddrs =	htonl (glob_word->or_hwaddrs);
-	RECWRITE (PROGNAME "111", &Lwordbuf,
-	    vista_num);
-    }
-    else {
-	if (len >= DtSrMAXWIDTH_HWORD) {
-	    printf ("\n" PROGNAME "124 Program Error Abort, "
-		"word too long:\n  '%s'\n",
-		glob_word->or_hwordkey);
-	    DtSearchExit (24);
-	}
-	HTONL (glob_word->or_hwoffset);
-	HTONL (glob_word->or_hwfree);
-	HTONL (glob_word->or_hwaddrs);
-	RECWRITE (PROGNAME "115", glob_word, vista_num);
-	NTOHL (glob_word->or_hwoffset);
-	NTOHL (glob_word->or_hwfree);
-	NTOHL (glob_word->or_hwaddrs);
-    }
-    return;
-}  /* write_wordstr() */
-
+        if (len < sizeof(Swordbuf.or_swordkey)) {
+                strcpy(Swordbuf.or_swordkey, glob_word->or_hwordkey);
+                Swordbuf.or_swoffset = htonl(glob_word->or_hwoffset);
+                Swordbuf.or_swfree = htonl(glob_word->or_hwfree);
+                Swordbuf.or_swaddrs = htonl(glob_word->or_hwaddrs);
+                RECWRITE(PROGNAME "102", &Swordbuf, vista_num);
+        } else if (len < sizeof(Lwordbuf.or_lwordkey)) {
+                strcpy(Lwordbuf.or_lwordkey, glob_word->or_hwordkey);
+                Lwordbuf.or_lwoffset = htonl(glob_word->or_hwoffset);
+                Lwordbuf.or_lwfree = htonl(glob_word->or_hwfree);
+                Lwordbuf.or_lwaddrs = htonl(glob_word->or_hwaddrs);
+                RECWRITE(PROGNAME "111", &Lwordbuf, vista_num);
+        } else {
+                if (len >= DtSrMAXWIDTH_HWORD) {
+                        printf("\n" PROGNAME "124 Program Error Abort, "
+                               "word too long:\n  '%s'\n",
+                               glob_word->or_hwordkey);
+                        DtSearchExit(24);
+                }
+                HTONL(glob_word->or_hwoffset);
+                HTONL(glob_word->or_hwfree);
+                HTONL(glob_word->or_hwaddrs);
+                RECWRITE(PROGNAME "115", glob_word, vista_num);
+                NTOHL(glob_word->or_hwoffset);
+                NTOHL(glob_word->or_hwfree);
+                NTOHL(glob_word->or_hwaddrs);
+        }
+        return;
+} /* write_wordstr() */
 
 /****************************************/
 /*					*/
@@ -196,41 +183,38 @@ void            write_wordstr (struct or_hwordrec * glob_word, int vista_num)
  * Formerly this function was called put_new_word().
  * CALLER MUST CHECK DB_STATUS.
  */
-void            fillnew_wordrec (struct or_hwordrec * glob_word, int vista_num)
-{
-    static size_t   len;
+void fillnew_wordrec(struct or_hwordrec *glob_word, int vista_num) {
+        static size_t len;
 
-    len = strlen (glob_word->or_hwordkey);
-    if (len < sizeof (Swordbuf.or_swordkey)) {
-	strcpy (Swordbuf.or_swordkey, glob_word->or_hwordkey);
-	Swordbuf.or_swoffset =	htonl (glob_word->or_hwoffset);
-	Swordbuf.or_swfree =	htonl (glob_word->or_hwfree);
-	Swordbuf.or_swaddrs =	htonl (glob_word->or_hwaddrs);
-	FILLNEW (PROGNAME "137", OR_SWORDREC, &Swordbuf, vista_num);
-    }
-    else if (len < sizeof (Lwordbuf.or_lwordkey)) {
-	strcpy (Lwordbuf.or_lwordkey, glob_word->or_hwordkey);
-	Lwordbuf.or_lwoffset =	htonl (glob_word->or_hwoffset);
-	Lwordbuf.or_lwfree =	htonl (glob_word->or_hwfree);
-	Lwordbuf.or_lwaddrs =	htonl (glob_word->or_hwaddrs);
-	FILLNEW (PROGNAME "147", OR_LWORDREC, &Lwordbuf, vista_num);
-    }
-    else {
-	if (len >= DtSrMAXWIDTH_HWORD) {
-	    printf ("\n" PROGNAME "168 Program Error Abort, "
-		"word too long:\n  '%s'\n",
-		glob_word->or_hwordkey);
-	    DtSearchExit (68);
-	}
-	HTONL (glob_word->or_hwoffset);
-	HTONL (glob_word->or_hwfree);
-	HTONL (glob_word->or_hwaddrs);
-	FILLNEW (PROGNAME "151", OR_HWORDREC, glob_word, vista_num);
-	NTOHL (glob_word->or_hwoffset);
-	NTOHL (glob_word->or_hwfree);
-	NTOHL (glob_word->or_hwaddrs);
-    }
-    return;
-}  /* fillnew_wordrec() */
+        len = strlen(glob_word->or_hwordkey);
+        if (len < sizeof(Swordbuf.or_swordkey)) {
+                strcpy(Swordbuf.or_swordkey, glob_word->or_hwordkey);
+                Swordbuf.or_swoffset = htonl(glob_word->or_hwoffset);
+                Swordbuf.or_swfree = htonl(glob_word->or_hwfree);
+                Swordbuf.or_swaddrs = htonl(glob_word->or_hwaddrs);
+                FILLNEW(PROGNAME "137", OR_SWORDREC, &Swordbuf, vista_num);
+        } else if (len < sizeof(Lwordbuf.or_lwordkey)) {
+                strcpy(Lwordbuf.or_lwordkey, glob_word->or_hwordkey);
+                Lwordbuf.or_lwoffset = htonl(glob_word->or_hwoffset);
+                Lwordbuf.or_lwfree = htonl(glob_word->or_hwfree);
+                Lwordbuf.or_lwaddrs = htonl(glob_word->or_hwaddrs);
+                FILLNEW(PROGNAME "147", OR_LWORDREC, &Lwordbuf, vista_num);
+        } else {
+                if (len >= DtSrMAXWIDTH_HWORD) {
+                        printf("\n" PROGNAME "168 Program Error Abort, "
+                               "word too long:\n  '%s'\n",
+                               glob_word->or_hwordkey);
+                        DtSearchExit(68);
+                }
+                HTONL(glob_word->or_hwoffset);
+                HTONL(glob_word->or_hwfree);
+                HTONL(glob_word->or_hwaddrs);
+                FILLNEW(PROGNAME "151", OR_HWORDREC, glob_word, vista_num);
+                NTOHL(glob_word->or_hwoffset);
+                NTOHL(glob_word->or_hwfree);
+                NTOHL(glob_word->or_hwaddrs);
+        }
+        return;
+} /* fillnew_wordrec() */
 
 /********************* VSTFUNCT.C **********************************/

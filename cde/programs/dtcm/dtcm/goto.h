@@ -24,7 +24,8 @@
 **
 **  goto.h
 **
-**  static char sccsid[] = "@(#)goto.h 1.6 94/11/07 Copyr 1991 Sun Microsystems, Inc.";
+**  static char sccsid[] = "@(#)goto.h 1.6 94/11/07 Copyr 1991 Sun Microsystems,
+*Inc.";
 **
 **  $XConsortium: goto.h /main/3 1995/11/03 10:27:45 rswiston $
 **
@@ -55,17 +56,17 @@
 #include "ansi_c.h"
 
 typedef struct {
-	Widget          	frame;
-	Widget			form;
-	Widget			datelabel;
-	Widget			datetext;
-	Widget			datebutton;
-	Widget			cancelbutton;
-	Widget			helpbutton;
-	Widget			goto_message;
-}Goto;
+        Widget frame;
+        Widget form;
+        Widget datelabel;
+        Widget datetext;
+        Widget datebutton;
+        Widget cancelbutton;
+        Widget helpbutton;
+        Widget goto_message;
+} Goto;
 
-extern	caddr_t	make_goto	P((Calendar*));
+extern caddr_t make_goto P((Calendar *));
 
 #define DATESIZ 40
 
