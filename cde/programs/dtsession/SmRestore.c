@@ -1839,6 +1839,7 @@ static int RestoreClients(void) {
                                                                 remoteBuf[i]);
                                                 }
                                         }
+                                        free(displayName);
                                         return (-1);
                                 }
                                 hintPtr = NULL;

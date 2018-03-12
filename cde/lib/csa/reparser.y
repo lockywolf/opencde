@@ -44,10 +44,10 @@ static RepeatEvent *DeriveYearlyEvent(RepeatType, unsigned int, NumberList *,
 %}
 
 %token ERROR ENDMARKER DURATION NUMBER FIRSTWEEK SECONDWEEK THIRDWEEK
-%token FOURTHWEEK FIFTHWEEK LASTWEEK SECONDLAST THIRDLAST FOURTHLAST            
-%token FIFTHLAST MINUTECOMMAND DAILYCOMMAND WEEKLYCOMMAND MONTHPOSCOMMAND       
+%token FOURTHWEEK FIFTHWEEK LASTWEEK SECONDLAST THIRDLAST FOURTHLAST
+%token FIFTHLAST MINUTECOMMAND DAILYCOMMAND WEEKLYCOMMAND MONTHPOSCOMMAND
 %token MONTHDAYCOMMAND YEARDAYCOMMAND YEARMONTHCOMMAND LASTDAY SUNDAY
-%token MONDAY TUESDAY WEDNESDAY THURSDAY FRIDAY SATURDAY DATE 
+%token MONDAY TUESDAY WEDNESDAY THURSDAY FRIDAY SATURDAY DATE
 
 %union	{
 		int		 number;
@@ -65,7 +65,7 @@ static RepeatEvent *DeriveYearlyEvent(RepeatType, unsigned int, NumberList *,
 %type <re>	start begin minuteEvent dailyEvent weeklyEvent monthlyPosEvent
 		monthlyDayEvent yearlyByMonth yearlyByDay
 %type <nl>	time0List timeList dayOfMonthList monthOfYearList
-		dayOfYearList occurrenceList genericNumberList 
+		dayOfYearList occurrenceList genericNumberList
 		generic0NumberList weekdayList
 %type <weekday>	SUNDAY MONDAY TUESDAY WEDNESDAY THURSDAY FRIDAY SATURDAY
 		weekday
@@ -78,7 +78,7 @@ static RepeatEvent *DeriveYearlyEvent(RepeatType, unsigned int, NumberList *,
 
 %% /* Beginning of rules section */
 
-start 		: begin 
+start 		: begin
 		    {
 			_DtCm_repeat_info = $$;
 		    }
@@ -151,7 +151,7 @@ weeklyEvent
 			$$ = DeriveWeeklyEvent($2, $3, $4, $5);
 			if ($5) $$ = NULL;
 		    }
-		| WEEKLYCOMMAND NUMBER duration minuteEvent 
+		| WEEKLYCOMMAND NUMBER duration minuteEvent
 		    {
 			$$ = DeriveWeeklyEvent($2, NULL, $3, $4);
 			if ($4) $$ = NULL;
@@ -165,7 +165,7 @@ monthlyPosEvent
 						$2, $3, $4, $5);
 			if ($5) $$ = NULL;
 		    }
-		| MONTHPOSCOMMAND NUMBER weekDayTime duration dailyEvent 
+		| MONTHPOSCOMMAND NUMBER weekDayTime duration dailyEvent
 		    {
 			$$ = DeriveMonthlyEvent(RT_MONTHLY_POSITION,
 						$2, $3, $4, $5);
@@ -196,56 +196,56 @@ monthlyDayEvent	: MONTHDAYCOMMAND NUMBER dayOfMonthList duration minuteEvent
 		    }
 		;
 
-yearlyByMonth	: YEARMONTHCOMMAND NUMBER monthOfYearList duration minuteEvent 
+yearlyByMonth	: YEARMONTHCOMMAND NUMBER monthOfYearList duration minuteEvent
 		    {
 			$$ = DeriveYearlyEvent(RT_YEARLY_MONTH, $2, $3, $4, $5);
 			if ($5) $$ = NULL;
 		    }
-		| YEARMONTHCOMMAND NUMBER monthOfYearList duration dailyEvent 
+		| YEARMONTHCOMMAND NUMBER monthOfYearList duration dailyEvent
 		    {
 			$$ = DeriveYearlyEvent(RT_YEARLY_MONTH, $2, $3, $4, $5);
 			if ($5) $$ = NULL;
 		    }
-		| YEARMONTHCOMMAND NUMBER monthOfYearList duration weeklyEvent 
-		    {
-			$$ = DeriveYearlyEvent(RT_YEARLY_MONTH, $2, $3, $4, $5);
-			if ($5) $$ = NULL;
-		    }
-		| YEARMONTHCOMMAND NUMBER monthOfYearList duration
-								monthlyPosEvent 
+		| YEARMONTHCOMMAND NUMBER monthOfYearList duration weeklyEvent
 		    {
 			$$ = DeriveYearlyEvent(RT_YEARLY_MONTH, $2, $3, $4, $5);
 			if ($5) $$ = NULL;
 		    }
 		| YEARMONTHCOMMAND NUMBER monthOfYearList duration
-								monthlyDayEvent 
+								monthlyPosEvent
+		    {
+			$$ = DeriveYearlyEvent(RT_YEARLY_MONTH, $2, $3, $4, $5);
+			if ($5) $$ = NULL;
+		    }
+		| YEARMONTHCOMMAND NUMBER monthOfYearList duration
+								monthlyDayEvent
 		    {
 			$$ = DeriveYearlyEvent(RT_YEARLY_MONTH, $2, $3, $4, $5);
 			if ($5) $$ = NULL;
 		    }
 		;
 
-yearlyByDay	: YEARDAYCOMMAND NUMBER dayOfYearList duration minuteEvent 
+yearlyByDay	: YEARDAYCOMMAND NUMBER dayOfYearList duration minuteEvent
 		    {
 			$$ = DeriveYearlyEvent(RT_YEARLY_DAY, $2, $3, $4, $5);
 			if ($5) $$ = NULL;
 		    }
-		| YEARDAYCOMMAND NUMBER dayOfYearList duration dailyEvent 
+		| YEARDAYCOMMAND NUMBER dayOfYearList duration dailyEvent
 		    {
 			$$ = DeriveYearlyEvent(RT_YEARLY_DAY, $2, $3, $4, $5);
 			if ($5) $$ = NULL;
 		    }
-		| YEARDAYCOMMAND NUMBER dayOfYearList duration weeklyEvent 
+		| YEARDAYCOMMAND NUMBER dayOfYearList duration weeklyEvent
 		    {
 			$$ = DeriveYearlyEvent(RT_YEARLY_DAY, $2, $3, $4, $5);
 			if ($5) $$ = NULL;
 		    }
-		| YEARDAYCOMMAND NUMBER dayOfYearList duration monthlyPosEvent 
+		| YEARDAYCOMMAND NUMBER dayOfYearList duration monthlyPosEvent
 		    {
 			$$ = DeriveYearlyEvent(RT_YEARLY_DAY, $2, $3, $4, $5);
 			if ($5) $$ = NULL;
 		    }
-		| YEARDAYCOMMAND NUMBER dayOfYearList duration monthlyDayEvent 
+		| YEARDAYCOMMAND NUMBER dayOfYearList duration monthlyDayEvent
 		    {
 			$$ = DeriveYearlyEvent(RT_YEARLY_DAY, $2, $3, $4, $5);
 			if ($5) $$ = NULL;
@@ -342,7 +342,7 @@ weekdayTimePair	: weekday time0List
 		;
 
 		/* e.g. MO 1300 1500 2000 TU 1200 1400 */
-weekdayTimeList	: weekdayTimePair  
+weekdayTimeList	: weekdayTimePair
 		    {
 			DayTimeList	*dtl;
 
@@ -376,7 +376,7 @@ weekdayTimeList	: weekdayTimePair
 				dtl_end = $$;
 				while (dtl_end->dtl_next)
 					dtl_end = dtl_end->dtl_next;
-				
+
 				dtl_end->dtl_next = dtl;
 			}
 		   }
@@ -528,7 +528,7 @@ endMarker	: /* empty */
 		/* e.g. #10 */
 duration	: /* empty */
 		    {
-			/* If no duration then default to 2 - set later if 
+			/* If no duration then default to 2 - set later if
 			 * end date not used.
 			 */
 			$$ = RE_NOTSET;
@@ -537,7 +537,7 @@ duration	: /* empty */
 		    {
 			/* If duration == 0 then repeat forever */
 			if ($2 == 0)
-				$$ = RE_INFINITY; 
+				$$ = RE_INFINITY;
 			else
 				$$ = $2;
 		    }
@@ -703,9 +703,9 @@ ConvertDayTime(
 				int j;
 
 				for (j = no_time; j < i; j++) {
-					daytime_array[j].dt_ntime = 
+					daytime_array[j].dt_ntime =
 						daytime_array[i].dt_ntime;
-					daytime_array[j].dt_time = 
+					daytime_array[j].dt_time =
 						(Time *)calloc(
 						     daytime_array[j].dt_ntime,
 						     sizeof(Time));
@@ -896,11 +896,12 @@ DeriveMinuteEvent(
 {
 	RepeatEvent	*re;
 
-	if (interval < 1)
+	if (interval < 1) {
 		return NULL;
+	}
 
 	re = (RepeatEvent *)calloc(1, sizeof(RepeatEvent));
-				
+
 	re->re_interval = interval;
 	re->re_duration = duration;
 	re->re_type = RT_MINUTE;
@@ -926,11 +927,13 @@ DeriveDailyEvent(
 		/* Convert from list to array, sort */
 	dd->dd_time = (Time *)ConvertNumList(time_list, &(dd->dd_ntime));
 
-	if (interval < 1)
+	if (interval < 1) {
+	  free(dd);
 		return NULL;
+	}
 
 	re = (RepeatEvent *)calloc(1, sizeof(RepeatEvent));
-				
+
 	re->re_interval = interval;
 	re->re_duration = duration;
 	re->re_type = RT_DAILY;
@@ -963,11 +966,13 @@ DeriveWeeklyEvent(
 		/* Convert from list to array, sort */
 	wd->wd_daytime = ConvertDayTime(dtl, &(wd->wd_ndaytime));
 
-	if (interval < 1)
+	if (interval < 1) {
+	  free(wd);
 		return NULL;
+	}
 
 	re = (RepeatEvent *)calloc(1, sizeof(RepeatEvent));
-				
+
 	re->re_interval = interval;
 	re->re_duration = duration;
 	re->re_type = RT_WEEKLY;
@@ -1006,11 +1011,13 @@ DeriveMonthlyEvent(
 			(NumberList *)data_list, &(md->md_nitems));
 	}
 
-	if (interval < 1)
+	if (interval < 1) {
+	  free(md);
 		return NULL;
+	}
 
 	re = (RepeatEvent *)calloc(1, sizeof(RepeatEvent));
-				
+
 	re->re_interval = interval;
 	re->re_duration = duration;
 	re->re_type = type;
@@ -1044,11 +1051,13 @@ DeriveYearlyEvent(
 			/* Convert from list to array, sort */
 	yd->yd_items = ConvertNumList(nl, &(yd->yd_nitems));
 
-	if (interval < 1)
+	if (interval < 1) {
+	  free(yd);
 		return NULL;
+  }
 
 	re = (RepeatEvent *)calloc(1, sizeof(RepeatEvent));
-				
+
 	re->re_interval = interval;
 	re->re_duration = duration;
 	re->re_type = type;

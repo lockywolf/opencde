@@ -585,12 +585,13 @@ static ReadBitmaps(void) {
         }
 
         /* read the directory $HOME/.dt/backdrops */
-        string =
-            (char *)XtMalloc(strlen(style.home) + strlen("/.dt/backdrops") + 1);
-        sprintf(string, "%s/.dt/backdrops", style.home);
-        ReadBitmapDirectory(string);
-        if (string != NULL)
+        int string_size = strlen(style.home) + strlen("/.dt/backdrops") + 1;
+        string = (char *)XtMalloc(string_size);
+        if (string != NULL) {
+                snprintf(string, string_size, "%s/.dt/backdrops", style.home);
+                ReadBitmapDirectory(string);
                 XtFree(string);
+        }
 
         if (backdrops.tmpNumBitmaps == 0) {
                 /* give error dialog, free space, and return */

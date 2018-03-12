@@ -222,9 +222,10 @@ static int GetUserIMSelectionFile(I18nEnv *env) {
 
         if (ret == NoError) {
                 /* Look if this file is readable */
-                if ((fp = fopen(env->file_sel->fname, "r")) == NULL)
+                if ((fp = fopen(env->file_sel->fname, "r")) == NULL) {
                         env->file_sel->start_mode = -1;
-                return ErrNoSelectionFile;
+                        return ErrNoSelectionFile;
+                }
         }
 
         start_tag_line(env->file_sel->fname);
@@ -290,8 +291,9 @@ static int ReadImSelectionFile(FileSel *fsel, FILE *fp) {
                         continue;
                 }
                 if (strncmp(lp + 1, STR_SELECTMODE, 3) == 0) {
-                        if (str_to_int(valp, &i) && i >= 0)
+                        if (str_to_int(valp, &i) && i >= 0) {
                                 select_mode = i;
+                        }
                 } else if (strncmp(lp + 1, STR_IMSNAME, 4) == 0) {
                         vp = valp;
                         cut_field(valp);
@@ -573,6 +575,7 @@ int _DtI18nWriteImSelectionFile(I18nEnv *env) {
 
         /* Close the file */
         fclose(fp);
+        return NoError;
 }
 
 static void PutSelectMode(FILE *fp, int start_mode) {

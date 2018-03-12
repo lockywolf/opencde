@@ -1486,10 +1486,10 @@ static int OutputResource(void) {
         *resSpec = 0;
         langPtr = getenv("LANG");
         if ((langPtr != NULL) && (*langPtr != 0)) {
-                sprintf(resSpec, "%s*%s: %s\n", SM_RESOURCE_NAME,
+                snprintf(resSpec, resSize, "%s*%s: %s\n", SM_RESOURCE_NAME,
                         SmNsessionLang, langPtr);
         } else {
-                sprintf(resSpec, "%s*%s:   \n", SM_RESOURCE_NAME,
+                snprintf(resSpec, resSize, "%s*%s:   \n", SM_RESOURCE_NAME,
                         SmNsessionLang);
         }
 

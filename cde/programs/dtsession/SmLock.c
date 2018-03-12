@@ -159,9 +159,10 @@ static Boolean CanReAuthenticate(char *name, uid_t uid, char *passwd,
                                  struct passwd **pwent, struct spwd **spent) {
         Boolean fail = False;
 
-        *pwent = (name == NULL) ? getpwuid(uid) : getpwnam(name);
-        if (pwent)
+        if (pwent) {
+                *pwent = (name == NULL) ? getpwuid(uid) : getpwnam(name);
                 *spent = getspnam((*pwent)->pw_name);
+        }
 
 #ifdef JET_AUTHDEBUG
         fprintf(stderr, "CanReAuthenticate(): %s %s %s\n",
