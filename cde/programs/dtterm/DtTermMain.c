@@ -330,30 +330,6 @@ static XtResource applicationResources[] = {
 
 extern String fallbackResources[];
 
-#ifdef sun
-void sunSetupIA(Widget w) {
-        int i, major_op, first_event, first_err;
-        int *pids;
-        void (*IAptr)() = (void (*)())NULL;
-        DtTermPrimitiveWidget tw;
-
-        if ((IAptr = (void (*)())dlsym(RTLD_NEXT,
-                                       "XSolarisIASetProcessInfo")) != NULL) {
-                pids = (int *)malloc(sizeof(int) * (InstanceCount + 1));
-                pids[0] = getpid();
-                for (i = 0; i < InstanceCount; i++) {
-                        tw = (DtTermPrimitiveWidget)instance_list[i]
-                                 ->termview.term;
-                        pids[i + 1] = tw->term.subprocessPid;
-                }
-                if (XQueryExtension(XtDisplay(w), "SolarisIA", &major_op,
-                                    &first_event, &first_err))
-                        (*IAptr)(XtDisplay(w), pids, 0x1, InstanceCount + 1);
-                free(pids);
-        }
-}
-#endif /* sun */
-
 #ifdef DELAY_DESTROY
 static void DestroyTree(XtPointer client_data, XtIntervalId *id) {
         (void)XtDestroyWidget((Widget)client_data);
@@ -524,23 +500,23 @@ static XtEventHandler TestProbeHandler(Widget w, XtPointer client_data,
                                &data) == Success) {
                 switch (prop_type) {
                 case GET_CURSOR_VISIBLE:
-                        sprintf((char *)reply, "%d",
+                        snprintf((char *)reply, 1024, "%d",
                                 (int)_DtTermPrimGetCursorVisible(
                                     tw->termview.term));
                         break;
 
                 case GET_USER_KEY_LOCK:
-                        sprintf((char *)reply, "%d",
+                        snprintf((char *)reply, 1024, "%d",
                                 (int)_DtTermGetUserKeyLock(tw->termview.term));
                         break;
 
                 case GET_AUTO_LINE_FEED:
-                        sprintf((char *)reply, "%d",
+                        snprintf((char *)reply, 1024, "%d",
                                 (int)_DtTermGetAutoLineFeed(tw->termview.term));
                         break;
 
                 case GET_SCROLLBAR_WINDOW:
-                        sprintf((char *)reply, "0x%lx",
+                        snprintf((char *)reply, 1024, "0x%lx",
                                 tw->termview.scrollBar.widget
                                     ? XtWindow(tw->termview.scrollBar.widget)
                                     : 0);
@@ -553,13 +529,13 @@ static XtEventHandler TestProbeHandler(Widget w, XtPointer client_data,
                                 XtGetValues((Widget)tw, al, 1);
                         else
                                 XtGetValues(tw->termview.term, al, 1);
-                        sprintf((char *)reply, "%d", onebyte.uc);
+                        snprintf((char *)reply, 1024, "%d", onebyte.uc);
                         break;
 
                 case TWO_BYTE:
                         XtSetArg(al[0], (XtPointer)data, &twobyte);
                         XtGetValues(tw->termview.term, al, 1);
-                        sprintf((char *)reply, "%d", twobyte.s);
+                        snprintf((char *)reply, 1024, "%d", twobyte.s);
                         break;
 
                 case FOUR_BYTE:
@@ -568,16 +544,16 @@ static XtEventHandler TestProbeHandler(Widget w, XtPointer client_data,
                         XtGetValues(tw->termview.term, al, 1);
                         if (prop_type == FOUR_BYTE_PTR)
                                 if (fourbyte.cp) {
-                                        sprintf((char *)reply, "%s",
+                                        snprintf((char *)reply, 1024, "%s",
                                                 fourbyte.cp);
                                 } else {
-                                        sprintf((char *)reply, "%s", "<NULL>");
+                                        snprintf((char *)reply, 1024, "%s", "<NULL>");
                                 }
                         else
-                                sprintf((char *)reply, "%d", fourbyte.i);
+                                snprintf((char *)reply, 1024, "%d", fourbyte.i);
                         break;
                 default:
-                        sprintf((char *)reply, "%s", "ERROR");
+                        snprintf((char *)reply, 1024, "%s", "ERROR");
                 }
 
                 XChangeProperty(XtDisplay(w), win, prop_name, prop_name, 8,
@@ -611,8 +587,8 @@ static void AddMenubarToggle(Widget topLevel, Widget termViewWidget) {
 	Sep             f.separator\n\
 	Toggle\\ Menu\\ Bar  f.send_msg %d\
 	");
-        (void)sprintf(buffer, menu, xa_DTTERM_TOGGLE_MENUBAR);
-        (void)XtSetArg(al[ac], XmNmwmMenu, buffer);
+        snprintf(buffer, BUFSIZ, menu, xa_DTTERM_TOGGLE_MENUBAR);
+        XtSetArg(al[ac], XmNmwmMenu, buffer);
         ac++;
         (void)XtSetValues(topLevel, al, ac);
 
@@ -885,8 +861,9 @@ static void FixOSFBindings(Display *display) {
 
         /* malloc a copy of the ignoredKeysym string... */
         if (attrs.ignoredKeysyms && *attrs.ignoredKeysyms) {
-                c1 = XtMalloc(strlen(attrs.ignoredKeysyms) + 1);
-                (void)strcpy(c1, attrs.ignoredKeysyms);
+                int size = strlen(attrs.ignoredKeysyms) + 1;
+                c1 = XtMalloc(size);
+                strlcpy(c1, attrs.ignoredKeysyms, size);
                 attrs.ignoredKeysyms = c1;
         }
 
@@ -1120,19 +1097,11 @@ int main(int argc, char **argv) {
         savedArgc = argc;
         savedArgv = (char **)XtMalloc((argc + 1) * sizeof(char *));
         for (i = 0; i < argc; i++) {
-                savedArgv[i] = XtMalloc(strlen(argv[i]) + 1);
-                (void)strcpy(savedArgv[i], argv[i]);
-#ifdef SUN_TERMINAL_SERVER
-                if ((!strcmp(argv[i], "-sdtserver")) ||
-                    (!strcmp(argv[i], "-dtserver")))
-                        iAmTheServer = TRUE;
-#endif /* SUN_TERMINAL_SERVER */
+                int size = strlen(argv[i]) + 1;
+                savedArgv[i] = XtMalloc(size);
+                strlcpy(savedArgv[i], argv[i], size);
         }
         savedArgv[i] = (char *)0;
-
-#ifdef sun
-        (void)setsid();
-#endif /* sun */
 
         /* before we do anything with the toolkit, let's usurp the constraint
          * initialize proc for the XmManager widget class.  This will allow us
@@ -1295,11 +1264,6 @@ int main(int argc, char **argv) {
                 (void)XtSetValues(topLevel, arglist, i);
                 (void)XtRealizeWidget(topLevel);
 
-#ifdef SUN_TERMINAL_SERVER
-                if (iAmTheServer)
-                        FinishToolTalkInit(topLevel);
-#endif /* SUN_TERMINAL_SERVER */
-
                 /* Set title to the command to execute (if any)
                  */
                 if (commandToExecute && !attrs.title) {
@@ -1309,11 +1273,11 @@ int main(int argc, char **argv) {
                 /* Else set title to default ("Terminal")
                  */
                 if (!attrs.title) {
-                        title = XtMalloc(
-                            strlen(GETMESSAGE(NL_SETN_Main, 3, "Terminal")) +
-                            1);
-                        (void)strcpy(title,
-                                     GETMESSAGE(NL_SETN_Main, 3, "Terminal"));
+                        int size = strlen(GETMESSAGE(NL_SETN_Main, 3, "Terminal")) + 1;
+                        title = XtMalloc(size);
+                        strlcpy(title,
+                                     GETMESSAGE(NL_SETN_Main, 3, "Terminal"),
+                                     size);
                         attrs.title = title;
                 }
 
@@ -1353,12 +1317,9 @@ int main(int argc, char **argv) {
                         /* write out the window id... */
                         char buffer[BUFSIZ];
 
-                        (void)sprintf(buffer, "%lx\n", XtWindow(topLevel));
-                        (void)write(ptyMasterFd, buffer, strlen(buffer));
+                        snprintf(buffer, BUFSIZ, "%lx\n", XtWindow(topLevel));
+                        write(ptyMasterFd, buffer, strlen(buffer));
                 }
-#ifdef sun
-                sunSetupIA(topLevel);
-#endif /* sun */
 
 #ifdef TERMINAL_SERVER
         } else {
@@ -1418,14 +1379,15 @@ static void SaveSessionCB(Widget w,            /* widget id */
                 return;
         }
 
-        sprintf(bufr, "*dtterm.numClonedTerms: %d\n", InstanceCount);
+        snprintf(bufr, 1024, "*dtterm.numClonedTerms: %d\n", InstanceCount);
         write(fd, bufr, strlen(bufr));
 
         for (i = 0; i < InstanceCount; i++)
                 SaveTerm(instance_list[i], i, fd);
 
-        sprintf(
+        snprintf(
             bufr,
+            1024,
             "*dtterm.sessionFileVersionId: dttermSessionFileVersion.1.0.0\n");
         write(fd, bufr, strlen(bufr));
 
@@ -1516,10 +1478,10 @@ static void SaveTerm(DtTermViewWidget dtvw, int cloneNum, int fd) {
         width = XtWidth(XtParent(dtvw));
         height = XtHeight(XtParent(dtvw));
 
-        sprintf(bufr, "*dtterm_%d.x: %d\n", cloneNum, x);
-        sprintf(bufr, "%s*dtterm_%d.y: %d\n", bufr, cloneNum, y);
-        sprintf(bufr, "%s*dtterm_%d.width: %d\n", bufr, cloneNum, width);
-        sprintf(bufr, "%s*dtterm_%d.height: %d\n", bufr, cloneNum, height);
+        snprintf(bufr, 1024, "*dtterm_%d.x: %d\n", cloneNum, x);
+        snprintf(bufr, 1024, "%s*dtterm_%d.y: %d\n", bufr, cloneNum, y);
+        snprintf(bufr, 1024, "%s*dtterm_%d.width: %d\n", bufr, cloneNum, width);
+        snprintf(bufr, 1024, "%s*dtterm_%d.height: %d\n", bufr, cloneNum, height);
 
         /* Write out iconic state...
          */
@@ -1535,10 +1497,10 @@ static void SaveTerm(DtTermViewWidget dtvw, int cloneNum, int fd) {
                             AnyPropertyType, &actualType, &actualFormat,
                             &nItems, &bytesAfter, (unsigned char **)&prop))) {
                 if (prop->state == IconicState) {
-                        sprintf(bufr, "%s*dtterm_%d.iconify: %s\n", bufr,
+                        snprintf(bufr, 1024, "%s*dtterm_%d.iconify: %s\n", bufr,
                                 cloneNum, "True");
                 } else {
-                        sprintf(bufr, "%s*dtterm_%d.iconify: %s\n", bufr,
+                        snprintf(bufr, 1024, "%s*dtterm_%d.iconify: %s\n", bufr,
                                 cloneNum, "False");
                 }
         }
@@ -1547,20 +1509,20 @@ static void SaveTerm(DtTermViewWidget dtvw, int cloneNum, int fd) {
                                        XtWindow(XtParent(dtvw)), &pWsPresence,
                                        &numInfo) == Success) {
                 int i;
-                sprintf(bufr, "%s*dtterm_%d.workspaceList: ", bufr, cloneNum);
+                snprintf(bufr, 1024, "%s*dtterm_%d.workspaceList: ", bufr, cloneNum);
                 for (i = 0; i < numInfo; i++) {
                         char *name =
                             XGetAtomName(XtDisplay(dtvw), pWsPresence[i]);
-                        sprintf(bufr, "%s %s", bufr, name);
+                        snprintf(bufr, 1024, "%s %s", bufr, name);
                         XtFree(name);
                 }
-                sprintf(bufr, "%s\n", bufr);
+                snprintf(bufr, 1024, "%s\n", bufr);
                 XtFree((char *)pWsPresence);
         }
 
         write(fd, bufr, strlen(bufr));
 
-        sprintf(bufr, "*dtterm_%d.userFontListIndex: %d\n", cloneNum,
+        snprintf(bufr, 1024, "*dtterm_%d.userFontListIndex: %d\n", cloneNum,
                 _DtTermViewGetUserFontListIndex((Widget)dtvw));
         write(fd, bufr, strlen(bufr));
 
@@ -1613,96 +1575,100 @@ static void SaveTerm(DtTermViewWidget dtvw, int cloneNum, int fd) {
                 if (!defaultCwd) {
                         /* first time through, use getcwd() to get it... */
                         if (getcwd(buffer, sizeof(buffer))) {
-                                defaultCwd = XtMalloc(strlen(buffer) + 1);
-                                (void)strcpy(defaultCwd, buffer);
+                                int size = strlen(buffer) + 1;
+                                defaultCwd = XtMalloc(size);
+                                strlcpy(defaultCwd, buffer, size);
                         }
                 }
                 cwd = defaultCwd;
         }
 
-        (void)sprintf(bufr, "*dtterm_%d*rows: %d\n", cloneNum, rows);
-        (void)write(fd, bufr, strlen(bufr));
-        (void)sprintf(bufr, "*dtterm_%d*columns: %d\n", cloneNum, columns);
-        (void)write(fd, bufr, strlen(bufr));
+        snprintf(bufr, 1024, "*dtterm_%d*rows: %d\n", cloneNum, rows);
+        write(fd, bufr, strlen(bufr));
+        snprintf(bufr, 1024, "*dtterm_%d*columns: %d\n", cloneNum, columns);
+        write(fd, bufr, strlen(bufr));
 
         if (menuBar == False) {
-                sprintf(bufr, "*dtterm_%d*menuBar: False\n", cloneNum);
+                snprintf(bufr, 1024, "*dtterm_%d*menuBar: False\n", cloneNum);
                 write(fd, bufr, strlen(bufr));
         }
         if (scrollBar == False) {
-                sprintf(bufr, "*dtterm_%d*scrollBar: False\n", cloneNum);
+                snprintf(bufr, 1024, "*dtterm_%d*scrollBar: False\n", cloneNum);
                 write(fd, bufr, strlen(bufr));
         }
         if (_DtTermPrimGetCursorVisible((Widget)dtw)) {
                 if (charCursorStyle == DtTERM_CHAR_CURSOR_BAR)
-                        sprintf(bufr,
+                        snprintf(bufr,
+                                1024,
                                 "*dtterm_%d*charCursorStyle: CHARCURSOR_BAR\n",
                                 cloneNum);
                 else
-                        sprintf(bufr,
+                        snprintf(bufr,
+                                1024,
                                 "*dtterm_%d*charCursorStyle: CHARCURSOR_BOX\n",
                                 cloneNum);
         } else
-                sprintf(bufr,
+                snprintf(bufr,
+                        1024,
                         "*dtterm_%d*charCursorStyle: CHARCURSOR_INVISIBLE\n",
                         cloneNum);
         write(fd, bufr, strlen(bufr));
 
-        sprintf(bufr, "*dtterm_%d*blinkRate: %d\n", cloneNum, blinkRate);
+        snprintf(bufr, 1024, "*dtterm_%d*blinkRate: %d\n", cloneNum, blinkRate);
         write(fd, bufr, strlen(bufr));
 
         if (jumpScroll == False) {
-                sprintf(bufr, "*dtterm_%d*jumpScroll: False\n", cloneNum);
+                snprintf(bufr, 1024, "*dtterm_%d*jumpScroll: False\n", cloneNum);
                 write(fd, bufr, strlen(bufr));
         }
         if (marginBell == True) {
-                sprintf(bufr, "*dtterm_%d*marginBell: True\n", cloneNum);
+                snprintf(bufr, 1024, "*dtterm_%d*marginBell: True\n", cloneNum);
                 write(fd, bufr, strlen(bufr));
-                sprintf(bufr, "*dtterm_%d*nMarginBell: %d\n", cloneNum,
+                snprintf(bufr, 1024, "*dtterm_%d*nMarginBell: %d\n", cloneNum,
                         nMarginBell);
                 write(fd, bufr, strlen(bufr));
         }
         if (visualBell == True) {
-                sprintf(bufr, "*dtterm_%d*visualBell: True\n", cloneNum);
+                snprintf(bufr, 1024, "*dtterm_%d*visualBell: True\n", cloneNum);
                 write(fd, bufr, strlen(bufr));
         }
         if (reverseVideo == True) {
-                sprintf(bufr, "*dtterm_%d*reverseVideo: True\n", cloneNum);
+                snprintf(bufr, 1024, "*dtterm_%d*reverseVideo: True\n", cloneNum);
                 write(fd, bufr, strlen(bufr));
         }
         if (cursorMode == True) {
-                sprintf(bufr, "*dtterm_%d*appCursorDefault: True\n", cloneNum);
+                snprintf(bufr, 1024, "*dtterm_%d*appCursorDefault: True\n", cloneNum);
                 write(fd, bufr, strlen(bufr));
         }
         if (keypadMode == True) {
-                sprintf(bufr, "*dtterm_%d*appKeypadDefault: True\n", cloneNum);
+                snprintf(bufr, 1024, "*dtterm_%d*appKeypadDefault: True\n", cloneNum);
                 write(fd, bufr, strlen(bufr));
         }
         if (autoWrap == False) {
-                sprintf(bufr, "*dtterm_%d*autoWrap: False\n", cloneNum);
+                snprintf(bufr, 1024, "*dtterm_%d*autoWrap: False\n", cloneNum);
                 write(fd, bufr, strlen(bufr));
         }
         if (reverseWrap == True) {
-                sprintf(bufr, "*dtterm_%d*reverseWrap: True\n", cloneNum);
+                snprintf(bufr, 1024, "*dtterm_%d*reverseWrap: True\n", cloneNum);
                 write(fd, bufr, strlen(bufr));
         }
         if (c132 == True) {
-                sprintf(bufr, "*dtterm_%d*c132: True\n", cloneNum);
+                snprintf(bufr, 1024, "*dtterm_%d*c132: True\n", cloneNum);
                 write(fd, bufr, strlen(bufr));
         }
         if (lockState == False)
-                sprintf(bufr, "*dtterm_%d*userKeyLock: False\n", cloneNum);
+                snprintf(bufr, 1024, "*dtterm_%d*userKeyLock: False\n", cloneNum);
         else
-                sprintf(bufr, "*dtterm_%d*userKeyLock: True\n", cloneNum);
+                snprintf(bufr, 1024, "*dtterm_%d*userKeyLock: True\n", cloneNum);
         write(fd, bufr, strlen(bufr));
         if (autoLineFeed == False)
-                sprintf(bufr, "*dtterm_%d*autoLineFeed: False\n", cloneNum);
+                snprintf(bufr, 1024, "*dtterm_%d*autoLineFeed: False\n", cloneNum);
         else
-                sprintf(bufr, "*dtterm_%d*autoLineFeed: True\n", cloneNum);
+                snprintf(bufr, 1024, "*dtterm_%d*autoLineFeed: True\n", cloneNum);
         write(fd, bufr, strlen(bufr));
 
         if (cwd && *cwd) {
-                (void)sprintf(bufr, "*dtterm_%d*currentWorkingDirectory: %s\n",
+                snprintf(bufr, 1024, "*dtterm_%d*currentWorkingDirectory: %s\n",
                               cloneNum, cwd);
                 (void)write(fd, bufr, strlen(bufr));
         }
@@ -1815,7 +1781,7 @@ static void RestoreTerm(Widget shellWidget, DtTermViewWidget dtvw, int termNum,
         int rows = 0;
         int columns = 0;
 
-        sprintf(buf, "dtterm_%d", termNum);
+        snprintf(buf, 1024, "dtterm_%d", termNum);
         xrm_name[0] = XrmStringToQuark(buf);
         xrm_name[2] = 0;
 

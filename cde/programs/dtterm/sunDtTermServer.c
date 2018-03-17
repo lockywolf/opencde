@@ -272,9 +272,6 @@ static void dttermNewHandler(Tt_message msg) {
         (void)CreateInstance(shellWidget, "dtTermView", arglist, argcnt, True);
 
         (void)XtRealizeWidget(shellWidget);
-#ifdef sun
-        sunSetupIA(shellWidget);
-#endif
 
 #ifdef TIMEOUT
         /* since we now have active instances, we can remove our
@@ -324,8 +321,9 @@ void DieFromToolTalkError(Widget parent, char *errfmt, Tt_status status) {
         if (!tt_is_err(status))
                 return;
         statmsg = tt_status_message(status);
-        errmsg = XtMalloc(strlen(errfmt) + strlen(statmsg) + 2);
-        sprintf(errmsg, errfmt, statmsg);
+        int size = strlen(errfmt) + strlen(statmsg) + 2;
+        errmsg = XtMalloc(size);
+        snprintf(errmsg, size, errfmt, statmsg);
 
         xms_ok = GETXMSTRING(10, 3, "OK");
         xms_errmsg = XmStringCreateLocalized(errmsg);

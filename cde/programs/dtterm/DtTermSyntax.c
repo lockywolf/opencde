@@ -118,8 +118,9 @@ static void GetUsage() {
                 */
                 num_messages = i;
                 c2 = GETMESSAGE(NL_SETN_Syntax, i, options_default[i - 1]);
-                c = XtMalloc(strlen(c2) + 1);
-                (void)strcpy(c, c2);
+                int size = strlen(c2) + 1;
+                c = XtMalloc(size);
+                strlcpy(c, c2, size);
                 /*
                 ** check and see if we are at the end of the list...
                 */
@@ -192,8 +193,9 @@ static void GetUsage() {
                 */
                 c2 = GETMESSAGE(NL_SETN_Syntax, i,
                                 message_defaults[i - num_messages - 1]);
-                c = XtMalloc(strlen(c2) + 1);
-                (void)strcpy(c, c2);
+                int size = strlen(c2) + 1;
+                c = XtMalloc(size);
+                strlcpy(c, c2, size);
                 /*
                 ** check and see if we are at the end of the list...
                 */
@@ -257,7 +259,7 @@ void Syntax(char *programName, char *badOption) {
          * warning...
          */
         /*SUPPRESS 624*/
-        if (c = getenv("COLUMNS"))
+        if ((c = getenv("COLUMNS")))
                 cols = atoi(c);
         else
                 cols = 80;
@@ -276,9 +278,10 @@ void Syntax(char *programName, char *badOption) {
         */
 
         c = GETMESSAGE(NL_SETN_Syntax, 50, " [%s]");
-        fmt = XtMalloc(strlen(c) + 1);
-        (void)strcpy(fmt, c);
-        (void)sprintf(buffer, fmt, "");
+        int size = strlen(c) + 1;
+        fmt = XtMalloc(size);
+        strlcpy(fmt, c, size);
+        snprintf(buffer, size, fmt, "");
         fmtlen = strlen(buffer);
 
         for (optPtr = optHead; optPtr; optPtr = optPtr->next) {
