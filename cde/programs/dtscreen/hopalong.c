@@ -87,14 +87,14 @@ void inithop(perwindow *pwin) {
         hp->centery = xgwa.height / 2;
         range = sqrt((double)hp->centerx * hp->centerx +
                      (double)hp->centery * hp->centery) /
-                (10.0 + random() % 10);
+                (10.0 + arc4random() % 10);
 
         hp->pix = 0;
-        hp->inc = (int)((random() / MAXRAND) * 200) - 100;
-        hp->a = (random() / MAXRAND) * range - range / 2.0;
-        hp->b = (random() / MAXRAND) * range - range / 2.0;
-        hp->c = (random() / MAXRAND) * range - range / 2.0;
-        if (!(random() % 2))
+        hp->inc = (int)((arc4random() / MAXRAND) * 200) - 100;
+        hp->a = (arc4random() / MAXRAND) * range - range / 2.0;
+        hp->b = (arc4random() / MAXRAND) * range - range / 2.0;
+        hp->c = (arc4random() / MAXRAND) * range - range / 2.0;
+        if (!(arc4random() % 2))
                 hp->c = 0.0;
 
         hp->i = hp->j = 0.0;

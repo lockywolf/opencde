@@ -105,7 +105,7 @@ void worm_doit(perwindow *pwin, wormstruct *wp, int which,
         y = ws->ycirc[ws->tail];
         XClearArea(dsp, pwin->w, x, y, CIRCSIZE, CIRCSIZE, False);
 
-        if (random() & 1) {
+        if (arc4random() & 1) {
                 ws->dir = (ws->dir + 1) % SEGMENTS;
         } else {
                 ws->dir = (ws->dir + SEGMENTS - 1) % SEGMENTS;
@@ -176,7 +176,7 @@ void initworm(perwindow *pwin) {
                         wp->worm[i].xcirc[j] = wp->xsize / 2;
                         wp->worm[i].ycirc[j] = wp->ysize / 2;
                 }
-                wp->worm[i].dir = (unsigned)random() % SEGMENTS;
+                wp->worm[i].dir = (unsigned)arc4random() % SEGMENTS;
                 wp->worm[i].tail = 0;
                 wp->worm[i].x = wp->xsize / 2;
                 wp->worm[i].y = wp->ysize / 2;

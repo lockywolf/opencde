@@ -72,7 +72,7 @@ static short halfrandom(int mv) {
                 r = lasthalf;
                 lasthalf = 0;
         } else {
-                r = random();
+                r = arc4random();
                 lasthalf = r >> 16;
         }
         return r % mv;
@@ -183,7 +183,7 @@ void drawflame(perwindow *pwin) {
                 for (i = 0; i < 2; i++)
                         for (j = 0; j < 3; j++)
                                 fs->f[i][j][k] =
-                                    ((double)(random() & 1023) / 512.0 - 1.0);
+                                    ((double)(arc4random() & 1023) / 512.0 - 1.0);
         }
         fs->num_points = 0;
         fs->total_points = 0;

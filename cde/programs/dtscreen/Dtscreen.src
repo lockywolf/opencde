@@ -12,12 +12,7 @@
 !#     $XConsortium: Dtscreen.src /main/3 1995/11/02 16:05:53 rswiston $
 !#
 !######################################################################
-#ifdef __hpux
-!# hpux will be using blank because swarm creates a lot of lan traffic
-Dtscreen.mode: blank
-#else
 Dtscreen.mode: swarm
-#endif
 Dtscreen.background: White
 Dtscreen.foreground: Black
 Dtscreen.nice: 10

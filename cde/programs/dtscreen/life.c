@@ -413,7 +413,7 @@ void initlife(perwindow *pwin) {
         XFillRectangle(dsp, pwin->w, pwin->gc, 0, 0, lp->width, lp->height);
 
         memset(lp->buffer, '\0', sizeof(lp->buffer));
-        patptr = (int *)&patterns[random() % NPATS][0];
+        patptr = (int *)&patterns[arc4random() % NPATS][0];
         while ((col = *patptr++) != 99) {
                 row = *patptr++;
                 col += lp->ncols / 2;
@@ -481,8 +481,8 @@ void drawlife(perwindow *pwin) {
          */
 
         if (seconds() - lp->shooterTime > TIMEOUT) {
-                int hsp = random() % (lp->ncols - 5) + 3;
-                int vsp = random() % (lp->nrows - 5) + 3;
+                int hsp = arc4random() % (lp->ncols - 5) + 3;
+                int vsp = arc4random() % (lp->nrows - 5) + 3;
                 int hoff = 1;
                 int voff = 1;
                 if (vsp > lp->nrows / 2)

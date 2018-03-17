@@ -151,7 +151,7 @@ void initrotor(perwindow *pwin) {
                 fs->prev = 1;
                 fs->lastx = fs->centerx;
                 fs->lasty = fs->centery;
-                fs->angle = (random() % (long)MAXANGLE) / 3;
+                fs->angle = (arc4random() % (long)MAXANGLE) / 3;
                 fs->forward = fs->firsttime = True;
         }
         XSetForeground(dsp, pwin->gc,
@@ -187,17 +187,17 @@ void drawrotor(perwindow *pwin) {
                             pelem->radius_drift_now) {
                                 pelem->start_radius = pelem->end_radius;
                                 pelem->end_radius =
-                                    (float)(random() % 40000) / 100.0 - 200.0;
+                                    (float)(arc4random() % 40000) / 100.0 - 200.0;
                                 pelem->radius_drift_max =
-                                    (float)(random() % 100000) + 10000.0;
+                                    (float)(arc4random() % 100000) + 10000.0;
                                 pelem->radius_drift_now = 0.0;
                         }
                         if (pelem->ratio_drift_max <= pelem->ratio_drift_now) {
                                 pelem->start_ratio = pelem->end_ratio;
                                 pelem->end_ratio =
-                                    (float)(random() % 2000) / 100.0 - 10.0;
+                                    (float)(arc4random() % 2000) / 100.0 - 10.0;
                                 pelem->ratio_drift_max =
-                                    (float)(random() % 100000) + 10000.0;
+                                    (float)(arc4random() % 100000) + 10000.0;
                                 pelem->ratio_drift_now = 0.0;
                         }
                         pelem->ratio = pelem->start_ratio +

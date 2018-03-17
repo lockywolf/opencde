@@ -51,7 +51,7 @@
 /* Macros */
 #define X(t, b) (sp->x[(t)*sp->beecount + (b)])
 #define Y(t, b) (sp->y[(t)*sp->beecount + (b)])
-#define RAND(v) ((random() % (v)) - ((v) / 2)) /* random number around 0 */
+#define RAND(v) ((arc4random() % (v)) - ((v) / 2)) /* random number around 0 */
 
 typedef struct {
         int pix;
@@ -105,8 +105,8 @@ void initswarm(perwindow *pwin) {
         /* Initialize point positions, velocities, etc. */
 
         /* wasp */
-        sp->wx[0] = BORDER + random() % (sp->width - 2 * BORDER);
-        sp->wy[0] = BORDER + random() % (sp->height - 2 * BORDER);
+        sp->wx[0] = BORDER + arc4random() % (sp->width - 2 * BORDER);
+        sp->wy[0] = BORDER + arc4random() % (sp->height - 2 * BORDER);
         sp->wx[1] = sp->wx[0];
         sp->wy[1] = sp->wy[0];
         sp->wxv = 0;
@@ -114,9 +114,9 @@ void initswarm(perwindow *pwin) {
 
         /* bees */
         for (b = 0; b < sp->beecount; b++) {
-                X(0, b) = random() % sp->width;
+                X(0, b) = arc4random() % sp->width;
                 X(1, b) = X(0, b);
-                Y(0, b) = random() % sp->height;
+                Y(0, b) = arc4random() % sp->height;
                 Y(1, b) = Y(0, b);
                 sp->xv[b] = RAND(7);
                 sp->yv[b] = RAND(7);
@@ -162,8 +162,8 @@ void drawswarm(perwindow *pwin) {
                 sp->wy[0] += sp->wyv;
         }
         /* Don't let things settle down. */
-        sp->xv[random() % sp->beecount] += RAND(3);
-        sp->yv[random() % sp->beecount] += RAND(3);
+        sp->xv[arc4random() % sp->beecount] += RAND(3);
+        sp->yv[arc4random() % sp->beecount] += RAND(3);
 
         /* <=- Bees -=> */
         for (b = 0; b < sp->beecount; b++) {

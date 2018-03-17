@@ -104,14 +104,14 @@ void initqix(perwindow *pwin) {
         qp->offset = qp->delta / 3;
         qp->last = 0;
         qp->pix = 0;
-        qp->dx1 = random() % qp->delta + qp->offset;
-        qp->dy1 = random() % qp->delta + qp->offset;
-        qp->dx2 = random() % qp->delta + qp->offset;
-        qp->dy2 = random() % qp->delta + qp->offset;
-        qp->x1 = random() % qp->width;
-        qp->y1 = random() % qp->height;
-        qp->x2 = random() % qp->width;
-        qp->y2 = random() % qp->height;
+        qp->dx1 = arc4random() % qp->delta + qp->offset;
+        qp->dy1 = arc4random() % qp->delta + qp->offset;
+        qp->dx2 = arc4random() % qp->delta + qp->offset;
+        qp->dy2 = arc4random() % qp->delta + qp->offset;
+        qp->x1 = arc4random() % qp->width;
+        qp->y1 = arc4random() % qp->height;
+        qp->x2 = arc4random() % qp->width;
+        qp->y2 = arc4random() % qp->height;
         XSetForeground(dsp, pwin->gc,
                        BlackPixelOfScreen(pwin->perscreen->screen));
         XFillRectangle(dsp, pwin->w, pwin->gc, 0, 0, qp->width, qp->height);
@@ -120,9 +120,9 @@ void initqix(perwindow *pwin) {
 #define check_bounds(qp, val, del, max)                                        \
         {                                                                      \
                 if ((val) < 0) {                                               \
-                        *(del) = (random() % (qp)->delta) + (qp)->offset;      \
+                        *(del) = (arc4random() % (qp)->delta) + (qp)->offset;      \
                 } else if ((val) > (max)) {                                    \
-                        *(del) = -(random() % (qp)->delta) - (qp)->offset;     \
+                        *(del) = -(arc4random() % (qp)->delta) - (qp)->offset;     \
                 }                                                              \
         }
 

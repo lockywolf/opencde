@@ -85,8 +85,8 @@ void drawimage(perwindow *pwin) {
                                        ip->yb + xlogo_height * ip->icons[i].y,
                                        xlogo_width, xlogo_height);
 
-                ip->icons[i].x = random() % ip->ncols;
-                ip->icons[i].y = random() % ip->nrows;
+                ip->icons[i].x = arc4random() % ip->ncols;
+                ip->icons[i].y = arc4random() % ip->nrows;
         }
         if (pwin->perscreen->npixels == 2)
                 XSetForeground(dsp, pwin->gc,
@@ -96,7 +96,7 @@ void drawimage(perwindow *pwin) {
                         XSetForeground(
                             dsp, pwin->gc,
                             pwin->perscreen
-                                ->pixels[random() % pwin->perscreen->npixels]);
+                                ->pixels[arc4random() % pwin->perscreen->npixels]);
 
                 XPutImage(dsp, pwin->w, pwin->gc, &logo, 0, 0,
                           ip->xb + xlogo_width * ip->icons[i].x,

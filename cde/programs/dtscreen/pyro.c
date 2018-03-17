@@ -92,8 +92,8 @@
 #define MINSFUSE 50 /* Range of fuse lengths for stars */
 #define MAXSFUSE 100
 
-#define INTRAND(min, max) (random() % ((max + 1) - (min)) + (min))
-#define FLOATRAND(min, max) ((min) + (random() / MAXRAND) * ((max) - (min)))
+#define INTRAND(min, max) (arc4random() % ((max + 1) - (min)) + (min))
+#define FLOATRAND(min, max) ((min) + (arc4random() / MAXRAND) * ((max) - (min)))
 
 static void ignite();
 static void animate();
@@ -215,9 +215,9 @@ void drawpyro(perwindow *pwin) {
         int rockn;
 
         pp = (pyrostruct *)pwin->data;
-        if (just_started || (random() % pp->p_ignite == 0)) {
+        if (just_started || (arc4random() % pp->p_ignite == 0)) {
                 just_started = False;
-                if (random() % P_FUSILLADE == 0) {
+                if (arc4random() % P_FUSILLADE == 0) {
                         pp->p_ignite = orig_p_ignite / FUSILFACTOR;
                         pp->fusilcount =
                             INTRAND(FUSILLEN * 9 / 10, FUSILLEN * 11 / 10);
@@ -241,7 +241,7 @@ static void ignite(perwindow *pwin, pyrostruct *pp) {
         int multi, shelltype, nstars, fuse, npix, pix, color1, color2;
         float xvel, yvel, x;
 
-        x = random() % pp->width;
+        x = arc4random() % pp->width;
         xvel = FLOATRAND(-pp->maxvelx, pp->maxvelx);
         /* All this to stop too many rockets going offscreen: */
         if ((x < pp->lmargin && xvel < 0.0) || (x > pp->rmargin && xvel > 0.0))
@@ -250,18 +250,18 @@ static void ignite(perwindow *pwin, pyrostruct *pp) {
         fuse = INTRAND(MINFUSE, MAXFUSE);
         nstars = INTRAND(MINSTARS, MAXSTARS);
         if (!mono && (npix = pwin->perscreen->npixels) > 2) {
-                color1 = pwin->perscreen->pixels[pix = random() % npix];
+                color1 = pwin->perscreen->pixels[pix = arc4random() % npix];
                 color2 = pwin->perscreen->pixels[(pix + (npix / 2)) % npix];
         } else {
                 color1 = color2 = WhitePixelOfScreen(pwin->perscreen->screen);
         }
 
         multi = 1;
-        if (random() % P_DOUBLECLOUD == 0)
+        if (arc4random() % P_DOUBLECLOUD == 0)
                 shelltype = DOUBLECLOUD;
         else {
                 shelltype = CLOUD;
-                if (random() % P_MULTI == 0)
+                if (arc4random() % P_MULTI == 0)
                         multi = INTRAND(5, 15);
         }
 
@@ -331,7 +331,7 @@ static void shootup(perwindow *pwin, pyrostruct *pp, rocket *rp) {
         rp->yvel += pp->rockdecel;
         XSetForeground(dsp, pwin->gc, pp->rockpixel);
         XFillRectangle(dsp, pwin->w, pwin->gc, (int)(rp->x), (int)(rp->y),
-                       ROCKETW, ROCKETH + random() % 4);
+                       ROCKETW, ROCKETH + arc4random() % 4);
 }
 
 static void burst(perwindow *pwin, pyrostruct *pp, rocket *rp) {

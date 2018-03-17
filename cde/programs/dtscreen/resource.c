@@ -238,15 +238,10 @@ static argtype modevars[] = {
 static void Syntax(char *badOption) {
         int col, len, i;
 
-#ifdef MIT_R5
-        fprintf(stderr, "%s:  bad command line option:  %s.\n\n", ProgramName,
-                badOption);
-#else
         fprintf(
             stderr,
             catgets(scmc_catd, 2, 1, "%s:  Bad command line option:  %s.\n\n"),
             ProgramName, badOption);
-#endif
 
         fprintf(stderr, "usage:  %s", ProgramName);
         col = 8 + strlen(ProgramName);
@@ -278,47 +273,31 @@ static void Syntax(char *badOption) {
         }
         fprintf(stderr, "]\n");
 
-#ifdef MIT_R5
-        fprintf(stderr, "\nType %s -help for a full description.\n\n",
-                ProgramName);
-#else
         fprintf(stderr,
                 catgets(scmc_catd, 2, 2,
                         "\nType %s -help for a full description.\n\n"),
                 ProgramName);
-#endif
         exit(1);
 }
 
 static void Help(void) {
         int i;
 
-#ifdef MIT_R5
-        fprintf(stderr, "usage:\n        %s [-options ...]\n\n", ProgramName);
-        fprintf(stderr, "where options include:\n");
-
-#else
         fprintf(
             stderr,
             catgets(scmc_catd, 2, 3, "Usage:\n        %s [-options ...]\n\n\
         where options include:\n"),
             ProgramName);
-#endif
 
         for (i = 0; i < opDescEntries; i++) {
                 fprintf(stderr, "    %-28s %s\n", opDesc[i].opt,
                         opDesc[i].desc);
         }
 
-#ifdef MIT_R5
-        fprintf(stderr, "    %-28s %s\n", "-mode mode", "animation mode");
-        fprintf(stderr, "    where mode is one of:\n");
-#else
         fprintf(stderr,
                 catgets(scmc_catd, 2, 5,
                         "    %-28s %s\n\t where mode is one of:\n"),
                 "-mode mode", "animation mode");
-#endif
         for (i = 0; i < NUMPROCS; i++) {
                 fprintf(stderr, "          %-23s %s\n",
                         LockProcs[i].cmdline_arg, LockProcs[i].desc);
@@ -369,8 +348,8 @@ static void GetResource(XrmDatabase database, char *parentname,
         char fullclass[1024];
         int len;
 
-        sprintf(fullname, "%s.%s", parentname, name);
-        sprintf(fullclass, "%s.%s", parentclass, class);
+        snprintf(fullname, 1024, "%s.%s", parentname, name);
+        snprintf(fullclass, 1024, "%s.%s", parentclass, class);
         if (XrmGetResource(database, fullname, fullclass, &type, &value)) {
                 string = value.addr;
                 len = value.size;
@@ -386,9 +365,6 @@ static void GetResource(XrmDatabase database, char *parentname,
                 char *s;
                 s = (char *)malloc(len + 1);
                 if (s == (char *)NULL)
-#ifdef MIT_R5
-                        error("%s: GetResource - couldn't allocate memory");
-#else
                 {
                         fprintf(stderr,
                                 catgets(scmc_catd, 2, 18,
@@ -397,7 +373,6 @@ static void GetResource(XrmDatabase database, char *parentname,
                                 ProgramName);
                         exit(1);
                 }
-#endif
                 (void)strncpy(s, string, len);
                 s[len] = '\0';
                 *((char **)valuep) = s;
@@ -439,12 +414,12 @@ static XrmDatabase parsefilepath(char *xfilesearchpath, char *TypeName,
                                 *dst = '\0';
                                 break;
                         case 'T':
-                                (void)strcat(dst, TypeName);
+                                strlcat(dst, TypeName, 1024);
                                 src++;
                                 dst += strlen(TypeName);
                                 break;
                         case 'N':
-                                (void)strcat(dst, ClassName);
+                                strlcat(dst, ClassName, 1024);
                                 src++;
                                 dst += strlen(ClassName);
                                 break;
@@ -488,10 +463,6 @@ static void open_display(void) {
                 char *colon = strchr(display, ':');
 
                 if (colon == NULL)
-#ifdef MIT_R5
-                        error("%s: Malformed -display argument, \"%s\"\n",
-                              display);
-#else
                 {
                         fprintf(
                             stderr,
@@ -500,14 +471,10 @@ static void open_display(void) {
                             ProgramName, display);
                         exit(1);
                 }
-#endif
 
         } else
                 display = ":0.0";
         if (!(dsp = XOpenDisplay(display)))
-#ifdef MIT_R5
-                error("%s: unable to open display %s.\n", display);
-#else
         {
                 fprintf(stderr,
                         catgets(scmc_catd, 2, 17,
@@ -515,7 +482,6 @@ static void open_display(void) {
                         ProgramName, display);
                 exit(1);
         }
-#endif
 
         XSetIOErrorHandler(screenIOErrorHandler);
 }
@@ -617,7 +583,7 @@ void GetResources(int argc, char *argv[]) {
                 (void)XrmMergeDatabases(serverDB, &RDB);
         } else {
                 char buf[1024];
-                sprintf(buf, "%s/.Xdefaults", homeenv);
+                snprintf(buf, 1024, "%s/.Xdefaults", homeenv);
                 homeDB = XrmGetFileDatabase(buf);
                 (void)XrmMergeDatabases(homeDB, &RDB);
         }
@@ -633,25 +599,25 @@ void GetResources(int argc, char *argv[]) {
          * if random< mode, then just grab a random entry from the table
          */
         if (!strcmp(mode, randomstring))
-                mode = LockProcs[random() % (NUMPROCS - 2)].cmdline_arg;
+                mode = LockProcs[arc4random() % (NUMPROCS - 2)].cmdline_arg;
 
-        sprintf(modename, "%s.%s", ProgramName, mode);
-        sprintf(modeclass, "%s.%s", classname, mode);
+        snprintf(modename, 1024, "%s.%s", ProgramName, mode);
+        snprintf(modeclass, 1024, "%s.%s", classname, mode);
 
         /*********************************************************************/
         /** New code for AIX                                                **/
         /** We must build the specifier fields of the modeTable on the fly. **/
         /*********************************************************************/
-        sprintf(delaySpecifier, ".%s.delay", mode);
-        sprintf(batchcountSpecifier, ".%s.batchcount", mode);
-        sprintf(saturationSpecifier, ".%s.saturation", mode);
+        snprintf(delaySpecifier, 64, ".%s.delay", mode);
+        snprintf(batchcountSpecifier, 64, ".%s.batchcount", mode);
+        snprintf(saturationSpecifier, 64, ".%s.saturation", mode);
         modeTable[0].specifier = delaySpecifier;
         modeTable[1].specifier = batchcountSpecifier;
         modeTable[2].specifier = saturationSpecifier;
 
         XrmParseCommand(&modeDB, modeTable, modeEntries, ProgramName, &argc,
                         argv);
-        (void)XrmMergeDatabases(modeDB, &RDB);
+        XrmMergeDatabases(modeDB, &RDB);
 
         /* Parse the rest of the command line */
         for (argc--, argv++; argc > 0; argc--, argv++) {
@@ -700,12 +666,8 @@ void CheckResources(void) {
                 }
         }
         if (i == NUMPROCS) {
-#ifdef MIT_R5
-                fprintf(stderr, "Unknown mode: ");
-#else
                 fprintf(stderr, "%s",
                         catgets(scmc_catd, 2, 7, "Unknown mode: "));
-#endif
                 Syntax(mode);
         }
 }

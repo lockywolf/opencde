@@ -14,12 +14,12 @@ LOCAL_LIBRARIES = $(DTSVCLIB) $(TTLIB) $(XMLIB) $(XTOOLLIB) $(XLIB)
 SRCS =	blank.c		dtscreen.c	flame.c		hopalong.c \
 	hsbramp.c	image.c		life.c		pyro.c \
 	qix.c		resource.c	rotor.c		swarm.c \
-	usleep.c	worm.c
+	worm.c
 
 OBJS =	blank.o		dtscreen.o	flame.o		hopalong.o \
 	hsbramp.o	image.o		life.o		pyro.o \
 	qix.o		resource.o	rotor.o		swarm.o \
-	usleep.o	worm.o
+	worm.o
 
 all::
 

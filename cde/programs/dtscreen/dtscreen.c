@@ -117,10 +117,6 @@ nl_catd scmc_catd; /* Cat descriptor for scmc conversion */
 #include <X11/Intrinsic.h> /* For Boolean */
 #include <X11/Shell.h>
 #include "dtscreen.h"
-#ifdef NEVER
-/* We'd like to include DtP.h, but it interferes with dtscreen.h */
-#include <Dt/DtP.h>
-#endif /* NEVER */
 #include <Dt/EnvControlP.h>
 #include <Dt/Saver.h>
 
@@ -182,17 +178,10 @@ long allocpixel(Colormap cmap, char *name, char *def) {
         XColor tmp;
         XParseColor(dsp, cmap, name, &col);
         if (!XAllocColor(dsp, cmap, &col)) {
-#ifdef MIT_R5
-
-                fprintf(stderr, "couldn't allocate: %s, using %s instead\n",
-                        name, def);
-
-#else
                 fprintf(stderr,
                         catgets(scmc_catd, 2, 35,
                                 "couldn't allocate: %s, using %s instead\n"),
                         name, def);
-#endif
 
                 XAllocNamedColor(dsp, cmap, def, &col, &tmp);
         }
@@ -359,4 +348,15 @@ int main(int argc, char *argv[]) {
         finish();
 
         return 0;
+}
+
+/*
+ * returns the number of seconds since 01-Jan-70.
+ * This is used to control rate and timeout in many of the animations.
+ */
+long seconds(void) {
+        struct timeval now;
+
+        gettimeofday(&now, (struct timezone *)0);
+        return now.tv_sec;
 }
