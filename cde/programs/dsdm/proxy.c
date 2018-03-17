@@ -182,7 +182,7 @@ extern Atom ATOM_WM_STATE;
 
 unsigned char *GetInterestProperty();
 
-static ForwardConversion();
+static int ForwardConversion();
 
 static drop_info_t drop_table[DROP_TABLE_MAX];
 Atom ATOM_SUN_DND_TRIGGER;
@@ -317,7 +317,7 @@ Window GetAtomWindow(Display *dpy, Window win, Atom atom) {
                     (nchildren == 0))
                         return 0;
                 for (i = nchildren - 1; i >= 0; i--) {
-                        if (inf = GetAtomWindow(dpy, children[i], atom))
+                        if ((inf = GetAtomWindow(dpy, children[i], atom)))
                                 return inf;
                 }
         }
@@ -415,7 +415,7 @@ void ProxyInit(Display *dpy, Window dsdm_win) {
 
         for (i = 0; i < DROP_TABLE_MAX; i++) {
                 buf_names[i] = buf + (ATOM_BUF_LEN * i);
-                sprintf(buf_names[i], "DND_PROXY_HANDLE_%d", i);
+                snprintf(buf_names[i], ATOM_BUF_LEN * DROP_TABLE_MAX, "DND_PROXY_HANDLE_%d", i);
         }
         XInternAtoms(dpy, buf_names, DROP_TABLE_MAX, False, buf_atoms);
 
@@ -1082,7 +1082,7 @@ static int CopyTargets(Display *dpy, Atom prop, Window old_win,
 
 /* Forward the SelectionNotify to the receiver.
    Returns True if we get ATOM_SUN_DND_DONE or ATOM_SUN_SELECTION_END */
-static ForwardConversion(XSelectionEvent *event, drop_info_t *drop_info) {
+static int ForwardConversion(XSelectionEvent *event, drop_info_t *drop_info) {
         int ol_done = False;
 
         if (CopyProperty(event->display, event->property, event->requestor,
