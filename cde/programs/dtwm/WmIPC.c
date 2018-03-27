@@ -451,17 +451,17 @@ void dtSendWorkspaceModifyNotification(WmScreenData *pSD, Atom aWs, int iType) {
         if (status != TT_OK) {
                 return;
         }
-        sprintf(sNum, "%d", pSD->screen);
+        snprintf(sNum, 40, "%d", pSD->screen);
         status = tt_message_arg_add(msg, TT_IN, Tttk_string, sNum);
         if (status != TT_OK) {
                 return;
         }
-        sprintf(pch, "%ld", aWs);
+        snprintf(pch, 40, "%ld", aWs);
         status = tt_message_arg_add(msg, TT_IN, Tttk_string, pch);
         if (status != TT_OK) {
                 return;
         }
-        sprintf(pchType, "%d", iType);
+        snprintf(pchType, 40, "%d", iType);
         status = tt_message_arg_add(msg, TT_IN, Tttk_string, pchType);
         if (status != TT_OK) {
                 return;
@@ -519,7 +519,7 @@ void dtSendMarqueeSelectionNotification(WmScreenData *pSD, int type, Position x,
                 return;
         }
 
-        sprintf(sNum, "%d", pSD->screen);
+        snprintf(sNum, 40, "%d", pSD->screen);
         status = tt_message_arg_add(msg, TT_IN, Tttk_string, sNum);
         if (status != TT_OK) {
                 return;
@@ -811,7 +811,7 @@ Tt_callback_action RequestMsgCB(Tt_message m, Tt_pattern p) {
                                              ptr += strlen(pCD->smClientID) + 1,
                                             i++) {
                                                 pCD = clients[i];
-                                                strcpy(ptr, pCD->smClientID);
+                                                strlcpy(ptr, pCD->smClientID, clientIdLen - (i * strlen(pCD->smClientID)));
                                                 clientWorkspaces[i] =
 #ifdef WSM
                                                     pCD->pWsList
@@ -883,8 +883,10 @@ static void ToolTalkError(Widget parent, char *errfmt, Tt_status status) {
                 return;
 
         statmsg = tt_status_message(status);
-        errmsg = XtMalloc(strlen(errfmt) + strlen(statmsg) + 2);
-        sprintf(errmsg, errfmt, statmsg);
+
+        int errmsg_size = strlen(errfmt) + strlen(statmsg) + 2;
+        errmsg = XtMalloc(errmsg_size);
+        snprintf(errmsg, errmsg_size, errfmt, statmsg);
 
         xms_ok = GETXMSTRING(2, 3, "OK");
         xms_errmsg = XmStringCreateLocalized(errmsg);

@@ -441,19 +441,20 @@ Boolean FrontPanelReadDatabases(void)
 
         HOME_DIR = XtNewString(HOME_DIR);
 
-        new_search_paths =
-            XtMalloc(strlen("DTDATABASESEARCHPATH") + strlen(HOME_DIR) +
-                     strlen(TYPES_DIR_NO_SLASH) + strlen(search_paths) + 3);
-        sprintf(new_search_paths, "%s=%s%s,%s", "DTDATABASESEARCHPATH",
-                HOME_DIR, TYPES_DIR_NO_SLASH, search_paths);
+        int new_search_paths_size = strlen("DTDATABASESEARCHPATH") + strlen(HOME_DIR) +
+            strlen(TYPES_DIR_NO_SLASH) + strlen(search_paths) + 3;
+        new_search_paths = XtMalloc(new_search_paths_size);
+        snprintf(new_search_paths, new_search_paths_size, "%s=%s%s,%s",
+                "DTDATABASESEARCHPATH", HOME_DIR, TYPES_DIR_NO_SLASH, search_paths);
         putenv(new_search_paths);
 
         XtFree(search_paths);
 
         /*  See if the fp_dynamic directory exists.  If not, create it  */
 
-        dynamic_dir = XtMalloc(strlen(HOME_DIR) + strlen(TYPES_DIR) + 3);
-        sprintf(dynamic_dir, "%s%s", HOME_DIR, TYPES_DIR);
+        int dynamic_dir_size = strlen(HOME_DIR) + strlen(TYPES_DIR) + 3;
+        dynamic_dir = XtMalloc(dynamic_dir_size);
+        snprintf(dynamic_dir, dynamic_dir_size, "%s%s", HOME_DIR, TYPES_DIR);
 
         if (lstat(dynamic_dir, &stat_info) != 0)
                 if ((fd = mkdir(dynamic_dir, S_IRWXU | S_IRGRP | S_IROTH |
@@ -1084,7 +1085,7 @@ static void ProcessRecord(DtDtsDbField *fields, ElementValue *element_values)
         int i, j;
         int entry;
 
-        int keyword_count;
+        int keyword_count = 0;
         char **field_keywords;
 
         /*  Find the position in the record structure for the value of   */
@@ -2422,11 +2423,12 @@ static char *CreateComponentFileName(RecordData *record_data)
         strncpy(component_name, record_data->element_values[0].string_value, 8);
         component_name[8] = '\0';
 
-        file_name = XtMalloc(strlen(HOME_DIR) + strlen(TYPES_DIR) + 14);
+        int file_name_size = strlen(HOME_DIR) + strlen(TYPES_DIR) + 14;
+        file_name = XtMalloc(file_name_size);
 
         for (i = 1; i < 1000; i++) {
-                sprintf(file_name, "%s%s%s%d.fp", HOME_DIR, TYPES_DIR,
-                        component_name, i);
+                snprintf(file_name, file_name_size, "%s%s%s%d.fp", HOME_DIR,
+                        TYPES_DIR, component_name, i);
 
                 if (lstat(file_name, &stat_info) != 0)
                         break;
@@ -2699,23 +2701,26 @@ void InitParse(char *file_name, ElementValue **elem_vals)
 
         /* create directory for dir path */
 
-        tmpPath = XtMalloc(strlen(HOME_DIR) + strlen(TYPES_DIR) + 34);
-        sprintf(tmpPath, "%s%s%s%d", HOME_DIR, TYPES_DIR, "fp", (int)getpid());
+        int tmpPath_size = strlen(HOME_DIR) + strlen(TYPES_DIR) + 34;
+        tmpPath = XtMalloc(tmpPath_size);
+        snprintf(tmpPath, tmpPath_size, "%s%s%s%d", HOME_DIR, TYPES_DIR, "fp", (int)getpid());
         mkdir(tmpPath, S_IRUSR | S_IWUSR | S_IXUSR);
 
         /* create symbolic link to file_name */
 
         tmpName = XtNewString(file_name);
         baseName = strrchr(tmpName, '/');
-        tmpFile = XtMalloc(strlen(tmpPath) + strlen(baseName) + 1);
-        sprintf(tmpFile, "%s%s", tmpPath, baseName);
+        int tmpFile_size = strlen(tmpPath) + strlen(baseName) + 1;
+        tmpFile = XtMalloc(tmpFile_size);
+        snprintf(tmpFile, tmpFile_size, "%s%s", tmpPath, baseName);
         symlink(file_name, tmpFile);
 
         hostName = XtMalloc((Cardinal)(MAXHOSTNAMELEN + 1));
         DtGetShortHostname(hostName, MAXHOSTNAMELEN + 1);
 
-        tmpDir = XtMalloc(strlen(hostName) + strlen(tmpPath) + 2);
-        sprintf(tmpDir, "%s:%s", hostName, tmpPath);
+        int tmpDir_size = strlen(hostName) + strlen(tmpPath) + 2;
+        tmpDir = XtMalloc(tmpDir_size);
+        snprintf(tmpDir, tmpDir_size, "%s:%s", hostName, tmpPath);
 
         dirPath = (DtDirPaths *)XtMalloc(sizeof(DtDirPaths));
         dirPath->dirs = (char **)XtMalloc(sizeof(char *) * 2);

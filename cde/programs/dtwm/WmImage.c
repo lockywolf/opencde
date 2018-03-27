@@ -45,16 +45,10 @@ static char rcsid[] =
 #define MWM_NEED_IIMAGE
 #include "WmIBitmap.h"
 
-#ifdef MOTIF_ONE_DOT_ONE
-#include <stdio.h>
-#include <pwd.h>
-#define MATCH_CHAR 'P' /* Default match character - defined in Xmos.p */
-#else
 #include <Xm/XmosP.h>
 /* Copied from XmosI.h */
 extern String _XmOSInitPath(String file_name, String env_pathname,
                             Boolean *user_path);
-#endif
 #ifdef WSM
 #include <Xm/IconFile.h>
 #include <Dt/GetDispRes.h>
@@ -73,11 +67,6 @@ extern String _XmOSInitPath(String file_name, String env_pathname,
 #include "WmResParse.h"
 #include "WmMenu.h"
 #include "WmError.h"
-
-#ifdef MOTIF_ONE_DOT_ONE
-    extern char *
-    getenv();
-#endif
 
 /******************************<->*************************************
  *
@@ -876,15 +865,16 @@ int GetBitmapIndex(WmScreenData *pSD, char *name)
          */
 
         if (path) {
+                int path_size = strlen(path) + 1;
                 if ((bitmapc->path = (String)XtMalloc(
-                         (unsigned int)(strlen(path) + 1))) == NULL) {
+                         (unsigned int)path_size)) == NULL) {
                         MWarning(
                             ((char *)GETMESSAGE(
                                 38, 6, "Insufficient memory for bitmap %s\n")),
                             name);
                         return (-1);
                 }
-                strcpy(bitmapc->path, path);
+                strlcpy(bitmapc->path, path, path_size);
 
                 if (XReadBitmapFile(DISPLAY, pSD->rootWindow, path,
                                     &bitmapc->width, &bitmapc->height,
@@ -966,9 +956,7 @@ char *BitmapPathName(string) char *string;
         static char fileName[MAXWMPATH + 1];
         char *retname;
         SubstitutionRec subs[1];
-#ifndef MOTIF_ONE_DOT_ONE
         char *homeDir = XmeGetHomeDirName();
-#endif
 
         if (!string || !*string) {
                 return (NULL);
@@ -987,11 +975,7 @@ char *BitmapPathName(string) char *string;
          * Handle "~/.."
          */
         {
-#ifdef MOTIF_ONE_DOT_ONE
-                GetHomeDirName(fileName);
-#else
-                strcpy(fileName, homeDir);
-#endif
+                strlcpy(fileName, homeDir, MAXWMPATH + 1);
                 strncat(fileName, &(string[1]), MAXWMPATH - strlen(fileName));
                 return (fileName);
         }
@@ -1007,15 +991,11 @@ char *BitmapPathName(string) char *string;
         {
                 if ((wmGD.bitmapDirectory[0] == '~') &&
                     (wmGD.bitmapDirectory[1] == '/')) {
-#ifdef MOTIF_ONE_DOT_ONE
-                        GetHomeDirName(fileName);
-#else
-                        strcpy(fileName, homeDir);
-#endif
+                        strlcpy(fileName, homeDir, MAXWMPATH + 1);
                         strncat(fileName, &wmGD.bitmapDirectory[1],
                                 MAXWMPATH - strlen(fileName));
                 } else {
-                        strcpy(fileName, wmGD.bitmapDirectory);
+                        strlcpy(fileName, wmGD.bitmapDirectory, MAXWMPATH + 1);
                 }
                 strncat(fileName, "/", MAXWMPATH - strlen(fileName));
                 strncat(fileName, string, MAXWMPATH - strlen(fileName));
@@ -1032,9 +1012,6 @@ char *BitmapPathName(string) char *string;
 
                 /* Fall back on a path search */
 
-#ifdef MOTIF_ONE_DOT_ONE
-        return (NULL);
-#else
         {
                 char *search_path;
                 Boolean user_path;
@@ -1054,7 +1031,6 @@ char *BitmapPathName(string) char *string;
                 XtFree(retname);
                 return (fileName);
         }
-#endif
 
 } /* END OF FUNCTION BitmapPathName */
 

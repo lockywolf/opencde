@@ -855,13 +855,15 @@ void InitializeIconBoxData(WmWorkspaceData *pWS, IconBoxData *pIBD) {
         if (!((!strcmp(pWS->pSD->iconBoxSBDisplayPolicy, "all")) ||
               (!strcmp(pWS->pSD->iconBoxSBDisplayPolicy, szvertical)) ||
               (!strcmp(pWS->pSD->iconBoxSBDisplayPolicy, szhorizontal)))) {
-                strcpy(pWS->pSD->iconBoxSBDisplayPolicy, "all");
+                fprintf(stderr, "ERROR: iconBoxSBDisplayPolicy is invalid.");
+                // AFAICT, this is never used
+                // strlcpy(pWS->pSD->iconBoxSBDisplayPolicy, "all");
         }
 
-                /*
-                 * this will be set by the iconPlacement resource if
-                 * iconBoxGeometry width and height are not specified
-                 */
+        /*
+         * this will be set by the iconPlacement resource if
+         * iconBoxGeometry width and height are not specified
+         */
 
 #ifdef WSM
         if (pWS->iconBoxGeometry == NULL) /* not set by user */
@@ -2513,8 +2515,7 @@ void CheckIconBoxResize(ClientData *pCD, unsigned int changedValues,
                 }
 
                 if (newWidth < (int)oldWidth) {
-                        if ((!strcmp(pSD->iconBoxSBDisplayPolicy,
-                                     szvertical)) &&
+                        if ((!strcmp(pSD->iconBoxSBDisplayPolicy, szvertical)) &&
                             (newWidth / pCD->widthInc < pIBD->lastCol + 1)) {
                                 XtSetArg(setArgs[i], XmNwidth,
                                          (XtArgVal)newWidth);
@@ -2550,8 +2551,7 @@ void CheckIconBoxResize(ClientData *pCD, unsigned int changedValues,
                 }
 
                 if (newHeight < (int)oldHeight) {
-                        if ((!strcmp(pSD->iconBoxSBDisplayPolicy,
-                                     szhorizontal)) &&
+                        if ((!strcmp(pSD->iconBoxSBDisplayPolicy, szhorizontal)) &&
                             (newHeight / pCD->heightInc < pIBD->lastRow + 1)) {
                                 XtSetArg(setArgs[i], XmNheight,
                                          (XtArgVal)newHeight);

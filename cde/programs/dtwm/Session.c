@@ -87,8 +87,9 @@ static char *SessionFileGetName()
                 home_dir = pw_info->pw_dir;
         }
 
-        file_name = XtMalloc(strlen(home_dir) + strlen(SESSION_FILE) + 1);
-        sprintf(file_name, "%s%s", home_dir, SESSION_FILE);
+        int file_name_size = strlen(home_dir) + strlen(SESSION_FILE) + 1;
+        file_name = XtMalloc(file_name_size);
+        snprintf(file_name, file_name_size, "%s%s", home_dir, SESSION_FILE);
 
         return (file_name);
 }
@@ -567,7 +568,6 @@ void WmFrontPanelSessionSaveData()
 
 {
         FILE *fd;
-
         char *session_file;
         Boolean written = False;
 
@@ -641,7 +641,7 @@ void WmFrontPanelSessionSaveData()
                                 if (XtIsManaged(subpanel_data[i]->shell))
                                         fprintf(
                                             fd, "%s %d %d %d\n",
-                                            subpanel_data[i]
+                                            (char *) subpanel_data[i]
                                                 ->element_values[SUBPANEL_NAME]
                                                 .parsed_value,
                                             XtX(subpanel_data[i]->shell),
@@ -661,10 +661,10 @@ void WmFrontPanelSessionSaveData()
                                     subpanel_data[i]->parent_control_data) {
                                         fprintf(
                                             fd, "%s	%s\n",
-                                            subpanel_data[i]
+                                            (char *) subpanel_data[i]
                                                 ->element_values[SUBPANEL_NAME]
                                                 .parsed_value,
-                                            subpanel_data[i]
+                                            (char *) subpanel_data[i]
                                                 ->default_control
                                                 ->element_values[CONTROL_NAME]
                                                 .parsed_value);
@@ -862,8 +862,9 @@ void SessionDeleteAll(void) {
         }
 
         /* Add path to fp_dynamic directory */
-        fp_dir = XtMalloc(strlen(home_dir) + strlen(TYPES_DIR) + 1);
-        sprintf(fp_dir, "%s%s", home_dir, TYPES_DIR);
+        int fp_dir_size = strlen(home_dir) + strlen(TYPES_DIR) + 1;
+        fp_dir = XtMalloc(fp_dir_size);
+        snprintf(fp_dir, fp_dir_size, "%s%s", home_dir, TYPES_DIR);
 
         /* Open the fp_dynamic directory */
         dir = opendir(fp_dir);
@@ -872,7 +873,7 @@ void SessionDeleteAll(void) {
                 return;
 
         /* prepare source name */
-        strcpy(srcname, fp_dir);
+        strlcpy(srcname, fp_dir, MAX_PATH);
         srclen = strlen(fp_dir);
         if (srcname[srclen - 1] != '/')
                 srcname[srclen++] = '/';
@@ -885,7 +886,7 @@ void SessionDeleteAll(void) {
                 if (strcmp(entry->d_name, ".") == 0 ||
                     strcmp(entry->d_name, "..") == 0)
                         continue;
-                strcpy(srcname + srclen, entry->d_name);
+                strlcpy(srcname + srclen, entry->d_name, MAX_PATH);
                 remove(srcname);
         }
 }

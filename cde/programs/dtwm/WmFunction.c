@@ -2087,7 +2087,7 @@ Boolean F_Push_Recall(String args, ClientData *pCD, XEvent *event) {
                         }
 
                         if (!bWaiting) {
-                                long clientTimeout;
+                                long clientTimeout = 0;
                                 Arg al[5];
                                 int ac;
                                 WmPanelistObject pPanelist;
@@ -4071,7 +4071,7 @@ Boolean F_Screen(String args, ClientData *pCD, XEvent *event) {
                                 scr += inc;
                                 continue;
                         }
-                        sprintf(pch, "Unable to warp to unmanaged screen %d\n",
+                        snprintf(pch, 80, "Unable to warp to unmanaged screen %d\n",
                                 scr);
                         Warning(&pch[0]);
                         XBell(DISPLAY, 0);
@@ -4264,7 +4264,7 @@ Boolean F_ZZ_Debug(String subFcn, ClientData *pCD, XEvent *event) {
                         char szRes[80];
 
                         for (scr = 0; scr < wmGD.numScreens; scr++) {
-                                sprintf(szRes, "/tmp/dtwm.resources.%d", scr);
+                                snprintf(szRes, 80, "/tmp/dtwm.resources.%d", scr);
 
                                 XrmPutFileDatabase(
                                     XtScreenDatabase(

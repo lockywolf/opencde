@@ -2193,7 +2193,7 @@ static void SwitchCreate(BoxData *box_data)
         int switch_count = 1;
         Atom *atom_names;
         Atom current_workspace_atom;
-        int current_workspace;
+        int current_workspace = -1;
 
         Widget switch_button;
 
@@ -3430,53 +3430,45 @@ void AddSubpanel(ControlData *control_data)
         BoxData *box_data = (BoxData *)control_data->parent_data;
 
         DtWmHints vHints;
-
         Arg al[2];
         int i;
 
-        if (control_data->subpanel_data == NULL) {
-                control_data->subpanel_data =
-                    (SubpanelData *)XtMalloc(sizeof(SubpanelData));
+        control_data->subpanel_data =
+            (SubpanelData *)XtMalloc(sizeof(SubpanelData));
 
-                subpanel_data = control_data->subpanel_data;
+        subpanel_data = control_data->subpanel_data;
 
-                element_values = (ElementValue *)XtMalloc(
-                    sizeof(ElementValue) * SUBPANEL_KEYWORD_COUNT);
+        element_values = (ElementValue *)XtMalloc(
+            sizeof(ElementValue) * SUBPANEL_KEYWORD_COUNT);
 
-                for (i = 0; i < SUBPANEL_KEYWORD_COUNT; i++) {
-                        (element_values)[i].use_default = True;
-                        (element_values)[i].string_value = NULL;
-                        (element_values)[i].parsed_value = NULL;
-                }
-
-                element_values[SUBPANEL_NAME].string_value = XtNewString(
-                    control_data->element_values[CONTROL_NAME].parsed_value);
-                element_values[SUBPANEL_CONTAINER_NAME].string_value =
-                    XtNewString(control_data->element_values[CONTROL_NAME]
-                                    .parsed_value);
-                if (control_data->element_values[CONTROL_LABEL].parsed_value !=
-                    NULL)
-                        element_values[SUBPANEL_TITLE].string_value =
-                            XtNewString(
-                                control_data->element_values[CONTROL_LABEL]
-                                    .parsed_value);
-                else
-                        element_values[SUBPANEL_TITLE].string_value =
-                            XtNewString(
-                                control_data->element_values[CONTROL_NAME]
-                                    .parsed_value);
-
-                subpanel_data->control_data = NULL;
-                subpanel_data->control_data_count = 0;
-                subpanel_data->parent_control_data = control_data;
-
-                InitializeSubpanelFields(element_values);
-
-                subpanel_data->element_values = element_values;
+        for (i = 0; i < SUBPANEL_KEYWORD_COUNT; i++) {
+                (element_values)[i].use_default = True;
+                (element_values)[i].string_value = NULL;
+                (element_values)[i].parsed_value = NULL;
         }
 
-        if (!XtIsManaged(XtParent(control_data->arrow))) {
+        element_values[SUBPANEL_NAME].string_value = XtNewString(
+            control_data->element_values[CONTROL_NAME].parsed_value);
+        element_values[SUBPANEL_CONTAINER_NAME].string_value =
+            XtNewString(control_data->element_values[CONTROL_NAME].parsed_value);
+        if (control_data->element_values[CONTROL_LABEL].parsed_value != NULL)
+                element_values[SUBPANEL_TITLE].string_value =
+                    XtNewString(
+                        control_data->element_values[CONTROL_LABEL].parsed_value);
+        else
+                element_values[SUBPANEL_TITLE].string_value =
+                    XtNewString(
+                        control_data->element_values[CONTROL_NAME].parsed_value);
 
+        subpanel_data->control_data = NULL;
+        subpanel_data->control_data_count = 0;
+        subpanel_data->parent_control_data = control_data;
+
+        InitializeSubpanelFields(element_values);
+
+        subpanel_data->element_values = element_values;
+
+        if (!XtIsManaged(XtParent(control_data->arrow))) {
                 if (box_data->left_arrow_form) {
                         XtSetArg(al[0], XmNtopAttachment, XmATTACH_WIDGET);
                         XtSetArg(al[1], XmNtopWidget,

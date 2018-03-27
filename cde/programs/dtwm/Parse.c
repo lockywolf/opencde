@@ -73,7 +73,7 @@ Boolean StringToInt(char *parse_source, void **parse_return)
         long value = 0;
         char chr;
 
-        while (chr = *source_ptr++) {
+        while ((chr = *source_ptr++)) {
                 if (chr >= '0' && chr <= '9') {
                         value *= 10;
                         value += chr - '0';

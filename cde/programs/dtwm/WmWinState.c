@@ -615,7 +615,7 @@ void ConfigureNewState(ClientData *pcd) {
                  * Update client config to reflect underlying head, if MultiHead
                  * is active
                  */
-                if (WmHI = GetHeadInfo(pcd)) {
+                if ((WmHI = GetHeadInfo(pcd))) {
                         FrameToClient(pcd, &WmHI->x_org, &WmHI->y_org,
                                       &WmHI->width, &WmHI->height);
                         pcd->maxX = WmHI->x_org;

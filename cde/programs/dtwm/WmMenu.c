@@ -1857,19 +1857,19 @@ static void SearchForOtherMatches(WmScreenData *pSD, ClientData *pCD,
                                         WmFunction inLine_function;
 
                                         if (command_string == NULL)
-                                                sprintf(new_command_str, "<%s>",
+                                                snprintf(new_command_str, 1024, "<%s>",
                                                         tree->name);
                                         else
-                                                sprintf(
-                                                    new_command_str, "%s.<%s>",
+                                                snprintf(
+                                                    new_command_str, 1024, "%s.<%s>",
                                                     command_string, tree->name);
                                         if (tree->subTrees != (CmdTree *)NULL) {
                                                 /* menu to cascade to */
-                                                sprintf(new_funcargs, "<%s>",
+                                                snprintf(new_funcargs, 1024, "<%s>",
                                                         tree->name);
                                                 inLine_function = F_Menu;
                                         } else {
-                                                sprintf(new_funcargs,
+                                                snprintf(new_funcargs, 1024,
                                                         "%d %ld %ld",
                                                         tree->commandID,
                                                         pCD->client, selection);
@@ -1976,10 +1976,10 @@ static void InsertTreeOnClient(WmScreenData *pSD, ClientData *pCD,
                          (tree->name != NULL ? strlen(tree->name) : 0) + 4;
                 new_command_str = XtMalloc(sizeof(unsigned char) * length);
                 if (command_so_far != (String)NULL)
-                        sprintf(new_command_str, "%s.<%s>", command_so_far,
+                        snprintf(new_command_str, length, "%s.<%s>", command_so_far,
                                 tree->name);
                 else
-                        sprintf(new_command_str, "<%s>", tree->name);
+                        snprintf(new_command_str, length, "<%s>", tree->name);
 
                 /* If there is an exclusion preventing this command from being
                    inserted, then just continue the loop. @RGC: This is wrong.
@@ -2023,7 +2023,7 @@ static void InsertTreeOnClient(WmScreenData *pSD, ClientData *pCD,
                 else if (tree->subTrees != (CmdTree *)NULL) {
                         /* Create the name of the menu for the f.menu command.
                          */
-                        sprintf(funcarg_buf, "<%s>", tree->name);
+                        snprintf(funcarg_buf, 256, "<%s>", tree->name);
 
                         /* Store the cascade button information so it can be
                            created later. */
@@ -2126,7 +2126,7 @@ static void InsertTreeOnClient(WmScreenData *pSD, ClientData *pCD,
                 {
                         /* Store away the push button information so it can be
                            created later. */
-                        sprintf(funcarg_buf, "%d %ld %ld", tree->commandID,
+                        snprintf(funcarg_buf, 256, "%d %ld %ld", tree->commandID,
                                 (pCD == NULL ? None : pCD->client), selection);
 
                         /* If the menuSpec is global and we are supposed to be
@@ -4204,7 +4204,7 @@ void MWarning(char *format, char *message) {
         if (strlen(format) + strlen(message) < (size_t)MAXWMPATH) {
                 char pch[MAXWMPATH + 1];
 
-                sprintf(pch, format, message);
+                snprintf(pch, MAXWMPATH + 1, format, message);
                 Warning(pch);
         }
 

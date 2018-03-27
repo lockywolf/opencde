@@ -275,7 +275,7 @@ void SetupWmICCC(void) {
                 if (wmGD.Screens[scr].managed) {
                         char wm_query_scr[32];
 
-                        sprintf(wm_query_scr, "_MOTIF_WM_QUERY_%d",
+                        snprintf(wm_query_scr, 32, "_MOTIF_WM_QUERY_%d",
                                 wmGD.Screens[scr].screen);
                         xa_WM_QUERY[scr] =
                             XInternAtom(DISPLAY, wm_query_scr, False);
@@ -1091,7 +1091,7 @@ static void OwnWMSelections(Time timestamp) {
                 if (wmGD.Screens[scr].managed) {
                         char wm_scr[8];
 
-                        sprintf(wm_scr, "WM_S%d", DefaultScreen(DISPLAY));
+                        snprintf(wm_scr, 8, "WM_S%d", DefaultScreen(DISPLAY));
                         wmGD.xa_WM[scr] = XInternAtom(DISPLAY, wm_scr, False);
 
 #ifdef MWM_WSM

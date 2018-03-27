@@ -1271,30 +1271,30 @@ void SetWorkspaceInfoProperty(WmWorkspaceData *pWS) {
 
         /*  Pixel set id */
         ix = (i * WIP_NUMBER_SIZE);
-        sprintf(&pch[ix], "%d", pWS->backdrop.colorSet);
+        snprintf(&pch[ix], WIP_NUMBER_SIZE, "%d", pWS->backdrop.colorSet);
         ppchList[i++] = &pch[ix];
 
         /* backdrop background */
         ix = (i * WIP_NUMBER_SIZE);
-        sprintf(&pch[ix], "0x%lx", pWS->backdrop.background);
+        snprintf(&pch[ix], WIP_NUMBER_SIZE, "0x%lx", pWS->backdrop.background);
         ppchList[i++] = &pch[ix];
 
         /* backdrop foreground */
         ix = (i * WIP_NUMBER_SIZE);
-        sprintf(&pch[ix], "0x%lx", pWS->backdrop.foreground);
+        snprintf(&pch[ix], WIP_NUMBER_SIZE, "0x%lx", pWS->backdrop.foreground);
         ppchList[i++] = &pch[ix];
 
         /* backdrop name */
         ix = (i * WIP_NUMBER_SIZE);
-        sprintf(&pch[ix], "0x%lx", pWS->backdrop.nameAtom);
+        snprintf(&pch[ix], WIP_NUMBER_SIZE, "0x%lx", pWS->backdrop.nameAtom);
         ppchList[i++] = &pch[ix];
 
         /* number of backdrop windows */
         ix = (i * WIP_NUMBER_SIZE);
         if (pWS->backdrop.window == None) {
-                strcpy(&pch[ix], "0");
+                strlcpy(&pch[ix], "0", WIP_NUMBER_SIZE);
         } else {
-                sprintf(&pch[ix], "%d", count);
+                snprintf(&pch[ix], WIP_NUMBER_SIZE, "%d", count);
         }
         ppchList[i++] = &pch[ix];
 
@@ -1304,7 +1304,7 @@ void SetWorkspaceInfoProperty(WmWorkspaceData *pWS) {
          * (NULL written if zero)
          */
         ix = (i * WIP_NUMBER_SIZE);
-        sprintf(&pch[ix], "0x%lx", pWS->backdrop.window);
+        snprintf(&pch[ix], WIP_NUMBER_SIZE, "0x%lx", pWS->backdrop.window);
         ppchList[i++] = &pch[ix];
 
         /*
@@ -1401,9 +1401,9 @@ char *WorkspacePropertyName(WmWorkspaceData *pWS) {
         len = strlen(pchName) + strlen(_XA_DT_WORKSPACE_INFO) + 4;
 
         pch = (char *)XtMalloc(len);
-        strcpy(pch, _XA_DT_WORKSPACE_INFO);
-        strcat(pch, "_");
-        strcat(pch, pchName);
+        strlcpy(pch, _XA_DT_WORKSPACE_INFO, len);
+        strlcat(pch, "_", len);
+        strlcat(pch, pchName, len);
 
         return (pch);
 

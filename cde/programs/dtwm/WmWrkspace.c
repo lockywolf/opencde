@@ -228,10 +228,6 @@ void ChangeToWorkspace(WmWorkspaceData *pNewWS)
                 ShowPresenceBox(pSD->presence.pCDforClient, F_CONTEXT_ICON);
         }
 
-#ifdef HP_VUE
-        /* sync up workspace info property with current state */
-        UpdateWorkspaceInfoProperty(pSD);
-#endif /* HP_VUE */
         SetCurrentWorkspaceProperty(pSD);
 
         /* send workspace change broadcast message */
@@ -291,9 +287,6 @@ void ChangeWorkspaceTitle(WmWorkspaceData *pWS, char *pchTitle) {
          * Replace old workspace in info property
          */
         SetWorkspaceInfoProperty(pWS);
-#ifdef HP_VUE
-        UpdateWorkspaceInfoProperty(pWS->pSD);
-#endif /* HP_VUE */
         XFlush(DISPLAY);
 
         /*
@@ -372,76 +365,6 @@ void UpdateWorkspacePresenceProperty(ClientData *pCD)
                              MIN(pCD->numInhabited, cPresence));
 
 } /* END OF FUNCTION UpdateWorkspacePresenceProperty */
-
-#ifdef HP_VUE
-
-/*************************************<->*************************************
- *
- *  UpdateWorkspaceInfoProperty (pSD)
- *
- *
- *  Description:
- *  -----------
- *  This function updates the _DT_WORKSPACE_INFO property for the
- *  screen
- *
- *  Inputs:
- *  ------
- *  pSD  =  pointer to screen data
- *
- *
- *************************************<->***********************************/
-
-void UpdateWorkspaceInfoProperty(WmScreenData *pSD)
-
-{
-        WorkspaceInfo *pWsInfo;
-        WmWorkspaceData *pws;
-        int count;
-
-        if (wmGD.useStandardBehavior) {
-                /*
-                 * Don't change any workspace properties in standard behavior
-                 * mode.
-                 */
-                return;
-        }
-
-        if (pWsInfo = (WorkspaceInfo *)XtMalloc(pSD->numWorkspaces *
-                                                sizeof(WorkspaceInfo))) {
-                /* put current workspace at top of list */
-                pWsInfo[0].workspace = pSD->pActiveWS->id;
-                pWsInfo[0].backgroundWindow = pSD->pActiveWS->backdrop.window;
-                pWsInfo[0].bg = pSD->pActiveWS->backdrop.background;
-                pWsInfo[0].fg = pSD->pActiveWS->backdrop.foreground;
-                pWsInfo[0].backdropName = pSD->pActiveWS->backdrop.nameAtom;
-
-                /* add in the rest of the workspaces */
-                pws = pSD->pWS;
-                for (count = 1; count < pSD->numWorkspaces; count++) {
-                        if (pWsInfo[0].workspace == pws->id)
-                                pws++; /* already at top, skip this one */
-
-                        pWsInfo[count].workspace = pws->id;
-                        pWsInfo[count].backgroundWindow = pws->backdrop.window;
-                        pWsInfo[count].bg = pws->backdrop.background;
-                        pWsInfo[count].fg = pws->backdrop.foreground;
-                        pWsInfo[count].backdropName = pws->backdrop.nameAtom;
-                        pws++;
-                }
-
-                /* set the property */
-                SetWorkspaceInfo(pSD->wmWorkspaceWin, pWsInfo,
-                                 pSD->numWorkspaces);
-
-                XtFree((char *)pWsInfo);
-        } else {
-                Warning(((char *)GETMESSAGE(
-                    76, 3, "Insufficient memory to update workspace info")));
-        }
-
-} /* END OF FUNCTION UpdateWorkspaceInfoProperty */
-#endif /* HP_VUE */
 
 /*************************************<->*************************************
  *
@@ -793,9 +716,6 @@ void DeleteWorkspace(WmWorkspaceData *pWS)
 void ProcessDtWmHints(ClientData *pCD) {
         DtWmHints *pHints;
         Atom property;
-#ifdef HP_VUE
-        Atom propertyVUE;
-#endif /* HP_VUE */
 #ifdef PANELIST
         long saveFunctions;
 #endif /* PANELIST */
@@ -805,16 +725,9 @@ void ProcessDtWmHints(ClientData *pCD) {
          */
 
         property = XmInternAtom(DISPLAY, _XA_DT_WM_HINTS, False);
-#ifdef HP_VUE
-        propertyVUE = XmInternAtom(DISPLAY, _XA_VUE_WM_HINTS, False);
-#endif /* HP_VUE */
 
         if (
-#ifdef HP_VUE
-            ((HasProperty(pCD, property)) || (HasProperty(pCD, propertyVUE)))
-#else  /* HP_VUE */
             (HasProperty(pCD, property))
-#endif /* HP_VUE */
             && (_DtWsmGetDtWmHints(DISPLAY, pCD->client, &pHints) == Success)) {
                 pCD->clientFlags |= GOT_DT_WM_HINTS;
                 if (pHints->flags & DtWM_HINTS_FUNCTIONS) {
@@ -935,14 +848,7 @@ Boolean GetClientWorkspaceInfo(ClientData *pCD, long manageFlags)
               GetMyOwnPresence(pCD, &pIDs, &numIDs)) ||
              (WorkspaceIsInCommand(DISPLAY, pCD, &pIDs, &numIDs)) ||
              (
-#ifdef HP_VUE
-                 (HasProperty(pCD, wmGD.xa_DT_WORKSPACE_HINTS) ||
-                  HasProperty(
-                      pCD,
-                      XmInternAtom(DISPLAY, _XA_VUE_WORKSPACE_HINTS, False)))
-#else  /* HP_VUE */
                  HasProperty(pCD, wmGD.xa_DT_WORKSPACE_HINTS)
-#endif /* HP_VUE */
                  && (GetWorkspaceHints(DISPLAY, pCD->client, &pIDs, &numIDs,
                                        &bAll) == Success))) &&
             numIDs) {
@@ -1108,9 +1014,10 @@ Boolean ConvertNamesToIDs(WmScreenData *pSD, unsigned char *pchIn,
         }
         numLocalIDs = WS_ALLOC_AMOUNT;
 
+        int pchLocal_size = 1 + strlen((char *)pchIn);
         if (pchIn &&
-            (pchLocal = (unsigned char *)XtMalloc(1 + strlen((char *)pchIn)))) {
-                strcpy((char *)pchLocal, (char *)pchIn);
+            (pchLocal = (unsigned char *)XtMalloc(pchLocal_size))) {
+                strlcpy((char *)pchLocal, (char *)pchIn, pchLocal_size);
                 pch = pchLocal;
 
                 while ((pchName = GetSmartString(&pch))) {
@@ -1552,7 +1459,7 @@ WmWorkspaceData *GetWorkspaceData(WmScreenData *pSD, WorkspaceID wsID)
 unsigned char *GenerateWorkspaceName(WmScreenData *pSD, int wsnum)
 
 {
-        static unsigned char nameReturned[10];
+        static unsigned char nameReturned[13];
         int i, j;
 
         /*
@@ -1561,7 +1468,7 @@ unsigned char *GenerateWorkspaceName(WmScreenData *pSD, int wsnum)
          */
         for (i = 0; i <= pSD->numWorkspaces; i++) {
                 /* generate a name */
-                sprintf((char *)nameReturned, "ws%d", i);
+                snprintf((char *)nameReturned, 13, "ws%d", i);
                 if (!DuplicateWorkspaceName(pSD, nameReturned, wsnum))
                         break;
         }
@@ -2498,7 +2405,8 @@ Boolean F_CreateWorkspace(String args, ClientData *pCD, XEvent *event)
                 /*
                  * At the maximum number of allowed workspaces.
                  */
-                sprintf(buffer,
+                snprintf(buffer,
+                        MAXWMPATH,
                         ((char *)GETMESSAGE(
                             76, 14,
                             "Maximum number of workspaces is %d. New "
@@ -2976,13 +2884,7 @@ Boolean GetMyOwnPresence(ClientData *pCD, WorkspaceID **ppIDs,
          * Get the workspace presence property
          */
         if (
-#ifdef HP_VUE
-            (HasProperty(pCD, wmGD.xa_DT_WORKSPACE_PRESENCE) ||
-             HasProperty(
-                 pCD, XmInternAtom(DISPLAY, _XA_VUE_WORKSPACE_PRESENCE, False)))
-#else  /* HP_VUE */
             HasProperty(pCD, wmGD.xa_DT_WORKSPACE_PRESENCE)
-#endif /* HP_VUE */
             && (DtWsmGetWorkspacesOccupied(DISPLAY, pCD->client, ppIDs,
                                            &nIDs) == Success)) {
                 if (nIDs) {
@@ -3166,8 +3068,8 @@ void SaveWorkspaceResources(WmWorkspaceData *pWS, unsigned long flags) {
                 res_class = DT_WM_RESOURCE_CLASS;
         }
 
-        strcpy(screenName, "*");
-        strcat(screenName, XtName(pWS->pSD->screenTopLevelW));
+        strlcpy(screenName, "*", 1024);
+        strlcat(screenName, XtName(pWS->pSD->screenTopLevelW), 1024);
 
         /* construct and write out the resources specification */
 
@@ -3182,7 +3084,7 @@ void SaveWorkspaceResources(WmWorkspaceData *pWS, unsigned long flags) {
                                                    bufferLength * sizeof(char));
                 }
 
-                sprintf(buffer, "%s%s*%s*%s*%s:  %s\n", res_class, screenName,
+                snprintf(buffer, bufferLength, "%s%s*%s*%s*%s:  %s\n", res_class, screenName,
                         pWS->name, WmNbackdrop, WmNimage, pWS->backdrop.image);
 
                 AddStringToResourceData(buffer, &data, &cum_len);
@@ -3203,7 +3105,7 @@ void SaveWorkspaceResources(WmWorkspaceData *pWS, unsigned long flags) {
                                                    bufferLength * sizeof(char));
                 }
 
-                sprintf(buffer, "%s%s*%s*%s:  %s\n", res_class, screenName,
+                snprintf(buffer, bufferLength, "%s%s*%s*%s:  %s\n", res_class, screenName,
                         pWS->name, WmNtitle, asciiName);
 
                 AddStringToResourceData(buffer, &data, &cum_len);
@@ -3221,7 +3123,7 @@ void SaveWorkspaceResources(WmWorkspaceData *pWS, unsigned long flags) {
                                                    bufferLength * sizeof(char));
                 }
 
-                sprintf(buffer, "%s%s*%s:  %s\n", res_class, screenName,
+                snprintf(buffer, bufferLength, "%s%s*%s:  %s\n", res_class, screenName,
                         WmNinitialWorkspace, pWS->name);
 
                 AddStringToResourceData(buffer, &data, &cum_len);
@@ -3236,19 +3138,19 @@ void SaveWorkspaceResources(WmWorkspaceData *pWS, unsigned long flags) {
 
                 pchQname = (char *)_DtWmParseMakeQuotedString(
                     (unsigned char *)pWSi->name);
-                strcpy((char *)wmGD.tmpBuffer, pchQname);
+                strlcpy((char *)wmGD.tmpBuffer, pchQname, MAXBUF);
                 XtFree(pchQname);
                 pWSi++;
 
                 for (i = 1; i < pWS->pSD->numWorkspaces; i++, pWSi++) {
-                        strcat((char *)wmGD.tmpBuffer, " ");
+                        strlcat((char *)wmGD.tmpBuffer, " ", MAXBUF);
                         pchQname = (char *)_DtWmParseMakeQuotedString(
                             (unsigned char *)pWSi->name);
-                        strcat((char *)wmGD.tmpBuffer, pchQname);
+                        strlcat((char *)wmGD.tmpBuffer, pchQname, MAXBUF);
                         XtFree(pchQname);
                 }
 
-                sprintf(buffer, "%s%s*%s:  %s\n", res_class, screenName,
+                snprintf(buffer, bufferLength, "%s%s*%s:  %s\n", res_class, screenName,
                         WmNworkspaceList, wmGD.tmpBuffer);
 
                 AddStringToResourceData(buffer, &data, &cum_len);
@@ -3257,7 +3159,7 @@ void SaveWorkspaceResources(WmWorkspaceData *pWS, unsigned long flags) {
         if ((flags & WM_RES_WORKSPACE_COUNT) && (!wmGD.useStandardBehavior)) {
                 char pchNumWs[20];
 
-                sprintf(pchNumWs, "%d", pWS->pSD->numWorkspaces);
+                snprintf(pchNumWs, 20, "%d", pWS->pSD->numWorkspaces);
 
                 iLen = strlen(res_class) + strlen(screenName) +
                        strlen(WmNworkspaceCount) + strlen(pchNumWs) + 14;
@@ -3268,7 +3170,7 @@ void SaveWorkspaceResources(WmWorkspaceData *pWS, unsigned long flags) {
                                                    bufferLength * sizeof(char));
                 }
 
-                sprintf(buffer, "%s%s*%s:  %s\n", res_class, screenName,
+                snprintf(buffer, bufferLength, "%s%s*%s:  %s\n", res_class, screenName,
                         WmNworkspaceCount, pchNumWs);
 
                 AddStringToResourceData(buffer, &data, &cum_len);
@@ -3320,7 +3222,7 @@ void SaveWorkspaceResources(WmWorkspaceData *pWS, unsigned long flags) {
                                                     pCD_Panel->frameInfo
                                                         .titleBarHeight);
                                 }
-                                sprintf(tmpBuffer, "+%d+%d", clientX, clientY);
+                                snprintf(tmpBuffer, MAXWMPATH + 1, "+%d+%d", clientX, clientY);
                         } else {
                                 /* SouthWest */
                                 clientY = screenHeight - clientY -
@@ -3330,7 +3232,7 @@ void SaveWorkspaceResources(WmWorkspaceData *pWS, unsigned long flags) {
                                                        .lowerBorderWidth;
                                 }
 
-                                sprintf(tmpBuffer, "+%d-%d", clientX, clientY);
+                                snprintf(tmpBuffer, MAXWMPATH + 1, "+%d-%d", clientX, clientY);
                         }
                 } else {
                         clientX =
@@ -3349,7 +3251,7 @@ void SaveWorkspaceResources(WmWorkspaceData *pWS, unsigned long flags) {
                                                     pCD_Panel->frameInfo
                                                         .titleBarHeight);
                                 }
-                                sprintf(tmpBuffer, "-%d+%d", clientX, clientY);
+                                snprintf(tmpBuffer, MAXWMPATH + 1, "-%d+%d", clientX, clientY);
                         } else {
                                 /* SouthEast */
                                 clientY = screenHeight - clientY -
@@ -3358,7 +3260,7 @@ void SaveWorkspaceResources(WmWorkspaceData *pWS, unsigned long flags) {
                                         clientY -= pCD_Panel->frameInfo
                                                        .lowerBorderWidth;
                                 }
-                                sprintf(tmpBuffer, "-%d-%d", clientX, clientY);
+                                snprintf(tmpBuffer, MAXWMPATH + 1, "-%d-%d", clientX, clientY);
                         }
                 }
 
@@ -3372,7 +3274,7 @@ void SaveWorkspaceResources(WmWorkspaceData *pWS, unsigned long flags) {
                                                    bufferLength * sizeof(char));
                 }
 
-                sprintf(buffer, "%s%s*%s*%s:  %s\n", res_class, screenName,
+                snprintf(buffer, bufferLength, "%s%s*%s*%s:  %s\n", res_class, screenName,
                         XtName(O_Shell(pPanelist)), WmNgeometry, tmpBuffer);
 
                 AddStringToResourceData(buffer, &data, &cum_len);
@@ -3405,7 +3307,7 @@ void SaveWorkspaceResources(WmWorkspaceData *pWS, unsigned long flags) {
                         clientY = pWS->pIconBox->pCD_iconBox->clientY;
                 }
 
-                sprintf(buffer, "%dx%d+%d+%d", clientWidth, clientHeight,
+                snprintf(buffer, bufferLength, "%dx%d+%d+%d", clientWidth, clientHeight,
                         clientX, clientY);
 
                 pWS->iconBoxGeometry = strdup(buffer);
@@ -3420,7 +3322,7 @@ void SaveWorkspaceResources(WmWorkspaceData *pWS, unsigned long flags) {
                                                    bufferLength * sizeof(char));
                 }
 
-                sprintf(buffer, "%s%s*%s*%s:  %s\n", res_class, screenName,
+                snprintf(buffer, bufferLength, "%s%s*%s*%s:  %s\n", res_class, screenName,
                         pWS->name, WmNiconBoxGeometry, pWS->iconBoxGeometry);
 
                 AddStringToResourceData(buffer, &data, &cum_len);
@@ -3465,14 +3367,14 @@ void SaveWorkspaceResources(WmWorkspaceData *pWS, unsigned long flags) {
  *
  *************************************<->***********************************/
 void AddStringToResourceData(char *string, char **pdata, int *plen) {
-        if ((*pdata = (char *)XtRealloc(*pdata, *plen + strlen(string) + 1)) ==
-            NULL) {
+        int pdata_size = *plen + strlen(string) + 1;
+        if ((*pdata = (char *)XtRealloc(*pdata, pdata_size)) == NULL) {
                 Warning(((char *)GETMESSAGE(
                     76, 13, "Insufficient memory to save resources.")));
                 Do_Quit_Mwm(False);
         }
 
-        strcat(*pdata, string);
+        strlcat(*pdata, string, pdata_size);
         *plen += strlen(string);
 } /* END OF FUNCTION AddStringToResourceData */
 

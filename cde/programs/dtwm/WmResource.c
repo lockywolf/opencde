@@ -208,111 +208,90 @@ void InitBuiltinSystemMenu(void) {
 #endif /* WSM */
         char *CloString = NULL;
         char dsm[2048];
+        int size;
         Boolean gotItAll;
         gotItAll = True;
         if (gotItAll) {
-#ifdef sun
-                tmpString = ((char *)GETMESSAGE(
-                    62, 60, "Restore _R  Alt<Key>F5 f.restore"));
-#else
                 tmpString =
                     ((char *)GETMESSAGE(62, 49, "Restore _R  f.restore"));
-#endif
+                size = strlen(tmpString) + 1;
                 if ((ResString = (char *)XtMalloc(
-                         (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+                         (unsigned int)size)) == NULL) {
                         Warning(((char *)GETMESSAGE(
                             62, 2,
                             "Insufficient memory for local default menu.")));
                         gotItAll = False;
                 } else {
-                        strcpy(ResString, tmpString);
+                        strlcpy(ResString, tmpString, size);
                 }
         }
         if (gotItAll) {
-#ifdef sun
-                tmpString =
-                    ((char *)GETMESSAGE(62, 61, "Move _M  Alt<Key>F7 f.move"));
-#else
                 tmpString = ((char *)GETMESSAGE(62, 50, "Move _M  f.move"));
-#endif
+
+                size = strlen(tmpString) + 1;
                 if ((MovString = (char *)XtMalloc(
-                         (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+                         (unsigned int)size)) == NULL) {
                         Warning(((char *)GETMESSAGE(
                             62, 4,
                             "Insufficient memory for local default menu.")));
                         gotItAll = False;
                 } else {
-                        strcpy(MovString, tmpString);
+                        strlcpy(MovString, tmpString, size);
                 }
         }
         if (gotItAll) {
-#ifdef sun
-                tmpString = ((char *)GETMESSAGE(
-                    62, 62, "Size _S  Alt<Key>F8 f.resize"));
-#else
                 tmpString = ((char *)GETMESSAGE(62, 51, "Size _S  f.resize"));
-#endif
+                size = strlen(tmpString) + 1;
+
                 if ((SizString = (char *)XtMalloc(
-                         (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+                         (unsigned int)size)) == NULL) {
                         Warning(((char *)GETMESSAGE(
                             62, 6,
                             "Insufficient memory for local default menu.")));
                         gotItAll = False;
                 } else {
-                        strcpy(SizString, tmpString);
+                        strlcpy(SizString, tmpString, size);
                 }
         }
         if (gotItAll) {
-#ifdef sun
-                tmpString = ((char *)GETMESSAGE(
-                    62, 63, "Minimize _n  Alt<Key>F9 f.minimize"));
-#else
                 tmpString =
                     ((char *)GETMESSAGE(62, 52, "Minimize _n  f.minimize"));
-#endif
+                size = strlen(tmpString) + 1;
                 if ((MinString = (char *)XtMalloc(
-                         (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+                         (unsigned int)size)) == NULL) {
                         Warning(((char *)GETMESSAGE(
                             62, 8,
                             "Insufficient memory for local default menu.")));
                         gotItAll = False;
                 } else {
-                        strcpy(MinString, tmpString);
+                        strlcpy(MinString, tmpString, size);
                 }
         }
         if (gotItAll) {
-#ifdef sun
-                tmpString = ((char *)GETMESSAGE(
-                    62, 64, "Maximize _x  Alt<Key>F10 f.maximize"));
-#else
                 tmpString =
                     ((char *)GETMESSAGE(62, 53, "Maximize _x  f.maximize"));
-#endif
+                size = strlen(tmpString) + 1;
                 if ((MaxString = (char *)XtMalloc(
-                         (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+                         (unsigned int)size)) == NULL) {
                         Warning(((char *)GETMESSAGE(
                             62, 10,
                             "Insufficient memory for local default menu.")));
                         gotItAll = False;
                 } else {
-                        strcpy(MaxString, tmpString);
+                        strlcpy(MaxString, tmpString, size);
                 }
         }
         if (gotItAll) {
-#ifdef sun
-                tmpString = ((char *)GETMESSAGE(
-                    62, 65, "Lower _L  Alt<Key>F3 f.lower"));
-#else
                 tmpString = ((char *)GETMESSAGE(62, 54, "Lower _L  f.lower"));
-#endif
+                size = strlen(tmpString) + 1;
                 if ((LowString = (char *)XtMalloc(
-                         (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+                         (unsigned int)size)) == NULL) {
                         Warning(((char *)GETMESSAGE(
                             62, 12,
                             "Insufficient memory for local default menu.")));
                         gotItAll = False;
                 } else {
-                        strcpy(LowString, tmpString);
+                        strlcpy(LowString, tmpString, size);
                 }
         }
 #ifdef WSM
@@ -322,8 +301,9 @@ void InitBuiltinSystemMenu(void) {
                             ((char *)GETMESSAGE(62, 55,
                                                 "Occupy\\ Workspace\\.\\.\\. "
                                                 "_O  f.workspace_presence"));
+                        size = strlen(tmpString) + 1;
                         if ((OcpString = (char *)XtMalloc(
-                                 (unsigned int)(strlen(tmpString) + 1))) ==
+                                 (unsigned int)size)) ==
                             NULL) {
                                 Warning(((char *)GETMESSAGE(62, 14,
                                                             "Insufficient "
@@ -331,15 +311,16 @@ void InitBuiltinSystemMenu(void) {
                                                             "default menu.")));
                                 gotItAll = False;
                         } else {
-                                strcpy(OcpString, tmpString);
+                                strlcpy(OcpString, tmpString, size);
                         }
                 }
                 if (gotItAll) {
                         tmpString = ((char *)GETMESSAGE(
                             62, 56,
                             "Occupy\\ All\\ Workspaces _A  f.occupy_all"));
+                        size = strlen(tmpString) + 1;
                         if ((OcaString = (char *)XtMalloc(
-                                 (unsigned int)(strlen(tmpString) + 1))) ==
+                                 (unsigned int)size)) ==
                             NULL) {
                                 Warning(((char *)GETMESSAGE(62, 16,
                                                             "Insufficient "
@@ -347,22 +328,22 @@ void InitBuiltinSystemMenu(void) {
                                                             "default menu.")));
                                 gotItAll = False;
                         } else {
-                                strcpy(OcaString, tmpString);
+                                strlcpy(OcaString, tmpString, size);
                         }
                 }
                 if (gotItAll) {
                         tmpString = ((char *)GETMESSAGE(
                             62, 57, "Unoccupy\\ Workspace _U  f.remove"));
+                        size = strlen(tmpString) + 1;
                         if ((RemString = (char *)XtMalloc(
-                                 (unsigned int)(strlen(tmpString) + 1))) ==
-                            NULL) {
+                                 (unsigned int)size)) == NULL) {
                                 Warning(((char *)GETMESSAGE(62, 18,
                                                             "Insufficient "
                                                             "memory for local "
                                                             "default menu.")));
                                 gotItAll = False;
                         } else {
-                                strcpy(RemString, tmpString);
+                                strlcpy(RemString, tmpString, size);
                         }
                 }
         } /* if DTWM */
@@ -370,14 +351,15 @@ void InitBuiltinSystemMenu(void) {
         if (gotItAll) {
                 tmpString =
                     ((char *)GETMESSAGE(62, 48, "Close _C Alt<Key>F4 f.kill"));
+                size = strlen(tmpString) + 1;
                 if ((CloString = (char *)XtMalloc(
-                         (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+                         (unsigned int)size)) == NULL) {
                         Warning(((char *)GETMESSAGE(
                             62, 20,
                             "Insufficient memory for local default menu.")));
                         gotItAll = False;
                 } else {
-                        strcpy(CloString, tmpString);
+                        strlcpy(CloString, tmpString, size);
                 }
         }
 
@@ -396,37 +378,38 @@ void InitBuiltinSystemMenu(void) {
 #endif /* WSM */
         } else {
                 /* put it together */
-                strcpy(dsm, defaultSystemMenuName);
-                strcat(dsm, "\n{\n");
-                strcat(dsm, ResString);
-                strcat(dsm, "\n");
-                strcat(dsm, MovString);
-                strcat(dsm, "\n");
-                strcat(dsm, SizString);
-                strcat(dsm, "\n");
-                strcat(dsm, MinString);
-                strcat(dsm, "\n");
-                strcat(dsm, MaxString);
-                strcat(dsm, "\n");
-                strcat(dsm, LowString);
-                strcat(dsm, "\n");
-                strcat(dsm, " no-label  f.separator\n");
+                strlcpy(dsm, defaultSystemMenuName, 2048);
+                strlcat(dsm, "\n{\n", 2048);
+                strlcat(dsm, ResString, 2048);
+                strlcat(dsm, "\n", 2048);
+                strlcat(dsm, MovString, 2048);
+                strlcat(dsm, "\n", 2048);
+                strlcat(dsm, SizString, 2048);
+                strlcat(dsm, "\n", 2048);
+                strlcat(dsm, MinString, 2048);
+                strlcat(dsm, "\n", 2048);
+                strlcat(dsm, MaxString, 2048);
+                strlcat(dsm, "\n", 2048);
+                strlcat(dsm, LowString, 2048);
+                strlcat(dsm, "\n", 2048);
+                strlcat(dsm, " no-label  f.separator\n", 2048);
 #ifdef WSM
                 if (DtwmBehavior) {
-                        strcat(dsm, OcpString);
-                        strcat(dsm, "\n");
-                        strcat(dsm, OcaString);
-                        strcat(dsm, "\n");
-                        strcat(dsm, RemString);
-                        strcat(dsm, "\n");
-                        strcat(dsm, " no-label  f.separator\n");
+                        strlcat(dsm, OcpString, 2048);
+                        strlcat(dsm, "\n", 2048);
+                        strlcat(dsm, OcaString, 2048);
+                        strlcat(dsm, "\n", 2048);
+                        strlcat(dsm, RemString, 2048);
+                        strlcat(dsm, "\n", 2048);
+                        strlcat(dsm, " no-label  f.separator\n", 2048);
                 }
 #endif /* WSM */
-                strcat(dsm, CloString);
-                strcat(dsm, "\n}");
+                strlcat(dsm, CloString, 2048);
+                strlcat(dsm, "\n}", 2048);
 
+                int builtinSystemMenu_size = strlen(dsm) + 1;
                 if ((builtinSystemMenu = (char *)XtMalloc(
-                         (unsigned int)(strlen(dsm) + 1))) == NULL) {
+                         (unsigned int)builtinSystemMenu_size)) == NULL) {
                         Warning(((char *)GETMESSAGE(62, 21,
                                                     "Insufficient memory for "
                                                     "localized default system "
@@ -444,7 +427,7 @@ void InitBuiltinSystemMenu(void) {
                             (char *)XtNewString((String)BUILTINSYSTEMMENU);
 #endif /* WSM */
                 } else {
-                        strcpy(builtinSystemMenu, dsm);
+                        strlcpy(builtinSystemMenu, dsm, builtinSystemMenu_size);
                 }
         }
 
@@ -2161,6 +2144,7 @@ void ProcessScreenListResource(void) {
         unsigned char *string;
         int sNum = 0;
         int nameCount = 0;
+        int size;
 
         lineP = (unsigned char *)wmGD.screenList;
 
@@ -2169,12 +2153,13 @@ void ProcessScreenListResource(void) {
          */
         while (((string = GetString(&lineP)) != NULL) &&
                (sNum < ScreenCount(DISPLAY))) {
+                size = strlen((char *)string) + 1;
                 if (!(wmGD.screenNames[sNum] = (unsigned char *)WmRealloc(
                           (char *)wmGD.screenNames[sNum],
-                          strlen((char *)string) + 1))) {
+                          size))) {
                         ExitWM(WM_ERROR_EXIT_VALUE);
                 } else {
-                        strcpy((char *)wmGD.screenNames[sNum], (char *)string);
+                        strlcpy((char *)wmGD.screenNames[sNum], (char *)string, size);
                         nameCount++;
                         sNum++;
                 }
@@ -2188,13 +2173,14 @@ void ProcessScreenListResource(void) {
         if (nameCount > 0) {
                 string = wmGD.screenNames[0]; /* name of the first screen */
                 while (sNum < ScreenCount(DISPLAY)) {
+                        size = strlen((char *)string) + 1;
                         if (!(wmGD.screenNames[sNum] = (unsigned char *)
                                   WmRealloc((char *)wmGD.screenNames[sNum],
-                                            strlen((char *)string) + 1))) {
+                                            size))) {
                                 ExitWM(WM_ERROR_EXIT_VALUE);
                         } else {
-                                strcpy((char *)wmGD.screenNames[sNum],
-                                       (char *)string);
+                                strlcpy((char *)wmGD.screenNames[sNum],
+                                       (char *)string, size);
                                 sNum++;
                         }
                 }
@@ -3431,7 +3417,8 @@ void MakeAppearanceResources(WmScreenData *pSD, AppearanceData *pAData,
          */
 
         if (!XmeRenderTableGetDefaultFont(pAData->fontList, &(pAData->font))) {
-                sprintf((char *)wmGD.tmpBuffer,
+                snprintf((char *)wmGD.tmpBuffer,
+                        MAXBUF,
                         ((char *)GETMESSAGE(62, 23,
                                             "failed to load font: %.100s\0")),
                         (char *)pAData->fontList);
@@ -3998,7 +3985,7 @@ void ProcessDefaultBackdropImages(WmScreenData *pSD) {
  *************************************<->***********************************/
 
 void ProcessWorkspaceList(WmScreenData *pSD) {
-        int i, wsNameCount, wsNamesAlloced;
+        int i, size, wsNameCount, wsNamesAlloced;
         WmWorkspaceData *pwsI;
         unsigned char *lineP = NULL;
         unsigned char *string;
@@ -4074,13 +4061,14 @@ void ProcessWorkspaceList(WmScreenData *pSD) {
                 } else {
                         string = GenerateWorkspaceName(pSD, i);
                 }
+                size = 1 + strlen((char *)string);
                 if (!(pwsI->name =
-                          (String)XtMalloc(1 + strlen((char *)string)))) {
+                          (String)XtMalloc(size))) {
                         Warning(((char *)GETMESSAGE(
                             62, 27, "Insufficient memory for workspace data")));
                         ExitWM(WM_ERROR_EXIT_VALUE);
                 } else {
-                        strcpy(pwsI->name, (char *)string);
+                        strlcpy(pwsI->name, (char *)string, size);
                 }
         }
 
@@ -4242,14 +4230,15 @@ void ProcessPresenceResources(WmScreenData *pSD) {
                  */
 
                 tmpString = ((char *)GETMESSAGE(62, 59, "Occupy Workspace"));
+                int size = strlen(tmpString) + 1;
                 if ((default_ws_pres_title = (char *)XtMalloc(
-                         (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+                         (unsigned int)size)) == NULL) {
                         Warning(((char *)GETMESSAGE(
                             62, 31,
                             "Insufficient memory for local message string")));
                         default_ws_pres_title = "Occupy Workspace";
                 } else {
-                        strcpy(default_ws_pres_title, tmpString);
+                        strlcpy(default_ws_pres_title, tmpString, size);
                 }
         }
 #endif
@@ -4267,9 +4256,12 @@ void ProcessPresenceResources(WmScreenData *pSD) {
                         pch1 = (unsigned char *)WmXmStringToString(
                             pSD->presence.title);
 
-                        if (pch1 && (pch2 = (unsigned char *)XtMalloc(
-                                         1 + strlen((char *)pch1)))) {
-                                strcpy((char *)pch2, (char *)pch1);
+                        if (pch1) {
+                            int pch2_size = 1 + strlen((char *)pch1);
+                            if (pch1 && (pch2 = (unsigned char *)XtMalloc(
+                                         pch2_size))) {
+                                strlcpy((char *)pch2, (char *)pch1, pch2_size);
+                            }
                         }
                 }
 
@@ -5128,10 +5120,11 @@ void SetupDefaultResources(pSD)
                  */
 
                 char *buffer;
+                int buffer_size = strlen(builtinKeyBindings) +
+                    strlen(pSD->rootMenu) + 1;
 
-                buffer = (char *)XtMalloc(strlen(builtinKeyBindings) +
-                                          strlen(pSD->rootMenu) + 1);
-                sprintf(buffer, builtinKeyBindings, pSD->rootMenu);
+                buffer = (char *)XtMalloc(buffer_size);
+                snprintf(buffer, buffer_size, builtinKeyBindings, pSD->rootMenu);
 
                 ParseKeyStr(pSD, (unsigned char *)buffer);
 #else
@@ -5174,10 +5167,10 @@ void SetupDefaultResources(pSD)
                  */
 
                 char *buffer;
-
-                buffer = (char *)XtMalloc(strlen(builtinButtonBindings) +
-                                          strlen(pSD->rootMenu) + 1);
-                sprintf(buffer, builtinButtonBindings, pSD->rootMenu);
+                int buffer_size = strlen(builtinButtonBindings) +
+                    strlen(pSD->rootMenu) + 1;
+                buffer = (char *)XtMalloc(buffer_size);
+                snprintf(buffer, buffer_size, builtinButtonBindings, pSD->rootMenu);
 
                 ParseButtonStr(pSD, (unsigned char *)buffer);
 #else

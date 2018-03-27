@@ -2055,6 +2055,7 @@ typedef struct _WmGlobalData {
         XrmDatabase clientResourceDB;
 #ifndef WSM
         char *dbFileName;
+        int dbFileNameSize;
         String sessionClientDB; /* resource */
 #endif
 

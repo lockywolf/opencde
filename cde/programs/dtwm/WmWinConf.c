@@ -41,6 +41,7 @@ static char rcsid[] =
  */
 #include "WmGlobal.h" /* This should be the first include */
 #include <X11/X.h>
+#include <X11/XKBlib.h>
 
 #define XK_MISCELLANY
 #include <X11/keysymdef.h>
@@ -275,8 +276,7 @@ void HandleClientFrameMove(ClientData *pcd, XEvent *pev) {
                                 keyMultiplier++;
                         }
 
-                        keysym =
-                            XKeycodeToKeysym(DISPLAY, pev->xkey.keycode, 0);
+                        keysym = XkbKeycodeToKeysym(DISPLAY, pev->xkey.keycode, 0, 0);
                         control = (pev->xkey.state & ControlMask) != 0;
                         tmpX = tmpY = 0;
 
@@ -650,7 +650,7 @@ Boolean HandleResizeKeyPress(ClientData *pcd, XEvent *pev) {
                 keyMult++;
         }
 
-        keysym = XKeycodeToKeysym(DISPLAY, pev->xkey.keycode, 0);
+        keysym = XkbKeycodeToKeysym(DISPLAY, pev->xkey.keycode, 0, 0);
         control = (pev->xkey.state & ControlMask) != 0;
 
         switch (keysym) {
@@ -823,8 +823,10 @@ Boolean HandleResizeKeyPress(ClientData *pcd, XEvent *pev) {
         /*
          * Don't query pointer if enable warp is off.
          */
-        if (!wmGD.enableWarp ||
-            XQueryPointer(DISPLAY, ROOT_FOR_CLIENT(pcd), &junk_win, &junk_win,
+        if (!wmGD.enableWarp) {
+                SetPointerPosition(warpX, warpY, &newX, &newY);
+                return (False);
+        } else if (XQueryPointer(DISPLAY, ROOT_FOR_CLIENT(pcd), &junk_win, &junk_win,
                           &currentX, &currentY, &junk, &junk,
                           (unsigned int *)&junk)) {
                 if ((warpX != currentX) || (warpY != currentY)) {
@@ -4100,7 +4102,7 @@ Boolean HandleMarqueeKeyPress(WmScreenData *pSD, XEvent *pev) {
                 keyMult++;
         }
 
-        keysym = XKeycodeToKeysym(DISPLAY, pev->xkey.keycode, 0);
+        keysym = XkbKeycodeToKeysym(DISPLAY, pev->xkey.keycode, 0, 0);
         control = (pev->xkey.state & ControlMask) != 0;
 
         switch (keysym) {

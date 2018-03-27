@@ -73,12 +73,6 @@
 #define C_ConstraintNumResources(wc) (wc->constraint_class.num_resources)
 #endif /* _XtConstraintP_h */
 
-/*	XmGadget Class Macros
- */
-#define XmInheritBorderHighlight ((XtWidgetProc)_XtInherit)
-#define XmInheritBorderUnhighlight ((XtWidgetProc)_XtInherit)
-#define XmInheritVisualChange ((XmVisualChangeProc)_XtInherit)
-
 /*-------------------------------------------------------------
 **	Primitive Macros
 */

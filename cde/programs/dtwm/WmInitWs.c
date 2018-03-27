@@ -264,8 +264,8 @@ static void BuildLockMaskSequence(void) {
                  * funny because we skip the case of all the
                  * bits cleared.
                  */
-                run = (0x1 << bit - 1); /* number of consecutive masks to set
-                                           bits in */
+                run = (0x1 << (bit - 1)); /* number of consecutive masks to set
+                                             bits in */
                 bit_on = False;         /* are we setting bits or not? */
 
                 for (j = 0, k = run - 1; j < num_masks; j++, k--) {
@@ -695,7 +695,7 @@ void InitWmGlobal(int argc, char *argv[], char *environ[]) {
                              (Window)wmGD.errorResource) &&
                             (wmGD.errorRequestCode ==
                              X_ChangeWindowAttributes)) {
-                                sprintf(pch,
+                                snprintf(pch, 80,
                                         ((char *)GETMESSAGE(
                                             40, 3,
                                             "Another window manager is running "
@@ -1425,7 +1425,7 @@ void InitWmScreen(WmScreenData *pSD, int sNum) {
 
         if (!(strcmp((char *)wmGD.screenNames[sNum],
                      UNSPECIFIED_SCREEN_NAME))) {
-                sprintf(buffer, "%d", sNum);
+                snprintf(buffer, LENCBUFFER, "%d", sNum);
 
                 buf_size = strlen(buffer) + 1;
 
@@ -1437,7 +1437,7 @@ void InitWmScreen(WmScreenData *pSD, int sNum) {
                                                 "for the screen names")));
                         ExitWM(WM_ERROR_EXIT_VALUE);
                 } else {
-                        strcpy((char *)wmGD.screenNames[sNum], buffer);
+                        strlcpy((char *)wmGD.screenNames[sNum], buffer, buf_size);
                 }
         } /* if wmGD.screenNames[sNum] == UNSPECIFIED_SCREEN_NAME */
 
@@ -1607,7 +1607,7 @@ void InitWmScreen(WmScreenData *pSD, int sNum) {
          * used earlier to generate a screen name.
          */
 
-        strcpy(displayName, pDisplayName);
+        strlcpy(displayName, pDisplayName, LENCBUFFER);
 
         token1 = (char *)strtok(displayName, ":"); /* parse of hostname */
 
@@ -1617,9 +1617,9 @@ void InitWmScreen(WmScreenData *pSD, int sNum) {
                 {
                         if ((token2 = (char *)strtok(token1, ".")) !=
                             NULL) /* parse dpy# */
-                                sprintf(buffer, "DISPLAY=:%s.%d", token2, sNum);
+                                snprintf(buffer, LENCBUFFER, "DISPLAY=:%s.%d", token2, sNum);
                 } else { /* otherwise process normally */
-                        sprintf(buffer, "DISPLAY=%s:%s.%d", token1, token2,
+                        snprintf(buffer, LENCBUFFER, "DISPLAY=%s:%s.%d", token1, token2,
                                 sNum);
                 }
 
@@ -1627,12 +1627,13 @@ void InitWmScreen(WmScreenData *pSD, int sNum) {
                  * Allocate space for the display string
                  */
 
+                int displayString_size = strlen(buffer) + 1;
                 if ((pSD->displayString = (String)XtMalloc(
-                         (unsigned int)(strlen(buffer) + 1))) == NULL) {
+                         displayString_size)) == NULL) {
                         Warning(((char *)GETMESSAGE(
                             40, 9, "Insufficient memory for displayString")));
                 } else {
-                        strcpy(pSD->displayString, buffer);
+                        strlcpy(pSD->displayString, buffer, displayString_size);
                 }
         }
 
@@ -1677,12 +1678,12 @@ void InitWmWorkspace(WmWorkspaceData *pWS, WmScreenData *pSD) {
         pWS->buttonW = NULL;
 #else  /* WSM */
 
-        if ((pWS->name = (char *)XtMalloc((1 + strlen(DEFAULT_WS_NAME)) *
-                                          sizeof(char))) == NULL) {
+        int name_size = (1 + strlen(DEFAULT_WS_NAME)) * sizeof(char);
+        if ((pWS->name = (char *)XtMalloc(name_size)) == NULL) {
                 ShowWaitState(FALSE);
                 ExitWM(WM_ERROR_EXIT_VALUE);
         }
-        strcpy(pWS->name, DEFAULT_WS_NAME);
+        strlcpy(pWS->name, DEFAULT_WS_NAME, name_size);
 #endif /* WSM */
 
         /*
@@ -1808,12 +1809,12 @@ static void InsureDefaultBackdropDir(char **ppchBackdropDirs) {
                       strlen(*ppchBackdropDirs) + strlen("/etc/dt/backdrops") +
                       3;
                 tmpptr = XtMalloc(len * sizeof(char *));
-                strcpy(tmpptr, homeDir);
-                strcat(tmpptr, "/.dt/backdrops");
-                strcat(tmpptr, ":");
-                strcat(tmpptr, "/etc/dt/backdrops");
-                strcat(tmpptr, ":");
-                strcat(tmpptr, *ppchBackdropDirs);
+                strlcpy(tmpptr, homeDir, len);
+                strlcat(tmpptr, "/.dt/backdrops", len);
+                strlcat(tmpptr, ":", len);
+                strlcat(tmpptr, "/etc/dt/backdrops", len);
+                strlcat(tmpptr, ":", len);
+                strlcat(tmpptr, *ppchBackdropDirs, len);
                 *ppchBackdropDirs = tmpptr;
         } else
         /*
@@ -1825,14 +1826,14 @@ static void InsureDefaultBackdropDir(char **ppchBackdropDirs) {
                       strlen(*ppchBackdropDirs) + strlen(pchD) +
                       strlen("/etc/dt/backdrops") + 4;
                 tmpptr = XtMalloc(len * sizeof(char *));
-                strcpy(tmpptr, homeDir);
-                strcat(tmpptr, "/.dt/backdrops");
-                strcat(tmpptr, ":");
-                strcat(tmpptr, *ppchBackdropDirs);
-                strcat(tmpptr, ":");
-                strcat(tmpptr, "/etc/dt/backdrops");
-                strcat(tmpptr, ":");
-                strcat(tmpptr, pchD);
+                strlcpy(tmpptr, homeDir, len);
+                strlcat(tmpptr, "/.dt/backdrops", len);
+                strlcat(tmpptr, ":", len);
+                strlcat(tmpptr, *ppchBackdropDirs, len);
+                strlcat(tmpptr, ":", len);
+                strlcat(tmpptr, "/etc/dt/backdrops", len);
+                strlcat(tmpptr, ":", len);
+                strlcat(tmpptr, pchD, len);
                 *ppchBackdropDirs = tmpptr;
         }
 
@@ -2229,9 +2230,9 @@ void InitScreenNames(void) {
                         /* default name is left justified, 3-chars max, zero
                          * terminated */
 #ifdef WSM
-                sprintf((char *)wmGD.screenNames[num], UNSPECIFIED_SCREEN_NAME);
+                snprintf((char *)wmGD.screenNames[num], 4 * sizeof(char), UNSPECIFIED_SCREEN_NAME);
 #else  /* WSM */
-                sprintf((char *)wmGD.screenNames[num], "%d", num % 1000);
+                snprintf((char *)wmGD.screenNames[num], 4 * sizeof(char), "%d", num % 1000);
 #endif /* WSM */
         }
 }
@@ -2255,68 +2256,74 @@ void InitNlsStrings(void) {
          */
 
         tmpString = ((char *)GETMESSAGE(40, 14, "Icons"));
+        int title_size = strlen(tmpString) + 1;
         if ((wmNLS.default_icon_box_title = (char *)XtMalloc(
-                 (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+                 title_size)) == NULL) {
                 Warning(((char *)GETMESSAGE(
                     40, 15, "Insufficient memory for local message string")));
                 wmNLS.default_icon_box_title = "Icons";
         } else {
-                strcpy(wmNLS.default_icon_box_title, tmpString);
+                strlcpy(wmNLS.default_icon_box_title, tmpString, title_size);
         }
 
 #ifdef WSM
         tmpString = ((char *)GETMESSAGE(
             40, 20, "%s: %s on line %d of configuration file %s\n"));
+        int pWarningStringFile_size = strlen(tmpString) + 1;
         if ((pWarningStringFile = (char *)XtMalloc(
-                 (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+                 pWarningStringFile_size)) == NULL) {
                 Warning(((char *)GETMESSAGE(
                     40, 17, "Insufficient memory for local message string")));
                 pWarningStringFile =
                     "%s: %s on line %d of configuration file %s\n";
         } else {
-                strcpy(pWarningStringFile, tmpString);
+                strlcpy(pWarningStringFile, tmpString, pWarningStringFile_size);
         }
 
         tmpString = ((char *)GETMESSAGE(
             40, 21, "%s: %s on line %d of specification string\n"));
+        int pWarningStringLine_size = strlen(tmpString) + 1;
         if ((pWarningStringLine = (char *)XtMalloc(
-                 (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+                 pWarningStringLine_size)) == NULL) {
                 Warning(((char *)GETMESSAGE(
                     40, 19, "Insufficient memory for local message string")));
                 pWarningStringLine =
                     "%s: %s on line %d of specification string\n";
         } else {
-                strcpy(pWarningStringLine, tmpString);
+                strlcpy(pWarningStringLine, tmpString, pWarningStringLine_size);
         }
 
         tmpString = ((char *)GETMESSAGE(40, 22, "About Workspace Manager"));
+        int defaultVersionTitle_size = strlen(tmpString) + 1;
         if ((wmNLS.defaultVersionTitle = (char *)XtMalloc(
-                 (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+                 defaultVersionTitle_size)) == NULL) {
                 Warning(((char *)GETMESSAGE(
                     40, 15, "Insufficient memory for local message string")));
                 wmNLS.defaultVersionTitle = "About Workspace Manager";
         } else {
-                strcpy(wmNLS.defaultVersionTitle, tmpString);
+                strlcpy(wmNLS.defaultVersionTitle, tmpString, defaultVersionTitle_size);
         }
 
         tmpString = ((char *)GETMESSAGE(40, 23, "Workspace Manager - Help"));
+        int defaultDtwmHelpTitle_size = strlen(tmpString) + 1;
         if ((wmNLS.defaultDtwmHelpTitle = (char *)XtMalloc(
-                 (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+                 defaultDtwmHelpTitle_size)) == NULL) {
                 Warning(((char *)GETMESSAGE(
                     40, 15, "Insufficient memory for local message string")));
                 wmNLS.defaultDtwmHelpTitle = "Workspace Manager - Help";
         } else {
-                strcpy(wmNLS.defaultDtwmHelpTitle, tmpString);
+                strlcpy(wmNLS.defaultDtwmHelpTitle, tmpString, defaultDtwmHelpTitle_size);
         }
 
         tmpString = ((char *)GETMESSAGE(40, 24, "Workspace Manager - Help"));
+        int defaultHelpTitle_size = strlen(tmpString) + 1;
         if ((wmNLS.defaultHelpTitle = (char *)XtMalloc(
-                 (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+                 defaultHelpTitle_size)) == NULL) {
                 Warning(((char *)GETMESSAGE(
                     40, 15, "Insufficient memory for local message string")));
                 wmNLS.defaultHelpTitle = "Workspace Manager - Help";
         } else {
-                strcpy(wmNLS.defaultHelpTitle, tmpString);
+                strlcpy(wmNLS.defaultHelpTitle, tmpString, defaultHelpTitle_size);
         }
 #endif /* WSM */
 
@@ -2349,19 +2356,20 @@ void InitWmDisplayEnv(void) {
         /*
          * Construct displayString for this string.
          */
-        strcpy(displayName, pDisplayName);
-        sprintf(buffer, "DISPLAY=%s", displayName);
+        strlcpy(displayName, pDisplayName, 256);
+        snprintf(buffer, 256, "DISPLAY=%s", displayName);
 
         /*
          * Allocate space for the display string
          */
+        int displayString_size = strlen(buffer) + 1;
         if ((wmGD.displayString = (String)XtMalloc(
-                 (unsigned int)(strlen(buffer) + 1))) == NULL) {
+                 displayString_size)) == NULL) {
                 wmGD.displayString = NULL;
                 Warning(((char *)GETMESSAGE(
                     40, 9, "Insufficient memory for displayString")));
         } else {
-                strcpy(wmGD.displayString, buffer);
+                strlcpy(wmGD.displayString, buffer, displayString_size);
 #ifdef WSM
                 putenv(wmGD.displayString);
 #endif /* WSM */

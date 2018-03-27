@@ -35,6 +35,8 @@
  ****************************************************************************
  *****************************************************************************/
 
+#include <stdbool.h>
+
 #include <Xm/XmP.h>
 #include <Xm/ManagerP.h>
 #include <Xm/RowColumn.h>
@@ -61,7 +63,6 @@ extern Boolean CheckControlTypeFile(ControlData *);
  ************************************************************************/
 
 void ActionCB(Widget w, XtPointer client_data, XtPointer call_data)
-
 {
         ControlData *control_data;
         long control_type;
@@ -115,11 +116,11 @@ void ActionCB(Widget w, XtPointer client_data, XtPointer call_data)
  ************************************************************************/
 
 void DeleteWorkspaceCB(Widget w, XtPointer client_data, XtPointer call_data)
-
 {
         long delete_workspace = (long)client_data;
         SwitchData *switch_data;
         int i;
+        bool switch_data_set = false;
 
         /*  Look up the switch data to get the atom name of the workspace  */
         /*  to delete.                                                     */
@@ -127,11 +128,13 @@ void DeleteWorkspaceCB(Widget w, XtPointer client_data, XtPointer call_data)
         for (i = 0; i < panel.box_data_count; i++) {
                 if (panel.box_data[i]->switch_data != NULL) {
                         switch_data = panel.box_data[i]->switch_data;
+                        switch_data_set = true;
                         break;
                 }
         }
 
-        _DtWsmDeleteWorkspace(panel.shell,
+        if (switch_data_set)
+                _DtWsmDeleteWorkspace(panel.shell,
                               switch_data->atom_names[delete_workspace]);
 }
 
@@ -147,11 +150,11 @@ void DeleteWorkspaceCB(Widget w, XtPointer client_data, XtPointer call_data)
  ************************************************************************/
 
 void RenameWorkspaceCB(Widget w, XtPointer client_data, XtPointer call_data)
-
 {
         long rename_ws = (long)client_data;
         SwitchData *switch_data;
         int i;
+        bool switch_data_set = false;
 
         /*  Look up the switch data to get the atom name of the workspace  */
         /*  to delete.                                                     */
@@ -159,11 +162,13 @@ void RenameWorkspaceCB(Widget w, XtPointer client_data, XtPointer call_data)
         for (i = 0; i < panel.box_data_count; i++) {
                 if (panel.box_data[i]->switch_data != NULL) {
                         switch_data = panel.box_data[i]->switch_data;
+                        switch_data_set = true;
                         break;
                 }
         }
 
-        SwitchRenameLabel(switch_data->buttons[rename_ws], panel.box_data[i]);
+        if (switch_data_set)
+                SwitchRenameLabel(switch_data->buttons[rename_ws], panel.box_data[i]);
 }
 
 /************************************************************************
@@ -193,7 +198,7 @@ void AddWorkspaceCB(Widget w, XtPointer client_data, XtPointer call_data)
         temp_name = FPGETMESSAGE(82, 35, "New");
         slen = strlen(temp_name) + 5 + 1;
         switch_name = XtCalloc(1, slen);
-        strcpy(switch_name, temp_name);
+        strlcpy(switch_name, temp_name, slen);
 
         /*  Look up the switch data to get the atom name of the workspace  */
         /*  to delete.                                                     */
@@ -352,11 +357,12 @@ void DeleteControlCB(Widget w, XtPointer client_data, XtPointer call_data)
                     "This control cannot be deleted because it is locked.");
                 del_msg = XtNewString(del_msg);
 
-                message = XtMalloc(sizeof(char) *
-                                   (strlen(del_ctrl) + strlen(ctrl_label) +
-                                    strlen(del_msg) + 4));
+                int message_size = strlen(del_ctrl) + strlen(ctrl_label) +
+                        strlen(del_msg) + 4;
+                message = XtMalloc(message_size);
 
-                sprintf(message, "%s %s\n\n%s", del_ctrl, ctrl_label, del_msg);
+                snprintf(message, message_size, "%s %s\n\n%s",
+                                del_ctrl, ctrl_label, del_msg);
 
                 _DtMessage(XtParent(w), title, message, NULL, NULL);
 
@@ -392,11 +398,12 @@ void DeleteControlCB(Widget w, XtPointer client_data, XtPointer call_data)
 
                 del_msg = XtNewString(del_msg);
 
-                message = XtMalloc(sizeof(char) *
-                                   (strlen(del_ctrl) + strlen(ctrl_label) +
-                                    strlen(del_msg) + 4));
+                int message_size = strlen(del_ctrl) + strlen(ctrl_label) +
+                        strlen(del_msg) + 4;
+                message = XtMalloc(message_size);
 
-                sprintf(message, "%s %s\n\n%s", del_ctrl, ctrl_label, del_msg);
+                snprintf(message, message_size, "%s %s\n\n%s",
+                                del_ctrl, ctrl_label, del_msg);
 
 #ifndef IBM_163763
                 /*  Get the subpanel data for the control.  Check to see if the
@@ -512,12 +519,12 @@ void DeleteSubpanelCB(Widget w, XtPointer client_data, XtPointer call_data)
                     "This subpanel cannot be deleted because it is locked.");
                 del_msg = XtNewString(del_msg);
 
-                message = XtMalloc(sizeof(char) *
-                                   (strlen(del_spanel) + strlen(spanel_name) +
-                                    strlen(del_msg) + 4));
+                int message_size = strlen(del_spanel) + strlen(spanel_name) +
+                        strlen(del_msg) + 4;
+                message = XtMalloc(message_size);
 
-                sprintf(message, "%s %s\n\n%s", del_spanel, spanel_name,
-                        del_msg);
+                snprintf(message, message_size, "%s %s\n\n%s",
+                                del_spanel, spanel_name, del_msg);
 
                 _DtMessage(XtParent(w), title, message, NULL, NULL);
 
@@ -563,12 +570,12 @@ void DeleteSubpanelCB(Widget w, XtPointer client_data, XtPointer call_data)
 
                 del_msg = XtNewString(del_msg);
 
-                message = XtMalloc(sizeof(char) *
-                                   (strlen(del_spanel) + strlen(spanel_name) +
-                                    strlen(del_msg) + 4));
+                int message_size = strlen(del_spanel) + strlen(spanel_name) +
+                        strlen(del_msg) + 4;
+                message = XtMalloc(message_size);
 
-                sprintf(message, "%s %s\n\n%s", del_spanel, spanel_name,
-                        del_msg);
+                snprintf(message, message_size, "%s %s\n\n%s",
+                                del_spanel, spanel_name, del_msg);
 
 #ifndef IBM_163763
                 dialog = _DtMessageDialog(subpanel_data->shell, title, message,
@@ -1437,10 +1444,11 @@ static void ShowWorkspaceItems(SwitchData *switch_data, Widget focus_widget)
         ws = strdup(FPGETMESSAGE(82, 21, "Workspace"));
         ws_name = switch_data->switch_names[i];
 
+        int control_label_size = strlen(ws) + strlen(ws_name) + 4;
         control_label =
-            XtMalloc(sizeof(char) * (strlen(ws) + strlen(ws_name) + 4));
+            XtMalloc(control_label_size);
 
-        sprintf(control_label, format, ws, ws_name);
+        snprintf(control_label, control_label_size, format, ws, ws_name);
         free(format);
         free(ws);
 

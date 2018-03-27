@@ -1121,8 +1121,9 @@ Boolean CheckControlTypeFile(ControlData *control_data)
         title = XtNewString(title);
 
         msg = FPGETMESSAGE(86, 7, "Cannot find the file");
-        message = XtMalloc(strlen(msg) + strlen(file_name) + 2);
-        sprintf(message, "%s %s", msg, file_name);
+        int message_size = strlen(msg) + strlen(file_name) + 2;
+        message = XtMalloc(message_size);
+        snprintf(message, message_size, "%s %s", msg, file_name);
 
         _DtMessage(panel.shell, title, message, NULL, NULL);
 
@@ -1530,15 +1531,15 @@ void PushCB(Widget w, XtPointer client_data, XtPointer call_data)
                                                             [CONTROL_FILE_NAME]
                                                         .parsed_value;
 
-                                                s1 = XtMalloc(
-                                                    strlen(push_action
-                                                               ->action_name) +
-                                                    strlen(file_name) + 2);
-                                                strcpy(
+                                                int size = strlen(push_action->action_name) +
+                                                    strlen(file_name) + 2;
+                                                s1 = XtMalloc(size);
+                                                strlcpy(
                                                     s1,
-                                                    push_action->action_name);
-                                                strcat(s1, " ");
-                                                strcat(s1, file_name);
+                                                    push_action->action_name,
+                                                    size);
+                                                strlcat(s1, " ", size);
+                                                strlcat(s1, file_name, size);
                                         } else
                                                 s1 = XtNewString(
                                                     push_action->action_name);
@@ -2228,11 +2229,12 @@ void CustomizeDropCB(Widget w, XtPointer client_data, XtPointer call_data)
                                     "There is already an icon of this name.");
                                 del_msg = XtNewString(del_msg);
 
-                                message = XtMalloc((strlen(del_ctrl) +
-                                                    strlen(new_control_name) +
-                                                    strlen(del_msg) + 4));
-                                sprintf(message, "%s %s\n\n%s", del_ctrl,
-                                        new_control_name, del_msg);
+                                int message_size = strlen(del_ctrl) +
+                                    strlen(new_control_name) +
+                                    strlen(del_msg) + 4;
+                                message = XtMalloc(message_size);
+                                snprintf(message, message_size, "%s %s\n\n%s",
+                                        del_ctrl, new_control_name, del_msg);
 
                                 _DtMessage(panel.shell, title, message, NULL,
                                            NULL);

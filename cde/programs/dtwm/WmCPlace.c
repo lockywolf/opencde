@@ -43,6 +43,7 @@ static char rcsid[] =
 #define XK_MISCELLANY
 #define XK_LATIN1
 #include <X11/keysymdef.h>
+#include <X11/XKBlib.h>
 
 /* absolute value macro */
 #ifndef ABS
@@ -290,7 +291,7 @@ void HandlePlacementKeyEvent(ClientData *pcd, XKeyEvent *pev) {
         }
 
         /* convert event data to useful key data */
-        keysym = XKeycodeToKeysym(DISPLAY, pev->keycode, 0);
+        keysym = XkbKeycodeToKeysym(DISPLAY, pev->keycode, 0, 0);
         control = (pev->state & ControlMask) != 0;
         big_inc = DisplayWidth(DISPLAY, ACTIVE_PSD->screen) / 20;
 

@@ -968,7 +968,8 @@ Boolean WmDtHelp(String args) {
                         /*
                          * parse args for volume and topic
                          */
-                        WmDtGetHelpArgs(args, volume, topic, &argCount);
+                        WmDtGetHelpArgs(args, volume, topic, MAXWMPATH + 1,
+                                MAXWMPATH + 1, &argCount);
                         if (argCount == 1) {
                                 WmDtDisplayTopic(
                                     pSD->screenTopLevelW1, theHelpVolume,
@@ -1467,7 +1468,9 @@ static Boolean WmDtGetFromCache(CacheListStruct **pCurrentNode,
  ******************************<->***********************************/
 
 Boolean RestoreHelpDialogs(WmScreenData *pSD) {
-#ifndef NO_DT
+#ifdef NO_DT
+        return False;
+#else
         XrmDatabase db;
         XrmName xrm_name[5];
         XrmRepresentation rep_type;
@@ -1475,7 +1478,7 @@ Boolean RestoreHelpDialogs(WmScreenData *pSD) {
 
         Position xLoc, yLoc;
         short columns, rows;
-        int helpType;
+        int helpType = -1;
         char geometry[40];
         int wsCnt;
         int cCount;
@@ -1503,7 +1506,7 @@ Boolean RestoreHelpDialogs(WmScreenData *pSD) {
 
         if (pSD->helpResources) {
                 if ((db = XrmGetStringDatabase(pSD->helpResources)) == NULL) {
-                        return (False);
+                        return False;
                 }
                 xrm_name[0] = XrmStringToQuark("wsHelp");
                 xrm_name[1] = XrmStringToQuark("onScreen");
@@ -1554,7 +1557,7 @@ Boolean RestoreHelpDialogs(WmScreenData *pSD) {
                                         ac++;
                                         rows = (short)atoi((char *)value.addr);
                                 }
-                                sprintf(geometry, "=+%d+%d", xLoc, yLoc);
+                                snprintf(geometry, 40, "=+%d+%d", xLoc, yLoc);
 
                                 XtSetArg(setArgs[ac], XmNgeometry,
                                          XtNewString(geometry));
@@ -1647,6 +1650,7 @@ Boolean RestoreHelpDialogs(WmScreenData *pSD) {
 
                                         break;
 
+                                case -1:
                                 default:
                                         /* error condition, don't try to display
                                          * help */
@@ -1717,7 +1721,7 @@ Boolean RestoreHelpDialogs(WmScreenData *pSD) {
                         /* restore cachedCount number of help dialogs */
                         cachedCount = (int)atoi((char *)value.addr);
                         for (cCount = 1; cCount < (cachedCount + 1); cCount++) {
-                                sprintf(dialogName, "oWsHelp%d", cCount);
+                                snprintf(dialogName, 10, "oWsHelp%d", cCount);
                                 xrm_name[0] = XrmStringToQuark(dialogName);
                                 xrm_name[1] = NULLQUARK;
                                 xrm_name[2] = NULLQUARK;
@@ -1773,7 +1777,7 @@ Boolean RestoreHelpDialogs(WmScreenData *pSD) {
                                         ac++;
                                         rows = (short)atoi((char *)value.addr);
                                 }
-                                sprintf(geometry, "=+%d+%d", xLoc, yLoc);
+                                snprintf(geometry, 40, "=+%d+%d", xLoc, yLoc);
 
                                 XtSetArg(setArgs[ac], XmNgeometry,
                                          XtNewString(geometry));
@@ -1889,6 +1893,7 @@ Boolean RestoreHelpDialogs(WmScreenData *pSD) {
                 XrmDestroyDatabase(db);
         }
 #endif /* NO_DT */
+        return False;
 } /* END OF FUNCTION  RestoreHelpDialogs */
 
 /*************************************<->*************************************
@@ -1971,15 +1976,15 @@ void SaveHelpResources(WmScreenData *pSD) {
                 res_class = DT_WM_RESOURCE_CLASS;
         }
 
-        sprintf(screenName, "%d", pSD->screen);
+        snprintf(screenName, 10, "%d", pSD->screen);
 
-        sprintf(buffer, "%s*%s*%s:  \\n ", res_class, screenName,
+        snprintf(buffer, MAXWMPATH + 1, "%s*%s*%s:  \\n ", res_class, screenName,
                 WmNhelpResources);
         AddStringToResourceData(buffer, &data, &cum_len);
 
         if (pHelp->onScreen) {
-                sprintf(dialogName, "wsHelp");
-                sprintf(buffer, "%s*onScreen: True\\n ", dialogName);
+                snprintf(dialogName, 128, "wsHelp");
+                snprintf(buffer, MAXWMPATH + 1, "%s*onScreen: True\\n ", dialogName);
                 AddStringToResourceData(buffer, &data, &cum_len);
 
                 ac = 0;
@@ -2010,19 +2015,19 @@ void SaveHelpResources(WmScreenData *pSD) {
                 ac++;
                 XtGetValues(pSD->dtHelp.dialog, getArgs, ac);
 
-                sprintf(buffer, "%s*x: %d \\n ", dialogName, xLoc);
+                snprintf(buffer, MAXWMPATH + 1, "%s*x: %d \\n ", dialogName, xLoc);
                 AddStringToResourceData(buffer, &data, &cum_len);
-                sprintf(buffer, "%s*y: %d \\n ", dialogName, yLoc);
+                snprintf(buffer, MAXWMPATH + 1, "%s*y: %d \\n ", dialogName, yLoc);
                 AddStringToResourceData(buffer, &data, &cum_len);
-                sprintf(buffer, "%s*columns: %d \\n ", dialogName, columns);
+                snprintf(buffer, MAXWMPATH + 1, "%s*columns: %d \\n ", dialogName, columns);
                 AddStringToResourceData(buffer, &data, &cum_len);
-                sprintf(buffer, "%s*rows: %d \\n ", dialogName, rows);
+                snprintf(buffer, MAXWMPATH + 1, "%s*rows: %d \\n ", dialogName, rows);
                 AddStringToResourceData(buffer, &data, &cum_len);
-                sprintf(buffer, "%s*helpType: %d \\n ", dialogName, helpType);
+                snprintf(buffer, MAXWMPATH + 1, "%s*helpType: %d \\n ", dialogName, helpType);
                 AddStringToResourceData(buffer, &data, &cum_len);
-                sprintf(buffer, "%s*vPCount: %d \\n ", dialogName, vPCount);
+                snprintf(buffer, MAXWMPATH + 1, "%s*vPCount: %d \\n ", dialogName, vPCount);
                 AddStringToResourceData(buffer, &data, &cum_len);
-                sprintf(buffer, "%s*tTitle: %s\\n ", dialogName, topicTitle);
+                snprintf(buffer, MAXWMPATH + 1, "%s*tTitle: %s\\n ", dialogName, topicTitle);
                 AddStringToResourceData(buffer, &data, &cum_len);
 
                 ac = 0;
@@ -2033,10 +2038,10 @@ void SaveHelpResources(WmScreenData *pSD) {
                         XtSetArg(getArgs[ac], DtNlocationId, &locationId);
                         ac++;
                         XtGetValues(pSD->dtHelp.dialog, getArgs, ac);
-                        sprintf(buffer, "%s*helpVolume: %s\\n ", dialogName,
+                        snprintf(buffer, MAXWMPATH + 1, "%s*helpVolume: %s\\n ", dialogName,
                                 helpVolume);
                         AddStringToResourceData(buffer, &data, &cum_len);
-                        sprintf(buffer, "%s*locationId: %s\\n ", dialogName,
+                        snprintf(buffer, MAXWMPATH + 1, "%s*locationId: %s\\n ", dialogName,
                                 locationId);
                         AddStringToResourceData(buffer, &data, &cum_len);
 
@@ -2046,7 +2051,7 @@ void SaveHelpResources(WmScreenData *pSD) {
                         XtSetArg(getArgs[ac], DtNstringData, &stringData);
                         ac++;
                         XtGetValues(pSD->dtHelp.dialog, getArgs, ac);
-                        sprintf(buffer, "%s*stringData: %s\\n ", dialogName,
+                        snprintf(buffer, MAXWMPATH + 1, "%s*stringData: %s\\n ", dialogName,
                                 stringData);
                         AddStringToResourceData(buffer, &data, &cum_len);
 
@@ -2072,7 +2077,7 @@ void SaveHelpResources(WmScreenData *pSD) {
 
                 if (!XFindContext(DISPLAY, wmGroupWindow,
                                   wmGD.windowContextType, (caddr_t *)&pCD)) {
-                        sprintf(buffer, "%s*windowGroup: %s\\n ", dialogName,
+                        snprintf(buffer, MAXWMPATH + 1, "%s*windowGroup: %s\\n ", dialogName,
                                 pCD->clientName);
                         AddStringToResourceData(buffer, &data, &cum_len);
 
@@ -2081,7 +2086,7 @@ void SaveHelpResources(WmScreenData *pSD) {
                                 wsName = XGetAtomName(
                                     DISPLAY,
                                     pCD->pWsList[pCD->currentWsc].wsID);
-                                sprintf(buffer, "%s*wsName: %s\\n ", dialogName,
+                                snprintf(buffer, MAXWMPATH + 1, "%s*wsName: %s\\n ", dialogName,
                                         wsName);
                                 AddStringToResourceData(buffer, &data,
                                                         &cum_len);
@@ -2103,7 +2108,7 @@ void SaveHelpResources(WmScreenData *pSD) {
                                 pTemp = pTemp->pNext;
                         } else {
                                 cachedCount++;
-                                sprintf(dialogName, "oWsHelp%d", cachedCount);
+                                snprintf(dialogName, 128, "oWsHelp%d", cachedCount);
 
                                 ac = 0;
                                 XtSetArg(getArgs[ac], XmNx, &xLoc);
@@ -2144,31 +2149,31 @@ void SaveHelpResources(WmScreenData *pSD) {
                                 ac++;
                                 XtGetValues(pTemp->helpDialog, getArgs, ac);
 
-                                sprintf(buffer, "%s*x: %d \\n ", dialogName,
+                                snprintf(buffer, MAXWMPATH + 1, "%s*x: %d \\n ", dialogName,
                                         xLoc);
                                 AddStringToResourceData(buffer, &data,
                                                         &cum_len);
-                                sprintf(buffer, "%s*y: %d \\n ", dialogName,
+                                snprintf(buffer, MAXWMPATH + 1, "%s*y: %d \\n ", dialogName,
                                         yLoc);
                                 AddStringToResourceData(buffer, &data,
                                                         &cum_len);
-                                sprintf(buffer, "%s*columns: %d \\n ",
+                                snprintf(buffer, MAXWMPATH + 1, "%s*columns: %d \\n ",
                                         dialogName, columns);
                                 AddStringToResourceData(buffer, &data,
                                                         &cum_len);
-                                sprintf(buffer, "%s*rows: %d \\n ", dialogName,
+                                snprintf(buffer, MAXWMPATH + 1, "%s*rows: %d \\n ", dialogName,
                                         rows);
                                 AddStringToResourceData(buffer, &data,
                                                         &cum_len);
-                                sprintf(buffer, "%s*helpType: %d \\n ",
+                                snprintf(buffer, MAXWMPATH + 1, "%s*helpType: %d \\n ",
                                         dialogName, helpType);
                                 AddStringToResourceData(buffer, &data,
                                                         &cum_len);
-                                sprintf(buffer, "%s*vPCount: %d \\n ",
+                                snprintf(buffer, MAXWMPATH + 1, "%s*vPCount: %d \\n ",
                                         dialogName, vPCount);
                                 AddStringToResourceData(buffer, &data,
                                                         &cum_len);
-                                sprintf(buffer, "%s*tTitle: %s\\n ", dialogName,
+                                snprintf(buffer, MAXWMPATH + 1, "%s*tTitle: %s\\n ", dialogName,
                                         topicTitle);
                                 AddStringToResourceData(buffer, &data,
                                                         &cum_len);
@@ -2184,11 +2189,11 @@ void SaveHelpResources(WmScreenData *pSD) {
                                         ac++;
                                         XtGetValues(pTemp->helpDialog, getArgs,
                                                     ac);
-                                        sprintf(buffer, "%s*helpVolume: %s\\n ",
+                                        snprintf(buffer, MAXWMPATH + 1, "%s*helpVolume: %s\\n ",
                                                 dialogName, helpVolume);
                                         AddStringToResourceData(buffer, &data,
                                                                 &cum_len);
-                                        sprintf(buffer, "%s*locationId: %s\\n ",
+                                        snprintf(buffer, MAXWMPATH + 1, "%s*locationId: %s\\n ",
                                                 dialogName, locationId);
                                         AddStringToResourceData(buffer, &data,
                                                                 &cum_len);
@@ -2201,7 +2206,7 @@ void SaveHelpResources(WmScreenData *pSD) {
                                         ac++;
                                         XtGetValues(pTemp->helpDialog, getArgs,
                                                     ac);
-                                        sprintf(buffer, "%s*stringData: %s\\n ",
+                                        snprintf(buffer, MAXWMPATH + 1, "%s*stringData: %s\\n ",
                                                 dialogName, stringData);
                                         AddStringToResourceData(buffer, &data,
                                                                 &cum_len);
@@ -2224,7 +2229,7 @@ void SaveHelpResources(WmScreenData *pSD) {
 
                                 if (pCDforHelp) {
                                         thisCnt = 0;
-                                        sprintf(workspaces, "%s", "");
+                                        snprintf(workspaces, MAXWMPATH + 1, "%s", "");
                                         for (wsCnt = 0;
                                              wsCnt < pSD->numWorkspaces;
                                              wsCnt++) {
@@ -2238,24 +2243,25 @@ void SaveHelpResources(WmScreenData *pSD) {
                                                 if (ClientInWorkspace(
                                                         pWS, pCDforHelp)) {
                                                         if (thisCnt == 0) {
-                                                                strcpy(
+                                                                strlcpy(
                                                                     workspaces,
-                                                                    pSD->pWS[wsCnt]
-                                                                        .name);
+                                                                    pSD->pWS[wsCnt].name,
+                                                                        MAXWMPATH + 1);
 
                                                         } else {
-                                                                strcat(
+                                                                strlcat(
                                                                     workspaces,
-                                                                    "*");
-                                                                strcat(
+                                                                    "*",
+                                                                    MAXWMPATH + 1);
+                                                                strlcat(
                                                                     workspaces,
-                                                                    pSD->pWS[wsCnt]
-                                                                        .name);
+                                                                    pSD->pWS[wsCnt].name,
+                                                                        MAXWMPATH + 1);
                                                         }
                                                         thisCnt++;
                                                 }
                                         }
-                                        sprintf(buffer, "%s*workspaces: %s\\n ",
+                                        snprintf(buffer, MAXWMPATH + 1, "%s*workspaces: %s\\n ",
                                                 dialogName, workspaces);
                                         AddStringToResourceData(buffer, &data,
                                                                 &cum_len);
@@ -2264,7 +2270,7 @@ void SaveHelpResources(WmScreenData *pSD) {
                         }
                 } /* While */
                 if (cachedCount) {
-                        sprintf(buffer, "cachedHelp*cachedCount: %d\\n ",
+                        snprintf(buffer, MAXWMPATH + 1, "cachedHelp*cachedCount: %d\\n ",
                                 cachedCount);
                         AddStringToResourceData(buffer, &data, &cum_len);
                 }
@@ -2274,7 +2280,7 @@ void SaveHelpResources(WmScreenData *pSD) {
                 /*
                  * Save help resources as a string
                  */
-                sprintf(buffer, " \n");
+                snprintf(buffer, MAXWMPATH + 1, " \n");
                 AddStringToResourceData(buffer, &data, &cum_len);
 
                 _DtAddToResource(DISPLAY, data);

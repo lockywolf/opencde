@@ -2043,8 +2043,8 @@ static XmString WmICCCMToXmString(XTextProperty *wmNameProp) {
             (nStrings <= 0)) {
                 switch (status) {
                 case XConverterNotFound:
-#ifndef MOTIF_ONE_DOT_ONE
-                        sprintf(msg,
+                        snprintf(msg,
+                                200,
                                 GETMESSAGE(70, 5,
                                            "Window manager cannot convert "
                                            "property %.100s as "
@@ -2052,11 +2052,11 @@ static XmString WmICCCMToXmString(XTextProperty *wmNameProp) {
                                            "XmbTextPropertyToTextList"),
                                 XGetAtomName(DISPLAY, wmNameProp->encoding));
                         Warning(msg);
-#endif /* MOTIF_ONE_DOT_ONE */
                         break;
 
                 case XNoMemory:
-                        sprintf(msg,
+                        snprintf(msg,
+                                200,
                                 GETMESSAGE(70, 6,
                                            "insufficient memory to convert "
                                            "property %.100s as "
@@ -2069,11 +2069,12 @@ static XmString WmICCCMToXmString(XTextProperty *wmNameProp) {
                 case XLocaleNotSupported:
                         if ((wmNameProp->encoding == XA_STRING) ||
                             (wmNameProp->encoding == wmGD.xa_COMPOUND_TEXT)) {
-                                sprintf(msg, LOCALE_MSG,
+                                snprintf(msg, 200, LOCALE_MSG,
                                         setlocale(LC_ALL, NULL));
                         } else {
                                 /* Atom was neither STRING nor COMPOUND_TEXT */
-                                sprintf(msg,
+                                snprintf(msg,
+                                        200,
                                         GETMESSAGE(70, 8,
                                                    "Window manager received "
                                                    "unknown property as "
@@ -3387,7 +3388,7 @@ void FindClientPlacement(ClientData *pCD) {
         frameHeight =
             pCD->clientHeight + pCD->clientOffset.y + pCD->clientOffset.x;
 
-        if (WmHI = GetHeadInfo(wmGD.keyboardFocus)) {
+        if ((WmHI = GetHeadInfo(wmGD.keyboardFocus))) {
                 /* Use Head metrics for placeable area */
                 screenX = WmHI->x_org;
                 screenY = WmHI->y_org;
@@ -3701,9 +3702,9 @@ void ProcessMwmHints(ClientData *pCD) {
 	    {
 		/*
 		 * !!! Backward compatibility heurisitic !!!
-		 * 
+		 *
 		 * If client doesn't want any functions and
-		 * no DT_WM_HINTS specified, then remove 
+		 * no DT_WM_HINTS specified, then remove
 		 * workspace functions.
 		 */
 		pCD->dtwmFunctions &= ~DtWM_FUNCTION_OCCUPY_WS;

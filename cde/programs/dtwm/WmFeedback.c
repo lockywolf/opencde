@@ -94,23 +94,23 @@ void initMesg() {
          */
 
         tmpString = ((char *)GETMESSAGE(22, 12, "Switch to Default Behavior?"));
-        if ((confirm_mesg[0] = (char *)XtMalloc(
-                 (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+        int confirm_mesg_size = strlen(tmpString) + 1;
+        if ((confirm_mesg[0] = (char *)XtMalloc(confirm_mesg_size)) == NULL) {
                 Warning(((char *)GETMESSAGE(
                     22, 2, "Insufficient memory for local message string")));
                 confirm_mesg[0] = "Switch to Default Behavior?";
         } else {
-                strcpy(confirm_mesg[0], tmpString);
+                strlcpy(confirm_mesg[0], tmpString, confirm_mesg_size);
         }
 
         tmpString = ((char *)GETMESSAGE(22, 13, "Switch to Custom Behavior?"));
-        if ((confirm_mesg[1] = (char *)XtMalloc(
-                 (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+        confirm_mesg_size = strlen(tmpString) + 1;
+        if ((confirm_mesg[1] = (char *)XtMalloc(confirm_mesg_size)) == NULL) {
                 Warning(((char *)GETMESSAGE(
                     22, 2, "Insufficient memory for local message string")));
                 confirm_mesg[1] = "Switch to Custom Behavior?";
         } else {
-                strcpy(confirm_mesg[1], tmpString);
+                strlcpy(confirm_mesg[1], tmpString, confirm_mesg_size);
         }
 
         if (MwmBehavior) {
@@ -119,8 +119,8 @@ void initMesg() {
                 tmpString =
                     ((char *)GETMESSAGE(22, 10, "Restart Workspace Manager?"));
         }
-        if ((confirm_mesg[2] = (char *)XtMalloc(
-                 (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+        confirm_mesg_size = strlen(tmpString) + 1;
+        if ((confirm_mesg[2] = (char *)XtMalloc(confirm_mesg_size)) == NULL) {
                 Warning(((char *)GETMESSAGE(
                     22, 5, "Insufficient memory for local message string")));
                 if (MwmBehavior) {
@@ -129,7 +129,7 @@ void initMesg() {
                         confirm_mesg[2] = "Restart Workspace Manager?";
                 }
         } else {
-                strcpy(confirm_mesg[2], tmpString);
+                strlcpy(confirm_mesg[2], tmpString, confirm_mesg_size);
         }
 
         if (MwmBehavior) {
@@ -148,8 +148,8 @@ void initMesg() {
 #endif /* MINIMAL_DT */
         }
 
-        if ((confirm_mesg[3] = (char *)XtMalloc(
-                 (unsigned int)(strlen(tmpString) + 1))) == NULL) {
+        confirm_mesg_size = strlen(tmpString) + 1;
+        if ((confirm_mesg[3] = (char *)XtMalloc(confirm_mesg_size)) == NULL) {
                 Warning(((char *)GETMESSAGE(
                     22, 8, "Insufficient memory for local message string")));
                 if (MwmBehavior) {
@@ -166,7 +166,7 @@ void initMesg() {
                             22, 11, "QUIT Workspace Manager?"));
 #endif /* MINIMAL_DT */
         } else {
-                strcpy(confirm_mesg[3], tmpString);
+                strlcpy(confirm_mesg[3], tmpString, confirm_mesg_size);
         }
 }
 #else
@@ -544,7 +544,7 @@ void UpdateFeedbackText(WmScreenData *pSD, int x, int y, unsigned int width,
         XCharStruct xcs;
 
         if (pSD->fbStyle & FB_POSITION) {
-                sprintf(pSD->fbLocation, "(%4d,%-4d)", x, y);
+                snprintf(pSD->fbLocation, 20, "(%4d,%-4d)", x, y);
                 XTextExtents(pSD->feedbackAppearance.font, pSD->fbLocation,
                              strlen(pSD->fbLocation), &direction, &ascent,
                              &descent, &xcs);
@@ -552,7 +552,7 @@ void UpdateFeedbackText(WmScreenData *pSD, int x, int y, unsigned int width,
         }
 
         if (pSD->fbStyle & FB_SIZE) {
-                sprintf(pSD->fbSize, "%4dx%-4d", width, height);
+                snprintf(pSD->fbSize, 20, "%4dx%-4d", width, height);
                 XTextExtents(pSD->feedbackAppearance.font, pSD->fbSize,
                              strlen(pSD->fbSize), &direction, &ascent, &descent,
                              &xcs);

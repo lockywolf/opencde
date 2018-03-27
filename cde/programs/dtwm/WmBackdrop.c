@@ -406,7 +406,8 @@ void ProcessBackdropResources(WmWorkspaceData *pWS, unsigned long callFlags) {
                                 } else {
                                         char msg[MAXWMPATH + 1];
 
-                                        sprintf((char *)msg,
+                                        snprintf((char *)msg,
+                                                MAXWMPATH + 1,
                                                 ((char *)GETMESSAGE(
                                                     6, 3,
                                                     "Unable to get image %s "

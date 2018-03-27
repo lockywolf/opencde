@@ -247,13 +247,15 @@ int main(int argc, char *argv[], char *environ[]) {
 int WmReturnIdentity(int argc, char *argv[], char *environ[]) {
         char *tempString;
         char *origPtr;
+        int tempString_size;
 
         /* assume it's dtwm until proven differently */
 
         int retVal = DT_MWM;
 
+        tempString_size = strlen(argv[0]) + 1;
         if (!(tempString =
-                  (char *)(XtMalloc((unsigned int)(strlen(argv[0]) + 1))))) {
+                  (char *)(XtMalloc((unsigned int)tempString_size)))) {
                 Warning(((char *)GETMESSAGE(
                     44, 2, "Insufficient memory for name of window manager")));
                 exit(WM_ERROR_EXIT_VALUE);
@@ -263,11 +265,11 @@ int WmReturnIdentity(int argc, char *argv[], char *environ[]) {
 
         if (strrchr(argv[0], '/')) {
 
-                strcpy(tempString, (strrchr(argv[0], '/')));
+                strlcpy(tempString, (strrchr(argv[0], '/')), tempString_size);
 
                 tempString++;
         } else
-                strcpy(tempString, argv[0]);
+                strlcpy(tempString, argv[0], tempString_size);
 
         if (!(strcmp(tempString, WM_RESOURCE_NAME)))
         /*

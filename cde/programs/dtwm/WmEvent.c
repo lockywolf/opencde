@@ -1919,9 +1919,9 @@ void HandleDtWmRequest(WmScreenData *pSD, XEvent *pev) {
 
                                 /* get path name */
                                 pch = strtok(NULL, " ");
+                                int pchFile_size = 1 + strlen(pch);
                                 if (pch) {
-                                        pchFile =
-                                            (char *)XtMalloc(1 + strlen(pch));
+                                        pchFile = (char *)XtMalloc(pchFile_size);
                                 } else {
                                         Warning(((char *)GETMESSAGE(
                                             32, 3,
@@ -1929,7 +1929,7 @@ void HandleDtWmRequest(WmScreenData *pSD, XEvent *pev) {
                                             "change request.")));
                                 }
                                 if (pchFile) {
-                                        strcpy(pchFile, pch);
+                                        strlcpy(pchFile, pch, pchFile_size);
 
                                         /* get pixmap id */
                                         pch = strtok(NULL, " ");

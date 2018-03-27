@@ -263,7 +263,7 @@ static void buildDBFileName(char fileNameBuf[MAXPATHLEN], Boolean doingSave) {
 
                         if (strlen(savePath) + strlen(dtwmFileName) + 2 <
                             MAXPATHLEN)
-                                sprintf(fileNameBuf, "%s/%s", savePath,
+                                snprintf(fileNameBuf, MAXPATHLEN, "%s/%s", savePath,
                                         dtwmFileName);
 
                         XtFree(savePath);
@@ -272,20 +272,20 @@ static void buildDBFileName(char fileNameBuf[MAXPATHLEN], Boolean doingSave) {
                 if (DtSessionRestorePath(wmGD.topLevelW, &savePath,
                                          dtwmFileName)) {
                         if ((int)strlen(savePath) < MAXPATHLEN)
-                                strcpy(fileNameBuf, savePath);
+                                strlcpy(fileNameBuf, savePath, MAXPATHLEN);
 
                         XtFree(savePath);
                 }
         }
 
         if (fileNameBuf[0] == '\0')
-                strcpy(fileNameBuf, dtwmFileName);
+                strlcpy(fileNameBuf, dtwmFileName, MAXPATHLEN);
 
 #else
 
-        strcpy(fileNameBuf, (wmGD.dbFileName == (char *)NULL)
+        strlcpy(fileNameBuf, (wmGD.dbFileName == (char *)NULL)
                                 ? dtwmFileName
-                                : wmGD.dbFileName);
+                                : wmGD.dbFileName, MAXPATHLEN);
 
 #endif
 }
@@ -308,11 +308,12 @@ static void getClientDBName(void) {
                 for (argP = wmGD.argv; *argP != (char *)NULL; argP++) {
                         if (strcmp(*argP, dbFileArgStr) == 0) {
                                 if (*(++argP) != (char *)NULL) {
+                                        wmDb.dbFileNameSize = (strlen(*argP) + 1 +
+                                                        EXTRA_FN_CHARS) * sizeof(char);
+
                                         if ((wmGD.dbFileName = (char *)XtMalloc(
-                                                 (strlen(*argP) + 1 +
-                                                  EXTRA_FN_CHARS) *
-                                                 sizeof(char))) != (char *)NULL)
-                                                strcpy(wmGD.dbFileName, *argP);
+                                                 wmDb.dbFileNameSize)) != (char *)NULL)
+                                                strlcpy(wmGD.dbFileName, *argP, wmDb.dbFileNameSize);
                                 }
                                 break;
                         }
@@ -322,23 +323,21 @@ static void getClientDBName(void) {
         /* Check resource if necessary. */
         if (wmGD.dbFileName == (char *)NULL) {
                 if (wmGD.sessionClientDB != (String)NULL) {
+                        wmDb.dbFileNameSize = (strlen(wmGD.sessionClientDB) + 1 +
+                                        EXTRA_FN_CHARS) * sizeof(char);
                         if ((wmGD.dbFileName = (char *)XtMalloc(
-                                 (strlen(wmGD.sessionClientDB) + 1 +
-                                  EXTRA_FN_CHARS) *
-                                 sizeof(char))) != (char *)NULL)
-                                strcpy(wmGD.dbFileName, wmGD.sessionClientDB);
+                                 wmDb.dbFileNameSize)) != (char *)NULL)
+                                strlcpy(wmGD.dbFileName, wmGD.sessionClientDB, wmDb.dbFileNameSize);
                 }
         }
 
         if (wmGD.dbFileName == (char *)NULL) {
                 char *homeDir = XmeGetHomeDirName();
-
-                if ((wmGD.dbFileName = (char *)XtMalloc(
-                         (strlen(homeDir) + strlen(dtwmFileName) + 2 +
-                          EXTRA_FN_CHARS) *
-                         sizeof(char))) != (char *)NULL)
-                        sprintf(wmGD.dbFileName, "%s/%s", homeDir,
-                                dtwmFileName);
+                wmDb.dbFileNameSize = (strlen(homeDir) + strlen(dtwmFileName) + 2 +
+                                EXTRA_FN_CHARS) * sizeof(char);
+                if ((wmGD.dbFileName = (char *)XtMalloc(wmDb.dbFileNameSize)) != NULL)
+                        snprintf(wmGD.dbFileName, wmDb.dbFileNameSize,
+                                "%s/%s", homeDir, dtwmFileName);
         }
 }
 
@@ -354,8 +353,10 @@ static void setClientDBName(void) {
         /* Change trailing ".<number>" to ".<number+1>" */
         if ((ptr = strrchr(wmGD.dbFileName, '.')) != (char *)NULL) {
                 char *p1;
+                int index = 0;
 
                 for (p1 = ++ptr; *p1 != '\0'; p1++) {
+                        index++;
                         if (!isdigit(*p1))
                                 break;
                 }
@@ -364,7 +365,8 @@ static void setClientDBName(void) {
                         int numSuffix;
 
                         numSuffix = atoi(ptr) + 1;
-                        sprintf(ptr, "%d", numSuffix);
+                        int size = wmDb.dbFileNameSize - index;
+                        snprintf(ptr, size, "%d", numSuffix);
 
                         /* Success!  We're all done here. */
                         return;
@@ -372,7 +374,7 @@ static void setClientDBName(void) {
         }
 
         /* Otherwise, append ".0" to filename. */
-        strcat(wmGD.dbFileName, ".0");
+        strlcat(wmGD.dbFileName, ".0", wmDb.dbFileNameSize);
 }
 
 static char **getNewRestartCmd(void) {
@@ -455,13 +457,12 @@ static char *getClientWorkspaces(ClientData *pCD) {
                     (WmWorkspaceData *)NULL) {
                         wsNameP = pWS->name;
                         if (pLen == 0) {
-                                pLen = strlen(wsNameP) +
-                                       1; /* 1 for null termination */
-                                if ((cwsP = (char *)XtMalloc(
-                                         pLen * sizeof(char))) == (char *)NULL)
+                                /* 1 for null termination */
+                                pLen = strlen(wsNameP) + 1;
+                                if ((cwsP = (char *)XtMalloc(pLen)) == NULL)
                                         return (char *)NULL;
 
-                                strcpy(cwsP, wsNameP);
+                                strlcpy(cwsP, wsNameP, pLen);
                         } else {
                                 pLen += strlen(wsNameP) + 1; /* 1 for space */
                                 if ((tmpP = (char *)XtRealloc(
@@ -471,8 +472,8 @@ static char *getClientWorkspaces(ClientData *pCD) {
                                         return (char *)NULL;
                                 }
                                 cwsP = tmpP;
-                                strcat(cwsP, " ");
-                                strcat(cwsP, wsNameP);
+                                strlcat(cwsP, " ", pLen);
+                                strlcat(cwsP, wsNameP, pLen);
                         }
                 }
         }
@@ -534,7 +535,7 @@ static char *getClientResource(char *clientID, char *fmtStr) {
         char *resourceType;
         XrmValue resourceValue;
 
-        sprintf(resourceBuf, fmtStr, clientID);
+        snprintf(resourceBuf, MAX_RESOURCE_LEN, fmtStr, clientID);
         if (XrmGetResource(wmGD.clientResourceDB, resourceBuf, resourceBuf,
                            &resourceType, &resourceValue))
                 return (char *)resourceValue.addr;
@@ -956,7 +957,7 @@ static Boolean saveProxyClient(FILE *fp, ClientData *pCD, int clientIDNum) {
         if (!getProxyClientInfo(pCD, &proxyClientInfo))
                 return False;
 
-        sprintf(clientID, "%d", clientIDNum);
+        snprintf(clientID, 50, "%d", clientIDNum);
         fprintf(fp, dbClientFormat, proxyClientStr, clientID, clientID);
 
         fprintf(fp, screenStr, clientID);
@@ -1040,8 +1041,8 @@ static void dbRemoveProxyClientEntry(char *proxyClientID) {
 
         /* Remove entry from DB.  Since Xrm does not provide a means */
         /* of removing something from the DB, we blank out key info. */
-        sprintf(resourceBuf, wmCommandStr, proxyClientID);
-        strcat(resourceBuf, ":");
+        snprintf(resourceBuf, MAX_RESOURCE_LEN, wmCommandStr, proxyClientID);
+        strlcat(resourceBuf, ":", MAX_RESOURCE_LEN);
         XrmPutLineResource(&wmGD.clientResourceDB, resourceBuf);
 }
 
@@ -1204,7 +1205,7 @@ void LoadClientIconPositions(ClientData *pCD) {
                         if ((pWS =
                                  GetWorkspaceData(pSD, pCD->pWsList[i].wsID)) !=
                             (WmWorkspaceData *)NULL) {
-                                sprintf(resourceBuf, iconXPosStr, "%s",
+                                snprintf(resourceBuf, MAX_RESOURCE_LEN, iconXPosStr, "%s",
                                         pWS->name);
                                 if ((resourcePtr = getXSMPResource(
                                          pCD, WMSAVE_ICON_X, resourceBuf)) !=
@@ -1214,7 +1215,7 @@ void LoadClientIconPositions(ClientData *pCD) {
                                         pCD->clientFlags |= SM_ICON_X;
                                 }
 
-                                sprintf(resourceBuf, iconYPosStr, "%s",
+                                snprintf(resourceBuf, MAX_RESOURCE_LEN, iconYPosStr, "%s",
                                         pWS->name);
                                 if ((resourcePtr = getXSMPResource(
                                          pCD, WMSAVE_ICON_Y, resourceBuf)) !=
@@ -1237,7 +1238,7 @@ void LoadClientIconPositions(ClientData *pCD) {
                                 if ((pWS = GetWorkspaceData(
                                          pSD, pCD->pWsList[i].wsID)) !=
                                     (WmWorkspaceData *)NULL) {
-                                        sprintf(resourceBuf, iconXPosStr, "%s",
+                                        snprintf(resourceBuf, MAX_RESOURCE_LEN, iconXPosStr, "%s",
                                                 pWS->name);
                                         if ((resourcePtr = getClientResource(
                                                  proxyClientID, resourceBuf)) !=
@@ -1247,7 +1248,7 @@ void LoadClientIconPositions(ClientData *pCD) {
                                                 pCD->clientFlags |= SM_ICON_X;
                                         }
 
-                                        sprintf(resourceBuf, iconYPosStr, "%s",
+                                        snprintf(resourceBuf, MAX_RESOURCE_LEN, iconYPosStr, "%s",
                                                 pWS->name);
                                         if ((resourcePtr = getClientResource(
                                                  proxyClientID, resourceBuf)) !=

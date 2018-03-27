@@ -1556,7 +1556,7 @@ unsigned char *_DtWmParseExpandEnvironmentVariables(unsigned char *pch,
                                 }
                                 chSave = *pch;
                                 *pch = '\0';
-                                strcat((char *)pchReturn, (char *)pchStart);
+                                strlcat((char *)pchReturn, (char *)pchStart, lenReturn);
                                 *pch = chSave;
                                 chSave = '\0';
 
@@ -1678,8 +1678,8 @@ unsigned char *_DtWmParseExpandEnvironmentVariables(unsigned char *pch,
                                         /*
                                          * Tack it onto the return string
                                          */
-                                        strcat((char *)pchReturn,
-                                               (char *)pchEnvValue);
+                                        strlcat((char *)pchReturn,
+                                               (char *)pchEnvValue, lenReturn);
                                 }
 
                                 /*
@@ -1742,7 +1742,7 @@ unsigned char *_DtWmParseExpandEnvironmentVariables(unsigned char *pch,
                 /*
                  * Copy remaining parts of the string
                  */
-                strcat((char *)pchReturn, (char *)pchStart);
+                strlcat((char *)pchReturn, (char *)pchStart, lenReturn);
         }
 
         return (pchReturn);

@@ -103,14 +103,15 @@ void WmInitErrorHandler(Display *display) {
                                       pchErrorFormatNames[i],
                                       pchDefaultErrorFormat[i], buffer, BUFSIZ);
 
+                int pchErrorFormat_size = 1 + strlen(buffer);
                 if ((pchErrorFormat[i] =
-                         (char *)XtMalloc(1 + strlen(buffer))) == NULL) {
+                         (char *)XtMalloc(pchErrorFormat_size)) == NULL) {
                         Warning("Insufficient memory for error message "
                                 "initialization.");
                         ExitWM(1);
                 }
 
-                strcpy(pchErrorFormat[i], buffer);
+                strlcpy(pchErrorFormat[i], buffer, pchErrorFormat_size);
         }
 
 #endif /* DEBUG */
@@ -161,7 +162,7 @@ int WmXErrorHandler(Display *display, XErrorEvent *errorEvent) {
         fprintf(stderr, "Description = '%s'\n  ", buffer);
 
         fprintf(stderr, pchErrorFormat[E_MAJOR_CODE], errorEvent->request_code);
-        sprintf(message, "%d", errorEvent->request_code);
+        snprintf(message, BUFSIZ, "%d", errorEvent->request_code);
         XGetErrorDatabaseText(display, "XRequest", message, " ", buffer,
                               BUFSIZ);
         fprintf(stderr, " (%s)\n  ", buffer);
@@ -218,7 +219,7 @@ int WmXErrorHandler(Display *display, XErrorEvent *errorEvent) {
 int WmXIOErrorHandler(Display *display) {
         char err[100];
 
-        sprintf(err, "%s: %s\n",
+        snprintf(err, 100, "%s: %s\n",
                 "I/O error on display:", XDisplayString(display));
         Warning(err);
 
@@ -295,7 +296,7 @@ void Warning(char *message) {
 #ifdef WSM
         char pch[MAXWMPATH + 1];
 
-        sprintf(pch, "%s: %s\n", GETMESSAGE(20, 1, "Workspace Manager"),
+        snprintf(pch, MAXWMPATH + 1, "%s: %s\n", GETMESSAGE(20, 1, "Workspace Manager"),
                 message);
 
         _DtSimpleError(wmGD.mwmName, DtIgnore, NULL, pch, NULL);

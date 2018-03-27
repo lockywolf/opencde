@@ -181,8 +181,9 @@ static void Initialize(Widget request_w, Widget new_w) {
          */
         if (B_ImageName(new_g) != NULL) {
                 String str = B_ImageName(new_g);
-                B_ImageName(new_g) = XtMalloc(strlen(str) + 1);
-                strcpy(B_ImageName(new_g), str);
+                int size = strlen(str) + 1;
+                B_ImageName(new_g) = XtMalloc(size);
+                strlcpy(B_ImageName(new_g), str, size);
 
                 B_Pixmap(new_g) =
                     XmGetPixmap(XtScreen(new_g), B_ImageName(new_g),
@@ -347,32 +348,6 @@ static void Redisplay(Widget w, XEvent *event, Region region) {
 
 /************************************************************************
  *
- *  Destroy
- *	Clean up allocated resources when the widget is destroyed.
- *
- ************************************************************************/
-#if 0
-static void 
-Destroy(
-        Widget w )
-{
-DtButtonGadget bg = (DtButtonGadget) w ;
-
-if (bg->button.timer)
-    XtRemoveTimeOut (bg->button.timer);
-
-XtReleaseGC (w, bg -> button.gc_normal);
-XtReleaseGC (w, bg -> button.gc_background);
-XtReleaseGC (w, bg -> button.gc_armed_bg);
-if (bg -> button.gc_clip != NULL) 
-    XtReleaseGC (w, bg -> button.gc_clip);
-
-XtRemoveAllCallbacks (w, "callback");
-}
-#endif /* 0 */
-
-/************************************************************************
- *
  *  SetValues
  *	Note:  The only implementation within this function is to
  *	support the resetting of the image, cursor, and functions
@@ -398,10 +373,10 @@ static Boolean SetValues(Widget current_w, Widget request_w, Widget new_w)
 
         if (strcmp(B_ImageName(current), B_ImageName(new_g)) != 0) {
                 String str = B_ImageName(new_g);
-
+                int size = strlen(str) + 1;
                 XtFree(B_ImageName(current));
-                B_ImageName(new_g) = XtMalloc(strlen(str) + 1);
-                strcpy(B_ImageName(new_g), str);
+                B_ImageName(new_g) = XtMalloc(size);
+                strlcpy(B_ImageName(new_g), str, size);
 
                 B_Pixmap(new_g) =
                     XmGetPixmap(XtScreen(new_g), B_ImageName(new_g),
@@ -430,10 +405,11 @@ static Boolean SetValues(Widget current_w, Widget request_w, Widget new_w)
         } else {
                 if (B_ImageName(new_g) != B_ImageName(current)) {
                         String str = B_ImageName(new_g);
+                        int size = strlen(str) + 1;
 
                         XtFree(B_ImageName(current));
-                        B_ImageName(new_g) = XtMalloc(strlen(str) + 1);
-                        strcpy(B_ImageName(new_g), str);
+                        B_ImageName(new_g) = XtMalloc(size);
+                        strlcpy(B_ImageName(new_g), str, size);
                 }
         }
 

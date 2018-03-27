@@ -45,7 +45,8 @@ extern Boolean FindDtSessionMatch(int commandArgc, char **commandArgv,
                                   ClientData *pCD, WmScreenData *pSD,
                                   char **pWorkSpaceList, char *clientMachine);
 extern void WmDtGetHelpArgs(char *args, unsigned char *volume,
-                            unsigned char *topic, int *argsCount);
+                            unsigned char *topic, int volume_size, int topic_size,
+                            int *argsCount);
 extern void GetActionIndex(int tableSize, int *actionIndex);
 extern void GetFunctionTableValues(int *execIndex, int *nopIndex,
                                    int *actionIndex);
