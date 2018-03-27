@@ -1,3 +1,9 @@
+# 0.4 - March 26, 2018
+
+* Standardizes code formatting
+* Fixes dterm warnings
+* Fixes dtwm warnings
+
 # 0.3 - Jan 6, 2018
 
 * Fixes dtcalc warnings

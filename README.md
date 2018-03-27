@@ -64,10 +64,10 @@ Note: It will not build when logged in as root (problem in dtksh)
 -   [ ] Dtspcd
 -   [ ] Dtsr
 -   [ ] Dtstyle
--   [ ] Dtterm
+-   [x] Dtterm
 -   [ ] Dtudcexch
 -   [ ] Dtudcfonted
--   [ ] Dtwm
+-   [x] Dtwm
 
 ## Future
 
