@@ -303,9 +303,9 @@ void ShowChangeDirDialog(Widget w, XtPointer client_data, XtPointer callback) {
         if (file_mgr_data->title != NULL &&
             strcmp(file_mgr_data->helpVol, DTFILE_HELP_NAME) != 0) {
                 tmpStr = GETMESSAGE(2, 15, "Go To");
-                tempStr = (char *)XtMalloc(strlen(tmpStr) +
-                                           strlen(file_mgr_data->title) + 5);
-                sprintf(tempStr, "%s - %s", file_mgr_data->title, tmpStr);
+                int tempStr_size = strlen(tmpStr) + strlen(file_mgr_data->title) + 5;
+                tempStr = (char *)XtMalloc(tempStr_size);
+                snprintf(tempStr, tempStr_size, "%s - %s", file_mgr_data->title, tmpStr);
         } else {
                 tmpStr = (GETMESSAGE(2, 17, "File Manager - Go To"));
                 tempStr = XtNewString(tmpStr);
@@ -670,7 +670,7 @@ void CurrentDirExposed(Widget w, XtPointer client_data, XtPointer call_data) {
  *
  ************************************************************************/
 
-Boolean GetStatusMsg(FileMgrData *file_mgr_data, char *buf) {
+Boolean GetStatusMsg(FileMgrData *file_mgr_data, char *buf, int buf_size) {
         int n_files;
         int n_hidden;
         int i, j;
@@ -684,12 +684,15 @@ Boolean GetStatusMsg(FileMgrData *file_mgr_data, char *buf) {
         if (file_mgr_data->busy_status == initiating_readdir ||
             file_mgr_data->busy_status == busy_readdir) {
                 if (file_mgr_data->busy_detail == 0)
-                        sprintf(buf, "%s", (GETMESSAGE(3, 5, "Reading ...")));
+                        snprintf(buf, buf_size, "%s",
+                          (GETMESSAGE(3, 5, "Reading ...")));
                 else if (file_mgr_data->busy_detail == 1)
-                        sprintf(buf, (GETMESSAGE(3, 11, "%d Item(s)...")),
+                        snprintf(buf, buf_size,
+                          (GETMESSAGE(3, 11, "%d Item(s)...")),
                                 file_mgr_data->busy_detail);
                 else
-                        sprintf(buf, (GETMESSAGE(3, 9, "%3d Items ...")),
+                        snprintf(buf, buf_size,
+                          (GETMESSAGE(3, 9, "%3d Items ...")),
                                 file_mgr_data->busy_detail);
 
                 return True; /* this message deemed important! */
@@ -723,7 +726,8 @@ Boolean GetStatusMsg(FileMgrData *file_mgr_data, char *buf) {
                                 }
                         }
                 }
-                sprintf(buf, (GETMESSAGE(3, 6, "%d Hidden")), n_hidden);
+                snprintf(buf, buf_size,
+                  (GETMESSAGE(3, 6, "%d Hidden")), n_hidden);
 
                 return False;
         }
@@ -735,14 +739,15 @@ Boolean GetStatusMsg(FileMgrData *file_mgr_data, char *buf) {
                  */
                 n_files = file_mgr_data->directory_set[0]->file_count;
                 if (n_files == 0)
-                        sprintf(buf,
+                        snprintf(buf, buf_size,
                                 (GETMESSAGE(11, 31, "Error while reading %s")),
                                 file_mgr_data->current_directory);
                 else if (file_mgr_data == trashFileMgrData) {
                         n_hidden = file_mgr_data->directory_set[0]
                                        ->filtered_file_count;
-                        sprintf(buf, (GETMESSAGE(3, 10, "%d Item(s)")),
-                                n_files - n_hidden);
+                        snprintf(buf, buf_size,
+                          (GETMESSAGE(3, 10, "%d Item(s)")),
+                          n_files - n_hidden);
                 } else {
                         n_files -= file_mgr_data->directory_set[0]
                                        ->invisible_file_count;
@@ -751,13 +756,14 @@ Boolean GetStatusMsg(FileMgrData *file_mgr_data, char *buf) {
                                    file_mgr_data->directory_set[0]
                                        ->invisible_file_count;
                         if (n_files == 1)
-                                sprintf(
-                                    buf,
+                                snprintf(
+                                    buf, buf_size,
                                     (GETMESSAGE(3, 12, "%d Item(s) %d Hidden")),
                                     n_files, n_hidden);
                         else
-                                sprintf(
+                                snprintf(
                                     buf,
+                                    buf_size,
                                     (GETMESSAGE(3, 7, "%d Items %d Hidden")),
                                     n_files, n_hidden);
                 }
@@ -837,7 +843,7 @@ void DrawCurrentDirectory(Widget w, FileMgrRec *file_mgr_rec,
                  * GetStatusMsg() returns True if the status msg is "important".
                  * In this case, make sure we leave room for it
                  */
-                msg_drawn = GetStatusMsg(file_mgr_data, msg);
+                msg_drawn = GetStatusMsg(file_mgr_data, msg, 21 + MAX_PATH);
                 msg_width = get_textwidth(file_mgr_data, msg, strlen(msg));
         } else
                 msg_drawn = False;

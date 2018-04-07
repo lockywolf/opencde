@@ -864,7 +864,7 @@ static int Update(DtIconicPathWidget ip, FileMgrRec *file_mgr_rec,
 
         /* update the status message */
         if (file_mgr_data && ip->iconic_path.status_msg)
-                GetStatusMsg(file_mgr_data, msg_buf);
+                GetStatusMsg(file_mgr_data, msg_buf, 21 + MAX_PATH);
         else
                 strcpy(msg_buf, "");
 

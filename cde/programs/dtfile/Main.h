@@ -485,7 +485,7 @@ extern void CurrentDirIconCallback(Widget w, XtPointer client_data,
                                    XtPointer call_data);
 extern void CurrentDirExposed(Widget w, XtPointer client_data,
                               XtPointer call_data);
-extern Boolean GetStatusMsg(FileMgrData *file_mgr_data, char *buf);
+extern Boolean GetStatusMsg(FileMgrData *file_mgr_data, char *buf, int buf_size);
 extern void DrawCurrentDirectory(Widget w, FileMgrRec *file_mgr_rec,
                                  FileMgrData *file_mgr_data);
 extern void CurrentDirectoryIconMotion(Widget w, XtPointer client_data,

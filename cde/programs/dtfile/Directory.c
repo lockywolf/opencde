@@ -2121,7 +2121,7 @@ static void ReaddirPipeCallback(XtPointer client_data, int *fd, XtInputId *id) {
                                                 Arg args[2];
 
                                                 GetStatusMsg(file_mgr_data,
-                                                             buf);
+                                                             buf, 256);
                                                 label_string =
                                                     XmStringCreateLocalized(
                                                         buf);

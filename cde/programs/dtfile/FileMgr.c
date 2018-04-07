@@ -2629,7 +2629,7 @@ static void UpdateStatusLine(FileMgrRec *file_mgr_rec,
                 label_string =
                     XmStringCreateLocalized(file_mgr_data->special_msg);
         } else {
-                GetStatusMsg(file_mgr_data, buf);
+                GetStatusMsg(file_mgr_data, buf, 21 + MAX_PATH);
                 label_string = XmStringCreateLocalized(buf);
         }
         XtSetArg(args[0], XmNlabelString, label_string);

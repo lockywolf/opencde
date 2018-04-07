@@ -547,9 +547,9 @@ static void SetValues(ChangeDirRec *change_dir_rec,
         }
 
         tmp_str = GETMESSAGE(2, 16, "System Name: ");
-        host_name =
-            XtMalloc(strlen(tmp_str) + strlen(change_dir_data->host_name) + 1);
-        sprintf(host_name, "%s%s", tmp_str, change_dir_data->host_name);
+        int host_name_size = strlen(tmp_str) + strlen(change_dir_data->host_name) + 1;
+        host_name = XtMalloc(host_name_size);
+        snprintf(host_name, host_name_size, "%s%s", tmp_str, change_dir_data->host_name);
         host_string = XmStringCreateLocalized(host_name);
         XtSetArg(args[0], XmNlabelString, host_string);
         XtSetValues(XmSelectionBoxGetChild(change_dir_rec->change_dir,
@@ -635,6 +635,7 @@ static Boolean TryToChangeDir(Boolean isFromDialog, char *incoming_string,
         XmString host_string;
         Arg args[1];
         char *message_buf;
+        int message_buf_size;
         char *tmpStr;
         char *title;
         char *msg;
@@ -692,10 +693,10 @@ static Boolean TryToChangeDir(Boolean isFromDialog, char *incoming_string,
                 if (CheckAccess(path, R_OK | X_OK)) {
                         tmpStr = GETMESSAGE(9, 6, "Action Error");
                         title = XtNewString(tmpStr);
-                        msg = (char *)XtMalloc(
-                            strlen(GETMESSAGE(30, 1, "Cannot read from %s")) +
-                            strlen(new_directory) + 1);
-                        sprintf(msg, GETMESSAGE(30, 1, "Cannot read from %s"),
+                        int msg_size = strlen(GETMESSAGE(30, 1, "Cannot read from %s")) +
+                            strlen(new_directory) + 1;
+                        msg = (char *)XtMalloc(msg_size);
+                        snprintf(msg, msg_size, GETMESSAGE(30, 1, "Cannot read from %s"),
                                 new_directory);
 
                         if (isFromDialog)
@@ -755,10 +756,10 @@ static Boolean TryToChangeDir(Boolean isFromDialog, char *incoming_string,
 
                         if (selection_box) {
                                 tmpStr = GETMESSAGE(2, 16, "System Name: ");
-                                message_buf = XtMalloc(
-                                    strlen(tmpStr) +
-                                    strlen(change_dir_data->host_name) + 1);
-                                sprintf(message_buf, "%s%s", tmpStr,
+                                message_buf_size = strlen(tmpStr) +
+                                    strlen(change_dir_data->host_name) + 1;
+                                message_buf = XtMalloc(message_buf_size);
+                                snprintf(message_buf, message_buf_size, "%s%s", tmpStr,
                                         change_dir_data->host_name);
                                 host_string =
                                     XmStringCreateLocalized(message_buf);
@@ -795,13 +796,14 @@ static Boolean TryToChangeDir(Boolean isFromDialog, char *incoming_string,
                             2, 19,
                             "The following folder name is invalid.\n\n%s");
                 if (path) {
-                        message_buf =
-                            XtMalloc(strlen(tmpStr) + strlen(path) + 1);
-                        sprintf(message_buf, tmpStr, path);
+                        message_buf_size = strlen(tmpStr) + strlen(path) + 1;
+                        message_buf = XtMalloc(message_buf_size);
+                        snprintf(message_buf, message_buf_size, tmpStr, path);
                 } else {
-                        message_buf = XtMalloc(strlen(tmpStr) +
-                                               strlen(new_directory) + 1);
-                        sprintf(message_buf, tmpStr, new_directory);
+                        message_buf_size = strlen(tmpStr) +
+                            strlen(new_directory) + 1;
+                        message_buf = XtMalloc(message_buf_size);
+                        snprintf(message_buf, message_buf_size, tmpStr, new_directory);
                 }
 
                 if (isFromDialog)
@@ -915,13 +917,13 @@ static int CheckRestrictedDir(FileMgrRec *file_mgr_rec,
 
         /* get real file name */
         if (relative_name) {
-                tmpStr = (char *)XtMalloc(
-                    strlen(*value) +
-                    strlen(file_mgr_data->restricted_directory) + 3);
-                strcpy(tmpStr, file_mgr_data->restricted_directory);
+                int tmpStr_size = strlen(*value) +
+                    strlen(file_mgr_data->restricted_directory) + 3;
+                tmpStr = (char *)XtMalloc(tmpStr_size);
+                strlcpy(tmpStr, file_mgr_data->restricted_directory, tmpStr_size);
                 if (*value[0] != '/')
-                        strcat(tmpStr, "/");
-                strcat(tmpStr, *value);
+                        strlcat(tmpStr, "/", tmpStr_size);
+                strlcat(tmpStr, *value, tmpStr_size);
                 XtFree(*value);
                 *value = tmpStr;
         }
@@ -930,9 +932,9 @@ static int CheckRestrictedDir(FileMgrRec *file_mgr_rec,
         if (restrictMode && file_mgr_data->toolbox == False) {
                 if (strcmp(users_home_dir, "/") == 0)
                         return 0;
-                strcpy(directory, users_home_dir);
+                strlcpy(directory, users_home_dir, MAXPATHLEN);
         } else
-                strcpy(directory, file_mgr_data->restricted_directory);
+                strlcpy(directory, file_mgr_data->restricted_directory, MAXPATHLEN);
 
         len = strlen(directory);
 
@@ -944,7 +946,7 @@ static int CheckRestrictedDir(FileMgrRec *file_mgr_rec,
         /* check if value is inside the restricted subdir */
         len = strlen(directory);
         if (strncmp(*value, directory, len) != 0 ||
-            (*value)[len] != '/' && (*value)[len] != '\0') {
+            ((*value)[len] != '/' && (*value)[len] != '\0')) {
                 tmpBuffer = GetSharedMessage(CHANGE_DIR_ERROR_TITLE);
                 title = XtNewString(tmpBuffer);
                 if (restrictMode)
