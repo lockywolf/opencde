@@ -93,15 +93,20 @@ char *ResolveLocalPathName(char *hostname, char *directory_name,
 
         /* construct full qualified filename
          */
+        int size;
         if (file_name) {
                 if (len == 1 && *directory_name == '/') {
+                        size = strlen(file_name) + 2;
                         fully_qualified_name =
-                            (char *)XtCalloc(1, (strlen(file_name) + 2));
-                        sprintf(fully_qualified_name, "/%s", file_name);
+                            (char *)XtCalloc(1, size);
+                        snprintf(fully_qualified_name, size,
+                                        "/%s", file_name);
                 } else {
+                        size = len + strlen(file_name) + 2;
                         fully_qualified_name =
-                            (char *)XtCalloc(1, (len + strlen(file_name) + 2));
-                        sprintf(fully_qualified_name, "%s/%s", directory_name,
+                            (char *)XtCalloc(1, size);
+                        snprintf(fully_qualified_name, size,
+                                "%s/%s", directory_name,
                                 file_name);
                 }
         } else {
@@ -172,9 +177,9 @@ char *ResolveTranslationString(char *originalString, char *address)
         int i, j, k, total, length;
 
 #ifdef __osf__
-        sprintf(addressStr, "%lx", address);
+        snprintf(addressStr, 20, "%lx", address);
 #else
-        sprintf(addressStr, "%p", address);
+        snprintf(addressStr, 20, "%p", address);
 #endif
 
         for (i = 0, total = 0; originalString[i] != '\0'; ++i)

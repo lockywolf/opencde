@@ -338,24 +338,26 @@ Boolean TrashIsInitialized(void) { return (TrashInitialized); }
 Boolean InitializeTrash(Boolean enableVerifyPrompt) {
         char *ptr;
         struct stat statInfo;
+        int size = strlen(users_home_dir) + strlen(TRASH_DIR) + 1;
 
         /* Build the 'TRASH' directory */
-        trash_dir = XtMalloc(strlen(users_home_dir) + strlen(TRASH_DIR) + 1);
-        sprintf(trash_dir, "%s%s", users_home_dir, TRASH_DIR);
+        trash_dir = XtMalloc(size);
+        snprintf(trash_dir, size, "%s%s", users_home_dir, TRASH_DIR);
         if (stat(trash_dir, &statInfo) < 0)
                 mkdir(trash_dir, S_IRUSR | S_IWUSR | S_IXUSR | S_IRGRP |
                                      S_IWGRP | S_IXGRP | S_IROTH | S_IWOTH |
                                      S_IXOTH);
 
         /* build path to .trashinfo file */
-        TrashInfoFileName =
-            XtMalloc(strlen(users_home_dir) + strlen(TRASH_INFO_FILE) + 1);
-        sprintf(TrashInfoFileName, "%s%s", users_home_dir, TRASH_INFO_FILE);
+        size = strlen(users_home_dir) + strlen(TRASH_INFO_FILE) + 1;
+        TrashInfoFileName = XtMalloc(size);
+        snprintf(TrashInfoFileName, size, "%s%s",
+                        users_home_dir, TRASH_INFO_FILE);
 
         /* */
-        NewTrashInfoFileName =
-            XtMalloc(strlen(users_home_dir) + strlen(NEW_TRASH_INFO_FILE) + 1);
-        sprintf(NewTrashInfoFileName, "%s%s", users_home_dir,
+        size = strlen(users_home_dir) + strlen(NEW_TRASH_INFO_FILE) + 1;
+        NewTrashInfoFileName = XtMalloc(size);
+        snprintf(NewTrashInfoFileName, size, "%s%s", users_home_dir,
                 NEW_TRASH_INFO_FILE);
 
         /* Keep track of whether to prompt for user verification */
@@ -483,8 +485,7 @@ static Boolean ReadTrashList(void) {
 
                 title = XtNewString(GetSharedMessage(TRASH_ERROR_TITLE));
 
-                msg = XtMalloc(
-                    strlen(GETMESSAGE(27, 93,
+                int size = strlen(GETMESSAGE(27, 93,
                                       "Unable to access this trash information "
                                       "file:\n   %s\n   All "
                                       "trash operations will not be "
@@ -493,10 +494,12 @@ static Boolean ReadTrashList(void) {
                                       "authentication.\n     - Insufficient "
                                       "disk space.\n     - Wrong permissions "
                                       "$HOME/.dt/Trash.")) +
-                    strlen(TrashInfoFileName) + 1);
+                    strlen(TrashInfoFileName) + 1;
+                msg = XtMalloc(size);
 
-                sprintf(
+                snprintf(
                     msg,
+                    size,
                     GETMESSAGE(
                         27, 93,
                         "Unable to access this trash information file:\n   "
@@ -557,11 +560,13 @@ static Boolean ReadTrashList(void) {
                                 memcpy(external, tmpPtr, extSize);
                                 memcpy(intName, tmpPtr + extSize + 1, intSize);
 
+                                int size = strlen(users_home_dir) +
+                                        strlen(TRASH_DIR) +
+                                        strlen(intName) + 2;
                                 /* Create internal/trash name */
-                                internal = (char *)XtMalloc(
-                                    strlen(users_home_dir) + strlen(TRASH_DIR) +
-                                    strlen(intName) + 2);
-                                sprintf(internal, "%s%s/%s", users_home_dir,
+                                internal = (char *)XtMalloc(size);
+                                snprintf(internal, size, "%s%s/%s",
+                                        users_home_dir,
                                         TRASH_DIR, intName);
 
                                 /* Make sure the file still exists */
@@ -1358,9 +1363,10 @@ void TrashRemoveHandler(Tt_message msg) {
                                     "from\nboth "
                                     "the File Manager and Workspace "
                                     "backdrop."));
-                        message = (char *)XtMalloc(strlen(template) +
-                                                   strlen(str) + 1);
-                        sprintf(message, template, str);
+                        int size = strlen(template) +
+                                   strlen(str) + 1;
+                        message = (char *)XtMalloc(size);
+                        snprintf(message, size, template, str);
                 } else {
                         if (widget_dragged)
                                 template = (GETMESSAGE(
@@ -1386,9 +1392,9 @@ void TrashRemoveHandler(Tt_message msg) {
                                     "trash will remove them "
                                     "from\nboth the File Manager and Workspace "
                                     "backdrop."));
-                        message = (char *)XtMalloc(strlen(template) +
-                                                   strlen(str) + 1);
-                        sprintf(message, template, str);
+                        int size = strlen(template) + strlen(str) + 1;
+                        message = (char *)XtMalloc(size);
+                        snprintf(message, size, template, str);
                 }
 
                         /* Really ought to pass to OK and Cancel CBs via
@@ -1782,9 +1788,11 @@ static String CreateTrashFilename(String baseName, Boolean uniqueTest) {
 
         /* Create trash path */
         /* Give that name a little extra cushion, just in case */
-        trashName = (char *)XtMalloc(strlen(users_home_dir) +
-                                     strlen(TRASH_DIR) + strlen(baseName) + 15);
-        sprintf(trashName, "%s%s/%s", users_home_dir, TRASH_DIR, baseName);
+        int trash_size = strlen(users_home_dir) +
+                         strlen(TRASH_DIR) + strlen(baseName) + 15;
+        trashName = (char *)XtMalloc(trash_size);
+        snprintf(trashName, trash_size, "%s%s/%s",
+                        users_home_dir, TRASH_DIR, baseName);
 
         /* Want to find the extension so the new file name created will preserve
            its original datatype.
@@ -1804,11 +1812,13 @@ static String CreateTrashFilename(String baseName, Boolean uniqueTest) {
                 for (i = 1; True; i++) {
                         /* Make a duplicate file name */
                         if (extension)
-                                sprintf(trashName, "%s%s/%s_%d.%s",
+                                snprintf(trashName, trash_size,
+                                        "%s%s/%s_%d.%s",
                                         users_home_dir, TRASH_DIR, baseName, i,
                                         extension);
                         else
-                                sprintf(trashName, "%s%s/%s_%d", users_home_dir,
+                                snprintf(trashName, trash_size,
+                                        "%s%s/%s_%d", users_home_dir,
                                         TRASH_DIR, baseName, i);
 
                         /* Is the filename taken? */
@@ -2726,12 +2736,15 @@ static void MoveToTrashPipeCB(XtPointer client_data, int *fd, XtInputId *id) {
                                                        cb_data->file_list[i]);
                                                 strcat(dir_error, "\n");
                                         } else {
-                                                dir_error = XtMalloc(
+                                                int dir_size =
                                                     strlen(tmpmsg) +
                                                     strlen(
                                                         cb_data->file_list[i]) +
-                                                    5);
-                                                sprintf(dir_error, "%s%s\n",
+                                                    5;
+                                                dir_error = XtMalloc(dir_size);
+                                                snprintf(dir_error,
+                                                        dir_size,
+                                                        "%s%s\n",
                                                         tmpmsg,
                                                         cb_data->file_list[i]);
                                         }
@@ -2756,12 +2769,15 @@ static void MoveToTrashPipeCB(XtPointer client_data, int *fd, XtInputId *id) {
                                                        cb_data->file_list[i]);
                                                 strcat(file_error, "\n");
                                         } else {
-                                                file_error = XtMalloc(
+                                                int error_size =
                                                     strlen(tmpmsg) +
                                                     strlen(
                                                         cb_data->file_list[i]) +
-                                                    5);
-                                                sprintf(file_error, "%s%s\n",
+                                                    5;
+                                                file_error = XtMalloc(error_size);
+                                                snprintf(file_error,
+                                                        error_size,
+                                                        "%s%s\n",
                                                         tmpmsg,
                                                         cb_data->file_list[i]);
                                         }
@@ -2787,10 +2803,13 @@ static void MoveToTrashPipeCB(XtPointer client_data, int *fd, XtInputId *id) {
                                                cb_data->file_list[i]);
                                         strcat(sacred_error, "\n");
                                 } else {
-                                        sacred_error = XtMalloc(
+                                        int serror_size =
                                             strlen(tmpmsg) +
-                                            strlen(cb_data->file_list[i]) + 5);
-                                        sprintf(sacred_error, "%s%s\n", tmpmsg,
+                                            strlen(cb_data->file_list[i]) + 5;
+                                        sacred_error = XtMalloc(serror_size);
+                                        snprintf(sacred_error,
+                                                serror_size,
+                                                "%s%s\n", tmpmsg,
                                                 cb_data->file_list[i]);
                                 }
                                 XtFree(cb_data->file_list[i]);
@@ -2819,10 +2838,13 @@ static void MoveToTrashPipeCB(XtPointer client_data, int *fd, XtInputId *id) {
                                                cb_data->file_list[i]);
                                         strcat(no_file_error, "\n");
                                 } else {
-                                        no_file_error = XtMalloc(
+                                        int nerror_size =
                                             strlen(tmpmsg) +
-                                            strlen(cb_data->file_list[i]) + 5);
-                                        sprintf(no_file_error, "%s%s\n", tmpmsg,
+                                            strlen(cb_data->file_list[i]) + 5;
+                                        no_file_error = XtMalloc(nerror_size);
+                                        snprintf(no_file_error,
+                                                nerror_size,
+                                                "%s%s\n", tmpmsg,
                                                 cb_data->file_list[i]);
                                 }
                         }
@@ -2915,41 +2937,50 @@ static void MoveToTrashPipeCB(XtPointer client_data, int *fd, XtInputId *id) {
                         }
                 }
         }
+        int buf_size;
         if (dir_error) {
-                buf = XtMalloc(strlen(dir_error) + 3);
-                sprintf(buf, "%s\n", dir_error);
+                buf_size = strlen(dir_error) + 3;
+                buf = XtMalloc(buf_size);
+                snprintf(buf, buf_size, "%s\n", dir_error);
                 XtFree(dir_error);
         }
         if (file_error) {
                 if (!buf) {
-                        buf = XtMalloc(strlen(file_error) + 3);
-                        sprintf(buf, "%s\n", file_error);
+                        buf_size = strlen(file_error) + 3;
+                        buf = XtMalloc(buf_size);
+                        snprintf(buf, buf_size, "%s\n", file_error);
                 } else {
-                        buf = XtRealloc(buf,
-                                        strlen(buf) + strlen(file_error) + 3);
-                        sprintf(buf, "%s%s\n", buf, file_error);
+                        buf_size = strlen(buf) + strlen(file_error) + 3;
+                        buf = XtRealloc(buf, buf_size);
+                        snprintf(buf, buf_size,
+                                        "%s%s\n", buf, file_error);
                 }
                 XtFree(file_error);
         }
         if (no_file_error) {
                 if (!buf) {
-                        buf = XtMalloc(strlen(no_file_error) + 3);
-                        sprintf(buf, "%s\n", no_file_error);
+                        buf_size = strlen(no_file_error) + 3;
+                        buf = XtMalloc(buf_size);
+                        snprintf(buf, buf_size, "%s\n", no_file_error);
                 } else {
-                        buf = XtRealloc(buf, strlen(buf) +
-                                                 strlen(no_file_error) + 3);
-                        sprintf(buf, "%s%s\n", buf, no_file_error);
+                        buf_size = strlen(buf) +
+                                   strlen(no_file_error) + 3;
+                        buf = XtRealloc(buf, buf_size);
+                        snprintf(buf, buf_size,
+                                        "%s%s\n", buf, no_file_error);
                 }
                 XtFree(no_file_error);
         }
         if (sacred_error) {
                 if (!buf) {
-                        buf = XtMalloc(strlen(sacred_error) + 3);
-                        sprintf(buf, "%s\n", sacred_error);
+                        buf_size = strlen(sacred_error) + 3;
+                        buf = XtMalloc(buf_size);
+                        snprintf(buf, buf_size, "%s\n", sacred_error);
                 } else {
-                        buf = XtRealloc(buf,
-                                        strlen(buf) + strlen(sacred_error) + 3);
-                        sprintf(buf, "%s%s\n", buf, sacred_error);
+                        buf_size = strlen(buf) + strlen(sacred_error) + 3;
+                        buf = XtRealloc(buf, buf_size);
+                        snprintf(buf, buf_size,
+                                        "%s%s\n", buf, sacred_error);
                 }
                 XtFree(sacred_error);
         }
@@ -3005,7 +3036,7 @@ static void MoveToTrashPipeCB(XtPointer client_data, int *fd, XtInputId *id) {
                 if (badCount > 8) {
                         char extraFiles[256];
 
-                        (void)sprintf(extraFiles, AdditionalHeader,
+                        snprintf(extraFiles, 256, AdditionalHeader,
                                       badCount - 8);
                         AddString(&buf, &bufsize, extraFiles,
                                   GETMESSAGE(27, 97,
@@ -3052,7 +3083,7 @@ static void MoveToTrashPipeCB(XtPointer client_data, int *fd, XtInputId *id) {
                 if (verifyCount > 6) {
                         char extraFiles[256];
 
-                        (void)sprintf(extraFiles, AdditionalHeader,
+                        snprintf(extraFiles, 256, AdditionalHeader,
                                       verifyCount - 6);
                         AddString(&verifybuf, &verifybufsize, extraFiles, NULL);
                 }
@@ -3080,8 +3111,9 @@ static void MoveToTrashPipeCB(XtPointer client_data, int *fd, XtInputId *id) {
                                        "The following folder(s) are not "
                                        "empty.\nDo you want to proceed?\n");
 
-                tmpbuf = XtMalloc(strlen(header) + strlen(verifybuf) + 1);
-                sprintf(tmpbuf, "%s%s", header, verifybuf);
+                int tmpbuf_size = strlen(header) + strlen(verifybuf) + 1;
+                tmpbuf = XtMalloc(tmpbuf_size);
+                snprintf(tmpbuf, tmpbuf_size, "%s%s", header, verifybuf);
                 title = XtNewString(GETMESSAGE(27, 4, "Trash Can Warning"));
                 dlog = (Widget)_DtMessageDialog(
                     toplevel, title, tmpbuf, NULL, True, VerifyCancel, VerifyOk,
@@ -3721,7 +3753,8 @@ static void EmptyTrashPipeCB(XtPointer client_data, int *fd, XtInputId *id) {
                         /* If more items than can be displayed, let user know */
                         if (itemCount < problemCount) {
                                 char extraFiles[256];
-                                sprintf(extraFiles, AdditionalHeader,
+                                snprintf(extraFiles, 256,
+                                        AdditionalHeader,
                                         problemCount - itemCount);
                                 AddString(&buf, &bufsize, extraFiles,
                                           GETMESSAGE(27, 97,
@@ -3766,9 +3799,11 @@ static void EmptyTrashPipeCB(XtPointer client_data, int *fd, XtInputId *id) {
                                             "be removed from the "
                                             "file system:  \n");
                         file_name = cb_data->del_list[0].trash;
-                        buffer =
-                            XtMalloc(strlen(tmpStr) + strlen(file_name) + 1);
-                        sprintf(buffer, "%s%s\n", tmpStr, file_name);
+                        int buffer_size = strlen(tmpStr) +
+                                strlen(file_name) + 1;
+                        buffer = XtMalloc(buffer_size);
+                        snprintf(buffer, buffer_size,
+                                "%s%s\n", tmpStr, file_name);
                         _DtMessage(toplevel, title, buffer, NULL,
                                    HelpRequestCB);
                         XtFree(title);
@@ -4032,8 +4067,9 @@ static void CreateRestoreDialog(char *source, char *target) {
 
         dirs[0] = strdup(source);
         dirs[1] = strdup(target);
-        tmpbuf = XtMalloc(strlen(header) + strlen(target) + 1);
-        sprintf(tmpbuf, header, target);
+        int tmpbuf_size = strlen(header) + strlen(target) + 1;
+        tmpbuf = XtMalloc(tmpbuf_size);
+        snprintf(tmpbuf, tmpbuf_size, header, target);
         title = XtNewString(GETMESSAGE(27, 109, "Put Back Warning"));
         dw = (Widget)_DtMessageDialog(
             toplevel, title, tmpbuf, NULL, True, RestoreVerifyCancel,
@@ -4067,8 +4103,9 @@ static void RestoreVerifyOk(Widget w, XtPointer client_data,
                     "Cannot move or rename the folder %s.\nAll File Manager "
                     "views displayed for a folder or its sub-folders\nmust be "
                     "closed before a folder can be moved or renamed.");
-                msgbuf = XtMalloc(strlen(tmpStr) + strlen(dirs[1]) + 1);
-                sprintf(msgbuf, tmpStr, dirs[1]);
+                int msgbuf_size = strlen(tmpStr) + strlen(dirs[1]) + 1;
+                msgbuf = XtMalloc(msgbuf_size);
+                snprintf(msgbuf, msgbuf_size, tmpStr, dirs[1]);
                 _DtMessage(toplevel, title, msgbuf, NULL, HelpRequestCB);
                 XtFree(title);
                 XtFree(msgbuf);

@@ -75,7 +75,7 @@ extern void _DtMappedCB(Widget w, XtPointer client_data, XtPointer call_data);
 extern void _DtGenericMapWindow(Widget parent, XtPointer recordPtr);
 extern void _DtGenericDestroy(XtPointer recordPtr);
 extern void _DtGenericUpdateWindowPosition(DialogData *dataPtr);
-extern void _DtBuildPath(char *path, char *directory, char *fileName);
+extern void _DtBuildPath(char *path, int path_size, char *directory, char *fileName);
 extern PixmapData *_DtRetrievePixmapData(char *dataType, char *fileName,
                                          char *directory, Widget shell,
                                          int size);

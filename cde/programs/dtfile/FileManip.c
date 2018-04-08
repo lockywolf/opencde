@@ -209,13 +209,16 @@ void FileOperationError(Widget w, char *message1, char *message2) {
         char *message_buf;
         char *title;
         char *tmpStr;
+        int size;
 
         if (message2 != NULL) {
-                message_buf = XtMalloc(strlen(message1) + strlen(message2) + 1);
-                (void)sprintf(message_buf, message1, message2);
+                size = strlen(message1) + strlen(message2) + 1;
+                message_buf = XtMalloc(size);
+                snprintf(message_buf, size, message1, message2);
         } else {
-                message_buf = XtMalloc(strlen(message1) + 1);
-                (void)sprintf(message_buf, "%s", message1);
+                size = strlen(message1) + 1;
+                message_buf = XtMalloc(size);
+                snprintf(message_buf, size, "%s", message1);
         }
 
         /*  Display an error dialog  */
@@ -453,25 +456,6 @@ static Boolean MoveDir(Widget w, register char *source, register char *target,
                 XtFree(targetDir);
                 return (False);
         }
-        /*
-          if (((sourceStatInfo->st_mode & S_IFMT) == S_IFDIR) &&
-          (CheckAccess(source, W_OK) != 0))
-          {
-          if (errorHandler)
-          {
-          char * tmpStr;
-
-          tmpStr=GETMESSAGE(11, 57,"You do not have permission to move the
-          folder\n%s\nWrite permission is required."); msg =
-          XtMalloc(strlen(tmpStr) + strlen(source) + 2); sprintf(msg, tmpStr,
-          source);
-          (*errorHandler) (w, msg, source);
-          XtFree(msg);
-          }
-          XtFree(targetDir);
-          return (False);
-          }
-          */
         /*  if parents are not on the same device, do a copy & delete */
         if (s1.st_dev != s2.st_dev) {
                 /* Determine correct Geometry Placement fo Move Dialog */
@@ -819,7 +803,7 @@ Boolean FileManip(Widget w, int mode, register char *from, register char *to,
                                             "sub-folders\nmust be closed "
                                             "before a folder "
                                             "can be moved or renamed."));
-                                        sprintf(message_buf, tmpStr, from);
+                                        snprintf(message_buf, 512, tmpStr, from);
                                         (*errorHandler)(w, message_buf, NULL);
                                 }
                                 return (False);
@@ -1195,37 +1179,43 @@ Boolean FileManip(Widget w, int mode, register char *from, register char *to,
                                         break;
                                 }
                                 case EAGAIN:
-                                        sprintf(errnoMsg, "EAGAIN:  ");
+                                        snprintf(errnoMsg, 25,
+                                                "EAGAIN:  ");
                                         strerrormsg = strerror(errno);
                                         break;
                                 case EBADF:
-                                        sprintf(errnoMsg, "EBADF:  ");
+                                        snprintf(errnoMsg, 25,
+                                                "EBADF:  ");
                                         strerrormsg = strerror(errno);
                                         break;
                                 case EDEADLK:
-                                        sprintf(errnoMsg, "EDEADLK:  ");
+                                        snprintf(errnoMsg, 25,
+                                                "EDEADLK:  ");
                                         strerrormsg = strerror(errno);
                                         break;
                                 case EINTR:
-                                        sprintf(errnoMsg, "EINTR:  ");
+                                        snprintf(errnoMsg, 25,
+                                                "EINTR:  ");
                                         strerrormsg = strerror(errno);
                                         break;
                                 case EIO:
-                                        sprintf(errnoMsg, "EIO:   ");
+                                        snprintf(errnoMsg, 25, "EIO:   ");
                                         strerrormsg = strerror(errno);
                                         break;
                                 case ENOLCK:
-                                        sprintf(errnoMsg, "ENOLCK:  ");
+                                        snprintf(errnoMsg, 25,
+                                                "ENOLCK:  ");
                                         strerrormsg = strerror(errno);
                                         break;
                                 case EPIPE:
-                                        sprintf(errnoMsg, "EPIPE:  ");
+                                        snprintf(errnoMsg, 25,
+                                                "EPIPE:  ");
                                         strerrormsg = strerror(errno);
                                         break;
                                 default:
                                         unknown = True;
-                                        sprintf(
-                                            errnoMsg, "%s",
+                                        snprintf(
+                                            errnoMsg, 25, "%s",
                                             GETMESSAGE(11, 56, "(Unknown):"));
                                         strerrormsg = strerror(errno);
                                         break;

@@ -1057,7 +1057,7 @@ void create_replace_rename_dialog(Widget parent_widget, int mode,
 
         /* create text field for entering a new file name */
         /* a name is generated to use as the default */
-        _DtBuildPath(path, directory, file);
+        _DtBuildPath(path, MAX_PATH, directory, file);
         generate_NewPath(path, path);
         split_path(path, newDir, newFile);
         G_rename_text = XtVaCreateManagedWidget(

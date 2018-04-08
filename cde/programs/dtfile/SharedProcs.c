@@ -358,7 +358,7 @@ void _DtLoadSubdialogArray(char **nameList, int nameCount,
             (DialogData **)XtMalloc(sizeof(DialogData *) * dialogCount);
 
         for (i = 0; i < dialogCount; i++) {
-                sprintf(number, "%d", firstId);
+                snprintf(number, 10, "%d", firstId);
                 (*dialogArray)[i] =
                     _DtGetResourceDialogData(dialogId, dataBase, nameList);
                 firstId++;
@@ -377,7 +377,7 @@ void _DtSaveSubdialogArray(char **nameList, int nameCount,
         nameList[nameCount + 1] = NULL;
 
         for (i = 0; i < dialogCount; i++) {
-                sprintf(number, "%d", firstId);
+                snprintf(number, 10, "%d", firstId);
                 _DtWriteDialogData(dialogArray[i], fd, nameList);
                 firstId++;
         }
@@ -532,19 +532,21 @@ void _DtGenericUpdateWindowPosition(DialogData *dataPtr)
  * parameters.
  */
 
-void _DtBuildPath(char *path, char *directory, char *fileName)
+void _DtBuildPath(char *path, int path_size, char *directory,
+        char *fileName)
 
 {
         if (directory) {
                 if (fileName)
-                        sprintf(path, "%s/%s", directory, fileName);
+                        snprintf(path, path_size,
+                                "%s/%s", directory, fileName);
                 else
-                        sprintf(path, "%s", directory);
+                        snprintf(path, path_size, "%s", directory);
         } else {
                 if (fileName)
-                        sprintf(path, "%s", fileName);
+                        snprintf(path, path_size, "%s", fileName);
                 else
-                        sprintf(path, "%s", "");
+                        snprintf(path, path_size, "%s", "");
         }
 }
 
@@ -565,7 +567,7 @@ PixmapData *_DtRetrievePixmapData(char *dataType, char *fileName,
                 return NULL;
 
         path[0] = 0x0;
-        _DtBuildPath(path, directory, fileName);
+        _DtBuildPath(path, MAXPATHLEN, directory, fileName);
 
         pixmapData->size = size;
 
@@ -810,33 +812,36 @@ char *_DtBuildFMTitle(FileMgrData *file_mgr_data)
         else
                 ptr = "";
 
+        int title_size;
         if (file_mgr_data->title) {
                 if (file_mgr_data->toolbox &&
                     strcmp(file_mgr_data->current_directory,
                            file_mgr_data->restricted_directory) != 0) {
-                        title = (char *)XtMalloc(
-                            strlen(file_mgr_data->title) + strlen(ptr) +
-                            4); /* Need for blank dash blank NULL */
-                        sprintf(title, "%s - %s", file_mgr_data->title, ptr);
+                        title_size = strlen(file_mgr_data->title) +
+                            strlen(ptr) + 4; /* Need for blank dash blank NULL */
+                        title = (char *)XtMalloc(title_size);
+                        snprintf(title, title_size,
+                                "%s - %s", file_mgr_data->title, ptr);
                 } else {
                         title = XtNewString(file_mgr_data->title);
                 }
         } else {
                 if (strcmp(file_mgr_data->current_directory, "/") == 0 &&
                     !fileLabel) {
-                        title = (char *)XtMalloc(
+                        title_size =
                             strlen((GETMESSAGE(12, 7, "File Manager"))) +
-                            strlen(file_mgr_data->host) + strlen(root_title) +
-                            5); /* Need for blank dash blank colon NULL */
-                        sprintf(title, "%s - %s:%s",
+                            strlen(file_mgr_data->host) + strlen(root_title) + 5; /* Need for blank dash blank colon NULL */
+                        title = (char *)XtMalloc(title_size);
+                        snprintf(title, title_size, "%s - %s:%s",
                                 (GETMESSAGE(12, 7, "File Manager")),
                                 file_mgr_data->host, root_title);
                 } else {
-                        title = (char *)XtMalloc(
+                        title_size =
                             strlen((GETMESSAGE(12, 7, "File Manager"))) +
                             strlen(ptr) +
-                            4); /* Need for blank dash blank NULL */
-                        sprintf(title, "%s - %s",
+                            4; /* Need for blank dash blank NULL */
+                        title = (char *)XtMalloc(title_size);
+                        snprintf(title, title_size, "%s - %s",
                                 (GETMESSAGE(12, 7, "File Manager")), ptr);
                 }
         }
@@ -856,16 +861,20 @@ char *_DtGetSelectedFilePath(FileViewData *selected_file)
         char *directory;
         char *file;
         char *path;
+        int path_size;
 
         directory = ((DirectorySet *)selected_file->directory_set)->name;
         file = selected_file->file_data->file_name;
 
+        path_size = strlen(directory) + strlen(file);
         if (strcmp(directory, "/") == 0) {
-                path = XtMalloc(strlen(directory) + strlen(file) + 1);
-                sprintf(path, "%s%s", directory, file);
+                path_size += 1;
+                path = XtMalloc(path_size);
+                snprintf(path, path_size, "%s%s", directory, file);
         } else {
-                path = XtMalloc(strlen(directory) + strlen(file) + 2);
-                sprintf(path, "%s/%s", directory, file);
+                path_size += 2;
+                path = XtMalloc(path_size);
+                snprintf(path, path_size, "%s/%s", directory, file);
         }
 
         return (path);
@@ -1111,17 +1120,19 @@ static char *BuildBufferFileName(char *file_name, int postfix_index,
 
         DPRINTF(("Executing....BuildBufferFileName\n"));
 
+        int size = strlen(file_name) + 1 + MAX_POSTFIX_LENGTH + 1;
+
         /* Malloc memory and contruct the new file name */
         new_file_name =
-            (char *)XtMalloc(strlen(file_name) + 1 + MAX_POSTFIX_LENGTH + 1);
+            (char *)XtMalloc(size);
 
         DPRINTF(("BuildBufferFileName: Old file name is %s\n", file_name));
 
         /* determine whether to append post fix name */
         if (postfix_index == -1)
-                strcpy(new_file_name, file_name);
+                strlcpy(new_file_name, file_name, size);
         else
-                sprintf(new_file_name, "%s%c%d", file_name, delim,
+                snprintf(new_file_name, size, "%s%c%d", file_name, delim,
                         postfix_index);
 
         /* Retrieve the name template if it exists and use it in the filename */
@@ -1147,14 +1158,18 @@ static char *RetrieveAndUseNameTemplateInfo(void *buffer, int buffer_size,
 {
         char *name_template;
         char *buffer_name = NULL;
+        int buffer_name_size;
 
         name_template = DtDtsBufferToAttributeValue(
             buffer, buffer_size, DtDTS_DA_NAME_TEMPLATE, NULL);
-        if (name_template)
-                buffer_name = (char *)XtMalloc(strlen(name_template) +
-                                               strlen(template_input) + 1);
+        if (name_template) {
+                buffer_name_size = strlen(name_template) +
+                              strlen(template_input) + 1;
+                buffer_name = (char *)XtMalloc(buffer_name_size);
+        }
         if (buffer_name) {
-                sprintf(buffer_name, name_template, template_input);
+                snprintf(buffer_name, buffer_name_size, name_template,
+                        template_input);
                 DtDtsFreeAttributeValue(name_template);
                 XtFree(template_input);
                 return (buffer_name);
@@ -1193,8 +1208,9 @@ static void RenameCollisions(char **list, int count) {
         }
         if (flg) {
                 free(list[k]);
-                list[k] = (char *)malloc(strlen(DEFAULT_BUFFER_FILENAME) + 1);
-                sprintf(list[k], "%s", DEFAULT_BUFFER_FILENAME);
+                int size = strlen(DEFAULT_BUFFER_FILENAME) + 1;
+                list[k] = (char *)malloc(size);
+                snprintf(list[k], size, "%s", DEFAULT_BUFFER_FILENAME);
         }
 }
 
@@ -1208,25 +1224,29 @@ static void RenameEntry(char **name, unsigned int addIndex) {
 #define MAX_INT_SIZE 15
 
         char *tmpPtr, *newName;
+        int size;
 
         if (*name == 0x0)
                 return;
         else if (**name == 0x0) {
-                newName = (char *)XtCalloc(1, strlen(DEFAULT_BUFFER_FILENAME) +
-                                                  MAX_INT_SIZE);
-                sprintf(newName, "%s_%d", DEFAULT_BUFFER_FILENAME, addIndex);
+                size = strlen(DEFAULT_BUFFER_FILENAME) + MAX_INT_SIZE;
+                newName = (char *)XtCalloc(1, size);
+                snprintf(newName, size, "%s_%d",
+                        DEFAULT_BUFFER_FILENAME, addIndex);
         } else {
                 tmpPtr = strrchr(*name, '.');
 
-                newName = (char *)XtCalloc(1, strlen(*name) + MAX_INT_SIZE);
+                size = strlen(*name) + MAX_INT_SIZE;
+                newName = (char *)XtCalloc(1, size);
 
                 if (tmpPtr == NULL)
-                        sprintf(newName, "%s_%d", *name, addIndex);
+                        snprintf(newName, size, "%s_%d", *name, addIndex);
                 else if (tmpPtr == *name)
-                        sprintf(newName, "%d%s", addIndex, *name);
+                        snprintf(newName, size, "%d%s", addIndex, *name);
                 else {
                         *tmpPtr = 0x0;
-                        sprintf(newName, "%s_%d.%s", *name, addIndex, ++tmpPtr);
+                        snprintf(newName, size, "%s_%d.%s",
+                                *name, addIndex, ++tmpPtr);
                 }
         }
         free(*name);
@@ -1361,7 +1381,7 @@ void _DtPathFromInput(char *input_string, char *current_dir, char **host,
                 FILE *pfp;
                 char command[MAXPATHLEN];
 
-                sprintf(command, "echo %s", path);
+                snprintf(command, MAXPATHLEN, "echo %s", path);
 
                 if ((pfp = popen(command, "r")) != NULL) {
                         int read_ok = 1;
@@ -1395,18 +1415,23 @@ void _DtPathFromInput(char *input_string, char *current_dir, char **host,
         if (*path == '~')
                 path = _DtChangeTildeToHome(path);
 
+        int size;
         /* If current dir provided, check for relative path */
         if (path && current_dir) {
                 if (*path != '/') {
                         /* file is relative path i.e.      xyz/abc */
                         if (strcmp(current_dir, "/") == 0) {
-                                tmp_path = (char *)XtMalloc(
-                                    strlen(current_dir) + strlen(path) + 1);
-                                sprintf(tmp_path, "%s%s", current_dir, path);
+                                size = strlen(current_dir) +
+                                    strlen(path) + 1;
+                                tmp_path = (char *)XtMalloc(size);
+                                snprintf(tmp_path, size, "%s%s",
+                                        current_dir, path);
                         } else {
-                                tmp_path = (char *)XtMalloc(
-                                    strlen(current_dir) + strlen(path) + 2);
-                                sprintf(tmp_path, "%s/%s", current_dir, path);
+                                size = strlen(current_dir) +
+                                    strlen(path) + 2;
+                                tmp_path = (char *)XtMalloc(size);
+                                snprintf(tmp_path, size, "%s/%s",
+                                        current_dir, path);
                         }
 
                         XtFree(path);
@@ -1461,6 +1486,7 @@ char *_DtChangeTildeToHome(char *input_string) {
         char *path;
         char *full_path;
         struct passwd *pwInfo;
+        int size;
 
         if ((input_string[1] != '\0') && (input_string[1] != '/')) {
                 char *path;
@@ -1491,9 +1517,11 @@ char *_DtChangeTildeToHome(char *input_string) {
                                 full_path = (char *)XtMalloc(strlen(path) + 1);
                                 strcpy(full_path, path);
                         } else {
-                                full_path = (char *)XtMalloc(
-                                    strlen(pwInfo->pw_dir) + strlen(path) + 1);
-                                sprintf(full_path, "%s%s", pwInfo->pw_dir,
+                                size = strlen(pwInfo->pw_dir) +
+                                    strlen(path) + 1;
+                                full_path = (char *)XtMalloc(size);
+                                snprintf(full_path, size, "%s%s",
+                                        pwInfo->pw_dir,
                                         path);
                         }
                 } else {
@@ -1505,10 +1533,12 @@ char *_DtChangeTildeToHome(char *input_string) {
         } else if (input_string[1]) {
                 /* ~/path format */
 
+                size = strlen(users_home_dir) +
+                       strlen(input_string + 2) + 1;
                 /* NOTE: users_home_dir has trailing '/' */
-                full_path = XtMalloc(strlen(users_home_dir) +
-                                     strlen(input_string + 2) + 1);
-                sprintf(full_path, "%s%s", users_home_dir, (input_string + 2));
+                full_path = XtMalloc(size);
+                snprintf(full_path, size, "%s%s", users_home_dir,
+                    (input_string + 2));
         } else {
                 /* ~ format */
 
@@ -1555,8 +1585,9 @@ char *_DtResolveAppManPath(char *path, char *restricted_dir) {
                         *ptr = '\0';
                         linkDir = _DtFollowLink(path);
                         *ptr = '/';
-                        tmpPath = XtMalloc(strlen(linkDir) + strlen(ptr) + 1);
-                        sprintf(tmpPath, "%s%s", linkDir, ptr);
+                        int size = strlen(linkDir) + strlen(ptr) + 1;
+                        tmpPath = XtMalloc(size);
+                        snprintf(tmpPath, size, "%s%s", linkDir, ptr);
                         XtFree(path);
                         path = tmpPath;
                 } else {

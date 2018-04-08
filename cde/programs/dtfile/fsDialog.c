@@ -194,7 +194,8 @@ static Boolean configFileOK(void)
                 msg1 = GETMESSAGE(
                     21, 22, "Cannot open file manager configuration file: ");
                 msg2 = strerror(errno);
-                sprintf(g_errorMessage, "%s%s\n   %s\n", msg1, fname, msg2);
+                snprintf(g_errorMessage, EMSGMAX,
+                        "%s%s\n   %s\n", msg1, fname, msg2);
                 _DtSimpleError(application_name, DtError, NULL, g_errorMessage,
                                NULL);
                 return FALSE;
@@ -221,39 +222,6 @@ static Boolean configFileOK(void)
 static void getFSType(const String path, String fsType, String platform)
 
 {
-#ifdef __aix
-#define GETFSTYPE
-        struct stat buf;
-
-        strncpy(platform, "aix", MAXLINELENGTH);
-        if (lstat(path, &buf) == 0)
-                sprintf(fsType, "%i", buf.st_vfstype);
-        else
-                strncpy(fsType, "", MAXLINELENGTH);
-#endif /* __aix */
-
-#ifdef sun
-#define GETFSTYPE
-        struct statvfs buf;
-
-        strncpy(platform, "sunos", MAXLINELENGTH);
-        if (statvfs(path, &buf) == 0)
-                strncpy(fsType, buf.f_basetype, MAXLINELENGTH);
-        else
-                strncpy(fsType, "", MAXLINELENGTH);
-#endif /* sun */
-
-#ifdef __hpux
-#define GETFSTYPE
-        struct statfs buf;
-
-        strncpy(platform, "hpux", MAXLINELENGTH);
-        if (statfs(path, &buf) == 0)
-                sprintf(fsType, "%li", buf.f_fsid[1]);
-        else
-                strncpy(fsType, "", MAXLINELENGTH);
-#endif /* __hpux */
-
 #ifdef __osf__
 #define GETFSTYPE
         struct statvfs buf;
@@ -329,7 +297,8 @@ static void readConfigFile(const String fsType, const String platform,
                 msg1 = GETMESSAGE(
                     21, 22, "Cannot open file manager configuration file: ");
                 msg2 = strerror(errno);
-                sprintf(g_errorMessage, "%s%s\n   %s\n", msg1, fname, msg2);
+                snprintf(g_errorMessage, EMSGMAX,
+                        "%s%s\n   %s\n", msg1, fname, msg2);
                 _DtSimpleError(application_name, DtError, NULL, g_errorMessage,
                                NULL);
                 return;
@@ -562,7 +531,8 @@ static void readDialogData(FILE *fptr, const String fsID,
                                             21, 24,
                                             "Unknown field label in file "
                                             "manager configuration file: ");
-                                        sprintf(g_errorMessage, "%s\"%s\"\n",
+                                        snprintf(g_errorMessage, EMSGMAX,
+                                                "%s\"%s\"\n",
                                                 msg1, token1);
                                         _DtSimpleError(application_name,
                                                        DtWarning, NULL,
@@ -588,7 +558,8 @@ static void readDialogData(FILE *fptr, const String fsID,
                     21, 25,
                     "No information found in file manager configuration file "
                     "for file-system identifier");
-                sprintf(g_errorMessage, "%s \"%s\"\n", msg1, fsID);
+                snprintf(g_errorMessage, EMSGMAX,
+                        "%s \"%s\"\n", msg1, fsID);
                 _DtSimpleError(application_name, DtError, NULL, g_errorMessage,
                                NULL);
         }
