@@ -230,8 +230,9 @@ void InitializeDesktopWindows(int number_cache, Display *display) {
         for (i = desktop_data->numCachedIcons + desktop_data->numIconsUsed;
              i < new_size; i++) {
                 desktop = (DesktopRec *)XtMalloc(sizeof(DesktopRec));
-                popup_name = (char *)XtMalloc(strlen("popup_name") + 11);
-                sprintf(popup_name, "popup_name%d",
+                int popup_size = strlen("popup_name") + 11;
+                popup_name = (char *)XtMalloc(popup_size);
+                snprintf(popup_name, popup_size, "popup_name%d",
                         desktop_data->popup_name_count);
 
                 n = 0;
@@ -747,11 +748,13 @@ void SaveDesktopInfo(int session) {
         char *full_path = NULL;
         char *rDir, *title, *helpVol;
         Tt_status tt_status;
+        int path_size;
 
         /* Build the name which the desktop data will be saved */
         if (desktopFileName == NULL) {
-                desktopFileName = XtMalloc(strlen(DESKTOP_SAVE_NAME) + 1);
-                sprintf(desktopFileName, "%s", DESKTOP_SAVE_NAME);
+                path_size = strlen(DESKTOP_SAVE_NAME) + 1;
+                desktopFileName = XtMalloc(path_size);
+                snprintf(desktopFileName, path_size, "%s", DESKTOP_SAVE_NAME);
         }
 
         switch (session) {
@@ -762,9 +765,9 @@ void SaveDesktopInfo(int session) {
                                                 &tt_status);
                 break;
         case HOME_DIR_RESTORE:
-                full_path =
-                    (char *)XtMalloc(strlen(dt_path) + strlen("/home") + 1);
-                sprintf(full_path, "%s/home", dt_path);
+                path_size = strlen(dt_path) + strlen("/home") + 1;
+                full_path = (char *)XtMalloc(path_size);
+                snprintf(full_path, path_size, "%s/home", dt_path);
                 fileName = ResolveLocalPathName(home_host_name, full_path,
                                                 desktopFileName, home_host_name,
                                                 &tt_status);
@@ -772,9 +775,10 @@ void SaveDesktopInfo(int session) {
                 full_path = NULL;
                 break;
         default:
+                path_size = strlen(dt_path) + strlen("/current") + 1;
                 full_path =
-                    (char *)XtMalloc(strlen(dt_path) + strlen("/current") + 1);
-                sprintf(full_path, "%s/current", dt_path);
+                    (char *)XtMalloc(path_size);
+                snprintf(full_path, path_size, "%s/current", dt_path);
                 fileName = ResolveLocalPathName(home_host_name, full_path,
                                                 desktopFileName, home_host_name,
                                                 &tt_status);
@@ -927,11 +931,13 @@ void LoadDesktopInfo(char *session) {
         Boolean haveOne;
         Tt_status tt_status;
         struct stat stat_buf;
+        int path_size;
 
         /* Build the name which the desktop data will be saved */
         if (desktopFileName == NULL) {
-                desktopFileName = XtMalloc(strlen(DESKTOP_SAVE_NAME) + 1);
-                sprintf(desktopFileName, "%s", DESKTOP_SAVE_NAME);
+                path_size = strlen(DESKTOP_SAVE_NAME) + 1;
+                desktopFileName = XtMalloc(path_size);
+                snprintf(desktopFileName, path_size, "%s", DESKTOP_SAVE_NAME);
         }
 
         if (session == NULL) {
@@ -1022,17 +1028,17 @@ void LoadDesktopInfo(char *session) {
                         struct stat stat_buf;
 
                         if (strcmp(desktopWindow->dir_linked_to, "/") == 0) {
-                                path = (char *)XtMalloc(
-                                    strlen(desktopWindow->dir_linked_to) +
-                                    strlen(desktopWindow->file_name) + 1);
-                                sprintf(path, "%s%s",
+                                path_size = strlen(desktopWindow->dir_linked_to) +
+                                    strlen(desktopWindow->file_name) + 1;
+                                path = (char *)XtMalloc(path_size);
+                                snprintf(path, path_size, "%s%s",
                                         desktopWindow->dir_linked_to,
                                         desktopWindow->file_name);
                         } else {
-                                path = (char *)XtMalloc(
-                                    strlen(desktopWindow->dir_linked_to) +
-                                    strlen(desktopWindow->file_name) + 2);
-                                sprintf(path, "%s/%s",
+                                path_size = strlen(desktopWindow->dir_linked_to) +
+                                    strlen(desktopWindow->file_name) + 2;
+                                path = (char *)XtMalloc(path_size);
+                                snprintf(path, path_size, "%s/%s",
                                         desktopWindow->dir_linked_to,
                                         desktopWindow->file_name);
                         }
@@ -1819,12 +1825,11 @@ void RunDTCommand(char *command, DesktopRec *desktopWindow,
 
                         tmpStr = GETMESSAGE(9, 6, "Action Error");
                         title = XtNewString(tmpStr);
-                        msg = (char *)XtMalloc(
-                            strlen(GETMESSAGE(30, 1, "Cannot read from %s")) +
+                        int msg_size = strlen(GETMESSAGE(30, 1, "Cannot read from %s")) +
                             strlen(desktopWindow->file_view_data->file_data
-                                       ->file_name) +
-                            1);
-                        sprintf(msg, GETMESSAGE(30, 1, "Cannot read from %s"),
+                                       ->file_name) + 1;
+                        msg = (char *)XtMalloc(msg_size);
+                        snprintf(msg, msg_size, GETMESSAGE(30, 1, "Cannot read from %s"),
                                 desktopWindow->file_view_data->file_data
                                     ->file_name);
                         _DtMessage(desktopWindow->shell, title, msg, NULL,
@@ -1882,7 +1887,8 @@ void RunDTCommand(char *command, DesktopRec *desktopWindow,
 static void ProcessNewViewDT(DesktopRec *desktopWindow) {
         char directory_name[MAX_PATH];
 
-        sprintf(directory_name, "%s/%s", desktopWindow->dir_linked_to,
+        snprintf(directory_name, MAX_PATH, "%s/%s",
+                desktopWindow->dir_linked_to,
                 desktopWindow->file_name);
         DtEliminateDots(directory_name);
 
@@ -1964,7 +1970,8 @@ static void ProcessMoveCopyLinkDT(char *command, DesktopRec *desktopWindow,
         if (file_view_data->file_data->physical_type == DtDIRECTORY) {
                 char dir_name[MAX_PATH];
 
-                sprintf(dir_name, "%s/%s", desktopWindow->dir_linked_to,
+                snprintf(dir_name, MAX_PATH, "%s/%s",
+                        desktopWindow->dir_linked_to,
                         desktopWindow->file_name);
                 DtEliminateDots(dir_name);
 
@@ -2050,7 +2057,7 @@ ProcessBufferDropOnFolderDT(char *command, DesktopRec *desktopWindow,
             "ProcessBufferDropOnFolderDT...Buffers dropped on Folder icon %s\n",
             file_view_data->file_data->file_name));
 
-        sprintf(directory, "%s/%s",
+        snprintf(directory, MAX_PATH, "%s/%s",
                 ((DirectorySet *)file_view_data->directory_set)->name,
                 file_view_data->file_data->file_name);
         DtEliminateDots(directory);
@@ -2104,17 +2111,8 @@ char *IsAFileOnDesktop2(char **file_set, int file_count, int *number,
                 for (j = 0; j < desktop_data->numIconsUsed; j++) {
                         desktopWindow = desktop_data->desktopWindows[j];
 
-                        /*
-                                if( strcmp( desktopWindow->dir_linked_to, "/" )
-                           != 0 ) sprintf(tmp_filename, "%s/%s",
-                           desktopWindow->dir_linked_to,
-                                            desktopWindow->file_view_data->file_data->file_name);
-                                else
-                                  sprintf(tmp_filename, "%s%s",
-                           desktopWindow->dir_linked_to,
-                                            desktopWindow->file_view_data->file_data->file_name);
-                        */
-                        strcpy(tmp_filename, desktopWindow->dir_linked_to);
+                        strlcpy(tmp_filename,
+                                desktopWindow->dir_linked_to, MAX_PATH);
                         if (Link)
                                 filename2 = XtNewString(tmp_filename);
                         else {
@@ -2134,9 +2132,10 @@ char *IsAFileOnDesktop2(char **file_set, int file_count, int *number,
                         if (strcmp(filename1, filename2) == 0) {
                                 *IsToolBox = desktopWindow->toolbox;
                                 if (onDesktop == False) {
+                                        int size = strlen(filename1) + 10;
                                         filesOnDesktop = (char *)XtMalloc(
-                                            strlen(filename1) + 10);
-                                        sprintf(filesOnDesktop, "\n   %s\n",
+                                            size);
+                                        snprintf(filesOnDesktop, size, "\n   %s\n",
                                                 filename1);
                                         onDesktop = True;
                                 } else {
@@ -2144,7 +2143,8 @@ char *IsAFileOnDesktop2(char **file_set, int file_count, int *number,
                                                  strlen(filename1) + 6;
                                         filesOnDesktop = (char *)XtRealloc(
                                             filesOnDesktop, newLen);
-                                        sprintf(filesOnDesktop, "%s   %s\n",
+                                        snprintf(filesOnDesktop, newLen,
+                                                "%s   %s\n",
                                                 filesOnDesktop, filename1);
                                 }
                                 *number += 1;
@@ -2796,7 +2796,8 @@ void SetupDesktopWindow(Display *display, FileMgrData *file_mgr_data,
         else if (strcmp(file_name, ".") != 0)
                 title = file_name;
         else {
-                sprintf(title_buf, "%s:%s", home_host_name, root_title);
+                snprintf(title_buf, 256, "%s:%s",
+                         home_host_name, root_title);
                 title = title_buf;
         }
 
@@ -3227,9 +3228,10 @@ static void BuildDesktopLinks(Display *display) {
         int retry;
 
         /* Build the 'Desktop' directory */
-        desktop_dir =
-            XtMalloc(strlen(users_home_dir) + strlen(DESKTOP_DIR) + 2);
-        sprintf(desktop_dir, "%s%s", users_home_dir, DESKTOP_DIR);
+        int dir_size = strlen(users_home_dir) + strlen(DESKTOP_DIR) + 2;
+        desktop_dir = XtMalloc(dir_size);
+        snprintf(desktop_dir, dir_size, "%s%s",
+                 users_home_dir, DESKTOP_DIR);
         if (stat(desktop_dir, &statBuf) < 0)
                 mkdir(desktop_dir, S_IRUSR | S_IWUSR | S_IXUSR);
 
@@ -4016,9 +4018,9 @@ void PutOnWorkspaceHandler(Tt_message ttMsg) {
                         errorName = "";
                 else
                         errorName = fullName;
-                errorMsg =
-                    (char *)XtMalloc(strlen(template) + strlen(errorName) + 1);
-                sprintf(errorMsg, template, errorName);
+                int size = strlen(template) + strlen(errorName) + 1;
+                errorMsg = (char *)XtMalloc(size);
+                snprintf(errorMsg, size, template, errorName);
                 _DtMessage(toplevel, dialogTitle, errorMsg, NULL,
                            HelpRequestCB);
 
@@ -4055,7 +4057,7 @@ void PutOnWorkspaceHandler(Tt_message ttMsg) {
 
         /* separate the rest of the path into directory and file name */
         if (strcmp(fullName, "/") == 0) {
-                sprintf(title, "%s:%s", home_host_name, root_title);
+                snprintf(title, 256, "%s:%s", home_host_name, root_title);
                 fileName = XtNewString(".");
                 dirName = XtNewString("/");
         } else {
@@ -4160,9 +4162,10 @@ void PutOnWorkspaceHandler(Tt_message ttMsg) {
                                     "Workspace.\nTo have "
                                     "both objects on the Workspace, rename one "
                                     "of them."));
-                        errorMsg = (char *)XtMalloc(strlen(template) +
-                                                    strlen(title) + 1);
-                        sprintf(errorMsg, template, title);
+                        int msg_size = strlen(template) +
+                                       strlen(title) + 1;
+                        errorMsg = (char *)XtMalloc(msg_size);
+                        snprintf(errorMsg, msg_size, template, title);
                         _DtMessage(toplevel, dialogTitle, errorMsg, NULL,
                                    HelpRequestCB);
 

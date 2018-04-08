@@ -848,10 +848,11 @@ void FilterFiles(FileMgrData *file_mgr_data, DirectorySet *directory_set) {
                      strcmp(file_view_data[i]->file_data->file_name, ".") ==
                          0)) {
                         char *tempName;
+                        int tempName_size =
+                            strlen(file_mgr_data->current_directory) + 3;
 
-                        tempName = (char *)XtMalloc(
-                            strlen(file_mgr_data->current_directory) + 3);
-                        sprintf(tempName, "%s/",
+                        tempName = (char *)XtMalloc(tempName_size);
+                        snprintf(tempName, tempName_size, "%s/",
                                 file_mgr_data->current_directory);
                         if (strcmp(users_home_dir, tempName) == 0 ||
                             strcmp(users_home_dir,
@@ -1412,8 +1413,7 @@ void IconCallback(Widget w, XtPointer clientData, XtPointer callData) {
                         title = (char *)XtMalloc(strlen(tmpStr) + 1);
                         strcpy(title, tmpStr);
 
-                        (void)sprintf(
-                            msg,
+                        snprintf(msg, 512,
                             (GETMESSAGE(
                                 9, 7, "There are no actions defined for %s\n")),
                             logicalType);
@@ -1807,9 +1807,11 @@ static void NewConvertFileName(Widget w, FileViewData *fileViewData,
                                         ->name;
                                 fileName = fileViewData->file_data->file_name;
                         }
-                        path = (char *)XtMalloc(strlen(directoryName) +
-                                                strlen(fileName) + 2);
-                        sprintf(path, "%s/%s", directoryName, fileName);
+                        int size = strlen(directoryName) +
+                                   strlen(fileName) + 2;
+                        path = (char *)XtMalloc(size);
+                        snprintf(path, size, "%s/%s",
+                                 directoryName, fileName);
 
                         if ((!desktopRec) && (fileMgrData->toolbox))
                                 path = _DtResolveAppManPath(
@@ -1830,9 +1832,11 @@ static void NewConvertFileName(Widget w, FileViewData *fileViewData,
                         directoryName = fileMgrData->current_directory;
                         fileName = NULL;
                 }
-                path = (char *)XtMalloc(strlen(directoryName) +
-                                        strlen(fileName) + 2);
-                sprintf(path, "%s/%s", directoryName, fileName);
+                int path_size = strlen(directoryName) +
+                                strlen(fileName) + 2;
+                path = (char *)XtMalloc(path_size);
+                snprintf(path, path_size, "%s/%s",
+                         directoryName, fileName);
 
                 if ((!desktopRec) && (fileMgrData->toolbox))
                         path = _DtResolveAppManPath(
@@ -2884,7 +2888,8 @@ void CreateNameChangeDialog(Widget w, FileViewData *file_view_data,
                 if (desktopWindow->text != NULL)
                         return;
 
-                sprintf(buf, "%s:%s", home_host_name, root_title);
+                snprintf(buf, MAXPATHLEN, "%s:%s",
+                         home_host_name, root_title);
 
                 /*
                  * If the object is on the DESKTOP and its name is root_title,
@@ -2923,10 +2928,11 @@ void CreateNameChangeDialog(Widget w, FileViewData *file_view_data,
                 tmpStr = GETMESSAGE(10, 39, "Rename error");
                 title = XtNewString(tmpStr);
                 tmpStr = GETMESSAGE(11, 32, "Cannot rename %s");
-                msg = XtMalloc(strlen(tmpStr) +
-                               strlen(file_view_data->file_data->action_name) +
-                               1);
-                sprintf(msg, tmpStr, file_view_data->file_data->action_name);
+                int msg_size = strlen(tmpStr) +
+                               strlen(file_view_data->file_data->action_name) + 1;
+                msg = XtMalloc(msg_size);
+                snprintf(msg, msg_size, tmpStr,
+                         file_view_data->file_data->action_name);
 
                 _DtMessage(toplevel, title, msg, NULL, HelpRequestCB);
                 XtFree(title);
@@ -2958,7 +2964,8 @@ void CreateNameChangeDialog(Widget w, FileViewData *file_view_data,
                 XtSetArg(args[0], XmNfontList, &fontList);
                 XtGetValues(file_view_data->widget, args, 1);
 
-                sprintf(tmpBuf, "%s    ", file_view_data->file_data->file_name);
+                snprintf(tmpBuf, MAX_PATH, "%s    ",
+                         file_view_data->file_data->file_name);
                 fileNameString = XmStringCreateLocalized(tmpBuf);
                 stringWidth = XmStringWidth(fontList, fileNameString);
                 XmStringFree(fileNameString);
@@ -3197,7 +3204,7 @@ void RestorePositionalData(XrmDatabase db, char **name_list,
         file_mgr_data->num_objects = num_objects;
 
         for (j = 0; j < num_objects; j++) {
-                sprintf(objectName, "object%d", j);
+                snprintf(objectName, 20, "object%d", j);
                 xrm_name[i] = XrmStringToQuark(objectName);
                 ptr = file_mgr_data->object_positions[j] =
                     (ObjectPosition *)XtMalloc(sizeof(ObjectPosition));
@@ -4250,10 +4257,12 @@ void FmPopup(Widget w, XtPointer client_data, XEvent *event,
                                             fileViewData->file_data->file_name;
 
                                 if (strlen(tmp_label) > 20)
-                                        sprintf(label, "%-20.20s...",
+                                        snprintf(label, MAX_PATH,
+                                                "%-20.20s...",
                                                 tmp_label);
                                 else
-                                        sprintf(label, "%s", tmp_label);
+                                        snprintf(label, MAX_PATH,
+                                                 "%s", tmp_label);
 
                                 label_string = XmStringCreateLocalized(label);
                         }
@@ -4446,10 +4455,12 @@ void FmPopup(Widget w, XtPointer client_data, XEvent *event,
                                             fileViewData->file_data->file_name;
 
                                 if (strlen(tmp_label) > 20)
-                                        sprintf(label, "%-20.20s...",
+                                        snprintf(label, MAX_PATH,
+                                                "%-20.20s...",
                                                 tmp_label);
                                 else
-                                        sprintf(label, "%s", tmp_label);
+                                        snprintf(label, MAX_PATH,
+                                                "%s", tmp_label);
 
                                 /* Set popup menu label */
                                 label_string = XmStringCreateLocalized(label);

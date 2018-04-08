@@ -112,7 +112,7 @@
 
 static void RenameOk(Widget w, XtPointer client_data, XtPointer call_data);
 void RenameDone(XtPointer client_data, int rc);
-static Boolean GetToPath(char *to, char *new_name, char *host_in, char *dir_in);
+static Boolean GetToPath(char *to, int to_size, char *new_name, char *host_in, char *dir_in);
 static void FileTypePreview(Widget w, String new_name, XtPointer client_data,
                             XtPointer call_data);
 static void FileTypePreviewCB(Widget w, XtPointer client_data,
@@ -295,9 +295,11 @@ void ShowCopyFileDialog(Widget w, XtPointer client_data, XtPointer call_data) {
         if (file_mgr_data->title != NULL &&
             strcmp(file_mgr_data->helpVol, DTFILE_HELP_NAME) != 0) {
                 tmpStr = GETMESSAGE(10, 44, "Copy Object");
-                tempStr = (char *)XtMalloc(strlen(tmpStr) +
-                                           strlen(file_mgr_data->title) + 5);
-                sprintf(tempStr, "%s - %s", file_mgr_data->title, tmpStr);
+                int tempStr_size = strlen(tmpStr) +
+                                   strlen(file_mgr_data->title) + 5;
+                tempStr = (char *)XtMalloc(tempStr_size);
+                snprintf(tempStr, tempStr_size,
+                         "%s - %s", file_mgr_data->title, tmpStr);
         } else {
                 tmpStr = (GETMESSAGE(10, 45, "File Manager - Copy Object"));
                 tempStr = XtNewString(tmpStr);
@@ -335,7 +337,7 @@ void ShowCopyFileDialog(Widget w, XtPointer client_data, XtPointer call_data) {
         XtAddCallback(form, XmNhelpCallback, (XtCallbackProc)HelpRequestCB,
                       HELP_COPY_DIALOG_STR);
 
-        sprintf(name_string, "%s ",
+        snprintf(name_string, 18 + MAX_PATH, "%s ",
                 ((char *)GETMESSAGE(10, 37, "Selected object:")));
         strcat(name_string, file_view_data->file_data->file_name);
         label_string = XmStringCreateLocalized(name_string);
@@ -876,9 +878,11 @@ void ShowMoveFileDialog(Widget w, XtPointer client_data, XtPointer call_data) {
         if (file_mgr_data->title != NULL &&
             strcmp(file_mgr_data->helpVol, DTFILE_HELP_NAME) != 0) {
                 tmpStr = GETMESSAGE(10, 42, "Move Object");
-                tempStr = (char *)XtMalloc(strlen(tmpStr) +
-                                           strlen(file_mgr_data->title) + 5);
-                sprintf(tempStr, "%s - %s", file_mgr_data->title, tmpStr);
+                int tempStr_size = strlen(tmpStr) +
+                                   strlen(file_mgr_data->title) + 5;
+                tempStr = (char *)XtMalloc(tempStr_size);
+                snprintf(tempStr, tempStr_size,
+                         "%s - %s", file_mgr_data->title, tmpStr);
         } else {
                 tmpStr = (GETMESSAGE(10, 43, "File Manager - Move Object"));
                 tempStr = XtNewString(tmpStr);
@@ -915,7 +919,7 @@ void ShowMoveFileDialog(Widget w, XtPointer client_data, XtPointer call_data) {
         XtAddCallback(form, XmNhelpCallback, (XtCallbackProc)HelpRequestCB,
                       HELP_MOVE_DIALOG_STR);
 
-        sprintf(name_string, "%s ",
+        snprintf(name_string, 18 + MAX_PATH, "%s ",
                 ((char *)GETMESSAGE(10, 37, "Selected object:")));
         strcat(name_string, file_view_data->file_data->file_name);
         label_string = XmStringCreateLocalized(name_string);
@@ -1253,9 +1257,11 @@ void ShowLinkFileDialog(Widget w, XtPointer client_data, XtPointer call_data) {
         if (file_mgr_data->title != NULL &&
             strcmp(file_mgr_data->helpVol, DTFILE_HELP_NAME) != 0) {
                 tmpStr = GETMESSAGE(10, 46, "Link Object");
-                tempStr = (char *)XtMalloc(strlen(tmpStr) +
-                                           strlen(file_mgr_data->title) + 5);
-                sprintf(tempStr, "%s - %s", file_mgr_data->title, tmpStr);
+                int tempStr_size = strlen(tmpStr) +
+                                   strlen(file_mgr_data->title) + 5;
+                tempStr = (char *)XtMalloc(tempStr_size);
+                snprintf(tempStr, tempStr_size,
+                         "%s - %s", file_mgr_data->title, tmpStr);
         } else {
                 tmpStr = (GETMESSAGE(10, 47, "File Manager - Link Object"));
                 tempStr = XtNewString(tmpStr);
@@ -1292,7 +1298,7 @@ void ShowLinkFileDialog(Widget w, XtPointer client_data, XtPointer call_data) {
         XtAddCallback(form, XmNhelpCallback, (XtCallbackProc)HelpRequestCB,
                       HELP_LINK_DIALOG_STR);
 
-        sprintf(name_string, "%s ",
+        snprintf(name_string, 18 + MAX_PATH, "%s ",
                 ((char *)GETMESSAGE(10, 37, "Selected object:")));
         strcat(name_string, file_view_data->file_data->file_name);
         label_string = XmStringCreateLocalized(name_string);
@@ -1751,10 +1757,11 @@ static void RenameOk(Widget w, XtPointer client_data, XtPointer call_data) {
                         msg = XtNewString(
                             GetSharedMessage(NO_SPACES_ALLOWED_ERROR));
 #endif
-                sprintf(new, "%s/%s", new_dir, new_name);
+                snprintf(new, MAX_PATH, "%s/%s", new_dir, new_name);
                 break;
         case MOVE_FILE:
-                sprintf(new, "%s/%s", new_dir, call_struct->file_name);
+                snprintf(new, MAX_PATH, "%s/%s",
+                         new_dir, call_struct->file_name);
                 break;
         }
 
@@ -1857,8 +1864,8 @@ void RenameDone(XtPointer client_data, int rc) {
  *
  ************************************************************************/
 
-static Boolean GetToPath(char *to, char *new_name, char *host_in,
-                         char *dir_in) {
+static Boolean GetToPath(char *to, int to_size, char *new_name,
+                         char *host_in, char *dir_in) {
         char *ptr;
         char *host_name;
         char *directory_name;
@@ -1872,9 +1879,9 @@ static Boolean GetToPath(char *to, char *new_name, char *host_in,
                         return (False);
         } else {
                 if (strcmp(dir_in, "/") == 0)
-                        sprintf(to, "%s%s", dir_in, new_name);
+                        snprintf(to, to_size, "%s%s", dir_in, new_name);
                 else
-                        sprintf(to, "%s/%s", dir_in, new_name);
+                        snprintf(to, to_size, "%s/%s", dir_in, new_name);
 
                 if ((path = (char *)ResolveLocalPathName(host_in, to, NULL,
                                                          home_host_name,
@@ -1937,7 +1944,8 @@ static void FileTypePreview(Widget w, String new_name, XtPointer client_data,
         if (new_name[0] == '~')
                 new_name = _DtChangeTildeToHome(new_name);
 
-        if (GetToPath(whole_name, new_name, call_struct->host_name,
+        if (GetToPath(whole_name, MAX_PATH, new_name,
+                      call_struct->host_name,
                       call_struct->directory_name) == False)
                 strcpy(whole_name, " ");
 
@@ -2157,10 +2165,11 @@ void ShowMakeFileDialog(Widget w, XtPointer client_data, XtPointer call_data) {
                 if (file_mgr_data->title != NULL &&
                     strcmp(file_mgr_data->helpVol, DTFILE_HELP_NAME) != 0) {
                         tmpStr = GETMESSAGE(10, 14, "New Folder");
-                        tempStr = (char *)XtMalloc(
-                            strlen(tmpStr) + strlen(file_mgr_data->title) + 5);
-                        sprintf(tempStr, "%s - %s", file_mgr_data->title,
-                                tmpStr);
+                        int tempStr_size = strlen(tmpStr) +
+                                strlen(file_mgr_data->title) + 5;
+                        tempStr = (char *)XtMalloc(tempStr_size);
+                        snprintf(tempStr, tempStr_size,
+                                "%s - %s", file_mgr_data->title, tmpStr);
                 } else {
                         tmpStr =
                             (GETMESSAGE(10, 28, "File Manager - New Folder"));
@@ -2188,9 +2197,11 @@ void ShowMakeFileDialog(Widget w, XtPointer client_data, XtPointer call_data) {
                 if (file_mgr_data->title != NULL &&
                     strcmp(file_mgr_data->helpVol, DTFILE_HELP_NAME) != 0) {
                         tmpStr = (GETMESSAGE(10, 26, "New File"));
-                        tempStr = (char *)XtMalloc(
-                            strlen(tmpStr) + strlen(file_mgr_data->title) + 5);
-                        sprintf(tempStr, "%s - %s", file_mgr_data->title,
+                        int tempStr_size = strlen(tmpStr) +
+                                strlen(file_mgr_data->title) + 5;
+                        tempStr = (char *)XtMalloc(tempStr_size);
+                        snprintf(tempStr, tempStr_size,
+                                "%s - %s", file_mgr_data->title,
                                 tmpStr);
                 } else {
                         tmpStr =

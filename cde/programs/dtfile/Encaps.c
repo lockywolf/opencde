@@ -519,9 +519,9 @@ void _DtShowDialog(Widget parent, Widget map_parent, XtPointer top_rec,
                          applicationShellWidgetClass)) {
                 if (XtIsRealized(XtParent(dialog->dialog_widget)) == False) {
                         if (instance_data->displayed == True) {
-                                (void)sprintf(
-                                    geometry, "=%dx%d+%d+%d",
-                                    instance_data->width, instance_data->height,
+                                snprintf(geometry, 40, "=%dx%d+%d+%d",
+                                    instance_data->width,
+                                    instance_data->height,
                                     instance_data->x, instance_data->y);
 
                                 XtSetArg(args[0], XmNgeometry, geometry);
@@ -1497,28 +1497,28 @@ static void TimerEvent(Widget widget, XtIntervalId *id)
 void _DtIntToString(int fd, int *value, char *out_buf)
 
 {
-        (void)sprintf(resourceBuf, "%d", *value);
+        snprintf(resourceBuf, 20, "%d", *value);
         _DtStringToString(fd, &resourceBuf, out_buf);
 }
 
 void _DtShortToString(int fd, short *value, char *out_buf)
 
 {
-        (void)sprintf(resourceBuf, "%d", *value);
+        snprintf(resourceBuf, 20, "%d", *value);
         _DtStringToString(fd, &resourceBuf, out_buf);
 }
 
 void _DtPositionToString(int fd, Position *value, char *out_buf)
 
 {
-        (void)sprintf(resourceBuf, "%d", *value);
+        snprintf(resourceBuf, 20, "%d", *value);
         _DtStringToString(fd, &resourceBuf, out_buf);
 }
 
 void _DtDimensionToString(int fd, Dimension *value, char *out_buf)
 
 {
-        (void)sprintf(resourceBuf, "%d", *value);
+        snprintf(resourceBuf, 20, "%d", *value);
         _DtStringToString(fd, &resourceBuf, out_buf);
 }
 
@@ -1888,8 +1888,7 @@ void _DtShowBuiltDialog(Widget parent, Widget map_parent,
                          applicationShellWidgetClass)) {
                 if (XtIsRealized(XtParent(dialog->dialog_widget)) == False) {
                         if (instance_data->displayed == True) {
-                                (void)sprintf(
-                                    geometry, "=%dx%d+%d+%d",
+                                snprintf(geometry, 40, "=%dx%d+%d+%d",
                                     instance_data->width, instance_data->height,
                                     instance_data->x, instance_data->y);
 

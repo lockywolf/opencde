@@ -447,11 +447,11 @@ void RunCommand(char *command, FileMgrData *file_mgr_data,
 
                         tmpStr = GETMESSAGE(9, 6, "Action Error");
                         title = XtNewString(tmpStr);
-                        msg = (char *)XtMalloc(
-                            strlen(GETMESSAGE(30, 1, "Cannot read from %s")) +
-                            strlen(file_view_data->file_data->file_name) + 1);
-                        sprintf(msg, GETMESSAGE(30, 1, "Cannot read from %s"),
-                                file_view_data->file_data->file_name);
+                        int msg_size = strlen(GETMESSAGE(30, 1, "Cannot read from %s")) + strlen(file_view_data->file_data->file_name) + 1;
+                        msg = (char *)XtMalloc(msg_size);
+                        snprintf(msg, msg_size,
+                          GETMESSAGE(30, 1, "Cannot read from %s"),
+                          file_view_data->file_data->file_name);
                         _DtMessage(((FileMgrRec *)file_mgr_data->file_mgr_rec)
                                        ->file_window,
                                    title, msg, NULL, HelpRequestCB);
@@ -1001,10 +1001,10 @@ void ProcessBufferDropOnFolder(char *command, FileMgrData *file_mgr_data,
                 if (file_mgr_data->show_type != SINGLE_DIRECTORY &&
                     file_mgr_data->tree_root == file_view_data) {
                         /* dropped on the top level folder in the tree view */
-                        sprintf(directory, "%s",
+                        snprintf(directory, MAX_PATH, "%s",
                                 file_mgr_data->current_directory);
                 } else
-                        sprintf(directory, "%s/%s",
+                        snprintf(directory, MAX_PATH, "%s/%s",
                                 file_mgr_data->current_directory,
                                 file_view_data->file_data->file_name);
                 DtEliminateDots(directory);
@@ -1284,8 +1284,9 @@ void MoveCopyLinkHandler(Tt_message ttMsg, int opType) {
                 if (opType == MOVE_FILE) {
                         dialogTitle =
                             XtNewString(GETMESSAGE(33, 3, "Move Object Error"));
-                        sprintf(
+                        snprintf(
                             title,
+                            256,
                             GETMESSAGE(
                                 33, 6,
                                 "The location you are trying to Move to:\n\n   "
@@ -1294,8 +1295,9 @@ void MoveCopyLinkHandler(Tt_message ttMsg, int opType) {
                 } else if (opType == COPY_FILE) {
                         dialogTitle =
                             XtNewString(GETMESSAGE(33, 4, "Copy Object Error"));
-                        sprintf(
+                        snprintf(
                             title,
+                            256,
                             GETMESSAGE(
                                 33, 7,
                                 "The location you are trying to Copy to:\n\n   "
@@ -1304,8 +1306,9 @@ void MoveCopyLinkHandler(Tt_message ttMsg, int opType) {
                 } else {
                         dialogTitle =
                             XtNewString(GETMESSAGE(33, 5, "Link Object Error"));
-                        sprintf(
+                        snprintf(
                             title,
+                            256,
                             GETMESSAGE(
                                 33, 8,
                                 "The location you are trying to Link to:\n\n   "
@@ -1331,8 +1334,9 @@ void MoveCopyLinkHandler(Tt_message ttMsg, int opType) {
                 if (opType == MOVE_FILE) {
                         dialogTitle =
                             XtNewString(GETMESSAGE(33, 3, "Move Object Error"));
-                        sprintf(
+                        snprintf(
                             title,
+                            256,
                             GETMESSAGE(
                                 33, 9,
                                 "The location you are trying to Move to:\n\n   "
@@ -1341,8 +1345,9 @@ void MoveCopyLinkHandler(Tt_message ttMsg, int opType) {
                 } else if (opType == COPY_FILE) {
                         dialogTitle =
                             XtNewString(GETMESSAGE(33, 4, "Copy Object Error"));
-                        sprintf(
+                        snprintf(
                             title,
+                            256,
                             GETMESSAGE(
                                 33, 10,
                                 "The location you are trying to Copy to:\n\n   "
@@ -1351,8 +1356,9 @@ void MoveCopyLinkHandler(Tt_message ttMsg, int opType) {
                 } else {
                         dialogTitle =
                             XtNewString(GETMESSAGE(33, 5, "Link Object Error"));
-                        sprintf(
+                        snprintf(
                             title,
+                            256,
                             GETMESSAGE(
                                 33, 11,
                                 "The location you are trying to Link to:\n\n   "
@@ -1381,8 +1387,9 @@ void MoveCopyLinkHandler(Tt_message ttMsg, int opType) {
                                 dialogTitle = XtNewString(
                                     GETMESSAGE(33, 3, "Move Object Error"));
                                 if (file_count == 1)
-                                        sprintf(
+                                        snprintf(
                                             title,
+                                            256,
                                             GETMESSAGE(33, 12,
                                                        "The object you are "
                                                        "trying to Move:\n\n   "
@@ -1390,7 +1397,8 @@ void MoveCopyLinkHandler(Tt_message ttMsg, int opType) {
                                                        "in the file system."),
                                             file_set[i]);
                                 else
-                                        sprintf(title,
+                                        snprintf(title,
+                                                256,
                                                 GETMESSAGE(
                                                     33, 13,
                                                     "One of the objects you "
@@ -1403,8 +1411,9 @@ void MoveCopyLinkHandler(Tt_message ttMsg, int opType) {
                                 dialogTitle = XtNewString(
                                     GETMESSAGE(33, 4, "Copy Object Error"));
                                 if (file_count == 1)
-                                        sprintf(
+                                        snprintf(
                                             title,
+                                            256,
                                             GETMESSAGE(33, 14,
                                                        "The object you are "
                                                        "trying to Copy:\n\n   "
@@ -1412,7 +1421,8 @@ void MoveCopyLinkHandler(Tt_message ttMsg, int opType) {
                                                        "in the file system."),
                                             file_set[i]);
                                 else
-                                        sprintf(title,
+                                        snprintf(title,
+                                                256,
                                                 GETMESSAGE(
                                                     33, 15,
                                                     "One of the objects you "
@@ -1425,8 +1435,9 @@ void MoveCopyLinkHandler(Tt_message ttMsg, int opType) {
                                 dialogTitle = XtNewString(
                                     GETMESSAGE(33, 5, "Link Object Error"));
                                 if (file_count == 1)
-                                        sprintf(
+                                        snprintf(
                                             title,
+                                            256,
                                             GETMESSAGE(33, 16,
                                                        "The object you are "
                                                        "trying to Link:\n\n   "
@@ -1434,7 +1445,8 @@ void MoveCopyLinkHandler(Tt_message ttMsg, int opType) {
                                                        "in the file system."),
                                             file_set[i]);
                                 else
-                                        sprintf(title,
+                                        snprintf(title,
+                                                256,
                                                 GETMESSAGE(
                                                     33, 17,
                                                     "One of the objects you "

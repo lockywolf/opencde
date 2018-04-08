@@ -144,9 +144,9 @@ String CvtStringListToString(String *list, int count) {
                         }
 
                         if (i == 0)
-                                (void)sprintf(string + offset, "%s", list[i]);
+                                snprintf(string + offset, stringSize - offset, "%s", list[i]);
                         else
-                                (void)sprintf(string + offset, ", %s", list[i]);
+                                snprintf(string + offset, stringSize - offset, ", %s", list[i]);
                         offset = strlen(string);
                 }
         }
@@ -180,19 +180,20 @@ void VFTextChangeSpace(Widget text, XEvent *event, XtPointer params,
         path[0] = '\0';
 
         if (currentDirectoryText == NULL) {
-                strcpy(path, value);
+                strlcpy(path, value, MAX_PATH);
         } else {
                 if (strcmp(currentDirectoryText, "/") == 0)
-                        sprintf(path, "%s%s", currentDirectoryText, value);
+                        snprintf(path, MAX_PATH, "%s%s", currentDirectoryText, value);
                 else
-                        sprintf(path, "%s/%s", currentDirectoryText, value);
+                        snprintf(path, MAX_PATH, "%s/%s", currentDirectoryText, value);
         }
 
         /* add a '*' at the end of the path so the shellscan will no to return
          * all possible matches.
          */
-        test = (char *)XtMalloc(strlen(path) + strlen("*") + 1);
-        sprintf(test, "%s%s", path, "*");
+        int test_size = strlen(path) + strlen("*") + 1;
+        test = (char *)XtMalloc(test_size);
+        snprintf(test, test_size, "%s%s", path, "*");
 
         /* do a shellscan to get all possible matches to the path */
         temp = (char **)shellscan(test, &val, 0);

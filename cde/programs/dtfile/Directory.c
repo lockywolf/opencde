@@ -313,9 +313,11 @@ static void InitializePositionFileName(void) {
         if (positionFileName == NULL) {
 
                 pwInfo = getpwuid(getuid());
-                positionFileName = XtMalloc(strlen(pwInfo->pw_name) +
-                                            strlen(POSITION_FILE_PREFIX) + 1);
-                sprintf(positionFileName, "%s%s", POSITION_FILE_PREFIX,
+                int size = strlen(pwInfo->pw_name) +
+                           strlen(POSITION_FILE_PREFIX) + 1;
+                positionFileName = XtMalloc(size);
+                snprintf(positionFileName, size, "%s%s",
+                        POSITION_FILE_PREFIX,
                         pwInfo->pw_name);
         }
 }
@@ -1468,10 +1470,12 @@ static int ReadDirectoryProcess(int pipe_fd, Directory *directory,
 
         /* construct full name of the position info file */
         if (strcmp(full_directory_name, "/") != 0)
-                sprintf(file_name, "%s/%s", full_directory_name,
+                snprintf(file_name, MAX_PATH, "%s/%s",
+                        full_directory_name,
                         positionFileName);
         else
-                sprintf(file_name, "%s%s", full_directory_name,
+                snprintf(file_name, MAX_PATH, "%s%s",
+                        full_directory_name,
                         positionFileName);
 
         /* read the count from the position info file */
@@ -1768,10 +1772,13 @@ static int UpdateAllProcess(int pipe_fd, Directory *directory,
                                 char *tname;
                                 struct stat sbuf;
 
+                                int tname_size = strlen(full_directory_name) +
+                                                 strlen(dp->d_name) + 2;
+
                                 /* check modified times */
-                                tname = XtMalloc(strlen(full_directory_name) +
-                                                 strlen(dp->d_name) + 2);
-                                sprintf(tname, "%s/%s", full_directory_name,
+                                tname = XtMalloc(tname_size);
+                                snprintf(tname, tname_size, "%s/%s",
+                                        full_directory_name,
                                         dp->d_name);
                                 if ((lstat(tname, &sbuf) >= 0) &&
                                     sbuf.st_mtime != old_data->stat.st_mtime)
@@ -3179,7 +3186,8 @@ char *GetLongName(FileData *file_data) {
         char oth_read_priv, oth_write_priv, oth_exec_priv;
 
         /*  Generate the long list name.  */
-        long_name = (char *)XtMalloc(sizeof(char) * (MAX_PATH * 3));
+        int long_name_size = sizeof(char) * (MAX_PATH * 3);
+        long_name = (char *)XtMalloc(long_name_size);
         long_name[0] = '\0';
 
         /* Initially, assume their is not a soft link */
@@ -3205,7 +3213,8 @@ char *GetLongName(FileData *file_data) {
                         if (user_data)
                                 strcpy(user_name, user_data->pw_name);
                         else
-                                sprintf(user_name, "%ld", (long)user_id);
+                                snprintf(user_name, 20, "%ld",
+                                        (long)user_id);
                 }
         } else {
                 char error_msg[1024];
@@ -3232,7 +3241,8 @@ char *GetLongName(FileData *file_data) {
                 error_msg[msg_len - 1] = '\0';
                 strcat(error_msg, ")");
 
-                sprintf(long_name, "%-28.28s  %s  %9d %s", file_data->file_name,
+                snprintf(long_name, long_name_size,
+                        "%-28.28s  %s  %9d %s", file_data->file_name,
                         time_string, 0, error_msg);
 
                 return (long_name);
@@ -3329,10 +3339,11 @@ char *GetLongName(FileData *file_data) {
                         if (len > NAME_PRECISION) {
                                 int i;
                                 char name[NAME_PRECISION];
-                                sprintf(name, "%-20.20s%s",
+                                snprintf(name, NAME_PRECISION,
+                                        "%-20.20s%s",
                                         file_data->file_name, ELLIPSIS);
 
-                                sprintf(long_name,
+                                snprintf(long_name, long_name_size,
                                         "%-28.28s  %s  %9ld  "
                                         "%c%c%c%c%c%c%c%c%c%c  %-9s  %-9s  %s",
                                         name, time_string,
@@ -3344,7 +3355,7 @@ char *GetLongName(FileData *file_data) {
                                         oth_write_priv, oth_exec_priv,
                                         user_name, group_name, link_path);
                         } else {
-                                sprintf(long_name,
+                                snprintf(long_name, long_name_size,
                                         "%-28.28s  %s  %9ld  "
                                         "%c%c%c%c%c%c%c%c%c%c  %-9s  %-9s  %s",
                                         file_data->file_name, time_string,
@@ -3360,13 +3371,13 @@ char *GetLongName(FileData *file_data) {
                 } else {
                         /* MULTIBYTE
                          *
-                         * sprintf() counts width in bytes (not characters),
+                         * snprintf() counts width in bytes (not characters),
                          * moreover, it fails (returns -1 and produces no
                          * output) if input string is not a valid multibyte
                          * string (at least the glibc version), but we can't
                          * fail to display a file because it's name has some
                          * invalid characters). So it looks that instead of
-                         * using sprintf() we have to format the file name part
+                         * using snprintf() we have to format the file name part
                          * manually.
                          */
                         int len = DtCharCount(file_data->file_name);
@@ -3412,8 +3423,9 @@ char *GetLongName(FileData *file_data) {
                                         long_name[byte_len++] = ' ';
                                 }
                         }
-                        sprintf(
+                        snprintf(
                             long_name + byte_len,
+                            long_name_size - byte_len,
                             "  %s  %9ld  %c%c%c%c%c%c%c%c%c%c  %-9s  %-9s  %s",
                             time_string, (long)file_data->stat.st_size,
                             permission, usr_read_priv, usr_write_priv,
