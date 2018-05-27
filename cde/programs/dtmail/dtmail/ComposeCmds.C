@@ -26,7 +26,7 @@
  *	$TOG: ComposeCmds.C /main/11 1998/10/21 17:23:13 mgreess $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -107,12 +107,12 @@ ComposeFamily::~ComposeFamily( void )
 // 2. Indent string can be used for "include" and "forward".
 void
 ComposeFamily::Display_entire_msg(DtMailMessageHandle msgno,
-				  SendMsgDialog *compose, 
-				  char *format 
+				  SendMsgDialog *compose,
+				  char *format
 				  )
 {
     DtMailEnv error;
-    
+
     int num_bodyParts;
     DtMail::MailBox *mbox = _menuwindow->mailbox();
     DtMail::Message *msg = mbox->getMessage(error, msgno);
@@ -121,10 +121,10 @@ ComposeFamily::Display_entire_msg(DtMailMessageHandle msgno,
     DtMailBuffer tmpBuffer;
     void *buffer = NULL;
     unsigned long size = 0;
-    
+
     Editor::InsertFormat ins_format = Editor::IF_NONE;
     Editor::BracketFormat brackets = Editor::BF_NONE;
-    
+
     // Do not need to wrap "include", "forward", and "indent" with
     // catgets().
     if ( strcmp(format, "include") == 0 ) {
@@ -136,39 +136,39 @@ ComposeFamily::Display_entire_msg(DtMailMessageHandle msgno,
     } else if ( strcmp(format, "indent") == 0 ) {
 	ins_format = Editor::IF_INDENTED;
     }
-    
+
     // Get the editor to display the body of message with the appropriate
     // insert/bracket formatting.
-    // We only include the first body part of the message. Attachments, 
+    // We only include the first body part of the message. Attachments,
     // etc. are "FORWARD"-ed but not "INCLUDE"-ed
-    
+
     char * status_string;
     DtMailBoolean firstBPHandled =
 	compose->get_editor()->textEditor()->set_message(
-					 msg, 
-					 &status_string, 
+					 msg,
+					 &status_string,
 					 Editor::HF_ABBREV,
-					 ins_format, 
+					 ins_format,
 					 brackets);
 
     // Now need to handle the unhandled body parts of the message.
-    
+
     num_bodyParts = msg->getBodyCount(error);
     if (error.isSet()) {
 	// do something
     }
-    
+
     if (strcmp(format, "forward") == 0) {
 	// If the message has attachments, then let the attach pane
 	// handle attachments but not the first bodyPart (which has
 	// already been handled here).
-	
+
 	if ((num_bodyParts > 1) || (!firstBPHandled)) {
 
 	    tmpBP = msg->getFirstBodyPart(error);
 	    if (firstBPHandled) {
 		//  The first bodyPart has already been handled.
-		// The others, beginning from the second, need to be parsed 
+		// The others, beginning from the second, need to be parsed
 		// and put into the attachPane.
 
 		compose->setInclMsgHnd(msg, TRUE);
@@ -179,10 +179,10 @@ ComposeFamily::Display_entire_msg(DtMailMessageHandle msgno,
 		// It may not have been of type text.
 		// The attachment pane needs to handle all the bodyParts
 		// beginning with the first.
-	    
+
 		compose->setInclMsgHnd(msg, FALSE);
 	    }
-	    
+
 	    char *name;
 	    while (tmpBP != NULL) {
 		tmpBP->getContents(
@@ -211,33 +211,33 @@ ComposeFamily::Display_entire_msg(DtMailMessageHandle msgno,
 		}
 	    }
 	    if (error.isSet()) {
-		
+
 		// do something
 	    }
-	
+
 	    // Need to call this after calling parseAttachments().
 
 	    compose->get_editor()->manageAttachArea();
-	
+
 	    // This message has attachment and is being included/forwarded,
-	    // so need to fill the Compose Message Handle with attachment 
+	    // so need to fill the Compose Message Handle with attachment
 	    // BodyParts.
 	    // See function for further details.
 
 	    // compose->updateMsgHndAtt();
 	}
-    } 
+    }
     else
     {
 	// If the message has attachments, then let the attach pane
 	// handle attachments but not the first bodyPart (which has
 	// already been handled here).
-	
+
 	if ((num_bodyParts > 1) || (!firstBPHandled))
 	{
 	    char	*att;
 	    Editor	*editor = compose->get_editor()->textEditor();
-	    
+
 	    att = GETMSG(
 			DT_catd, 1, 255,
 			"------------------ Attachments ------------------\n");
@@ -245,7 +245,7 @@ ComposeFamily::Display_entire_msg(DtMailMessageHandle msgno,
 	    tmpBP = msg->getFirstBodyPart(error);
 	    if (firstBPHandled)
 	      tmpBP = msg->getNextBodyPart(error, tmpBP);
-	    
+
 	    editor->append_to_contents(att, strlen(att));
 	    while (tmpBP != NULL)
 	    {
@@ -256,8 +256,8 @@ ComposeFamily::Display_entire_msg(DtMailMessageHandle msgno,
 		}
 	    }
 	}
-    } 
-    
+    }
+
     // Leave it up to check point routine for update or do it now???
     compose->updateMsgHnd();
 }
@@ -330,7 +330,7 @@ ComposeFamily::valueToAddrString(DtMailValueSeq & value)
 
 
 // Container menu "Compose==>New Message"
-ComposeCmd::ComposeCmd( 
+ComposeCmd::ComposeCmd(
 			char *name,
 			char *label,
 			int active,
@@ -346,7 +346,7 @@ ComposeCmd::doit()
     SendMsgDialog * newsend = theCompose.getWin();
     if (newsend == NULL) {
 	DtMailGenDialog * dialog = _parent->genDialog();
-	
+
 	dialog->setToErrorDialog(GETMSG(DT_catd, 1, 203, "Mailer"),
 				 GETMSG(DT_catd, 1, 204, "Unable to create a compose window."));
 	char * helpId = DTMAILHELPNOCOMPOSE;
@@ -358,11 +358,11 @@ ComposeCmd::doit()
 
 // Container menu "Compose==>New, Include All" and "Compose==>Forward Message"
 // The last parameter is a switch for "include" or "forward" format.
-ForwardCmd::ForwardCmd( 
+ForwardCmd::ForwardCmd(
 			char *name,
 			char *label,
 			int active,
-			RoamMenuWindow *window, 
+			RoamMenuWindow *window,
 			int forward
 			) : ComposeFamily(name, label, active, window)
 {
@@ -379,12 +379,12 @@ ForwardCmd::doit()
     FORCE_SEGV_DECL(MsgHndArray, msgList);
     FORCE_SEGV_DECL(MsgStruct, tmpMS);
     DtMailMessageHandle msgno;
-    
+
     // Get a Compose window.
     SendMsgDialog *newsend = theCompose.getWin();
     if ( newsend == NULL ) {
 	DtMailGenDialog * dialog = _parent->genDialog();
-	
+
 	dialog->setToErrorDialog(GETMSG(DT_catd, 1, 205, "Mailer"),
 				 GETMSG(DT_catd, 1, 206, "Unable to create a compose window."));
 	char * helpId = DTMAILHELPNOCOMPOSE;
@@ -401,7 +401,7 @@ ForwardCmd::doit()
     DtMail::Envelope * env;
     DtMailValueSeq	value;
     DtMailEnv error;
-    
+
     // For each selected message, put it in the Compose window.
     if ( msgList = _menuwindow->list()->selected() ) {
 	for ( int k = 0;  k < msgList->length();  k++ ) {
@@ -430,12 +430,12 @@ ForwardCmd::doit()
 // Container menu "Compose==>Reply to Semder" and
 // "Compose==>Reply to Sender, Include"
 // The last parameter is a switch for including the selected message or not.
-ReplyCmd::ReplyCmd ( 
-		     char *name, 
+ReplyCmd::ReplyCmd (
+		     char *name,
 		     char *label,
-		     int active, 
-		     RoamMenuWindow *window, 
-		     int include 
+		     int active,
+		     RoamMenuWindow *window,
+		     int include
 		     ) : ComposeFamily ( name, label, active, window )
 {
     _include = include;
@@ -453,10 +453,10 @@ ReplyCmd::doit()
     FORCE_SEGV_DECL(char, cc);
     DtMailEnv error;
     DtMail::MailBox * mbox = _menuwindow->mailbox();
-    
+
     // Initialize the error.
     error.clear();
-    
+
     if (msgList = _menuwindow->list()->selected())
     {
 	for ( int i=0; i < msgList->length(); i++ ) {
@@ -465,19 +465,19 @@ ReplyCmd::doit()
 	    SendMsgDialog *newsend = theCompose.getWin();
 	    if ( newsend == NULL ) {
 		DtMailGenDialog * dialog = _parent->genDialog();
-		
+
 		dialog->setToErrorDialog(GETMSG(DT_catd, 1, 207, "Mailer"),
 					 GETMSG(DT_catd, 1, 208, "Unable to create a compose window."));
 		char * helpId = DTMAILHELPNOCOMPOSE;
 		int answer = dialog->post_and_return(helpId);
 	    }
 	    XmUpdateDisplay( newsend->baseWidget() );
-	    
+
 	    DtMail::Message * msg = mbox->getMessage(error, msgno);
 	    DtMail::Envelope * env = msg->getEnvelope(error);
-	    
+
 	    DtMailValueSeq	value;
-	    
+
 	    env->getHeader(error, DtMailMessageSender, DTM_TRUE, value);
 	    if (error.isSet()) {
 		newsend->setHeader("To", "nobody@nowhere");
@@ -487,7 +487,7 @@ ReplyCmd::doit()
 		newsend->setHeader("To", addr_str);
 		delete [] addr_str;
 	    }
-	    
+
 	    value.clear();
 	    env->getHeader(error, DtMailMessageSubject, DTM_TRUE, value);
 	    if (error.isSet()) {
@@ -508,7 +508,7 @@ ReplyCmd::doit()
 		newsend->setHeader("Subject", subject);
 	    }
 	    else {
-		// Get the BE store of header.  It may contain newlines or 
+		// Get the BE store of header.  It may contain newlines or
 		// tab chars which can munge the scrolling list's display!
 
 		const char * orig = *(value[0]);
@@ -519,14 +519,14 @@ ReplyCmd::doit()
 
 		// Check if BE store contains the funky chars.
 
-		for (fc = 0, orig_length = strlen(orig), 
-		      tmp_subj = (char *) orig; 
-		    fc < orig_length; 
+		for (fc = 0, orig_length = strlen(orig),
+		      tmp_subj = (char *) orig;
+		    fc < orig_length;
 		    fc++, tmp_subj++) {
 
 		    char c = *tmp_subj;
-		    if ((c == '\n') 
-		     || (c == '\t') 
+		    if ((c == '\n')
+		     || (c == '\t')
 		     || (c == '\r')) {
 
 			break;
@@ -534,19 +534,19 @@ ReplyCmd::doit()
 		}
 
 		subject = new char[fc+6];
-		
+
 		if (strncasecmp(orig, "Re:", 3)) {
 		    strcpy(subject, "Re: ");
 		}
 		else {
 		    *subject = 0;
 		}
-		
+
 		strncat((char *)subject, orig, fc);
 
 		newsend->setHeader("Subject", subject);
 	    }
-	    
+
             newsend->setTitle(subject);
             newsend->setIconTitle(subject);
 	    delete [] subject;
@@ -565,12 +565,12 @@ ReplyCmd::doit()
 
 // Container menu "Compose==>Reply to All" and "Compose==>Reply to All, Include"
 // The last parameter is a switch for including the selected message or not.
-ReplyAllCmd::ReplyAllCmd( 
+ReplyAllCmd::ReplyAllCmd(
 			  char *name,
 			  char *label,
 			  int active,
-			  RoamMenuWindow *window, 
-			  int include 
+			  RoamMenuWindow *window,
+			  int include
 			  ) : ComposeFamily( name, label, active, window )
 {
     _include = include;
@@ -597,18 +597,18 @@ ReplyAllCmd::doit()
 
     // Initialize the mail_error.
     error.clear();
-    
-    
+
+
     if ( msgList = _menuwindow->list()->selected() )
 	for ( int k = 0;  k < msgList->length();  k++ ) {
 	    DtMailValueSeq	value ;
-            
+
 	    tmpMS = msgList->at(k);
 	    msgno = tmpMS->message_handle;
 	    newsend = theCompose.getWin();
 	    if ( newsend == NULL ) {
 		dialog = _parent->genDialog();
-		
+
 		dialog->setToErrorDialog(GETMSG(DT_catd, 1, 209, "Mailer"),
 					 GETMSG(DT_catd, 1, 210, "Unable to create a compose window."));
 		char * helpId = DTMAILHELPNOCOMPOSE;
@@ -616,17 +616,17 @@ ReplyAllCmd::doit()
 	    }
 	    msg = mbox->getMessage(error, msgno);
 	    env = msg->getEnvelope(error);
-	    
+
 	    env->getHeader(
-			   error, 
+			   error,
 			   DtMailMessageToReply,
-			   DTM_TRUE, 
+			   DTM_TRUE,
 			   value);
-	    
+
 	    env->getHeader(
-			   error, 
-			   DtMailMessageSender, 
-			   DTM_TRUE, 
+			   error,
+			   DtMailMessageSender,
+			   DTM_TRUE,
 			   value);
 
 	    char * addr_str = valueToAddrString(value);
@@ -634,9 +634,9 @@ ReplyAllCmd::doit()
 	    delete [] addr_str;
 	    value.clear();
 	    env->getHeader(
-			   error, 
-			   DtMailMessageSubject, 
-			   DTM_TRUE, 
+			   error,
+			   DtMailMessageSubject,
+			   DTM_TRUE,
 			   value);
 	    if ( error.isSet() ) {
 		subject = new char[200];
@@ -655,7 +655,7 @@ ReplyAllCmd::doit()
 		}
 		newsend->setHeader("Subject", subject);
 	    } else {
-		// Get the BE store of header.  It may contain newlines or 
+		// Get the BE store of header.  It may contain newlines or
 		// tab chars which can munge the scrolling list's display!
 
 		const char * orig = *(value[0]);
@@ -667,14 +667,14 @@ ReplyAllCmd::doit()
 
 		// Check if BE store contains the funky chars.
 
-		for (fc = 0, orig_length = strlen(orig), 
-		      tmp_subj = (char *)orig; 
-		     fc < orig_length; 
+		for (fc = 0, orig_length = strlen(orig),
+		      tmp_subj = (char *)orig;
+		     fc < orig_length;
 		     fc++, tmp_subj++) {
 
 		    char c = *tmp_subj;
-		    if ((c == '\n') 
-		     || (c == '\t') 
+		    if ((c == '\n')
+		     || (c == '\t')
 		     || (c == '\r')) {
 
 			break;
@@ -682,26 +682,26 @@ ReplyAllCmd::doit()
 		}
 
 		subject = new char[fc+6];
-		
+
 		if (strncasecmp(orig, "Re:", 3)) {
 		    strcpy(subject, "Re: ");
 		}
 		else {
 		    *subject = 0;
 		}
-		
+
 		strncat((char *)subject, orig, fc);
 
 		newsend->setHeader("Subject", subject);
 	    }
 	    value.clear();
 	    env->getHeader(
-			   error, 
-			   DtMailMessageCcReply, 
-			   DTM_TRUE, 
+			   error,
+			   DtMailMessageCcReply,
+			   DTM_TRUE,
 			   value);
 	    if (!error.isSet()) {
-		// Strip out newlines from the cc line.  They *may* be 
+		// Strip out newlines from the cc line.  They *may* be
 		// present.
 		currentCcValue = valueToAddrString(value);
 
@@ -784,19 +784,12 @@ TemplateCmd::doit()
     }
 
     int page_size = (int)sysconf(_SC_PAGESIZE);
-    size_t map_size = (size_t) (buf.st_size + 
+    size_t map_size = (size_t) (buf.st_size +
 				(page_size - (buf.st_size % page_size)));
 
     int free_buf = 0;
     mbuf.size = buf.st_size;
-#ifdef __osf__
-    // This version of mmap does NOT allow requested length to be
-    // greater than the file size ...  in contradiction to the
-    // documentation (don't round up).
-    mbuf.buffer = mmap(0, buf.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-#else
     mbuf.buffer = mmap(0, map_size, PROT_READ, MAP_PRIVATE, fd, 0);
-#endif
     if (mbuf.buffer == (char *)-1) {
 	free_buf = 1;
 	mbuf.buffer = new char[mbuf.size];

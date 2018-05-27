@@ -43,7 +43,7 @@
 
 #include <stdlib.h>
 
-#if !defined(__osf__) && !defined(USL) && !defined(linux) && \
+#if !defined(USL) && !defined(linux) && \
     !defined(CSRG_BASED) && !defined(sun)
 #include <osfcn.h>
 #endif
@@ -176,7 +176,7 @@ int read();
 /* default declaration of generated scanner - a define so the user can
  * easily add parameters
  */
-#define nodedata_DECL int nodedatalex nodedata_PROTO(( void )) 
+#define nodedata_DECL int nodedatalex nodedata_PROTO(( void ))
 
 /* code executed at the end of each rule */
 #define nodedata_BREAK break;
@@ -191,10 +191,10 @@ typedef struct nodedata_buffer_state *nodedata_BUFFER_STATE;
 
 #define nodedata_CHAR unsigned char
 #define INITIAL 0
-  
+
 /* exported interfaces... */
 #include "NodeData.h"
-  
+
 /* imported interfaces... */
 #include <iostream>
 #include <sstream>
@@ -215,7 +215,7 @@ using namespace std;
 #include "DataBase.h"
 #include "BookCaseDB.h"
 #include "GraphicsTask.h"
-#include "Dispatch.h"  
+#include "Dispatch.h"
 #include "api/utility.h"
 
 // Debugging macro
@@ -233,7 +233,7 @@ static int my_input ( char *, int );
 
 #undef nodedata_INPUT
 #define nodedata_INPUT(b, r, ms ) ( r=my_input( ( char *)b,ms) )
-  
+
 static char *myinput;
 static char *myinputptr;
 static char *myinputlim;
@@ -2926,7 +2926,7 @@ struct nodedata_buffer_state
     nodedata_CHAR *nodedata_buf_pos;	/* current position in input buffer */
 
     /* size of input buffer in bytes, not including room for EOB characters */
-    int nodedata_buf_size;	
+    int nodedata_buf_size;
 
     /* number of characters read into nodedata_ch_buf, not including EOB characters */
     int nodedata_n_chars;
@@ -3136,8 +3136,8 @@ case 2:
 			    (OL_Data *)CurrentNodeData->subtask( atoi(str) );
 			  if ( !idref->ContentIsEmpty() ) {
 			   const char *idrefval = idref->content();
-			   
-			   FlexBuffer *db_buf =  CurrentNodeData->DbBuffer; 
+
+			   FlexBuffer *db_buf =  CurrentNodeData->DbBuffer;
 
 			   db_buf->writeStr("<#OL-XREF>");
 			   replace_entity ( db_buf, idrefval );
@@ -3195,8 +3195,8 @@ case 8:
 			   const char *idrefval = idref->content();
 			   int line_num = idref->line_no();
 			   const char *filename = idref->filename();
-			   
-			   FlexBuffer *db_buf =  CurrentNodeData->DbBuffer; 
+
+			   FlexBuffer *db_buf =  CurrentNodeData->DbBuffer;
 
 			   db_buf->writeStr("<#OL-IDREF>");
 			   db_buf->writeStr(form("<#L>%d</#L>", line_num));
@@ -3227,7 +3227,7 @@ case 11:
 			       graphic_id->content();
 
 			     CurrentNodeData->DbBuffer->writeStr("<#GRAPHIC>");
-			     replace_entity (CurrentNodeData->DbBuffer, 
+			     replace_entity (CurrentNodeData->DbBuffer,
 					     graphic_id_val);
 			     CurrentNodeData->DbBuffer->writeStr("</#GRAPHIC>");
 			   }
@@ -3372,9 +3372,9 @@ case nodedata_STATE_EOF(XREF):
  *
  * synopsis
  *     int nodedata_get_next_buffer();
- *     
+ *
  * returns a code representing an action
- *     EOB_ACT_LAST_MATCH - 
+ *     EOB_ACT_LAST_MATCH -
  *     EOB_ACT_CONTINUE_SCAN - continue scanning from current position
  *     EOB_ACT_END_OF_FILE - end of file
  */
@@ -3787,7 +3787,7 @@ my_input ( char *buf, int max_size )
     myinputptr += n;
   }
   return n;
-}			      
+}
 
 //----------------------------------------------------------------------
 void ReplaceIdIdRef( NodeData *nd , char *buffer, int sz )

@@ -53,7 +53,7 @@
 #endif
 #include <errno.h>
 
-#if defined(sun) || defined(_AIX) || defined(__osf__) || defined(USL) || defined(__uxp__) || defined(linux) || defined(CSRG_BASED)
+#if defined(sun) || defined(_AIX) || defined(USL) || defined(__uxp__) || defined(linux) || defined(CSRG_BASED)
 #define UID_NO_CHANGE ((uid_t) -1)
 #define GID_NO_CHANGE ((gid_t) -1)
 #endif
@@ -76,8 +76,6 @@ UnixEnvironment::UnixEnvironment()
 	manpath = "/usr/share/man:/usr/lpp/info";
 #elif defined(hpux)
 	manpath = "/usr/man:/usr/contrib/man:/usr/local/man";
-#elif defined(__osf__)
-        manpath = "/usr/share/%L/man:/usr/share/man:/usr/local/man";
 #elif defined(linux)
         manpath = "/usr/share/man/%L:/usr/share/man:/usr/contrib/man/%L:/usr/contrib/man:/usr/local/man/%L:/usr/local/man";
 #elif defined(__OpenBSD__)
@@ -105,7 +103,7 @@ UnixEnvironment::UnixEnvironment()
     }
     else
         shell_ = new KShell();
-        
+
     uid_ = getuid();
     gid_ = getgid();
 }
@@ -116,7 +114,7 @@ UnixEnvironment::~UnixEnvironment()
 	delete shell_;
 }
 
-int UnixEnvironment::FileExists 
+int UnixEnvironment::FileExists
 	(
 	const CString & filename
 	) const
@@ -129,7 +127,7 @@ struct stat file;
     return 0;
 }
 
-void UnixEnvironment::MakeDirectory 
+void UnixEnvironment::MakeDirectory
 	(
 	const CString & dirname,
 	mode_t          permissions
@@ -138,10 +136,10 @@ void UnixEnvironment::MakeDirectory
     if (mkdir (dirname.data(), permissions) == -1) {
 	CString errorStr("MakeDirectory: " + dirname);
 	perror(errorStr.data());
-    }	
+    }
 }
 
-CString UnixEnvironment::getEnvironmentVariable 
+CString UnixEnvironment::getEnvironmentVariable
 	(
 	const char * envvar
 	)
@@ -153,7 +151,7 @@ CString UnixEnvironment::getEnvironmentVariable
   return CString(value);
 }
 
-int UnixEnvironment::isDirectory 
+int UnixEnvironment::isDirectory
 	(
 	const CString & directory
 	)
@@ -274,7 +272,7 @@ void UnixEnvironment::changeOwnerGroup
     }
 }
 
-void UnixEnvironment::removeDirectory 
+void UnixEnvironment::removeDirectory
 	(
 	const CString & dirspec
 	)
@@ -292,7 +290,7 @@ void UnixEnvironment::removeDirectory
     }
 }
 
-void UnixEnvironment::removeFiles 
+void UnixEnvironment::removeFiles
 	(
 	const CString & dirspec,
 	const CString & filespec
@@ -326,7 +324,7 @@ char buffer[100];
 #endif
 }
 
-void UnixEnvironment::removeFile 
+void UnixEnvironment::removeFile
 	(
 	const CString & filespec
 	)
@@ -341,7 +339,7 @@ void UnixEnvironment::removeFile
     }
 }
 
-void UnixEnvironment::removeDeadLinks 
+void UnixEnvironment::removeDeadLinks
 	(
 	const CString & dirspec
 	)
@@ -354,6 +352,6 @@ void UnixEnvironment::removeDeadLinks
 		!isDirectory(dirspec + "/" + direntry->d_name))
 	        removeFile(dirspec + "/" + direntry->d_name);
     }
-    closedir(dir);	    
+    closedir(dir);
 }
 

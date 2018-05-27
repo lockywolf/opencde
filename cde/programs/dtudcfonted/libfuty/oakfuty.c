@@ -37,13 +37,7 @@
 #if !defined(SYSV)
 #include <sys/resource.h>
 #endif
-#ifdef __osf__
-#define _BSD
-#endif
 #include <sys/wait.h>
-#ifdef __osf__
-#undef _BSD
-#endif
 #else
 #include <sys/mman.h>
 #include <wait.h>
@@ -1165,7 +1159,7 @@ ErrMsgTable_AndExit(
     char	*gpf_in,
     char	*gpf_out,
     char	*bdf_in,
-    char	*prog_name 
+    char	*prog_name
 )
 #else
     ErrMsgTable_AndExit(er_no, snf_in, snf_out, gpf_in, gpf_out, bdf_in,
@@ -1275,7 +1269,7 @@ char *prog_name;
 
 void
 #if NeedFunctionPrototypes
-fatal_err_msg( 
+fatal_err_msg(
     int		er_no,
     char	*prog_name
 )
@@ -1340,7 +1334,7 @@ void ChatchSig() { sig_flg = 1; }
 
 void
 #if NeedFunctionPrototypes
-Put_File_Create_Err_Msg( 
+Put_File_Create_Err_Msg(
     int		msg_level,
     char	*org_name,
     char	*tmp_name,
@@ -1390,7 +1384,7 @@ char *com;
 
 int
 #if NeedFunctionPrototypes
-Make_NewFefFile( 
+Make_NewFefFile(
     char	*org_name,
     char	*tmp_name,
     mode_t	mode,
@@ -1471,7 +1465,7 @@ char *com;
 
 int
 #if NeedFunctionPrototypes
-Unlink_Tmpfile( 
+Unlink_Tmpfile(
     char	*file,
     char	*com
 )
@@ -1493,7 +1487,7 @@ char *com;
 
 int
 #if NeedFunctionPrototypes
-Chmod_File ( 
+Chmod_File (
     char	*fname,
     mode_t	mode,
     char	*com
@@ -1519,7 +1513,7 @@ char *com;
 
 int
 #if NeedFunctionPrototypes
-Chown_File ( 
+Chown_File (
     char	*fname,
     uid_t	owner,
     gid_t	group,
@@ -1637,11 +1631,11 @@ char *cmd;
 
 int
 #if NeedFunctionPrototypes
-SetCmdPath( 
+SetCmdPath(
     char	*com ,
     char	**path ,
     char	*dflt_path ,
-    char	*cmd 
+    char	*cmd
 )
 #else
     SetCmdPath(com, path, dflt_path, cmd) char *com;

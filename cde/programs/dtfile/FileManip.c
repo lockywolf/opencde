@@ -88,12 +88,6 @@
 #include <ufs/fs.h>
 #endif
 #else
-#ifdef __hp_osf
-#include <unistd.h>
-#include <limits.h>
-#include <ufs/fs.h>
-#include <sys/access.h>
-#else
 #ifdef __ultrix
 #include <unistd.h>
 #include <limits.h>
@@ -105,12 +99,7 @@
 #include <unistd.h>
 #endif
 #endif /* __ultrix */
-#endif /* __hp_osf */
 #endif /* sun */
-
-#ifdef __osf__
-#include <ufs/fs.h>
-#endif
 
 #include <Xm/Xm.h>
 
@@ -149,9 +138,9 @@ int CheckAccess(char *fname, int what) {
         uid_t save_ruid;
         gid_t save_rgid;
 
-#if defined(__hp_osf) || defined(__ultrix)
+#if defined(__ultrix)
         /*--------------------------------------------------------------------
-         * access code for __hp_osf, __ultrix
+         * access code for __ultrix
          *------------------------------------------------------------------*/
 
         setreuid(geteuid(), -1);
@@ -926,7 +915,7 @@ Boolean FileManip(Widget w, int mode, register char *from, register char *to,
         if (lstat(to, &s2) >= 0) /* <to> exists */
         {
                 if ((stat(to, &s3) >= 0) &&
-#if defined(__hp_osf) || (__ultrix) || defined(__osf__) || defined(linux) ||   \
+#if (__ultrix) || defined(linux) ||   \
     defined(CSRG_BASED)
                     (((s3.st_mode & S_IFMT) == S_IFDIR) /* if is a directory */
                      || ((s3.st_mode & S_IFMT) ==

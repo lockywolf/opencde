@@ -20,11 +20,11 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $XConsortium: mover.C /main/4 1995/10/20 16:36:15 rswiston $ 			 				
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $XConsortium: mover.C /main/4 1995/10/20 16:36:15 rswiston $
 /*
  * mover.cc - Link Service/ToolTalk wrapper for mv(1).
  *
@@ -35,7 +35,7 @@
 #include "tt_options.h"
 #include <errno.h>
 #include <string.h>
-#if defined(__osf__) || defined(linux) || defined(CSRG_BASED)
+#if defined(linux) || defined(CSRG_BASED)
 #include <unistd.h>
 #else
 #if !defined(USL) && !defined(__uxp__) && !defined(sun)

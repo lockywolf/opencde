@@ -26,7 +26,7 @@
  *	$TOG: DtMailRc.C /main/9 1998/07/23 18:02:08 mgreess $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -69,12 +69,7 @@ struct cmd {
 };
 
 struct var *DtMail::MailRc::variables[HSHSIZE]; /* Pointer to active var list */
-#ifdef __osf__
-typedef DtMail::MailRc::globals DtMailRc_globals;
-DtMailRc_globals  DtMail::MailRc::glob;
-#else
 struct DtMail::MailRc::globals DtMail::MailRc::glob;
-#endif
 char *DtMail::MailRc::nullfield;
 Boolean DtMail::MailRc::clearAliases;
 
@@ -124,7 +119,7 @@ struct var {
     char    *v_name;                /* The variable's name */
     char    *v_value;               /* And it's current value */
     int	    v_written;		    /* It has been written on this pass. */
-};	
+};
 
 struct hash {
     struct hash *h_next;
@@ -150,7 +145,7 @@ struct cmd cmdtab[] = {
 
 #if defined(sun)
 #define SYSTEM_MAILRC	"/etc/mail/mail.rc"
-#elif defined(_AIX) || defined(__osf__) || defined(linux)
+#elif defined(_AIX) || defined(linux)
 #define SYSTEM_MAILRC	"/usr/share/lib/Mail.rc"
 #elif defined(USL) || defined(__hpux)
 #define SYSTEM_MAILRC	"/usr/share/lib/mailx.rc"
@@ -164,7 +159,7 @@ struct cmd cmdtab[] = {
 DtMail::MailRc::MailRc(DtMailEnv &env, DtMail::Session *session)
 {
   //char *line = NULL;
-   
+
     session = session;
 
 
@@ -174,7 +169,7 @@ DtMail::MailRc::MailRc(DtMailEnv &env, DtMail::Session *session)
     input = NULL;
 
     init_globals();
-    
+
     char * mail_rc = getenv("MAILRC");
     if (mail_rc) {
 	_mailrc_name = strdup(mail_rc);
@@ -182,19 +177,19 @@ DtMail::MailRc::MailRc(DtMailEnv &env, DtMail::Session *session)
     else {
 	passwd pw;
 	GetPasswordEntry(pw);
-	
+
 	_mailrc_name = (char *)malloc(MAXIMUM_PATH_LENGTH);
-	
+
 	strcpy(_mailrc_name, pw.pw_dir);
 	strcat(_mailrc_name, "/.mailrc");
     }
-    
+
     cond = CANY;
-  
+
     char line[LINESIZE];
     int rval = 0;
     line[0] = '\0';
-    
+
     if ((rval = this->load(_mailrc_name, line)) != 0) {
     	char *msg = new char[MAXIMUM_PATH_LENGTH + LINESIZE];
 	if (rval == -1) {
@@ -209,7 +204,7 @@ DtMail::MailRc::MailRc(DtMailEnv &env, DtMail::Session *session)
 	    env.setError(DTME_ResourceParsingNoEndif, NULL);
 	    _parseError = DTME_ResourceParsingNoEndif;
 	}
-		
+
       	env.logError(DTM_FALSE, "%s", msg);
 	delete [] msg;
     }
@@ -229,7 +224,7 @@ DtMail::MailRc::MailRc(DtMailEnv &env, DtMail::Session *session)
         }
 	delete [] msg;
     }
-    
+
 }
 
 DtMail::MailRc::~MailRc(void)
@@ -240,11 +235,11 @@ DtMail::MailRc::~MailRc(void)
 // return true if in list
 DtMailBoolean DtMail::MailRc::ignore(DtMailEnv &env, const char *name)
 {
-    
+
     char *ignore_list = (char *)MailRc::hm_test((struct hash **)glob.g_ignore, (char *)name);
-    
+
     env.clear();
-    
+
     if(ignore_list != NULL)  // we have a valid ignore list
       {
 	  return DTM_TRUE;
@@ -254,7 +249,7 @@ DtMailBoolean DtMail::MailRc::ignore(DtMailEnv &env, const char *name)
 	  env.setError(DTME_NoObjectValue, NULL);
 	  return DTM_FALSE;
       }
-    
+
 }
 
 void
@@ -275,11 +270,11 @@ DtMail::MailRc::removeIgnore(DtMailEnv & error, const char * name)
 
 const char *DtMail::MailRc::getAlias(DtMailEnv &env, const char * name)
 {
-    
+
     char *return_value = (char *)hm_test((struct hash **)glob.g_alias, (char *)name);
-    
+
     env.clear();
-    
+
     if(return_value == NULL)
       {
 	  env.setError(DTME_NoObjectValue, NULL);
@@ -289,7 +284,7 @@ const char *DtMail::MailRc::getAlias(DtMailEnv &env, const char * name)
       {
 	  return return_value;
       }
-    
+
 }
 
 void
@@ -317,13 +312,13 @@ DtMail::MailRc::removeAlias(DtMailEnv & error,
     }
 }
 
-// 
+//
 // Adapted from uuencode and uudecode written by Ian Lance Taylor.
 //
 #define ENCRYPT(c) ((c) ? (((c)&077) + ' ' + 2) : ('`' + 2))
 #define DECRYPT(c) ((((c) - ' ') & 077) - 2)
 
-int 
+int
 DtMail::MailRc::encryptedLength(int length)
 {
     // One for the length, one for the '\0', expansion factor of 4/3.
@@ -331,13 +326,13 @@ DtMail::MailRc::encryptedLength(int length)
     return encrypted_length;
 }
 
-void 
+void
 DtMail::MailRc::encryptValue(char *to, char *from, int buflen)
 {
     int		ch, length;
     char	*p;
     int		i=0;
-  
+
     memset(to, 0, buflen);
 
     length = strlen(from);
@@ -358,7 +353,7 @@ DtMail::MailRc::encryptValue(char *to, char *from, int buflen)
         to[i++] = (char) ch;
 
         ch = p[2] & 077;
-        ch = ENCRYPT(ch);   
+        ch = ENCRYPT(ch);
 	to[i++] = (char) ch;
     }
 }
@@ -369,7 +364,7 @@ DtMail::MailRc::decryptValue(char *to, char *from, int buflen)
     int		ch, length;
     int		i=0;
     char	*p;
-   
+
     memset(to, 0, buflen);
     p = from;
 
@@ -408,16 +403,16 @@ DtMail::MailRc::decryptValue(char *to, char *from, int buflen)
 // if set with no value return no error in env and return empty string
 // if not set, return error in env and leave value alone
 
-void DtMail::MailRc::getValue(DtMailEnv &env, 
-			      const char * var, 
+void DtMail::MailRc::getValue(DtMailEnv &env,
+			      const char * var,
 			      const char ** value,
 			      DtMailBoolean decrypt)
 {
     char *get_result = mt_value((char *)var);
-    
+
     *value = NULL;
     env.clear();
-    
+
     if (get_result != NULL)
     {
 	if (decrypt)
@@ -469,25 +464,25 @@ const char * DtMail::MailRc::getAlternates(DtMailEnv &env)
     register struct hash *h;
     struct hash **table = (struct hash **)glob.g_alternates;
     int len;
-    
+
     env.clear();
-    
+
     // we don't free this memory...
     alternate_list = NULL;
-    
+
     if(table == NULL)
       {
 	  env.setError(DTME_NoObjectValue, NULL);
 	  return NULL;
       }
-    
+
     i = HASHSIZE;
     while (--i >= 0) {
-	
+
 	h = *table++;
 	while (h) {
 	    len = strlen((const char*)h->h_key);
-	    
+
 	    if(alternate_list == NULL)
 	      {
 		  alternate_list = (char *)malloc(len + 1); // plus terminator
@@ -496,21 +491,21 @@ const char * DtMail::MailRc::getAlternates(DtMailEnv &env)
 	    else
 	      {
 		  len += strlen(alternate_list);
-		  alternate_list = (char *)realloc(alternate_list, 
+		  alternate_list = (char *)realloc(alternate_list,
 						   len + 2); // plus terminator
 		  // and space
 		  strcat(alternate_list, " "); // add space
 		  strcat(alternate_list, (const char *)h->h_key);
-		  
+
 	      }
-	    
+
 	    h = h->h_next;
 	}
-	
+
     }
-    
+
     return (alternate_list);
-    
+
 }
 
 void
@@ -535,19 +530,19 @@ void
 DtMail::MailRc::update(DtMailEnv & error)
 {
     error.clear();
-    
+
     // Generate a temporary file.
     char *tmp_mailrc = new char[MAXIMUM_PATH_LENGTH];
     strcpy(tmp_mailrc, _mailrc_name);
     strcat(tmp_mailrc, ".tmp");
-    
+
     FILE * outf = fopen(tmp_mailrc, "w+");
     if (outf == NULL) {
 	error.setError(DTME_ObjectCreationFailed);
 	delete [] tmp_mailrc;
 	return;
     }
-    
+
     // Now open the mailrc for input.
     FILE * inf = fopen(_mailrc_name, "r");
     if (inf != NULL) {
@@ -555,10 +550,10 @@ DtMail::MailRc::update(DtMailEnv & error)
 	// based on type and changes to the mailrc.
 	//
 	updateByLine(inf, outf);
-	
+
 	fclose(inf);
     }
-    
+
     // Now we need to make a final scan. This will cause new values
     // to be written and the written flag to be reset for the next
     // update.
@@ -614,7 +609,7 @@ void DtMail::MailRc::getAliasList(hm_callback stuffing_func, void *client_data)
 
 
 DtVirtArray<char *> *DtMail::MailRc::getAliasList()
-{	
+{
 
   DtVirtArray<char *>	*value_list = NULL;
 
@@ -626,7 +621,7 @@ DtVirtArray<char *> *DtMail::MailRc::getAliasList()
 }
 
 DtVirtArray<char *> *DtMail::MailRc::getIgnoreList()
-{	
+{
 
   DtVirtArray<char *>	*value_list = NULL;
 
@@ -745,7 +740,7 @@ DtMail::MailRc::outputLine(const char * verbatim,
 	}
 	com->c_write(verbatim, (char **)&start, outf);
 	break;
-	
+
       case RAWLIST:
 	/*
 	 * A vector of strings, in shell style.
@@ -766,7 +761,7 @@ DtMail::MailRc::outputLine(const char * verbatim,
 	com->c_write(verbatim, arglist, outf);
 	freerawlist(arglist);
 	break;
-	
+
       case NOLIST:
 	/*
 	 * Just the constant zero, for exiting,
@@ -774,7 +769,7 @@ DtMail::MailRc::outputLine(const char * verbatim,
 	 */
 	com->c_write(verbatim, NULL, outf);
 	break;
-	
+
       default:
 	fprintf(stderr,"Unknown argtype %#x", com->c_argtype);
 	fprintf(stderr, "NEED TO FIX THIS FOR DTMAIL!\n");
@@ -786,20 +781,20 @@ DtMail::MailRc::outputLine(const char * verbatim,
 // init the global hash structure
 void DtMail::MailRc::init_globals()
 {
-    glob.g_myname = NULL; 
-    
-    glob.g_ignore = this->hm_alloc(); 
-    glob.g_retain = this->hm_alloc(); 
-    glob.g_alias = this->hm_alloc(); 
-    glob.g_alternates = this->hm_alloc(); 
-    ssp = -1;  
-    
+    glob.g_myname = NULL;
+
+    glob.g_ignore = this->hm_alloc();
+    glob.g_retain = this->hm_alloc();
+    glob.g_alias = this->hm_alloc();
+    glob.g_alternates = this->hm_alloc();
+    ssp = -1;
+
     nullfield = new char[3];
-    
+
     strcpy(nullfield, "");
-    
+
     alternate_list = NULL;
-    
+
 }
 
 // load a "user definintion" file
@@ -808,7 +803,7 @@ DtMail::MailRc::load(char *name, char* line)
 {
     register FILE *in, *oldin;
     int ret=0;
-    
+
     if ((in = fopen(name, "r")) == NULL) {
         sprintf(line, "can not open file %s\n", name);
 	return(-2);
@@ -838,13 +833,13 @@ DtMail::MailRc::commands(char* iline)
     register int n;
     char *linebuf = new char[LINESIZE];
     char *line = new char[LINESIZE];
-    
+
     for (;;) {
 	/*
 	 * Read a line of commands from the current input
 	 * and handle end of file specially.
 	 */
-	
+
 	n = 0;
 	linebuf[0] = '\0';
 	for (;;) {
@@ -855,7 +850,7 @@ DtMail::MailRc::commands(char* iline)
 		    unstack();
 		    goto more;
 		}
-    		// Conditional if statement with no corresponding endif 
+    		// Conditional if statement with no corresponding endif
     		if (cond != CANY)
 		{
 		    delete [] linebuf;
@@ -885,7 +880,7 @@ DtMail::MailRc::commands(char* iline)
 		unstack();
 		goto more;
 	    }
-            // Conditional if statement with no corresponding endif 
+            // Conditional if statement with no corresponding endif
             if (cond != CANY)
 	    {
 	        delete [] linebuf;
@@ -927,7 +922,7 @@ int DtMail::MailRc::execute(char linebuf[])
 //	int muvec[2];
     int e;
     int newcmd = 0;
-    
+
     /*
      * Strip the white space away from the beginning
      * of the command, then scan out a word, which
@@ -936,7 +931,7 @@ int DtMail::MailRc::execute(char linebuf[])
      * Handle ! escapes differently to get the correct
      * lexical conventions.
      */
-    
+
     cp = linebuf;
     while (*cp && strchr(" \t", *cp))
 	cp++;
@@ -949,7 +944,7 @@ int DtMail::MailRc::execute(char linebuf[])
 	}
 	/* the special newcmd header -- "#-" */
 	newcmd = 1;
-	
+
 	/* strip whitespace again */
 	while (*++cp && strchr(" \t", *cp));
     }
@@ -957,15 +952,15 @@ int DtMail::MailRc::execute(char linebuf[])
     while (*cp && !strchr(" \t0123456789$^.:/-+*'\"", *cp))
 	*cp2++ = *cp++;
     *cp2 = '\0';
-    
+
     /*
      * Look up the command; if not found, complain.
      * We ignore blank lines to eliminate confusion.
      */
-    
+
     if (equal(word, ""))
 	return(0);
-    
+
     com = (struct cmd *)lex(word);
     if (com == NONE) {
 	if (newcmd) {
@@ -981,34 +976,34 @@ int DtMail::MailRc::execute(char linebuf[])
 	    unstack();
 	return(1);
     }
-    
+
     /*
      * See if we should execute the command -- if a conditional
-     * we always execute it, otherwise, check the state of cond.  
+     * we always execute it, otherwise, check the state of cond.
      */
-    
+
     if ((com->c_argtype & F) == 0) {
 	if (cond == CSEND || cond == CTTY )
 	  {
 	      return(0);
 	  }
-	
+
 #ifdef undef
 	if (cond == CRCV && !rcvmode || cond == CSEND && rcvmode ||
 	    cond == CTTY && !intty || cond == CNOTTY && intty)
 	  {
 	      return(0);
 	  }
-#endif 
+#endif
     }
-    
+
     /*
      * Process the arguments to the command, depending
      * on the type he expects.  Default to an error.
      * If we are sourcing an interactive command, it's
      * an error.
      */
-    
+
     e = 1;
     switch (com->c_argtype & ~(F)) {
       case STRLIST:
@@ -1020,7 +1015,7 @@ int DtMail::MailRc::execute(char linebuf[])
 	    cp++;
 	e = (*com->c_func)(&cp, this);
 	break;
-	
+
       case RAWLIST:
 	/*
 	 * A vector of strings, in shell style.
@@ -1041,7 +1036,7 @@ int DtMail::MailRc::execute(char linebuf[])
 	e = (*com->c_func)(arglist, this);
 	freerawlist(arglist);
 	break;
-	
+
       case NOLIST:
 	/*
 	 * Just the constant zero, for exiting,
@@ -1049,21 +1044,21 @@ int DtMail::MailRc::execute(char linebuf[])
 	 */
 	e = (*com->c_func)(0, this);
 	break;
-	
+
       default:
 	fprintf(stderr,"Unknown argtype %#x", com->c_argtype);
 	fprintf(stderr, "NEED TO FIX THIS FOR DTMAIL!\n");
 /* 		mt_done(1); */
     }
-    
+
     /*
      * Exit the current source file on
      * error.
      */
-    
+
     if (e && sourcing)
 	unstack();
-    
+
     /* ZZZ:katin: should we return an error here? */
     return(e);
 }
@@ -1080,7 +1075,7 @@ DtMail::MailRc::readline(FILE *ibuf, char *linebuf)
     register char *cp;
     register int c;
     int seennulls = 0;
-    
+
     clearerr(ibuf);
     c = getc(ibuf);
     for (cp = linebuf; c != '\n' && c != EOF; c = getc(ibuf)) {
@@ -1145,7 +1140,7 @@ void *DtMail::MailRc::lex(char word[])
 int DtMail::MailRc::isprefix(char *as1, char *as2)
 {
     register char *s1, *s2;
-    
+
     s1 = as1;
     s2 = as2;
     while (*s1++ == *s2)
@@ -1164,7 +1159,7 @@ int DtMail::MailRc::getrawlist(char line[], char **argv, int argc)
     register char **ap, *cp, *cp2;
     char linebuf[LINESIZE], quotec;
     register char **last;
-    
+
     ap = argv;
     cp = line;
     last = argv + argc - 1;
@@ -1205,7 +1200,7 @@ int DtMail::MailRc::getrawlist(char line[], char **argv, int argc)
 
 void DtMail::MailRc::freerawlist(char **argv)
 {
-    
+
     while(*argv) {
 	free((char*)*argv);
 	argv++;
@@ -1222,7 +1217,7 @@ char *DtMail::MailRc::mt_value(char name[])
     register struct var *vp;
     register char *cp;
 //        extern char *getenv();
-    
+
     if ((vp = lookup(name, (struct var **)this->variables)) == (struct var *)NULL)
 	cp = getenv(name);
     else
@@ -1238,7 +1233,7 @@ struct var *DtMail::MailRc::lookup(char *name, struct var **hasharray)
 {
     register struct var *vp;
     register int h;
-    
+
     h = hash(name);
     for (vp = hasharray[h]; vp != (struct var *)NULL; vp = vp->v_link)
 	if (strcmp(vp->v_name, name) == 0)
@@ -1257,13 +1252,13 @@ int DtMail::MailRc::group(char **argv, DtMail::MailRc *)
     char *buf;
     char *s;
     char **ap;
-    
+
     /*
      * Insert names from the command list into the group.
      * Who cares if there are duplicates?  They get tossed
      * later anyway.
      */
-    
+
     /* compute the size of the buffer */
     size = 0;
     for (ap = argv+1; *ap != NOSTR; ap++) {
@@ -1277,7 +1272,7 @@ int DtMail::MailRc::group(char **argv, DtMail::MailRc *)
 	*s++ = ' ';
     }
     *--s = '\0';
-    
+
     MailRc::add_alias((char *)argv[0], (char *)buf);
     free(buf);
     return(0);
@@ -1304,7 +1299,7 @@ DtMail::MailRc::wgroup(const char * verbatim, char ** argv, FILE * outf)
     *--s = '\0';
 
     char * cur = (char *)hm_test((struct hash **)glob.g_alias, argv[0]);
-    if (!cur || (!clearAliases && hm_ismarked((struct hash **)glob.g_alias, 
+    if (!cur || (!clearAliases && hm_ismarked((struct hash **)glob.g_alias,
 			argv[0]))) {
 	// Its been removed or written. Dont write it to the file.
 	free(buf);
@@ -1372,7 +1367,7 @@ DtMail::MailRc::nalias(char * key, void * data, void * client_data)
 	m_size = key_len + strlen((char *)white_space)
 		 + strlen((char *)data) + strlen(" = ") + 1;
 	new_alias = (char *)malloc(m_size);
-    
+
 	sprintf(new_alias, "%s%s = %s",key, white_space, (char *) data);
 
       }
@@ -1381,11 +1376,11 @@ DtMail::MailRc::nalias(char * key, void * data, void * client_data)
 		/* make an alias string */
 	m_size = key_len + strlen((char *)data) + strlen(" = ") + 1;
 	new_alias = (char *)malloc(m_size);
-    
+
 	sprintf(new_alias, "%s = %s",key, (char *) data);
 
       }
-    
+
     value_list->append(new_alias);
 
 }
@@ -1416,7 +1411,7 @@ int DtMail::MailRc::set(char **arglist, DtMail::MailRc *)
     register char *cp, *cp2;
     char varbuf[LINESIZE], **ap;
     int errs;
-    
+
     errs = 0;
     for (ap = arglist; *ap != NOSTR; ap++) {
 	cp = *ap;
@@ -1532,7 +1527,7 @@ int DtMail::MailRc::hash(char *name)
 {
     register unsigned h;
     register char *cp;
-    
+
     for (cp = name, h = 0; *cp; h = (h << 2) + *cp++)
 	;
     return (h % HSHSIZE);
@@ -1543,23 +1538,23 @@ void DtMail::MailRc::add_alias(char *name, char *value)
 {
     char *old;
     char *new_ptr;
-    
+
     /* aliases to the same name get appended to the list */
     old = (char*)MailRc::hm_test((struct hash **)glob.g_alias, name);
     if (old) {
-	
+
 	int size;
-	
+
 	size = strlen(value) + strlen(old) + 2;
 	new_ptr = (char *)malloc(size);
 	sprintf(new_ptr, "%s %s", value, old);
-	
+
 	/* delete any old bindings for the name */
 	MailRc::hm_delete((struct hash**)glob.g_alias, name);
-	
+
 	/* add the new binding */
 	MailRc::hm_add((struct hash**)glob.g_alias, name, new_ptr, size);
-	
+
 	/* free up the temporary space */
 	free(new_ptr);
     } else {
@@ -1573,7 +1568,7 @@ void DtMail::MailRc::add_alias(char *name, char *value)
  */
 void DtMail::MailRc::mt_assign(char *name,char * val)
 {
-    
+
     if (name[0]=='-')
 	(void) mt_deassign(name+1);
     else if (name[0]=='n' && name[1]=='o')
@@ -1588,7 +1583,7 @@ int DtMail::MailRc::mt_deassign(char *s)
 {
     register struct var *vp, *vp2;
     register int h;
-    
+
     if ((vp2 = lookup(s, MailRc::variables)) == (struct var *)NULL) {
 	return (1);
     }
@@ -1616,7 +1611,7 @@ void DtMail::MailRc::mt_puthash(char *name, char *val, struct var **hasharray)
 {
     register struct var *vp;
     register int h;
-    
+
     vp = lookup(name, hasharray);
     if (vp == (struct var *)NULL) {
 	h = hash(name);
@@ -1656,7 +1651,7 @@ DtMail::MailRc::mt_scan(FILE * outf)
  */
 char *DtMail::MailRc::vcopy(char *str)
 {
-    
+
     if (strcmp(str, "") == 0)
 	return ("");
     return (strdup(str));
@@ -1669,7 +1664,7 @@ char *DtMail::MailRc::vcopy(char *str)
  */
 void DtMail::MailRc::vfree(char *cp)
 {
-    
+
     if (strcmp(cp, "") != 0)
 	free(cp);
 }
@@ -1677,22 +1672,22 @@ void DtMail::MailRc::vfree(char *cp)
 void *DtMail::MailRc::hm_alloc(void)
 {
     struct hash **table;
-    
+
     table = (struct hash**)malloc(sizeof (struct hash) * HASHSIZE);
     memset(table, '\0', sizeof (struct hash) * HASHSIZE);
     return (table);
 }
-void DtMail::MailRc::hm_add(struct hash **table, 
-			    char *key, 
-			    void *value, 
+void DtMail::MailRc::hm_add(struct hash **table,
+			    char *key,
+			    void *value,
 			    int size)
 {
     int index;
     register struct hash *h;
-    
+
     if (!table)
 	return;
-    
+
     index = hash_index(key);
     h = (struct hash *)malloc(sizeof (struct hash));
     h->h_next = table[index];
@@ -1713,10 +1708,10 @@ void DtMail::MailRc::hm_delete(struct hash **table, char *key)
     register int index;
     register struct hash *h;
     register struct hash *old;
-    
+
     if (!table)
 	return;
-    
+
     index = hash_index(key);
     old = NULL;
     h = table[index];
@@ -1727,11 +1722,11 @@ void DtMail::MailRc::hm_delete(struct hash **table, char *key)
 		table[index] = h->h_next;
 	    else
 		old->h_next = h->h_next;
-	    
+
 	    free_hash(h);
 	    break;
 	}
-	
+
 	old = h;
 	h = h->h_next;
     }
@@ -1741,39 +1736,39 @@ void DtMail::MailRc::hm_delete(struct hash **table, char *key)
 void *DtMail::MailRc::hm_test(struct hash **table, char *key)
 {
     register struct hash *h;
-    
+
     if (!table)
 	return (NULL);
-    
+
     h = table[hash_index(key)];
-    
+
     while (h) {
 	if (strcasecmp(h->h_key, key) == 0) {
 	    /* found a match */
 	    return (h->h_value);
 	}
-	
+
 	h = h->h_next;
     }
-    
+
     return (NULL);
 }
 
 void DtMail::MailRc::hm_mark(struct hash **table, char *key)
 {
     register struct hash *h;
-    
+
     if (!table)
 	return;
-    
+
     h = table[hash_index(key)];
-    
+
     while (h) {
 	if (strcasecmp(h->h_key, key) == 0) {
 	    h->h_written = 1;
 	    return;
 	}
-	
+
 	h = h->h_next;
     }
 }
@@ -1781,7 +1776,7 @@ void DtMail::MailRc::hm_mark(struct hash **table, char *key)
 int DtMail::MailRc::hm_ismarked(struct hash **table, char *key)
 {
     register struct hash *h;
-    
+
     if (!table) return 0;
     h = table[hash_index(key)];
     while (h)
@@ -1811,7 +1806,7 @@ int DtMail::MailRc::hash_index(char *key)
     register unsigned h;
     register char *s;
     register int c;
-    
+
     s = key;
     h = 0;
     while (*s) {
@@ -1821,7 +1816,7 @@ int DtMail::MailRc::hash_index(char *key)
 	}
 	h = (h << 2) + c;
     }
-    
+
     return (h % HASHSIZE);
 }
 
@@ -1841,7 +1836,7 @@ void DtMail::MailRc::free_hash(struct hash *h)
 int DtMail::MailRc::igfield(char *list[], DtMail::MailRc *)
 {
     char **ap;
-    
+
     for (ap = list; *ap != 0; ap++) {
 //                DP(("igfield: adding %s\n", *ap));
 	MailRc::add_ignore(*ap);
@@ -2243,7 +2238,7 @@ DtMail::MailRc::clearaliases(char **, DtMail::MailRc *)
 {
 	DtVirtArray<char *>   *value_list = NULL;
 	DtMailEnv error;
-	
+
   	value_list = new DtVirtArray<char *>(10);
 
   	hm_scan((struct hash **)glob.g_alias, nalias, value_list);

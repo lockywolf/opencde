@@ -20,11 +20,11 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $TOG: tt_tracefile_parse.C /main/4 1998/03/19 19:00:04 mgreess $ 			 				
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $TOG: tt_tracefile_parse.C /main/4 1998/03/19 19:00:04 mgreess $
 /*
  *
  * tt_trace_parse.C
@@ -41,7 +41,7 @@
 #include "util/tt_trace_parser.h"
 #include "util/tt_entry_pt_names.h"
 
-#if defined (_AIX) || defined(hpux) || defined(__osf__) || defined(linux) || \
+#if defined (_AIX) || defined(hpux) || defined(linux) || \
 	defined(CSRG_BASED)
 #include <fcntl.h>
 #endif
@@ -69,7 +69,7 @@ _tt_trace_parse(_Tt_string& parse_buf,
 	_Tt_string		value;
 
 	iserr = 0;
-	
+
 	while (token = get_token(prev, parse_buf, buf_ptr, value)) {
 
 		if (token == _TT_TRACE_UNKNOWN) {
@@ -134,9 +134,9 @@ get_token(const _Tt_trace_tokens prev,
 	  _Tt_string& value)
 {
 	int i;
-	
+
 	// Eat blanks
-	
+
 	while (parse_buf[buf_ptr] == ' ' ||
 	       parse_buf[buf_ptr] == '\t') {
 		buf_ptr++;
@@ -450,7 +450,7 @@ static int _is_tt_func(const _Tt_string& fun)
 
 		entry_len = strlen(_tt_entries[arr_indx]);
 		if (entry_len != name_len) continue;
-	
+
 		while (_tt_entries[arr_indx][i] == fun[i] &&
 		       i < name_len) i++;
 

@@ -8,7 +8,7 @@
 #<<------------------------------
 #
 { hpux : defaults
-	install_target = 
+	install_target =
 	fileset = CDE-INC
 	type = file
 	status = di----
@@ -18,8 +18,8 @@
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -29,7 +29,7 @@
 #<<------------------------------
 #
 { aix : defaults
-	install_target = 
+	install_target =
 	fileset = CDE-INC
 	type = file
 	status = di----
@@ -39,8 +39,8 @@
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -68,35 +68,12 @@
         responsible_project = cde_dt
 }
 
-#>>-------------------------------------------------
-# Defaults for: Digital
-#<<-------------------------------------------------
-#
-{ dec : defaults
-	install_target = 
-	fileset = CDE-INC
-	type = file
-	status = di----
-	processor = 378
-	mode = 0444
-	owner = bin
-	group = bin
-	link_source = <LNK>
-	build_target = /
-	install_rule_name = 
-	install_flags = 
-	a_out_location = <SRC>
-	order = 0
-	responsible_project = cde_dt
-}
-
-
 #>>------------------------------
 # Defaults for: standalone product
 #<<------------------------------
 #
 { standalone : defaults
-	install_target = 
+	install_target =
 	fileset = CDE-INC
 	type = file
 	status = di----
@@ -106,8 +83,8 @@
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -118,7 +95,7 @@
 #<<------------------------------
 #
 { nls : defaults
-	install_target = 
+	install_target =
 	processor = 378
 	type = file
 	mode = 0444
@@ -130,7 +107,7 @@
 #<<-------------------------------------------------
 #
 { default : defaults
-	install_target = 
+	install_target =
 	fileset = CDE-INC
 	type = file
 	status = di----
@@ -140,8 +117,8 @@
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -218,7 +195,7 @@ lib/DtMrm/Mrm.h
 #------------------------------------
 # Dt.h contains bits and pieces of non-public headers
 # that turned out to be necessary for developers.
-# 
+#
 lib/DtSvc/DtUtil1/Dt.h
 { default
         install_target = /usr/dt/share/include/Dt/Dt.h
@@ -279,7 +256,7 @@ lib/DtWidget/MenuButton.h
         install_target = /usr/dt/share/include/Dt/MenuButton.h
 }
 #
-#>>---------------------------------- 
+#>>----------------------------------
 # Tool Talk (tt) includes
 #------------------------------------
 #
@@ -293,7 +270,7 @@ lib/tt/lib/tttk/tttk.h
         install_target = /usr/dt/share/include/Tt/tttk.h
 }
 #
-#>>---------------------------------- 
+#>>----------------------------------
 # Calendar Manager includes
 #------------------------------------
 #
@@ -309,7 +286,7 @@ lib/csa/csa.h
 	type = sym_link
 }
 #
-#>>---------------------------------- 
+#>>----------------------------------
 # DtInfo includes
 #------------------------------------
 lib/DtSvc/DtUtil2/Info.h
@@ -317,7 +294,7 @@ lib/DtSvc/DtUtil2/Info.h
 	install_target = /usr/dt/share/include/Dt/Info.h
 }
 #
-#>>---------------------------------- 
+#>>----------------------------------
 # libDtSearch includes
 #------------------------------------
 lib/DtSearch/Search.h
@@ -325,7 +302,7 @@ lib/DtSearch/Search.h
 	install_target = /usr/dt/share/include/Dt/Search.h
 }
 #
-#>>---------------------------------- 
+#>>----------------------------------
 # libMmdb includes
 #------------------------------------
 programs/dtinfo/DtMmdb/oliasdb/Mmdb.h

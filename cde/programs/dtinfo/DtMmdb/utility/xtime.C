@@ -27,18 +27,18 @@
  * UNPUBLISHED -- rights reserved under the Copyright Laws of the United
  * States.  Use of a copyright notice is precautionary only and does not
  * imply publication or disclosure.
- * 
+ *
  * This software contains confidential information and trade secrets of HaL
  * Computer Systems, Inc.  Use, disclosure, or reproduction is prohibited
  * without the prior express written permission of HaL Computer Systems, Inc.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject to
  * restrictions as set forth in subparagraph (c)(l)(ii) of the Rights in
  * Technical Data and Computer Software clause at DFARS 252.227-7013.
  *                        HaL Computer Systems, Inc.
  *                  1315 Dell Avenue, Campbell, CA  95008
- * 
+ *
  */
 
 
@@ -55,7 +55,7 @@ extern "C" { extern int gettimeofday(struct timeval *tp); }
 #endif
 
 
-xtime::xtime() : 
+xtime::xtime() :
 
 v_cpu_stamp(0), v_elapsed_stamp(0)
 {
@@ -76,29 +76,29 @@ void xtime::stop(float &cpu_time, long &elp_time)
 
 void xtime::start()
 {
-#if defined (SVR4) && !defined (_IBMR2) && !defined(sun) && !defined(__osf__) && !defined(USL)
+#if defined (SVR4) && !defined (_IBMR2) && !defined(sun) && !defined(USL)
    if ( gettimeofday(&v_tv) != 0 ) {
 #else
    if ( gettimeofday(&v_tv, &v_tz) != 0 ) {
 #endif
       MESSAGE(cerr, "xtime::start(): gettimeofday() failed");
       throw(systemException(errno));
-   } 
+   }
 
    v_elapsed_stamp = v_tv.tv_sec;
 
-#if defined(SVR4) || defined(__osf__)
-   if ( times(&v_time_regs) == -1 ) 
+#if defined(SVR4)
+   if ( times(&v_time_regs) == -1 )
 #else
-   if ( times(&v_time_regs) != 0 ) 
+   if ( times(&v_time_regs) != 0 )
 #endif
    {
       MESSAGE(cerr, "xtime::start(): times() failed");
       throw(systemException(errno));
-   } 
+   }
 
-   v_cpu_stamp = 
+   v_cpu_stamp =
       float(v_time_regs.tms_utime + v_time_regs.tms_stime +
-            v_time_regs.tms_cutime + v_time_regs.tms_cstime 
+            v_time_regs.tms_cutime + v_time_regs.tms_cstime
            ) / 60.0;
 }

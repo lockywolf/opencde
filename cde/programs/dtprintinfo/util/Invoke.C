@@ -48,25 +48,25 @@
 const int BUFFER_SIZE = 512;
 
 Invoke::Invoke(const char *command,   // Command to Run
-               char **out_ptr,        // ptr to output buffer ptr 
+               char **out_ptr,        // ptr to output buffer ptr
                char **err_ptr,        // ptr to error buffer ptr
                uid_t _uid)            // run command as this UID
 {
    int m_stdout[2], m_stderr[2];       // progname file descriptors
-   pid_t c_pid;                        // child's pid 
-   pid_t w;                            // temp vars 
-   int out_num,err_num;                // # of chars read 
-   char *out_tmp, *err_tmp;            // temp buffer ptrs 
-   char *out_end,*err_end;             // ptr to end of buffer 
-   int outb_size,errb_size;            // buffer size 
-   int out_count, err_count;           // # of buffers allocated 
-   int trap_out,trap_err;              // flags; if >0, trap output 
-   fd_set rdmask;                      // for select system call 
-   fd_set wrmask;                      // for select system call 
-   fd_set exmask;                      // for select system call 
+   pid_t c_pid;                        // child's pid
+   pid_t w;                            // temp vars
+   int out_num,err_num;                // # of chars read
+   char *out_tmp, *err_tmp;            // temp buffer ptrs
+   char *out_end,*err_end;             // ptr to end of buffer
+   int outb_size,errb_size;            // buffer size
+   int out_count, err_count;           // # of buffers allocated
+   int trap_out,trap_err;              // flags; if >0, trap output
+   fd_set rdmask;                      // for select system call
+   fd_set wrmask;                      // for select system call
+   fd_set exmask;                      // for select system call
    int Nfdsmsgs;
 
-   struct sigaction action;            // parameters of sigaction 
+   struct sigaction action;            // parameters of sigaction
    struct sigaction oldsigint_act;
    struct sigaction oldsigquit_act;
 
@@ -114,9 +114,7 @@ Invoke::Invoke(const char *command,   // Command to Run
    memset(&oldsigquit_act, '\0', sizeof (struct sigaction));
    memset(&oldsigint_act, '\0', sizeof (struct sigaction));
 
-#if defined(__OSF1__) || defined(__osf__) 
-   action.sa_handler = (void (*)(int))SIG_IGN;
-#elif defined(USL) || defined(__uxp__) || \
+#if defined(USL) || defined(__uxp__) || \
       ( defined(sun) && OSMAJORVERSION == 5 && OSMINORVERSION <= 4)
    action.sa_handler = (void (*)())SIG_IGN;
 #else
@@ -148,7 +146,7 @@ Invoke::Invoke(const char *command,   // Command to Run
          close(m_stderr[1]);
        }
 
-      // start the program 
+      // start the program
       execlp(KORNSHELL, "ksh", "-c", command, (char *) 0);
 
       exit(-1);
@@ -185,7 +183,7 @@ Invoke::Invoke(const char *command,   // Command to Run
     }
 
    if (!trap_out && !trap_err)
-    { // no piped output 
+    { // no piped output
       // wait for the child to die
       while ((w = wait(&status)) != c_pid && w != -1)
 	 ;

@@ -202,21 +202,9 @@
   m_free(wc_2,"wide character string");
   }
 #else
-#if defined(__osf__)
-  {
-  M_WCHAR *wc_1, *wc_2;
-
-  wc_1 = MakeWideCharString("OSF1");
-  wc_2 = MakeWideCharString("m-machine");
-  m_piaction(wc_1, wc_2, M_SDATA) ;
-  m_free(wc_1,"wide character string");
-  m_free(wc_2,"wide character string");
-  }
-#else
   m_piaction("UNDEFINED MACHINE",
 	     "m-machine",
 	     M_SDATA) ;
-#endif
 #endif
 #endif
 #endif
@@ -318,7 +306,7 @@ static char ident6[]="@(#) (c) Copyright 1993, 1994 Unix System Labs, Inc., a su
 
     wc_stago = MakeWideCharString(m_stago);
     wc_tagc  = MakeWideCharString(m_tagc);
-    
+
     m_err2("Unimplemented %sABBREV%s reached", wc_stago, wc_tagc);
     m_free(wc_stago,"wide character string");
     m_free(wc_tagc,"wide character string");
@@ -671,7 +659,7 @@ static char ident6[]="@(#) (c) Copyright 1993, 1994 Unix System Labs, Inc., a su
 
 <ELEMENT GLOSSARY>
   <START-CODE>
-    char *string = 
+    char *string =
       GetDefaultHeaderString("GlossaryElementDefaultHeadingString",
 			     M_SDATA,
 			     "Glossary");
@@ -870,7 +858,7 @@ static char ident6[]="@(#) (c) Copyright 1993, 1994 Unix System Labs, Inc., a su
     svheadlen = 0 ;
     fprintf(outfile, "<HEAD TYPE=\"LINED\" SSI=\"%s\">", ssi);
     m_free(ssi, "multi-byte string");
-/* Other headings */ 
+/* Other headings */
   <START-CODE CHAPHEAD>
      M_WCHAR *wc_stago, *wc_tagc;
 
@@ -1262,14 +1250,14 @@ static char ident6[]="@(#) (c) Copyright 1993, 1994 Unix System Labs, Inc., a su
 
 <ELEMENT INDEXPRIMARY>
   <START-CODE>
-    idxsavlen = 0; 
+    idxsavlen = 0;
     didsort = FALSE;
   <END-CODE>
     /* capture saved term unless <sort> got it already */
     if (! didsort) {
 	 idxsav[idxsavlen] = M_EOS;
          w_strcpy(print, idxsav);
-        
+
     }
     else { /* save the sort field */
 	 idxsav[idxsavlen] = M_EOS;
@@ -1278,7 +1266,7 @@ static char ident6[]="@(#) (c) Copyright 1993, 1994 Unix System Labs, Inc., a su
 
 <ELEMENT INDEXSUB>
   <START-CODE>
-    idxsavlen = 0; 
+    idxsavlen = 0;
     didsubsort = FALSE;
   <END-CODE>
     /* capture saved term unless <sort> got it already */
@@ -1422,7 +1410,7 @@ static char ident6[]="@(#) (c) Copyright 1993, 1994 Unix System Labs, Inc., a su
   <START-CODE>
     char mb_xrefstring[400];
 
-    if (! tonumexlines) 
+    if (! tonumexlines)
       m_error(
     "Preparing cross-reference to a line in an example without line numbers"
       ) ;
@@ -1468,7 +1456,7 @@ static char ident6[]="@(#) (c) Copyright 1993, 1994 Unix System Labs, Inc., a su
 
 	E.g.,
 
-	   <link foo DEFINITION><XREF bar></link> 
+	   <link foo DEFINITION><XREF bar></link>
 
 	will do the right thing (remember that xref turns to an implicit link).
         Right_thing => xref becomes definition link.
@@ -1480,7 +1468,7 @@ static char ident6[]="@(#) (c) Copyright 1993, 1994 Unix System Labs, Inc., a su
 	the xref will think that is supposed to become a link of type jump,
         not definition.  This case is odd, so we won't worry about it.
      */
-     global_linktype = 0; 
+     global_linktype = 0;
      mb_strcode("</LINK>", outfile);
 
 <ELEMENT LIST>
@@ -1553,7 +1541,7 @@ static char ident6[]="@(#) (c) Copyright 1993, 1994 Unix System Labs, Inc., a su
 	}
   <PI-CODE>
     /* could need to handle calculator context sensitive entities
-     * here if needed to reduce tex macro count 
+     * here if needed to reduce tex macro count
      */
     if (memo)
 	{
@@ -1613,7 +1601,7 @@ static char ident6[]="@(#) (c) Copyright 1993, 1994 Unix System Labs, Inc., a su
       mb_strcode("\n", outfile);
   <START-CODE>
       fputs("&\n", outfile) ;
-       
+
 <ELEMENT NOTE>
   <START-CODE>
     StartNCW("NOTE");
@@ -1706,8 +1694,8 @@ static char ident6[]="@(#) (c) Copyright 1993, 1994 Unix System Labs, Inc., a su
     if (tooutput)
 	EmitSavedAnchors();
   <END-CODE INDEXPRIMARY, INDEXSUB, * ABBREV>
-  <END-CODE HEAD CHAPHEAD, 
-            HEAD FRONTSUB, 
+  <END-CODE HEAD CHAPHEAD,
+            HEAD FRONTSUB,
             HEAD OTHERFRONT,
             HEAD OTHERHEAD>
     putc('\n', stderr) ;
@@ -1757,7 +1745,7 @@ static char ident6[]="@(#) (c) Copyright 1993, 1994 Unix System Labs, Inc., a su
 	     (sizeof(savehead) / sizeof(M_WCHAR)),
 	     savehead,
 	     svhdstring,
-	     "Too many characters in head or caption", 
+	     "Too many characters in head or caption",
 	     &hderr) ;
       }
     else
@@ -1785,7 +1773,7 @@ static char ident6[]="@(#) (c) Copyright 1993, 1994 Unix System Labs, Inc., a su
     PushForm("TEXT", "PROCEDURE", NULL);
   <END-CODE>
     PopFormMaybe();
-  
+
 <ELEMENT QUOTE>
   <START-CODE * ABBREV>
     mb_strcode("``", outfile) ;
@@ -2137,7 +2125,7 @@ static char ident6[]="@(#) (c) Copyright 1993, 1994 Unix System Labs, Inc., a su
     termchar(m_textchar) ;
   <PI-CODE>
     termpi(m_enttype, m_pi, m_entname) ;
-     
+
 <ELEMENT TEXT>
   <START-CODE NOTE>
     StartNCWtext("NOTE",
@@ -2265,7 +2253,7 @@ static char ident6[]="@(#) (c) Copyright 1993, 1994 Unix System Labs, Inc., a su
     mb_strcode("</KEY>", outfile) ;
 
   /* added to fix calculator computer chars */
-  <TEXT-CODE * SYNEL> 
+  <TEXT-CODE * SYNEL>
     if (m_textchar == M_SPACE) fputs("\\ ", outfile) ;
     else outchar(m_textchar, outfile) ;
 

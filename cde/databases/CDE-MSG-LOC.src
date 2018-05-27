@@ -2,13 +2,13 @@ XCOMM $TOG: CDE-MSG-LOC.src /main/14 1998/08/11 17:29:12 mgreess $
 XCOMM >>---------------------------------------------
 XCOMM  %_FILENAME_%.udb   CDE Localized Message Catalogs
 XCOMM -----------------------------------------------
-XCOMM 
+XCOMM
 XCOMM >>------------------------------
 XCOMM  Defaults for: hpux
 XCOMM <<------------------------------
-XCOMM 
+XCOMM
 { hpux : defaults
-	install_target = 
+	install_target =
 	fileset = %_FILENAME_%
 	type = file
 	status = di----
@@ -18,30 +18,8 @@ XCOMM
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
-	a_out_location = <SRC>
-	order = 0
-	responsible_project = cde_dt
-}
-
-XCOMM >>------------------------------
-XCOMM  Defaults for: Digital
-XCOMM <<------------------------------
-XCOMM 
-{ dec : defaults
-	install_target = 
-	fileset = %_FILENAME_%
-	type = file
-	status = di----
-	processor = 378
-	mode = 0444
-	owner = bin
-	group = bin
-	link_source = <LNK>
-	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -50,9 +28,9 @@ XCOMM
 XCOMM >>------------------------------
 XCOMM  Defaults for: standalone product
 XCOMM <<------------------------------
-XCOMM 
+XCOMM
 { standalone : defaults
-	install_target = 
+	install_target =
 	fileset = %_FILENAME_%
 	type = file
 	status = di----
@@ -62,8 +40,8 @@ XCOMM
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -72,9 +50,9 @@ XCOMM
 XCOMM >>------------------------------
 XCOMM  Defaults for: nls internationalized files
 XCOMM <<------------------------------
-XCOMM 
+XCOMM
 { nls : defaults
-	install_target = 
+	install_target =
 	processor = 378
 	type = file
 	mode = 0444
@@ -84,9 +62,9 @@ XCOMM
 XCOMM >>-------------------------------------------------
 XCOMM  Defaults for: everything else (identical to hpux)
 XCOMM <<-------------------------------------------------
-XCOMM 
+XCOMM
 { default : defaults
-	install_target = 
+	install_target =
 	fileset = %_FILENAME_%
 	type = file
 	status = di----
@@ -96,8 +74,8 @@ XCOMM
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -110,7 +88,7 @@ XCOMM
 	mode = 0555
 	status = ------
 }
-XCOMM 
+XCOMM
 -
 { default
 	type = directory
@@ -118,7 +96,7 @@ XCOMM
 	mode = 0555
 	status = ------
 }
-XCOMM 
+XCOMM
 -
 { default
 	type = directory
@@ -126,7 +104,7 @@ XCOMM
 	mode = 0555
 	status = ------
 }
-XCOMM 
+XCOMM
 -
 { default
 	type = directory
@@ -134,7 +112,7 @@ XCOMM
 	mode = 0555
 	status = ------
 }
-XCOMM 
+XCOMM
 -
 { default
 	type = directory
@@ -142,7 +120,7 @@ XCOMM
 	mode = 0555
 	status = ------
 }
-XCOMM 
+XCOMM
 -
 { default
 	type = directory
@@ -150,199 +128,199 @@ XCOMM
 	mode = 0555
 	status = ------
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtlogin.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtlogin.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dthello.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dthello.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtsession.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtsession.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtwm.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtwm.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtfile.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtfile.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtstyle.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtstyle.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtpad.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtpad.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtscreen.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtscreen.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtimsstart.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtimsstart.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dticon.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dticon.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtact.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtact.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dt.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dt.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtcreate.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtcreate.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/DtMail.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/DtMail.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtmailopts.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtmailopts.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/libDtMail.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/libDtMail.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/MotifApp.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/MotifApp.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/DtPrint.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/DtPrint.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/DtWidget.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/DtWidget.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtksh.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtksh.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtcalc.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtcalc.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtprintinfo.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtprintinfo.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtterm.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtterm.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtlp.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtlp.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/Xm.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/Xm.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/Mrm.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/Mrm.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/Uil.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/Uil.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dttypes.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dttypes.cat
 }
 #if defined(_ENGLISH_) || defined(_JAPANESE_)
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtbuilder.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtbuilder.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtcodegen.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtcodegen.cat
 }
 #endif
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/SUNW_TOOLTALK.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/SUNW_TOOLTALK.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtcm.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtcm.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/libdtcm.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/libdtcm.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtcopy.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtcopy.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtconfig.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtconfig.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtudcexch.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtudcexch.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtudcfonted.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtudcfonted.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtpdm.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtpdm.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtpdmd.cat
 { default
         install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtpdmd.cat
@@ -355,12 +333,12 @@ programs/localized/%_LANG_%/msg/dthelpgen.cat
 { default
 	install_target = /usr/dt/lib/nls/msg/%_LANG_%/dthelpgen.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/DtHelp.cat
 { default
 	install_target = /usr/dt/lib/nls/msg/%_LANG_%/DtHelp.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dthelpprint.cat
 { default
 	install_target = /usr/dt/lib/nls/msg/%_LANG_%/dthelpprint.cat
@@ -373,17 +351,17 @@ programs/localized/%_LANG_%/msg/dtinfo.cat
 { default
 	install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtinfo.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtinfo_start.cat
 { default
 	install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtinfo_start.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/dtsearch.cat
 { default
 	install_target = /usr/dt/lib/nls/msg/%_LANG_%/dtsearch.cat
 }
-XCOMM 
+XCOMM
 programs/localized/%_LANG_%/msg/fmt_tbl.cat
 { default
 	install_target = /usr/dt/lib/nls/msg/%_LANG_%/fmt_tbl.cat
@@ -404,9 +382,9 @@ XCOMM ##########################################################################
 #endif
 
 XCOMM ##########################################################################
-XCOMM 
+XCOMM
 XCOMM  HP - Locale and platform specific entries
-XCOMM 
+XCOMM
 XCOMM ##########################################################################
 #ifdef __hpux
 #ifdef _GERMAN_
@@ -475,9 +453,9 @@ XCOMM ##########################################################################
 #endif /* __hpux */
 
 XCOMM ##########################################################################
-XCOMM 
+XCOMM
 XCOMM  IBM - Locale and platform specific entries
-XCOMM 
+XCOMM
 XCOMM ##########################################################################
 #ifdef _AIX
 #ifdef _GERMAN_
@@ -546,9 +524,9 @@ XCOMM ##########################################################################
 #endif /* _AIX */
 
 XCOMM ##########################################################################
-XCOMM 
+XCOMM
 XCOMM  Novell - Locale and platform specific entries
-XCOMM 
+XCOMM
 XCOMM ##########################################################################
 #ifdef USL
 #ifdef _GERMAN_
@@ -617,9 +595,9 @@ XCOMM ##########################################################################
 #endif /* USL */
 
 XCOMM ##########################################################################
-XCOMM 
+XCOMM
 XCOMM  Fujitsu - Locale and platform specific entries
-XCOMM 
+XCOMM
 XCOMM ##########################################################################
 #ifdef __uxp__
 #ifdef _GERMAN_
@@ -686,43 +664,3 @@ XCOMM ##########################################################################
 }
 #endif
 #endif /* __uxp__ */
-
-XCOMM ###########################################################################
-XCOMM 
-XCOMM  DEC - Locale and platform specific entries
-XCOMM 
-XCOMM   There are no German, Spanish, French, Italian or Swedith
-XCOMM   symbolic links for DEC because they use the same name as
-XCOMM   the generic name.
-XCOMM 
-XCOMM ###########################################################################
-#ifdef __osf__
-#ifdef _JAPANESE_
-/usr/dt/lib/nls/msg/ja_JP.dt-eucJP
-{ dec
-	install_target = /usr/dt/lib/nls/msg/ja_JP.eucJP
-	type = sym_link
-}
-#endif
-#ifdef _KOREAN_
-/usr/dt/lib/nls/msg/ko_KR.dt-eucKR
-{ dec
-	install_target = /usr/dt/lib/nls/msg/ko_KR
-	type = sym_link
-}
-#endif
-#ifdef _CHINESE_
-/usr/dt/lib/nls/msg/zh_CN.dt-eucCN
-{ dec
-	install_target = /usr/dt/lib/nls/msg/zh_CN
-	type = sym_link
-}
-#endif
-#ifdef _TAIWANESE_
-/usr/dt/lib/nls/msg/zh_TW.dt-eucTW
-{ dec
-	install_target = /usr/dt/lib/nls/msg/zh_TW.eucTW
-	type = sym_link
-}
-#endif
-#endif /* __osf__ */

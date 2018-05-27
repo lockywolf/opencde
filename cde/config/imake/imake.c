@@ -161,7 +161,7 @@ in this Software without prior written authorization from The Open Group.
  */
 #include <stdio.h>
 #include <ctype.h>
-#include "Xosdefs.h"
+ #include "Xosdefs.h"
 #ifdef WIN32
 #include "Xw32defs.h"
 #endif

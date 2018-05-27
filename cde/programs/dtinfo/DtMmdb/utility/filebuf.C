@@ -26,7 +26,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#if !defined(hpux) && !defined(__osf__) && !defined(USL) && \
+#if !defined(hpux) && !defined(USL) && \
     !defined(linux) && !defined(CSRG_BASED) && !defined(sun)
 #include <sysent.h>
 #endif
@@ -38,7 +38,7 @@
 
 #include <sys/stat.h>
 
-filebuf::~filebuf() 
+filebuf::~filebuf()
 {
    close();
    delete _name;
@@ -75,9 +75,9 @@ filebuf::filebuf(const char* name, int mode, int protect) :
 
 int filebuf::open(const char* name, int mode, int protect)
 {
-   if ( _fd != -1 && 
-        _name && strcmp(name, _name) == 0 && 
-        mode == _mode 
+   if ( _fd != -1 &&
+        _name && strcmp(name, _name) == 0 &&
+        mode == _mode
    )
       return 0;
 
@@ -102,12 +102,12 @@ int filebuf::open(const char* name, int mode, int protect)
 
    if ( BIT_TEST(mode, ios::trunc) ||
         (
-         BIT_TEST(mode, ios::trunc) && 
+         BIT_TEST(mode, ios::trunc) &&
          !(BIT_TEST(mode, ios::in)||BIT_TEST(mode, ios::app))
-        ) 
-      ) 
+        )
+      )
       flag |= O_TRUNC;
-  
+
 //fprintf(stderr, "flag=%x\n", flag);
 
    _fd = ::open(name, flag);
@@ -127,9 +127,9 @@ int filebuf::open(const char* name, int mode, int protect)
 
 int filebuf::close()
 {
-   if ( _prev_action == streambuf::PUT ) 
+   if ( _prev_action == streambuf::PUT )
       flush();
-   
+
    ::close(_fd);
    _fd = -1;
    return 0;
@@ -140,7 +140,7 @@ int filebuf::is_open()
    return (_fd>=0) ? 1 : 0;
 }
 
-void filebuf::notify(int action_t) 
+void filebuf::notify(int action_t)
 {
       if ( _prev_action == -1 ) {
          _prev_action = action_t;
@@ -155,9 +155,9 @@ void filebuf::_notify(int action_t)
      case streambuf::GET:
 //////////////////////////////////////////////////////////////
 // previous action was PUT. Now calculate the number of chars
-// that have been put and write them out. 
+// that have been put and write them out.
 //
-// Note: put_ptr always starts at base. And at this time, 
+// Note: put_ptr always starts at base. And at this time,
 //       get_ptr == base.
 //
 //////////////////////////////////////////////////////////////
@@ -166,12 +166,12 @@ void filebuf::_notify(int action_t)
 
      case streambuf::PUT:
 //////////////////////////////////////////////////////////////
-// previous action was a GET. 
+// previous action was a GET.
 //
 // Note: get_ptr always starts at base.
 //
 //////////////////////////////////////////////////////////////
-       empty_buffer(); 
+       empty_buffer();
        break;
 
      default:
@@ -188,7 +188,7 @@ int filebuf::_write(char* ptr, int size)
    if ( _written_size != size ) {
       //fprintf(stderr, "fwrite only writes %d bytes\n.", size - _written_size);
       return EOF;
-   } 
+   }
    return _written_size;
 }
 
@@ -215,7 +215,7 @@ int filebuf::overflow()
 
       ok = _write(get_ptr, l);
 
-      if ( ok != EOF ) 
+      if ( ok != EOF )
          ok = _write(base, _size - l);
    }
 
@@ -223,12 +223,12 @@ int filebuf::overflow()
 
    current_pos += _size;
 
-   empty_buffer(); 
+   empty_buffer();
 
    return ok;
 }
 
-int filebuf::underflow() 
+int filebuf::underflow()
 {
 // get more from the file if possible
 
@@ -253,41 +253,41 @@ int filebuf::underflow()
    return 0;
 }
 
-int filebuf::_seek() 
+int filebuf::_seek()
 {
 //fprintf(stderr, "_seek() [1] current_pos= %d\n", current_pos);
    if ( ::lseek(_fd, current_pos, SEEK_SET) == -1 ) {
       fprintf(stderr, "lseek failed. current_pos= %ld\n", current_pos);
       return EOF;
-   } else 
+   } else
       return 0;
 }
 
-int filebuf::_seek(streampos pos, int whence) 
+int filebuf::_seek(streampos pos, int whence)
 {
-      
+
 //fprintf(stderr, "_seek() [2]: pos= %d, whence=%d\n", pos, whence);
    current_pos = pos;
    if ( ::lseek(_fd, pos, whence) == -1 ) {
       fprintf(stderr, "lseek failed. pos= %ld, whence=%d\n", pos, whence);
       return EOF;
-   } else 
+   } else
       return 0;
 }
 
-int filebuf::seekg(long delta) 
+int filebuf::seekg(long delta)
 {
    if ( _prev_action == streambuf::PUT )
       overflow();
    else
-      empty_buffer(); 
+      empty_buffer();
 
    current_pos = delta;
 
    return 0;
 }
 
-int filebuf::flush() 
+int filebuf::flush()
 {
    if ( overflow() == EOF )
       return EOF;

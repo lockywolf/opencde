@@ -6,13 +6,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -22,7 +22,7 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
 
 #ifndef _xList_hh
@@ -44,12 +44,12 @@ private:
   Link (const T &element)
     : f_element (element)
     { }
-  
+
   T     f_element;
 };
 
 template <class T>
-#if defined(__uxp__) || defined(_IBMR2) || defined(__osf__) || \
+#if defined(__uxp__) || defined(_IBMR2) || \
     defined(USL) || defined(linux) || defined(CSRG_BASED) || defined(sun)
 class xList : public List_base
 #else
@@ -61,13 +61,13 @@ class xList : private List_base
 #ifdef SC3
 friend class List_Iterator<T>;
 #else
-#if !defined(_IBMR2) && !defined(__osf__) && !defined(USL) && \
+#if !defined(_IBMR2) && !defined(USL) && \
     !defined(linux) && !defined(CSRG_BASED) && !defined(sun)
 template <class T> friend class List_Iterator;
 #endif
 #endif
 public:
-  xList() { } 
+  xList() { }
   ~xList();
 
   void insert (const T &element)
@@ -79,7 +79,7 @@ public:
 
   void append (const T &element);
 
-  // Element must have an operator == that works. 
+  // Element must have an operator == that works.
   void remove (T &element);
 
   void remove (List_Iterator<T> &iterator);
@@ -98,7 +98,7 @@ public:
 
 
 template <class T>
-#if defined(_IBMR2) || defined(__osf__) || defined(linux) || \
+#if defined(_IBMR2) || defined(linux) || \
     defined(CSRG_BASED) || defined(sun)
 class List_Iterator : public List_Iterator_base
 #else

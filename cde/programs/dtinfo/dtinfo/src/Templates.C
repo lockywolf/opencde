@@ -279,8 +279,8 @@ class UpdateMenu;
 
 #ifdef USL
 
-#pragma instantiate CC_TValSlist<SegClientData*> 
-#pragma instantiate CC_TValSlistIterator<SegClientData*> 
+#pragma instantiate CC_TValSlist<SegClientData*>
+#pragma instantiate CC_TValSlistIterator<SegClientData*>
 #pragma instantiate UAS_Receiver<UpdateMenu>
 #pragma instantiate UAS_PtrList<UAS_String>
 #pragma instantiate UAS_Pointer<UAS_String>
@@ -394,7 +394,7 @@ class UpdateMenu;
 #pragma instantiate UAS_Receiver<WantInputReadyCancel>
 #pragma instantiate UAS_Receiver<CancelOperation>
 #pragma instantiate UAS_Receiver<UAS_LibraryDestroyedMsg>
- 
+
 #pragma instantiate Stack<char>
 #pragma instantiate Stack<char *>
 
@@ -410,147 +410,9 @@ class UpdateMenu;
 
 #pragma instantiate hashTable<FontEntry,char>
 #pragma instantiate Stack<connective_t>
- 
+
 #pragma instantiate CC_TPtrDlist<sr_DtCvSegment>
 #pragma instantiate UAS_Pointer<UAS_List<DtSR_BookcaseSearchEntry> >
-
-#else
-
-#ifdef __osf__
-
-#pragma define_template CC_TValSlist<SegClientData*> 
-#pragma define_template CC_TValSlistIterator<SegClientData*> 
-#pragma define_template UAS_Receiver<UpdateMenu>
-#pragma define_template UAS_PtrList<UAS_String>
-#pragma define_template UAS_Pointer<UAS_String>
-
-#pragma define_template UAS_Pointer<UAS_Common>
-#pragma define_template UAS_Pointer<UAS_EmbeddedObject>
-#pragma define_template UAS_Pointer<UAS_Collection>
-#pragma define_template UAS_Pointer<UAS_Path>
-#pragma define_template UAS_Pointer<UAS_StyleSheet>
-#pragma define_template UAS_Pointer<Graphic>
-#pragma define_template UAS_Pointer<Mark>
-#pragma define_template UAS_Pointer<MarkUnitInfo>
-
-#pragma define_template UAS_List<UAS_StyleSheet>
-#pragma define_template UAS_List<UAS_Common>
-#pragma define_template UAS_List<UAS_SearchResults>
-#pragma define_template UAS_List<UAS_SearchEngine>
-
-#pragma define_template UAS_List<MarkUnitInfo>
-
-#pragma define_template UAS_PtrList<FactoryEntry>
-#pragma define_template UAS_PtrList<MMDB>
-#pragma define_template UAS_PtrList<const char>
-
-#pragma define_template UAS_Pointer<UAS_BookcaseEntry>
-#pragma define_template UAS_Pointer<DtSR_BookcaseSearchEntry>
-#pragma define_template UAS_Pointer<DtSR_SearchResults>
-#pragma define_template UAS_Pointer<DtSR_SearchResultsEntry>
-#pragma define_template UAS_Pointer<DtSR_SearchEngine>
-#pragma define_template Dict<UAS_String, UAS_Pointer<DtSR_SearchResultsEntry> >
-#pragma define_template Dict<UAS_String, int>
-#pragma define_template Dict<UAS_String, unsigned long>
-#pragma define_template DictIter<UAS_String, unsigned long>
-#pragma define_template DictIter<UAS_String, UAS_Pointer<DtSR_SearchResultsEntry> >
-#pragma define_template UAS_List<DtSR_BookcaseSearchEntry>
-#pragma define_template UAS_List<DtSR_Stems>
-#pragma define_template UAS_List<UAS_List<UAS_String> >
-
-#pragma define_template UAS_ObjList<UAS_String>
-
-#pragma define_template xList<Ancestor *>
-#pragma define_template xList<UAS_Pointer<UAS_Common> >
-#pragma define_template xList<BookTab *>
-#pragma define_template xList<MarkTml *>
-#pragma define_template xList<MarkIcon *>
-#pragma define_template xList<NodeWindowAgent *>
-#pragma define_template xList<LibraryAgent *>
-#pragma define_template xList<MarkBase *>
-#pragma define_template xList<MarkCanvas *>
-#pragma define_template xList<UAS_Pointer<Mark> >
-#pragma define_template xList<Mark_mmdb *>
-#pragma define_template xList<const char *>
-#pragma define_template xList<MarkBase::open_func_t>
-#pragma define_template xList<MarkBase::mb_create_func_t>
-#pragma define_template xList<UAS_Pointer<Mark> >
-
-#pragma define_template xList<UAS_Pointer<Graphic > >
-#pragma define_template xList<Graphic *>
-#pragma define_template xList<GraphicAgent *>
-#pragma define_template xList<int>
-#pragma define_template xList<long>
-#pragma define_template xList<unsigned long>
-#pragma define_template xList<BookmarkEdit *>
-#pragma define_template xList<UAS_SearchScope *>
-#pragma define_template xList<InfobaseEntry *>
-#pragma define_template xList<Header *>
-#pragma define_template xList<PixmapPidObj *>
-#pragma define_template xList<PsProcess *>
-
-#pragma define_template UAS_Sender<UAS_SearchMsg>
-#pragma define_template UAS_Sender<UAS_StatusMsg>
-#pragma define_template UAS_Sender<UAS_PartialDataMsg>
-#pragma define_template UAS_Sender<MarkCreated>
-#pragma define_template UAS_Sender<EditMark>
-#pragma define_template UAS_Sender<ViewMark>
-#pragma define_template UAS_Sender<MarkChanged>
-#pragma define_template UAS_Sender<MarkMoved>
-#pragma define_template UAS_Sender<MarkDeleted>
-#pragma define_template UAS_Sender<MarkSelectionChanged>
-#pragma define_template UAS_Sender<UpdateMenu>
-#pragma define_template UAS_PtrList<UAS_Sender<UpdateMenu> >
-#pragma define_template UAS_PtrList<UAS_Receiver<UpdateMenu> >
-#pragma define_template UAS_Sender<LinkAction>
-#pragma define_template UAS_Sender<UAS_DocumentRetrievedMsg>
-#pragma define_template UAS_Sender<UAS_CollectionRetrievedMsg>
-#pragma define_template UAS_Sender<HistoryAdd>
-#pragma define_template UAS_Sender<HistoryDelete>
-#pragma define_template UAS_Sender<SelectionChanged>
-#pragma define_template UAS_Sender<DetachGraphic>
-#pragma define_template UAS_Sender<ReAttachGraphic>
-#pragma define_template UAS_Sender<ScopeCreated>
-#pragma define_template UAS_Sender<ScopeDeleted>
-#pragma define_template UAS_Sender<ScopeRenamed>
-#pragma define_template UAS_Sender<InputReady>
-#pragma define_template UAS_Sender<WantInputReady>
-#pragma define_template UAS_Sender<WantInputReadyCancel>
-#pragma define_template UAS_Sender<CancelOperation>
-
-#pragma define_template UAS_Receiver<LinkAction>
-#pragma define_template UAS_Receiver<UAS_CollectionRetrievedMsg>
-#pragma define_template UAS_Receiver<UAS_DocumentRetrievedMsg>
-#pragma define_template UAS_Receiver<HistoryAdd>
-#pragma define_template UAS_Receiver<HistoryDelete>
-#pragma define_template UAS_Receiver<SelectionChanged>
-#pragma define_template UAS_Receiver<DetachGraphic>
-#pragma define_template UAS_Receiver<ReAttachGraphic>
-#pragma define_template UAS_Receiver<DisplayGraphic>
-#pragma define_template UAS_Receiver<InputReady>
-#pragma define_template UAS_Receiver<WantInputReady>
-#pragma define_template UAS_Receiver<WantInputReadyCancel>
-#pragma define_template UAS_Receiver<CancelOperation>
-#pragma define_template UAS_Receiver<UAS_LibraryDestroyedMsg>
- 
-#pragma define_template Stack<char>
-#pragma define_template Stack<char *>
-
-#pragma define_template Stack<_dtCvSegment*>
-#pragma define_template Stack<PartialElementFeatures*>
-#pragma define_template Stack<TableDefn*>
-#pragma define_template Stack<TGDefn*>
-#pragma define_template Stack<SegClientData*>
-
-#pragma define_template CC_TPtrSlist<ColDefn>
-#pragma define_template CC_TPtrSlist<ColFormat>
-#pragma define_template CC_TPtrSlist<RowDefn>
-
-#pragma define_template hashTable<FontEntry,char>
-#pragma define_template Stack<connective_t>
- 
-#pragma define_template CC_TPtrDlist<sr_DtCvSegment>
-#pragma define_template UAS_Pointer<UAS_List<DtSR_BookcaseSearchEntry> >
 
 #else
 
@@ -697,7 +559,6 @@ typedef Stack<NTerminal*> _stkNTPtr_;
 /* Basic subdir refs */
 typedef CC_TPtrDlist<sr_DtCvSegment> _ccTPtrDLstCvSegmnt_;
 
-#endif
 #endif
 #endif
 

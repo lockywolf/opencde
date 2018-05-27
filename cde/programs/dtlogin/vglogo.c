@@ -88,11 +88,7 @@ LogoInfo logoInfo; /* logo resources			   */
 static XtResource logoResources[] = {
     {"bitmapFile", "BitmapFile", XtRString, sizeof(char *),
      XtOffset(LogoInfoPtr, bitmapFile),
-#ifdef __osf__
-     XtRString, "DECDtlogo"},
-#else
      XtRString, "Dtlogo"},
-#endif
 };
 
 /***************************************************************************

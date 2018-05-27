@@ -5,7 +5,7 @@
  *	$TOG: DtMail.hh /main/18 1998/11/10 17:02:07 mgreess $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement bertween
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -51,11 +51,6 @@ typedef void SubProcessFinishedProc (int pid, int status, void *data);
                                 /* and will be removed in a     */
                                 /* later release                */
 
-#ifdef __osf__
-    struct hash;
-    struct var;
-#endif
-
 // enums cannot be declared inside of classes because the enum scope rules
 // changed from V2 to V3 compilers causing incompatibilities
 //
@@ -68,7 +63,7 @@ enum DtmFileLocality {
 
 class DtMail {
   public:
-    
+
     // Returns the minor code set by a DtMail routine. This method
     // should only be called if error._major is not NO_EXCEPTION.
     //
@@ -78,7 +73,7 @@ class DtMail {
     //  Returns - The error code as defined in DtMailError.h
     //
     static DTMailError_t getMinorCode(DtMailEnv & error);
-    
+
     // Returns the internationalized error text for an error. This
     // method should only be called if error._major is not NO_EXCEPTION.
     //
@@ -105,7 +100,7 @@ class DtMail {
       public:
 	    Session(DtMailEnv &, const char * app_name);
 	    ~Session(void);
-	    
+
 	    const char ** enumerateImpls(DtMailEnv & error);
 	    void setDefaultImpl(DtMailEnv & error, const char * impl);
 	    const char * getDefaultImpl(DtMailEnv & error);
@@ -223,17 +218,17 @@ class DtMail {
 	    //
             typedef void (*DisableGroupPrivilegesCallback)(void * client_data);
             typedef void (*EnableGroupPrivilegesCallback)(void * client_data);
-      
+
             void registerDisableGroupPrivilegesCallback(
 					DisableGroupPrivilegesCallback,
 					void * client_data);
             void registerEnableGroupPrivilegesCallback(
 					EnableGroupPrivilegesCallback,
 					void * client_data);
-      
+
             void disableGroupPrivileges(void);
             void enableGroupPrivileges(void);
-	
+
 	    // This method allows the client to register a callback that
 	    // can be called to return the last time() an interactive X
 	    // event was processed.
@@ -243,13 +238,13 @@ class DtMail {
 	    // library may wish to delay the busy event for a while.
             //
             typedef long (*LastInteractiveEventTimeCallback)(void * client_data);
-      
+
             void registerLastInteractiveEventTimeCallback(
 					LastInteractiveEventTimeCallback,
 					void * client_data);
-      
+
             long lastInteractiveEventTime(void);
-      
+
 		// For CHARSET
         int OpenLcxDb(void);
         void DtXlateStdToOpLocale(char *op, char *std, char *dflt,
@@ -280,19 +275,19 @@ class DtMail {
 	    char		*_app_name;
 	    MailRc *		_mail_rc;
 	    DtMailBoolean	_canAutoSave;
-	    
+
 	    /* Implementation structure. */
 	    struct Impls {
 	      char		*impl_name;
 	      MetaImplFactory	impl_meta_factory;
 	      void		*impl_lib;
 	    };
-	    
+
 	    Impls		*_impls;
 	    const char	**_impl_names; // Used to return names from enumerate.
 	    int		_num_impls;
 	    int		_default_impl;
-	    
+
 	    struct EventRoutine : public DtCPlusPlusAllocator {
 	      DtMailEventFunc	routine;
 	      void *		client_data;
@@ -323,13 +318,13 @@ class DtMail {
 
 //==================NEW MAILRC CLASS
     class MailRc {
-	
+
       public:
-	    
+
 	    MailRc(DtMailEnv &, Session *);
-	    
+
 	    ~MailRc();
-	    
+
 	    int  encryptedLength(int length);
 	    void encryptValue(char *to, char *from, int length);
 	    int  decryptValue(char *to, char *from, int length);
@@ -362,8 +357,8 @@ class DtMail {
 	    void removeAlternate(DtMailEnv &, const char * alt);
 
 	    void update(DtMailEnv &);
-	    
-	    
+
+
 	    // Methods below this line are not part of the public interface.
 	    // They must be declared public due to implementation restrictions.
 	    // DO NOT CALL THESE AS A CLIENT OF THIS CLASS.
@@ -408,9 +403,9 @@ class DtMail {
 	    static void *hm_alloc();
 	    static void *hm_test(struct hash **table, char *key);
 	    static void hm_delete(struct hash **table, char *key);
-	    static void hm_add(struct hash **table, 
-			       char *key, 
-			       void *value, 
+	    static void hm_add(struct hash **table,
+			       char *key,
+			       void *value,
 			       int size);
 	    static void hm_mark(struct hash **table, char * key);
 	    static int hm_ismarked(struct hash **table, char * key);
@@ -428,10 +423,10 @@ class DtMail {
 				char * key,
 				void * value,
 				void * client_data);
-	    
+
 	    static char *nullfield;
 	    static Boolean clearAliases;
-	    
+
 	    struct globals {
 	    char *g_myname;
 	    void *g_ignore;		/* hash list of ignored fields */
@@ -439,12 +434,12 @@ class DtMail {
 	    void *g_alias;		/* hash list of alias names */
 	    void *g_alternates;	/* hash list of alternate names */
 	    int g_nretained;	/* the number of retained fields */
-	    };	
-	    
+	    };
+
 	    static struct globals glob;
-	    
+
 	    /* Pointer to active var list */
-	    static struct   var *variables[HSHSIZE]; 
+	    static struct   var *variables[HSHSIZE];
 
             DTMailError_t getParseError(void) { return _parseError; }
 
@@ -467,9 +462,9 @@ class DtMail {
             int getfolderdir(char *);
 	    static int hash(char *name);
 	    static void vfree(char *cp);
-	    
+
 	  private:
-	    
+
 	    DTMailError_t			_parseError;
 	    FILE *input;
 	    int sourcing;
@@ -477,42 +472,42 @@ class DtMail {
 	    int  ssp;               /* Top of file stack */
 	    char *alternate_list;
 	    char *_mailrc_name;
-	    
+
 	    static struct var *lookup(char *name, struct var **hasharray);
-	    
-	    
+
+
 	    struct sstack {
 	    FILE    *s_file;                /* File we were in. */
 	    int     s_cond;                 /* Saved state of conditionals */
 	    };
-	    
+
 	    struct sstack sstack[MAILRC_NOFILE];
-	
-	
+
+
     };
 
-    
+
     class Envelope;
     class BodyPart;
 
     class Message : public DtCPlusPlusAllocator {
       public:
 	    virtual ~Message(void);
-	    
+
 	    virtual Envelope * getEnvelope(DtMailEnv &) = 0;
-	    
+
 	    // This should only be used when you REALLY need to know
 	    // how many body parts are present before actually traversing
 	    // the body parts (i.e. like when writing a MIME format message).
 	    virtual int getBodyCount(DtMailEnv &) = 0;
-	    
+
 	    virtual BodyPart * getFirstBodyPart(DtMailEnv &) = 0;
 	    virtual BodyPart * getNextBodyPart(DtMailEnv &,
 					       BodyPart * last) = 0;
-	    
+
 	    virtual BodyPart * newBodyPart(DtMailEnv &,
 					   BodyPart * after) = 0;
-	    
+
 #ifdef DEAD_WOOD
 	    virtual void newBodyPartOrder(DtMailEnv &,
 					  BodyPart * new_order,
@@ -541,11 +536,11 @@ class DtMail {
 	    MailBox * mailBox(void);
 	    Session * session(void);
 
-	    
+
 	  protected:
 	    Message(DtMailEnv &,
 		    MailBox * parent);
-	    
+
 	    MailBox *		_parent;
 	    Session *		_session;
 	    Envelope *		_envelope;
@@ -570,15 +565,15 @@ class DtMail {
 				   const DtMailBoolean abstract,
 				   DtMailValueSeq & value) = 0;
 
-	    virtual void setHeaderSeq(DtMailEnv &, 
-				      const char * header_name, 
+	    virtual void setHeaderSeq(DtMailEnv &,
+				      const char * header_name,
 				      const DtMailValueSeq & val) = 0;
 
 	    // The last parameter is left to the client to provide
 	    // because it can not be done in a type safe manner.
 	    //
-	    virtual void setHeader(DtMailEnv &, 
-				   const char * header_name, 
+	    virtual void setHeader(DtMailEnv &,
+				   const char * header_name,
 				   const DtMailBoolean replace,
 				   const char *) = 0;
 
@@ -605,7 +600,7 @@ class DtMail {
 	    void *	_obj_mutex;
 	    Message *	_parent;
 	};
-    
+
     class BodyPart : public DtCPlusPlusAllocator {
       public:
 
@@ -619,10 +614,10 @@ class DtMail {
 				     char ** name,
 				     int * mode,
 				     char ** description) = 0;
-	    
+
 	    virtual void getContentType(DtMailEnv &,
 				     char ** content_type) = 0;
-	    
+
 	    virtual void setContents(DtMailEnv &,
 				     const void * contents,
 				     const unsigned long length,
@@ -636,7 +631,7 @@ class DtMail {
 
 	    virtual void resetFlag(DtMailEnv &,
 				   DtMailBodyPartState) = 0;
-	    
+
 	    virtual DtMailBoolean flagIsSet(DtMailEnv &,
 					    DtMailBodyPartState) = 0;
 
@@ -651,14 +646,14 @@ class DtMail {
         //-------------------------------------------
         // These methods are duplicated in class BodyPart
 	// (also being implemented in class Session) because
-	// RFCFormat and RFCBodyPart need to access them. 
+	// RFCFormat and RFCBodyPart need to access them.
 	// Duplicating routines like what is being done here is a workaround
 	// for an implementation bug/hole because there is no class where global
 	// routines can be defined (and be accessed by any class).
 	// class Session is not a proper place to put (global) methods because
 	// not every class can get at Session.
 	// RFCFormat accesses these routines through its private Session handle.
-	// RFCBodyPart does not have a Session handle. 
+	// RFCBodyPart does not have a Session handle.
 	// Hence the need to duplicate the following routines.
 
         virtual int OpenLcxDb(void) = 0;
@@ -670,7 +665,7 @@ class DtMail {
 		     const char *, char **, char **) = 0;
         virtual void DtXlateLocaleToMime(const char *, const char *,
                      const char *, char **) = 0;
- 
+
         virtual char *csToConvName(char *) = 0;
         virtual char *locToConvName() = 0;
         virtual char *targetConvName() = 0;
@@ -696,13 +691,13 @@ class DtMail {
 	    Message *	_parent;
 	};
 
-    
+
     // The MailBox encapsulates the concept of a mail box as a container.
     // This class should be used for manipulating mail containers.
-    
+
     class MailBox : public DtCPlusPlusAllocator {
       public:
-	    
+
 	    // Create a MailBox. The constructor simply initializes the
 	    // instance and sets the appropriate meta handlers for mail
 	    // containers.
@@ -716,7 +711,7 @@ class DtMail {
 		    void * arg,
 		    DtMailCallback cb,
 		    void * clientData);
-	    
+
 	    // Returns DTM_TRUE if the is mail box is writable and DTM_FALSE
 	    // if the mail box is read only.
 	    //
@@ -726,7 +721,7 @@ class DtMail {
 	    // container, and any embedded containers.
 	    //
 	    virtual ~MailBox(void);
-	    
+
 	    static void	appendCB(DtMailEnv&, char*, int, void *clientData);
             virtual void append(DtMailEnv &error, char *buf, int len) = 0;
 
@@ -744,7 +739,7 @@ class DtMail {
 	    //
 	    virtual void create(DtMailEnv &,
 				mode_t mode = DTMAIL_DEFAULT_CREATE_MODE) = 0;
-	    
+
 	    // Open a named mail container in the file system. The container
 	    // must exist, and be readable (at least) by the user.
 	    // If the container is writable by the user it will be opened
@@ -784,7 +779,7 @@ class DtMail {
 					DtMailEnv & error,
 					const DtMailHeaderRequest & header_list,
 					DtMailHeaderLine & header_line) = 0;
-	    
+
 	    virtual DtMailMessageHandle getNextMessageSummary(
 					DtMailEnv & error,
 					DtMailMessageHandle last,
@@ -803,11 +798,11 @@ class DtMail {
 	    virtual Message * getMessage(
 					DtMailEnv & error,
 					DtMailMessageHandle message_handle) = 0;
-	    
+
 	    virtual Message * getFirstMessage(DtMailEnv &) = 0;
-	    
+
 	    virtual Message * getNextMessage(DtMailEnv &, Message * last) = 0;
-	    
+
 	    virtual Message * newMessage(DtMailEnv &) = 0;
 
 	    virtual void copyMessage(DtMailEnv &, Message *) = 0;
@@ -833,7 +828,7 @@ class DtMail {
 	    // acquire the session to which it belongs.
 	    //
 	    virtual Session * session(void);
-	    
+
 	    virtual void callCallback(DtMailCallbackOp, void *) = 0;
 	    virtual void startAutoSave(
 				DtMailEnv & error,
@@ -845,7 +840,7 @@ class DtMail {
 
 	    void hideAccessEvents(DtMailBoolean onoff)
 			{_hide_access_events = onoff;}
-             
+
     	    DtMailObjectKey getObjectKey(void)
 			{return _key;}
 
@@ -867,7 +862,7 @@ class DtMail {
 	    DtMailBoolean	_mail_box_writable;
 	    mode_t		_default_mode;	// Default mode for file.
 	};
-    
+
     class Transport : public DtCPlusPlusAllocator {
       public:
 	    virtual DtMailOperationId submit(
@@ -898,7 +893,7 @@ class DtMail {
 	};
 
   private:
-    
+
 friend class MailBox;
 friend class Message;
 friend class Envelope;

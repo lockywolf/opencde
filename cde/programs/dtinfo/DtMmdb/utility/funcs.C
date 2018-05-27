@@ -27,18 +27,18 @@
  * UNPUBLISHED -- rights reserved under the Copyright Laws of the United
  * States.  Use of a copyright notice is precautionary only and does not
  * imply publication or disclosure.
- * 
+ *
  * This software contains confidential information and trade secrets of HaL
  * Computer Systems, Inc.  Use, disclosure, or reproduction is prohibited
  * without the prior express written permission of HaL Computer Systems, Inc.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject to
  * restrictions as set forth in subparagraph (c)(l)(ii) of the Rights in
  * Technical Data and Computer Software clause at DFARS 252.227-7013.
  *                        HaL Computer Systems, Inc.
  *                  1315 Dell Avenue, Campbell, CA  95008
- * 
+ *
  */
 
 
@@ -71,13 +71,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #endif
-#ifdef __osf__
-extern "C"
-{
-int statvfs(const char *, struct statvfs *);
-int getdomainname(char *, int);
-}
-#endif /* __osf__ */
 #include <sys/stat.h>
 
 #define BUFLEN 512
@@ -138,7 +131,7 @@ int gethostname(char* name, int namelen)
       throw(Exception());
    } else
       memcpy(name, myuname.nodename, l);
-   
+
    return 0;
 }
 #endif
@@ -212,34 +205,34 @@ int pos_of_LSB(const unsigned int y)
    default:
     {
       unsigned int x = y;
-   
+
    //debug(cerr, x);
    //debug(cerr, hex(x));
-   
+
       unsigned int i;
       for ( i =0; i<sizeof(x); i++ ) {
-         if ( ( 0x000000ff & x) == 0 ) 
+         if ( ( 0x000000ff & x) == 0 )
             x >>= 8;
          else
             break;
       }
-   
+
    //debug(cerr, i);
-   
+
       int j;
       for ( j =1; j<=8; j++ )
-         if ( (0x00000001 & x) == 0 ) 
+         if ( (0x00000001 & x) == 0 )
             x >>= 1;
          else
             break;
-   
+
    //debug(cerr, j);
    //debug(cerr, i*8+j);
-   
+
       return i*8 + j;
      }
    }
-   
+
 }
 
 /*
@@ -304,7 +297,7 @@ int del_file(const char* filename, const char* pathname)
        *((char *) memcpy(buf + slen, filename, len) + len) = '\0';
        ok = unlink(buf);
    }
-   
+
    if ( ok == -1 ) {
       debug(cerr, pathname);
       debug(cerr, filename);
@@ -330,7 +323,7 @@ Boolean copy_file(const char* source, const char* sink)
 
    in.close();
 
-   if ( out.fail() ) 
+   if ( out.fail() )
       return false;
    else
       return true;
@@ -356,7 +349,7 @@ Boolean exist_file(const char* filename, const char* pathname)
 
    struct stat stat_info;
 
-    if ( pathname ) 
+    if ( pathname )
        ok = stat(form("%s/%s", pathname, filename), &stat_info);
     else
        ok = stat( filename, &stat_info );
@@ -366,9 +359,9 @@ Boolean exist_file(const char* filename, const char* pathname)
        return S_ISREG(stat_info.st_mode) ? true : false ;
 
     switch (errno) {
-       case ENOENT: 
+       case ENOENT:
           return false;
-       default: 
+       default:
           MESSAGE(cerr, "exist_file(): stat() failed. an exception");
           throw(systemException(errno));
     }
@@ -435,11 +428,11 @@ Boolean exist_dir(const char* pathname)
 {
    struct stat stat_info;
 
-   if ( stat( pathname, &stat_info ) == 0 ) 
+   if ( stat( pathname, &stat_info ) == 0 )
       return S_ISDIR(stat_info.st_mode) ? true : false ;
 
    switch ( errno ) {
-      case ENOENT: 
+      case ENOENT:
          return false;
       default:
          MESSAGE(cerr, "exist_dir() failed");
@@ -480,7 +473,7 @@ Boolean check_and_create_dir(const char* path)
    if ( mkdir(path, 0777) != 0 ) {
       cerr << "mkdir failed on path " << path << "\n";
       throw(systemException(errno));
-   } 
+   }
 
    return true;
 }
@@ -493,7 +486,7 @@ int open_prot(int min, int def)
    umask(prot = umask(0));
 
    prot = min | (def & ~(prot & 0777));
-   
+
    return prot;
 }
 
@@ -559,7 +552,7 @@ int ll4(int x)
 //      return false;
 //   }
 //}
-//      
+//
 //Boolean fcntl_unlock( int fd )
 //{
 //   flock flock_record;
@@ -755,7 +748,7 @@ char* access_info( char* request )
 #else
    char userid[L_cuserid];
    snprintf(info_buf, sizeof(info_buf), "%s-%s-%ld-%s-%s",
-           name.nodename, 
+           name.nodename,
            ( cuserid(userid)[0] == 0 ) ? "???" : userid,
            /* getenv("USER"), */
            (long)getpid(), x, request
@@ -765,7 +758,7 @@ char* access_info( char* request )
    return info_buf;
 }
 
-void lsb_putbits(unsigned& target, unsigned position_from_lsb, 
+void lsb_putbits(unsigned& target, unsigned position_from_lsb,
              unsigned bits, unsigned source)
 {
    target |= ((source & ~( ~0 << bits )) << position_from_lsb) ;
@@ -787,7 +780,7 @@ Boolean cc_is_digit(istream& in)
 
 unsigned long disk_space(const char* path)
 {
-#if defined(__osf__) || defined (hpux) || defined (SVR4) || defined(CSRG_BASED)
+#if defined (hpux) || defined (SVR4) || defined(CSRG_BASED)
    struct statvfs statfs_buf;
 #else
    struct statfs statfs_buf;
@@ -795,7 +788,7 @@ unsigned long disk_space(const char* path)
 
    long free_bytes;
 
-#if defined(__osf__) || defined (hpux) || defined (SVR4) || defined(CSRG_BASED)
+#if defined (hpux) || defined (SVR4) || defined(CSRG_BASED)
    if ( statvfs(path, &statfs_buf) == 0 ) {
       free_bytes = statfs_buf.f_bavail * statfs_buf.f_frsize ;
 #else
@@ -847,7 +840,7 @@ Boolean writeToTmpFile(char* unique_nm, char* str, int size)
              delete out;
              continue;
           }
-   
+
           if ( ! (out->write(str, size) ) ) {
              out -> close();
              delete out;
@@ -859,7 +852,7 @@ Boolean writeToTmpFile(char* unique_nm, char* str, int size)
              delete out;
              break;
           }
-   
+
        }
        mcatch_any()
        {

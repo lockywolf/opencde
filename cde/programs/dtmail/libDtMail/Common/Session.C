@@ -27,7 +27,7 @@
  *	$TOG: Session.C /main/16 1998/07/24 16:08:39 mgreess $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement bertween
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -40,49 +40,6 @@
  *
  *+ENOTICE
  */
-
-#if defined (__osf__)
-
-// Workaround for CDExc19308
-//
-// This ifdef was added as a workaround for the
-// bug in the OSF1 V3.2 148 /usr/include/sys/localedef.h
-// header file, and should be removed as soon as the bug is
-// fixed.
-
-#include <iconv.h>
-#include <locale.h>
-#include <time.h>
-#include <DtHelp/LocaleXlate.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <limits.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <pwd.h>
-#include <sys/socket.h>
-#include <ctype.h>
-
-#include <DtMail/DtMail.hh>
-#include <EUSDebug.hh>
-#include "DynamicLib.hh"
-#include <DtMail/Threads.hh>
-#include <DtMail/ImplDriver.hh>
-#include "ImplConfigTable.hh"
-#include "SigChldImpl.hh"
-#include <DtMail/IO.hh>
-#include <DtMail/Common.h>
-
-#ifndef True
-#define True 1
-#endif
-#ifndef False
-#define False 0
-#endif
-
-#else
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -123,14 +80,14 @@ extern "C" {
 #include <stdlib.h>
 #include <limits.h>
 #include <ctype.h>
- 
+
 #ifndef True
 #define True 1
 #endif
 #ifndef False
 #define False 0
 #endif
- 
+
 #if defined(SunOS) && (SunOS < 55)
 extern "C" {
 #endif
@@ -145,9 +102,6 @@ extern "C" {
 #if defined(SunOS) && (SunOS < 55)
 }
 #endif
-
-// End of For CHARSET
-#endif	// ! defined(__osf__)
 
 DtVirtArray<SigChldInfo *>	*DtMailSigChldList;
 void *				_DtMutex;
@@ -238,16 +192,16 @@ DtMail::Session::~Session(void)
     if (_object_signature != SessionSignature) { // Been here, did that!
 	return;
     }
-    
+
   {
       MutexLock lock_scope(_obj_mutex);
-      
+
       _object_signature = 0;
-      
+
       ttdt_close(_tt_channel, NULL, 1);
-      
+
       DtMailEnv b_error;
-      
+
       // Close off the dynamic libraries and free the impl table.
       for (int tbl = 0; tbl < _num_impls; tbl++) {
 	  free(_impls[tbl].impl_name);
@@ -263,7 +217,7 @@ DtMail::Session::~Session(void)
       close(_event_fd[0]);
       close(_event_fd[1]);
   }
-    
+
 }
 
 const char **
@@ -335,7 +289,7 @@ DtMail::Session::queryImplV(DtMailEnv & error,
     // We need to retrieve the QueryImpl entry point for the implementation.
     //
     QueryImplEntry qie;
-    
+
     qie = (QueryImplEntry)_impls[slot].impl_meta_factory(QueryImplEntryOp);
     if (!qie) {
 	error.setError(DTME_ImplFailure);
@@ -376,7 +330,7 @@ DtMail::Session::mailBoxConstruct(DtMailEnv & error,
     //
     int		const_impl;
     QueryOpenEntry qoe;
-    
+
     qoe = (QueryOpenEntry)
 	    _impls[primary_impl].impl_meta_factory(QueryOpenEntryOp);
     if (!qoe) {
@@ -427,7 +381,7 @@ DtMail::Session::mailBoxConstruct(DtMailEnv & error,
     // from it.
     //
     MailBoxConstructEntry mbce;
-    
+
     mbce = (MailBoxConstructEntry)
 	     _impls[const_impl].impl_meta_factory(MailBoxConstructEntryOp);
     if (!mbce) {
@@ -463,7 +417,7 @@ DtMail::Session::messageConstruct(DtMailEnv & error,
 
     int		const_impl;
     QueryMessageEntry qoe;
-    
+
     qoe = (QueryMessageEntry)
 	      _impls[primary_impl].impl_meta_factory(QueryMessageEntryOp);
     if (!qoe) {
@@ -514,7 +468,7 @@ DtMail::Session::messageConstruct(DtMailEnv & error,
     // from it.
     //
     MessageConstructEntry mbce;
-    
+
     mbce = (MessageConstructEntry)
 	     _impls[const_impl].impl_meta_factory(MessageConstructEntryOp);
     if (!mbce) {
@@ -644,17 +598,17 @@ DtMail::Session::expandPath(DtMailEnv & error, const char * path)
     	if ((fp = popen(exp_name, "r")) != NULL) {
           	exp_name[0] = '\0';
           	if (fgets(exp_name, MAXIMUM_PATH_LENGTH, fp) != NULL &&
-			exp_name[0] != '\0') 
+			exp_name[0] != '\0')
     	        	// get rid of \n at end of string
 	  		exp_name[strlen(exp_name)-1] = '\0';
 	  	else
-			strcpy(exp_name, path); 
+			strcpy(exp_name, path);
 	  	pclose(fp);
     	}
-	else 
+	else
 		strcpy(exp_name, path);
     }
-    else 
+    else
 	strcpy(exp_name, path);
 
     char * exp_name2 = (char *)malloc(MAXIMUM_PATH_LENGTH);
@@ -666,8 +620,8 @@ DtMail::Session::expandPath(DtMailEnv & error, const char * path)
       {
 	  _mail_rc->getValue(error, "folder", &fold_path);
 	  if (error.isNotSet()) {
-               if (*fold_path != '/' && *fold_path != '.' && 
-			*fold_path != '~' && *fold_path != '$') 
+               if (*fold_path != '/' && *fold_path != '.' &&
+			*fold_path != '~' && *fold_path != '$')
 		  strcpy(exp_name2, "~/");
 
 	  	strcat(exp_name2, fold_path);
@@ -675,18 +629,18 @@ DtMail::Session::expandPath(DtMailEnv & error, const char * path)
 	  }
 	  else  // Use the default folder
 	  	strcpy(exp_name2, "~/");
-		
+
 	  strcat(exp_name2, &exp_name[1]);
-      
-          // We need to call ourselves again to deal with 
+
+          // We need to call ourselves again to deal with
           // relative paths in the folder directory.
-          // 
+          //
           char * old_exp = exp_name2;
           exp_name2 = expandPath(error, old_exp);
 	  free(old_exp);
 	  break;
       }
-	
+
       case '~':
 	// This is relative to the user's home directory.
       {
@@ -774,10 +728,10 @@ DtMail::Session::getRelativePath(DtMailEnv & error, const char * path)
 	    _mail_rc->getValue(error, "folder", &fold_path);
 	    if (error.isNotSet()) {
 		strcpy(exp_name, fold_path);
-	      
-		// We need to call ourselves again to deal with 
+
+		// We need to call ourselves again to deal with
 		// relative paths in the folder directory.
-		// 
+		//
 		char * old_exp = exp_name;
 		exp_name = expandPath(error, old_exp);
 		free(old_exp);
@@ -1123,7 +1077,7 @@ DtMail::Session::OpenLcxDb (void)
     time_t	time1  = 0;
     time_t	time2  = 0;
 
-    while (MyProcess == True) 
+    while (MyProcess == True)
       {
         /* if time out, return */
 	if (time(&time2) == (time_t)-1)
@@ -1311,7 +1265,7 @@ DtMail::Session::DtXlateMimeToIconv(
     int exists = -1;
 
     this->OpenLcxDb();
-   
+
     exists = _DtLcxXlateOpToStd(
 				MyDb, MyPlatform, CompVer,
 				DtLCX_OPER_MIME, mimeId,
@@ -1385,9 +1339,9 @@ DtMail::Session::csToConvName(char *cs)
    char *commonCS = NULL;
    char *convName = NULL;
    char *ret_target = NULL;
- 
+
    this->OpenLcxDb();
- 
+
    // Convert charset to upper case first because charset table is
    // case sensitive.
    if (cs)
@@ -1408,7 +1362,7 @@ DtMail::Session::csToConvName(char *cs)
       if  (exists == -1)
         return NULL;
    }
- 
+
   DtXlateStdToOpCodeset(DtLCX_OPER_INTERCHANGE_CODESET,
       commonCS,
       NULL,
@@ -1422,7 +1376,7 @@ DtMail::Session::csToConvName(char *cs)
      free( ret_target );
    if ( commonCS )
      free( commonCS );
- 
+
    // Workaround for libDtHelp
    // Case of no iconv name for a particular locale, eg. C,
    // check for empty string.
@@ -1443,7 +1397,7 @@ DtMail::Session::locToConvName()
    char *ret_locale = NULL;
    char *ret_lang = NULL;
    char *ret_codeset = NULL;
- 
+
    DtXlateOpToStdLocale(DtLCX_OPER_SETLOCALE,
       setlocale(LC_CTYPE, NULL),
       &ret_locale,
@@ -1454,22 +1408,22 @@ DtMail::Session::locToConvName()
        free(ret_codeset);
        ret_codeset = NULL;
    }
-   
+
    if (ret_lang) {
        free(ret_lang);
        ret_lang = NULL;
    }
-   
+
    DtXlateStdToOpLocale(DtLCX_OPER_ICONV3,
       ret_locale,
       NULL,
       &ret_codeset);
 
-   if (ret_locale) 
+   if (ret_locale)
      free(ret_locale);
 
    // Workaround for libDtHelp
-   // Case of no iconv name for a particular locale, eg. C, 
+   // Case of no iconv name for a particular locale, eg. C,
    // check for empty string.
    if ( ret_codeset != NULL )
    {
@@ -1490,7 +1444,7 @@ DtMail::Session::targetConvName()
    char *ret_codeset = NULL;
    char *ret_target = NULL;
    char *ret_convName = NULL;
- 
+
    DtXlateOpToStdLocale(DtLCX_OPER_SETLOCALE,
       setlocale(LC_CTYPE, NULL),
       &ret_locale,
@@ -1505,7 +1459,7 @@ DtMail::Session::targetConvName()
       ret_target,
       NULL,
       &ret_convName);
- 
+
    if (ret_locale)
      free(ret_locale);
    if (ret_lang)
@@ -1573,13 +1527,13 @@ DtMail::Session::targetTagName(char *special)
    char *ret_lang = NULL;
    char *ret_codeset = NULL;
    char *ret_target = NULL;
- 
+
    DtXlateOpToStdLocale(DtLCX_OPER_SETLOCALE,
       setlocale(LC_CTYPE, NULL),
       &ret_locale,
       &ret_lang,
       &ret_codeset);
- 
+
    // Allocate two more bytes for "." and null terminator.
    char *special_locale;
 
@@ -1587,7 +1541,7 @@ DtMail::Session::targetTagName(char *special)
 				strlen(ret_locale) + strlen(special) + 2,
         			sizeof(char));
    sprintf(special_locale, "%s%s%s", ret_locale, ".", special);
- 
+
    DtXlateStdToOpLocale(DtLCX_OPER_INTERCHANGE_CODESET,
       special_locale,
       NULL,
@@ -1596,7 +1550,7 @@ DtMail::Session::targetTagName(char *special)
       ret_target,
       NULL,
       &ret_codeset);
- 
+
    if (ret_locale)
      free(ret_locale);
    if (ret_lang)
@@ -1665,7 +1619,7 @@ char *from_cs, char *to_cs)
 			 bp_len += delta;
 			 op_start = (char *)realloc(
 						(char *)op_start,
-						(unsigned int) bp_len + 1); 
+						(unsigned int) bp_len + 1);
 			 op = op_start + bp_len - delta - oleft;
 			 oleft += delta;
 			 // realloc does not clear out unused space.
@@ -1705,7 +1659,7 @@ char *from_cs, char *to_cs)
       free(*bp);
    }
    *bp = op_start;
-   bp_len = strlen(*bp); 
+   bp_len = strlen(*bp);
 
    return 1;
 }

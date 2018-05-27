@@ -27,7 +27,7 @@
  *	$TOG: RFCTransport.C /main/18 1998/07/24 16:09:46 mgreess $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -102,7 +102,7 @@ writeToFileDesc(const char * buf, int len, va_list args)
 	} while (status < 0 && errno == EAGAIN);
 
 	if (status < 0 && errno != 0)		// Did an error occur??
-	  saveErrno = (unsigned long)errno;	// Yes: remember "last" errno 
+	  saveErrno = (unsigned long)errno;	// Yes: remember "last" errno
 
 #ifdef DEAD_WOOD
 	DtMailProcessClientEvents();
@@ -164,14 +164,14 @@ RFCTransport::submit(DtMailEnv & error, DtMail::Message * msg, DtMailBoolean log
 	    // reset all signal handlers
 	    for (int sig = 1; sig < NSIG; sig++)
 	    {
-	        (void) signal(sig, SIG_DFL);		
+	        (void) signal(sig, SIG_DFL);
 	    }
 
 	    DtMailEnv tmp_error;
 	    tmp_error.clear();
 
 	    format(tmp_error, msg, log_msg);
-	    _exit((int)((DTMailError_t)tmp_error)); 
+	    _exit((int)((DTMailError_t)tmp_error));
 	}
 	default:		/* parent */
 	{
@@ -208,7 +208,7 @@ RFCTransport::format(DtMailEnv & error, DtMail::Message * dtmsg, DtMailBoolean l
 
     DtMailEnv tmp_error;
     tmp_error.clear();
-    
+
     env->getHeader(tmp_error, DtMailMessageTo, DTM_TRUE, value);
     if (tmp_error.isNotSet()) {
 	to = concatValue(value);
@@ -298,7 +298,7 @@ RFCTransport::format(DtMailEnv & error, DtMail::Message * dtmsg, DtMailBoolean l
       error.clear();
       //call unsetIsWriteBcc so that the Bcc field will not write to headers
       // buffer (see aix defect 177089
-      fmt->unsetIsWriteBcc(); 
+      fmt->unsetIsWriteBcc();
       fmt->msgToBuffer(error, *dtmsg, DTM_FALSE, DTM_FALSE, DTM_FALSE,
 	headers, bodies);
 
@@ -312,7 +312,7 @@ RFCTransport::format(DtMailEnv & error, DtMail::Message * dtmsg, DtMailBoolean l
     // storage and cause the message to be written to all open files
     //
     tmp_error.clear();		// Used to cache error from logging to files
-    
+
     if (log_count) {
       BufferMemory logHeaders(1024);
       BufferMemory logBodies(8192);
@@ -326,13 +326,13 @@ RFCTransport::format(DtMailEnv & error, DtMail::Message * dtmsg, DtMailBoolean l
 
       //call setIsWriteBcc so that the Bcc field will write to logHeaders
       // buffer (see aix defect 177089)
-      logFmt->setIsWriteBcc(); 
+      logFmt->setIsWriteBcc();
       logFmt->msgToBuffer(tmp_error, *dtmsg, DTM_TRUE, DTM_FALSE, DTM_FALSE,
 			    logHeaders, logBodies);
 
       if (!tmp_error.isSet()) {
 	unsigned long iterateErrno, iterateErrno1;
-	
+
         iterateErrno = logHeaders.iterate(writeToFileDesc, log_files, log_count, DTM_TRUE);
         iterateErrno1 = logBodies.iterate(writeToFileDesc, log_files, log_count, DTM_TRUE);
 	if ( (iterateErrno != 0) || (iterateErrno1 != 0) )
@@ -369,7 +369,7 @@ RFCTransport::format(DtMailEnv & error, DtMail::Message * dtmsg, DtMailBoolean l
     //
     if (!error.isSet() && tmp_error.isSet())
       error.setError((DTMailError_t)tmp_error);
-    
+
     return;
 }
 
@@ -388,7 +388,7 @@ RFCTransport::deliver(DtMailEnv & error,
     const char * value;
 
     assert(log_files != NULL);		// must provide -> log_files ->
-    
+
     // We want to make an argv list that is big enough to hold all
     // of the addresses. Of course, this may need to be expanded
     // because of local aliases, but we'll work on that.
@@ -431,7 +431,7 @@ RFCTransport::deliver(DtMailEnv & error,
               * log_files = new int[addr_tokens.length() + 4];
 	    (*log_files)[log_count++] = fd;
 	}
-	
+
 	if (buf != NULL) {
 		free(buf);
 	}
@@ -488,18 +488,18 @@ RFCTransport::deliver(DtMailEnv & error,
 		}
 	    }
 	    break;
-	    
+
 	  default:
 	    argv[argc++] = addr_tokens[addr]->dtm_address;
 	}
     }
-    
+
     argv[argc] = NULL;
 
     launchSendmail(error, headers, bodies, argv);
-    
+
     assert((!log_count && ! *log_files) || (log_count && *log_files));
-    
+
     free(argv);
 }
 
@@ -531,7 +531,7 @@ RFCTransport::arpaPhrase(const char * name, DtMailAddressSeq & tokens)
     int token = 1;
     int comma = 0;
     DtMailValueAddress * addr;
-    
+
     if (name == (char *) 0) {
 	return;
     }
@@ -540,14 +540,14 @@ RFCTransport::arpaPhrase(const char * name, DtMailAddressSeq & tokens)
     cp = name;
     for (;;) {
 	cp = strchr(cp, ',');
-	
+
 	if (!cp) break;
-	
+
 	for(cp += 1; *cp && isspace((unsigned char)*cp); cp++) {
 	    extra++;
 	}
     }
-    
+
     nbufp = (char *)malloc(strlen(name) + extra);
 
     char * tok_start = nbufp;
@@ -584,7 +584,7 @@ RFCTransport::arpaPhrase(const char * name, DtMailAddressSeq & tokens)
 	  outcm:
 	    lastsp = 0;
 	    break;
-	    
+
 	  case '"':
 	    /*
 	      Start a quoted string.
@@ -618,7 +618,7 @@ RFCTransport::arpaPhrase(const char * name, DtMailAddressSeq & tokens)
 		*cp2++ = '"';
 	    lastsp = 0;
 	    break;
-	    
+
 	  case ' ':
 	  case '\t':
 	  case '\n':
@@ -641,7 +641,7 @@ RFCTransport::arpaPhrase(const char * name, DtMailAddressSeq & tokens)
 		tok_start = cp2;
 	    }
 	    break;
-	    
+
 	  case ',':
 	    *cp2++ = c;
 	    if (gotlt != '<') {
@@ -654,7 +654,7 @@ RFCTransport::arpaPhrase(const char * name, DtMailAddressSeq & tokens)
 		}
 	    }
 	    break;
-	    
+
 	  case '<':
 	    cp2 = bufend;
 	    for (rem = (tokens.length() - 1); tokens.length() > count_at_comma;
@@ -667,15 +667,15 @@ RFCTransport::arpaPhrase(const char * name, DtMailAddressSeq & tokens)
 	    gotlt = c;
 	    lastsp = 0;
 	    break;
-	    
+
 	  case '>':
 	    if (gotlt == '<') {
 		gotlt = c;
 		break;
 	    }
-	    
+
 	    /* FALLTHROUGH . . . */
-	    
+
 	  default:
 	    if (gotlt == 0 || gotlt == '<') {
 		if (lastsp) {
@@ -746,28 +746,28 @@ RFCTransport::launchSendmail(DtMailEnv & error,
         mailer = "/usr/lib/sendmail";
 #endif
     }
- 
+
     error.clear();
- 
+
     argv[0] = (char *)mailer;
- 
+
     // If we have only one arg, then everything goes to the log files.
     // Don't do the fork and exec.
     //
     if (argv[1] == NULL)
       return;
- 
+
     // We need a pipe to write the message to sendmail.
     //
     int inputPipe[2];
     const int pipeReader = 0;           // pipe[0] is read side of pipe
     const int pipeWriter = 1;           // pipe[1] is write side of pipe
- 
+
     if (pipe(inputPipe)==-1) {          // Attempt to get a pipe
       error.setError(DTME_NoMemory);    // this must be really bad...
       return;
     }
- 
+
     // We need to fork and send the data to sendmail.
     // Use vfork when available because the only purpose
     // of the child is to do an exec
@@ -781,10 +781,10 @@ RFCTransport::launchSendmail(DtMailEnv & error,
         // NOTE: probably reduce priv's to invoking user too???
         //
         long maxOpenFiles = sysconf(_SC_OPEN_MAX);
- 
+
         if (maxOpenFiles < 32)          // less than 32 descriptors?
           maxOpenFiles = 1024;          // dont believe it--assume lots
- 
+
         for (int sig = 1; sig < NSIG; sig++)
           (void) signal(sig, SIG_DFL);  // REset all signal handlers
 
@@ -796,7 +796,7 @@ RFCTransport::launchSendmail(DtMailEnv & error,
         (void) SafeClose(inputPipe[pipeWriter]); // input pipe writer n/a
         for (int cfd = 3; cfd < maxOpenFiles; cfd++)
           (void) SafeClose(cfd); // close all open file descriptors
-	
+
 #if 0
 	printf("Command:  %s\n",mailer);
 	int k=0;
@@ -818,22 +818,22 @@ RFCTransport::launchSendmail(DtMailEnv & error,
       error.setError(DTME_NoMemory);                    // yes: bail
       return;
     }
- 
+
     (void) SafeClose(inputPipe[pipeReader]); // input pipe reader n/a
- 
+
     // Sendmail files
     //
     headers.iterate(writeToFileDesc, &inputPipe[pipeWriter], 1, DTM_FALSE);
     bodies.iterate(writeToFileDesc, &inputPipe[pipeWriter], 1, DTM_FALSE);
     (void) SafeClose(inputPipe[pipeWriter]); // force EOF on mail age nt's input
- 
+
     // Now we wait on the condition variable until the child's
     // process status is reported.
     //
     int status;
     int ret_status;
     int err_ret = SafeWaitpid(childPid, &status, 0);
- 
+
     if (err_ret < 0) {
         // Somebody beat us to the status of the child.
         // Just assume the best possible outcome.
@@ -852,11 +852,11 @@ RFCTransport::launchSendmail(DtMailEnv & error,
           case 68:
             error.setError(DTME_BadMailAddress);
             break;
- 
+
           case 0:
             error.clear();
             break;
- 
+
           default:
             error.setError(DTME_TransportFailed);
         }
@@ -884,18 +884,18 @@ RFCTransport::sendmailReturnProc(void)
 		error.setError (DTME_NoMemory);
 		error.logError(DTM_TRUE,
 		  "RFCTransport: sendmailReturnProc(): Failed to read pipe\n");
-		return; 
+		return;
 	}
-		
+
 	ptr =  _waitlist;
 	prev = &_waitlist;
 
-	// Loop through the waitlist which is a list of all the 
+	// Loop through the waitlist which is a list of all the
 	// child processes (sendmail) that the parent exec'd.  When
 	// the pid in the list matches the child process that has
 	// exited, we've found it.
 	while(ptr) {
-		if(ptr->pid == new_pd.pid) 
+		if(ptr->pid == new_pd.pid)
 		    break;
 		prev = &(ptr->next);
 		ptr = ptr->next;
@@ -906,7 +906,7 @@ RFCTransport::sendmailReturnProc(void)
 		// ERROR just return
 		return;
 	}
-	
+
 	*prev = ptr->next;
 
 	// If the low byte of the status code returned from wait
@@ -940,7 +940,7 @@ RFCTransport::sendmailReturnProc(void)
 // The amount of processing should be kept to a minimum in a
 // signal handler and we don't really know where X is in it's
 // processing.  It may not be appropriate to pop a dialog up.
-void 
+void
 RFCTransport::childHandler(void)
 {
 	pipedata_t d;
@@ -963,7 +963,7 @@ RFCTransport::childHandler(void)
 
 //
 // Listen for the child processes when they exit.  On exit from a
-// child process, call child_handler and have it write to 
+// child process, call child_handler and have it write to
 // XtAppAddInput which will call SendmailReturnProc.
 void
 RFCTransport::signalRegister(void)
@@ -974,7 +974,7 @@ RFCTransport::signalRegister(void)
     if (initialized) return;
     initialized = 1;
 
-#if defined(hpux) || defined(_aix) || defined(__osf__) || defined(linux) || \
+#if defined(hpux) || defined(_aix) || defined(linux) || \
     (defined(sun) && OSMAJORVERSION>=5 && OSMINORVERSION>4) || defined(CSRG_BASED)
     // SunOS 5.5 and above defined prototype for signal handler
     act.sa_handler = (void (*)(int))&RFCTransport::childHandler;
@@ -985,7 +985,7 @@ RFCTransport::signalRegister(void)
     sigemptyset(&act.sa_mask);
     sigaddset(&act.sa_mask, SIGCHLD);
     act.sa_flags = 0;
-   
+
     sigaction(SIGCHLD, &act, NULL);
 
     return;
@@ -994,7 +994,7 @@ RFCTransport::signalRegister(void)
 //
 // fork/exec the child process and return the child process pid
 //
-int 
+int
 RFCTransport::startSubprocess(DtMailEnv &error, char * cmd,
 	Buffer & headers, Buffer & bodies, char ** argv)
 {
@@ -1005,7 +1005,7 @@ RFCTransport::startSubprocess(DtMailEnv &error, char * cmd,
 
 	// Create a pipe to write any necessary information
 	// from the parent process to the child process.
-	if(pipe(sendfds) < 0) 
+	if(pipe(sendfds) < 0)
 	{
 	    error.setError (DTME_NoMemory);
 	    return(-1);
@@ -1032,16 +1032,16 @@ RFCTransport::startSubprocess(DtMailEnv &error, char * cmd,
 		long maxOpenFiles = sysconf(_SC_OPEN_MAX);
 
 		// less than 32 descriptors?
-		if (maxOpenFiles < 32)		
+		if (maxOpenFiles < 32)
 		{
 		    // dont believe it--assume lots
-		    maxOpenFiles = 1024;		
+		    maxOpenFiles = 1024;
 		}
 
 		// reset all signal handlers
 		for (int sig = 1; sig < NSIG; sig++)
 		{
-		    (void) signal(sig, SIG_DFL);		
+		    (void) signal(sig, SIG_DFL);
 		}
 
 		// The child process (sendmail) needs to read info
@@ -1054,23 +1054,23 @@ RFCTransport::startSubprocess(DtMailEnv &error, char * cmd,
 		    // ERROR: exit with bad status
 	  		_exit (1);
 		}
-	
+
 		// We need to close the write end of the pipe.
-		// NOTE: we leave standard output and standard error output 
+		// NOTE: we leave standard output and standard error output
 		// open, input pipe writer n/a
 		(void) SafeClose(sendfds[1]);
-	
+
 		// close all open file descriptors
 		for (int cfd = 3; cfd < maxOpenFiles; cfd++)
 		{
-	  	    (void) SafeClose(cfd);			
+	  	    (void) SafeClose(cfd);
 		}
 
 		// exec sendmail
 		(void) SafeExecvp(cmd, (char *const *)argv);
 
 		// Should never get here!
-		_exit(1); 					
+		_exit(1);
 
 	    }
 	    default:		/* parent */
@@ -1081,7 +1081,7 @@ RFCTransport::startSubprocess(DtMailEnv &error, char * cmd,
 		// Write the mail message to the pipe.  The child process
 		// (sendmail) will read from the pipe and send the message.
     		unsigned long iterateErrno;
-    
+
 		iterateErrno = headers.iterate(writeToFileDesc, &sendfds[1],
 			1, DTM_FALSE);
 		if (iterateErrno == 0)
@@ -1138,7 +1138,7 @@ void
 RFCTransport::appendAddrs(DtMailAddressSeq & to, DtMailAddressSeq & from)
 {
   int fromLength = from.length();
-  
+
     for (int f = 0; f < fromLength; f++) {
 	to.append(new DtMailValueAddress(*from[f]));
     }
@@ -1199,7 +1199,7 @@ RFCTransport::openLogFile(const char * path)
 {
     DtMailEnv error;
     error.clear();
-    
+
     char * exp_path = _session->expandPath(error, path);
     if (error.isSet())
       return(-1);
@@ -1251,7 +1251,7 @@ RFCWriteMessage(DtMailEnv & error,
     fmt = new RFCMIME(session);
       //call setIsWriteBcc so that the Bcc field will write to headers
       // buffer (see aix defect 177089)
-    fmt->setIsWriteBcc(); 
+    fmt->setIsWriteBcc();
     fmt->msgToBuffer(error, *msg, DTM_TRUE, DTM_TRUE, DTM_FALSE,
 		     headers, bodies);
 
@@ -1283,14 +1283,14 @@ RFCWriteMessage(DtMailEnv & error,
     }
 
     unsigned long iterateErrno;
-    
+
     iterateErrno = headers.iterate(writeToFileDesc, &fd, 1, DTM_FALSE);
     if (iterateErrno == 0)
       iterateErrno = bodies.iterate(writeToFileDesc, &fd, 1, DTM_FALSE);
 
     if (iterateErrno != 0)
       error.setError(DTME_ObjectCreationFailed);
-    
+
     delete fmt;
     close(fd);
 }

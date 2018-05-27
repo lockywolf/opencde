@@ -20,13 +20,13 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* $XConsortium: ContentType.C /main/5 1996/08/21 15:57:45 drk $ 
+/* $XConsortium: ContentType.C /main/5 1996/08/21 15:57:45 drk $
  *
  * (c) Copyright 1996 Digital Equipment Corporation.
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -54,7 +54,7 @@
 
 #include <stdlib.h>
 
-#if !defined(__osf__) && !defined(USL) && !defined(linux) && \
+#if !defined(USL) && !defined(linux) && \
     !defined(CSRG_BASED) && !defined(sun)
 #include <osfcn.h>
 #endif
@@ -187,7 +187,7 @@ int read();
 /* default declaration of generated scanner - a define so the user can
  * easily add parameters
  */
-#define ol_data_DECL int ol_datalex ol_data_PROTO(( void )) 
+#define ol_data_DECL int ol_datalex ol_data_PROTO(( void ))
 
 /* code executed at the end of each rule */
 #define ol_data_BREAK break;
@@ -209,34 +209,34 @@ using namespace std;
 #include <memory.h>
 #include <string.h>
 #include <stdlib.h>
-#include <assert.h>  
+#include <assert.h>
 
 #include "Exceptions.hh"
 
-#include "Task.h"  
-#include "SGMLName.h"  
+#include "Task.h"
+#include "SGMLName.h"
 #include "ExprList.h"
 #include "Expression.h"
 #include "OL_DataExpr.tab.h"
 #include "ContentType.h"
 #include "api/utility.h"
-  
+
 /* CurrentContentPtr is used as the communication media between
  * ol_dataparse and ContentType::Parse()
  */
 
 ContentType *CurrentContentPtr;
-  
+
 /*
  * Forward declaration for my_input
  */
 static int my_input ( char *, int );
 extern       int ol_dataparse();
 
-  
+
 #undef ol_data_INPUT
 #define ol_data_INPUT(b, r, ms ) ( r=my_input( ( char *)b,ms) )
-  
+
 static char *myinput;
 static char *myinputptr;
 static char *myinputlim;
@@ -1654,7 +1654,7 @@ struct ol_data_buffer_state
     ol_data_CHAR *ol_data_buf_pos;	/* current position in input buffer */
 
     /* size of input buffer in bytes, not including room for EOB characters*/
-    int ol_data_buf_size;	
+    int ol_data_buf_size;
 
     /* number of characters read into ol_data_ch_buf, not including EOB characters */
     int ol_data_n_chars;
@@ -1846,14 +1846,14 @@ do_action:	/* this label is used only to access EOF actions */
 
 case 1:
 {
-                                  ol_datalval.name = SGMLName::intern((const char *)ol_datatext+1 ,1); 
+                                  ol_datalval.name = SGMLName::intern((const char *)ol_datatext+1 ,1);
 				  return( Reference );
 				}
 	ol_data_BREAK
 case 2:
 {
                                   if ( *(ol_datatext + 1) != '"' ) {
-                                     // get rid of the 2 quotes 
+                                     // get rid of the 2 quotes
                                      int len = strlen(( const char *)ol_datatext)-2;
                                      char *lit_str = new char [ len + 1 ];
                                      *((char *) memcpy(lit_str,
@@ -1874,14 +1874,14 @@ case 2:
 case 3:
 {
                                   if ( *(ol_datatext + 1) != '\'' ) {
-                                     // get rid of the 2 quotes 
+                                     // get rid of the 2 quotes
                                      int len = strlen(( const char *)ol_datatext)-2;
                                      char *lit_str = new char [ len + 1 ];
                                      *((char *) memcpy(lit_str,
                                                 (const char *)ol_datatext + 1,
                                                  len) + len) = '\0';
                                      ol_datalval.string = lit_str;
-                                     
+
                                   }
                                   else {
                                      ol_datalval.string = 0;
@@ -1889,7 +1889,7 @@ case 3:
 
 	                          DBG(50) cerr << "(DEBUG) literal 'string' = "
 	                                       << ol_datalval.string << endl;
-	 
+
                                   return( Literal );
                                 }
 	ol_data_BREAK
@@ -2056,9 +2056,9 @@ case ol_data_STATE_EOF(INITIAL):
  *
  * synopsis
  *     int ol_data_get_next_buffer();
- *     
+ *
  * returns a code representing an action
- *     EOB_ACT_LAST_MATCH - 
+ *     EOB_ACT_LAST_MATCH -
  *     EOB_ACT_CONTINUE_SCAN - continue scanning from current position
  *     EOB_ACT_END_OF_FILE - end of file
  */
@@ -2512,9 +2512,9 @@ ContentType::Parse( char *str )
   myinputlim = str + strlen(str);
 
   CurrentContentPtr = this;
-  
+
   ol_dataparse();
-  
+
   BEGIN INITIAL;
   ol_datarestart(NULL);
 }
@@ -2525,7 +2525,7 @@ ContentType::init( OL_Expression *expr )
 {
   assert(expr != NULL);
   if ( expr->next ) {
-    
+
     /*
      * The same as CONCAT
      */

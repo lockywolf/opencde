@@ -45,7 +45,7 @@ char **argv;
         static char name[] = "m_name = '%s'\n";
         static char literal[] = "m_literal = '%s'\n";
 #if defined(hpux) || defined(_AIX) || defined(sun) || defined(USL) ||          \
-    defined(__uxp__) || defined(__osf__)
+    defined(__uxp__)
         char buffer[M_LITLEN + 80];
 #else
 #define max4(a, b, c, d)                                                       \

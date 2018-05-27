@@ -282,7 +282,7 @@ int main(int argc, char **argv) {
         StartDisplays();
         (void)signal(SIGHUP, RescanNotify);
 #if !defined(SYSV) || defined(hpux) || defined(_AIX) || defined(__uxp__) ||    \
-    defined(__osf__) || defined(linux)
+    defined(linux)
         (void)signal(SIGCHLD, ChildNotify);
 #endif
         while (AnyWellKnownSockets() || AnyDisplaysLeft()) {
@@ -294,7 +294,7 @@ int main(int argc, char **argv) {
                 TrimErrorFile();
 
 #if defined(SYSV) && !defined(hpux) && !defined(_AIX) && !defined(__uxp__) &&  \
-    !defined(__osf__) && !defined(linux)
+    !defined(linux)
                 WaitForChild();
 #else
                 WaitForSomething();
@@ -479,7 +479,7 @@ static SIGVAL StopAll(int arg) {
 int ChildReady = 0;
 
 #if !defined(SYSV) || defined(hpux) || defined(_AIX) || defined(__uxp__) ||    \
-    defined(__osf__) || defined(linux) || defined(CSRG_BASED)
+    defined(linux) || defined(CSRG_BASED)
 static SIGVAL ChildNotify(int arg) { ChildReady = 1; }
 #endif
 
@@ -1250,7 +1250,7 @@ void RegisterCloseOnFork(int fd) {
 }
 
 #if 0 /* utility routine: activate if needed...		   */
-int 
+int
 CloseOnFork( void )
 {
     FD_CLR (fd, &CloseMask);
@@ -1433,7 +1433,7 @@ int SetTitle(char *name, char *ptr) {
          *
          *****************************************************************************/
 
-#if defined(_AIX) && defined(_POWER) || defined(__osf__)
+#if defined(_AIX) && defined(_POWER)
 #define GETTYPATH "/usr/sbin/getty"
 #elif defined(__OpenBSD__)
 #define GETTYPATH "/usr/libexec/getty"

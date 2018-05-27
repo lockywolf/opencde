@@ -20,11 +20,11 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $TOG: remover.C /main/5 1999/10/14 18:37:42 mgreess $ 			 				
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $TOG: remover.C /main/5 1999/10/14 18:37:42 mgreess $
 /*
  * remover.cc - ToolTalk wrapper for rm(1) and rmdir(1).
  *
@@ -35,7 +35,7 @@
 #include "tt_options.h"
 #include <errno.h>
 #include <string.h>
-#if defined(__osf__) || defined(linux) || defined(CSRG_BASED)
+#if defined(linux) || defined(CSRG_BASED)
 #include <unistd.h>
 #else
 #if !defined(USL) && !defined(__uxp__) && !defined(sun)
@@ -49,7 +49,7 @@
 #define S_ISLNK(m)     (((m)&IFMT) == IFLNK)
 #endif
 #include <sys/stat.h>
-#if defined(OPT_BUG_USL) || defined(OPT_BUG_UXP) 
+#if defined(OPT_BUG_USL) || defined(OPT_BUG_UXP)
 #define S_ISLNK(mode)     (((mode) & S_IFMT) == S_IFLNK)
 #endif
 #include <sys/wait.h>
@@ -324,7 +324,7 @@ parse_args( int argc, char **argv )
 }
 
 /*
- * remover::_parse_arg() - Parse an option 
+ * remover::_parse_arg() - Parse an option
  */
 void remover::
 _parse_arg( char *arg )

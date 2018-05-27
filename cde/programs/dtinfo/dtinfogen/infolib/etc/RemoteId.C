@@ -20,13 +20,13 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* $XConsortium: RemoteId.C /main/4 1996/08/21 15:57:59 drk $ 
+/* $XConsortium: RemoteId.C /main/4 1996/08/21 15:57:59 drk $
  *
  * (c) Copyright 1996 Digital Equipment Corporation.
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -53,7 +53,7 @@
 
 #include <stdlib.h>
 
-#if !defined(__osf__) && !defined(USL) && !defined(linux) && \
+#if !defined(USL) && !defined(linux) && \
     !defined(CSRG_BASED) && !defined(sun)
 # include <osfcn.h>
 #endif
@@ -186,7 +186,7 @@ int read();
 /* default declaration of generated scanner - a define so the user can
  * easily add parameters
  */
-#define remote_DECL int remotelex remote_PROTO(( void )) 
+#define remote_DECL int remotelex remote_PROTO(( void ))
 
 /* code executed at the end of each rule */
 #define remote_BREAK break;
@@ -2125,7 +2125,7 @@ struct remote_buffer_state
     remote_CHAR *remote_buf_pos;	/* current position in input buffer */
 
     /* size of input buffer in bytes, not including room for EOB characters*/
-    int remote_buf_size;	
+    int remote_buf_size;
 
     /* number of characters read into remote_ch_buf, not including EOB characters */
     int remote_n_chars;
@@ -2328,7 +2328,7 @@ case 1:
 case 2:
 {
                   BEGIN(OLIDREF_LINE);
-                } 
+                }
 	remote_BREAK
 case 3:
 {
@@ -2372,7 +2372,7 @@ case 9:
 case 10:
 {
 		  /*
-		   * test if the link value found in 
+		   * test if the link value found in
 		   * #OL-IDREF is resolved in the bookcase
 		   */
 
@@ -2397,7 +2397,7 @@ case 10:
 		    NodeBuffer->writeStr("<#REMOTE></#REMOTE>");
 		    NeedRemote = 0;
 		  }
-		  
+
 		  BEGIN ( 0 );
 		}
 	remote_BREAK
@@ -2541,9 +2541,9 @@ case remote_STATE_EOF(OLIDREF_FILE):
  *
  * synopsis
  *     int remote_get_next_buffer();
- *     
+ *
  * returns a code representing an action
- *     EOB_ACT_LAST_MATCH - 
+ *     EOB_ACT_LAST_MATCH -
  *     EOB_ACT_CONTINUE_SCAN - continue scanning from current position
  *     EOB_ACT_END_OF_FILE - end of file
  */
@@ -2957,7 +2957,7 @@ my_input ( char *buf, int max_size )
 }
 
 //------------------------------------------------------------
-void insert_remotelink( hashTable<CC_String,BTCollectable> *dictionary, 
+void insert_remotelink( hashTable<CC_String,BTCollectable> *dictionary,
                         char *data,
 			size_t datalen,
 			FlexBuffer *result_buf)

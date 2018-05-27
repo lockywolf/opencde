@@ -120,24 +120,6 @@ extern void init_time() {
         _Xltimeparams localtime_buf;
         _Xgtimeparams gmtime_buf;
 
-#ifdef __osf__
-        char *tzptr;
-#endif
-
-#ifdef __osf__
-        /* Fix for QAR 31607 */
-        if (getenv("TZ") == NULL) {
-                tzset();
-                int tz_size = strlen(tzname[0]) + strlen(tzname[1]) + 10;
-                tzptr = malloc(tz_size);
-                snprintf(tzptr, tz_size, "TZ=%s%d%s", tzname[0],
-                         timezone / 3600, tzname[1]);
-                putenv(tzptr);
-                tzset();
-        } else
-                tzset();
-#endif
-
         t = time(0);
         tm = *_XLocaltime(&t, localtime_buf);
         gm = *_XGmtime(&t, gmtime_buf);

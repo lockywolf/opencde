@@ -36,9 +36,3 @@
 version_tag(
     "dtwm:          $XConsortium: version.c /main/5 1996/08/30 15:36:22 drk $")
 #endif /* lint */
-
-#ifdef __osf__
-#include <limits.h>
-#include <nl_types.h>
-    nl_catd Xm_catd;
-#endif /* __osf__ */

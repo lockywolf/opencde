@@ -27,7 +27,7 @@
  *	$TOG: IO.C /main/33 1999/01/29 14:45:00 mgreess $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement bertween
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -97,10 +97,6 @@ extern "C" { int lockf(int, int, off_t); }
 #endif
 #endif /* _AIX */
 
-#ifdef __osf__
-extern "C" { int statvfs(const char *, struct statvfs *); }
-#endif /* __osf__ */
-
 #include <DtMail/DtMail.hh>
 #include <DtMail/DtMailError.hh>
 #include <DtMail/IO.hh>
@@ -127,7 +123,7 @@ int
 SafeOpen(const char * path, int oflag, mode_t mode)
 {
     int status;
-    
+
     do {
 	status = open(path, oflag, mode);
     } while (status < 0 && errno == EINTR);
@@ -208,7 +204,7 @@ SafeWrite(int fd, const void * buf, size_t bytes)
     do {
 	status = write(fd, buf, bytes);
     } while(status < 0 && errno == EINTR);
-    
+
     return(status);
 }
 
@@ -277,7 +273,7 @@ SafeWritev(int fd, struct iovec *iov, int iovcnt)
       }
       continue;				// continue and let for loop exit
     }
-    
+
     // Check for a partial write: if the current vector contains more data
     // than what has been written, writev() bailed in the middle of writing
     // a vector - adjust the vector and and feed it back to writev() again
@@ -299,11 +295,11 @@ SafeWriteStrip(int fd, const void * buf, size_t bytes)
 {
     ssize_t status = 0;
     int i, j;
-    char *ptr = (char*)buf, *writebuf; 
-    
-    // bug 5856: dont write out control M 
+    char *ptr = (char*)buf, *writebuf;
+
+    // bug 5856: dont write out control M
     // make a finite size buffer for writing
-    writebuf = (char*) malloc(bytes < SWS_BUFFERSIZE ? bytes : SWS_BUFFERSIZE); 
+    writebuf = (char*) malloc(bytes < SWS_BUFFERSIZE ? bytes : SWS_BUFFERSIZE);
 
     for (i = 0, j = 0; i < bytes; i++, ptr++) {
 	if (*ptr == '\r' && *(ptr+1) == '\n')
@@ -317,7 +313,7 @@ SafeWriteStrip(int fd, const void * buf, size_t bytes)
 	}
     }
     free(writebuf);
-    
+
     return(status);
 }
 
@@ -372,7 +368,7 @@ SafeFStat(int fd, struct stat * buf)
 // To get around this problem, this function will perform a open(),
 // read() of 1 byte, fstat(), close() which will force the attributes
 // for the named file to be retrieved directly from the server.
-// 
+//
 int
 SafeGuaranteedStat(const char * path, struct stat * buf)
 {
@@ -388,7 +384,7 @@ SafeGuaranteedStat(const char * path, struct stat * buf)
     return(-1);
   }
 
-  char tempBuf;  
+  char tempBuf;
   if (SafeRead(tempFd, &tempBuf, 1) == -1) {
     saveErrno = errno;
     (void) SafeClose(tempFd);
@@ -623,11 +619,7 @@ SafeStrftime(char * buf, size_t buf_size,
 void *SockOpen(char *host, int clientPort, char **errorstring)
 {
     int sockfd;
-#if defined(__osf__)
-    in_addr_t inaddr;
-#else
     unsigned long inaddr;
-#endif
     struct sockaddr_in ad;
     struct hostent *hp;
     DtMailEnv error;
@@ -657,7 +649,7 @@ void *SockOpen(char *host, int clientPort, char **errorstring)
         memcpy(&ad.sin_addr, hp->h_addr, hp->h_length);
     }
     ad.sin_port = htons(clientPort);
-    
+
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0)
     {
@@ -717,7 +709,7 @@ char *SockGets(char *buf, int len, void *sockfp)
 #else
     size_t n;
     char *bufp;
-    
+
     n = 0;
     bufp = buf-1;
     do
@@ -789,10 +781,10 @@ GetIdForGroupName(char * grp_name)
   assert(grp_name != NULL);
   struct group *grp;
   _Xgetgrparams grp_buf;
-  
+
   memset((void*) &grp_buf, 0, sizeof(_Xgetgrparams));
   grp = _XGetgrnam(grp_name, grp_buf);
-    
+
   return(grp ? grp->gr_gid : (gid_t)-1);
 }
 
@@ -820,9 +812,7 @@ GetPasswordEntry(passwd & result)
     passwordEntry.pw_name = strdup(passwordEntry.pw_name);
     passwordEntry.pw_passwd = strdup(passwordEntry.pw_passwd);
 #if !defined(_AIX) && !defined(linux) && !defined(CSRG_BASED)
-#ifndef __osf__
     passwordEntry.pw_age = strdup(passwordEntry.pw_age);
-#endif
     passwordEntry.pw_comment = strdup(passwordEntry.pw_comment);
 #endif
     passwordEntry.pw_gecos = strdup(passwordEntry.pw_gecos);
@@ -861,7 +851,7 @@ int isSetMailGidNeeded(const char * mailboxPath)
     char *str = (char *) calloc(1, len+1);
     strncpy(str, mailboxPath, len);
     str[len] = '\0';
-    
+
     stat(str,&buf);
 
     // Default or system mailbox dir name.
@@ -872,7 +862,7 @@ int isSetMailGidNeeded(const char * mailboxPath)
     if( ( (buf.st_dev == buf1.st_dev) && (buf.st_ino == buf1.st_ino) ) )
     {
         if( !strcmp((p+1),pw->pw_name) || !strcmp((p+1),lock_file) )
-        {  
+        {
            if( access(mailboxPath,R_OK) == -1 )
            {
              free(lock_file);
@@ -880,12 +870,12 @@ int isSetMailGidNeeded(const char * mailboxPath)
            }
         }
         free(lock_file);
-  	return ( 0 ); 
+  	return ( 0 );
     }
     else
     {
         free(lock_file);
-  	return ( 1 ); 
+  	return ( 1 );
     }
 }
 #endif
@@ -1028,7 +1018,7 @@ int FileSystemSpace(const char *file_path, size_t bytes, char **fsname)
         // there are enough inodes.
         //
         // special case where the filesystem is out of inodes.
-        if(statvfs_buf.f_ffree < 10) fserror = TRUE; 
+        if(statvfs_buf.f_ffree < 10) fserror = TRUE;
 #endif
 
         if (! fserror)

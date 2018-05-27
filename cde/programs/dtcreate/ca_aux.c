@@ -47,7 +47,7 @@
 #if defined(AIXV3)
 #include <sys/dir.h>
 #else
-#if defined(__osf__) || defined(linux)
+#if defined(linux)
 #include <dirent.h>
 #else
 #include <sys/dirent.h>

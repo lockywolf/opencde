@@ -106,7 +106,7 @@
 #   undef _lib_setreuid
 #endif /* _lib_setregid */
 
-#if defined(_lib_setreuid) && ! defined(_AIX) && ! defined(__osf__)
+#if defined(_lib_setreuid) && ! defined(_AIX)
     extern __MANGLE__ int setreuid __PROTO__((uid_t,uid_t));
     extern __MANGLE__ int setregid __PROTO__((uid_t,uid_t));
 #endif /* _lib_setreuid */
@@ -188,7 +188,7 @@ int b_test __PARAM__((int argc, char *argv[],__V_ *extra), (argc, argv, extra)) 
  * evaluate a test expression.
  * flag is 0 on outer level
  * flag is 1 when in parenthesis
- * flag is 2 when evaluating -a 
+ * flag is 2 when evaluating -a
  */
 static int expr __PARAM__((int register flag), (flag)) __OTORP__(int register flag;){
 	register int r;
@@ -511,7 +511,7 @@ sh_access __PARAM__((register const char *name, register int mode), (name, mode)
 #ifdef _lib_setreuid
 	/* swap the real uid to effective, check access then restore */
 	/* first swap real and effective gid, if different */
-	if(sh.groupid==sh.euserid || setregid(sh.egroupid,sh.groupid)==0) 
+	if(sh.groupid==sh.euserid || setregid(sh.egroupid,sh.groupid)==0)
 	{
 		/* next swap real and effective uid, if needed */
 		if(sh.userid==sh.euserid || setreuid(sh.euserid,sh.userid)==0)
@@ -549,7 +549,7 @@ skip:
 		else
 		{
 			static int maxgroups = 0;
-			gid_t *groups; 
+			gid_t *groups;
 			register int n;
 			if(maxgroups==0)
 			{
@@ -579,7 +579,7 @@ skip:
 }
 
 /*
- * Return the mode bits of file <file> 
+ * Return the mode bits of file <file>
  * If <file> is null, then the previous stat buffer is used.
  * The mode bits are zero if the file doesn't exist.
  */

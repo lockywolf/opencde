@@ -42,7 +42,7 @@
 #ifdef __cplusplus
 
 #include <stdlib.h>
-#if !defined(__osf__) && !defined(USL) && !defined(linux) && \
+#if !defined(USL) && !defined(linux) && \
     !defined(CSRG_BASED) && !defined(sun)
 #include <osfcn.h>
 #endif
@@ -175,7 +175,7 @@ int read();
 /* default declaration of generated scanner - a define so the user can
  * easily add parameters
  */
-#define YY_DECL int yylex YY_PROTO(( void )) 
+#define YY_DECL int yylex YY_PROTO(( void ))
 
 /* code executed at the end of each rule */
 #define YY_BREAK break;
@@ -191,7 +191,7 @@ typedef struct yy_buffer_state *YY_BUFFER_STATE;
 #define YY_CHAR unsigned char
 #define INITIAL 0
 
-#if !defined(__osf__) && !defined(USL) && !defined(linux) && \
+#if !defined(USL) && !defined(linux) && \
     !defined(CSRG_BASED) && !defined(sun)
 #include <osfcn.h>
 #else
@@ -206,10 +206,10 @@ using namespace std;
 
 #include "Exceptions.hh"
 
-#include "SGMLDefn.h"  
+#include "SGMLDefn.h"
 #include "Dispatch.h"
 #include "AttributeRec.h"
-#include "AttributeList.h"  
+#include "AttributeList.h"
 #include "FlexBuffer.h"
 #include "Token.h"
 #include "api/utility.h"
@@ -223,12 +223,12 @@ unsigned char oct2dec( const char *str )
   unsigned char  value = 0;
   const char *ptr = str;
   const char *endptr = str + strlen(str) -1 ;
-  
+
   for ( ; *ptr != '\0' ; ptr++ ) {
-    
+
     int power = endptr - ptr;
     int result     = 1;
-    
+
     for ( int i = 1; i <= power; i++ ) {
       result = result * 8;
     }
@@ -236,7 +236,7 @@ unsigned char oct2dec( const char *str )
     value = value + ( *ptr - '0' ) * result ;
   }
 
-  
+
   return ( value );
 }
 
@@ -1647,7 +1647,7 @@ struct yy_buffer_state
     YY_CHAR *yy_buf_pos;	/* current position in input buffer */
 
     /* size of input buffer in bytes, not including room for EOB characters*/
-    int yy_buf_size;	
+    int yy_buf_size;
 
     /* number of characters read into yy_ch_buf, not including EOB characters */
     int yy_n_chars;
@@ -1865,7 +1865,7 @@ case 2:
                              // information associated with it
 
                              Dispatch::token(START, (unsigned char *)yytext+1 );
-                            
+
                            }
 	YY_BREAK
 case 3:
@@ -1903,9 +1903,9 @@ case 7:
 			       */
                               defn->store_defn( ENTITY_TYPE,
 						(char *)yytext + 1 );
-			      
+
                               Dispatch::entity_decl( defn );
-			      
+
 			    }
 	YY_BREAK
 case 8:
@@ -1913,7 +1913,7 @@ case 8:
                               /*
 			       * external entity reference
 			       */
-                              Dispatch::token(EXTERNAL_ENTITY, 
+                              Dispatch::token(EXTERNAL_ENTITY,
 					      (unsigned char *)yytext+1 );
 			    }
 	YY_BREAK
@@ -1950,7 +1950,7 @@ case 13:
                              // Replace new line with space
                              DataBuffer->put('\015');
 			     Dispatch::newline();
-                             
+
                            }
 	YY_BREAK
 case 14:
@@ -1965,7 +1965,7 @@ case 15:
 	YY_BREAK
 case 16:
 {
-  
+
                                    unsigned char ch = oct2dec(
 				      (const char *)yytext + 1 );
                                    DataBuffer->put ( ch );
@@ -2127,9 +2127,9 @@ case YY_STATE_EOF(ProcessData):
  *
  * synopsis
  *     int yy_get_next_buffer();
- *     
+ *
  * returns a code representing an action
- *     EOB_ACT_LAST_MATCH - 
+ *     EOB_ACT_LAST_MATCH -
  *     EOB_ACT_CONTINUE_SCAN - continue scanning from current position
  *     EOB_ACT_END_OF_FILE - end of file
  */
@@ -2535,7 +2535,7 @@ FILE *file;
 
 #ifdef DEBUG
 //---------------------------------------------------------------------
-#include "OLAF.h"  
+#include "OLAF.h"
 #include "SGMLName.h"
 
 static void TestToken( Token *tok )
@@ -2561,7 +2561,7 @@ static void TestToken( Token *tok )
       else {
 	cout << "AttrMatch Test 2 failed\n";
       }
-      
+
     }
   }
 }

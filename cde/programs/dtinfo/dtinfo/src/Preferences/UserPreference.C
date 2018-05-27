@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,7 +44,7 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
 
 
@@ -63,7 +63,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <unistd.h>
-#if !defined(hpux) && !defined(__osf__) && !defined(USL) && \
+#if !defined(hpux) && !defined(USL) && \
     !defined(linux) && !defined(CSRG_BASED) && !defined(sun)
 #include <sysent.h>
 #endif
@@ -161,7 +161,7 @@ read_version (FILE *stream)
   if(ret1 == 0) throw (CASTEXCEPT Exception());
   if (V != 'V')
     return (0);
-  // Nab the version from the file. 
+  // Nab the version from the file.
   int version = 0;
   ret2 = fscanf (stream, "%d", &version);
   if(ret2 == 0) throw (CASTEXCEPT Exception());
@@ -206,24 +206,24 @@ PreferenceRecord::read_prefs()
       int status = stat (filename, &file_info);
       if (status == -1)
 	{
-	  // Check for access failure or IO error. 
+	  // Check for access failure or IO error.
 	  if (errno == EACCES || errno == EIO)
 	    throw (CASTEXCEPT Exception());
-	  // It doesn't exists otherwise. 
+	  // It doesn't exists otherwise.
 	  g_update_count = 0;
 	  return;
 	}
       else if (!S_ISREG (file_info.st_mode))
 	throw (CASTEXCEPT Exception());
       stream = fopen (filename, "r");
-      if (stream == NULL)    // Open failed, something is bogus. 
+      if (stream == NULL)    // Open failed, something is bogus.
 	throw (CASTEXCEPT Exception());
 
       int version = read_version (stream);   // Snag the version.
-      if (version == 0)                      // See if file is ok. 
+      if (version == 0)                      // See if file is ok.
 	{
 	  fclose (stream);
-	  if (attempt == 2)   // give up on 2nd attempt 
+	  if (attempt == 2)   // give up on 2nd attempt
 	    throw (CASTEXCEPT Exception());
 	  else
 	    revert_from_backup (filename);
@@ -232,14 +232,14 @@ PreferenceRecord::read_prefs()
 
   g_update_count = read_update_count (stream);
 
-  // Read in the preference lines. 
+  // Read in the preference lines.
   char key[256], *value;
   while (fgets (key, 256, stream) != NULL)
     {
       value = key;
       while (*value != ':' && *value != '\0')
 	value++;
-      if (*value == '\0')  // Ignore bogus lines. 
+      if (*value == '\0')  // Ignore bogus lines.
 	continue;
       *value++ = '\0';
       while (isspace ((unsigned char) *value))
@@ -261,7 +261,7 @@ PreferenceRecord::write_prefs()
   const char *filename = form_filename();
   struct stat file_info;
   int status = stat (filename, &file_info);
-  // Make sure it's a regular file if it exists. 
+  // Make sure it's a regular file if it exists.
   if (status == 0  && !S_ISREG (file_info.st_mode))
     throw (CASTEXCEPT Exception());
 
@@ -273,7 +273,7 @@ PreferenceRecord::write_prefs()
 
   if (status == 0)
     {
-      // If the file isn't readable, we won't write the prefs. 
+      // If the file isn't readable, we won't write the prefs.
       stream = fopen (filename, "r");
       if (stream == NULL)
 	throw (CASTEXCEPT Exception());
@@ -325,7 +325,7 @@ PreferenceRecord::write_prefs()
       throw (CASTEXCEPT Exception());
     }
 
-  // Write out the preference records. 
+  // Write out the preference records.
   PreferenceRecord *current = g_head;
   // First line is version and update count.
   fprintf (stream, "-1.0, %d  # AUTOMATICALLY GENERATED - DO NOT EDIT!\n",
@@ -336,7 +336,7 @@ PreferenceRecord::write_prefs()
 	  fprintf(stream, "%s: %s\n", current->f_key, current->f_value) == EOF)
 	{
 	  fclose (stream);
-	  // Remove the file and restore the backup file. 
+	  // Remove the file and restore the backup file.
 	  if (unlink (filename) == 0 && backup[0] != '\0')
 	    rename (backup, filename);
 	  throw (CASTEXCEPT Exception());
@@ -344,7 +344,7 @@ PreferenceRecord::write_prefs()
       current = current->f_next;
     }
 
-  // Rewrite first character to indicate file is complete. 
+  // Rewrite first character to indicate file is complete.
   fseek (stream, 0L, 0);
   fwrite ("V", 1, 1, stream);
 
@@ -363,14 +363,14 @@ PreferenceRecord::lookup (const char *key)
 	}
       mcatch_any()
 	{
-	  // This will only happen the first time through. 
+	  // This will only happen the first time through.
 	  message_mgr().error_dialog ((char*)"Unable to read preferences.");
 	  g_update_count = 0;
 	}
       end_try;
     }
 
-  // Scan through the list of preferences looking for the record. 
+  // Scan through the list of preferences looking for the record.
   PreferenceRecord *current = g_head;
   while (current != NULL)
     {

@@ -44,7 +44,7 @@ typedef hashTable<CC_String,autoNumber> _f11_;
 
 typedef CC_TPtrSlistDictionary<CC_String,autoNumberListT> _f12_;
 typedef CC_TPtrSlistDictionary<CC_String,autoNumber> _f13_;
- 
+
 typedef hashTableIterator<CC_String,autoNumber> _f14_;
 typedef hashTableIterator<CC_String, autoNumberListT> _f15;
 
@@ -76,46 +76,11 @@ typedef Stack<int> _Stack_int_;
 #endif
 
 #pragma define ( CC_TPtrSlist<autoNumber> )
- 
+
 #pragma define ( hashTableIterator<CC_String,autoNumber> )
 #pragma define ( hashTableIterator<CC_String,autoNumberListT> )
 
 #pragma define ( Stack<int> )
-
-#endif
-
-#ifdef __osf__
-
-#pragma define_template hashTable<CC_String,autoNumberListT>
-#pragma define_template hashTable<CC_String,autoNumber>
-
-#ifndef CDE_NEXT
-#pragma define_template CC_TPtrSlistDictionary<CC_String,autoNumberListT>
-#pragma define_template CC_TPtrSlistDictionary<CC_String,autoNumber>
-#endif
-
-#pragma define_template CC_TPtrSlist<autoNumber>
- 
-#pragma define_template hashTableIterator<CC_String,autoNumber>
-#pragma define_template hashTableIterator<CC_String,autoNumberListT> 
-
-#pragma define_template Stack<int>
-
-// still unresolved
-
-#pragma define_template CC_TPtrSlist<kv_pair<CC_String, autoNumberListT> >
-#pragma define_template kv_pair<CC_String, autoNumber>
-#pragma define_template kv_pair<CC_String, autoNumberListT>
-#pragma define_template CC_TPtrSlist<kv_pair<CC_String, autoNumber> >
-#pragma define_template pointer_vector<CC_TPtrSlist<kv_pair<CC_String, autoNumber> > >
-#pragma define_template pointer_vector<CC_TPtrSlist<kv_pair<CC_String, autoNumberListT> > >
-
-//  The following are initializations for a static member 
-//  function that the DEC compiler wouldn't let me initialize
-//  in the template definition
-
-CC_Boolean kv_pair<CC_String, autoNumberListT>::f_needRemove = FALSE; 
-CC_Boolean kv_pair<CC_String, autoNumber>::f_needRemove = FALSE; 
 
 #endif
 
@@ -130,9 +95,9 @@ CC_Boolean kv_pair<CC_String, autoNumber>::f_needRemove = FALSE;
 #endif
 
 #pragma instantiate CC_TPtrSlist<autoNumber>
- 
+
 #pragma instantiate hashTableIterator<CC_String,autoNumber>
-#pragma instantiate hashTableIterator<CC_String,autoNumberListT> 
+#pragma instantiate hashTableIterator<CC_String,autoNumberListT>
 
 #pragma instantiate Stack<int>
 

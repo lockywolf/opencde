@@ -20,11 +20,11 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $XConsortium: tttar_api.C /main/4 1995/10/20 16:59:54 rswiston $ 			 				
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $XConsortium: tttar_api.C /main/4 1995/10/20 16:59:54 rswiston $
 /*
  * tttar_api.cc - ToolTalk object archiving interface functions.
  *
@@ -33,7 +33,7 @@
  */
 
 #include <errno.h>
-#if defined(__osf__) || defined(linux) || defined(CSRG_BASED) || defined(sun)
+#if defined(linux) || defined(CSRG_BASED) || defined(sun)
 #include <unistd.h>
 #else
 #ifndef USL
@@ -92,10 +92,10 @@ pathlist_lstt_archive(
 	while (path_cursor.next()) {
 		paths_copy->append( *path_cursor );
 	}
-	
+
 	bool_t need_preliminary_pass = follow_symlinks && recurse;
 	realpaths2tar = realtrees( paths_copy, need_preliminary_pass );
-	
+
 	obj_kind = VERSION_NUM;
 	int version = CURRENT_ARCHIVE_VERSION;
 	if (    (! xdr_enum( xdrs, (enum_t *)&obj_kind ))
@@ -108,7 +108,7 @@ pathlist_lstt_archive(
 	while (! paths_copy->is_empty()) {
 		_Tt_string_list_ptr	children;
 		_Tt_string		path( paths_copy->top() );
-		
+
 		paths_copy->pop();
 		if (! path_lstt_archive( path, verbosity, xdrs ))
 		{
@@ -127,7 +127,7 @@ pathlist_lstt_archive(
 		return FALSE;
 	}
 	return TRUE;
-	
+
 } /* pathlist_lstt_archive() */
 
 /*
@@ -390,7 +390,7 @@ pathlist_lstt_archive_list(
 } /* pathlist_lstt_archive_list() */
 
 /*
- * path_lstt_archive() - Archive the specs on the given path. 
+ * path_lstt_archive() - Archive the specs on the given path.
  */
 static bool_t
 path_lstt_archive(

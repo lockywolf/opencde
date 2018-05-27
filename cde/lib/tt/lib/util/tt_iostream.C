@@ -21,14 +21,14 @@
  * Floor, Boston, MA 02110-1301 USA
  */
 
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $TOG: tt_iostream.C /main/5 1998/04/03 17:10:03 mgreess $ 			 				
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $TOG: tt_iostream.C /main/5 1998/04/03 17:10:03 mgreess $
 /*
  * @(#)tt_iostream.cc	1.4 93/08/15
- * 
+ *
  * Copyright 1993 Sun Microsystems, Inc.  All rights reserved.
  */
 
@@ -225,7 +225,7 @@ _Tt_ostream::operator <<(
 	return *this;
 }
 
-#if defined(__osf__) || defined(linux) || defined(CSRG_BASED)
+#if defined(linux) || defined(CSRG_BASED)
 /* This operator is being added to take care of uid_t and gid_t
  * for osf */
 const _Tt_ostream &

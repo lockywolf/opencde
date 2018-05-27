@@ -28,13 +28,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -44,7 +44,7 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
 
 
@@ -91,11 +91,7 @@ oid_t::oid_t(const char* source, Boolean ascii_format, Boolean swap_order)
       memcpy((char*)&v_i_code, source, sizeof(v_i_code));
 
       if ( swap_order == true )
-#ifdef __osf__
-         ORDER_SWAP_INT(v_i_code);
-#else
          ORDER_SWAP_LONG(v_i_code);
-#endif
 
    } else {
       istringstream in((char*)source);
@@ -165,7 +161,7 @@ unsigned oid_t::hash(const oid_t& id)
 
 io_status oid_t::asciiOut(ostream& out) const
 {
-   out << v_c_code << "." ; 
+   out << v_c_code << "." ;
 
 // for compacted disk store. need to revisit. not working.
 //   out << 0 << "." ;
@@ -174,7 +170,7 @@ io_status oid_t::asciiOut(ostream& out) const
    return done;
 }
 
-io_status oid_t::asciiIn(istream& in) 
+io_status oid_t::asciiIn(istream& in)
 {
    _asciiIn(in);
 
@@ -185,7 +181,7 @@ io_status oid_t::asciiIn(istream& in)
    return done;
 }
 
-io_status oid_t::_asciiIn(istream& in) 
+io_status oid_t::_asciiIn(istream& in)
 {
    if ( ! cc_is_digit(in) )
       throw (stringException("a digit is expected"));
@@ -211,7 +207,7 @@ io_status oid_t::_asciiIn(istream& in)
           debug(cerr, mid);
           throw(stringException("'.' expected"));
       }
-    
+
       if ( ! cc_is_digit(in) )
          throw (stringException("a digit expected"));
 
@@ -222,7 +218,7 @@ io_status oid_t::_asciiIn(istream& in)
    return done;
 }
 
-ostream& operator<<(ostream& out, const oid_t& id) 
+ostream& operator<<(ostream& out, const oid_t& id)
 {
    id.asciiOut(out);
    return out;
@@ -240,23 +236,19 @@ void oid_t::to_char_string(char* sink, Boolean swap_order) const
    //bcopy((char*)&c_code, sink, sizeof(c_code));
    memcpy(sink, (char*)&c_code, sizeof(c_code));
 
-   //bcopy((char*)&i_code, 
+   //bcopy((char*)&i_code,
    //      sink+sizeof(c_code), sizeof(i_code));
    memcpy(
-         sink+sizeof(c_code), 
-         (char*)&i_code, 
+         sink+sizeof(c_code),
+         (char*)&i_code,
          sizeof(i_code));
 */
 
    if ( swap_order == true ) {
       i_code_t x = v_i_code;
-#ifdef __osf__
-      ORDER_SWAP_INT(x);
-#else
       ORDER_SWAP_LONG(x);
-#endif
       memcpy(sink, (char*)&x, sizeof(x));
-   } else 
+   } else
       memcpy(sink, (char*)&v_i_code, sizeof(v_i_code));
 }
 
@@ -275,7 +267,7 @@ io_status oid_t::cdrOut(buffer& buf)
    buf.put(v_i_code);
    return done;
 }
-   
+
 io_status oid_t::cdrIn(buffer& buf, c_code_t c_code_to_use)
 {
 // 4/30/93. save no c_code

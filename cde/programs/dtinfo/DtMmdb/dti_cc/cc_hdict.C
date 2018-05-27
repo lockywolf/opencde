@@ -2,9 +2,7 @@
 
 #include "dti_cc/cc_exceptions.h"
 
-#if !defined(__osf__)
 template <class K, class V> CC_Boolean kv_pair<K, V>::f_needRemove = FALSE;
-#endif
 
 template <class K, class V>
 kv_pair<K, V>::~kv_pair()
@@ -63,7 +61,7 @@ hashTable<K,V>::~hashTable()
       b  = f_buckets[i];
 
       if ( b ) {
-         while ( (r = b -> removeFirst()) ) 
+         while ( (r = b -> removeFirst()) )
             delete r;
 
          delete b;
@@ -100,7 +98,7 @@ CC_Boolean hashTable<K,V>::contains(const K* k) const
      return TRUE;
    else
      return FALSE;
-   
+
 }
 
 template <class K, class V>
@@ -171,10 +169,10 @@ K* hashTable<K,V>::remove(const K* k)
 
    if ( result == 0 )
      return 0;
-   
+
    K* kr = result -> f_key;
 
-   delete result; 
+   delete result;
 
    f_items --;
 
@@ -182,7 +180,7 @@ K* hashTable<K,V>::remove(const K* k)
 }
 
 #ifdef DEBUG
-template <class K, class V> 
+template <class K, class V>
 ostream& hashTable<K,V>::print(ostream& out)
 {
    CC_TPtrSlist<kv_pair<K, V> >* b = 0;
@@ -206,18 +204,18 @@ ostream& hashTable<K,V>::print(ostream& out)
 #endif
 
 ////////////////////////////////////////
-template <class K, class V> 
+template <class K, class V>
 hashTableIterator<K,V>::hashTableIterator(hashTable<K, V>& b) :
    f_bucket_num(0), f_pos(0), f_rec(0), f_hashTable(b)
 {
 }
 
-template <class K, class V> 
+template <class K, class V>
 hashTableIterator<K,V>::~hashTableIterator()
 {
 }
 
-template <class K, class V> 
+template <class K, class V>
 CC_Boolean hashTableIterator<K,V>::_findNonEmptyBucket()
 {
    CC_TPtrSlist<kv_pair<K, V> >* b = 0;
@@ -232,7 +230,7 @@ CC_Boolean hashTableIterator<K,V>::_findNonEmptyBucket()
    return FALSE;
 }
 
-template <class K, class V> 
+template <class K, class V>
 CC_Boolean hashTableIterator<K,V>::operator++()
 {
    if ( f_rec == 0 ) { // first call to this op.
@@ -247,14 +245,14 @@ CC_Boolean hashTableIterator<K,V>::operator++()
        }
    }
 
-//fprintf(stderr, "in operator++: f_bucket_num= %d, f_pos = %d\n", 
+//fprintf(stderr, "in operator++: f_bucket_num= %d, f_pos = %d\n",
 //f_bucket_num, f_pos);
 
    f_rec = f_hashTable.f_buckets[f_bucket_num] -> at(f_pos);
    return TRUE;
 }
 
-template <class K, class V> 
+template <class K, class V>
 CC_Boolean hashTableIterator<K,V>::_findNextRecord()
 {
    f_pos++;
@@ -267,13 +265,13 @@ CC_Boolean hashTableIterator<K,V>::_findNextRecord()
       return TRUE;
 }
 
-template <class K, class V> 
+template <class K, class V>
 K* hashTableIterator<K,V>::key()
 {
    return f_rec -> f_key;
 }
 
-template <class K, class V> 
+template <class K, class V>
 V* hashTableIterator<K,V>::value() const
 {
    return f_rec -> f_value;

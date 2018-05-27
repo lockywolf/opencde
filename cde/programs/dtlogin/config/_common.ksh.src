@@ -10,7 +10,7 @@
  * (c) Copyright 1993,1994,1996 Hewlett-Packard Company.
  * (c) Copyright 1993,1994,1996 International Business Machines Corp.
  * (c) Copyright 1993,1994,1996 Sun Microsystems, Inc.
- * (c) Copyright 1993,1994,1996 Novell, Inc. 
+ * (c) Copyright 1993,1994,1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  * (c) Copyright 1997, The Open Group.
@@ -32,7 +32,7 @@
   HASH
   HASH Determine Xsession parent
   HASH
-#if defined (__osf__) || defined(__OpenBSD__) || defined(__NetBSD__)
+#if defined(__OpenBSD__) || defined(__NetBSD__)
   pexec=$(LC_TIME=C ps -p $PPID | awk 'NR==2 {print $5}')
 #elif defined(USL) && (OSMAJORVERSION > 1)
   pexec=$(LC_TIME=C ps -p $PPID | awk 'NR==2 {print $6}')
@@ -47,7 +47,7 @@
 #endif
 
 XCOMM ##########################################################################
-XCOMM  
+XCOMM
 XCOMM Append desktop font aliases to font path
 XCOMM
 XCOMM ##########################################################################
@@ -73,7 +73,7 @@ ADDFONTPATH() {
     HASH
     HASH If Xsession launched by dtlogin, it is assumed that the desktop
     HASH font path has already been added by Xsetup, so no need to add it here.
-    HASH 
+    HASH
 #endif
 #if defined (sun)
 
@@ -159,7 +159,7 @@ ADDFONTPATH() {
       HASH set them one at a time.
       HASH
 
-      if [ "${LANG-C}" != "C" ]; then 
+      if [ "${LANG-C}" != "C" ]; then
         $XDIR/xset fp+ CDE_CONFIGURATION_TOP/config/xfonts/$LANG 1>/dev/null
 
         $XDIR/xset fp+ CDE_INSTALLATION_TOP/config/xfonts/$LANG 1>/dev/null
@@ -171,173 +171,7 @@ ADDFONTPATH() {
 
     fi
 #ifdef cpp_Xsession
-  fi 
-#endif
-
-
-#if defined (__osf__)
-#ifdef cpp_Xsetup
-
-    if [ "$DTXSERVERLOCATION" != "remote" ]; then
-      HASH
-      HASH We can only modify the font path or the keymap if the X server is
-      HASH local.
-      HASH
-      HASH Since X server is local, optimize by checking local desktop
-      HASH font directories and making one call to xset.
-      HASH
-      HASH
-      HASH
-      HASH check if the system has a Low or High Resolution Monitor
-      HASH   -  High Resolution (1280 x 1024) uses 100 dpi fonts.
-      HASH   -  Medium Resolution (1024 x 864 ) uses 75 dpi fonts.
-      HASH   -  Low Resolution (1024 x 768 or lower) uses 75 dpi fonts.
-      HASH This will only switch to 75dpi fonts if there is a low or medium
-      HASH resolution monitor found.  
-      HASH
-      HASH
-      fd=""
-      prefplist=""
-      appfplist=""
-      setfont="No"
-      FONTLIB="/usr/lib/X11/fonts"
-      I18N="/usr/i18n/lib/X11/fonts/decwin"
-      pixwidth=`/usr/sbin/sizer -gr | awk -Fx ' { print $1 } ' `
-      if [ ${pixwidth} -lt 1280 ] 
-      then
-         nat_res="75dpi"
-         alt_res="100dpi"
-      else
-	 nat_res="100dpi"
-         alt_res="75dpi"
-      fi
-
-      HASH
-      HASH Add scalable fonts to the font path, based on 
-      HASH screen resolution
-      HASH
-      if [ ${pixwidth} -lt 1024 ] 
-      then
-          HASH
-          HASH Prepend fontpaths
-          HASH
-          prefplist="${FONTLIB}/Speedo ${FONTLIB}/Type1 ${FONTLIB}/Type1Adobe"
-      else
-          HASH
-          HASH Append fontpaths 
-          HASH
-          appfplist="${FONTLIB}/Type1Adobe"
-      fi
-
-      HASH
-      HASH Append fontpaths
-      HASH add optional extra fonts
-      HASH
-      cde_configuration_top=CDE_CONFIGURATION_TOP
-      cde_installation_top=CDE_INSTALLATION_TOP
-      appfplist="${appfplist} ${FONTLIB}/user/${nat_res} ${FONTLIB}/user/misc"
-      if [ "${LANG-C}" != "C" ]; then
-        appfplist="${appfplist} $cde_configuration_top/config/xfonts/$LANG/$nat_res"
-        appfplist="${appfplist} $cde_configuration_top/config/xfonts/$LANG/$alt_res"
-      fi
-      appfplist="${appfplist} $cde_configuration_top/config/xfonts/C"
-      appfplist="${appfplist} $cde_configuration_top/config/xfonts/C/$nat_res"
-      appfplist="${appfplist} $cde_configuration_top/config/xfonts/C/$alt_res"
-      if [ "${LANG-C}" != "C" ]; then
-        appfplist="${appfplist} $cde_installation_top/config/xfonts/$LANG/$nat_res"
-        appfplist="${appfplist} $cde_installation_top/config/xfonts/$LANG/$alt_res"
-      fi
-      appfplist="${appfplist} $cde_installation_top/config/xfonts/C"
-      appfplist="${appfplist} $cde_installation_top/config/xfonts/C/$nat_res"
-      appfplist="${appfplist} $cde_installation_top/config/xfonts/C/$alt_res"
-
-      HASH
-      HASH Prepend fontpaths
-      HASH add i18n fonts if they exist
-      HASH
-      prefplist="${I18N}/${nat_res} ${I18N}/${alt_res} ${prefplist}"
-
-      HASH
-      HASH Prepend to fontpath
-      HASH
-      for i in ${prefplist} 
-      do 
-         if [ -f ${i}/fonts.dir ]
-         then 
-             if [ $fd ] 
-             then
-                fd="${fd},${i}/" 
-             else
-                fd="${i}/"
-                setfont="Yes" 
-             fi
-         fi 
-      done
-
-      if [ ${setfont} = Yes ]
-      then
-         $XDIR/xset +fp ${fd}
-         if [ $? -ne 0 ] 
-         then
-            HASH
-            HASH set the old slow way.....
-            HASH
-            for i in ${prefplist}
-            do
-              if [ -f ${i}/fonts.dir ]
-              then
-                  $XDIR/xset +fp ${i}
-              fi
-            done
-         fi
-         HASH
-         HASH End of the setting the old slow way.........
-         HASH
-         fd=""
-         setfont='No'
-      fi  
-
-      HASH
-      HASH Append to fontpath
-      HASH
-      for i in ${appfplist}
-      do
-         if [ -f ${i}/fonts.dir ]
-         then
-             if [ $fd ]
-             then
-                fd="${fd},${i}/"
-             else
-                fd="${i}/"
-                setfont="Yes"
-             fi
-         fi
-      done
-
-      if [ ${setfont} = Yes ]
-      then
-         $XDIR/xset fp+ ${fd}
-         if [ $? -ne 0 ] 
-         then
-            HASH
-            HASH set the old slow way.....
-            HASH
-            for i in ${appfplist}
-            do
-              if [ -f ${i}/fonts.dir ]
-              then
-                  $XDIR/xset fp+ ${i}
-              fi
-            done
-         fi
-         HASH
-         HASH End of the setting the old slow way.........
-         HASH
-      fi
-
-
-    fi
-#endif
+  fi
 #endif
 
 #if defined (_AIX)
@@ -352,25 +186,25 @@ XCOMM ##########################################################################
  * The keyboard mapping method depends upon how the session is started:
  *
  * - from dtlogin with a local X server
- *   
+ *
  *   This is generally the case for the console. Since the keyboard is
  *   on the login server, the keyboard mapping will be done in Xsetup
- *   and the language will be determined via querybkd. 
+ *   and the language will be determined via querybkd.
  *
  * - from dtlogin with a remote X server
  *
  *   The is generally the case for X stations. Since the keyboard is not
  *   on the login server, we cannot query for the language. The keyboard
  *   language will thus be provided in the KBD_MAP table setup by the
- *   sysadmin and the keyboard mapping will be done in Xsetup. 
+ *   sysadmin and the keyboard mapping will be done in Xsetup.
  *
  * - using 'xinit /usr/dt/bin/Xsession' from an HFT/LFT
- *   
- *   Since the keyboard is local, the keyboard mapping will be done in 
+ *
+ *   Since the keyboard is local, the keyboard mapping will be done in
  *   Xsession and the language will be determined via querykbd.
- *   
+ *
  * - starting Xsession from an x_st_mgr provided aixterm on an X station
- *   
+ *
  *   The X station manager sets up the keyboard mapping in this case, so
  *   no work is required.
  */
@@ -414,7 +248,7 @@ SetKeyboardMap()
     HASH set, it is assumed that the keyboard mapping was set up by x_st_mgr.
     HASH
 #endif
-    
+
 #if defined (AIXV4)
 # define cpp_CNAME "C"
 #else
@@ -452,7 +286,7 @@ SetKeyboardMap()
 
     HASH
     HASH Set up keyboard mapping
-    HASH 
+    HASH
     KBD=""
     XMODDIR=/usr/lpp/X11/defaults/xmodmap
 
@@ -466,7 +300,7 @@ SetKeyboardMap()
         SetKeyboardMap $LANG
       fi
     fi
-    
+
 #ifdef cpp_Xsession
   fi
 #endif

@@ -26,7 +26,7 @@
  *	$TOG: XmTextEditor.C /main/13 1998/02/03 10:29:51 mgreess $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -88,7 +88,7 @@ XmTextEditor::XmTextEditor(
     text_already_selected = FALSE;
 }
 
-XmTextEditor::~XmTextEditor() 
+XmTextEditor::~XmTextEditor()
 {
     if (_buffer) {
 	delete _buffer;
@@ -163,7 +163,7 @@ XmTextEditor::initialize()
     update_display_from_props();
     XtManageChild(_w);
     XtAddEventHandler(XtParent(_w), ButtonPressMask,
-                        FALSE, MenuButtonHandler, 
+                        FALSE, MenuButtonHandler,
 			(XtPointer) this);
 }
 
@@ -203,7 +203,7 @@ XmTextEditor::append_to_contents(
 {
 
     if (contents[len - 1] == 0) {
-  	XmTextInsert( _w, XmTextGetLastPosition( _w ), 
+  	XmTextInsert( _w, XmTextGetLastPosition( _w ),
 		      (char *)contents);
     }
     else {
@@ -229,8 +229,8 @@ XmTextEditor::append_at_cursor(
 {
     if (contents[len - 1] == 0) {
   	XmTextInsert(
-		_w, 
-		XmTextGetInsertionPosition(_w), 
+		_w,
+		XmTextGetInsertionPosition(_w),
 		(char *)contents
 		);
     }
@@ -240,8 +240,8 @@ XmTextEditor::append_at_cursor(
 	this->my_owner->needBuf(&_buffer, &_buf_len, len + 1);
 	this->my_owner->stripCRLF(&_buffer, contents, len);
 	XmTextInsert(
-		_w, 
-		XmTextGetInsertionPosition(_w), 
+		_w,
+		XmTextGetInsertionPosition(_w),
 		_buffer);
     }
 }
@@ -252,7 +252,7 @@ XmTextEditor::append_at_cursor(const char * path)
     loadFile(path, (const int)XmTextGetInsertionPosition(_w));
 }
 
-void    
+void
 XmTextEditor::clear_contents()
 {
 
@@ -270,7 +270,7 @@ Pixel
 XmTextEditor::get_text_foreground()
 {
     Pixel fg;
-    
+
     XtVaGetValues(_w,
 	XmNforeground, &fg,
 	NULL);
@@ -282,7 +282,7 @@ Pixel
 XmTextEditor::get_text_background()
 {
     Pixel bg;
-    
+
     XtVaGetValues(_w,
 	XmNbackground, &bg,
 	NULL);
@@ -293,7 +293,7 @@ XmFontList
 XmTextEditor::get_text_fontList()
 {
     XmFontList fl;
-    
+
     XtVaGetValues(_w,
 	XmNfontList, &fl,
 	NULL);
@@ -304,7 +304,7 @@ Dimension
 XmTextEditor::get_text_width()
 {
     Dimension wid;
-    
+
     XtVaGetValues(_w,
         XmNwidth, &wid,
 	NULL);
@@ -371,7 +371,7 @@ XmTextEditor::set_rows(int nrows)
 // TOGO CMContainer
 // TOGO XmTextEditor::get_container()
 // TOGO {
-// TOGO    return(NULL);    
+// TOGO    return(NULL);
 // TOGO }
 
 void
@@ -420,7 +420,7 @@ XmTextEditor::focus_callback(
     void *
 )
 {
- 
+
     XmTextEditor  *obj=(XmTextEditor *) clientData;
 
     obj->obtained_focus();
@@ -567,12 +567,12 @@ XmTextEditor::paste_special_from_clipboard(Editor::InsertFormat format)
 	cd.obj = this;
 	cd.insert_format = format;
 
-	XtAddCallback(_w, XmNmodifyVerifyCallback, 
+	XtAddCallback(_w, XmNmodifyVerifyCallback,
 			modify_verify_callback, (XtPointer)&cd);
 
 	XmTextPaste( _w );
 
-	XtRemoveCallback(_w, XmNmodifyVerifyCallback, 
+	XtRemoveCallback(_w, XmNmodifyVerifyCallback,
 			modify_verify_callback, (XtPointer)&cd);
 }
 
@@ -643,19 +643,11 @@ XmTextEditor::loadFile(const char * path, const int pos)
     }
 
     int page_size = (int)sysconf(_SC_PAGESIZE);
-    size_t map_size = (size_t)(info.st_size + 
+    size_t map_size = (size_t)(info.st_size +
 				(page_size - (info.st_size % page_size)));
     char * map;
 
-#if defined(__osf__)
-    // Need the (char *) for compile to work in ALL cases ... for the
-    // POSIX "mmap" is (void *).  Also, this version of mmap does NOT
-    // allow requested length to be greater than the file size ...
-    // in contradiction to the documentation (don't round up).
-    map = (char *) mmap(0, info.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-#else
     map = (char *) mmap(0, map_size, PROT_READ, MAP_PRIVATE, fd, 0);
-#endif
 
     if (map == (char *)-1) {
 	// We could not map it for some reason. Let's just read it into
@@ -692,12 +684,12 @@ XmTextEditor::loadFile(const char * path, const int pos)
     close(fd);
 }
 
-void 
+void
 XmTextEditor::modify_verify_callback(
 	Widget , XtPointer client, XtPointer call_data)
 {
 	PSClientData *cd = (PSClientData *)client;
-	XmTextVerifyCallbackStruct *modify_info = 
+	XmTextVerifyCallbackStruct *modify_info =
 			(XmTextVerifyCallbackStruct *)call_data;
 
 	// Make sure we are being called programmatically
@@ -724,14 +716,14 @@ XmTextEditor::modifyPasteData(
 	if(_modified_text == NULL)
 		_modified_text = (XmTextBlockRec *)calloc(1,sizeof(XmTextBlockRec));
 
-	char *sp = modify_info->text->ptr; // source pointer to the insert string 
+	char *sp = modify_info->text->ptr; // source pointer to the insert string
 	int length = modify_info->text->length; // length does not include '\0' char
 	char *maxsp = sp  + length; // maxmimum source ptr
 
 	// Allocate memory rounded off to the nearest BUFINC
 	size_t size_req = (size_t)(((length/BUFINC)+1)*BUFINC);
 	if((_modified_text_buflen < size_req)	||
-		  ((_modified_text_buflen > XmTextEditor::MAXBUFSZ) && 
+		  ((_modified_text_buflen > XmTextEditor::MAXBUFSZ) &&
 			(size_req <  XmTextEditor::MAXBUFSZ)) 	)
 		reallocPasteBuf(size_req);
 
@@ -739,17 +731,17 @@ XmTextEditor::modifyPasteData(
 		return; // No memory available
 
 	switch( insert_format) {
-	case IF_INDENTED:	
+	case IF_INDENTED:
 		{
 		DtMailEnv error;
 		int ip = 0;
 
 		// Get the indent prefix string
-		DtMail::Session *m_session = 
+		DtMail::Session *m_session =
 				theRoamApp.session()->session();
-		m_session->mailRc(error)->getValue(error, 
+		m_session->mailRc(error)->getValue(error,
 				"indentprefix", &indent_str);
-		if ( error.isSet() || !indent_str) 
+		if ( error.isSet() || !indent_str)
 			indent_str = strdup("> ");
 
 		size_t indlen = strlen(indent_str);
@@ -760,21 +752,21 @@ XmTextEditor::modifyPasteData(
 			// Make sure there is enough space
 			// for an indent prefix, one char and a terminating '\0'
 			if(!((ip+indlen+2) < _modified_text_buflen) ) {
-				size_req = (size_t)((((_modified_text_buflen + 
+				size_req = (size_t)((((_modified_text_buflen +
 						indlen+2)/BUFINC)+1)*BUFINC);
 				reallocPasteBuf(size_req);
 				if(_modified_text->ptr == NULL)
 					return; // No memory available
 			}
 
-			// Copy the indent string at the beginning 
-			if(!ip) { 
+			// Copy the indent string at the beginning
+			if(!ip) {
 				memcpy(_modified_text->ptr, indent_str, indlen);
                 		ip += indlen;
 			}
 
 			// Copy the next byte and check for new line
-			_modified_text->ptr[ip++] = *sp++; 
+			_modified_text->ptr[ip++] = *sp++;
 			if(*(sp-1) == '\n') {
 				memcpy(&_modified_text->ptr[ip], indent_str, indlen);
 				ip += indlen;
@@ -790,16 +782,16 @@ XmTextEditor::modifyPasteData(
 
 		if( !begin_ins_bracket)
 			begin_ins_bracket = GETMSG(DT_catd, 1, 199,
-				"\n------------- Begin Included Message -------------\n"); 
-		if(!end_ins_bracket) 
+				"\n------------- Begin Included Message -------------\n");
+		if(!end_ins_bracket)
 			end_ins_bracket = GETMSG(DT_catd, 1, 200,
-				"\n------------- End Included Message -------------\n"); 
-		
-		size_t begin_len = strlen(begin_ins_bracket); 
-		size_t end_len = strlen(end_ins_bracket); 
+				"\n------------- End Included Message -------------\n");
+
+		size_t begin_len = strlen(begin_ins_bracket);
+		size_t end_len = strlen(end_ins_bracket);
 
 		// Make sure there is enough space
-		if((size_req = length + begin_len + end_len + 1) > 
+		if((size_req = length + begin_len + end_len + 1) >
 					_modified_text_buflen) {
 			size_req = (size_t) ((((size_req)/BUFINC)+1)*BUFINC);
 			reallocPasteBuf(size_req);
@@ -810,14 +802,14 @@ XmTextEditor::modifyPasteData(
 
 		strcpy(_modified_text->ptr, begin_ins_bracket);
 		strncat(_modified_text->ptr,sp,length);
-		strcat(_modified_text->ptr, end_ins_bracket); 
+		strcat(_modified_text->ptr, end_ins_bracket);
 		_modified_text->length = end_len + begin_len + length;
 		}
 		break;
 	default:
 		break;
 	}
-			
+
 	_modified_text->format = modify_info->text->format;
 
 	// Stuff the modified text block ptr in the return call data

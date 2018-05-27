@@ -196,7 +196,7 @@ signalHandler(
 	}
 }
 
-#if defined(SVR4) || defined(aix) || defined(hpux) || defined(__osf__) || defined(linux) || defined(CSRG_BASED)
+#if defined(SVR4) || defined(aix) || defined(hpux) || defined(linux) || defined(CSRG_BASED)
 #if !defined(SIG_PF)
 typedef void (*sig_pf_t)(int);
 #define SIG_PF sig_pf_t
@@ -310,7 +310,7 @@ _DtTtMediaLoadPatCb(
  */
 static XrmOptionDescRec optionDescList[] = {
     {"-session", "*session", XrmoptionSepArg, (XPointer)NULL}
-    
+
     /*** DTB_USER_CODE_START vvv Add structure fields below vvv ***/
     /*** DTB_USER_CODE_END   ^^^ Add structure fields above ^^^ ***/
 };
@@ -321,7 +321,7 @@ static XrmOptionDescRec optionDescList[] = {
 static XtResource resources[] = {
     {"session", "Session", XtRString, sizeof(String),
         XtOffsetOf(DtbAppResourceRec, session_file), XtRImmediate, (XtPointer)NULL}
-    
+
     /*** DTB_USER_CODE_START vvv Add structure fields below vvv ***/
     /*** DTB_USER_CODE_END   ^^^ Add structure fields above ^^^ ***/
 };
@@ -342,7 +342,7 @@ main(int argc, char **argv)
 
     Pixmap	icon_pixmap = 0;
     Pixmap	icon_mask_pixmap = 0;
-    
+
     /**************************************************************************
      *** DTB_USER_CODE_START
      ***
@@ -350,9 +350,9 @@ main(int argc, char **argv)
      ***
      *** Add local variables and code.
      ***/
-    
+
     /*
-     * The application must call DtTermInitialize() before 
+     * The application must call DtTermInitialize() before
      * initializing the Xt Toolkit with XtAppInitialize(3X).
      */
     DtTermInitialize();
@@ -362,7 +362,7 @@ main(int argc, char **argv)
      *** End of user code section
      ***
      **************************************************************************/
-    
+
     toplevel = XtVaAppInitialize(&app, "Ttsnoop",
         optionDescList, XtNumber(optionDescList),
         &argc, argv, (String *)NULL,
@@ -380,21 +380,21 @@ main(int argc, char **argv)
         fprintf(stderr, "Could not open display.");
         exit(1);
     }
-    
+
     /*
      * Save the toplevel widget so it can be fetched later as needed.
      */
     dtb_save_toplevel_widget(toplevel);
-    
+
     /*
      * Save the command used to invoke the application.
      */
     dtb_save_command(argv[0]);
-    
+
     XtGetApplicationResources(toplevel, (XtPointer)&dtb_app_resource_rec,
     	resources, XtNumber(resources), (Arg *)NULL, 0);
-    
-    
+
+
     /**************************************************************************
      *** DTB_USER_CODE_START
      ***
@@ -583,15 +583,15 @@ main(int argc, char **argv)
 	    }
 	    installSignalHandler();
     }
-    
+
     /*** DTB_USER_CODE_END
      ***
      *** End of user code section
      ***
      **************************************************************************/
-    
 
-    
+
+
     /*
      * Initialize all global variables.
      */
@@ -605,7 +605,7 @@ main(int argc, char **argv)
     dtbFileChooserFchooserInfo_clear(&dtb_file_chooser_fchooser);
     dtbArgChooserArgChooserInfo_clear(&dtb_arg_chooser_arg_chooser);
     dtbCallbackChooserCallbackChooserInfo_clear(&dtb_callback_chooser_callback_chooser);
-    
+
     /*
      * Set up the application's root window.
      */
@@ -621,22 +621,22 @@ main(int argc, char **argv)
         XmNiconPixmap, icon_pixmap,
         XmNbackground, dtb_cvt_string_to_pixel(dtb_ttsnoop_ttsnoop_win.ttsnoopWin, "white"),
         NULL);
-    
+
     dtb_ttsnoop_ttsnoop_win_initialize(&(dtb_ttsnoop_ttsnoop_win), dtb_get_toplevel_widget());
-    
+
     /*
      * Map any initially-visible windows
      */
-    
+
     save_yourself_atom = XmInternAtom(XtDisplay(toplevel),
     	"WM_SAVE_YOURSELF", False);
-    
+
     dtb_set_client_session_saveCB((DtbClientSessionSaveCB)NULL);
-    
+
     XmAddWMProtocolCallback(toplevel, save_yourself_atom,
     	dtb_session_save, (XtPointer)NULL);
-    
-    
+
+
     /**************************************************************************
      *** DTB_USER_CODE_START
      ***
@@ -645,17 +645,17 @@ main(int argc, char **argv)
      *** that must be completed before the toplevel widget is
      *** realized.
      ***/
-    
+
     /*** DTB_USER_CODE_END
      ***
      *** End of user code section
      ***
      **************************************************************************/
-    
+
 
     XtRealizeWidget(toplevel);
 
-    
+
     /**************************************************************************
      *** DTB_USER_CODE_START
      ***
@@ -769,15 +769,15 @@ main(int argc, char **argv)
 			   DtNmapOnOutput, optMapOnOutput, NULL );
     }
     installSignalHandler();
-    
+
     /*** DTB_USER_CODE_END
      ***
      *** End of user code section
      ***
      **************************************************************************/
-    
 
-    
+
+
     /*
      * Enter event loop
      */

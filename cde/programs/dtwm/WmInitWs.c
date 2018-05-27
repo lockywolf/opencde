@@ -603,10 +603,6 @@ void InitWmGlobal(int argc, char *argv[], char *environ[]) {
         wmGD.topLevelW = XtAppCreateShell(
             NULL, res_class, sessionShellWidgetClass, DISPLAY, args, argnum);
 
-#ifdef __osf__
-        _XmColorObjCreate(wmGD.topLevelW, NULL, NULL);
-        _XmColorObjCreate(wmGD.topLevelW, NULL, NULL);
-#endif
 
         XtAddEventHandler(wmGD.topLevelW, NoEventMask, True,
                           MappingEventHandler, NULL);
@@ -1072,15 +1068,6 @@ void InitWmGlobal(int argc, char *argv[], char *environ[]) {
                          *
                          */
 
-#ifdef __osf__
-                /* Fixes problem on multiscreen where cursor is only
-                 * set on primary screen.
-                 */
-                if (DtwmBehavior) {
-                        XDefineCursor(DISPLAY, RootWindow(DISPLAY, scr),
-                                      wmGD.workspaceCursor);
-                }
-#endif
 #endif /* WSM */
         }
 #ifdef PANELIST

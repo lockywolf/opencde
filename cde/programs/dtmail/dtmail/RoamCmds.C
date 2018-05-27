@@ -26,7 +26,7 @@
  *	$TOG: RoamCmds.C /main/43 1999/07/13 08:41:44 mgreess $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement between
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -49,9 +49,9 @@
  *   (c) Copyright 1995 Digital Equipment Corp.
  *   (c) Copyright 1995 Fujitsu Limited
  *   (c) Copyright 1995 Hitachi, Ltd.
- *                                                                   
  *
- *                     RESTRICTED RIGHTS LEGEND                              
+ *
+ *                     RESTRICTED RIGHTS LEGEND
  *
  *Use, duplication, or disclosure by the U.S. Government is subject to
  *restrictions as set forth in subparagraph (c)(1)(ii) of the Rights in
@@ -60,7 +60,7 @@
  *FAR 52.227-19(c)(1,2).
 
  *Hewlett-Packard Company, 3000 Hanover Street, Palo Alto, CA 94304 U.S.A.
- *International Business Machines Corp., Route 100, Somers, NY 10589 U.S.A. 
+ *International Business Machines Corp., Route 100, Somers, NY 10589 U.S.A.
  *Sun Microsystems, Inc., 2550 Garcia Avenue, Mountain View, CA 94043 U.S.A.
  *Novell, Inc., 190 River Road, Summit, NJ 07901 U.S.A.
  *Digital Equipment Corp., 111 Powdermill Road, Maynard, MA 01754, U.S.A.
@@ -155,9 +155,9 @@ RoamCmd::RoamCmd
 
 #ifdef DEAD_WOOD
 SearchCmd::SearchCmd(
-		     char *name, 
+		     char *name,
 		     char *label,
-		     int active, 
+		     int active,
 		     RoamMenuWindow *window
 		     ) : InterruptibleCmd (name, label, active)
 {
@@ -166,9 +166,9 @@ SearchCmd::SearchCmd(
 }
 
 void
-SearchCmd::execute ( 
-		     TaskDoneCallback callback, 
-		     void *clientData 
+SearchCmd::execute (
+		     TaskDoneCallback callback,
+		     void *clientData
 		     )
 {
     InterruptibleCmd::execute( callback, clientData );
@@ -177,15 +177,15 @@ SearchCmd::execute (
 void
 SearchCmd::execute()
 {
-    
+
     _menuwindow->list()->clearMsgs();
     _menuwindow->busyCursor();
-    
+
     if ( !_criteria ) {
 	_criteria=( char * )realloc(_criteria, strlen( this->name()) + 1);
 	strcpy(_criteria, this->name());
     }
-    
+
     InterruptibleCmd::execute();
 }
 
@@ -194,37 +194,37 @@ SearchCmd::doit()
 {
     int 	count;
     DtMailEnv	mail_error;
-    
+
     // Initialize the mail_error.
     mail_error.clear();
-    
+
     MsgScrollingList *list=_menuwindow->list();
-    
-    
+
+
     // load_headers will retrieve all of the message headers and
     // add the handles to the list.
     //
     count = list->load_headers(mail_error);
-    
+
     _menuwindow->normalCursor();
-    
+
     if (count == 0) {
 	_menuwindow->message(GETMSG(DT_catd, 3, 46, "Empty container"));
 	_done = TRUE;
 	return;
     }
-    
+
     list->scroll_to_bottom();
     _done=TRUE;
-}      
+}
 
 void
 SearchCmd::undoit()
 {
     // Just print a message that allows us to trace the execution
-    
+
     DebugPrintf(1, "%s: undoit\n", name());
-}       
+}
 
 void
 SearchCmd::updateMessage (char *msg)
@@ -233,10 +233,10 @@ SearchCmd::updateMessage (char *msg)
 }
 #endif /* DEAD_WOOD */
 
-CheckForNewMailCmd::CheckForNewMailCmd( 
-					char *name, 
+CheckForNewMailCmd::CheckForNewMailCmd(
+					char *name,
 					char *label,
-					int active, 
+					int active,
 					RoamMenuWindow *window
 					) :  NoUndoCmd ( name, label, active )
 {
@@ -250,7 +250,7 @@ CheckForNewMailCmd::doit()
     // Initialize the mail_error.
     error.clear();
     _menuwindow->checkForMail(error);
-    
+
 }
 
 OpenInboxCmd::OpenInboxCmd(
@@ -262,7 +262,7 @@ OpenInboxCmd::OpenInboxCmd(
 {
 
     _menuWindow = rmw;
-    
+
 }
 
 void
@@ -300,20 +300,20 @@ OpenInboxCmd::undoit()
 {
 }
 
-// 
+//
 // OpenContainerCmd methods implementation.
 // For the most part, we treat container->open() as a benign thing.
-// The magic, as we see it, deals with converting the container 
-// if necessary.  
+// The magic, as we see it, deals with converting the container
+// if necessary.
 // For OpenContainerCmd, if no conversion is necessary bingo! it opens.
 // If conversion is necessary, it punts the work to ConvertContainerCmd.
 //
 //
 
 OpenContainerCmd::OpenContainerCmd (
-				    char *name, 
+				    char *name,
 				    char *label,
-				    int active, 
+				    int active,
 				    RoamMenuWindow *window
 				) : RoamInterruptibleCmd (name, label, active)
 {
@@ -328,8 +328,8 @@ OpenContainerCmd::execute()
 }
 
 void
-OpenContainerCmd::execute( 
-			   RoamTaskDoneCallback rtd_callback, 
+OpenContainerCmd::execute(
+			   RoamTaskDoneCallback rtd_callback,
 			   void *clientData
 			   )
 {
@@ -348,36 +348,36 @@ void
 OpenContainerCmd::doit()
 {
     DtMailEnv error;
-    
+
     assert(_menuWindow != NULL);
-    
+
     // Initialize the mail_error.
     error.clear();
-    
+
     _menuWindow->open(error, _open_create_flag, _open_lock_flag);
     if (error.isSet()) {
 	// Post a dialog indicating error and exit?
 	return;		// for now. Should exit instead?
     }
     _done = TRUE;
-}      
+}
 
 void
 OpenContainerCmd::undoit()
 {
     // Just print a message that allows us to trace the execution
-    
+
     DebugPrintf(1, "%s: undoit\n", name());
-}       
+}
 
 void
 OpenContainerCmd::check_if_done()
 {
     // Have nothing fancy to do here.  Since we do not want a dialog
     // in any case, set it to true...
-    
+
     _done = TRUE;
-    
+
 }
 
 
@@ -413,9 +413,9 @@ OpenContainerCmd::set_create_lock_flags(
 // Here be dragons!
 
 ConvertContainerCmd::ConvertContainerCmd(
-					 char *name, 
+					 char *name,
 					 char *label,
-					 int active, 
+					 int active,
 					 RoamMenuWindow *window
 				 ) : RoamInterruptibleCmd (name, label, active)
 {
@@ -431,18 +431,18 @@ ConvertContainerCmd::execute()
     if (!_dialog) {
 	_dialog = new DtMailWDM("Convert");
     }
-    
+
     RoamInterruptibleCmd::execute();
 }
 
 void
-ConvertContainerCmd::execute ( RoamTaskDoneCallback rtd_callback, 
+ConvertContainerCmd::execute ( RoamTaskDoneCallback rtd_callback,
 			       void *clientData)
 {
     if (!_dialog) {
 	_dialog = new DtMailWDM("Convert");
     }
-    
+
     RoamInterruptibleCmd::execute(rtd_callback, clientData);
 }
 
@@ -457,27 +457,27 @@ ConvertContainerCmd::execute ( RoamTaskDoneCallback rtd_callback,
 // 2) the session->convert() which is calling the _conv_cb() for every
 //    message that it converts.  In the _conv_cb(), we do the following:
 //    a) force update the dialog and see if it was interrupted;
-//    b) if not interrupted, set_convert_data() where we set _done if 
+//    b) if not interrupted, set_convert_data() where we set _done if
 //       we are really done.
-//  
+//
 
 void
 ConvertContainerCmd::doit()
 {
     assert(_menuWindow != NULL);
-    
+
     MailSession *ses = theRoamApp.session();
     DtMailEnv mail_error;
-    
+
     // Initialize the mail_error.
     mail_error.clear();
-    
+
 //    ses->convert(mail_error, _src, _dest, _conv_cb, _menuWindow);
-    
+
     if (mail_error.isSet()) {
 	_menuWindow->postErrorDialog(mail_error);
     }
-}      
+}
 
 void
 ConvertContainerCmd::set_convert_data(
@@ -487,7 +487,7 @@ ConvertContainerCmd::set_convert_data(
 {
     _num_converted = converted;
     _num_to_be_converted = to_be_converted;
-    
+
     if ((_num_converted == _num_to_be_converted) && !_interrupted) {
 	_done = TRUE;
     }
@@ -517,7 +517,7 @@ ConvertContainerCmd::updateDialog(
 				  )
 {
     forceUpdate(_dialog->baseWidget());
-    _dialog->updateDialog( msg );  
+    _dialog->updateDialog( msg );
 }
 
 void
@@ -531,25 +531,25 @@ void
 ConvertContainerCmd::post_dialog()
 {
     Dimension x, y, wid, ht;
-    
+
     char * buf = new char[25];
-    
+
     sprintf(buf, "Converted: %3d%", 0);
-    
+
     _dialog->post ("Mailer",
 		   buf,
 		   _menuWindow->baseWidget(),
 		   (void *) this,
-		   NULL, 
+		   NULL,
 		   &RoamInterruptibleCmd::interruptCallback );
-    
+
     XtVaGetValues(_dialog->baseWidget(),
 		  XmNx, &x,
 		  XmNy, &y,
 		  XmNwidth, &wid,
 		  XmNheight, &ht,
 		  NULL);
-    
+
 }
 
 void
@@ -562,9 +562,9 @@ void
 ConvertContainerCmd::undoit()
 {
     // Just print a message that allows us to trace the execution
-    
+
     DebugPrintf(1, "%s: undoit\n", name());
-}       
+}
 
 void
 ConvertContainerCmd::set_data(
@@ -587,11 +587,11 @@ ConvertContainerCmd::get_destination_name()
 // Here be sheep!
 // FindCmd
 
-FindCmd::FindCmd( 
-		  char *name, 
+FindCmd::FindCmd(
+		  char *name,
 		  char *label,
 		  int active,
-		  RoamMenuWindow *window 
+		  RoamMenuWindow *window
 		  ) : RoamCmd ( name, label, active, window )
 {
 }
@@ -599,18 +599,18 @@ FindCmd::FindCmd(
 void
 FindCmd::doit()
 {
-    
+
     _menuwindow->get_find_dialog();
-    
+
 //  SearchCmd::doit();
-    
+
 }
 
 
-ChooseCmd::ChooseCmd( 
-		      char *name, 
+ChooseCmd::ChooseCmd(
+		      char *name,
 		      char *label,
-		      int active, 
+		      int active,
 		      RoamMenuWindow *window
 		      ) :  NoUndoCmd( name, label, active )
 {
@@ -620,7 +620,7 @@ ChooseCmd::ChooseCmd(
 void
 ChooseCmd::doit()
 {
-    
+
 }
 
 SelectAllCmd::SelectAllCmd(
@@ -647,10 +647,10 @@ SelectAllCmd::undoit()
 }
 
 
-DeleteCmd::DeleteCmd( 
-		      char *name, 
+DeleteCmd::DeleteCmd(
+		      char *name,
 		      char *label,
-		      int active, 
+		      int active,
 		      RoamMenuWindow *window
 		      ) :  Cmd ( name, label, active )
 {
@@ -661,19 +661,19 @@ void
 DeleteCmd::doit()
 {
     _menuwindow->list()->deleteSelected(FALSE);
-    
+
 }
 
 void
 DeleteCmd::undoit()
 {
-    
+
 }
 
 DestroyCmd::DestroyCmd(
-			char *name, 
-			char *label, 
-			int active, 
+			char *name,
+			char *label,
+			int active,
 			RoamMenuWindow *window
 			) : Cmd(name, label, active)
 {
@@ -702,12 +702,12 @@ char *UnifiedSelectFileCmd::_unified_file = NULL;
 int   UnifiedSelectFileCmd::_unified_hidden = 0;
 int   UnifiedSelectFileCmd::_unify_selection = 1;
 
-UnifiedSelectFileCmd::UnifiedSelectFileCmd ( 
-			       		char   *name, 
+UnifiedSelectFileCmd::UnifiedSelectFileCmd (
+			       		char   *name,
 			       		char   *label,
 			       		char   *title,
 			       		char   *ok_label,
-			       		int    active, 
+			       		int    active,
 			       		FileCallback
 					       select_callback,
 			       		void   *client_data,
@@ -870,12 +870,12 @@ char *UnifiedSelectMailboxCmd::_unified_file = NULL;
 int   UnifiedSelectMailboxCmd::_unified_hidden = 0;
 int   UnifiedSelectMailboxCmd::_unify_selection = 1;
 
-UnifiedSelectMailboxCmd::UnifiedSelectMailboxCmd ( 
-			       		char   *name, 
+UnifiedSelectMailboxCmd::UnifiedSelectMailboxCmd (
+			       		char   *name,
 			       		char   *label,
 			       		char   *title,
 			       		char   *ok_label,
-			       		int    active, 
+			       		int    active,
 			       		FileCallback
 					       select_callback,
 			       		void   *client_data,
@@ -996,7 +996,7 @@ void
 UnifiedSelectMailboxCmd::unifiedMailboxSearchProc(
 					Widget w,
 					XtPointer sd)
-{   
+{
     XmFileSelectionBoxWidget fs =
 				(XmFileSelectionBoxWidget) w;
     XmFileSelectionBoxCallbackStruct * searchData =
@@ -1016,12 +1016,12 @@ UnifiedSelectMailboxCmd::unifiedMailboxSearchProc(
 
     if (!(dir = _XmStringGetTextConcat(searchData->dir)))
       return ;
-    
+
     if (!(pattern = _XmStringGetTextConcat(searchData->pattern)))
     {
 	XtFree(dir);
         return;
-    } 
+    }
     fileList = NULL;
 
     XtVaGetValues(
@@ -1041,9 +1041,9 @@ UnifiedSelectMailboxCmd::unifiedMailboxSearchProc(
 
 	if (numFiles > 1)
 	  qsort((void*) fileList, numFiles, sizeof(char*), _XmOSFileCompare);
-	
+
         XmStringFileList = (XmString*) XtMalloc(numFiles*sizeof(XmString));
-        
+
         Index = 0;
 	dirLen = strlen(dir);
 
@@ -1059,20 +1059,20 @@ UnifiedSelectMailboxCmd::unifiedMailboxSearchProc(
 
 	    if (isMailBox &&
 		(showDotFiles || ((fileList[Index])[dirLen] != '.')) )
-	    {   
+	    {
                 if (pathMode ==  XmPATH_MODE_FULL)
-		  XmStringFileList[numItems++] = 
+		  XmStringFileList[numItems++] =
 			XmStringGenerate(fileList[Index],
 					 XmFONTLIST_DEFAULT_TAG,
 					 XmCHARSET_TEXT, NULL);
-		else 
-		  XmStringFileList[numItems++] = 
+		else
+		  XmStringFileList[numItems++] =
 			XmStringGenerate(&(fileList[Index])[dirLen],
 					 XmFONTLIST_DEFAULT_TAG,
 					 XmCHARSET_TEXT, NULL) ;
-	    } 
+	    }
 	    ++Index ;
-	} 
+	}
 
 	/* Update the list.
         */
@@ -1101,7 +1101,7 @@ UnifiedSelectMailboxCmd::unifiedMailboxSearchProc(
 		XmNfileListItems, NULL,
 		XmNlistUpdated, TRUE,
 		NULL);
-    } 
+    }
 
     XtFree((char *) fileList);
     XtFree(pattern);
@@ -1241,7 +1241,7 @@ ContainerMenuCmd::~ContainerMenuCmd()
 {
 }
 
-    
+
 // Move the messages that are selected in the RoamMenuWindow to the Inbox.
 MoveToInboxCmd::MoveToInboxCmd(
 			       char *name,
@@ -1257,15 +1257,15 @@ void
 MoveToInboxCmd::doit()
 {
     DtMailEnv mail_error;
-    
+
     // Initialize mail_error.
     mail_error.clear();
-    
+
     // Get a handle to the Inbox.
     char * mail_file = NULL;
     DtMailObjectSpace space;
     DtMail::Session * d_session = theRoamApp.session()->session();
-    
+
     d_session->queryImpl(mail_error,
 			 d_session->getDefaultImpl(mail_error),
 			 DtMailCapabilityInboxName,
@@ -1291,20 +1291,20 @@ CopyToInboxCmd::CopyToInboxCmd(
 {
     _menuwindow = window;
 }
- 
+
 void
 CopyToInboxCmd::doit()
 {
     DtMailEnv mail_error;
- 
+
     // Initialize mail_error.
     mail_error.clear();
- 
+
     // Get a handle to the Inbox.
     char * mail_file = NULL;
     DtMailObjectSpace space;
     DtMail::Session * d_session = theRoamApp.session()->session();
- 
+
     d_session->queryImpl(mail_error,
                          d_session->getDefaultImpl(mail_error),
                          DtMailCapabilityInboxName,
@@ -1324,10 +1324,10 @@ CopyToInboxCmd::~CopyToInboxCmd()
 // This is hooked up the Undelete button in the Deleted
 // Messages List dialog box.
 
-DoUndeleteCmd::DoUndeleteCmd( 
-			      char *name, 
+DoUndeleteCmd::DoUndeleteCmd(
+			      char *name,
 			      char *label,
-			      int active, 
+			      int active,
 			      UndelFromListDialog *undelDialog
 			      ) :  Cmd ( name, label, active )
 {
@@ -1354,8 +1354,8 @@ DoUndeleteCmd::~DoUndeleteCmd()
 // This is hooked up to the Close button in the Deleted Messages
 // List dialog box.
 
-CloseUndelCmd::CloseUndelCmd( 
-			      char *name, 
+CloseUndelCmd::CloseUndelCmd(
+			      char *name,
 			      char *label,
 			      int active,
 			      UndelFromListDialog *undelDialog
@@ -1382,10 +1382,10 @@ CloseUndelCmd::~CloseUndelCmd()
 {
 }
 
-UndeleteCmd::UndeleteCmd ( 
-			   char *name, 
+UndeleteCmd::UndeleteCmd (
+			   char *name,
 			   char *label,
-			   int active, 
+			   int active,
 			   RoamMenuWindow *window,
 			   Boolean viaDeleteList
 			   ) : ChooseCmd  ( name, label, active, window )
@@ -1406,44 +1406,44 @@ UndeleteCmd::doit()
     MsgScrollingList *list = _menuwindow->list();
     MsgHndArray *deleted_messages;
     DtMailEnv mail_error;
-    
+
     // Initialize the mail_error.
     mail_error.clear();
-    
-    
+
+
     if (_fromList) {
 	// Create the Deleted Messages Dialog
-	
+
 	if (_undelFromList) {
 	    // Hack for user testing.  If the dialog is up, we destroy it.
 	    XtDestroyWidget(_undelFromList->baseWidget());
 	}
 //	if (!_undelFromList) {
 	_undelFromList = new UndelFromListDialog(
-	                 GETMSG(DT_catd, 1, 227, "Mailer - Deleted Messages"), 
-	                 _menuwindow);	
+	                 GETMSG(DT_catd, 1, 227, "Mailer - Deleted Messages"),
+	                 _menuwindow);
 	_undelFromList->initialize();
-	
+
 	// Check for existing list of deleted messages
 	_num_deleted = list->get_num_deleted_messages();
-	
+
 	// If there are deleted messages, put them in the Deleted
 	// Messages List.
-	
+
 	if (_num_deleted > 0) {
 	    deleted_messages = list->get_deleted_messages();
 	    _undelFromList->loadMsgs(
-				mail_error, 
-				deleted_messages, 
+				mail_error,
+				deleted_messages,
 				_num_deleted);
 	    if (mail_error.isSet()) {
 		// Post an exception here!
 		_menuwindow->postErrorDialog(mail_error);
 	    }
-		
+
 	}
 	// Display the dialog
-	
+
 	_undelFromList->popped_up();
     } else {
 	// Although we don't display the Deleted Message Dialog here, we
@@ -1455,30 +1455,30 @@ UndeleteCmd::doit()
 
 
 #ifdef DEAD_WOOD
-SaveCmd::SaveCmd ( char *name, 
-		   char *label, 
-		   int active, 
-		   RoamMenuWindow *window 
+SaveCmd::SaveCmd ( char *name,
+		   char *label,
+		   int active,
+		   RoamMenuWindow *window
 		) : RoamCmd ( name, label, active, window )
 {
-    
+
 }
 
 void
 SaveCmd::doit()
 {
-    
+
     assert(_menuwindow->mailbox() != NULL);
 }
 #endif /* DEAD_WOOD */
 
 
 
-MoveCopyCmd::MoveCopyCmd( char *name, 
+MoveCopyCmd::MoveCopyCmd( char *name,
 			  char *label,
-			  int active, 
-			  FileCallback move_callback, 
-			  FileCallback copy_callback, 
+			  int active,
+			  FileCallback move_callback,
+			  FileCallback copy_callback,
 			  RoamMenuWindow * menu_window,
 			  Widget parent,
 			  DtMailBoolean only_show_mailboxes)
@@ -1486,8 +1486,8 @@ MoveCopyCmd::MoveCopyCmd( char *name,
 			  label,
 			  GETMSG(DT_catd, 1, 89, "Mailer - Other Mailboxes"),
 			  "Move",
-			  active, 
-			  move_callback, 
+			  active,
+			  move_callback,
 			  menu_window,
 			  parent,
 			  only_show_mailboxes)
@@ -1520,12 +1520,12 @@ MoveCopyCmd::doit()
     Widget unused_button;
     Widget action_area;
     DtMailEnv error;
-    
+
     if (!_fileBrowser) {
 	UnifiedSelectMailboxCmd::doit();
 	// Customize buttons for MoveCopy dialog
 	move = XmStringCreateLocalized(GETMSG(DT_catd, 1, 90, "Move"));
-	
+
 	filter_button = XtNameToWidget(_fileBrowser, "*Apply");
 	_move_button = XtNameToWidget(_fileBrowser, "*OK");
 	action_area = XtParent(_move_button);
@@ -1547,7 +1547,7 @@ MoveCopyCmd::doit()
 	//
 	XtAddCallback(
 		_copy_button,
-		XmNhelpCallback, 
+		XmNhelpCallback,
 		HelpCB,
 		(void *)"dtmailViewmainWindowWork-AreapanedWform2RowColumnMoveCopy");
 	XtAddCallback(
@@ -1593,11 +1593,11 @@ MoveCopyCmd::doit()
     } else {
 	UnifiedSelectMailboxCmd::doit();
     }
-    
+
 }
 
 void
-MoveCopyCmd::fileSelectedCallback2 ( 
+MoveCopyCmd::fileSelectedCallback2 (
 				     Widget	,
 				     XtPointer	clientData,
 				     XtPointer	callData
@@ -1612,11 +1612,11 @@ MoveCopyCmd::fileSelectedCallback2 (
     char	*dname = NULL;
     int		status = 0;
     XmString	xmstr;
-    
+
     static char	selected[MAXPATHLEN+1];
 
     // Bring the file selection dialog down.
-    XtUnmanageChild ( obj->_fileBrowser );  
+    XtUnmanageChild ( obj->_fileBrowser );
 
     //
     // Get the file name
@@ -1626,7 +1626,7 @@ MoveCopyCmd::fileSelectedCallback2 (
       dname = (char*) _XmStringUngenerate(
 					xmstr, NULL,
 					XmMULTIBYTE_TEXT, XmMULTIBYTE_TEXT);
-    
+
     //
     // Get the file name
     //
@@ -1638,7 +1638,7 @@ MoveCopyCmd::fileSelectedCallback2 (
         fname = (char *) _XmStringUngenerate(
 					xmstr, NULL,
 					XmMULTIBYTE_TEXT, XmMULTIBYTE_TEXT);
-	  
+
 	if (NULL == fname || strlen(fname) == 0)
 	  return;
 
@@ -1656,7 +1656,7 @@ MoveCopyCmd::fileSelectedCallback2 (
 }
 
 void
-MoveCopyCmd::setDefaultButtonCB( 
+MoveCopyCmd::setDefaultButtonCB(
 			     Widget,
 			     XtPointer	clientData,
 			     XtPointer)
@@ -1666,9 +1666,9 @@ MoveCopyCmd::setDefaultButtonCB(
 }
 
 
-CopyCmd::CopyCmd( char *name, 
-		   char *label, 
-		   int active, 
+CopyCmd::CopyCmd( char *name,
+		   char *label,
+		   int active,
 		   RoamMenuWindow *window,
 		   MoveCopyCmd *move_copy_cmd
 		) : RoamCmd ( name, label, active, window )
@@ -1688,9 +1688,9 @@ CopyCmd::doit()
 }
 
 
-MoveCmd::MoveCmd( char *name, 
-		   char *label, 
-		   int active, 
+MoveCmd::MoveCmd( char *name,
+		   char *label,
+		   int active,
 		   RoamMenuWindow *window,
 		   MoveCopyCmd *move_copy_cmd
 		) : RoamCmd ( name, label, active, window )
@@ -1710,11 +1710,11 @@ MoveCmd::doit()
 }
 
 
-NextCmd::NextCmd( 
-		  char *name, 
+NextCmd::NextCmd(
+		  char *name,
 		  char *label,
-		  int active, 
-		  RoamMenuWindow *window 
+		  int active,
+		  RoamMenuWindow *window
 		  ) : RoamCmd ( name, label, active, window )
 {
 }
@@ -1726,11 +1726,11 @@ NextCmd::doit()
 }
 
 
-PrevCmd::PrevCmd( 
-		  char *name, 
+PrevCmd::PrevCmd(
+		  char *name,
 		  char *label,
-		  int active, 
-		  RoamMenuWindow *window 
+		  int active,
+		  RoamMenuWindow *window
 		  ) : RoamCmd ( name, label, active, window )
 {
 }
@@ -1742,11 +1742,11 @@ PrevCmd::doit()
 }
 
 #ifdef DEAD_WOOD
-MessagesCmd::MessagesCmd( 
-			  char *name, 
+MessagesCmd::MessagesCmd(
+			  char *name,
 			  char *label,
-			  int active, 
-			  RoamMenuWindow *window 
+			  int active,
+			  RoamMenuWindow *window
 			  ) : RoamCmd ( name, label, active, window )
 {
 }
@@ -1757,22 +1757,22 @@ MessagesCmd::doit()
 {
     Boolean old=_menuwindow->fullHeader();
     MsgScrollingList *list=_menuwindow->list();
-    
+
     ( !strcmp( this->name(), "Full Header" ) ? _menuwindow->fullHeader( True ) : _menuwindow->fullHeader( False ) );
-    
+
     if ( old!=_menuwindow->fullHeader() && _menuwindow->msgView() ) {
 //    list->chooseCurrent();
     }
-    
+
 }
 #endif /* DEAD_WOOD */
 
-PrintCmd::PrintCmd ( 
-		     char *name, 
+PrintCmd::PrintCmd (
+		     char *name,
 		     char *label,
-		     int active, 
+		     int active,
 		     int silent,
-		     RoamMenuWindow *window 
+		     RoamMenuWindow *window
 		 ) : ChooseCmd ( name, label, active, window ), _tmp_files(5)
 {
     _parent = window;
@@ -1785,7 +1785,7 @@ PrintCmd::doit()
     // The entire implementation of print was broken. It has
     // be removed until a proper implementation can be provided.
     // dlp 10/04/93
-    
+
     printit(_silent);
     return;
 }
@@ -1800,7 +1800,7 @@ PrintCmd::actioncb(
 		   )
 {
     PrintCmd	*data;
-    
+
     switch (status) {
       case DtACTION_INVOKED:
 	break;
@@ -1810,7 +1810,7 @@ PrintCmd::actioncb(
 	data->_unregister_tmp_file(id);
 	break;
     }
-    
+
     return;
 }
 
@@ -1833,9 +1833,9 @@ PrintCmd::printit( int silent )
     char *tmpdir = new char[MAXPATHLEN+1];
     DtMailEnv	mail_error;
     MsgScrollingList	*list;
-    
+
     DebugPrintf(1, "%s: printit\n", name());
-    
+
     // Create tmp file.
     sprintf(tmpdir, "%s/%s", getenv("HOME"), DtPERSONAL_TMP_DIRECTORY);
     if ((p = tempnam(tmpdir, "dtmail")) == NULL) {
@@ -1843,10 +1843,10 @@ PrintCmd::printit( int silent )
 	return;
     }
     delete [] tmpdir;
-    
+
     mail_error.clear();
     list = _parent->list();
-    
+
     // Copy selected messages to a temp file
     int status = list->copySelected(mail_error, p, FALSE, TRUE);
     if (mail_error.isSet())
@@ -1856,7 +1856,7 @@ PrintCmd::printit( int silent )
 	return;
     }
     if (0 != status) return;
-    
+
 
     DmxPrintJob *pjob = new DmxPrintJob(p,
 					(silent ? DTM_TRUE : DTM_FALSE),
@@ -1879,19 +1879,19 @@ PrintCmd::_register_tmp_file(
 			     )
 {
     struct tmp_file	*f;
-    
+
     // Allocate struct to hold id and temp file
     if ((f = (struct tmp_file *)malloc(sizeof(struct tmp_file))) == NULL) {
 	return -1;
     }
-    
+
     // Save file name and action id
     f->file = strdup(name);
     f->id = id;
-    
+
     // Add to list of temp files
     _tmp_files.append(f);
-    
+
     return 0;
 }
 
@@ -1902,7 +1902,7 @@ PrintCmd::_unregister_tmp_file(
 {
     int n;
     struct tmp_file *f;
-    
+
     // Find the temp file that was used by the Action specified by id
     for (n = _tmp_files.length() - 1; n >= 0; n--) {
 	f = _tmp_files[n];
@@ -1916,17 +1916,17 @@ PrintCmd::_unregister_tmp_file(
 	    break;
 	}
     }
-    
+
     return;
 }
 
 #ifdef DEAD_WOOD
-PopupCmd::PopupCmd ( 
-		     char *name, 
+PopupCmd::PopupCmd (
+		     char *name,
 		     char *label,
 		     int active,
-		     PopupWindow * (RoamMenuWindow::* member) (void), 
-		     RoamMenuWindow *myparent 
+		     PopupWindow * (RoamMenuWindow::* member) (void),
+		     RoamMenuWindow *myparent
 		     ) : NoUndoCmd ( name, label, active )
 {
     parent=myparent;
@@ -1942,10 +1942,10 @@ PopupCmd::doit()
 #endif /* DEAD_WOOD */
 
 // OnItemCmd brings up the Help On Item help.
-OnItemCmd::OnItemCmd ( char * name, 
-		       char *label, 
-		       int active, 
-		       UIComponent *window ) 
+OnItemCmd::OnItemCmd ( char * name,
+		       char *label,
+		       int active,
+		       UIComponent *window )
 : NoUndoCmd (name, label, active)
 {
     _parent = window;
@@ -1957,11 +1957,11 @@ OnItemCmd::doit()
     int status = DtHELP_SELECT_ERROR;
     Widget widget = _parent->baseWidget();
     Widget selWidget = NULL;
-    
+
     // Display the appropriate help information for the selected item.
-    
+
     status = DtHelpReturnSelectedWidgetId(widget, 0, &selWidget);
-    
+
     switch ((int) status) {
       case DtHELP_SELECT_ERROR:
 	printf("Selection Error, cannot continue\n");
@@ -1987,13 +1987,13 @@ OnItemCmd::doit()
 	;
 	// Empty
     }
-    
+
 }
 
-OnAppCmd::OnAppCmd ( char * name, 
+OnAppCmd::OnAppCmd ( char * name,
 		     char *label,
-		     int active, 
-		     UIComponent *window ) 
+		     int active,
+		     UIComponent *window )
 : NoUndoCmd (name, label, active)
 {
     _parent = window;
@@ -2005,9 +2005,9 @@ OnAppCmd::doit()
     DisplayMain (_parent->baseWidget(), "Mailer", DTMAILWINDOWID);
 }
 
-TasksCmd::TasksCmd ( char * name, 
+TasksCmd::TasksCmd ( char * name,
 		     char *label,
-		     int active, 
+		     int active,
 		     UIComponent *window )
 : NoUndoCmd (name, label, active)
 {
@@ -2020,9 +2020,9 @@ TasksCmd::doit()
     DisplayMain (_parent->baseWidget(), "Mailer", HELP_MAILER_TASKS);
 }
 
-ReferenceCmd::ReferenceCmd ( char * name, 
+ReferenceCmd::ReferenceCmd ( char * name,
 			     char *label,
-			     int active, 
+			     int active,
 			     UIComponent *window )
 : NoUndoCmd (name, label, active)
 {
@@ -2035,9 +2035,9 @@ ReferenceCmd::doit()
     DisplayMain (_parent->baseWidget(), "Mailer", HELP_MAILER_REFERENCE);
 }
 
-UsingHelpCmd::UsingHelpCmd ( char * name, 
+UsingHelpCmd::UsingHelpCmd ( char * name,
 			     char *label,
-			     int active, 
+			     int active,
 			     UIComponent *window )
 : NoUndoCmd (name, label, active)
 {
@@ -2050,10 +2050,10 @@ UsingHelpCmd::doit()
     DisplayMain (_parent->baseWidget(), "Help4Help", "_HOMETOPIC");
 }
 
-RelNoteCmd::RelNoteCmd ( char * name, 
+RelNoteCmd::RelNoteCmd ( char * name,
 			 char *label,
-			 int active, 
-			 UIComponent *window 
+			 int active,
+			 UIComponent *window
 		     ) : NoUndoCmd (name, label, active )
 {
     _parent = window;
@@ -2067,7 +2067,7 @@ RelNoteCmd::doit()
 
     // if (!_genDialog)
     //   _genDialog = new DtMailGenDialog("AboutBox", _parent->baseWidget());
-    
+
     // _genDialog->setToAboutDialog();
     // answer = _genDialog->post_and_return(GETMSG(DT_catd, 1, 92, "OK"), NULL);
 
@@ -2080,11 +2080,11 @@ RelNoteCmd::~RelNoteCmd()
 }
 
 #ifdef DEAD_WOOD
-ClearCmd::ClearCmd ( 
-		     char * name, 
+ClearCmd::ClearCmd (
+		     char * name,
 		     char *label,
-		     int active, 
-		     RoamMenuWindow *window 
+		     int active,
+		     RoamMenuWindow *window
 		     ) : NoUndoCmd (name, label, active )
 {
     parent=window;
@@ -2096,62 +2096,62 @@ ClearCmd::doit()
 //  ((FindPopup *) parent->find_popup())->clear_text_values();
 }
 
-StartCmd::StartCmd( char *name, 
+StartCmd::StartCmd( char *name,
 		    char *label,
 		    int active ) : Cmd ( name, label, active )
 {
 }
 
-void 
+void
 StartCmd::doit()
 {
     char *forward= ".forward";
-    
+
     struct passwd pwd;
     GetPasswordEntry(pwd);
-    
+
     char *forward_filename=new char[strlen(pwd.pw_dir)+1+strlen(forward)+1];
     sprintf( forward_filename, "%s/%s", pwd.pw_dir, forward );
 }
 
 
-void 
+void
 StartCmd::undoit()
 {
 }
 
 
-ChangeCmd::ChangeCmd( 
-		      char *name, 
+ChangeCmd::ChangeCmd(
+		      char *name,
 		      char *label,
-		      int active 
+		      int active
 		      ) : Cmd (name, label, active )
 {
 }
 
-void 
+void
 ChangeCmd::doit()
 {
     struct passwd pwd;
     GetPasswordEntry(pwd);
-    
+
     char *user_name=new char[strlen(pwd.pw_name)+1];
     strcpy(user_name,pwd.pw_name);
-    
+
 }
 
 
-void 
+void
 ChangeCmd::undoit()
 {
 }
 
 
-StopCmd::StopCmd( 
-		  char *name, 
+StopCmd::StopCmd(
+		  char *name,
 		  char *label,
-		  int active, 
-		  RoamMenuWindow *window 
+		  int active,
+		  RoamMenuWindow *window
 		  ) : Cmd (name, label, active )
 {
     parent=window;
@@ -2168,18 +2168,18 @@ StopCmd::doit()
 void
 StopCmd::undoit()
 {
-    
+
 }
 #endif /* DEAD_WOOD */
 
 
 
 SendCmd::SendCmd(
-		 char *name, 
+		 char *name,
 		 char *label,
-		 int active, 
+		 int active,
 		 SendMsgDialog *parent,
-		 int trans_type) 
+		 int trans_type)
 : NoUndoCmd( name, label, active )
 {
     _parent=parent;
@@ -2201,7 +2201,7 @@ OpenMsgCmd::OpenMsgCmd(
 		       char *name,
 		       char *label,
 		       int active,
-		       RoamMenuWindow *window) 
+		       RoamMenuWindow *window)
 : RoamCmd (name, label, active, window)
 {
 }
@@ -2223,10 +2223,10 @@ OpenMsgCmd::doit()
 
 // Attachment Cmds stuff
 
-SaveAttachCmd::SaveAttachCmd ( char *name, 
+SaveAttachCmd::SaveAttachCmd ( char *name,
 			       char *label,
 			       char * title,
-			       int active, 
+			       int active,
 			       FileCallback save_callback,
 			       RoamMenuWindow *clientData,
 			       Widget parent)
@@ -2242,11 +2242,11 @@ SaveAttachCmd::SaveAttachCmd ( char *name,
    _parent = clientData;
 }
 
-SaveAttachCmd::SaveAttachCmd ( 
-			       char *name, 
+SaveAttachCmd::SaveAttachCmd (
+			       char *name,
 			       char *label,
 			       char * title,
-			       int active, 
+			       int active,
 			       FileCallback save_callback,
 			       ViewMsgDialog *clientData,
 			       Widget parent
@@ -2263,11 +2263,11 @@ SaveAttachCmd::SaveAttachCmd (
    _parent = clientData;
 }
 
-SaveAttachCmd::SaveAttachCmd ( 
-			       char *name, 
+SaveAttachCmd::SaveAttachCmd (
+			       char *name,
 			       char *label,
 			       char * title,
-			       int active, 
+			       int active,
 			       FileCallback save_callback,
 			       SendMsgDialog *clientData,
 			       Widget parent
@@ -2307,19 +2307,19 @@ SaveAttachCmd::doit()
 void SaveAttachCmd::updateCallback(Widget, XtPointer clientData, XtPointer )
 {
     SaveAttachCmd *obj = (SaveAttachCmd *)clientData;
-    
+
     XtVaSetValues(obj->_fileBrowser, XmNtextString, obj->_name, NULL);
 }
 
-SaveAsTextCmd::SaveAsTextCmd ( 
-			       char *name, 
+SaveAsTextCmd::SaveAsTextCmd (
+			       char *name,
 			       char *label,
 			       char *title,
-			       int active, 
+			       int active,
 			       Editor * editor,
 			       RoamMenuWindow *parent_roam_menu_window,
 			       Widget parent
-			       ) 
+			       )
 :UnifiedSelectFileCmd (name,
 		       label,
 		       title,
@@ -2333,15 +2333,15 @@ SaveAsTextCmd::SaveAsTextCmd (
     _roam_menu_window = parent_roam_menu_window;
 }
 
-SaveAsTextCmd::SaveAsTextCmd ( 
-			       char *name, 
+SaveAsTextCmd::SaveAsTextCmd (
+			       char *name,
 			       char *label,
 			       char *title,
-			       int active, 
+			       int active,
 			       Editor * editor,
 			       void *,
 			       Widget parent
-			       ) 
+			       )
 :UnifiedSelectFileCmd (name,
 		       label,
 		       title,
@@ -2376,7 +2376,7 @@ SaveAsTextCmd::saveText(const char * filename)
 	sprintf(buf,
 		GETMSG(DT_catd, 3, 47, "%s already exists.\nOverwrite?"),
 		filename);
-	
+
 	_genDialog->setToQuestionDialog(GETMSG(DT_catd, 3, 48, "Mailer"), buf);
 	helpId = DTMAILHELPERROR;
 	answer = _genDialog->post_and_return(helpId);
@@ -2387,9 +2387,9 @@ SaveAsTextCmd::saveText(const char * filename)
 
 	if (unlink(filename) < 0)
 	{
-	    sprintf(buf, 
+	    sprintf(buf,
 		    GETMSG(DT_catd, 3, 49, "Unable to overwrite %s.\n\
-Check file permissions and retry."), 
+Check file permissions and retry."),
 		    filename);
 	    _genDialog->setToErrorDialog(GETMSG(DT_catd, 3, 50, "Mailer"), buf);
             helpId = DTMAILHELPNOOVERWRITE;
@@ -2405,16 +2405,16 @@ Check file permissions and retry."),
     {
 	sprintf(buf, GETMSG(DT_catd, 3, 51, "Unable to create %s."), filename);
 	_genDialog->setToErrorDialog(GETMSG(DT_catd, 3, 52, "Mailer"), buf);
-        helpId = DTMAILHELPNOCREATE;        
+        helpId = DTMAILHELPNOCREATE;
 	_genDialog->post_and_return(helpId);
 	delete [] buf;
 	return;
     }
-    
+
     if (SafeWrite(fd, "\n", 1) < 1)
     {
-	sprintf(buf, 
-		GETMSG(DT_catd, 3, 53, "Unable to write to %s."), 
+	sprintf(buf,
+		GETMSG(DT_catd, 3, 53, "Unable to write to %s."),
 		filename);
 	_genDialog->setToErrorDialog(GETMSG(DT_catd, 3, 54, "Mailer"), buf);
         helpId = DTMAILHELPNOWRITE;
@@ -2424,7 +2424,7 @@ Check file permissions and retry."),
 	delete [] buf;
 	return;
     }
-    
+
     if (NULL == _roam_menu_window)
     {
 	char	*text_buf = _text_editor->get_contents();
@@ -2433,7 +2433,7 @@ Check file permissions and retry."),
     }
     else
       writeTextFromScrolledList(fd);
-    
+
     SafeClose(fd);
     delete [] buf;
 }
@@ -2457,7 +2457,7 @@ SaveAsTextCmd::writeTextFromScrolledList(int fd)
     if ((tmppath = tempnam(tmpdir, "dtmail")) == NULL) {
 	sprintf(buf, GETMSG(DT_catd, 3, 51, "Unable to create %s."), tmpdir);
 	_genDialog->setToErrorDialog(GETMSG(DT_catd, 3, 52, "Mailer"), buf);
-        helpId = DTMAILHELPNOCREATE;        
+        helpId = DTMAILHELPNOCREATE;
 	_genDialog->post_and_return(helpId);
 	delete [] tmpdir;
 	return;
@@ -2511,7 +2511,7 @@ SaveAsTextCmd::writeText(XtPointer filedes, char *text_buf)
     long 	fdl = (long) filedes;
     int 	fd = (int) fdl;
     int		len = strlen(text_buf);
-    
+
     if (SafeWrite(fd, text_buf, len) < len) {
 #if 0
         char	buf[2048];
@@ -2519,7 +2519,7 @@ SaveAsTextCmd::writeText(XtPointer filedes, char *text_buf)
 
 	sprintf(
 		buf,
-		GETMSG(DT_catd, 3, 53, "Unable to write to %s."), 
+		GETMSG(DT_catd, 3, 53, "Unable to write to %s."),
 		filename);
         helpId = DTMAILHELPNOWRITE;
 	_genDialog->setToErrorDialog(GETMSG(DT_catd, 3, 56, "Mailer"), buf);
@@ -2620,12 +2620,12 @@ SaveAsTextCmd::doit()
 }
 
 
-DeleteAttachCmd::DeleteAttachCmd( 
-				  char *name, 
+DeleteAttachCmd::DeleteAttachCmd(
+				  char *name,
 				  char *label,
 				  int active,
 				  SendMsgDialog *smd
-				  
+
 				  ) : Cmd ( name, label, active )
 {
     _parent = smd;
@@ -2642,12 +2642,12 @@ DeleteAttachCmd::undoit()
 {
 }
 
-UndeleteAttachCmd::UndeleteAttachCmd( 
-				      char *name, 
+UndeleteAttachCmd::UndeleteAttachCmd(
+				      char *name,
 				      char *label,
 				      int active,
 				      SendMsgDialog *smd
-				      
+
 				      ) : Cmd ( name, label, active )
 {
     _parent = smd;
@@ -2657,7 +2657,7 @@ void
 UndeleteAttachCmd::doit()
 {
     _parent->undelete_last_deleted_attachment();
-    
+
 }
 
 void
@@ -2665,8 +2665,8 @@ UndeleteAttachCmd::undoit()
 {
 }
 
-RenameAttachCmd::RenameAttachCmd ( 
-				   char *name, 
+RenameAttachCmd::RenameAttachCmd (
+				   char *name,
 				   char *label,
 				   int active,
 				   SendMsgDialog *smd
@@ -2674,15 +2674,15 @@ RenameAttachCmd::RenameAttachCmd (
 {
     Widget renameDialog;
     XmString message;
-    
+
     _parent = smd;
     renameDialog = XmCreatePromptDialog(
-					smd->baseWidget(), 
-					"renameDialog", 
-					NULL, 
+					smd->baseWidget(),
+					"renameDialog",
+					NULL,
 					0
 					);
-    
+
     message = XmStringCreateLocalized(GETMSG(DT_catd, 1, 96, "Empty"));
     XtVaSetValues(renameDialog, XmNselectionLabelString, message, NULL);
     XmStringFree(message);
@@ -2698,10 +2698,10 @@ RenameAttachCmd::RenameAttachCmd (
     XtUnmanageChild(XmSelectionBoxGetChild(renameDialog, XmDIALOG_HELP_BUTTON));
 
     _parent->get_editor()->attachArea()->setRenameDialog(renameDialog);
-    XtAddCallback(renameDialog, XmNcancelCallback, 
+    XtAddCallback(renameDialog, XmNcancelCallback,
 		  &RenameAttachCmd::cancelCallback,
 		  (XtPointer) this );
-    XtAddCallback(renameDialog, XmNokCallback, 
+    XtAddCallback(renameDialog, XmNokCallback,
 		  &RenameAttachCmd::okCallback,
 		  (XtPointer) this );
 }
@@ -2713,68 +2713,68 @@ void RenameAttachCmd::doit()
     XmString message;
     char	buf[512];
     AttachArea *aa;
-    
+
     if (!_parent->renameAttachmentOK()) {
 	return;
     }
-    
+
     aa = _parent->get_editor()->attachArea();
-    
+
     oldAttachName = aa->getSelectedAttachName();
-    
+
     if (oldAttachName == NULL) return;
-    
+
     renameDialog = aa->getRenameDialog();
-    
+
     sprintf(buf, "%s", GETMSG(DT_catd, 3, 57, "Rename attachment as"));
-    
+
     message = XmStringCreateLocalized(buf);
-    
-    XtVaSetValues(renameDialog, 
+
+    XtVaSetValues(renameDialog,
 		  XmNselectionLabelString, message,
 		  XmNtextString, oldAttachName,
 		  NULL);
-    
+
 //     XtFree(buf);
     XmStringFree(message);
     XmStringFree(oldAttachName);
-    
+
     XtManageChild(renameDialog);
     XtPopup(XtParent(renameDialog), XtGrabNone);
-}      
+}
 
 void RenameAttachCmd::undoit()
 {
     // Just print a message that allows us to trace the execution
-    
-}       
 
-void RenameAttachCmd::cancelCallback ( 
-				       Widget, 
-				       XtPointer clientData, 
-				       XtPointer callData 
+}
+
+void RenameAttachCmd::cancelCallback (
+				       Widget,
+				       XtPointer clientData,
+				       XtPointer callData
 				       )
 {
     RenameAttachCmd *obj = (RenameAttachCmd *) clientData;
-    
+
     obj->cancel( callData );
 }
 
 void RenameAttachCmd::cancel( XtPointer )
 {
     AttachArea* aa;
-    
+
     aa = _parent->get_editor()->attachArea();
-    
+
     Widget renameDialog = aa->getRenameDialog();
-    
+
     XtUnmanageChild(renameDialog);
 }
 
-void RenameAttachCmd::okCallback ( 
-				   Widget, 
-				   XtPointer clientData, 
-				   XtPointer callData 
+void RenameAttachCmd::okCallback (
+				   Widget,
+				   XtPointer clientData,
+				   XtPointer callData
 				   )
 {
     RenameAttachCmd *obj = (RenameAttachCmd *) clientData;
@@ -2783,18 +2783,18 @@ void RenameAttachCmd::okCallback (
 
 void RenameAttachCmd::ok( XtPointer callData )
 {
-    XmSelectionBoxCallbackStruct *cbs = 
+    XmSelectionBoxCallbackStruct *cbs =
 	(XmSelectionBoxCallbackStruct *)callData;
     AttachArea *aa;
-    
+
     aa = _parent->get_editor()->attachArea();
-    
+
     Widget renameDialog = aa->getRenameDialog();
-    
+
     XtUnmanageChild(renameDialog);
-    
+
     aa->setSelectedAttachName(cbs->value);
-    
+
 }
 
 AttachmentActionCmd::AttachmentActionCmd(
@@ -2805,7 +2805,7 @@ AttachmentActionCmd::AttachmentActionCmd(
 					 ) : Cmd (name, label, TRUE)
 {
     _index = indx;
-    
+
     _parent = rmw;
 }
 
@@ -2817,7 +2817,7 @@ AttachmentActionCmd::AttachmentActionCmd(
 					 ) : Cmd (name, label, TRUE)
 {
     _index = indx;
-    
+
     _parent = vmd;
 }
 
@@ -2829,7 +2829,7 @@ AttachmentActionCmd::AttachmentActionCmd(
 					 ) : Cmd (name, label, TRUE)
 {
     _index = indx;
-    
+
     _parent = smd;
 }
 
@@ -2881,7 +2881,7 @@ SelectAllAttachsCmd::doit()
 void
 SelectAllAttachsCmd::undoit()
 {
-    // 
+    //
 }
 
 ShowAttachPaneCmd::ShowAttachPaneCmd(
@@ -2908,7 +2908,7 @@ ShowAttachPaneCmd::doit()
 void
 ShowAttachPaneCmd::undoit()
 {
-    // 
+    //
 }
 
 AbbrevHeadersCmd::AbbrevHeadersCmd(
@@ -2935,15 +2935,15 @@ AbbrevHeadersCmd::doit()
 void
 AbbrevHeadersCmd::undoit()
 {
-    // 
+    //
 }
 
-CloseCmd::CloseCmd( 
-    char *name, 
+CloseCmd::CloseCmd(
+    char *name,
     char *label,
-    int active, 
-    Widget w, 
-    SendMsgDialog *s ) 
+    int active,
+    Widget w,
+    SendMsgDialog *s )
     : NoUndoCmd(name, label, active)
 {
     _compose_dialog = s;
@@ -2954,7 +2954,7 @@ void
 CloseCmd::doit()
 {
     // Call the goAway() method on the SMD.  Argument TRUE requests it
-    // to check if the SMD is dirty.  Let it handle the 
+    // to check if the SMD is dirty.  Let it handle the
     // case where text may be present in the compose window.
     if (!_compose_dialog->isMsgValid())
 	return;
@@ -2963,11 +2963,11 @@ CloseCmd::doit()
 
 }
 
-EditUndoCmd::EditUndoCmd( 
-    char *name, 
+EditUndoCmd::EditUndoCmd(
+    char *name,
     char *label,
-    int active, 
-    AbstractEditorParent *w ) 
+    int active,
+    AbstractEditorParent *w )
     : NoUndoCmd( name, label, active )
 {
     editor = w->get_editor()->textEditor();
@@ -2979,12 +2979,12 @@ EditUndoCmd::doit()
 	editor->undo_edit();
 }
 
-EditCutCmd::EditCutCmd( 
-    char *name, 
+EditCutCmd::EditCutCmd(
+    char *name,
     char *label,
-    int active, 
+    int active,
     AbstractEditorParent *w
-) 
+)
     : NoUndoCmd( name, label, active )
 {
     editor = w->get_editor()->textEditor();
@@ -3002,7 +3002,7 @@ void
 EditCutCmd::doit()
 {
     editor->cut_selection();
-	
+
     if (_compose_dialog) {
 	// Turn Paste on
 	_compose_dialog->activate_edit_paste();
@@ -3011,15 +3011,15 @@ EditCutCmd::doit()
     }
 }
 
-EditCopyCmd::EditCopyCmd( 
-    char *name, 
+EditCopyCmd::EditCopyCmd(
+    char *name,
     char *label,
-    int active, 
-    AbstractEditorParent *w ) 
+    int active,
+    AbstractEditorParent *w )
     : NoUndoCmd( name, label, active )
 {
     editor = w->get_editor()->textEditor();
-    
+
     // className() is a virtual method
     if (w->className() == "SendMsgDialog") {
 	_compose_dialog = (SendMsgDialog *)w;
@@ -3041,11 +3041,11 @@ EditCopyCmd::doit()
     }
 }
 
-EditPasteCmd::EditPasteCmd( 
-    char *name, 
+EditPasteCmd::EditPasteCmd(
+    char *name,
     char *label,
-    int active, 
-    AbstractEditorParent *w ) 
+    int active,
+    AbstractEditorParent *w )
     : NoUndoCmd( name, label, active )
 {
     editor = w->get_editor()->textEditor();
@@ -3057,12 +3057,12 @@ EditPasteCmd::doit()
 	editor->paste_from_clipboard();
 }
 
-EditPasteSpecialCmd::EditPasteSpecialCmd( 
-    char *name, 
+EditPasteSpecialCmd::EditPasteSpecialCmd(
+    char *name,
     char *label,
-    int active, 
+    int active,
     AbstractEditorParent *w,
-    Editor::InsertFormat format) 
+    Editor::InsertFormat format)
     : NoUndoCmd( name, label, active )
 {
     editor = w->get_editor()->textEditor();
@@ -3076,11 +3076,11 @@ EditPasteSpecialCmd::doit()
 }
 
 
-EditClearCmd::EditClearCmd( 
-    char *name, 
+EditClearCmd::EditClearCmd(
+    char *name,
     char *label,
-    int active, 
-    AbstractEditorParent *w ) 
+    int active,
+    AbstractEditorParent *w )
     : NoUndoCmd( name, label, active )
 {
 	editor = w->get_editor()->textEditor();
@@ -3095,11 +3095,11 @@ EditClearCmd::doit()
 	// _edit_paste->activate();
 }
 
-EditDeleteCmd::EditDeleteCmd( 
-    char *name, 
+EditDeleteCmd::EditDeleteCmd(
+    char *name,
     char *label,
-    int active, 
-    AbstractEditorParent *w ) 
+    int active,
+    AbstractEditorParent *w )
     : NoUndoCmd( name, label, active )
 {
     editor = w->get_editor()->textEditor();
@@ -3114,11 +3114,11 @@ EditDeleteCmd::doit()
 	// _edit_paste->deactivate();
 }
 
-EditSelectAllCmd::EditSelectAllCmd( 
-    char *name, 
+EditSelectAllCmd::EditSelectAllCmd(
+    char *name,
     char *label,
-    int active, 
-    AbstractEditorParent *w ) 
+    int active,
+    AbstractEditorParent *w )
     : NoUndoCmd( name, label, active )
 {
     editor = w->get_editor()->textEditor();
@@ -3132,11 +3132,11 @@ EditSelectAllCmd::doit()
 
 
 
-WordWrapCmd::WordWrapCmd( 
-    char *name, 
+WordWrapCmd::WordWrapCmd(
+    char *name,
     char *label,
-    int active, 
-    AbstractEditorParent *w 
+    int active,
+    AbstractEditorParent *w
 ) : ToggleButtonCmd( name, label, active )
 {
     editor = w->get_editor()->textEditor();
@@ -3149,14 +3149,14 @@ WordWrapCmd::WordWrapCmd(
 
     XtSetArg( args[0], XmNwordWrap, &cur_setting );
     XtGetValues( _w, args, 1 );
-    editor->set_word_wrap(cur_setting);		
+    editor->set_word_wrap(cur_setting);
 }
 
 void
 WordWrapCmd::doit()
 {
     cur_setting = ((ToggleButtonCmd *)this)->getButtonState();
-    editor->set_word_wrap(cur_setting);		
+    editor->set_word_wrap(cur_setting);
 }
 
 Boolean
@@ -3165,11 +3165,11 @@ WordWrapCmd::wordWrap()
     return(cur_setting);
 }
 
-FindChangeCmd::FindChangeCmd( 
-    char *name, 
+FindChangeCmd::FindChangeCmd(
+    char *name,
     char *label,
-    int active, 
-    AbstractEditorParent *w ) 
+    int active,
+    AbstractEditorParent *w )
     : NoUndoCmd( name, label, active )
 {
     editor = w->get_editor()->textEditor();
@@ -3181,11 +3181,11 @@ FindChangeCmd::doit()
 	editor->find_change();
 }
 
-SpellCmd::SpellCmd( 
-    char *name, 
+SpellCmd::SpellCmd(
+    char *name,
     char *label,
-    int active, 
-    AbstractEditorParent *w ) 
+    int active,
+    AbstractEditorParent *w )
     : NoUndoCmd( name, label, active )
 {
     editor = w->get_editor()->textEditor();
@@ -3224,7 +3224,7 @@ AliasCmd::doit()
     }
     else
       XtVaSetValues(_header, XmNvalue, _alias, NULL);
-    
+
     XtFree(value);
 }
 
@@ -3254,11 +3254,11 @@ OtherAliasesCmd::~OtherAliasesCmd()
 }
 
 
-FormatCmd::FormatCmd( 
-    char *name, 
+FormatCmd::FormatCmd(
+    char *name,
     char *label,
-    int active, 
-    AbstractEditorParent *w ) 
+    int active,
+    AbstractEditorParent *w )
     : NoUndoCmd( name, label, active )
 {
     editor = w->get_editor()->textEditor();
@@ -3270,11 +3270,11 @@ FormatCmd::doit()
 	editor->format();
 }
 
-LogMsgCmd::LogMsgCmd( 
-    char *name, 
+LogMsgCmd::LogMsgCmd(
+    char *name,
     char *label,
-    int active, 
-    SendMsgDialog * send 
+    int active,
+    SendMsgDialog * send
 ) : ToggleButtonCmd( name, label, active )
 {
   // Go to props and find out the default, ie. to log or not to log.
@@ -3315,7 +3315,7 @@ VacationCmd::VacationCmd(
     _msg = NULL;
     _dialog = NULL;
 
-    // Check if a .forward file exists.  
+    // Check if a .forward file exists.
 
     _priorVacationRunning = this->priorVacationRunning();
 
@@ -3331,7 +3331,7 @@ VacationCmd::~VacationCmd()
 {
     if (NULL != _subject)
       free((void*) _subject);
-    
+
     if (NULL != _msg)
       delete _msg;
 }
@@ -3351,7 +3351,7 @@ writeToFileDesc(const char * buf, int len, va_list args)
     do {
 	status = SafeWrite(fd, buf, len);
     } while (status < 0 && errno == EAGAIN);
-	
+
     return(0);
 }
 
@@ -3373,11 +3373,11 @@ void
 VacationCmd::stopVacation()
 {
     char *forwardfile = new char[MAXPATHLEN+1];
-    
+
     sprintf(forwardfile, "%s/%s", getenv("HOME"), _forwardFile);
 
     // Remove the current .forward file (it has vacation in it)
-    // Recover and replace the original backup forward file, if 
+    // Recover and replace the original backup forward file, if
     // one exists.
 
     unlink(forwardfile);
@@ -3401,9 +3401,9 @@ VacationCmd::priorVacationRunning()
 	delete [] forwardfile;
 	return(FALSE);
     }
-	
+
     fd = SafeOpen(forwardfile, O_RDONLY);
-	
+
     buf[sizeof buf -1] = '\0';
     int len;
     while ((len = SafeRead(fd, buf, (sizeof buf) - 1)) > 0) {
@@ -3453,14 +3453,14 @@ VacationCmd::handleForwardFile()
     GetPasswordEntry(pw);
 
     sprintf(forwardfile, "%s/%s", pw.pw_dir, _forwardFile);
-    
+
     if (SafeAccess(forwardfile, F_OK) == 0 ) {
 	forwardExists = TRUE;
 	}
     else {
 	forwardExists = FALSE;
     }
-    
+
     if (forwardExists && !_priorVacationRunning) {
 
 	/* STRING_EXTRACTION -
@@ -3476,7 +3476,7 @@ VacationCmd::handleForwardFile()
 
 	sprintf(error_buf, "%s", GETMSG(DT_catd, 1, 102, "You are already using the forwarding facility for\nsomething other than Vacation.  While Vacation is\nrunning, Vacation will be appended to this other\nforwarding activity. Is it still OK to start Vacation?\0"));
 
-	dialog->setToQuestionDialog(GETMSG(DT_catd, 1, 103, "Mailer"), 
+	dialog->setToQuestionDialog(GETMSG(DT_catd, 1, 103, "Mailer"),
 				    error_buf);
 
 	helpId = DTMAILHELPOKSTARTVACATION;
@@ -3489,7 +3489,7 @@ VacationCmd::handleForwardFile()
     	    delete [] forwardfile;
 	    return 1;
 	}
-	
+
 	if (this->backupFile(forwardfile) < 0) {
 	    delete [] buf;
     	    delete [] messagefile;
@@ -3504,7 +3504,7 @@ VacationCmd::handleForwardFile()
 	 */
 
 	_priorVacationRunning = TRUE;
-	
+
 	// Turn on the bit to indicate we are currently using a .forward
 	forwarding = TRUE;
     }
@@ -3523,7 +3523,7 @@ VacationCmd::handleForwardFile()
 	  dialog = theRoamApp.genDialog();
 
  	sprintf(error_buf, "%s", GETMSG(DT_catd, 1, 104, "You are already running the vacation program in your .forward file.\nConsult documentation on how to stop it and remove it from your .forward file.\nTry this command after fixing that problem.\0"));
- 	
+
  	dialog->setToErrorDialog("Error", error_buf);
  	helpId = DTMAILHELPREMOVEVACATION;
  	answer = dialog->post_and_return(helpId);
@@ -3534,7 +3534,7 @@ VacationCmd::handleForwardFile()
     	delete [] forwardfile;
  	return 1;
 
-    }	
+    }
 
     // Re-initialize the error_buf
     memset(error_buf, 0, error_bufLen);
@@ -3549,10 +3549,10 @@ VacationCmd::handleForwardFile()
     }
 
     if (fwd_fd < 0 ) {// If fwdfile is not writable/appendable
-	
+
 	// Put up error dialog indicating fwdfile not writable
 	/* restore the original .forward file */
-	
+
 	this->recoverForwardFile(forwardfile);
 	delete [] buf;
     	delete [] messagefile;
@@ -3565,7 +3565,7 @@ VacationCmd::handleForwardFile()
 
     // Make buf be forwardfile._backupSuffix.
     // Then create a backup file of name buf
-    
+
     strcpy(buf, forwardfile);
     strcat(buf, _backupSuffix);
 
@@ -3598,7 +3598,7 @@ VacationCmd::handleForwardFile()
 	 * loop to copy line by line, we'll use mmap followed by
 	 * a write.
 	 */
-	
+
 	fsize= (int)lseek(bkup_fd, 0, SEEK_END);
 	if (fsize > 0)
 	{
@@ -3626,7 +3626,7 @@ VacationCmd::handleForwardFile()
 	        SafeClose(bkup_fd);
 	        return 1;
 	    }
-	
+
 	    /* RELEASE .forward FILE
 	     *
 	     * Un-mmap the new .forward file
@@ -3667,7 +3667,7 @@ VacationCmd::handleForwardFile()
 	char *append_buf1 = new char[1024*2];
 	sprintf(append_buf1, "|\" /usr/bin/vacation %s\"\n", pw.pw_name);
 
-	if (SafeWrite(fwd_fd, append_buf1, strlen(append_buf1)) < 
+	if (SafeWrite(fwd_fd, append_buf1, strlen(append_buf1)) <
 	    strlen(append_buf1)) {
 	    // error
 	    delete [] buf;
@@ -3706,7 +3706,7 @@ VacationCmd::handleForwardFile()
 
 	char *end_text = "User not using forward file\n";
 
-	if (SafeWrite(bkup_fd, end_text, strlen(end_text)) < 
+	if (SafeWrite(bkup_fd, end_text, strlen(end_text)) <
 	    strlen(end_text)) {
 	    // error
 	    delete [] buf;
@@ -3729,7 +3729,7 @@ VacationCmd::handleForwardFile()
 
 	char *append_buf2 = new char[1024*2];
 
-	sprintf(append_buf2, "\\%s, |\" /usr/bin/vacation %s\"\n", 
+	sprintf(append_buf2, "\\%s, |\" /usr/bin/vacation %s\"\n",
 	        pw.pw_name, pw.pw_name);
 	if (SafeWrite(fwd_fd, append_buf2, strlen(append_buf2)) <
 	    strlen(append_buf2)) {
@@ -3774,8 +3774,8 @@ VacationCmd::backupFile(
                  * it failed.  The first %s is the name of the rename
                  * target; the second %s is the system error string.
                  */
-	
-	    // Put up error dialog 
+
+	    // Put up error dialog
 	    delete [] buf;
 	    return(-1);
 	}
@@ -3810,13 +3810,13 @@ VacationCmd::recoverForwardFile(
 
 	    delete [] buf;
 	    return(-1);
-	}	
+	}
 
 	if ((fd = SafeOpen(file, O_RDONLY)) == 0) {
 	    delete [] buf;
 	    return(-1);
 	}
-	
+
 	buf[sizeof file -1] = '\0';
 	while (SafeRead(fd, buf, BUFSIZ) != 0) {
 		if (strstr(buf, "User not using forward file")) {
@@ -3890,7 +3890,7 @@ VacationCmd::parseVacationMessage()
     free(fullpath);
 
     if (fd < 0) {// File doesn't exist
-	
+
 	_subject = NULL;
 	_body = NULL;
 	return;
@@ -3904,16 +3904,16 @@ VacationCmd::parseVacationMessage()
 	dialog->setToQuestionDialog("Mailer", dialog_text);
 	helpId = DTMAILHELPNOWRITEVACATION;
 	answer = dialog->post_and_return(helpId);
-	    
+
 	_subject = NULL;
 	_body = NULL;
 
 	SafeClose(fd);
 	return;
-    }		
+    }
 
     int page_size = (int)sysconf(_SC_PAGESIZE);
-    size_t map_size = (int) (buf.st_size + 
+    size_t map_size = (int) (buf.st_size +
 			    (page_size - (buf.st_size % page_size)));
 
     if (buf.st_size == 0)
@@ -3921,11 +3921,7 @@ VacationCmd::parseVacationMessage()
 
     int free_buf = 0;
     mbuf.size = buf.st_size;
-#ifdef __osf__
-    mbuf.buffer = (char *)mmap(0, map_size, PROT_READ, MAP_PRIVATE, fd, 0);
-#else
     mbuf.buffer = mmap(0, map_size, PROT_READ, MAP_PRIVATE, fd, 0);
-#endif
     if (mbuf.buffer == (char *)-1) {
 	free_buf = 1;
 	mbuf.buffer = new char[mbuf.size];
@@ -3984,7 +3980,7 @@ VacationCmd::parseVacationMessage()
 	for (hnd = env->getFirstHeader(error, &name, value);
 	    error.isNotSet() && hnd;
 	    hnd = env->getNextHeader(error, hnd, &name, value)) {
-	    
+
 	    if (!strcmp(name, "Subject") == 0) {
 		continue;
 	    }
@@ -4057,7 +4053,7 @@ VacationCmd::handleMessageFile(
     else
       dialog = theRoamApp.genDialog();
 
-    // Check if a .forward file exists.  
+    // Check if a .forward file exists.
     passwd pw;
     GetPasswordEntry(pw);
 
@@ -4098,7 +4094,7 @@ VacationCmd::handleMessageFile(
 		this->backupFile(messagefile);
 	}
     }
-    
+
     // If the file doesn't exist or if the user has okayed creation
 
     if ((msg_file_exists < 0) || (answer == 1)) {
@@ -4110,14 +4106,14 @@ VacationCmd::handleMessageFile(
 	    dialog->setToQuestionDialog("Mailer", dialog_text);
 	    helpId = DTMAILHELPERROR;
 	    answer = dialog->post_and_return(helpId);
-	    
+
 	    // Handle dialog indicating file not writable
 	    delete [] messagefile;
-	    return (-1);	
-	}		
+	    return (-1);
+	}
 	SafeFChmod (fd, 0644);
 
-	if (!subj) { 
+	if (!subj) {
 	    /* NL_COMMENT
 	     * This is the default value of the subject field in the
 	     * message that gets returned to the sender when vacation
@@ -4132,7 +4128,7 @@ VacationCmd::handleMessageFile(
         if (_subject)
 	    free (_subject);
         _subject = strdup(subj);
-	
+
 	if (!text) {
 	    text = GETMSG(DT_catd, 1, 109,
 			    "I'm on vacation.\nYour mail regarding \"$SUBJECT\" will be read when I return.\n");
@@ -4144,7 +4140,7 @@ VacationCmd::handleMessageFile(
 	_body = strdup(text);
 
 	buf.iterate(writeToFileDesc, fd);
-	
+
 	SafeClose(fd);
     }
     delete [] messagefile;

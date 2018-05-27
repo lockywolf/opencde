@@ -87,7 +87,7 @@ static void scanloop(LOGICAL prolog) {
         static char literal[] = "m_literal = '%s'\n";
 
 #if defined(hpux) || defined(_AIX) || defined(sun) || defined(USL) ||          \
-    defined(___uxp__) || defined(__osf__) || defined(linux)
+    defined(___uxp__) || defined(linux)
         char buffer[M_LITLEN + 80];
 #else
 #define max4(a, b, c, d)                                                       \

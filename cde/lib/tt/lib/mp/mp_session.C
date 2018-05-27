@@ -20,11 +20,11 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $TOG: mp_session.C /main/13 1999/09/16 13:46:46 mgreess $ 			 				
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $TOG: mp_session.C /main/13 1999/09/16 13:46:46 mgreess $
 /*
  * @(#)mp_session.C	1.84 96/01/10
  *
@@ -97,19 +97,19 @@ _Tt_session::
 
 
 #ifdef OPT_UNIX_SOCKET_RPC
-// 
+//
 // Returns the name of the socket file if the unix socket rpc option is
 // enabled. Note that the name should be unique for all sessions running
 // on the same machine so it has to be derived from the session id
 // (which has the required uniqueness properties).
-// 
+//
 char * _Tt_session::
 local_socket_name()
 {
 #define SPRFX "/tmp/.TT"
 
 	if (_socket_name.len() == 0) {
-		char *sname = (char *)malloc(_id.len() + strlen(SPRFX) + 1); 
+		char *sname = (char *)malloc(_id.len() + strlen(SPRFX) + 1);
 		char *sc;
 
 		sprintf(sname,"%s%s", SPRFX, (char *)_id);
@@ -123,14 +123,14 @@ local_socket_name()
 		_socket_name = sname;
 		free((MALLOCTYPE *)sname);
 	}
-	
+
 	return((char *)_socket_name);
 }
 
-// 
+//
 // Opens a connection to the unix socket bound to the given socket name.
 // If successful returns the fd for the connection. Otherwise, returns
-// -1. 
+// -1.
 //
 int
 c_open_unix_socket(char *socket_name)
@@ -145,7 +145,7 @@ c_open_unix_socket(char *socket_name)
 	memset(&server_addr, 0, sizeof(server_addr));
 	server_addr.sun_family = AF_UNIX;
 	strcpy(server_addr.sun_path, socket_name);
-#if defined(ultrix) || defined(_AIX) || defined(hpux) || defined(__osf__)
+#if defined(ultrix) || defined(_AIX) || defined(hpux)
         int servlen = strlen(server_addr.sun_path) + sizeof(server_addr.sun_fam\
 ily);
         if (connect(sock, (sockaddr *)&server_addr, servlen) < 0) {
@@ -170,12 +170,12 @@ desktop_event_callback()
 	if (! _desktop->process_event()) {
 		return (-1);
 	}
-	else 
+	else
 		return 0;
 }
 
 
-// 
+//
 // Initializes a session with the assumption that the server session is
 // already running. If the server session isn't running then this method
 // will return an error as opposed to attempting to autostart a new
@@ -191,10 +191,10 @@ desktop_event_callback()
 //			(diagnostic emitted)
 //	TT_ERR_ADDRESS	Could not find advertised host
 //	TT_ERR_NOMP	Could not init as rpc client
-// 
+//
 Tt_status _Tt_session::
 client_session_init()
-{		
+{
 	// this is a client of this session. Note that since this
 	// function may be called in the server, we can't use
 	// _tt_mp->in_server().
@@ -280,7 +280,7 @@ client_session_init()
 }
 
 
-// 
+//
 // Verifies that the server side of the session is alive and is a
 // ToolTalk session. Currently this is done by first invoking rpc
 // procedure 0 to see if the session is responding to rpc requests. If
@@ -292,7 +292,7 @@ client_session_init()
 //
 // In fact it seems to be too picky, if the session id we have is
 // different only in the IP address, it may just be an alternate
-// IP address for the very same session.  
+// IP address for the very same session.
 //
 // Returns:
 //	TT_OK
@@ -306,7 +306,7 @@ ping()
 {
 	Tt_status	is_live;
 	_Tt_string	sid;
-	
+
 	// We used to call the NULLPROC here first, but that seems
 	// to be a waste of a round-trip since it doesn't tell
 	// us anything that the TT_RPC_VRFY_SESSION call doesn't.
@@ -352,7 +352,7 @@ ping()
 }
 
 
-// 
+//
 // Invokes an rpc call named by the rpc_proc parameter on the server
 // session and returns any results. If timeout is anything other than -1
 // then it will be used as the timeout value. Otherwise a suitable
@@ -484,8 +484,8 @@ call(int rpc_proc,
 			}
 			continue;
 		      case RPC_PROCUNAVAIL:
-			// We get this if there is a mild version 
-			// mismatch, e.g. a 1.1 library talking to 
+			// We get this if there is a mild version
+			// mismatch, e.g. a 1.1 library talking to
 			// a 1.0.x server, and one of the new
 			// API calls is used.  This is relatively
 			// benign, just let the user know that
@@ -515,9 +515,9 @@ call(int rpc_proc,
 }
 
 
-// 
+//
 // Attempts to find the address of the server session. This is done
-// according to what kind of environment or session type we're in. 
+// according to what kind of environment or session type we're in.
 //
 Tt_status _Tt_session::
 find_advertised_address(_Tt_string &session_addr)
@@ -535,7 +535,7 @@ find_advertised_address(_Tt_string &session_addr)
 		} else {
 			session_addr = _address_string;
 		}
-		return(TT_OK);		
+		return(TT_OK);
 	      case _TT_ENV_LAST:
 	      default:
 		return(TT_ERR_NOMP);
@@ -568,10 +568,10 @@ env()
 }
 
 
-// 
+//
 // Sets the session-type for the session. This affects how the session id
-// is advertised to potential clients. 
-// 
+// is advertised to potential clients.
+//
 void _Tt_session::
 set_env(_Tt_env session_env, _Tt_string arg)
 {
@@ -587,10 +587,10 @@ set_env(_Tt_env session_env, _Tt_string arg)
 
 
 
-// 
+//
 // Returns the ToolTalk session id for the X session named by xdisp. Note
 // that no actual contact is attempted.
-// 
+//
 _Tt_string _Tt_session::
 Xid(_Tt_string xdisp)
 {
@@ -639,7 +639,7 @@ parsed_address(_Tt_string &addr_string)
 	char 		 addr_format[32];
 	const char 	*fcs1_addr_format_fmt = "%%ld %%d %%d %%d %%lu %%%ds";
 	char 		 fcs1_addr_format[32];
-	
+
 	//
 	// Note: the fcs 1.0 version of tooltalk uses the first 6
 	// fields in addr_format. Changing these first 6 fields
@@ -677,7 +677,7 @@ parsed_address(_Tt_string &addr_string)
 			(long)_server_uid,
 			(char *)_host->stringaddr(),
 			_rpc_version);
-		
+
 		addr_string = strid;
 		if ((status = _auth.set_sessionid(
 						_rpc_program,
@@ -698,7 +698,7 @@ parsed_address(_Tt_string &addr_string)
 
 		// XXX: note that if _TT_XATOM_VERSION is ever changed
 		// then backward compatibility is seriously
-		// compromised. 
+		// compromised.
 
 		if (atoi(str) != _TT_XATOM_VERSION) {
 			_tt_syslog( 0, LOG_ERR,
@@ -710,7 +710,7 @@ parsed_address(_Tt_string &addr_string)
 				    addr_string.operator const char *() );
 			return TT_ERR_NO_MATCH;
 		}
-		
+
 		// XXX: Originally, the fcs1_addr_format put in a
 		// field describing the rpc version of the server.
 		// However, the fcs1 version of client_session_init
@@ -722,7 +722,7 @@ parsed_address(_Tt_string &addr_string)
 		// (sigh) we have to add a field at the end of
 		// fcs1_addr_format that is the real rpc version of
 		// the server. This is the reason that the first rpc
-		// version parsed from addr_format is thrown away. 
+		// version parsed from addr_format is thrown away.
 
 		long long_pid;
 		long long_server_uid;
@@ -771,11 +771,11 @@ parsed_address(_Tt_string &addr_string)
 }
 
 
-// 
+//
 // Sets the id of a session. Note that addressing information (the rpc
 // number and version) are not part of the id. This makes it possible in
 // the future to provide server address rebinding.
-// 
+//
 Tt_status _Tt_session::
 set_id(char *id)
 {
@@ -783,7 +783,7 @@ set_id(char *id)
 	char			dpname[125];
 	int			svnum;
 	char			*ssid;
-	
+
 	if (id != (char *)0) {
 		_id = id;
 		switch (_id[0]) {
@@ -793,7 +793,7 @@ set_id(char *id)
 			if (sscanf((char *)id, "X %s %d", host, &svnum) != 2) {
 				return(TT_ERR_SESSION);
 			}
-			/* We _cannot_ set _displayname based solely on host and svnum, 
+			/* We _cannot_ set _displayname based solely on host and svnum,
 			 * because :0 is NOT the same as 127.0.0.1:0 as far as X11
 			 * is concerned: by default, it will only accept connections
 			 * to the former. (XOpenDisplay etc. will fail if you try the below!)
@@ -816,7 +816,7 @@ set_id(char *id)
 		      default:
 			return(TT_ERR_SESSION);
 		}
-		
+
 	} else {
 		// set the "id" which is the publicly visible *logical*
 		// address of this session.
@@ -856,19 +856,19 @@ set_id(char *id)
 			}
 		}
 	}
-	
+
 	return(TT_OK);
 }
 
 
-// 
+//
 // Returns a process-tree id for this session. This is essentially just
 // the address of the session preceded by a "P". The purpose of this is
 // that whenever this exact session needs to be advertised to a
 // persistent medium (as is done with file-scope messages) this version
 // of the session id is used so that if the session goes down and comes
 // up again, the session id stored on disk will become stale.
-// 
+//
 _Tt_string _Tt_session::
 process_tree_id()
 {
@@ -905,10 +905,10 @@ _tt_session_address(_Tt_object_ptr &o)
 }
 
 
-// 
+//
 // Returns 1 if the given id is the same as the id of this session or if
 // it is a process-tree id then it has the same address as this session.
-// 
+//
 int _Tt_session::
 has_id(const _Tt_string &id)
 {

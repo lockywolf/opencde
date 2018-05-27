@@ -22,7 +22,7 @@ class DtSR_BookcaseEntry : public UAS_BookcaseEntry
     DtSR_BookcaseEntry(UAS_Pointer<UAS_Common>& bookcase, int searchable = 0)
 			: UAS_BookcaseEntry(bookcase, searchable) { };
     virtual ~DtSR_BookcaseEntry() { };
-  
+
 };
 
 class DtSR_BookcaseSearchEntry : public DtSR_BookcaseEntry
@@ -44,7 +44,7 @@ class DtSR_BookcaseSearchEntry : public DtSR_BookcaseEntry
     UAS_Pointer<UAS_Common> bcase() { return uas_bcase; }
 
 
-#if !defined(SC3) && !defined(__osf__) && !defined(USL) && !defined(linux)
+#if !defined(SC3) && !defined(USL) && !defined(linux)
 
   protected:
     template <class T> friend class UAS_Pointer;

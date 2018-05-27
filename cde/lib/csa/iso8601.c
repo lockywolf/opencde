@@ -139,11 +139,7 @@ int _csa_iso8601_to_tick(char *buf, time_t *tick_out) {
                 orig_tzset = B_TRUE;
         }
 
-#ifdef __osf__
-        set_timezone("GMT0");
-#else
         set_timezone("GMT");
-#endif
 
         *tick_out = mktime(&time_str);
 
@@ -187,11 +183,7 @@ int _csa_tick_to_iso8601(time_t tick, char *buf_out) {
                 orig_tzset = B_TRUE;
         }
 
-#ifdef __osf__
-        set_timezone("GMT0");
-#else
         set_timezone("GMT");
-#endif
 
         time_str = localtime(&tk);
 

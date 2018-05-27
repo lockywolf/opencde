@@ -20,13 +20,13 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* $TOG: TKTemplate.C /main/6 1998/04/17 11:43:37 mgreess $ 
+/* $TOG: TKTemplate.C /main/6 1998/04/17 11:43:37 mgreess $
  *
  * (c) Copyright 1996 Digital Equipment Corporation.
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -53,30 +53,6 @@
 #pragma define (Stack<Rec>)
 #endif
 
-#ifdef __osf__
-#pragma define_template Stack<int>
-#pragma define_template CC_TPtrSlist<CC_String>
-#pragma define_template hashTable<CC_String, BTCollectable>
-#pragma define_template hashTable<CC_String, int>
-#pragma define_template hashTableIterator<CC_String, BTCollectable>
-#pragma define_template hashTableIterator<CC_String, int>
-#pragma define_template Stack<Rec>
-#pragma define_template CC_TValSlist<int>
-#pragma define_template CC_TPtrSlist<kv_pair<CC_String, BTCollectable> >
-#pragma define_template CC_TPtrSlist<kv_pair<CC_String, int> >
-#pragma define_template CC_TValSlist<Rec>
-#pragma define_template CC_TValSlistIterator<int>
-#pragma define_template CC_TValSlistIterator<Rec>
-#pragma define_template kv_pair<CC_String, BTCollectable>
-#pragma define_template pointer_vector<CC_TPtrSlist<kv_pair<CC_String, BTCollectable> > >
-#pragma define_template kv_pair<CC_String, int>
-#pragma define_template pointer_vector<CC_TPtrSlist<kv_pair<CC_String, int> > >
-
-CC_Boolean kv_pair<CC_String, BTCollectable>::f_needRemove = FALSE;
-CC_Boolean kv_pair<CC_String, int>::f_needRemove = FALSE;
-
-#endif
-
 #ifdef USL
 #pragma instantiate Stack<int>
 #pragma instantiate CC_TPtrSlist<CC_String>
@@ -97,7 +73,7 @@ CC_Boolean kv_pair<CC_String, int>::f_needRemove = FALSE;
 #pragma instantiate pointer_vector<CC_TPtrSlist<kv_pair<CC_String, int> > >
 #endif
 
-#if !defined(__osf__) && !defined(IBMR2)
+#if !defined(IBMR2)
 typedef Stack<int> _f1_;
 typedef CC_TPtrSlist<CC_String> _f2_;
 typedef hashTable<CC_String, BTCollectable> _f3_;

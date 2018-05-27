@@ -95,9 +95,7 @@
 #include <limits.h>
 #endif
 
-#ifndef __osf__
 #include <X11/Xlibint.h>
-#endif /* __osf__ */
 
 typedef struct _ProxyClientCache {
         Window window;

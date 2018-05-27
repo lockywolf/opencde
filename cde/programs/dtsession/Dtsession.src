@@ -21,9 +21,7 @@ XCOMM include "Dt"
 !#Dtsession*coverScreen:	False
 
 Dtsession*drawArea.background: black
-#ifdef __osf__
-Dtsession*lockLabelPixmap.imageName: DECDtlogo
-#elif __FreeBSD__
+#if __FreeBSD__
 Dtsession*lockLabelPixmap.imageName: FreeBSDDtlogo
 #elif __OpenBSD__
 Dtsession*lockLabelPixmap.imageName: OpenBSDDtlogo
@@ -33,7 +31,7 @@ Dtsession*lockLabelPixmap.imageName: Dtlogo
 
 Dtsession*ignoreEnvironment:	DISPLAY,SESSION_MANAGER,AUDIOSERVER
 
-!# Selects the desired screen for certain dialogs (exit confirmation, 
+!# Selects the desired screen for certain dialogs (exit confirmation,
 !#  screen saver password, etc) for use in a Xinerama configuration.
 
 Dtsession*xineramaPreferredScreen:      0

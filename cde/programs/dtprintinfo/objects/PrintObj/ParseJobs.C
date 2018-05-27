@@ -64,7 +64,7 @@ extern "C" in_addr_t inet_addr(const char *);
   #include <regex.h>
 #endif
 
-#if defined(aix) || defined(__osf__) || defined(USL) || defined(__uxp__)
+#if defined(aix) || defined(USL) || defined(__uxp__)
 extern "C" { int rresvport(int *); }
 #endif
 
@@ -209,7 +209,7 @@ int ConnectToPrintServer(const char *rhost, int timeout)
       alarm(timeout);
    else
       alarm(15);
-   if (connect(s, (struct sockaddr *)&sin, sizeof(sin)) < 0) 
+   if (connect(s, (struct sockaddr *)&sin, sizeof(sin)) < 0)
     {
       close(s);
       s = -1;
@@ -247,13 +247,13 @@ JobOutputType DetermineOutput(char *output)
    static char *aixv2_pattern;
    static char *aixv3_pattern;
    static char *bsd_pattern;
-   /* 
+   /*
     * Due to bug in regcmp/regex (bug id 1191772), change to C locale for
     * this parsing work.  And change back at end of procedure.  This workaround
     * appears to be ok since the print service output parsed here is in a
     * "C locale" 8-bit form for inter-machine networking.
     */
-   setlocale(LC_ALL, "C"); 
+   setlocale(LC_ALL, "C");
 
    if (first_time)
     {
@@ -284,15 +284,15 @@ JobOutputType DetermineOutput(char *output)
     {
 #ifdef NO_REGCOMP
       if (regex(bsd_pattern, s)) {
-   	 setlocale(LC_ALL, ""); 
+   	 setlocale(LC_ALL, "");
 	 return BSD_OUTPUT;
       }
       if (regex(aixv3_pattern, s)) {
-   	 setlocale(LC_ALL, ""); 
+   	 setlocale(LC_ALL, "");
 	 return AIX_V3_OUTPUT;
       }
       if (regex(aixv2_pattern, s)) {
-   	 setlocale(LC_ALL, ""); 
+   	 setlocale(LC_ALL, "");
 	 return AIX_V2_OUTPUT;
       }
 #else
@@ -384,7 +384,7 @@ void LocalPrintJobs(char *printer, char **return_job_list, int *return_n_jobs)
    current_size = 0;
    *job_list1 = '\0';
    *return_n_jobs = 0;
-	
+
    // run as user's UID, but with privileges from root
    SETEUID(0);
 
@@ -552,7 +552,7 @@ static void check_dir(char *printer, char *tmp_dir, StatusLineList *job_list,
                            i++;
 			   break;
 			 }
-			else 
+			else
 			 {
 			   i--;
 			   if (filename[i] != '\\')
@@ -590,17 +590,17 @@ static void check_dir(char *printer, char *tmp_dir, StatusLineList *job_list,
                 {
 		  *s = '\0';
 		  s++;
-                  strcpy(owner, s); 
-                  strcat(owner, "@"); 
-                  strcat(owner, line); 
+                  strcpy(owner, s);
+                  strcat(owner, "@");
+                  strcat(owner, line);
 		  if (s = strchr(owner, '.'))
 		     *s = '\0';
                 }
                else
-                  strcpy(owner, line); 
+                  strcpy(owner, line);
 	       break;
 	    case 5: strcpy(job_size, line); break;
-	    case 6: 
+	    case 6:
                secs = (time_t)atoi(line);
 	       strftime(date_str, 100, "%b %e|%T", localtime(&secs));
 	       line_ct = -1;
@@ -774,37 +774,37 @@ void LocalPrintJobs(char *printer, char **return_job_list, int *return_n_jobs)
 }
 #endif // HP LOCAL PARSER
 
-#if defined(__osf__) || defined(linux) || defined(CSRG_BASED)
+#if defined(linux) || defined(CSRG_BASED)
 //
 // DEC/OSF1 PARSER - Output from "lpstat -o<printer>
 //
 // Remote:
-// 
+//
 // everest.unx.dec.com: Tue Nov 29 18:44:33 1994:
 // lps20 is ready and printing via network
 // Rank   Owner      Job  Files                                 Total Size
 // active vsp        231  /etc/printcap                         845 bytes
 // Requests on lps20:
-// 
+//
 // Local:
-// 
+//
 // Wed Nov 30 12:20:24 1994: Attempting to print dfA000globe.unx.dec.com
 // Rank   Pri Owner      Job  Files                                 Total Size
 // active 0   root       0    /etc/printcap                        407 bytes
 // Requests on la75:
-// 
+//
 
 //
 // DEC/OSF1 PARSER - Output from "lpq -p<printer>
 //
 // No Jobs in progress:
 //
-//  build-dec.qte.x.org: Thu Oct  3 11:17:18 1996: 
+//  build-dec.qte.x.org: Thu Oct  3 11:17:18 1996:
 //  no entries
 //
 //
 // Jobs in progress:
-//   build-dec.qte.x.org: Fri Oct  4 09:08:48 1996: 
+//   build-dec.qte.x.org: Fri Oct  4 09:08:48 1996:
 //   federal is ready and printing via dev
 //   Rank   Owner      Job  Files                                 Total Size
 //   active mgreess     65  (standard input)                      13482 bytes
@@ -819,7 +819,7 @@ void LocalPrintJobs(char *printer, char **return_job_list, int *return_n_jobs)
 // No Jobs in progress:
 //
 // Requests on ansel:
-// build-dec.osf.org: Wed Jul  2 11:29:53 1997: 
+// build-dec.osf.org: Wed Jul  2 11:29:53 1997:
 // no entries
 //
 //
@@ -827,7 +827,7 @@ void LocalPrintJobs(char *printer, char **return_job_list, int *return_n_jobs)
 // Jobs in progress:
 //
 // Requests on ansel:
-// build-dec.osf.org: Wed Jul  2 11:31:12 1997: 
+// build-dec.osf.org: Wed Jul  2 11:31:12 1997:
 // Rank   Pri Owner      Job  Files                                 Total Size
 // 1st    0   mgreess    7    ParseJobs.C                          33367 bytes
 // no entries
@@ -867,9 +867,6 @@ void LocalPrintJobs(char *printer, char **return_job_list, int *return_n_jobs)
    static char *job_list = NULL;
    static int prev_buf_size = 0;
 
-#if defined(__osf__)
-   sprintf(buf, "LANG=C lpstat -o%s", printer);
-#endif
 #if defined(linux) || defined(__OpenBSD__) || defined(__NetBSD__)
    snprintf(buf, 1000, "LANG=C lpq -P%s", printer);
 #elif defined(__FreeBSD__)
@@ -988,19 +985,19 @@ void LocalPrintJobs(char *printer, char **return_job_list, int *return_n_jobs)
        }
        if (strcmp(tmp, "Owner"))
          fprintf(stderr, "Unexpected legend column: %s != Owner\n", tmp);
-       
+
        tmp = strtok(NULL, " ");
        if (strcmp(tmp, "Job"))
          fprintf(stderr, "Unexpected legend column: %s != Job\n", tmp);
-       
+
        tmp = strtok(NULL, " ");
        if (strcmp(tmp, "Files"))
          fprintf(stderr, "Unexpected legend column: %s != Files\n", tmp);
-       
+
        tmp = strtok(NULL, " ");
        if (strcmp(tmp, "Total"))
          fprintf(stderr, "Unexpected legend column: %s != Total\n", tmp);
-       
+
        tmp = strtok(NULL, " \n");
        if (strcmp(tmp, "Size"))
          fprintf(stderr, "Unexpected legend column: %s != Size\n", tmp);
@@ -1104,7 +1101,7 @@ int ParseBSDPrintJobs(char *printer, char *jobs,
     * appears to be ok since the print service output parsed here is in a
     * "C locale" 8-bit form for inter-machine networking.
     */
-   setlocale(LC_ALL, "C"); 
+   setlocale(LC_ALL, "C");
 
    if (first_time)
     {
@@ -1191,37 +1188,37 @@ int ParseBSDPrintJobs(char *printer, char *jobs,
    *return_job_list = job_list;
 
 #ifdef NO_REGCOMP
-   setlocale(LC_ALL, ""); 
+   setlocale(LC_ALL, "");
 #endif
 
    delete [] buf;
    return rc;
 }
 
-/* AIX version 3 and 4 PARSER - have to parse the following 
+/* AIX version 3 and 4 PARSER - have to parse the following
 
- Queue   Dev   Status    Job     Name           From           To            
+ Queue   Dev   Status    Job     Name           From           To
                          Submitted        Rnk Pri       Blks  Cp          PP %
  ------- ----- --------- ---------        --- ---      ----- ---        ---- --
- bsh     bshde RUNNING   956     STDIN.14937    root           root          
+ bsh     bshde RUNNING   956     STDIN.14937    root           root
                         08/02/94 09:55:44    1  15          1   1           0  0
                                /var/spool/qdaemon/tOlkCSM
 
- OR 
+ OR
 
- Queue   Dev   Status    Job     Name           From           To            
+ Queue   Dev   Status    Job     Name           From           To
                          Submitted        Rnk Pri       Blks  Cp          PP %
  ------- ----- --------- ---------        --- ---      ----- ---        ---- --
- john1   lp0   DOWN     
-               QUEUED    957     STDIN.14952    root           root          
-                        08/02/94 10:17:53    1  15          1   1               
+ john1   lp0   DOWN
+               QUEUED    957     STDIN.14952    root           root
+                        08/02/94 10:17:53    1  15          1   1
                                /var/spool/qdaemon/tOmgCrx
 
 
 Also need to parse filenames that are titles: Example, "My Report" below.
 
-               QUEUED    957     My Report      root           root          
-                        08/02/94 10:17:53    1  15          1   1               
+               QUEUED    957     My Report      root           root
+                        08/02/94 10:17:53    1  15          1   1
                                /var/spool/qdaemon/tOmgCrx
 
 */
@@ -1250,7 +1247,7 @@ int ParseAIXv3PrintJobs(char *_printer, char *jobs,
    strcpy(printer, _printer);
    if (s = strchr(printer, ':'))
       *s = '\0';
-	
+
    if (prev_buf_size == 0)
     {
       prev_buf_size = BUFSIZ;
@@ -1355,18 +1352,18 @@ int ParseAIXv3PrintJobs(char *_printer, char *jobs,
 
 dev  arg         status      request               pp output  % done
 ---  ----------  ----------  --------------------  ---------  ------
-bp0  b906ps5     READY     
-bp1  s906ps5     READY     
-bp2  lp0         READY     
-ts1  t1          OFF       
-ts2  t2          OFF       
+bp0  b906ps5     READY
+bp1  s906ps5     READY
+bp2  lp0         READY
+ts1  t1          OFF
+ts2  t2          OFF
 
 queue  user               request              blks cops pri  time   to
 -----  -----------------  -------------------- ---- ---- ---  -----  --------
-ts1    root               /etc/motd               2    1  15  15:57  root    
+ts1    root               /etc/motd               2    1  15  15:57  root
 ts1    root@warpspeed     /etc/rc.afs             3    1  15  16:03  root@war
-ts2    root               /.profile               1    1  15  16:05  root    
-ts2    root               /.profile               1    1  15  16:06  root    
+ts2    root               /.profile               1    1  15  16:05  root
+ts2    root               /.profile               1    1  15  16:06  root
 ts2    root@warpspeed     /etc/rc.afs             3    1  15  16:07  root@war
 
 */

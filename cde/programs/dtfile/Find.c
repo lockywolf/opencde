@@ -1658,9 +1658,6 @@ static Boolean ExecuteFind(FindRec *find_rec, FindData *find_data,
         char *link_path;
         void (*oldSig)();
         Tt_status tt_status;
-#ifdef __osf__
-        extern void sigchld_handler(int);
-#endif /* __osf__ */
 
         if (strcmp(find_data->content, "") == 0) {
                 label_string = XmStringCreateLocalized(
@@ -1735,7 +1732,7 @@ static Boolean ExecuteFind(FindRec *find_rec, FindData *find_data,
 #endif
         if (access_priv == -1 && geteuid() != root_user) {
 #else
-#if defined(__hp_osf) || defined(__ultrix) || defined(__osf__) ||              \
+#if defined(__ultrix) ||             \
     defined(linux) || defined(CSRG_BASED)
         setreuid(geteuid(), -1);
         if (access((char *)path, R_OK) == -1) {
@@ -1819,11 +1816,7 @@ static Boolean ExecuteFind(FindRec *find_rec, FindData *find_data,
 
         /* Start the 'find' process */
 
-#ifdef __osf__
-        oldSig = signal(SIGCHLD, sigchld_handler);
-#else
         oldSig = signal(SIGCHLD, SIG_DFL);
-#endif /* __osf__ */
         find_rec->popenId = findpopen(command, "r", &(find_rec->childpid));
         signal(SIGCHLD, oldSig);
 

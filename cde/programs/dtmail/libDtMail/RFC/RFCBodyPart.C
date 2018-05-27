@@ -27,7 +27,7 @@
  *	$TOG: RFCBodyPart.C /main/16 1998/04/06 13:27:40 mgreess $
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement bertween
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -43,41 +43,6 @@
 
 #ifndef I_HAVE_NO_IDENT
 #endif
-
-#if defined (__osf__) && OSMAJORVERSION < 4
-
-#include <iconv.h>
-
-// Workaround for CDExc19308
-//
-// This ifdef was added as a workaround for the
-// bug in the OSF1 V3.2 148 /usr/include/sys/localedef.h
-// header file, and should be removed as soon as the bug is 
-// fixed.
-#include <locale.h>
-#include <time.h>
-#include <DtHelp/LocaleXlate.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <limits.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include <Dt/Dts.h>
-#include <DtMail/DtMail.hh>
-#include "RFCImpl.hh"
-#include <DtMail/Threads.hh>
-
-#ifndef True
-#define True 1
-#endif
-#ifndef False
-#define False 0
-#endif
-
-#else
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -104,7 +69,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <ctype.h>
- 
+
 #ifndef True
 #define True 1
 #endif
@@ -127,9 +92,6 @@ extern "C" {
 #if defined(SunOS) && (SunOS < 55)
 }
 #endif
-
-// End of For CHARSET
-#endif // defined (__osf__) && OSMAJORVERSION < 4
 
 RFCBodyPart::RFCBodyPart(DtMailEnv & error,
 			 DtMail::Message * parent,
@@ -198,7 +160,7 @@ RFCBodyPart::getContents(DtMailEnv & error,
     *type = (char *)0;
   if (contents)
     *contents = (void *)0;
-  
+
     // The caller can ask for a hodge podge of information.
     // The only real rule here is that you can not ask for
     // the contents without requesting the length.
@@ -254,8 +216,8 @@ RFCBodyPart::getContents(DtMailEnv & error,
     if (type) {
 	if (!_body_type) {
 	    getDtType(error);
-	    // Do we want to propogate this error back up to the 
-	    // function that called us?  If not, we need to call 
+	    // Do we want to propogate this error back up to the
+	    // function that called us?  If not, we need to call
 	    // error.clear() before returning.
 	    if (error.isSet()) {
 		return;
@@ -337,7 +299,7 @@ RFCBodyPart::setContents(DtMailEnv & error,
     }
 
     if (type) {
-	if (_body_type) 
+	if (_body_type)
 	    free(_body_type);
 	_body_type = strdup(type);
     }
@@ -499,7 +461,7 @@ RFCBodyPart::adjustBodyPartsLocation(char * start)
 
     if (_body_env && _my_env == DTM_TRUE) {
 	// CMVC bug 2807
-	// start points at the body part seperator.  Need to 
+	// start points at the body part seperator.  Need to
 	// Skip seperator.  Put in a sanity check until we know
 	// this is the right fix
 	if (*start != '-' && *(start + 1) != '-') {
@@ -584,7 +546,7 @@ RFCBodyPart::OpenLcxDb (void)
     time_t	time1  = 0;
     time_t	time2  = 0;
 
-    while (MyProcess == True) 
+    while (MyProcess == True)
       {
         /* if time out, return */
 	if (time(&time2) == (time_t)-1)
@@ -770,7 +732,7 @@ RFCBodyPart::DtXlateMimeToIconv(
     int exists = -1;
 
     this->OpenLcxDb();
-   
+
     exists = _DtLcxXlateOpToStd(
 				MyDb, MyPlatform, CompVer,
 				DtLCX_OPER_MIME, mimeId,
@@ -844,9 +806,9 @@ RFCBodyPart::csToConvName(char *cs)
    char *commonCS = NULL;
    char *convName = NULL;
    char *ret_target = NULL;
- 
+
    this->OpenLcxDb();
- 
+
    // Convert charset to upper case first because charset table is
    // case sensitive.
    if (cs)
@@ -867,7 +829,7 @@ RFCBodyPart::csToConvName(char *cs)
       if  (exists == -1)
         return NULL;
    }
- 
+
    DtXlateStdToOpCodeset(DtLCX_OPER_INTERCHANGE_CODESET,
       commonCS,
       NULL,
@@ -902,7 +864,7 @@ RFCBodyPart::locToConvName()
    char *ret_locale = NULL;
    char *ret_lang = NULL;
    char *ret_codeset = NULL;
- 
+
    DtXlateOpToStdLocale(DtLCX_OPER_SETLOCALE,
       setlocale(LC_CTYPE, NULL),
       &ret_locale,
@@ -913,12 +875,12 @@ RFCBodyPart::locToConvName()
        free(ret_codeset);
        ret_codeset = NULL;
    }
-   
+
    if (ret_lang) {
        free(ret_lang);
        ret_lang = NULL;
    }
-   
+
    DtXlateStdToOpLocale(DtLCX_OPER_ICONV3,
       ret_locale,
       NULL,
@@ -935,7 +897,7 @@ RFCBodyPart::locToConvName()
         return ret_codeset;
       else
         free(ret_codeset);
-   } 
+   }
    return NULL;
 }
 
@@ -948,7 +910,7 @@ RFCBodyPart::targetConvName()
    char *ret_codeset = NULL;
    char *ret_target = NULL;
    char *ret_convName = NULL;
- 
+
    DtXlateOpToStdLocale(DtLCX_OPER_SETLOCALE,
       setlocale(LC_CTYPE, NULL),
       &ret_locale,
@@ -963,7 +925,7 @@ RFCBodyPart::targetConvName()
       ret_target,
       NULL,
       &ret_convName);
- 
+
 
    if (ret_locale)
      free(ret_locale);
@@ -1078,7 +1040,7 @@ char *from_cs, char *to_cs)
 			 bp_len += delta;
 			 op_start = (char *)realloc(
 						(char *)op_start,
-						(unsigned int) bp_len + 1); 
+						(unsigned int) bp_len + 1);
 			 op = op_start + bp_len - delta - oleft;
 			 oleft += delta;
 			 // realloc does not clear out unused space.
@@ -1118,7 +1080,7 @@ char *from_cs, char *to_cs)
       free(*bp);
    }
    *bp = op_start;
-   bp_len = strlen(*bp); 
+   bp_len = strlen(*bp);
 
    return 1;
 }

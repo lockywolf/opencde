@@ -43,7 +43,7 @@
 
 #include <stdlib.h>
 
-#if defined(__osf__) || defined(linux) || defined(CSRG_BASED) || defined(sun)
+#if defined(linux) || defined(CSRG_BASED) || defined(sun)
 #include <unistd.h>
 #else
 #if !defined(__uxp__) && !defined(USL)
@@ -179,7 +179,7 @@ int read();
 /* default declaration of generated scanner - a define so the user can
  * easily add parameters
  */
-#define  schema_DECL int  schemalex  schema_PROTO(( void )) 
+#define  schema_DECL int  schemalex  schema_PROTO(( void ))
 
 /* code executed at the end of each rule */
 #define  schema_BREAK break;
@@ -202,13 +202,13 @@ typedef struct  schema_buffer_state * schema_BUFFER_STATE;
 * the Copyright Laws of the United States.  USE OF A COPYRIGHT
 * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
 * OR DISCLOSURE.
-* 
+*
 * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
 * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
 * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
 * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
 * INTERNATIONAL, LTD.
-* 
+*
 *                         RESTRICTED RIGHTS LEGEND
 * Use, duplication, or disclosure by the Government is subject
 * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -218,7 +218,7 @@ typedef struct  schema_buffer_state * schema_BUFFER_STATE;
 *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
 *                  1315 Dell Avenue
 *                  Campbell, CA  95008
-* 
+*
 */
 #include "store_desc.h"
 #include "sheet.tab.h"
@@ -263,7 +263,7 @@ struct  schema_buffer_state
      schema_CHAR * schema_buf_pos;	/* current position in input buffer */
 
     /* size of input buffer in bytes, not including room for EOB characters*/
-    int  schema_buf_size;	
+    int  schema_buf_size;
 
     /* number of characters read into  schema_ch_buf, not including EOB characters */
     int  schema_n_chars;
@@ -758,8 +758,8 @@ case 30:
 	}
 	 schema_BREAK
 case 31:
-{ 
-	   linecount++; 
+{
+	   linecount++;
 	 }
 	 schema_BREAK
 case 32:
@@ -914,9 +914,9 @@ case  schema_STATE_EOF(INITIAL):
  *
  * synopsis
  *     int  schema_get_next_buffer();
- *     
+ *
  * returns a code representing an action
- *     EOB_ACT_LAST_MATCH - 
+ *     EOB_ACT_LAST_MATCH -
  *     EOB_ACT_CONTINUE_SCAN - continue scanning from current position
  *     EOB_ACT_END_OF_FILE - end of file
  */

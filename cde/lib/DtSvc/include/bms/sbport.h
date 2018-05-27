@@ -109,22 +109,6 @@ Motif library
 #define OSF_BUG
 #endif
 
-#if defined(__osf__) && !defined(__osf)
-#define __osf
-#define __sysv
-#define OSF_BUG
-#define __char_ptr_yytext
-#endif
-
-#if defined(osf) && !defined(__osf)
-#define __osf
-#define __sysv
-#define __osfs700
-#define OSF_BUG
-#define __hp_color_object
-#define __char_ptr_yytext
-#endif
-
 #ifdef __hpux
 #define __sysv
 /* __hp9000s300 or __hp9000s800 is defined by HP-UX cpp */
@@ -221,10 +205,6 @@ Motif library
 /* ----------------------------------------------------------------- */
 
 #if defined(__need_timeval) /* Get "struct timeval" */
-#ifdef __osf
-#define _OSF_SOURCE
-#include <sys/time.h>
-#endif
 #ifdef __sun
 #include <sys/time.h>
 #endif
@@ -240,10 +220,6 @@ Motif library
 #endif /* __need_timeval */
 
 #if defined(__need_fd_set) /* Get "typedef struct fd_set" */
-#ifdef __osf
-#define _OSF_SOURCE
-#include <sys/types.h>
-#endif
 #ifdef __apollo
 #define _INCLUDE_BSD_SOURCE
 #include "/bsd4.3/usr/include/sys/types.h"
@@ -259,9 +235,6 @@ Motif library
 #endif /* __need_fd_st */
 
 #if defined(__need_S_IF) /* Get S_IFNWK, S_IFLNK */
-#ifdef __osf
-#define _OSF_SOURCE
-#endif
 #ifdef __apollo
 #define _APOLLO_SOURCE
 #endif
@@ -275,9 +248,6 @@ Motif library
 #endif
 
 #if defined(__need_all_signals) /* Get all SIGxxx values */
-#ifdef __osf
-#define _OSF_SOURCE
-#endif
 #ifdef __apollo
 #define _APOLLO_SOURCE
 #include "/bsd4.3/usr/include/sys/types.h"
@@ -291,7 +261,7 @@ Motif library
 
 #if defined(_HPUX_SOURCE) || defined(__sun) || defined(USL) ||                 \
     defined(_INCLUDE_BSD_SOURCE) || defined(_OSF_SOURCE) || defined(__aix) ||  \
-    defined(__uxp__) || defined(__osf__) || defined(linux)
+    defined(__uxp__) || defined(linux)
 /* the "u_types" are defined in standard files */
 #undef _INCLUDE_BSD_SOURCE
 #else
@@ -305,14 +275,10 @@ typedef unsigned long u_long;
 /* -------------------------------------------------------------------- */
 typedef char int8;
 typedef short int16;
-#ifndef __osf__
 typedef long int32;
-#endif
 typedef unsigned char u_int8;
 typedef unsigned short u_int16;
-#ifndef __osf__
 typedef unsigned long u_int32;
-#endif
 
 #define __xechar_is_signed
 #undef __xechar_is_unsigned

@@ -2943,7 +2943,7 @@ static void StartSearchCB(Widget w, /* dont use */
    for the SunOS 5.3 optimized executable.  It isn't a problem for the
    non-optimized or debuggable versions or any versions on AIX 3.2 or
    HP-UX 9.05. */
-#if !defined(sun) && !defined(__osf__)
+#if !defined(sun)
                 n = 0;
                 XtSetArg(args[n], XmNeditable, False);
                 n++;

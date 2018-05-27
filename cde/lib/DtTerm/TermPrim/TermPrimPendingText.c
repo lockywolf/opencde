@@ -40,11 +40,6 @@ static char rcs_id[] =
 #include "TermPrimDebug.h"
 #include "TermPrimPendingTextP.h"
 
-#ifdef __osf__
-#include <termios.h>
-#include <poll.h>
-#endif /* __osf__ */
-
 static PendingTextChunk mallocChunk(int len);
 
 #ifdef DEBUG

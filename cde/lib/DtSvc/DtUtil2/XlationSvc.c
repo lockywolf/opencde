@@ -305,7 +305,7 @@ $PFUNBEG$ : DeleteDbMem() $1LINER$ : Zeros out the db mem &frees it $SUMMARY$
 /*========================================================*/
 $IFUNBEG$:  _DtMBStrchr()
 $1LINER$: Searches for a character in a multibyte string
-$SUMMARY$: 
+$SUMMARY$:
 Returns in 'ret_ptr' the address of the first occurence of 'value'
 in string s1.  Value may also be the end of string marker '\0'.
 $ARGS$:
@@ -370,7 +370,7 @@ int _DtMBStrchr (
 /*========================================================*/
 $IFUNBEG$:  _DtMBStrrchr()
 $1LINER$: Searches for a character in a multibyte string
-$SUMMARY$: 
+$SUMMARY$:
 Returns in 'ret_ptr' the address of the last occurence of 'value'
 in string s1.  Value may also be the end of string marker '\0'.
 $ARGS$:
@@ -431,7 +431,7 @@ int _DtMBStrrchr (
 /*========================================================*/
 $PFUNBEG$: SetDebugModeState()
 $1LINER$:  Checks db for debug mode and sets flag
-$SUMMARY$: 
+$SUMMARY$:
 $WARNING$:
 $ARGS$:
 $RETURNS$:
@@ -453,7 +453,7 @@ void SetDebugModeState(
 /*========================================================*/
 $PFUNBEG$: ReplaceMatchallSubex()
 $1LINER$:  Replace matchall subexpression refs (e.g. ?1) with values
-$SUMMARY$: 
+$SUMMARY$:
 If subexpressions are specified and referenced, the
 routine assumes that the string pointed to by pStr was
 allocated using malloc() and can be resized using realloc().
@@ -690,7 +690,7 @@ $PFUNBEG$ : StripMetaAndReplaceEscSubex() $1LINER$
 /*========================================================*/
 $PFUNBEG$: PrintDbEntry()
 $1LINER$:  Prints a db entry to stdout
-$SUMMARY$: 
+$SUMMARY$:
 $ARGS$:
 quarks:  NULLQUARK-terminated list of quarks for the LHS of the entry
 value:   value of the RHS of the entry
@@ -849,7 +849,7 @@ $PFUNBEG$ : CheckSearchVerMatchesSpec() $1LINER$
 /*========================================================*/
 $PFUNBEG$: CheckSearchOperMatchesSpec()
 $1LINER$:  Matches search pattern to spec data
-$SUMMARY$: 
+$SUMMARY$:
 $ARGS$:
 srchData:            state of the search
 specOperationQuark:  quark for the operation specification string
@@ -862,7 +862,7 @@ False: if not
 
 static
 Boolean CheckSearchOperMatchesSpec(
-           __DtXlateSrchData * srchData, 
+           __DtXlateSrchData * srchData,
            XrmQuark          specOperationQuark)
 {        /*$CODE$*/
         const char *opStr = XrmQuarkToString(specOperationQuark);
@@ -1404,7 +1404,7 @@ gets std value $SUMMARY$ : $ARGS$ : $RETURNS$ :
 /*========================================================*/
 $PFUNBEG$: DoCommonSrchDataPrep
 $1LINER$:  Prep srchData to search for a pattern
-$SUMMARY$: 
+$SUMMARY$:
 $ARGS$:
 $RETURNS$:
 /*================================================$SKIP$==*/
@@ -1452,7 +1452,7 @@ void DoCommonSrchDataPrep(
 /*========================================================*/
 $FUNBEG$:  _DtXlateOpenDb()
 $1LINER$:   Open a translation database
-$SUMMARY$: 
+$SUMMARY$:
 Opens a translation resource database and returns a
 reference to it in ret_db.
 
@@ -1522,7 +1522,7 @@ int  _DtXlateOpenDb(
 /*========================================================*/
 $FUNBEG$: _DtXlateOpenAndMergeDbs()
 $1LINER$: Opens a translation database and merges with earlier dbs
-$SUMMARY$: 
+$SUMMARY$:
 Opens a translation resource database and returns a
 reference to it in ret_db.
 
@@ -1775,7 +1775,7 @@ $FUNBEG$ : _DtXlateCloseDb() $1LINER$
 /*========================================================*/
 $FUNBEG$: _DbXlateStdToOpValue()
 $1LINER$:  Translates a standardized spec to an operation-specific value
-$SUMMARY$: 
+$SUMMARY$:
 Looks up the best translation of the standard value for an
 operation and places a pointer to the translation string
 at the location pointed to by ret_opValue.
@@ -1880,7 +1880,7 @@ int _DtXlateStdToOpValue(
 /*========================================================*/
 $FUNBEG$: _DbXlateOpToStdValue()
 $1LINER$:  Translates an operation-specific value to a standardized one
-$SUMMARY$: 
+$SUMMARY$:
 Looks up the best translation of the operation value for an
 operation and places a pointer to the standard string
 at the location pointed to by ret_stdValue.
@@ -2027,7 +2027,7 @@ std-version integer value.  If no specifications exist for
 that sysname, then sysname is set to the empty string and
 std-version is -1.
 
-ret_AppExecEnvPlatform should point to a character array at least 
+ret_AppExecEnvPlatform should point to a character array at least
 _DtPLATFORM_MAX_LEN characters long.  The sysname is copied to it.
 
 ret_AppExecEnvVersion is given the integer value of the
@@ -2039,7 +2039,7 @@ constants defined by the build environment of _DtXlate as follows:
 
 #define _STR(V) #V
 #define STR(V) _STR(V)
-      sprintf(buf,"%s%s%s", STR(OSMAJORVERSION), 
+      sprintf(buf,"%s%s%s", STR(OSMAJORVERSION),
                      nl_langinfo(RADIXCHAR), STR(OSMAJORVERSION));
 verNum = (int)(100.0 * atof(buf));
 
@@ -2063,13 +2063,13 @@ e.g.HP - UX 8.09
 Note that it may be necessary for the application to determine
 the version number of an operation in some platform-specific
 and operation-specific manner, for example using a library
-version value.  In many cases, however, the O.S. version value 
+version value.  In many cases, however, the O.S. version value
 for which _DtXlate was compiled will be sufficient
 when identifying version numbers for standard development
 environment libraries, such as libc.
 
 $EXAMPLE$:
-char * 
+char *
 xlateStd2Op(_DtXlateDb db,Boolean runtimeOp, char * operation,char * stdVal)
 {
         char platform[_DtPLATFORM_MAX_LEN];
@@ -2129,7 +2129,7 @@ int _DtXlateGetXlateEnv(
         /* then look up version number of execution host */
         if (ret_AppExecEnvVersion) {
 #if defined(sun) || defined(_AIX) || defined(USL) || defined(__uxp__) ||       \
-    defined(__osf__) || defined(linux) || defined(CSRG_BASED)
+    defined(linux) || defined(CSRG_BASED)
                 char version[SYS_NMLN + SYS_NMLN + 2];
 #else
                 char version[UTSLEN + UTSLEN + 2];
@@ -2232,8 +2232,8 @@ _DtXlateOpenAndMergeDb() opens a particular database and
   merges it with an already opened one, overriding any
   repeated specifications.
 _DtXlateOpenAllDbs() opens all occurances of a translation
-   database found in a search path and cumulatively merges 
-   the contents, allowing for the override of existing 
+   database found in a search path and cumulatively merges
+   the contents, allowing for the override of existing
    specifications as well as the addition of new ones.
 _DtXlateCloseDb() closes an open database
 _DtXlateOpToStdValue() translates an platform, version,
@@ -2385,8 +2385,8 @@ match the op-value of the translation request.  use '~' if the
 <opvalue> is a pure string that may be used for either OpToStd() or
 StdToOp() translations, and the specifation op-value must be
 a string within the op-value of the translation request.
-Use the '0' translation to represent that this particular 
-translation should result in an error, that is should not result 
+Use the '0' translation to represent that this particular
+translation should result in an error, that is should not result
 in a translation.
 
 Translations are two-way operations: from a host- and

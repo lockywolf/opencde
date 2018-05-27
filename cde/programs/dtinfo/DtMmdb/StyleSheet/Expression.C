@@ -86,16 +86,16 @@ CompositeVariableNode::appendItem(const Symbol& item)
   f_items.append(new Symbol(item));
 }
 
-const Symbol* 
+const Symbol*
 CompositeVariableNode::convertableToVariable()
 {
    const Symbol* x = 0;
    if ( f_items.entries() == 1 ) {
       x = f_items.first();
-      if ( gVariableTable -> exists(*x) ) 
-         return x; 
+      if ( gVariableTable -> exists(*x) )
+         return x;
    }
- 
+
    return 0;
 }
 
@@ -139,22 +139,22 @@ ConstantNode::~ConstantNode()
 FeatureValue *
 BinaryOperatorNode::evaluate() const
 {
-  // calculate children trees and then have feature value do the operation 
+  // calculate children trees and then have feature value do the operation
 
 #if !defined(SC3) && !defined(_IBMR2) && !defined(__uxp__) && \
-    !defined(__osf__) && !defined(USL) && !defined(linux) && \
+    !defined(USL) && !defined(linux) && \
     !defined(CSRG_BASED) && !defined(sun)
   volatile
 #endif
   FeatureValue *left =  0;
 #if !defined(SC3) && !defined(_IBMR2) && !defined(__uxp__) && \
-    !defined(__osf__) && !defined(USL) && !defined(linux) && \
+    !defined(USL) && !defined(linux) && \
     !defined(CSRG_BASED) && !defined(sun)
   volatile
 #endif
   FeatureValue *right = 0;
 #if !defined(SC3) && !defined(_IBMR2) && !defined(__uxp__) && \
-    !defined(__osf__) && !defined(USL) && !defined(linux) && \
+    !defined(USL) && !defined(linux) && \
     !defined(CSRG_BASED) && !defined(sun)
   volatile
 #endif
@@ -200,8 +200,8 @@ BinaryOperatorNode::evaluate() const
 FeatureValue *
 VariableNode::evaluate() const
 {
-  // this could be a feature or a variable 
-  // first look in the parent feature set 
+  // this could be a feature or a variable
+  // first look in the parent feature set
 
   // NOTE: actual operation should be to look in the local feature set first
   // before going to the parent unless the inherit operator was used. Not sure
@@ -213,7 +213,7 @@ VariableNode::evaluate() const
 
 //MESSAGE(cerr, "VariableNode::evaluate()");
 //f_name.print(cerr);
-  
+
   FeatureValue *variable_value = gVariableTable->lookup(f_name).evaluate();
 
 //debug(cerr, int(variable_value));
@@ -222,7 +222,7 @@ VariableNode::evaluate() const
     throw(CASTUVEXCEPT undefinedVariableException(f_name));
 
   // have to evaluate it in case it contains expressions or other variables
-  // etc.  
+  // etc.
   FeatureValue *return_variable = 0;
 
   mtry
@@ -231,7 +231,7 @@ VariableNode::evaluate() const
     }
   mcatch_any()
     {
-      delete return_variable; 
+      delete return_variable;
       delete variable_value ;
       rethrow;
     }
@@ -313,7 +313,7 @@ SgmlAttributeNode::evaluate() const
 
   if (attr)
     return new FeatureValueString(attr->value());
-  
+
   throw(CASTUAEXCEPT undefinedAttributeException(f_name));
 
   return 0 ;
@@ -337,7 +337,7 @@ ostream &operator<< (ostream &o, const TermNode &t)
 ostream &
 Expression::print(ostream &o) const
 {
-  return o << *f_root ; 
+  return o << *f_root ;
 }
 
 ostream &

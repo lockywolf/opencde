@@ -20,11 +20,11 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $XConsortium: tttar.C /main/4 1995/10/20 16:59:46 rswiston $ 			 				
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $XConsortium: tttar.C /main/4 1995/10/20 16:59:46 rswiston $
 /*
  * tttar.cc - Link Service/ToolTalk object archive tool.
  *
@@ -37,7 +37,7 @@
 #include <stdlib.h>
 #include <sys/param.h>
 #include <sys/stat.h>
-#if defined(__osf__) || defined(linux) || defined(sun) || defined(CSRG_BASED)
+#if defined(linux) || defined(sun) || defined(CSRG_BASED)
 #include <unistd.h>
 #else
 #if !defined(USL) && !defined(__uxp__) && !defined(sun)
@@ -52,7 +52,7 @@
 #include "tt_options.h"
 #include "archiver.h"
 
-#if defined(OPT_BUG_USL) || defined(OPT_BUG_UXP) 
+#if defined(OPT_BUG_USL) || defined(OPT_BUG_UXP)
 #include <unistd.h>
 #endif
 
@@ -81,7 +81,7 @@ main(int argc, char **argv)
 	_Tt_string		tttardir;
 	bool_t			tttar_worked	= FALSE;
 	bool_t			should_tttar	= FALSE;
-	
+
 	setlocale( LC_ALL, "" );
 
 	tttar->parse_args( argc, argv );

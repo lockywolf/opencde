@@ -1605,7 +1605,7 @@ double do_round(double result, int ndigits) {
 
         if (isnan(result))
                 return result;
-#if defined(_AIX) || defined(__aix) || defined(__osf__) || defined(__sparc)
+#if defined(_AIX) || defined(__aix) || defined(__sparc)
         temp = finite(result);
         if (!temp)
                 return (temp > 0) ? HUGE : -HUGE;
@@ -1618,7 +1618,7 @@ double do_round(double result, int ndigits) {
         if ((temp = isinf(result)))
                 return (temp > 0) ? HUGE : -HUGE;
 #endif /* USL or __uxp__ */
-#endif /* _AIX or __osf__ */
+#endif /* _AIX  */
 
         if (ndigits >= 0 && ndigits < MAX_DIGITS) {
                 result += 0.5 * (result > 0 ? mods[ndigits] : -mods[ndigits]);
@@ -1713,7 +1713,7 @@ try_compute_i(double guess, double *result, int method) {
 
                 new_w = w - f / f_prime;
 
-#if defined(_AIX) || defined(__aix) || defined(__osf__) || defined(__sparc)
+#if defined(_AIX) || defined(__aix) || defined(__sparc)
                 if (!(!isnan(new_w) && finite(new_w)))
                         return FALSE;
 #else
@@ -1724,7 +1724,7 @@ try_compute_i(double guess, double *result, int method) {
                 if (!(!isnan(new_w) && !isinf(new_w)))
                         return FALSE;
 #endif
-#endif /* _AIX or __osf__ */
+#endif /* _AIX  */
 
                 if (new_w == w ||
                     (w != 0.0 && fabs((new_w - w) / w) < FIN_EPSILON))

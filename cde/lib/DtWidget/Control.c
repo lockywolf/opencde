@@ -116,8 +116,6 @@ WidgetClass dtControlGadgetClass;
 
 #ifdef _SUN_OS
 static const char _DtMsgIndicator_0000[] = "/var/mail/";
-#elif defined(__osf__)
-static const char _DtMsgIndicator_0000[] = "/usr/spool/mail/";
 #else
 static const char _DtMsgIndicator_0000[] = "/usr/mail/";
 #endif
@@ -793,7 +791,7 @@ static Boolean SetValues(Widget current_w, Widget request_w, Widget new_w) {
                         new_c = (DtControlGadget)new_w;
 #if 0
 	String		file_name =	G_FileName (new);
-	int		file_name_size;				
+	int		file_name_size;
 	Boolean		redraw_flag =	False;
 #endif /*  0 */
 

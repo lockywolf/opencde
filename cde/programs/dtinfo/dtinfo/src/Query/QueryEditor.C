@@ -31,13 +31,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -47,7 +47,7 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
 
 #define C_TOC_Element
@@ -94,7 +94,7 @@ using namespace std;
 #include "utility/mmdb_exception.h"
 
 //static bool g_allow_query_text_change;
-  
+
 QueryEditor *QueryEditor::f_query_editor;
 
 // /////////////////////////////////////////////////////////////////
@@ -174,7 +174,7 @@ QueryEditor::edit_query (QueryGroup *query)
 #else
   // Clean up old junk.
   // The query isn't destroyed sometimes??
-  // Need to nuke only if it isn't saved on the history list.  DJB 
+  // Need to nuke only if it isn't saved on the history list.  DJB
   if (f_query_view != NULL)
     {
       QueryGroup *group = f_query_view->query_group();
@@ -198,7 +198,7 @@ QueryEditor::edit_query (QueryGroup *query)
       new QueryTerm (f_query, NULL, NULL);
     }
 
-  // QueryGroupView holds the pointer to the QueryGroup. 
+  // QueryGroupView holds the pointer to the QueryGroup.
   f_query_view =
     new QueryGroupView (f_query, WXmForm ((WObject &) f_query_area));
 #endif
@@ -209,7 +209,7 @@ QueryEditor::edit_query (QueryGroup *query)
 #if 1
       f_null_terms = 0;
 
-      // QueryGroupView holds the pointer to the QueryGroup. 
+      // QueryGroupView holds the pointer to the QueryGroup.
       f_query_view = new QueryGroupView (f_query, f_query_area);
 #endif
       // Only let pane get small enough to show two query entries.
@@ -218,7 +218,7 @@ QueryEditor::edit_query (QueryGroup *query)
       // NOTE: This really needs to use the height of one row.  If this
       // dialog comes up with an existing query at this point, the
       // height will be wrong.  We need to get the height of a single
-      // line somehow.  11:59 02/04/93 DJB 
+      // line somehow.  11:59 02/04/93 DJB
       f_query_area.
 	PaneMinimum (f_query_area.Height() -
 		     WCore (XtParent(XtParent(*f_query_view))).Height() +
@@ -241,7 +241,7 @@ QueryEditor::edit_query (QueryGroup *query)
       ON_DEBUG(printf ("Query Editor excess height = %d\n", excess_height));
 
       f_shell.MinHeight (f_shell.Height() - excess_height);
-      
+
       first_time = False;
     }
 
@@ -278,7 +278,7 @@ QueryEditor::create_ui()
   string = CATGETS(Set_QueryEditor, 1, "Dtinfo: Query Editor");
   XtVaSetValues((Widget)f_shell, XmNtitle, string, NULL);
 
-  // Main form and menu bar. 
+  // Main form and menu bar.
   WXmForm form                      (f_shell,    "form"                );
   WXmMenuBar menu_bar               (form,       (char*)"menu_bar"     );
 
@@ -324,7 +324,7 @@ QueryEditor::create_ui()
   mtfstring =  CATGETS(Set_AgentLabel, 229, "Redo");
   XtVaSetValues(f_redo_btn, XmNlabelString, (XmString)mtfstring, NULL);
 
-  // Button area at the bottom 
+  // Button area at the bottom
   WXmForm hform                     (form,       "hform"               );
   f_hist_prev = WXmArrowButton      (hform,      "hist_prev",        AM);
   f_hist_next = WXmArrowButton      (hform,      "hist_next",        AM);
@@ -351,14 +351,14 @@ QueryEditor::create_ui()
 
   help_agent().add_activate_help (help, (char*)"query_editor_help");
 
-  // Main "work" area 
+  // Main "work" area
   WXmPanedWindow pane               (form,       "pane"                );
   WXmForm qform                     (pane,       "qform"               );
   WXmLabel qlabel                   (qform,      "qlabel",           AM);
 
   mtfstring =  CATGETS(Set_AgentLabel, 230, "Query");
   XtVaSetValues(qlabel, XmNlabelString, (XmString)mtfstring, NULL);
-  
+
   f_query_text = WXmScrolledText    (qform,      (char*)"qtext",     AM);
 //  f_query_text.SetEditable(False);
   f_query_area = WXmScrolledWindow  (pane,       "query_area",       AM);
@@ -421,7 +421,7 @@ QueryEditor::search_activate()
 {
   Wait_Cursor bob;
 
-  // Need to duplicate string returned, because it is in static data space. 
+  // Need to duplicate string returned, because it is in static data space.
   char *human_readable =
     strdup (f_query_view->query_group()->
 	    generate_query (QueryGroup::QUERY_TYPE_INFIX));
@@ -434,7 +434,7 @@ QueryEditor::search_activate()
     (UAS_SearchScope *) WXmPushButton (f_scope_option.MenuHistory()).UserData();
 
    mtry {
-      // Search manager owns query from this point on.  Don't delete it here. 
+      // Search manager owns query from this point on.  Don't delete it here.
       search_mgr().parse_and_search (human_readable, scope);
    }
    mcatch (demoException &, demo) {
@@ -468,14 +468,14 @@ QueryEditor::increment_null_terms()
   if (f_null_terms == 0)
     f_search_btn.SetSensitive (False);
   f_null_terms++;
-  //  printf ("QueryEditor setting null_terms to %d\n", f_null_terms); 
+  //  printf ("QueryEditor setting null_terms to %d\n", f_null_terms);
 }
 
 void
 QueryEditor::decrement_null_terms()
 {
   f_null_terms--;
-  //  printf ("QueryEditor setting null_terms to %d\n", f_null_terms); 
+  //  printf ("QueryEditor setting null_terms to %d\n", f_null_terms);
   if (f_null_terms == 0)
     f_search_btn.SetSensitive (True);
 }
@@ -509,7 +509,7 @@ QueryEditor::scope()
 void
 QueryEditor::query_changed()
 {
-  // Need to duplicate string returned, because it is in static data space. 
+  // Need to duplicate string returned, because it is in static data space.
 #ifdef UseQSearch
   const char *human_readable =
     f_query_view->query_group()->generate_readable();
@@ -538,7 +538,7 @@ QueryEditor::modify_verify (WCallback *wcb)
 
 //  XmTextVerifyPtr tvp = (XmTextVerifyPtr) wcb->CallData();
 
-  // Editing never allowed. 
+  // Editing never allowed.
 //  tvp->doit = False;
 
 //  message_mgr().warning_dialog (
@@ -562,7 +562,7 @@ QueryEditor::fill_menu()
 
   for (; s != 0; s++)
     {
-      // Add a separator when they change from read only to changable. 
+      // Add a separator when they change from read only to changable.
       if (old_read_only != s.item()->read_only())
 	{
 	  DECLM (WXmSeparator, sep1, f_scope_option.SubMenuId(), "separator");
@@ -576,33 +576,10 @@ QueryEditor::fill_menu()
 
   // Do not want first item (Current Section)
 
-#ifdef __osf__
-#if 1
-  Widget w = f_scope_option.SubMenuId();
-  WComposite temp_composite(w);
-  WXmPushButton(temp_composite.Children()[0]).Unmanage();
-#else
-  int i = 0;
-  Widget w = f_scope_option.SubMenuId();;
-  Arg args[1];
-  WidgetList wl;
-  
-  XtSetArg(args[i], XmNchildren, &wl); i++;
-  XtGetValues(w, args, i);
-  XtUnmanageChild(wl[0]);
-#endif
-#else
   WXmPushButton(WComposite(f_scope_option.SubMenuId()).Children()[0]).Unmanage();
-#endif
 
   f_scope_option.
       MenuHistory (WComposite(f_scope_option.SubMenuId()).Children()[1]);
-  
-  //UAS_SearchScope::request ((UAS_Receiver<ScopeCreated> *) this);
-  //UAS_SearchScope::request ((UAS_Receiver<ScopeDeleted> *) this);
-  //UAS_SearchScope::request ((UAS_Receiver<ScopeRenamed> *) this);
-//
-  //search_scope_mgr().option_menu(this);
 }
 
 
@@ -629,7 +606,7 @@ QueryEditor::receive (ScopeCreated &msg, void* /*client_data*/)
   }
   else
   {
-    // Scan the current menu to find the correct insertion position. 
+    // Scan the current menu to find the correct insertion position.
     UAS_SearchScope *scope;
     for (; s != 0; s++, position++)
     {
@@ -650,7 +627,7 @@ QueryEditor::receive (ScopeCreated &msg, void* /*client_data*/)
 
   ON_DEBUG (printf ("Final SE position = %d\n", position));
 
-  // Add a separator if this is the first user-defined entry. 
+  // Add a separator if this is the first user-defined entry.
   if (need_sep == TRUE)
   {
     DECLM (WXmSeparator, separator, f_scope_option.SubMenuId(), "separator");
@@ -658,7 +635,7 @@ QueryEditor::receive (ScopeCreated &msg, void* /*client_data*/)
     position++;
   }
 
-  // Create the new toggle button. 
+  // Create the new toggle button.
   DECLM (WXmPushButton, scope, f_scope_option.SubMenuId(), scope_name);
   scope.PositionIndex (position);
   scope.UserData (msg.f_search_scope);
@@ -684,7 +661,7 @@ QueryEditor::receive (ScopeDeleted &msg, void* /*client_data*/)
 	break;
     }
 
-  // It had better be in the list! 
+  // It had better be in the list!
   Xassert (i != num_kids);
   ON_DEBUG (printf ("  widget #%d is the button\n", i));
 
@@ -718,7 +695,7 @@ QueryEditor::receive (ScopeRenamed &msg, void* /*client_data*/)
 	break;
     }
 
-  // It had better be in the list! 
+  // It had better be in the list!
   Xassert (i != num_kids);
   ON_DEBUG (printf ("QueryEdit: widget #%d is the button\n", i));
 

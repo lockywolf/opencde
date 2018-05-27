@@ -23,7 +23,7 @@
 /* $XConsortium: streambuf.C /main/8 1996/08/21 15:55:14 drk $ */
 #include "utility/c_streambuf.h"
 
-#if defined(USL) || defined(__osf__) || defined(linux) || \
+#if defined(USL) || defined(linux) || \
     defined(CSRG_BASED) || defined(sun)
 #include <stdlib.h>
 #else
@@ -41,7 +41,7 @@ streambuf::streambuf() : _size(0), _capacity(DEF_BUF_SIZ), _alloc(1),
 }
 
 streambuf::streambuf(char* p, int l, int bufferFull) :
-    base(p), end(p+l), put_ptr(p), get_ptr(p), _size(0), _capacity(l), 
+    base(p), end(p+l), put_ptr(p), get_ptr(p), _size(0), _capacity(l),
     _alloc(0), _pcount(0), _gcount(0)
 {
    if (bufferFull) {
@@ -118,7 +118,7 @@ int streambuf::move_get_ptr(int one)
    switch (one) {
      case 1:
 
-       get_ptr++;  
+       get_ptr++;
        if ( get_ptr == end )
          get_ptr = base;
 
@@ -126,7 +126,7 @@ int streambuf::move_get_ptr(int one)
 
      case -1:
 
-       get_ptr--;  
+       get_ptr--;
        if ( get_ptr == base-1 )
          get_ptr = end-1;
 
@@ -146,7 +146,7 @@ int streambuf::move_put_ptr(int one)
        if ( get_ptr == 0 )
           get_ptr = put_ptr;
 
-       put_ptr++; 
+       put_ptr++;
 
        if ( put_ptr == end )
          put_ptr = base;

@@ -65,7 +65,6 @@
  **
  **	__hpux	    HP-UX OS only
  **	__apollo    Domain OS only
- **	__hp_osf    HP OSF/1 OS only
  **     sun         SUN OS only
  **     USL         USL OS only
  **     SVR4        SUN OS and USL
@@ -124,10 +123,6 @@
 #if !(defined(__hpux) || defined(__apollo) || defined(_AIX) || defined(sun) || \
       defined(__uxp__) || defined(USL))
 #define generic
-#endif
-
-#ifdef __osf__
-#include <sys/sysinfo.h>
 #endif
 
 #if defined(linux)

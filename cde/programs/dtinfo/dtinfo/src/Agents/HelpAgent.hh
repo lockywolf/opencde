@@ -6,13 +6,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -22,12 +22,12 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
 
 
 
-// This will eventually be a LongLived subclass...  18:22 22-Jun-93 DJB 
+// This will eventually be a LongLived subclass...  18:22 22-Jun-93 DJB
 
 #ifndef wwl_h
 #include <WWL/wwl.h>
@@ -52,7 +52,7 @@ public:
 
   void add_help_cb(Widget);
 
-  // locator_id is the name of an X resource 
+  // locator_id is the name of an X resource
   void add_activate_help (Widget, const String locator_id = NULL);
   void add_activate_help (WXmPushButton &, const String locator_id = NULL);
   void add_activate_help (WXmPushButtonGadget &, const String locator_id = NULL);
@@ -73,11 +73,7 @@ private:
   Cursor f_cursor;
   XrmDatabase f_appXrmDb;
 
-#if defined(__osf__)
-  friend inline HelpAgent &help_agent();
-#else
   friend HelpAgent &help_agent();
-#endif
 
   static HelpAgent *g_help_agent;
 };

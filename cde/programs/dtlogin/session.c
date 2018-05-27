@@ -1467,7 +1467,7 @@ static int StartClient(struct verify_info *verify, struct display *d,
                          * the "setgroups()" call instead...
                          */
 
-#if (defined(__hpux) || defined(__osf__))
+#if (defined(__hpux))
                 initgroups(user, -1);
 #else
                 setgroups(verify->ngroups, verify->groups);
@@ -2003,10 +2003,6 @@ static void RunGreeter(struct display *d, struct greet_info *greet,
 
                         if ((path = getenv("NLSPATH")) != NULL)
                                 env = setEnv(env, "NLSPATH", path);
-#ifdef __hp_osf
-                        env = setEnv(env, "NLSPATH",
-                                     "/usr/lib/nls/msg/%L/%N.cat");
-#endif
 
                         /*
                          *  ping remote displays...

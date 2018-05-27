@@ -43,7 +43,7 @@
 
 #include <stdlib.h>
 
-#if defined(__osf__) || defined(linux) || defined(CSRG_BASED) || defined(sun)
+#if defined(linux) || defined(CSRG_BASED) || defined(sun)
 #include <unistd.h>
 #else
 #if !defined(__uxp__) && !defined(USL)
@@ -179,7 +179,7 @@ int read();
 /* default declaration of generated scanner - a define so the user can
  * easily add parameters
  */
-#define sgml_DECL int sgmllex sgml_PROTO(( void )) 
+#define sgml_DECL int sgmllex sgml_PROTO(( void ))
 
 /* code executed at the end of each rule */
 #define sgml_BREAK break;
@@ -203,13 +203,13 @@ typedef struct sgml_buffer_state *sgml_BUFFER_STATE;
 * the Copyright Laws of the United States.  USE OF A COPYRIGHT
 * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
 * OR DISCLOSURE.
-* 
+*
 * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
 * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
 * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
 * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
 * INTERNATIONAL, LTD.
-* 
+*
 *                         RESTRICTED RIGHTS LEGEND
 * Use, duplication, or disclosure by the Government is subject
 * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -219,7 +219,7 @@ typedef struct sgml_buffer_state *sgml_BUFFER_STATE;
 *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
 *                  1315 Dell Avenue
 *                  Campbell, CA  95008
-* 
+*
 */
 # line 37 "sgml.l"
 
@@ -231,7 +231,7 @@ static unsigned char sgmlbuf[LBUFSIZ];
 static int sgmlbuf_sz = LBUFSIZ;
 static int sgmlbuffed = 0;
 
-              
+
 #undef sgmlwrap
 int sgmlwrap();
 
@@ -280,7 +280,7 @@ struct sgml_buffer_state
     sgml_CHAR *sgml_buf_pos;	/* current position in input buffer */
 
     /* size of input buffer in bytes, not including room for EOB characters*/
-    int sgml_buf_size;	
+    int sgml_buf_size;
 
     /* number of characters read into sgml_ch_buf, not including EOB characters */
     int sgml_n_chars;
@@ -669,9 +669,9 @@ case sgml_STATE_EOF(INITIAL):
  *
  * synopsis
  *     int sgml_get_next_buffer();
- *     
+ *
  * returns a code representing an action
- *     EOB_ACT_LAST_MATCH - 
+ *     EOB_ACT_LAST_MATCH -
  *     EOB_ACT_CONTINUE_SCAN - continue scanning from current position
  *     EOB_ACT_END_OF_FILE - end of file
  */

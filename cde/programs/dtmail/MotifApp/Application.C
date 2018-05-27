@@ -25,7 +25,7 @@
  *+SNOTICE
  *
  *	RESTRICTED CONFIDENTIAL INFORMATION:
- *	
+ *
  *	The information in this document is subject to special
  *	restrictions in a confidential disclosure agreement bertween
  *	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -46,20 +46,20 @@
 //         by
 //           Douglas Young
 //           Prentice Hall, 1992
-//           ISBN 0-13-630252-1	
+//           ISBN 0-13-630252-1
 //
 //         Copyright 1991 by Prentice Hall
 //         All Rights Reserved
 //
-//  Permission to use, copy, modify, and distribute this software for 
-//  any purpose except publication and without fee is hereby granted, provided 
+//  Permission to use, copy, modify, and distribute this software for
+//  any purpose except publication and without fee is hereby granted, provided
 //  that the above copyright notice appear in all copies of the software.
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
 
 ////////////////////////////////////////////////////////////
-// Application.C: 
+// Application.C:
 ////////////////////////////////////////////////////////////
 #include "Application.h"
 #include "MainWindow.h"
@@ -94,7 +94,7 @@ Application::_appResources[] = {
 #define NL_CAT_LOCALE 0
 
 // If NL_CAT_LOCALE is not defined in other platforms, set it to 0
-#elif !defined(NL_CAT_LOCALE)	
+#elif !defined(NL_CAT_LOCALE)
 #define NL_CAT_LOCALE 0
 #endif
 
@@ -112,15 +112,15 @@ char *catgets_cache2(nl_catd catd, int set, int num, char *dflt)
 
   /* array to hold messages from catalog */
   static  char *MsgCat[NUM_SETS_MAX][MSGS_PER_SET_MAX];
-  
+
   /* convert to a zero based index */
   int setIdx = set - 1;
   int numIdx = num - 1;
-  
+
   if ( ! MsgCat[setIdx][numIdx] ) {
     MsgCat[setIdx][numIdx] = strdup( catgets(catd, set, num, dflt));
   }
-  
+
   return MsgCat[setIdx][numIdx];
 }
 
@@ -132,16 +132,16 @@ nl_catd catd = (nl_catd) -1;    // catgets file descriptor
 
 extern String ApplicationFallbacks[];
 
-Application::Application ( char *appClassName ) : 
+Application::Application ( char *appClassName ) :
                     UIComponent ( appClassName )
 {
     // Set the global Application pointer
     DebugPrintf(2, "Application::Application(%p \"%s\")\n", appClassName, appClassName);
-    
-    theApplication = this;  
-    
+
+    theApplication = this;
+
     // Initialize data members
-    
+
     _display    = NULL;
     _appContext = NULL;
     _bMenuButton = 0;
@@ -157,14 +157,14 @@ void Application::initialize ( int *argcp, char **argv )
 
     DebugPrintf(3, "Application::initialize - Initializing privileges.\n");
 
-    // The Solaris sendmail operates differently than the HP/IBM sendmail. 
-    // sendmail on Solaris runs as 'root' and so has access permissions 
-    // to any file on the system. sendmail on HP/IBM runs as set-group-id 
-    // 'mail' and so requires that all mailboxes that it may deliver e-mail 
-    // to be writable either by being group mail group writable, or by being 
-    // writable by the world. On those platforms, then, dtmail is required 
-    // to always run with set-group-id mail otherwise, when mailboxes are 
-    // saved, they will loose their group ownership and sendmail will no 
+    // The Solaris sendmail operates differently than the HP/IBM sendmail.
+    // sendmail on Solaris runs as 'root' and so has access permissions
+    // to any file on the system. sendmail on HP/IBM runs as set-group-id
+    // 'mail' and so requires that all mailboxes that it may deliver e-mail
+    // to be writable either by being group mail group writable, or by being
+    // writable by the world. On those platforms, then, dtmail is required
+    // to always run with set-group-id mail otherwise, when mailboxes are
+    // saved, they will loose their group ownership and sendmail will no
     // onger be able to deliver to those mailboxes.
 
     // we have to be set-gid to group "mail" when opening and storing
@@ -180,12 +180,12 @@ void Application::initialize ( int *argcp, char **argv )
     DebugPrintf(3, "Application::initialize - Initializing Xt.\n");
 
     _w = XtOpenApplication (
-			&_appContext, 
-			_applicationClass, 
-			(XrmOptionDescList) NULL, 0, 
+			&_appContext,
+			_applicationClass,
+			(XrmOptionDescList) NULL, 0,
 			argcp, argv, ApplicationFallbacks,
 			sessionShellWidgetClass, (ArgList) NULL, 0 );
-    
+
     // Extract and save a pointer to the X display structure
     DebugPrintf(3, "Application::initialize - Extracting display.\n");
     _display = XtDisplay ( _w );
@@ -193,13 +193,13 @@ void Application::initialize ( int *argcp, char **argv )
     // Set virtual BMenu mouse binding
     int numButtons = XGetPointerMapping(_display, (unsigned char *)NULL, 0);
     _bMenuButton = (numButtons < 3) ? Button2 : Button3;
-    
+
     // The Application class is less likely to need to handle
     // "surprise" widget destruction than other classes, but
     // we might as well install a callback to be safe and consistent
     DebugPrintf(3, "Application::initialize - Installing destroy handler.\n");
     installDestroyHandler();
-    
+
     // Center the shell, and make sure it isn't visible
     DebugPrintf(3, "Application::initialize - Setting window size.\n");
     XtVaSetValues ( _w,
@@ -209,8 +209,8 @@ void Application::initialize ( int *argcp, char **argv )
 		   XmNwidth,  1,
 		   XmNheight, 1,
 		   NULL );
-    
-    // The instance name of this object was set in the UIComponent 
+
+    // The instance name of this object was set in the UIComponent
     // constructor, before the name of the program was available
     // Free the old name and reset it to argv[0]
     DebugPrintf(3, "Application::initialize - Deleting name %p\n", _name);
@@ -221,12 +221,12 @@ void Application::initialize ( int *argcp, char **argv )
     // this shell behave correctly
     DebugPrintf(3, "Application::initialize - Realizing shell window.\n");
     XtRealizeWidget ( _w );
-    
+
     getResources(_appResources, XtNumber(_appResources));
 
     // Initialize and manage any windows registered
     // with this application.
-    
+
     for ( int i = 0; i < _numWindows; i++ )
     {
 	DebugPrintf(3, "Application::initialize - Initializing windows[%d]\n", i);
@@ -252,10 +252,6 @@ Application::~Application()
 #ifdef CDExc21492
   #if defined(__hpux) || defined(USL) || defined(__uxp__)
     this->BasicComponent::~BasicComponent();
-  #elif  __osf__
-    BasicComponent * The_End = this;
-    The_End->BasicComponent::~BasicComponent();
-  #else
     BasicComponent::~BasicComponent();
   #endif
 #endif
@@ -290,13 +286,13 @@ inline void Application::extractAndRememberEventTime(XEvent *event)
 void Application::handleEvents()
 {
     // Just loop forever
-#if 0    
+#if 0
     XtAppMainLoop ( _appContext );
 #else
     XEvent	event;
 
     _lastInteractiveEventTime = time((time_t *)0);
-    
+
     for (;;) {
       XtAppNextEvent( _appContext, &event );
       extractAndRememberEventTime( &event );
@@ -309,29 +305,29 @@ void Application::registerWindow ( MainWindow *window )
 {
     int i;
     MainWindow **newList;
-    
+
     // Allocate a new list large enough to hold the new
-    // object, and copy the contents of the current list 
+    // object, and copy the contents of the current list
     // to the new list
-    
+
     newList = new MainWindow*[_numWindows + 1];
-    
+
     for ( i = 0; i < _numWindows; i++ )
 	newList[i] = _windows[i];
-    
+
     // Install the new list and add the window to the list
-    
+
     if (_numWindows > 0) delete []_windows;
     _windows =  newList;
     _windows[_numWindows] = window;
-    
+
     _numWindows++;
 }
 
 void Application::unregisterWindow ( MainWindow *window )
 {
     int i, index;
-    
+
     // If this is the last window bye bye.
 
     if (isEnabledShutdown() && _numWindows == 1)
@@ -346,11 +342,11 @@ void Application::unregisterWindow ( MainWindow *window )
     // Copy all objects, except the one to be removed, to a new list
 
     MainWindow **newList = new MainWindow*[_numWindows - 1];
-    
+
     for (i=0, index=0; i<_numWindows; i++)
       if (_windows[i] != window)
 	newList[index++] = _windows[i];
-    
+
     delete []_windows;
     _windows = newList;
     _numWindows--;
@@ -360,7 +356,7 @@ void Application::manage()
 {
     // Manage all application windows. This will pop up
     // iconified windows as well.
-    
+
     for ( int i = 0; i < _numWindows; i++ )
 	_windows[i]->manage();
 }
@@ -368,7 +364,7 @@ void Application::manage()
 void Application::unmanage()
 {
     // Unmanage all application windows
-    
+
     for ( int i = 0; i < _numWindows; i++ )
 	_windows[i]->unmanage();
 }
@@ -376,7 +372,7 @@ void Application::unmanage()
 void Application::iconify()
 {
     // Iconify all top-level windows.
-    
+
     for ( int i = 0; i < _numWindows; i++ )
 	_windows[i]->iconify();
 }

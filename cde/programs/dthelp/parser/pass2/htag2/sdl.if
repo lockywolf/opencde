@@ -812,7 +812,7 @@
 		pPrev->u.u_refitem.pHead = pCurrentElement;
 	    break;
 	}
-    
+
     pPrev = pCurrentElement;
     PushCurrentElement();
     MakeNewElement(e_cdata);
@@ -1494,7 +1494,7 @@
     pPrev = pCurrentElement;
     PushCurrentElement();
     MakeNewElement(e_cdata);
-    pPrev->u.u_sphrase.pSpcOrPCDATA = pCurrentElement; 
+    pPrev->u.u_sphrase.pSpcOrPCDATA = pCurrentElement;
 
   <START-CODE>
     OpenTag(TRUE, FALSE);
@@ -1743,9 +1743,6 @@
   <START-CODE>
     if (firstVirpage)
 	{
-#ifdef __osf__
-#include <sys/fcntl.h>
-#endif /* __osf__ */
 	if (pCurrentElement)
 	    EmitSDL(pCurrentElement);
 	FcloseFile(outFile, vstructFileName, xxx);

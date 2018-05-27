@@ -20,11 +20,11 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $XConsortium: api_filemap.C /main/3 1995/10/23 09:52:27 rswiston $ 			 				
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $XConsortium: api_filemap.C /main/3 1995/10/23 09:52:27 rswiston $
 
 /*
  *
@@ -207,7 +207,7 @@ printf("DEBUG _tt_host_file_netfile: resolving locally.\n");
 		netfile = TT_NETFILE_PREFIX;
 		netfile = netfile.cat(path);
 	}
-#endif /* CDE_SNAPSHOT_COMPATIBILITY */	
+#endif /* CDE_SNAPSHOT_COMPATIBILITY */
 
 	return _tt_strdup((char *) netfile);
 }
@@ -229,8 +229,8 @@ _tt_host_netfile_file(const char * host, const char * netfilename)
         _tt_internal_init();
 
         // If this is an RPC call to our localhost, do
-        // it directly and don't bother with RPC. 
-         
+        // it directly and don't bother with RPC.
+
 	_Tt_host_equiv_ptr	eq_p = new _Tt_host_equiv;
 
 	if (eq_p->hostname_equiv(hostname, local_host) == 1) {
@@ -241,19 +241,6 @@ printf("DEBUG _tt_host_netfile_file: resolving locally.\n");
 		// strdup already done in _tt_netfile_file()
                 return _tt_netfile_file(netfilename);
         }
-
-#ifdef __osf__
-// hostname and localhost were not the same, so make one more check
-// of the environment variable created by /usr/dt/bin/Xsession. If
-// we have started the system without a network configured, this will
-// be true during an initial system installation.
-
-	if (getenv("DTNONETWORK")) {
-	    // strdup already done in _tt_netfile_file()
-	    return _tt_file_netfile(netfilename);
-	}
- 
-#endif /* __osf__ */
 
 	_Tt_string	path(netfilename);
 	_Tt_string	file;
@@ -269,7 +256,7 @@ printf("DEBUG _tt_host_netfile_file: resolving locally.\n");
 		status = status == TT_ERR_PATH ? TT_ERR_NETFILE : status;
 		return (char *)_tt_error_pointer(status);
 	}
-	
+
 	if ((status = _tt_get_api_error(h_dbserv->netfile_file(path, file),
 					_TT_API_FILE_MAP)) == TT_OK) {
 		return _tt_strdup((char *) file);
@@ -283,7 +270,7 @@ printf("DEBUG _tt_host_netfile_file: resolving locally.\n");
 
 	if (path.left(strlen(TT_NETFILE_PREFIX)) == TT_NETFILE_PREFIX) {
 		path = path.right(path.len()-strlen(TT_NETFILE_PREFIX));
-		
+
 		if ((status = _tt_get_api_error(h_dbserv->netfile_file(path, file),
 					_TT_API_FILE_MAP)) == TT_OK) {
 			return _tt_strdup((char *) file);
@@ -293,7 +280,7 @@ printf("DEBUG _tt_host_netfile_file: resolving locally.\n");
 #endif /* CDE_SNAPSHOT_COMPATIBILITY */
 
 	status = status == TT_ERR_PATH ? TT_ERR_NETFILE : status;
-	return (char *)_tt_error_pointer(status);	
+	return (char *)_tt_error_pointer(status);
 
 }
 
@@ -456,13 +443,13 @@ parse_netfilename(const _Tt_string & canonical_name)
 #if CDE_SNAPSHOT_COMPATIBILITY
 	} else if (canonical_name.left(5) == "HOST=") {
 		tmp_string = canonical_name;
-#endif /* CDE_SNAPSHOT_COMPATIBILITY */		
+#endif /* CDE_SNAPSHOT_COMPATIBILITY */
 	} else {
 		return (_Tt_string) 0;
 	}
 
 	// All the keyword stuff is before the colon.
-	
+
 	tmp_string.split(':',tmp_string);
 
 	if (!(get_keyword_value(tmp_string, "HOST", h_begin, h_end) &&
@@ -544,7 +531,7 @@ get_keyword_value(_Tt_string s, const char *keyword, int &start, int &end)
 	// in front of the keyword and an equals sign after it.
 	// Similarly, add a comma at the end of s so even the last
 	// keyword is terminated by one.
-	
+
 	_Tt_string ts = ",";
 	_Tt_string tk = ",";
 	_Tt_string junk;
@@ -552,7 +539,7 @@ get_keyword_value(_Tt_string s, const char *keyword, int &start, int &end)
 
 	ts = ts.cat(s).cat(",");
 	tk = tk.cat(keyword).cat("=");
-	
+
 	if (-1==(i=ts.index(tk))) {
 		return 0;
 	}

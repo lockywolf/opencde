@@ -43,7 +43,7 @@
 
 #include <stdlib.h>
 
-#if !defined(__osf__) && !defined(USL) && !defined(linux) && \
+#if !defined(USL) && !defined(linux) && \
     !defined(CSRG_BASED) && !defined(sun)
 #include <osfcn.h>
 #endif
@@ -176,7 +176,7 @@ int read();
 /* default declaration of generated scanner - a define so the user can
  * easily add parameters
  */
-#define style_DECL int stylelex style_PROTO(( void )) 
+#define style_DECL int stylelex style_PROTO(( void ))
 
 /* code executed at the end of each rule */
 #define style_BREAK break;
@@ -200,13 +200,13 @@ typedef struct style_buffer_state *style_BUFFER_STATE;
 * the Copyright Laws of the United States.  USE OF A COPYRIGHT
 * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
 * OR DISCLOSURE.
-* 
+*
 * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
 * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
 * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
 * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
 * INTERNATIONAL, LTD.
-* 
+*
 *                         RESTRICTED RIGHTS LEGEND
 * Use, duplication, or disclosure by the Government is subject
 * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -216,7 +216,7 @@ typedef struct style_buffer_state *style_BUFFER_STATE;
 *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
 *                  1315 Dell Avenue
 *                  Campbell, CA  95008
-* 
+*
 */
 # line 37 "tokenStyle.l"
 #include <string.h>
@@ -255,7 +255,7 @@ int commentBufferSize = 1024;
 int commentBufferContentSize = 0;
 
 int stylelineno=1;
-		
+
 void addToQstringBuf(const unsigned char* str, int size)
 {
    if ( size <= 0 ) return;
@@ -315,7 +315,7 @@ struct style_buffer_state
     style_CHAR *style_buf_pos;	/* current position in input buffer */
 
     /* size of input buffer in bytes, not including room for EOB characters*/
-    int style_buf_size;	
+    int style_buf_size;
 
     /* number of characters read into style_ch_buf, not including EOB characters */
     int style_n_chars;
@@ -703,7 +703,7 @@ case 2:
               delete commentBuffer;
               commentBufferSize = 2 * styleleng ;
               commentBuffer = new char [commentBufferSize];
-           } 
+           }
 
 	   commentBufferContentSize = styleleng-1;
            memcpy(commentBuffer, styletext+1, commentBufferContentSize); // copy everything except the #
@@ -899,7 +899,7 @@ case 29:
 case 30:
 # line 243 "tokenStyle.l"
 {
-		stylelval.charPtrData = 
+		stylelval.charPtrData =
                   (unsigned char*)strdup((const char*)styletext);
 		return(DIMENSION);
 		}
@@ -928,10 +928,10 @@ case 34:
 # line 263 "tokenStyle.l"
 {
 
-		stylelval.charPtrData = 
+		stylelval.charPtrData =
 			new unsigned char[qstring_buf_content_size+1];
-		memcpy( stylelval.charPtrData, 
-			qstring_buf, 
+		memcpy( stylelval.charPtrData,
+			qstring_buf,
 			qstring_buf_content_size+1
 		      );
 
@@ -972,7 +972,7 @@ case 37:
 case 38:
 # line 300 "tokenStyle.l"
 {
-		stylelval.charPtrData = 
+		stylelval.charPtrData =
                   (unsigned char*)strdup((const char*)styletext);
 		  return(UNIT_STRING);
 		}
@@ -980,7 +980,7 @@ case 38:
 case 39:
 # line 306 "tokenStyle.l"
 {
-		stylelval.charPtrData = 
+		stylelval.charPtrData =
                   (unsigned char*)strdup((const char*)styletext);
 		return(NORMAL_STRING);
 		}
@@ -988,7 +988,7 @@ case 39:
 case 40:
 # line 312 "tokenStyle.l"
 {
-		stylelval.charPtrData = 
+		stylelval.charPtrData =
                   (unsigned char*)strdup((const char*)styletext);
 		BEGIN 0;
 		return(SGMLGI_STRING);
@@ -1151,9 +1151,9 @@ case style_STATE_EOF(quoted_string):
  *
  * synopsis
  *     int style_get_next_buffer();
- *     
+ *
  * returns a code representing an action
- *     EOB_ACT_LAST_MATCH - 
+ *     EOB_ACT_LAST_MATCH -
  *     EOB_ACT_CONTINUE_SCAN - continue scanning from current position
  *     EOB_ACT_END_OF_FILE - end of file
  */

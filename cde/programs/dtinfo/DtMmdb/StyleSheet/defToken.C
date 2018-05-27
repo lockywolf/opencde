@@ -43,7 +43,7 @@
 
 #include <stdlib.h>
 
-#if !defined(__osf__) && !defined(USL) && !defined(linux) && \
+#if !defined(USL) && !defined(linux) && \
     !defined(CSRG_BASED) && !defined(sun)
 #include <osfcn.h>
 #endif
@@ -176,7 +176,7 @@ int read();
 /* default declaration of generated scanner - a define so the user can
  * easily add parameters
  */
-#define defParser_DECL int defParserlex defParser_PROTO(( void )) 
+#define defParser_DECL int defParserlex defParser_PROTO(( void ))
 
 /* code executed at the end of each rule */
 #define defParser_BREAK break;
@@ -286,7 +286,7 @@ struct defParser_buffer_state
     defParser_CHAR *defParser_buf_pos;	/* current position in input buffer */
 
     /* size of input buffer in bytes, not including room for EOB characters*/
-    int defParser_buf_size;	
+    int defParser_buf_size;
 
     /* number of characters read into defParser_ch_buf, not including EOB characters */
     int defParser_n_chars;
@@ -725,10 +725,10 @@ case 21:
 # line 167 "defToken.l"
 {
 
-		defParserlval.charPtrData = 
+		defParserlval.charPtrData =
 			new unsigned char[defToken_string_buf_content_size+1];
-		memcpy( defParserlval.charPtrData, 
-			defToken_string_buf, 
+		memcpy( defParserlval.charPtrData,
+			defToken_string_buf,
 			defToken_string_buf_content_size+1
 		      );
 
@@ -747,7 +747,7 @@ case 22:
 case 23:
 # line 186 "defToken.l"
 {
-		defParserlval.charPtrData = 
+		defParserlval.charPtrData =
                   (unsigned char*)strdup((const char*)(defParsertext+1));
 		return(REF_NAME);
 		}
@@ -755,7 +755,7 @@ case 23:
 case 24:
 # line 192 "defToken.l"
 {
-		defParserlval.charPtrData = 
+		defParserlval.charPtrData =
                   (unsigned char*)strdup((const char*)defParsertext);
 		return(NORMAL_STRING);
 		}
@@ -903,9 +903,9 @@ case defParser_STATE_EOF(quoted_string):
  *
  * synopsis
  *     int defParser_get_next_buffer();
- *     
+ *
  * returns a code representing an action
- *     EOB_ACT_LAST_MATCH - 
+ *     EOB_ACT_LAST_MATCH -
  *     EOB_ACT_CONTINUE_SCAN - continue scanning from current position
  *     EOB_ACT_END_OF_FILE - end of file
  */

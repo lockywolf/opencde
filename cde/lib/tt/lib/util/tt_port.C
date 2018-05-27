@@ -20,11 +20,11 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $TOG: tt_port.C /main/5 1999/10/14 19:02:43 mgreess $ 			 				
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $TOG: tt_port.C /main/5 1999/10/14 19:02:43 mgreess $
 /* @(#)tt_port.C	1.20 93/09/07
  *
  * tt_port.cc
@@ -102,7 +102,7 @@ _tt_gethostname()
 
 #if !defined(OPT_GETHOSTNAME)
 	struct utsname uts_name;
-	
+
 
 	if (uname(&uts_name) >= 0) {
 		result = uts_name.nodename;
@@ -113,7 +113,7 @@ _tt_gethostname()
 	// It's not completely clear to me whether or not MAXHOSTNAMELEN is
 	// supposed to have room for the null byte at the end.  Leave an
 	// extra byte just to be sure.
-	
+
 	char curhostname[MAXHOSTNAMELEN+1];
 	if (0==gethostname(curhostname, sizeof curhostname)) {
 		result = curhostname;
@@ -121,15 +121,6 @@ _tt_gethostname()
 		result = default_hostname;
 	}
 #endif /* OPT_GETHOSTNAME */
-
-#ifdef __osf__
-// An environment variable will be created by /usr/dt/bin/Xsession if
-// we have started the system without a network configured. This will
-// be true during an initial system installation.
-
-    if (getenv("DTNONETWORK"))
-        result = default_hostname;
-#endif
 
 	return result;
 }
@@ -209,11 +200,11 @@ _tt_gethostid(void)
 			sscanf(serial_num, "%12lx", &_hostid);
 		}
 	}
-#elif defined(hpux) || defined(_AIX) || defined(__osf__)
+#elif defined(hpux) || defined(_AIX)
 	struct utsname uts_name;
-	
+
 	uname(&uts_name);
-#	if defined(_AIX) || defined(__osf__)
+#	if defined(_AIX)
 		_hostid = atol(uts_name.machine);
 #	else
 		_hostid = atol(uts_name.idnumber);
@@ -236,19 +227,19 @@ _tt_sigset(
 	SIG_PF	handler )
 {
 #if defined(OPT_POSIX_SIGNAL)
-/* 
+/*
  * There seems to be some controversy over the type of sa_handler in
  * C++ programs.  Everybody\'s man page seems to say it is of type
  * "void (*)()", and that\'s what Solaris does, and I think that\'s what
  * POSIX says, but both HP and IBM define it as the arguably much more
  * useful "void (*)(int)", a/k/a SIG_PF.
- * 
+ *
  * [4 Apr 95] Solaris 2.5 has switched to use void (*)(int), which
  * is nice for the long run but causes us some short-run problems
  * as we want this level of the source to compile both on
  * Solaris 2.4 and Solaris 2.5 for a while. To solve this, we use
  * the "sa_sigaction" element of the sigaction structure, which is the
- * three-argument flavor of the function pointer.  This is, strictly, 
+ * three-argument flavor of the function pointer.  This is, strictly,
  * a lie, but it's safe since our signal handlers never look at the
  * arguments anyway.  sa_sigaction is, fortunately, the same on all
  * Solaris versions.
@@ -257,13 +248,13 @@ _tt_sigset(
  * UnixWare one.
  */
         struct sigaction act;
-#if defined(OPT_BUG_SUNOS_5)	
+#if defined(OPT_BUG_SUNOS_5)
 	act.sa_sigaction = (void (*)(int, siginfo_t *, void *)) handler;
 #elif defined(OPT_BUG_USL) || defined(OPT_BUG_UXP)
 	act.sa_handler = (void (*)()) handler;
 #else
         act.sa_handler = handler;
-#endif	
+#endif
 	sigemptyset(&act.sa_mask);
 	act.sa_flags = 0;
 	return 0==sigaction(sig, &act, NULL);
@@ -377,7 +368,7 @@ _tt_vsyslog(
 		return;
 	}
 
-#if defined(OPT_BUG_AIX) || defined(OPT_BUG_HPUX) || defined(OPT_BUG_USL) || defined(OPT_BUG_UXP) || defined(__osf__)
+#if defined(OPT_BUG_AIX) || defined(OPT_BUG_HPUX) || defined(OPT_BUG_USL) || defined(OPT_BUG_UXP)
 	char buf[5000];
 	vsprintf( buf, _format, args );
 	syslog( priority, buf );
@@ -403,42 +394,42 @@ _tt_syslog(
 
 
 //
-// _tt_get_first_set_env_var - getenvs i_num_names char*s in the environment, and returns 
+// _tt_get_first_set_env_var - getenvs i_num_names char*s in the environment, and returns
 // the value of the first one found with a non-null value, or NULL if all have no value.
 // The check is done from left to right across the supplied names.
-// e.g. _tt_get_first_set_env_var (2, "FOO", "BAR") is functionally equivalent to 
+// e.g. _tt_get_first_set_env_var (2, "FOO", "BAR") is functionally equivalent to
 // getenv("FOO") ? getenv("FOO") : getenv("BAR");
 //
 
 char* _tt_get_first_set_env_var (int i_num_names, ...) {
-    
+
     // set up for variable number of arguments
     va_list p_var;
     va_start(p_var, i_num_names);
-    
+
     char* pc_name_to_check;  // name of the environment var we're currently looking for
     char* pc_value = NULL;   // value of environment var we're currently looking for
     int i_index;	     // indexes through each of the names supplied
-    
+
     // check each of the names in turn
     for (i_index = 0; i_index < i_num_names; i_index++) {
-	
+
 	// get the next name to check
 	pc_name_to_check = va_arg(p_var, char*);
-	
+
 	if (!pc_name_to_check)  // ignore any null names
 	    continue;
-	
+
 	// get the environment value (if any)
 	pc_value = getenv(pc_name_to_check);
-	
+
 	if (pc_value) // we found one with a value
 	    break;
     }
-    
+
     // clean up var args
-    va_end(p_var); 
-    
+    va_end(p_var);
+
     // return the value
     return pc_value;
 }
@@ -448,38 +439,38 @@ char* _tt_get_first_set_env_var (int i_num_names, ...) {
 // NOTE: xxx see the _tt_putenv comments about memory leakage.
 // _tt_putenv are processed from left to right across the supplied names.  If any
 // _tt_putenv fails, putenv'ing stops.  The number of successful putenv's is returned
-// e.g. _tt_put_all_env_var (2, "HELLO", "FOO", "BAR") is functionally equivalent to 
+// e.g. _tt_put_all_env_var (2, "HELLO", "FOO", "BAR") is functionally equivalent to
 // _tt_putenv("FOO", "HELLO") ? 0 : (_tt_putenv("BAR", "HELLO") ? 1 : 2);
 
 int _tt_put_all_env_var (int i_num_names, const char* pc_val, ...) {
-    
+
     // set up for variable number of arguments
     va_list p_var;
     va_start(p_var, pc_val);
-    
+
     char* pc_name_to_set;  // name of the environment var we're currently looking for
     char* pc_buff;         // value of _tt_putenv call
     int i_index;	   // indexes through each of the names supplied
-    
+
     // check each of the names in turn
     for (i_index = 0; i_index < i_num_names; i_index++) {
-	
+
 	// get the next name to check
 	pc_name_to_set = va_arg(p_var, char*);
-	
+
 	if (!pc_name_to_set)  // ignore any null names
 	    continue;
-	
+
 	// set the environment value (if any)
 	pc_buff = _tt_putenv(pc_name_to_set, pc_val);
-	
+
 	if (!pc_buff) // we had a problem
 	    break;
     }
-    
+
     // clean up var args
-    va_end(p_var); 
-    
+    va_end(p_var);
+
     // return the value
     return i_index;
 }

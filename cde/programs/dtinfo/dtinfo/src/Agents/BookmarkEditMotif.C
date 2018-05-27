@@ -31,13 +31,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -47,7 +47,7 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
 
 #include "UAS.hh"
@@ -101,7 +101,7 @@ int BookmarkEdit::g_modified_count = 0;
 #define THIS_CLASS BookmarkEdit
 #define ON_ACTIVATE(WOBJ,FUNC) \
   (WOBJ).SetActivateCallback (this, (WWL_FUN) &THIS_CLASS::FUNC)
-#if defined(__STDC__) || defined(hpux) || defined(__osf__)
+#if defined(__STDC__) || defined(hpux)
 #define BUTTON(PARENT,NAME) \
   WXmPushButtonGadget NAME (PARENT, #NAME, WAutoManage); \
   ON_ACTIVATE (NAME, NAME)
@@ -160,7 +160,7 @@ BookmarkMgr::destroy (BookmarkEdit *editor)
 
 static BookmarkMgr g_bookmark_mgr;
 
-  
+
 // /////////////////////////////////////////////////////////////////
 // class destructor
 // /////////////////////////////////////////////////////////////////
@@ -286,13 +286,13 @@ void
 BookmarkEdit::ok()
 {
   // Only save if the mark is modified.  This shouldn't be necessary,
-  // since the OK button shouldn't be sensitive, but let's be safe... 
+  // since the OK button shouldn't be sensitive, but let's be safe...
   if (f_modified)
     {
       // NOTE: Need to strip leading/trailing spaces (or should that be
       // done in the mark object??
 
-      // Update mark fields. 
+      // Update mark fields.
       f_mark_ptr->set_name (f_name_text->Value());
       f_mark_ptr->set_notes (f_notes_text->Value());
       // Save the mark to disk.
@@ -308,7 +308,7 @@ BookmarkEdit::ok()
       end_try;
     }
 
-  // Get rid of the dialog now that the user is done with it. 
+  // Get rid of the dialog now that the user is done with it.
   g_bookmark_mgr.destroy (this);
 }
 
@@ -332,7 +332,7 @@ void
 BookmarkEdit::cancel()
 {
   bool confirmed = TRUE;
-  // Make the user verify a cancel if the data has been changed. 
+  // Make the user verify a cancel if the data has been changed.
 
   if (f_modified)
     confirmed = message_mgr().question_dialog(
@@ -386,7 +386,7 @@ BookmarkEdit::modified (WCallback *wcb)
 void
 BookmarkEdit::changed (WCallback *wcb)
 {
-  // Update the ok button. 
+  // Update the ok button.
   if (wcb->GetWidget() == *f_name_text)
     {
       char *name = f_name_text->Value();
@@ -415,7 +415,7 @@ BookmarkEdit::changed (WCallback *wcb)
 void
 BookmarkEdit::receive (MarkMoved &message, void *client_data)
 {
-  // First, see if it is ours. 
+  // First, see if it is ours.
   if (message.f_old_mark_ptr != f_mark_ptr)
     return;
 

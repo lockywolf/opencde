@@ -209,13 +209,13 @@ DtApp::DtApp(char *progname, int *argc, char **argv) :
 			   app_mode);
    window->Initialize();
    window->ApplicationData = NULL;
-      
+
    if (app_mode == PRINT_MANAGER)
       window->DtAddAction(MESSAGE(FindChoiceL), (char *)window->Category(),
 		          (char *)FIND, ActionCB, window,
 		          MESSAGE(FindMnemonicL), MESSAGE(FindAcceleratorL));
    window->DtAddAction(MESSAGE(ExitChoiceL), (char *)window->Category(),
-		       (char *)EXIT, ActionCB, window, MESSAGE(ExitMnemonicL), 
+		       (char *)EXIT, ActionCB, window, MESSAGE(ExitMnemonicL),
 		       MESSAGE(ExitAcceleratorL));
    window->RegisterPopup(window->container);
 
@@ -300,7 +300,7 @@ DtApp::DtApp(char *progname, int *argc, char **argv) :
 			        PUSH_BUTTON, FindCB, window,
 			        MESSAGE(FindMnemonicL),
 			        MESSAGE(FindAcceleratorL),
-				MESSAGE(FindAcceleratorKeySeq)); 
+				MESSAGE(FindAcceleratorKeySeq));
       find->Order(0);
       Button *filter = new Button(window->viewMenu, MESSAGE(ModifyShowChoiceL),
 			          PUSH_BUTTON, ModifyCB, window,
@@ -445,7 +445,7 @@ void DtApp::UpdateStatusLine()
       for (i = 0; i < window->container->NumChildren(); i++)
          if (children[i]->Visible() == false)
 	    n_visible++;
-      sprintf(msg2, MESSAGE(PrintersHiddenL), 
+      sprintf(msg2, MESSAGE(PrintersHiddenL),
 	      window->container->NumChildren(), n_visible);
       if (window->setPrefD->ShowOnlyMyJobs())
        {
@@ -527,7 +527,7 @@ void DtApp::ShowStatusDialog(DtPrinterIcon *printer_icon)
       if (printer_icon->PrintDeviceUp(i) == false)
        {
          len = strlen(message);
-         sprintf(message + len, MESSAGE(DeviceDownL), 
+         sprintf(message + len, MESSAGE(DeviceDownL),
 		 attributes[1 + i]->DisplayValue);
 	 strcat(message, "\n");
        }
@@ -808,7 +808,7 @@ void DtApp::ActionCB(BaseUI *obj, char *actionReferenceName)
     }
    else if (!strcmp(actionReferenceName, RENAME))
     {
-      Dialog *info = new Dialog(window, "Print Manager - Rename", 
+      Dialog *info = new Dialog(window, "Print Manager - Rename",
 	 "NOT IMPLEMENTED", INFORMATION);
       info->Visible(true);
     }
@@ -836,7 +836,7 @@ void DtApp::ActionCB(BaseUI *obj, char *actionReferenceName)
 	 sprintf(title, MESSAGE(CancelTitleL), window->Name(), obj->Name());
 	 char *message = new char[100];
 	 sprintf(message, MESSAGE(CancelQuestionL), obj->Name());
-	 Dialog *confirm = new Dialog(window, title, message, QUESTION, 
+	 Dialog *confirm = new Dialog(window, title, message, QUESTION,
 				      MESSAGE(YesL), MESSAGE(NoL));
 	 confirm->Visible(true);
 	 boolean answer = confirm->Answer();
@@ -862,7 +862,7 @@ void DtApp::ActionCB(BaseUI *obj, char *actionReferenceName)
          PrintJob *me = (PrintJob *) object;
 
          //  If there was a problem getting the job # from the prt server,
-         //  (if so, _jobNumber will be set to "not Available") put up an 
+         //  (if so, _jobNumber will be set to "not Available") put up an
          //  error dialog
 
          if (!(strcmp(me->JobNumber(), MESSAGE(NotAvailableL))))
@@ -877,12 +877,12 @@ void DtApp::ActionCB(BaseUI *obj, char *actionReferenceName)
 		    action->DisplayName);
 
 	    char *message = new char [strlen(MESSAGE(FailedMessageL))  +
-				      strlen(action->DisplayName)      + 
-				      strlen(object->DisplayName())    + 
+				      strlen(action->DisplayName)      +
+				      strlen(object->DisplayName())    +
 				      strlen(MESSAGE(NoRemoteCancelL)) + 1];
 
 	    sprintf(message, MESSAGE(FailedMessageL),
-		             action->DisplayName, object->DisplayName(), 
+		             action->DisplayName, object->DisplayName(),
 		             MESSAGE(NoRemoteCancelL));
 
 	    Dialog *dialog = new Dialog(window, title, message, ERROR,
@@ -935,11 +935,11 @@ void DtApp::ActionCB(BaseUI *obj, char *actionReferenceName)
                                  strlen(action->DisplayName) + 1];
 	 sprintf(title, MESSAGE(FailedActionTitleL), window->Name(),
 		 action->DisplayName);
-	 char *message = new char [strlen(object->LastActionOutput()) + 
-				   strlen(action->DisplayName) + 
+	 char *message = new char [strlen(object->LastActionOutput()) +
+				   strlen(action->DisplayName) +
 				   strlen(object->DisplayName()) + 70];
 	 sprintf(message, MESSAGE(FailedMessageL),
-		 action->DisplayName, object->DisplayName(), 
+		 action->DisplayName, object->DisplayName(),
 		 object->LastActionOutput());
 
 	 Dialog *dialog = new Dialog(window, title, message, ERROR,
@@ -1186,7 +1186,7 @@ void DtApp::ModifyCB(void *data)
    if (!window->setModList)
     {
       TITLE(MESSAGE(ModifyShowTitleL), window->Name());
-      window->setModList = new DtSetModList(window, title, 
+      window->setModList = new DtSetModList(window, title,
 					    window->container, FilterCB);
     }
    window->setModList->Visible(true);
@@ -1373,14 +1373,7 @@ void DtApp::UpdateQueues()
 #ifdef aix
 	 char *cmd = "lsallq | grep -v ^bsh\\$ | head -1";
 #else
-#ifdef __osf__
-	 /* resolve possible alias using lpstat -v<name> */
-	 char *cmd = "env LANG=C lpstat -v"
-	     "`env LANG=C lpstat -d | awk '$1 != \"no\" {print $NF}'`"
-	     "| awk '{ print $10 }'";
-#else
 	 char *cmd = "env LANG=C lpstat -d | awk '$1 != \"no\" {print $NF}'";
-#endif
 #endif
 	 char *output;
 	 Invoke *_thread = new Invoke(cmd, &output);

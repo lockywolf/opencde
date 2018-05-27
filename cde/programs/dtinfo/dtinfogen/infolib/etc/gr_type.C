@@ -20,13 +20,13 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-/* $XConsortium: gr_type.cc /main/3 1996/07/05 17:18:06 rws $ 
+/* $XConsortium: gr_type.cc /main/3 1996/07/05 17:18:06 rws $
  *
  * (c) Copyright 1996 Digital Equipment Corporation.
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -54,7 +54,7 @@
 
 #include <stdlib.h>
 
-#if !defined(__osf__) && !defined(USL) && !defined(linux) && \
+#if !defined(USL) && !defined(linux) && \
     !defined(CSRG_BASED) && !defined(sun)
 # include <osfcn.h>
 #else
@@ -189,7 +189,7 @@ int read();
 /* default declaration of generated scanner - a define so the user can
  * easily add parameters
  */
-#define graphics_task_DECL int graphics_tasklex graphics_task_PROTO(( void )) 
+#define graphics_task_DECL int graphics_tasklex graphics_task_PROTO(( void ))
 
 /* code executed at the end of each rule */
 #define graphics_task_BREAK break;
@@ -1767,7 +1767,7 @@ struct graphics_task_buffer_state
     graphics_task_CHAR *graphics_task_buf_pos;	/* current position in input buffer */
 
     /* size of input buffer in bytes, not including room for EOB characters*/
-    int graphics_task_buf_size;	
+    int graphics_task_buf_size;
 
     /* number of characters read into graphics_task_ch_buf, not including EOB characters */
     int graphics_task_n_chars;
@@ -2153,9 +2153,9 @@ case graphics_task_STATE_EOF(INITIAL):
  *
  * synopsis
  *     int graphics_task_get_next_buffer();
- *     
+ *
  * returns a code representing an action
- *     EOB_ACT_LAST_MATCH - 
+ *     EOB_ACT_LAST_MATCH -
  *     EOB_ACT_CONTINUE_SCAN - continue scanning from current position
  *     EOB_ACT_END_OF_FILE - end of file
  */
@@ -2602,7 +2602,7 @@ main(int argc, char *argv[])
 {
    int
       retcode;
-   
+
    /*
     * This procedure attempts to open a file passed as an argument,
     * and exits on failure.  If no argument is available, stdin is
