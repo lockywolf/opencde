@@ -20,11 +20,11 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $XConsortium: db_server_xdr.C /main/4 1996/01/30 16:08:48 barstow $ 			 				
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $XConsortium: db_server_xdr.C /main/4 1996/01/30 16:08:48 barstow $
 /*
  * @(#)db_server_xdr.C	1.19 95/01/06
  *
@@ -380,17 +380,6 @@ xdr_Tt_oidaccess_args(XDR *xdrs, _Tt_oidaccess_args *objp)
 bool_t
 xdr_Tt_oidaccess_results(XDR *xdrs, _Tt_oidaccess_results *objp)
 {
-#ifdef __osf__
-	if (!xdr_u_int(xdrs, (u_int *)&objp->uid)) {
-		return (FALSE);
-	}
-	if (!xdr_u_int(xdrs, (u_int *)&objp->group)) {
-		return (FALSE);
-	}
-	if (!xdr_u_int(xdrs, (u_int *)&objp->mode)) {
-		return (FALSE);
-	}
-#else
 	if (!xdr_long(xdrs, (long *)&objp->uid)) {
 		return (FALSE);
 	}
@@ -400,7 +389,6 @@ xdr_Tt_oidaccess_results(XDR *xdrs, _Tt_oidaccess_results *objp)
 	if (!xdr_short(xdrs, (short *)&objp->mode)) {
 		return (FALSE);
 	}
-#endif
 	if (!xdr_int(xdrs, &objp->result)) {
 		return (FALSE);
 	}
@@ -515,25 +503,13 @@ xdr_tt_property(XDR *xdrs, _tt_property *objp)
 bool_t
 xdr_tt_access(XDR *xdrs, _tt_access *objp)
 {
-#ifdef __osf__
-	if (!xdr_u_int(xdrs, (u_int *)&objp->user)) {
-#else
 	if (!xdr_long(xdrs, (long *)&objp->user)) {
-#endif /* __osf__ */
 		return (FALSE);
 	}
-#ifdef __osf__
-	if (!xdr_u_int(xdrs, (u_int *)&objp->group)) {
-#else
 	if (!xdr_long(xdrs, (long *)&objp->group)) {
-#endif /* __osf__ */
 		return (FALSE);
 	}
-#ifdef __osf__
-	if (!xdr_u_int(xdrs, (u_int *)&objp->mode)) {
-#else
 	if (!xdr_u_long(xdrs, (unsigned long *)&objp->mode)) {
-#endif /* __osf__ */
 		return (FALSE);
 	}
 	return (TRUE);
@@ -584,7 +560,7 @@ xdr_tt_create_obj_args(XDR *xdrs, _tt_create_obj_args *objp)
 	return (TRUE);
 }
 
-bool_t   
+bool_t
 xdr_tt_remove_file_args(XDR *xdrs, _tt_remove_file_args *objp)
 {
         if (!xdr_string(xdrs, &objp->file, ~0)) {
@@ -595,7 +571,7 @@ xdr_tt_remove_file_args(XDR *xdrs, _tt_remove_file_args *objp)
         }
         return (TRUE);
 }
- 
+
 bool_t
 xdr_tt_remove_obj_args(XDR *xdrs, _tt_remove_obj_args *objp)
 {

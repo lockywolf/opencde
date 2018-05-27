@@ -44,7 +44,7 @@
 #include <ctype.h>
 
 #if defined(hpux) || defined(_AIX) || defined(sun) || defined(USL) ||          \
-    defined(__uxp__) || defined(__osf__) || defined(linux) ||                  \
+    defined(__uxp__) || defined(linux) ||                  \
     defined(CSRG_BASED)
 #include <unistd.h>
 #include <locale.h>
@@ -166,7 +166,7 @@ EXTERN char dirsep
     INIT('\\')
 #else
 #if defined(hpux) || defined(_AIX) || defined(sun) || defined(USL) ||          \
-    defined(__uxp__) || defined(__osf__) || defined(linux) ||                  \
+    defined(__uxp__) || defined(linux) ||                  \
     defined(CSRG_BASED)
     INIT('/')
 #else
@@ -176,7 +176,7 @@ EXTERN char dirsep
         ;
 
 #if defined(hpux) || defined(_AIX) || defined(sun) || defined(USL) ||          \
-    defined(__uxp__) || defined(__osf__) || defined(linux) ||                  \
+    defined(__uxp__) || defined(linux) ||                  \
     defined(CSRG_BASED)
 #define CSEP '/'
 #define SSEP "/"

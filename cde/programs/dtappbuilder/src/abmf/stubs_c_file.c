@@ -226,13 +226,13 @@ static STRING get_from_var_name(void) { return fromVarName; }
 static int printf_setval(GenCodeInfo genCodeInfo, ABObj obj, ...) {
         int return_value = 0;
         File codeFile = genCodeInfo->code_file;
-#if defined(__osf__) || defined(linux) || defined(CSRG_BASED)
+#if defined(linux) || defined(CSRG_BASED)
         /* OSF/1 define va_list in <va_list.h> as structure of char ** and int
          * Sun define va_list as void * */
         va_list paramList = {0, 0};
 #else
         va_list paramList = NULL;
-#endif /* __osf__ */
+#endif
         STRING resName = NULL;
         void *resValue = NULL;
         STRING objCName = NULL;

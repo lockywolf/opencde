@@ -62,7 +62,7 @@ void options(filelenonly) LOGICAL filelenonly;
         m_free(nameofoptfile, "installation helptag.opt");
 
 #if defined(hpux) || defined(_AIX) || defined(sun) || defined(USL) ||          \
-    defined(__uxp__) || defined(__osf__)
+    defined(__uxp__)
         {
                 char *opts;
 
@@ -79,7 +79,7 @@ void options(filelenonly) LOGICAL filelenonly;
                         }
                 }
         }
-#endif /* hpux or _AIX or sun or __osf__ */
+#endif /* hpux or _AIX or sun */
 
         /* Check helptag.opt in input directory */
         if (indir) {

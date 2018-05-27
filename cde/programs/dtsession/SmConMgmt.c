@@ -158,7 +158,7 @@ int GetMemoryUtilization(void) {
         static int init = 0;
         static int kmem;
 #if !defined(SVR4) && !defined(sco) && !defined(hpV4) && !defined(_POWER) &&   \
-    !defined(__osf__) && !defined(CSRG_BASED)
+    !defined(CSRG_BASED)
         extern void nlist();
 #endif
         int i;

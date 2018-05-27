@@ -114,9 +114,7 @@
 #include "SmDB.h"
 #include "SmProp.h"
 
-#ifndef __osf__
 #include <X11/Xlibint.h>
-#endif /* __osf__ */
 
 /*
  * Local variables
@@ -134,7 +132,7 @@ static char *savedDisplay = NULL;
 
 #define SM_MAX_ARGS MAXLINE
 
-#if defined(SVR4) || defined(__osf__)
+#if defined(SVR4)
 #define REMOTE_CMD_STRING "rsh %s -n %s &"
 #else
 #define REMOTE_CMD_STRING "remsh %s -n %s &"
@@ -817,11 +815,11 @@ int RestoreResources(Boolean errorHandlerInstalled, ...) {
                 setegid(smGD.runningGID);
 #endif
 #endif
-#if defined(__osf__) || defined(CSRG_BASED)
+#if defined(CSRG_BASED)
                 setsid();
 #else
                 (void)setpgrp();
-#endif /* __osf__ */
+#endif /* CSRG_BASED */
 
                 MarkFileDescriptors(3, F_SETFD, 1);
 
@@ -3316,11 +3314,11 @@ static Boolean StartLocalClient(char *program, char *execArray[], char *cwd,
 
                 _DtEnvControl(DT_ENV_RESTORE_PRE_DT);
 
-#if defined(__osf__) || defined(CSRG_BASED)
+#if defined(CSRG_BASED)
                 setsid();
 #else
                 (void)setpgrp();
-#endif /* __osf__ */
+#endif /* CSRG_BASED */
 
                 MarkFileDescriptors(3, F_SETFD, 1);
 
@@ -3538,11 +3536,11 @@ static void ForkWM(void) {
 #endif
                 _DtEnvControl(DT_ENV_RESTORE_PRE_DT);
 
-#if defined(__osf__) || defined(CSRG_BASED)
+#if defined(CSRG_BASED)
                 setsid();
 #else
                 (void)setpgrp();
-#endif /* __osf__ */
+#endif /* CSRG_BASED */
 
                 MarkFileDescriptors(3, F_SETFD, 1);
 
@@ -3621,11 +3619,11 @@ void KillParent(void) {
                 /*
                  * Disassociate from parent
                  */
-#if defined(__osf__) || defined(CSRG_BASED)
+#if defined(CSRG_BASED)
         setsid();
 #else
         setpgrp();
-#endif /* __osf__ */
+#endif /* CSRG_BASED */
 }
 
 /*************************************<->*************************************

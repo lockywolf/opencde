@@ -75,16 +75,11 @@ void BecomeDaemon(void) {
                  * tty
                  */
 
-#ifdef __osf__
-        /* use setsid() instead of setpgrp() */
-        setsid();
-#else
 #if defined(SYSV) || defined(SVR4) || defined(linux)
         setpgrp();
 #else
         setpgrp(0, getpid());
 #endif
-#endif /* __osf__ */
 
         close(0);
         close(1);

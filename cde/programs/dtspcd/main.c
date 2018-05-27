@@ -39,10 +39,8 @@
 #include <errno.h>
 #include <signal.h>
 #include <unistd.h> /* initgroups() */
-#include <string.h> /* basename() on DEC */
-#ifndef __osf__
-#include <libgen.h> /* basename() everywhere else. */
-#endif
+#include <string.h>
+#include <libgen.h>
 #include <sys/param.h> /* MAXPATHLEN */
 
 #include <bms/bms.h>

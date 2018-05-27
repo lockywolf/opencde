@@ -526,13 +526,6 @@ int main(int argc, char **argv) {
 
         } else {
 
-#ifdef __osf__
-                /* Temporary work around for action database problem(platinum
-                 * BL5 03/29/95).
-                 */
-                StartDbUpdate((XtPointer)NULL);
-#endif
-
                 /*--------------------------------------------------------
                  * Requestor Mode
                  *
@@ -629,18 +622,18 @@ static Editor *CreateFirstPad(int *pArgc, char **argv) {
 
 #if 0
     	/*
-	 * At this point Xt has stripped for us all valid arguments. 
+	 * At this point Xt has stripped for us all valid arguments.
 	 * If number of arguments is <= 2, first one is program name and second
          * one will be file name always (we don't care if it has a '-').
 	 */
 	if (*pArgc > 2) {
 		 /*
-		 * Now we check for illegal arguments, note argv[0] is 
-		 * progname, so we skip that, argv[last] should be file name 
-		 * so we check for '-' character in (i = 1 to i = (n-1)) to 
+		 * Now we check for illegal arguments, note argv[0] is
+		 * progname, so we skip that, argv[last] should be file name
+		 * so we check for '-' character in (i = 1 to i = (n-1)) to
 		 * catch inbetween invalids.
-		 * Any extras with '-' as first characters are treated as 
-		 * illegal options and ones without it as superfluous 
+		 * Any extras with '-' as first characters are treated as
+		 * illegal options and ones without it as superfluous
 		 * arguments.
 		 */
 		for (i = 1; i < ((*pArgc) - 1); i++)

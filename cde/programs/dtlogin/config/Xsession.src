@@ -11,7 +11,7 @@ XCOMM   (c) Copyright 1996 Digital Equipment Corporation.
 XCOMM   (c) Copyright 1993,1994,1996 Hewlett-Packard Company.
 XCOMM   (c) Copyright 1993,1994,1996 International Business Machines Corp.
 XCOMM   (c) Copyright 1993,1994,1996 Sun Microsystems, Inc.
-XCOMM   (c) Copyright 1993,1994,1996 Novell, Inc. 
+XCOMM   (c) Copyright 1993,1994,1996 Novell, Inc.
 XCOMM   (c) Copyright 1996 FUJITSU LIMITED.
 XCOMM   (c) Copyright 1996 Hitachi.
 XCOMM
@@ -29,10 +29,10 @@ XCOMM ##########################################################################
 
 #define HASH #
 
-#ifdef sun 
-  HASH 
-  HASH Set OPENWINHOME 
-  HASH 
+#ifdef sun
+  HASH
+  HASH Set OPENWINHOME
+  HASH
   if [ -z "$OPENWINHOME" ]
   then
       export OPENWINHOME="/usr/openwin"
@@ -61,11 +61,6 @@ XCOMM ##########################################################################
 #  define cpp_MAIL "/var/mail/$USER"
 #  undef cpp_HELLO
 #  define cpp_HELLO "$DT_BINPATH/dthello -file $DT_INSTALL/copyright &"
-#endif
-
-#ifdef __osf__
-#  undef cpp_MAIL
-#  define cpp_MAIL "/usr/spool/mail/$USER"
 #endif
 
 #if defined (__hpux) && defined (BLS)
@@ -130,29 +125,29 @@ XCOMM ##########################################################################
 #endif
 
 XCOMM ##########################################################################
-XCOMM 
-XCOMM 
+XCOMM
+XCOMM
 XCOMM   This script starts the user's session. It searches for one of three
 XCOMM   types of startup mechanisms, in the following order:
-XCOMM 
+XCOMM
 XCOMM     DT     existence of CDE DT Session Manager on the system
 XCOMM     XDM    "$HOME/.xsession" (executable)
 XCOMM     xinit  cpp_XINITUSER  (executable)
-XCOMM 
+XCOMM
 XCOMM   If none of these startup mechanisms exist, a default window manager
 XCOMM   and terminal emulator client are started.
-XCOMM 
+XCOMM
 XCOMM ##########################################################################
 
 XCOMM
 XCOMM Variables must be explicitly exported
-XCOMM 
+XCOMM
 set +a
 
 XCOMM ##########################################################################
-XCOMM 
+XCOMM
 XCOMM   Initialize session startup logging
-XCOMM 
+XCOMM
 XCOMM ##########################################################################
 
   exec >/dev/null 2>/dev/null
@@ -160,7 +155,7 @@ XCOMM ##########################################################################
   LOGDIR=$HOME/.dt
   LOGFILENAME=$LOGDIR/startlog
   MSGLOGFILENAME=$LOGDIR/errorlog
-  
+
   if [ ! -d $LOGDIR ]; then
     mkdir $LOGDIR
     if [ -d $LOGDIR ]; then
@@ -188,13 +183,13 @@ XCOMM ##########################################################################
   Log "$0 starting..."
 
 XCOMM ##########################################################################
-XCOMM 
+XCOMM
 XCOMM   Global environment section
-XCOMM 
+XCOMM
 XCOMM    DT pre-sets the following environment variables for each user.
-XCOMM    
+XCOMM
 XCOMM     (internal)
-XCOMM 
+XCOMM
 XCOMM     DISPLAY      set to the value of the first field in the Xservers file.
 XCOMM     HOME         set to the user's home directory (from /etc/passwd)
 XCOMM     LANG         set to the display's current NLS language (if any)
@@ -204,27 +199,27 @@ XCOMM     PATH         set to the value of the Dtlogin "userPath" resource
 XCOMM     USER         set to the user name
 XCOMM     SHELL        set to the user's default shell (from /etc/passwd)
 XCOMM     TZ           set to the value of the Dtlogin "timeZone" resource
-XCOMM 
+XCOMM
 XCOMM
 XCOMM     (Xsession)
-XCOMM 
+XCOMM
 XCOMM     TERM         set to xterm
 XCOMM     EDITOR       set to the default editor
 XCOMM     KBD_LANG     set to the value of $LANG for certain languages
 XCOMM     MAIL         set to cpp_MAIL
-XCOMM 
-XCOMM 
-XCOMM    Three methods are available to modify or add to this list depending 
-XCOMM    on the desired scope of the resulting environment variable. 
-XCOMM    
+XCOMM
+XCOMM
+XCOMM    Three methods are available to modify or add to this list depending
+XCOMM    on the desired scope of the resulting environment variable.
+XCOMM
 XCOMM     1. X server and/or all users on a display       (Xconfig file)
 XCOMM     2. all users on a display                       (Xsession file)
 XCOMM     3. individual users                             (.dtprofile file)
-XCOMM 
+XCOMM
 XCOMM    See DT on-line help, the DT Users Guide, or the Dtlogin(1X) man
 XCOMM    page for details on setting environment variables.
-XCOMM     
-XCOMM     
+XCOMM
+XCOMM
 XCOMM ##########################################################################
 
   [ -z "$EDITOR" ] && EDITOR=CDE_INSTALLATION_TOP/bin/dtpad
@@ -245,25 +240,6 @@ then
 fi
 #endif
 
-#if defined (__osf__)
-  HASH
-  HASH Set XFILESEARCHPATH if necessary
-  HASH
-  if [ -z "$XFILESEARCHPATH" ]
-  then
-      export XFILESEARCHPATH="%D"
-  fi
-  HASH
-  HASH check if network is configured. If not, set environment variable
-  HASH so that tooltalk will use localhost/loopback rather than system
-  HASH name
-  RCMGR=/usr/sbin/rcmgr
-  NUM_NETCONFIG=`$RCMGR get NUM_NETCONFIG`
-  if [ "$NUM_NETCONFIG" = '' -o "$NUM_NETCONFIG" = 0 ]; then
-        export DTNONETWORK=true
-  fi
-#endif
- 
 #if defined (__hpux)
   HASH
   HASH Set the keyboard language if necessary...
@@ -273,16 +249,16 @@ fi
       case $LANG in
             bulgarian | czech   | hebrew | hungarian | \
             japanese  | korean  | polish | rumanian  | \
-            russian   | serbocroatian) 
+            russian   | serbocroatian)
                         KBD_LANG=$LANG
                         export KBD_LANG;;
-           
+
              chinese-t) KBD_LANG=t_chinese
                         export KBD_LANG;;
              chinese-s) KBD_LANG=s_chinese
                         export KBD_LANG;;
-            
-             *);; 
+
+             *);;
      esac
   fi
 #endif
@@ -306,9 +282,9 @@ XCOMM  some desktop components.
 XCOMM
 XCOMM ##########################################################################
 
-  HASH 
+  HASH
   HASH Input method server startup
-  HASH 
+  HASH
   if [ -z "$DTSTARTIMS" ]; then
      DTSTARTIMS=True
   fi
@@ -317,16 +293,16 @@ XCOMM ##########################################################################
      unset DTSTARTIMS
   fi
 
-  HASH 
-  HASH Default desktop screen saver action list 
-  HASH  
+  HASH
+  HASH Default desktop screen saver action list
+  HASH
   export DTSCREENSAVERLIST="StartDtscreenSwarm StartDtscreenQix \
     StartDtscreenFlame StartDtscreenHop StartDtscreenImage StartDtscreenLife \
     StartDtscreenRotor StartDtscreenPyro StartDtscreenWorm StartDtscreenBlank"
 
-  HASH 
+  HASH
   HASH Session startup clients and args
-  HASH 
+  HASH
   if [ "$SESSIONTYPE" = "altDt" ]; then
       dtstart_session[0]="$SDT_ALT_SESSION"
       dtstart_hello[0]="$SDT_ALT_HELLO"
@@ -351,11 +327,7 @@ XCOMM ##########################################################################
   HASH dtdbcache file's directory should match
   HASH _DTDTSMMTEMPDIR in DtSvc/DtUtil1/DtsMM.h
   HASH
-#ifdef __osf__
-  dtdbcacherm="rm -f /var/tmp/dtdbcache_$DISPLAY"
-#else
   dtdbcacherm="rm -f /tmp/dtdbcache_$DISPLAY"
-#endif
   dtstart_appgather="$DT_BINPATH/dtappgather &"
 #if defined(USL) || defined(sun) || defined(__uxp__)
   dtstart_dsdm="$DT_BINPATH/dsdm &"
@@ -404,27 +376,16 @@ XCOMM ##########################################################################
 #include "_common.ksh.src"
 #undef cpp_Xsession
 
-#if defined (__osf__)
-XCOMM
-XCOMM Bring up the sysman checklist if it hasn't been run before
-XCOMM
-  if [ -f /usr/sbin/start_checklist ]
-  then
-      Log "Starting the checklist setup"
-      /usr/sbin/start_checklist&
-  fi
-#endif
-
 XCOMM ##########################################################################
-XCOMM 
+XCOMM
 XCOMM   Source user's desktop profile
-XCOMM 
+XCOMM
 XCOMM   This section determines if the user has a desktop profile in their
 XCOMM   home directory. If not, the desktop default profile is copied to
 XCOMM   the home directory. The desktop profile is then sourced. The purpose
 XCOMM   is to incorporate any per-user/per-session environment customizations
 XCOMM   and thereby propagate them to applications and desktop components.
-XCOMM 
+XCOMM
 XCOMM ##########################################################################
 
 
@@ -462,14 +423,14 @@ XCOMM ##########################################################################
 
 
 XCOMM ##########################################################################
-XCOMM 
+XCOMM
 XCOMM  External Xsession processing section
-XCOMM 
+XCOMM
 XCOMM  This section searches the Xsession.d subdirectory and sources
 XCOMM  the files contained therein.  The purpose is to set up any
 XCOMM  per-user/per-session environment customizations and thereby propagate
 XCOMM  them to applications and desktop components.
-XCOMM 
+XCOMM
 XCOMM ##########################################################################
 
   DT_XSESSION_DIR=Xsession.d
@@ -477,9 +438,9 @@ XCOMM ##########################################################################
   for i in $DT_CONFIG_PATH
   do
     if [[ -d $i/$DT_XSESSION_DIR ]]; then
-      HASH 
+      HASH
       HASH Run custom Xsession scripts for this session.
-      HASH 
+      HASH
       for SCRIPT in $(ls $i/$DT_XSESSION_DIR); do
       	if [ -x $i/$DT_XSESSION_DIR/$SCRIPT -a \
 	    \( ! -d $i/$DT_XSESSION_DIR/$SCRIPT \) ]; then
@@ -492,18 +453,18 @@ XCOMM ##########################################################################
 
 
 XCOMM ##########################################################################
-XCOMM 
+XCOMM
 XCOMM   Startup section.
-XCOMM      
+XCOMM
 XCOMM   Note: The ksh syntax ${parameter%% *} is used when appropriate to
 XCOMM 	    remove any command line options that may have been included
 XCOMM 	    in the definition of a DT executable below.
-XCOMM      
+XCOMM
 XCOMM ##########################################################################
 
-XCOMM 
+XCOMM
 XCOMM Return first command in array named by $1 that is executable
-XCOMM 
+XCOMM
 GetFirst()
 {
   let i=0
@@ -516,10 +477,10 @@ GetFirst()
   done
 }
 
-XCOMM 
+XCOMM
 XCOMM Start first command in array named by $1 that is executable. If
-XCOMM $2 is 'eval', command result will be 'eval'ed. 
-XCOMM 
+XCOMM $2 is 'eval', command result will be 'eval'ed.
+XCOMM
 StartFirst()
 {
   first=$(GetFirst $1)
@@ -533,9 +494,9 @@ StartFirst()
   fi
 }
 
-  HASH 
+  HASH
   HASH Prepare for session startup
-  HASH 
+  HASH
 
   if [ "$DTSOURCEPROFILE" = "true" ]
   then
@@ -572,9 +533,9 @@ StartFirst()
     StartFirst dtstart_appgather            # setup session applications
   fi
 
-  HASH 
+  HASH
   HASH Start the session.
-  HASH 
+  HASH
 
   if [ $shellprofile ]; then
     Log "execing $startup using $shellprofile..."
@@ -592,10 +553,10 @@ StartFirst()
           source_profile="echo 'not execing $shellprofile due to errors'"
           source_login="echo 'not execing $shellprofile due to errors'"
         fi;;
-           
+
       *)
         source_profile=". $shellprofile"
-        source_login="source $shellprofile";; 
+        source_login="source $shellprofile";;
     esac
 
   else

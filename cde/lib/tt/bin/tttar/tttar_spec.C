@@ -20,11 +20,11 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $XConsortium: tttar_spec.C /main/3 1995/10/20 17:00:42 rswiston $ 			 				
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $XConsortium: tttar_spec.C /main/3 1995/10/20 17:00:42 rswiston $
 /*
  * tttar_spec.cc - Implementation of specs for Link Service/ToolTalk archiving
  *
@@ -32,7 +32,7 @@
  *
  */
 
-#if defined(__osf__) || defined(linux) || defined(CSRG_BASED) || defined(sun)
+#if defined(linux) || defined(CSRG_BASED) || defined(sun)
 #include <unistd.h>
 #else
 #if defined (USL) || defined(__uxp__)
@@ -45,7 +45,7 @@
 #else
 #include <osfcn.h>
 #endif
-#endif /* __osf__ */
+#endif
 #include "api/c/tt_c.h"
 #include "util/tt_iostream.h"
 #include "tttar_utils.h"
@@ -61,7 +61,7 @@ Lstar_spec()
 }
 
 /*
- * Lstar_spec::Lstar_spec() - 
+ * Lstar_spec::Lstar_spec() -
  */
 Lstar_spec::
 Lstar_spec(  _Tt_string id, _Tt_string path )

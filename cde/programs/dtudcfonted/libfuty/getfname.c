@@ -46,13 +46,7 @@
 #if !defined(SYSV)
 #include <sys/resource.h>
 #endif
-#ifdef __osf__
-#define _BSD
-#endif
 #include <sys/wait.h>
-#ifdef __osf__
-#undef _BSD
-#endif
 #else
 #include <wait.h>
 #endif /* SVR4 */
@@ -170,7 +164,7 @@ static int falcom_cr_to_null(buf) char *buf;
 
 int
 #if NeedFunctionPrototypes
-GetDefaultFile( 
+GetDefaultFile(
     int		size,
     char	*style,
     char	*fname
@@ -208,11 +202,11 @@ char *fname;                                     /* buffer */
 
 int
 #if NeedFunctionPrototypes
-get_default_file( 
+get_default_file(
     FILE	*fp,
     int		size,
-    char	*style,	
-    char	*fname	
+    char	*style,
+    char	*fname
 )
 #else
     get_default_file(fp, size, style, fname) FILE *fp;
@@ -345,9 +339,9 @@ int
 GetFileName(
     char	*com,
     char	*size_str,
-    char	*style,	
+    char	*style,
     int 	codeset,
-    char	*ofile	
+    char	*ofile
 )
 #else
     GetFileName(com, size_str, style, codeset, ofile) char
@@ -930,7 +924,7 @@ static void dsp_font_list(flist) FalFontDataList *flist;
 
 int
 #if NeedFunctionPrototypes
-GetUdcRegion( 
+GetUdcRegion(
     char	*com ,
     int		codeset ,
     char	*gpf_file ,
@@ -1042,7 +1036,7 @@ DispUdcCpArea( FILE	*fp )
 
 int
 #if NeedFunctionPrototypes
-GetUdcFontName( 
+GetUdcFontName(
     char	*gpf_file ,
     char	*bdf_file ,
     char	**fontname

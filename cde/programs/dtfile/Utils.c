@@ -176,11 +176,7 @@ char *ResolveTranslationString(char *originalString, char *address)
         char *resolvedString = NULL;
         int i, j, k, total, length;
 
-#ifdef __osf__
-        snprintf(addressStr, 20, "%lx", address);
-#else
-        snprintf(addressStr, 20, "%p", address);
-#endif
+        sprintf(addressStr, "%p", address);
 
         for (i = 0, total = 0; originalString[i] != '\0'; ++i)
                 if (originalString[i] == '@')

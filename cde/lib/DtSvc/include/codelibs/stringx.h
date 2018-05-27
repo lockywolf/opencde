@@ -53,7 +53,7 @@ extern void *_strcmbn_privbuf;
 extern "C" {
 #endif
 #if defined(__cplusplus) || defined(__STDC__)
-#if !defined(__osf__) && !defined(sun)
+#if !defined(sun)
 /* The DEC C++ compiler rejects this, claiming it has both */
 /* internal and external linkage. */
 char *strnew(size_t len);
@@ -74,13 +74,11 @@ char *strlower(char *str);
 
 #ifdef __cplusplus
 char *strtokx(char *&ptr, const char *sep);
-#if !defined(__osf__) && !defined(linux) && !defined(sun) &&                   \
+#if !defined(linux) && !defined(sun) &&                   \
     !defined(CSRG_BASED)
 char **strsep(const char *str, const char *sep, boolean whsp = TRUE,
               int *num = NULL);
-#if !defined(__osf__)
 const char *strcmbn(const char **vec, const char *sep = " ");
-#endif
 #endif
 
 #else /* __STDC__ */
@@ -88,9 +86,7 @@ char *strtokx(char **ptr, const char *sep);
 #if !defined(linux) && !defined(sun) && !defined(CSRG_BASED)
 char **strsep(const char *str, const char *sep, boolean whsp, int *num);
 #endif
-#ifndef __osf__
 const char *strcmbn(const char **vec, const char *sep);
-#endif
 
 #endif /* __STDC__ */
 
@@ -123,7 +119,7 @@ extern size_t nl_strlen(); /* __OBSOLETE */
 }
 
 #if defined(apollo) || defined(__aix) || defined(USL) || defined(__uxp__) ||   \
-    defined(__osf__) || defined(linux) || defined(CSRG_BASED)
+    defined(linux) || defined(CSRG_BASED)
 #include <stdlib.h>
 #else
 #include <malloc.h>
@@ -137,7 +133,7 @@ inline void strfree(const char *s) {
 }
 #else
 inline void strfree(const char *s)
-#if defined(__hpux) || defined(__osf__) || defined(CSRG_BASED)
+#if defined(__hpux) || defined(CSRG_BASED)
 {
         if (s != NULL)
                 free((void *)s);

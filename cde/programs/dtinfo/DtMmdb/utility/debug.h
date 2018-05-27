@@ -46,7 +46,7 @@
 
 #ifdef DEBUG
 
-#if !defined(__STDC__) && !defined(hpux) && !defined(__osf__)
+#if !defined(__STDC__) && !defined(hpux)
 #define debug(s, x)                                                            \
         s << "x"                                                               \
           << " = " << (x) << "\n"

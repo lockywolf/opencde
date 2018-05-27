@@ -1,11 +1,11 @@
 XCOMM! DTKORNSHELL
 XCOMM $TOG: dtlp.src /main/17 1998/07/31 17:03:31 mgreess $
-XCOMM 
+XCOMM
 XCOMM (c) Copyright 1996 Digital Equipment Corporation.
 XCOMM (c) Copyright 1993-1996 Hewlett-Packard Company.
 XCOMM (c) Copyright 1993-1996 International Business Machines Corp.
 XCOMM (c) Copyright 1993-1996 Sun Microsystems, Inc.
-XCOMM (c) Copyright 1993-1996 Novell, Inc. 
+XCOMM (c) Copyright 1993-1996 Novell, Inc.
 XCOMM (c) Copyright 1996 FUJITSU LIMITED.
 XCOMM (c) Copyright 1996 Hitachi.
 
@@ -20,13 +20,13 @@ XCOMM
 XCOMM  Purpose:           Set up print spooler options and print.
 XCOMM
 XCOMM  Description:       This shell script provides a graphical interface
-XCOMM                     for a print spooler dialog by default.   If 
+XCOMM                     for a print spooler dialog by default.   If
 XCOMM                     DTPRINTSILENT is "true", however, then it processes
 XCOMM                     the file and directly invokes "lp".
 XCOMM
 XCOMM  Invoked by:        The default Print action or custom print actions.
 XCOMM
-XCOMM  Product:           @(#)Common Desktop Environment 1.0          
+XCOMM  Product:           @(#)Common Desktop Environment 1.0
 XCOMM
 XCOMM  Note:              Please do not modify this file.
 XCOMM                     Later product updates will overwrite this file.
@@ -232,7 +232,7 @@ SetPreEnvironment()
 XCOMM #################################################################
 XCOMM ##  ReconcileOptions()
 XCOMM ##
-XCOMM ##       Arbitrate when there are two or more conflicting 
+XCOMM ##       Arbitrate when there are two or more conflicting
 XCOMM ##       print options.
 XCOMM ##
 XCOMM ##       The order of precedence is: -w > -a > -r.
@@ -303,7 +303,7 @@ XCOMM #################################################################
 XCOMM ##  EchoDtlpSetupOptions()
 XCOMM ##
 XCOMM ##      Echo all the command settings.
-XCOMM ##	     If dtlp is run stand-alone, the invoker may redirect 
+XCOMM ##	     If dtlp is run stand-alone, the invoker may redirect
 XCOMM ##	     the test output to a log file. Under the test harness
 XCOMM ##	     this is done automatically by the "record" function.
 XCOMM ##
@@ -439,7 +439,7 @@ CleanUp()
 XCOMM #################################################################
 XCOMM ##
 XCOMM ##         Ensure that the supplied file name references a
-XCOMM ##         valid file. 
+XCOMM ##         valid file.
 XCOMM ##
 XCOMM ##         Returns true or false.
 XCOMM #################################################################
@@ -451,12 +451,12 @@ CheckValidFile()
     fi
 
     HASH check whether file exists and is a regular file
-    if [[ ! -f "$1" ]] 
+    if [[ ! -f "$1" ]]
     then
         return $NO_REGULAR_FILE_ERR
     fi
 
-    HASH check whether file is readable by the user  
+    HASH check whether file is readable by the user
     if [[ ! -r "$1" ]]
     then
         return $NO_READABLE_FILE_ERR
@@ -769,7 +769,7 @@ PrintUsage() {
     print ""
     print "  <print_file>"
     print "      Specifies the name of file(s) to print."
-     
+
 }
 
 XCOMM #################################################################
@@ -817,7 +817,7 @@ DoParameterCollection()
         return $failure_flag
     fi
 
-    if [[ ("$printer_name" != "") && "$printer_name" != "$CAT_MESG_STRING" ]] 
+    if [[ ("$printer_name" != "") && "$printer_name" != "$CAT_MESG_STRING" ]]
     then
         LPOPTIONS="-d"$printer_name
     fi
@@ -829,7 +829,7 @@ DoParameterCollection()
     HASH
     HASH We must make sure the value is a positive integer in this case.
     HASH
-    XtGetValues $COPIES_SB textField:COPIES_TF 
+    XtGetValues $COPIES_SB textField:COPIES_TF
     XmTextFieldGetString copy_val $COPIES_TF
 
     CheckIsPosInteger $copy_val
@@ -860,7 +860,7 @@ DoParameterCollection()
         LPOPTIONS=${LPOPTIONS}" "${MINUS_T}${SINGLE_QUOTE}${banner_title}${SINGLE_QUOTE}
     fi
 
-    XmTextGetString other_options $OPTIONS_TF 
+    XmTextGetString other_options $OPTIONS_TF
 
     HASH Strip any leading or trailing spaces
     other_options=${other_options##+( )}
@@ -1025,7 +1025,7 @@ XCOMM ##
 XCOMM #################################################################
 GetCurrentPrinterName()
 {
-    XmTextFieldGetString printer_name $PRINTER_TF 
+    XmTextFieldGetString printer_name $PRINTER_TF
 
     HASH Strip any leading or trailing spaces
     printer_name=${printer_name##+( )}
@@ -1048,14 +1048,7 @@ GetAvailPrinters()
     HASH
     tmpfile=$DTLPDIR/printers$$
 
-#if defined(__osf__)
-    LANG=C lpstat -p | \
-	   awk -F":" \
-	     '/^.*:/ { PTRNAME = $1; QUEUING = 0 } \
-	      /^Queuing is enabled/ { QUEUING = 1 } \
-	      /^Printing is enabled/ {if (QUEUING == 1) print PTRNAME}' | \
-	   sort | uniq > $tmpfile 2>&1
-#elif defined(_AIX)
+#if defined(_AIX)
     LANG=C lpstat -p | \
            grep READY   | cut -f1 -d" " | \
 	   sort | uniq > $tmpfile 2>&1
@@ -1211,7 +1204,7 @@ SelectPrinterProc()
         $(DtkshUnder $BTN_SEP 5) \
         $(DtkshFloatLeft 10) \
         $(DtkshFloatRight 30) \
-        $(DtkshAnchorBottom 5) 
+        $(DtkshAnchorBottom 5)
 
     XtAddCallback $SELECT_PRINTER_BTN activateCallback "SelectPrinterCB"
 
@@ -1222,7 +1215,7 @@ SelectPrinterProc()
         $(DtkshUnder $BTN_SEP 5) \
         $(DtkshFloatLeft 40) \
         $(DtkshFloatRight 60) \
-        $(DtkshAnchorBottom 5) 
+        $(DtkshAnchorBottom 5)
 
     XtAddCallback $CANCEL_BTN activateCallback "SelectPrinterCancelCB"
 
@@ -1233,7 +1226,7 @@ SelectPrinterProc()
         $(DtkshUnder $BTN_SEP 5) \
         $(DtkshFloatLeft 70) \
         $(DtkshFloatRight 90) \
-        $(DtkshAnchorBottom 5) 
+        $(DtkshAnchorBottom 5)
 
     XtAddCallback $HELP_BTN activateCallback "SelectPrinterHelpCB"
 
@@ -1308,7 +1301,7 @@ PrinterNameFocusCB()
     if [ ${CB_CALL_DATA.REASON} = CR_FOCUS ]
     then
         GetCurrentPrinterName
-        old_printer=$printer_name 
+        old_printer=$printer_name
     else
         if [ ${CB_CALL_DATA.REASON} = CR_LOSING_FOCUS ]
         then
@@ -1460,7 +1453,7 @@ UseGui()
 
     if (( $copy_count_flag ))
     then
-        XtSetValues $COPIES_SB position:$copy_count 
+        XtSetValues $COPIES_SB position:$copy_count
     fi
 
     if [[ "$send_mail_flag" == "true" ]]
@@ -1468,7 +1461,7 @@ UseGui()
         XtSetValues $SEND_MAIL_BTN set:true
     fi
 
-    XtGetValues $COPIES_SB textField:COPIES_TF 
+    XtGetValues $COPIES_SB textField:COPIES_TF
 
     DtkshSetReturnKeyControls $PRINTER_TF $COPIES_TF $PDIALOG $PRINT_BTN
     DtkshSetReturnKeyControls $COPIES_TF $BANNER_TF $PDIALOG $PRINT_BTN
@@ -1483,7 +1476,7 @@ XCOMM ##  BadFileCB()
 XCOMM ##
 XCOMM ##  This is the callback for the OK button in the error message
 XCOMM ##  dialog and is used when the file to print is invalid. It will
-XCOMM ##  exit the program. 
+XCOMM ##  exit the program.
 XCOMM ##
 XCOMM #################################################################
 BadFileCB()
@@ -1539,7 +1532,7 @@ DisplayErrorMessageDialog()
         noResize:True \
         defaultButtonType:DIALOG_OK_BUTTON \
         dialogStyle:DIALOG_FULL_APPLICATION_MODAL \
-        messageAlignment:ALIGNMENT_CENTER 
+        messageAlignment:ALIGNMENT_CENTER
 
      XtUnmanageChild $(XmMessageBoxGetChild "-" $INFORMATION \
         DIALOG_CANCEL_BUTTON)

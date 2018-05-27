@@ -237,12 +237,6 @@ int Verify(struct display *d, struct greet_info *greet,
         Debug("System environment:\n");
         printEnv(verify->systemEnviron);
         Debug("End of environments\n");
-#ifdef __osf__
-        if (setlogin(greet->name) == -1) {
-                Debug("setlogin failed for %s, errno = %d\n", greet->name,
-                      errno);
-        }
-#endif /* __osf__ */
         return 1;
 }
 
@@ -579,7 +573,7 @@ void getGroups(char *name, struct verify_info *verify, int gid) {
          * this code...
          */
 
-#if !(defined(__hpux) || defined(__osf__))
+#if !(defined(__hpux))
         while ((g = getgrent()) != NULL) {
                 /*
                  * make the list unique

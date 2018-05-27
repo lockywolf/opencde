@@ -24,7 +24,7 @@
 //%%  (c) Copyright 1993, 1994 International Business Machines Corp.
 //%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
 //%%  (c) Copyright 1993, 1994 Novell, Inc.
-//%%  $TOG: db_server_svc.C /main/9 1999/10/12 10:01:35 mgreess $ 			 				
+//%%  $TOG: db_server_svc.C /main/9 1999/10/12 10:01:35 mgreess $
 /*
  *  @(#)db_server_svc.C	1.54 95/06/07
  *
@@ -57,7 +57,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <rpc/pmap_clnt.h>
-#include <isam.h>     
+#include <isam.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <termios.h>
@@ -132,8 +132,8 @@ char				_tt_log_file[MAXPATHLEN];
 _Tt_db_info			_tt_db_table[_TT_MAX_ISFD];
 
 // _tt_refclock is a "pseudo clock" that's just incremented every time
-// a reference is made to an fd; the resulting value is placed 
-// the _tt_db_table[fd].reftime field, so we can figure out which 
+// a reference is made to an fd; the resulting value is placed
+// the _tt_db_table[fd].reftime field, so we can figure out which
 // fd is Least Recently Used when it comes time to re-use one.
 int		_tt_refclock=0;
 time_t		_tt_mtab_last_mtime;
@@ -267,7 +267,7 @@ main(int argc, char** argv, char **envp)
 
         signal(SIGTTOU, SIG_IGN);
 	if (getsockname(0, (struct sockaddr *) &saddr, &asize) == 0) {
-	
+
 		//  We were given a socket.  This means  we were started
 		// from inetd.
  		if (saddr.sin_family != AF_INET) {
@@ -280,10 +280,10 @@ main(int argc, char** argv, char **envp)
 
 #if defined(OPT_TLI)
 
-		// We were given a socket but need a TLI endpoint.  
+		// We were given a socket but need a TLI endpoint.
 		// Fortunately STREAMS caters to folks like us by making
 		// it dead easy to change one into another.
- 
+
  		if (!ioctl(0, I_LOOK, mname) && (!strcmp(mname, "sockmod"))) {
  			if (ioctl(0, I_POP, 0) || ioctl(0, I_PUSH, "timod")) {
  				_tt_syslog(errstr, LOG_ERR, "ioctl(0, I_POP, 0)"
@@ -291,9 +291,9 @@ main(int argc, char** argv, char **envp)
  				exit(1);
  			}
  		}
-	
+
 	} else if (0==t_getinfo(0, &info)) {
-		
+
 		// We were given a TLI endpoint. This means we were started
 		// from inetd.  The TLI endpoint is suitable for later use.
 
@@ -309,16 +309,16 @@ main(int argc, char** argv, char **envp)
 
 		start_mode = STARTED_FROM_SHELL;
 	}
-		
+
 
 	// At this point start_mode is set to tell us who started us.
-	// If start_mode is STARTED_FROM_INETD, then fd 0 is the 
+	// If start_mode is STARTED_FROM_INETD, then fd 0 is the
 	// endpoint to use; if OPT_TLI is defined, fd 0 is a TLI endpoint;
 	// if OPT_TLI is not defined, fd 0 is a socket.
 
 	// it might be considered appropriate to fork into the background
 	// here if started from the shell here, but we never have before,
-	// we are usually started from inetd.  The usual reason we\'re 
+	// we are usually started from inetd.  The usual reason we\'re
 	// started from a a shell is for debugging, where forking into the
 	// background is a big pain, and we\'d have to have an option like
 	// the -S one on ttsession to skip the fork.
@@ -380,7 +380,7 @@ main(int argc, char** argv, char **envp)
 		// Since I need to check the value of a cpp macro
 		// -- _AIX -- and a program variable -- start_mode --
 		// use another "temp" program variable -- is_aix.
-	
+
         	if (optind < argc &&
 		    !(is_aix && start_mode == STARTED_FROM_INETD))
 		{
@@ -406,31 +406,31 @@ main(int argc, char** argv, char **envp)
 	LOCK_RPC();
 
 	/* setup oid key descriptor for access control */
-	
+
 	_tt_oid_keydesc.k_flags = ISNODUPS;
 	_tt_oid_keydesc.k_nparts = 1;
 	_tt_oid_keydesc.k_part[0].kp_start = 0;
 	_tt_oid_keydesc.k_part[0].kp_leng = OID_KEY_LENGTH;
 	_tt_oid_keydesc.k_part[0].kp_type = BINTYPE;
-	
+
 	install_signal_handler();
-	
+
 	/* set NetISAM fatal error handler */
 	if (iscntl(ALLISFD, ISCNTL_FATAL, isamfatalerror) == -1) {
 		_tt_syslog(errstr, LOG_ERR,
 			   "iscntl(ALLISFD, ISCNTL_FATAL,) == -1");
 		exit(1);
 	}
-	
+
 	/* setup database file creation mask */
 	mode_t pmask = umask(_TT_UMASK);
-	
+
 	/* initialize access control cache */
 	_tt_oa_cache = new _Tt_oid_access_queue();
 	_tt_la_cache = new _Tt_link_access_queue();
-	
+
 	/* initialize opened database table */
-	
+
 	for (int i = 0; i < _TT_MAX_ISFD; i++) {
 		_tt_db_table[i].db_path = 0;
 		_tt_db_table[i].opener_uid = (uid_t)-1;
@@ -438,7 +438,7 @@ main(int argc, char** argv, char **envp)
 		_tt_db_table[i].server_has_open = 0;
 		_tt_db_table[i].client_has_open = 0;
 	}
-	
+
 
 	// If we were started from inetd, inetd has already done all
 	// the negotiation with the portmapper.  We simply create a RPC
@@ -446,7 +446,7 @@ main(int argc, char** argv, char **envp)
 	// we were started from the shell, we create a RPC connection
 	// with RPC_ANYSOCK (to create a new endpoint) and register
 	// that with the portmapper.
-							
+
 	switch (start_mode) {
 	    case STARTED_FROM_INETD:
 #if defined(OPT_TLI)
@@ -474,8 +474,8 @@ main(int argc, char** argv, char **envp)
 		{
 			_tt_syslog(errstr, LOG_ERR, "svc_register() == 0");
 		}
-		break;	       
-								
+		break;
+
 	    case STARTED_FROM_SHELL:
 
 		// Go into the background, unless the debug_mode -S
@@ -484,11 +484,11 @@ main(int argc, char** argv, char **envp)
 		if (!_tt_debug_mode) {
 			if (0!=fork()) exit(0);
 
-#if defined(__osf__) || defined(CSRG_BASED)
+#if defined(CSRG_BASED)
 			setsid();
 #else
  			setpgrp();
-#endif // __osf__
+#endif
 
 			close(0); close(1); close(2);
 
@@ -505,7 +505,7 @@ main(int argc, char** argv, char **envp)
 			_tt_syslog(errstr, LOG_ERR, "svctcp_create() == 0");
 			exit(1);
 		}
-								
+
 		if (!svc_register(transp, TT_DBSERVER_PROG, TT_DBSERVER_VERS,
 #ifdef _AIX
 				  (void(*)())
@@ -764,7 +764,7 @@ _tt_dbserver_prog_1(struct svc_req *rqstp, SVCXPRT *transp)
 	char *result;
 	bool_t (*xdr_argument)(), (*xdr_result)();
 	char *(*local)();
-	
+
 	struct authunix_parms *unix_cred;
 #if defined(OPT_SECURE_RPC)
 	struct authdes_cred *des_cred;
@@ -773,7 +773,7 @@ _tt_dbserver_prog_1(struct svc_req *rqstp, SVCXPRT *transp)
 	// Increment the counter for the number of RPC calls
 	// handled during the life of this process.
 	_tt_global->event_counter++;
-	
+
 	LOCK_RPC();
 	if (rqstp->rq_proc == NULLPROC) {
 		(void)svc_sendreply(transp, (xdrproc_t)xdr_void, (caddr_t)NULL);
@@ -822,8 +822,8 @@ _tt_dbserver_prog_1(struct svc_req *rqstp, SVCXPRT *transp)
 					return;
 				}
 			break;
-#endif			
-			
+#endif
+
 #ifdef AUTH_NONE
 		    case AUTH_NONE:
 #else
@@ -835,7 +835,7 @@ _tt_dbserver_prog_1(struct svc_req *rqstp, SVCXPRT *transp)
 			return;
 		}
 	}
-	
+
 	/* Bind the service procedure */
 	switch (rqstp->rq_proc) {
 	    case _TT_MIN_AUTH_LEVEL:
@@ -844,224 +844,224 @@ _tt_dbserver_prog_1(struct svc_req *rqstp, SVCXPRT *transp)
 		xdr_result = (bool_t (*)()) xdr_int;
 		local = (char *(*)()) _tt_min_auth_level_1;
 		break;
-		
+
 	    case _TT_ISADDINDEX:
 		TTDB_DEBUG_SYSLOG("_TT_ISADDINDEX");
 		xdr_argument = (bool_t (*)()) xdr_Tt_isaddindex_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_isaddindex_1;
 		break;
-		
+
 	    case _TT_ISBUILD:
 		TTDB_DEBUG_SYSLOG("_TT_ISBUILD");
 		xdr_argument = (bool_t (*)()) xdr_Tt_isbuild_args;
 		xdr_result =(bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_isbuild_1;
 		break;
-		
+
 	    case _TT_ISCLOSE:
 		TTDB_DEBUG_SYSLOG("_TT_ISCLOSE");
 		xdr_argument = (bool_t (*)()) xdr_int;
 		xdr_result = (bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_isclose_1;
 		break;
-		
+
 	    case _TT_ISCNTL:
 		TTDB_DEBUG_SYSLOG("_TT_ISCNTL");
 		xdr_argument = (bool_t (*)()) xdr_Tt_iscntl_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_iscntl_results;
 		local = (char *(*)()) _tt_iscntl_1;
 		break;
-		
+
 	    case _TT_ISDELREC:
 		TTDB_DEBUG_SYSLOG("_TT_ISDELREC");
 		xdr_argument = (bool_t (*)()) xdr_Tt_isdelrec_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_isdelrec_1;
 		break;
-		
+
 	    case _TT_ISERASE:
 		TTDB_DEBUG_SYSLOG("_TT_ISERASE");
 		xdr_argument = (bool_t (*)()) xdr_wrapstring;
 		xdr_result = (bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_iserase_1;
 		break;
-		
+
 	    case _TT_ISOPEN:
 		TTDB_DEBUG_SYSLOG("_TT_ISOPEN");
 		xdr_argument = (bool_t (*)()) xdr_Tt_isopen_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_isopen_1;
 		break;
-		
+
 	    case _TT_ISREAD:
 		TTDB_DEBUG_SYSLOG("_TT_ISREAD");
 		xdr_argument = (bool_t (*)()) xdr_Tt_isread_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_isread_results;
 		local = (char *(*)()) _tt_isread_1;
 		break;
-		
+
 	    case _TT_ISREWREC:
 		TTDB_DEBUG_SYSLOG("_TT_ISREWREC");
 		xdr_argument = (bool_t (*)()) xdr_Tt_isrewrec_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_isrewrec_1;
 		break;
-		
+
 	    case _TT_ISSTART:
 		TTDB_DEBUG_SYSLOG("_TT_ISSTART");
 		xdr_argument = (bool_t (*)()) xdr_Tt_isstart_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_isstart_1;
 		break;
-		
+
 	    case _TT_ISWRITE:
 		TTDB_DEBUG_SYSLOG("_TT_ISWRITE");
 		xdr_argument = (bool_t (*)()) xdr_Tt_iswrite_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_iswrite_1;
 		break;
-		
+
 	    case _TT_TEST_AND_SET:
 		TTDB_DEBUG_SYSLOG("_TT_TEST_AND_SET");
 		xdr_argument = (bool_t (*)()) xdr_Tt_test_and_set_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_test_and_set_results;
 		local = (char *(*)()) _tt_test_and_set_1;
 		break;
-		
+
 	    case _TT_TRANSACTION:
 		TTDB_DEBUG_SYSLOG("_TT_TRANSACTION");
 		xdr_argument = (bool_t (*)()) xdr_Tt_transaction_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_transaction_1;
 		break;
-		
+
 	    case _TT_MFS:
 		TTDB_DEBUG_SYSLOG("_TT_MFS");
 		xdr_argument = (bool_t (*)()) xdr_wrapstring;
 		xdr_result = (bool_t (*)()) xdr_wrapstring;
 		local = (char *(*)()) _tt_mfs_1;
 		break;
-		
+
 	    case _TT_GETOIDACCESS:
 		TTDB_DEBUG_SYSLOG("_TT_GETOIDACCESS");
 		xdr_argument = (bool_t (*)()) xdr_Tt_oidaccess_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_oidaccess_results;
 		local = (char *(*)()) _tt_getoidaccess_1;
 		break;
-		
+
 	    case _TT_SETOIDUSER:
 		TTDB_DEBUG_SYSLOG("_TT_SETOIDUSER");
 		xdr_argument = (bool_t (*)()) xdr_Tt_oidaccess_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_setoiduser_1;
 		break;
-		
+
 	    case _TT_SETOIDGROUP:
 		TTDB_DEBUG_SYSLOG("_TT_SETOIDGROUP");
 		xdr_argument = (bool_t (*)()) xdr_Tt_oidaccess_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_setoidgroup_1;
 		break;
-		
+
 	    case _TT_SETOIDMODE:
 		TTDB_DEBUG_SYSLOG("_TT_SETOIDMODE");
 		xdr_argument = (bool_t (*)()) xdr_Tt_oidaccess_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_setoidmode_1;
 		break;
-		
+
 	    case _TT_READSPEC:
 		TTDB_DEBUG_SYSLOG("_TT_READSPEC");
 		xdr_argument = (bool_t (*)()) xdr_Tt_spec_props;
 		xdr_result = (bool_t (*)()) xdr_Tt_spec_props;
 		local = (char *(*)()) _tt_readspec_1;
 		break;
-		
+
 	    case _TT_WRITESPEC:
 		TTDB_DEBUG_SYSLOG("_TT_WRITESPEC");
 		xdr_argument = (bool_t (*)()) xdr_Tt_spec_props;
 		xdr_result = (bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_writespec_1;
 		break;
-		
+
 	    case _TT_ADDSESSION:
 		TTDB_DEBUG_SYSLOG("_TT_ADDSESSION");
 		xdr_argument = (bool_t (*)()) xdr_Tt_session_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_addsession_1;
 		break;
-		
+
 	    case _TT_DELSESSION:
 		TTDB_DEBUG_SYSLOG("_TT_DELSESSION");
 		xdr_argument = (bool_t (*)()) xdr_Tt_session_args;
 		xdr_result = (bool_t (*)()) xdr_Tt_isam_results;
 		local = (char *(*)()) _tt_delsession_1;
 		break;
-		
+
 	    case _TT_GETTYPE:
 		TTDB_DEBUG_SYSLOG("_TT_GETTYPE");
 		xdr_argument = (bool_t (*)()) xdr_Tt_spec_props;
 		xdr_result = (bool_t (*)()) xdr_Tt_spec_props;
 		local = (char *(*)()) _tt_gettype_1;
 		break;
-		
+
 	    case TT_GET_MIN_AUTH_LEVEL:
 		TTDB_DEBUG_SYSLOG("TT_GET_MIN_AUTH_LEVEL");
 		xdr_argument = (bool_t (*)()) xdr_void;
 		xdr_result = (bool_t (*)()) xdr_tt_auth_level_results;
 		local = (char *(*)()) _tt_get_min_auth_level_1;
 		break;
-		
+
 	    case TT_GET_FILE_PARTITION:
 		TTDB_DEBUG_SYSLOG("TT_GET_FILE_PARTITION");
 		xdr_argument = (bool_t (*)()) xdr_wrapstring;
 		xdr_result = (bool_t (*)()) xdr_tt_file_partition_results;
 		local = (char *(*)()) _tt_get_file_partition_1;
 		break;
-		
+
 	    case TT_CREATE_FILE:
 		TTDB_DEBUG_SYSLOG("TT_CREATE_FILE");
 		xdr_argument = (bool_t (*)()) xdr_tt_create_file_args;
 		xdr_result = (bool_t (*)()) xdr_tt_db_cache_results;
 		local = (char *(*)()) _tt_create_file_1;
 		break;
-		
+
 	    case TT_CREATE_OBJ:
 		TTDB_DEBUG_SYSLOG("TT_CREATE_OBJ");
 		xdr_argument = (bool_t (*)()) xdr_tt_create_obj_args;
 		xdr_result = (bool_t (*)()) xdr_tt_db_cache_results;
 		local = (char *(*)()) _tt_create_obj_1;
 		break;
-		
+
 	    case TT_REMOVE_FILE:
 		TTDB_DEBUG_SYSLOG("TT_REMOVE_FILE");
 		xdr_argument = (bool_t (*)()) xdr_tt_remove_file_args;
 		xdr_result = (bool_t (*)()) xdr_tt_db_results;
 		local = (char *(*)()) _tt_remove_file_1;
 		break;
-		
+
 	    case TT_REMOVE_OBJ:
 		TTDB_DEBUG_SYSLOG("TT_REMOVE_OBJ");
 		xdr_argument = (bool_t (*)()) xdr_tt_remove_obj_args;
 		xdr_result = (bool_t (*)()) xdr_tt_db_results;
 		local = (char *(*)()) _tt_remove_obj_1;
 		break;
-		
+
 	    case TT_MOVE_FILE:
 		TTDB_DEBUG_SYSLOG("TT_MOVE_FILE");
 		xdr_argument = (bool_t (*)()) xdr_tt_move_file_args;
 		xdr_result = (bool_t (*)()) xdr_tt_db_results;
 		local = (char *(*)()) _tt_move_file_1;
 		break;
-		
+
 	    case TT_SET_FILE_PROPS:
 		TTDB_DEBUG_SYSLOG("TT_SET_FILE_PROPS");
 		xdr_argument = (bool_t (*)()) xdr_tt_set_file_props_args;
 		xdr_result = (bool_t (*)()) xdr_tt_db_cache_results;
 		local = (char *(*)()) _tt_set_file_props_1;
 		break;
-		
+
 	    case TT_SET_FILE_PROP:
 		TTDB_DEBUG_SYSLOG("TT_SET_FILE_PROP");
 		xdr_argument = (bool_t (*)()) xdr_tt_set_file_prop_args;
@@ -1074,168 +1074,168 @@ _tt_dbserver_prog_1(struct svc_req *rqstp, SVCXPRT *transp)
 		xdr_result = (bool_t (*)()) xdr_tt_db_cache_results;
 		local = (char *(*)()) _tt_add_file_prop_1;
 		break;
-		
+
 	    case TT_DELETE_FILE_PROP:
 		TTDB_DEBUG_SYSLOG("TT_DELETE_FILE_PROP");
 		xdr_argument = (bool_t (*)()) xdr_tt_del_file_prop_args;
 		xdr_result = (bool_t (*)()) xdr_tt_db_cache_results;
 		local = (char *(*)()) _tt_delete_file_prop_1;
 		break;
-		
+
 	    case TT_GET_FILE_PROP:
 		TTDB_DEBUG_SYSLOG("TT_GET_FILE_PROP");
 		xdr_argument = (bool_t (*)()) xdr_tt_get_file_prop_args;
 		xdr_result = (bool_t (*)()) xdr_tt_file_prop_results;
 		local = (char *(*)()) _tt_get_file_prop_1;
 		break;
-		
+
 	    case TT_GET_FILE_PROPS:
 		TTDB_DEBUG_SYSLOG("TT_GET_FILE_PROPS");
 		xdr_argument = (bool_t (*)()) xdr_tt_get_file_props_args;
 		xdr_result = (bool_t (*)()) xdr_tt_file_props_results;
 		local = (char *(*)()) _tt_get_file_props_1;
 		break;
-		
+
 	    case TT_GET_FILE_OBJS:
 		TTDB_DEBUG_SYSLOG("TT_GET_FILE_OBJS");
 		xdr_argument = (bool_t (*)()) xdr_tt_get_file_objs_args;
 		xdr_result = (bool_t (*)()) xdr_tt_file_objs_results;
 		local = (char *(*)()) _tt_get_file_objs_1;
 		break;
-		
+
 	    case TT_SET_FILE_ACCESS:
 		TTDB_DEBUG_SYSLOG("TT_SET_FILE_ACCESS");
 		xdr_argument = (bool_t (*)()) xdr_tt_set_file_access_args;
 		xdr_result = (bool_t (*)()) xdr_tt_db_results;
 		local = (char *(*)()) _tt_set_file_access_1;
 		break;
-		
+
 	    case TT_GET_FILE_ACCESS:
 		TTDB_DEBUG_SYSLOG("TT_GET_FILE_ACCESS");
 		xdr_argument = (bool_t (*)()) xdr_tt_get_file_access_args;
 		xdr_result = (bool_t (*)()) xdr_tt_file_access_results;
 		local = (char *(*)()) _tt_get_file_access_1;
 		break;
-		
+
 	    case TT_SET_OBJ_PROPS:
 		TTDB_DEBUG_SYSLOG("TT_SET_OBJ_PROPS");
 		xdr_argument = (bool_t (*)()) xdr_tt_set_obj_props_args;
 		xdr_result = (bool_t (*)()) xdr_tt_obj_props_results;
 		local = (char *(*)()) _tt_set_obj_props_1;
 		break;
-		
+
 	    case TT_SET_OBJ_PROP:
 		TTDB_DEBUG_SYSLOG("TT_SET_OBJ_PROP");
 		xdr_argument = (bool_t (*)()) xdr_tt_set_obj_prop_args;
 		xdr_result = (bool_t (*)()) xdr_tt_obj_props_results;
 		local = (char *(*)()) _tt_set_obj_prop_1;
 		break;
-		
+
 	    case TT_ADD_OBJ_PROP:
 		TTDB_DEBUG_SYSLOG("TT_ADD_OBJ_PROP");
 		xdr_argument = (bool_t (*)()) xdr_tt_add_obj_prop_args;
 		xdr_result = (bool_t (*)()) xdr_tt_obj_props_results;
 		local = (char *(*)()) _tt_add_obj_prop_1;
 		break;
-		
+
 	    case TT_DELETE_OBJ_PROP:
 		TTDB_DEBUG_SYSLOG("TT_DELETE_OBJ_PROP");
 		xdr_argument = (bool_t (*)()) xdr_tt_del_obj_prop_args;
 		xdr_result = (bool_t (*)()) xdr_tt_obj_props_results;
 		local = (char *(*)()) _tt_delete_obj_prop_1;
 		break;
-		
+
 	    case TT_GET_OBJ_PROP:
 		TTDB_DEBUG_SYSLOG("TT_GET_OBJ_PROP");
 		xdr_argument = (bool_t (*)()) xdr_tt_get_obj_prop_args;
 		xdr_result = (bool_t (*)()) xdr_tt_obj_prop_results;
 		local = (char *(*)()) _tt_get_obj_prop_1;
 		break;
-		
+
 	    case TT_GET_OBJ_PROPS:
 		TTDB_DEBUG_SYSLOG("TT_GET_OBJ_PROPS");
 		xdr_argument = (bool_t (*)()) xdr_tt_get_obj_props_args;
 		xdr_result = (bool_t (*)()) xdr_tt_obj_props_results;
 		local = (char *(*)()) _tt_get_obj_props_1;
 		break;
-		
+
 	    case TT_SET_OBJ_TYPE:
 		TTDB_DEBUG_SYSLOG("TT_SET_OBJ_TYPE");
 		xdr_argument = (bool_t (*)()) xdr_tt_set_obj_type_args;
 		xdr_result = (bool_t (*)()) xdr_tt_db_results;
 		local = (char *(*)()) _tt_set_obj_type_1;
 		break;
-		
+
 	    case TT_GET_OBJ_TYPE:
 		TTDB_DEBUG_SYSLOG("TT_GET_OBJ_TYPE");
 		xdr_argument = (bool_t (*)()) xdr_wrapstring;
 		xdr_result = (bool_t (*)()) xdr_tt_obj_type_results;
 		local = (char *(*)()) _tt_get_obj_type_1;
 		break;
-		
+
 	    case TT_SET_OBJ_FILE:
 		TTDB_DEBUG_SYSLOG("TT_SET_OBJ_FILE");
 		xdr_argument = (bool_t (*)()) xdr_tt_set_obj_file_args;
 		xdr_result = (bool_t (*)()) xdr_tt_db_results;
 		local = (char *(*)()) _tt_set_obj_file_1;
 		break;
-		
+
 	    case TT_GET_OBJ_FILE:
 		TTDB_DEBUG_SYSLOG("TT_GET_OBJ_FILE");
 		xdr_argument = (bool_t (*)()) xdr_tt_get_obj_file_args;
 		xdr_result = (bool_t (*)()) xdr_tt_obj_file_results;
 		local = (char *(*)()) _tt_get_obj_file_1;
 		break;
-		
+
 	    case TT_SET_OBJ_ACCESS:
 		TTDB_DEBUG_SYSLOG("TT_SET_OBJ_ACCESS");
 		xdr_argument = (bool_t (*)()) xdr_tt_set_obj_access_args;
 		xdr_result = (bool_t (*)()) xdr_tt_db_results;
 		local = (char *(*)()) _tt_set_obj_access_1;
 		break;
-		
+
 	    case TT_GET_OBJ_ACCESS:
 		TTDB_DEBUG_SYSLOG("TT_GET_OBJ_ACCESS");
 		xdr_argument = (bool_t (*)()) xdr_tt_get_obj_access_args;
 		xdr_result = (bool_t (*)()) xdr_tt_obj_access_results;
 		local = (char *(*)()) _tt_get_obj_access_1;
 		break;
-		
+
 	    case TT_IS_FILE_IN_DB:
 		TTDB_DEBUG_SYSLOG("TT_IS_FILE_IN_DB");
 		xdr_argument = (bool_t (*)()) xdr_tt_is_file_in_db_args;
 		xdr_result = (bool_t (*)()) xdr_tt_is_file_in_db_results;
 		local = (char *(*)()) _tt_is_file_in_db_1;
 		break;
-		
+
 	    case TT_IS_OBJ_IN_DB:
 		TTDB_DEBUG_SYSLOG("TT_IS_OBJ_IN_DB");
 		xdr_argument = (bool_t (*)()) xdr_tt_is_obj_in_db_args;
 		xdr_result = (bool_t (*)()) xdr_tt_is_obj_in_db_results;
 		local = (char *(*)()) _tt_is_obj_in_db_1;
 		break;
-		
+
 	    case TT_QUEUE_MESSAGE:
 		TTDB_DEBUG_SYSLOG("TT_QUEUE_MESSAGE");
 		xdr_argument = (bool_t (*)()) xdr_tt_queue_msg_args;
 		xdr_result = (bool_t (*)()) xdr_tt_db_results;
 		local = (char *(*)()) _tt_queue_message_1;
 		break;
-		
+
 	    case TT_DEQUEUE_MESSAGES:
 		TTDB_DEBUG_SYSLOG("TT_DEQUEUE_MESSAGES");
 		xdr_argument = (bool_t (*)()) xdr_tt_dequeue_msgs_args;
 		xdr_result = (bool_t (*)()) xdr_tt_dequeue_msgs_results;
 		local = (char *(*)()) _tt_dequeue_messages_1;
 		break;
-		
+
 	    case TTDB_FILE_NETFILE:
 		TTDB_DEBUG_SYSLOG("TTDB_FILE_NETFILE");
 		xdr_argument = (bool_t (*)()) xdr_tt_file_netfile_args;
 		xdr_result = (bool_t (*)()) xdr_tt_file_netfile_results;
 		local = (char *(*)()) _tt_file_netfile_1;
 		break;
-		
+
 	    case TTDB_NETFILE_FILE:
 		TTDB_DEBUG_SYSLOG("TTDB_NETFILE_FILE");
 		xdr_argument = (bool_t (*)()) xdr_tt_file_netfile_args;
@@ -1278,31 +1278,31 @@ _tt_dbserver_prog_1(struct svc_req *rqstp, SVCXPRT *transp)
 	}
 	char *(*local_t)(caddr_t, SVCXPRT *) = (char *(*)(caddr_t, SVCXPRT *))
 		local;
-	
+
 	/* Check global message queue unlock flag */
 	if (msg_q_unlock_flag == TRUE) {
 		msg_q_unlock_flag = FALSE;
-		
+
 		_Tt_db_msg_q_lock locks;
 		locks.unsetAllLocks();
 	}
-	
+
 	if (refresh_partition_redirection_map) {
-		refresh_partition_redirection_map = FALSE;	
+		refresh_partition_redirection_map = FALSE;
 		db_pr_map->refresh();
 	}
-	
+
 	/* call the service procedure */
 	result = (*local_t)((caddr_t)&argument, transp);
 
-	
+
 	/* return the results to client */
 	if ((result != NULL) && !svc_sendreply(transp,
 					       (xdrproc_t)xdr_result,
 					       (caddr_t)result)) {
 		svcerr_systemerr(transp);
 	}
-	
+
 	/* free memory */
 	if (!svc_freeargs(transp,
 			  (xdrproc_t)xdr_argument,
@@ -1310,7 +1310,7 @@ _tt_dbserver_prog_1(struct svc_req *rqstp, SVCXPRT *transp)
 		_tt_syslog(errstr, LOG_ERR, "svc_freeargs() == 0");
 		exit(1);
 	}
-	
+
 	/* process the transaction log file if there were a transaction */
 	if (rqstp->rq_proc == _TT_TRANSACTION) {
 		_tt_process_transaction();
@@ -1321,7 +1321,7 @@ _tt_dbserver_prog_1(struct svc_req *rqstp, SVCXPRT *transp)
 		switch (rqstp->rq_proc) {
 		    case TT_GET_MIN_AUTH_LEVEL:
 			break;
-			
+
 		    case TT_GET_FILE_PARTITION:
 			if (result) {
 				if (((_tt_file_partition_results *)result)->partition) {
@@ -1332,114 +1332,114 @@ _tt_dbserver_prog_1(struct svc_req *rqstp, SVCXPRT *transp)
 				}
 			}
 			break;
-			
+
 		    case TT_CREATE_FILE:
 			break;
-			
+
 		    case TT_CREATE_OBJ:
 			break;
-			
+
 		    case TT_REMOVE_FILE:
 			break;
-			
+
 		    case TT_REMOVE_OBJ:
 			break;
-			
+
 		    case TT_MOVE_FILE:
 			break;
-			
+
 		    case TT_SET_FILE_PROPS:
 			break;
-			
+
 		    case TT_SET_FILE_PROP:
 			break;
-			
+
 		    case TT_ADD_FILE_PROP:
 			break;
-			
+
 		    case TT_DELETE_FILE_PROP:
 			break;
-			
+
 		    case TT_GET_FILE_PROP:
 			if (result) {
 				_tt_free_rpc_property(((_tt_file_prop_results *)
 						       result)->property);
 			}
 			break;
-			
+
 		    case TT_GET_FILE_PROPS:
 			if (result) {
 				_tt_free_rpc_properties(((_tt_file_props_results *)
 							 result)->properties);
 			}
 			break;
-			
+
 		    case TT_GET_FILE_OBJS:
 			if (result) {
 				_tt_free_rpc_strings(((_tt_file_objs_results *)
 						      result)->objids);
 			}
 			break;
-			
+
 		    case TT_SET_FILE_ACCESS:
 			break;
-			
+
 		    case TT_GET_FILE_ACCESS:
 			break;
-			
+
 		    case TT_SET_OBJ_PROPS:
 			break;
-			
+
 		    case TT_SET_OBJ_PROP:
 			break;
-			
+
 		    case TT_ADD_OBJ_PROP:
 			break;
-			
+
 		    case TT_DELETE_OBJ_PROP:
 			break;
-			
+
 		    case TT_GET_OBJ_PROP:
 			if (result) {
 				_tt_free_rpc_property(((_tt_obj_prop_results *)
 						       result)->property);
 			}
 			break;
-			
+
 		    case TT_GET_OBJ_PROPS:
 			if (result) {
 				_tt_free_rpc_properties(((_tt_obj_props_results *)
 							 result)->properties);
 			}
 			break;
-			
+
 		    case TT_SET_OBJ_TYPE:
 			break;
-			
+
 		    case TT_GET_OBJ_TYPE:
 			if (result) {
 				free(((_tt_obj_type_results *)result)->otype);
 			}
 			break;
-			
+
 		    case TT_SET_OBJ_FILE:
 			break;
-			
+
 		    case TT_GET_OBJ_FILE:
 			if (result) {
 				free(((_tt_obj_file_results *)result)->file);
 			}
 			break;
-			
+
 		    case TT_SET_OBJ_ACCESS:
 			break;
-			
+
 		    case TT_GET_OBJ_ACCESS:
 			break;
-			
+
 		    case TT_IS_FILE_IN_DB:
 			break;
-			
+
 		    case TT_IS_OBJ_IN_DB:
 			if (result && ((_tt_is_obj_in_db_results *)
 				       result)->forward_pointer) {
@@ -1447,17 +1447,17 @@ _tt_dbserver_prog_1(struct svc_req *rqstp, SVCXPRT *transp)
 				      result)->forward_pointer);
 			}
 			break;
-			
+
 		    case TT_QUEUE_MESSAGE:
 			break;
-			
+
 		    case TT_DEQUEUE_MESSAGES:
 			if (result) {
 				_tt_free_rpc_messages(((_tt_dequeue_msgs_results *)
 						       result)->messages);
 			}
 			break;
-			
+
 		    default:
 			break;
 		}
@@ -1530,16 +1530,16 @@ sig_handler(int sig)
 		// indefinitely.
 		msg_q_unlock_flag = TRUE;
 		break;
-		
+
 	      case SIGUSR1:
 		// turn trace on (level 1) if it was off. turn trace off
 		// if it was on.
 		break;
-		
+
 	      case SIGUSR2:
-		refresh_partition_redirection_map = TRUE;	
+		refresh_partition_redirection_map = TRUE;
 		break;
-		
+
 #if !defined(OPT_GARBAGE_THREADS)
 	      case SIGCHLD:
 		waitpid(-1, NULL, WNOHANG);	// Reap and run.

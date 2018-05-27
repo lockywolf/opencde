@@ -26,17 +26,15 @@
 #include "utility/pm_random.h"
 #include "utility/funcs.h"
 
-#if defined(__uxp__) 
+#if defined(__uxp__)
 #include <sys/times.h>
-#elif __osf__
-#include <sys/time.h>
 #endif
 
 #ifdef REGRESSION_TEST
 
 extern
 int
-bset_test(unsigned int in_cts, unsigned int out_cts, 
+bset_test(unsigned int in_cts, unsigned int out_cts,
 	  pm_random& rand_gen, unsigned int cycles);
 
 int dstr_test(int argc, char** argv)
@@ -49,7 +47,7 @@ int dstr_test(int argc, char** argv)
          cerr << "	out_count: number of elements originally not in the set\n";
          cerr << "	num_cycles: number of tests\n";
          return 1;
-      }   
+      }
 
       int in_cts = atoi(argv[2]);
       int out_cts = atoi(argv[3]);

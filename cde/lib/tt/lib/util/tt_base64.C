@@ -20,11 +20,11 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $XConsortium: tt_base64.C /main/4 1996/07/30 17:41:40 barstow $ 			 				
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $XConsortium: tt_base64.C /main/4 1996/07/30 17:41:40 barstow $
 /*
  *
  * tt_base64.cc
@@ -40,7 +40,7 @@ static	const	char	base64_chars[] =
 // The following table was mechanically generated to be the inverse
 // permutation of the above table.  Thus for 0<=i<63,
 // base_64_values[base64_chars[i]]==i.
-	
+
 static  const	char	base64_values[256] = {
 	  64,  64,  64,  64,  64,  64,  64,  64,
 	  64,  64,  64,  64,  64,  64,  64,  64,
@@ -75,19 +75,6 @@ static  const	char	base64_values[256] = {
 	  64,  64,  64,  64,  64,  64,  64,  64,
 	  64,  64,  64,  64,  64,  64,  64,  64};
 
-#ifdef __osf__
-/*
- * _tt_base64_encode(i) -- convert number to base-64 character string
- *
- * Purpose: Convert an int value (typically a time) to a "base-64"
- *   representation.  Return a _Tt_string containing
- *   the representation, not including any leading zeroes.
- */
-_Tt_string
-_tt_base64_encode(unsigned int i)
-{
-	int maxlen = (sizeof(int)*8+5)/6;
-#else /* __osf__ */
 /*
  * _tt_base64_encode(i) -- convert number to base-64 character string
  *
@@ -99,7 +86,6 @@ _Tt_string
 _tt_base64_encode(unsigned long i)
 {
 	int maxlen = (sizeof(long)*8+5)/6;
-#endif /* __osf__ */
 
 	_Tt_string retval(maxlen);
 	int c = maxlen-1;
@@ -116,19 +102,6 @@ _tt_base64_encode(unsigned long i)
 	return retval;
 }
 
-#ifdef __osf__
- /*
- * _tt_base64_decode(i) -- convert base-64 character string to number
- *
- * Purpose: Convert a string in a "base-64"
- *   representation to an unsigned int.
- */
-unsigned int
-_tt_base64_decode(const char *s)
-{
-	int c,v;
-	unsigned int r;
-#else /* __osf__ */
 /*
  * _tt_base64_decode(i) -- convert base-64 character string to number
  *
@@ -140,7 +113,6 @@ _tt_base64_decode(const char *s)
 {
 	int c,v;
 	unsigned long r;
-#endif /* __osf__ */
 
 	r = 0;
 	while (c = *s++) {

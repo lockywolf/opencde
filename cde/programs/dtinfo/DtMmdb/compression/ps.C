@@ -43,7 +43,7 @@
 
 #include <stdlib.h>
 
-#if defined(__osf__) || defined(linux) || defined(CSRG_BASED) || defined(sun)
+#if defined(linux) || defined(CSRG_BASED) || defined(sun)
 #include <unistd.h>
 #else
 #if !defined(__uxp__) && !defined(USL)
@@ -179,7 +179,7 @@ int read();
 /* default declaration of generated scanner - a define so the user can
  * easily add parameters
  */
-#define ps_DECL int pslex ps_PROTO(( void )) 
+#define ps_DECL int pslex ps_PROTO(( void ))
 
 /* code executed at the end of each rule */
 #define ps_BREAK break;
@@ -203,13 +203,13 @@ typedef struct ps_buffer_state *ps_BUFFER_STATE;
 * the Copyright Laws of the United States.  USE OF A COPYRIGHT
 * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
 * OR DISCLOSURE.
-* 
+*
 * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
 * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
 * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
 * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
 * INTERNATIONAL, LTD.
-* 
+*
 *                         RESTRICTED RIGHTS LEGEND
 * Use, duplication, or disclosure by the Government is subject
 * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -219,7 +219,7 @@ typedef struct ps_buffer_state *ps_BUFFER_STATE;
 *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
 *                  1315 Dell Avenue
 *                  Campbell, CA  95008
-* 
+*
 */
 # line 37 "ps.l"
 
@@ -229,7 +229,7 @@ typedef struct ps_buffer_state *ps_BUFFER_STATE;
 static unsigned char psbuf[LBUFSIZ];
 static int psbuf_sz = LBUFSIZ;
 static int psbuffed = 0;
-              
+
 #undef pswrap
 int pswrap();
 
@@ -278,7 +278,7 @@ struct ps_buffer_state
     ps_CHAR *ps_buf_pos;	/* current position in input buffer */
 
     /* size of input buffer in bytes, not including room for EOB characters*/
-    int ps_buf_size;	
+    int ps_buf_size;
 
     /* number of characters read into ps_ch_buf, not including EOB characters */
     int ps_n_chars;
@@ -658,9 +658,9 @@ case ps_STATE_EOF(INITIAL):
  *
  * synopsis
  *     int ps_get_next_buffer();
- *     
+ *
  * returns a code representing an action
- *     EOB_ACT_LAST_MATCH - 
+ *     EOB_ACT_LAST_MATCH -
  *     EOB_ACT_CONTINUE_SCAN - continue scanning from current position
  *     EOB_ACT_END_OF_FILE - end of file
  */

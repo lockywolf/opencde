@@ -8,7 +8,7 @@
 #<<------------------------------
 #
 { hpux : defaults
-	install_target = 
+	install_target =
 	fileset = CDE-RUN
 	type = file
 	status = di----
@@ -18,8 +18,8 @@
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -29,7 +29,7 @@
 #<<------------------------------
 #
 { hpV4 : defaults
-	install_target = 
+	install_target =
 	fileset = CDE-RUN
 	type = file
 	status = di----
@@ -39,8 +39,8 @@
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -50,7 +50,7 @@
 #<<------------------------------
 #
 { aix : defaults
-	install_target = 
+	install_target =
 	fileset = CDE-RUN
 	type = file
 	status = di----
@@ -60,8 +60,8 @@
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -90,33 +90,11 @@
 }
 
 #>>------------------------------
-# Defaults for: Digital
-#<<------------------------------
-#
-{ dec : defaults
-	install_target = 
-	fileset = CDE-RUN
-	type = file
-	status = di----
-	processor = 378
-	mode = 0444
-	owner = bin
-	group = bin
-	link_source = <LNK>
-	build_target = /
-	install_rule_name = 
-	install_flags = 
-	a_out_location = <SRC>
-	order = 0
-	responsible_project = cde_dt
-}
-
-#>>------------------------------
 # Defaults for: standalone product
 #<<------------------------------
 #
 { standalone : defaults
-	install_target = 
+	install_target =
 	fileset = CDE-RUN
 	type = file
 	status = di----
@@ -126,8 +104,8 @@
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -138,7 +116,7 @@
 #<<------------------------------
 #
 { nls : defaults
-	install_target = 
+	install_target =
 	processor = 378
 	type = file
 	mode = 0444
@@ -150,7 +128,7 @@
 #<<-------------------------------------------------
 #
 { default : defaults
-	install_target = 
+	install_target =
 	fileset = CDE-RUN
 	type = file
 	status = di----
@@ -160,17 +138,17 @@
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
 }
 
 #
-#>>----------------------------- 
+#>>-----------------------------
 # dtlogin
-#<<----------------------------- 
+#<<-----------------------------
 #
 programs/dtlogin/config/Xfailsafe
 { default
@@ -192,13 +170,13 @@ programs/dtconfig/hp/dtrc
 #
 { hpV4
 	type = directory
-	install_target = /usr/dt/config/dtrc.d   
+	install_target = /usr/dt/config/dtrc.d
 	mode = 0555
 	status = ------
 }
 #
 programs/dtconfig/hp/dtrc.dtlogin_st
-{ hpV4 
+{ hpV4
 	install_target = /usr/dt/config/dtrc.d/90_dtlogin_st
 	mode = 0544
 }
@@ -220,25 +198,9 @@ programs/dtconfig/ibm/rc.dt
         mode = 0544
 }
 #
-programs/dtconfig/dec/xlogin
-{ dec
-        install_target = /usr/dt/bin/xlogin
-        mode = 0544
-}
-#
 programs/dtlogin/config/Xconfig
 { default
 	install_target = /usr/dt/config/Xconfig
-}
-#
-programs/dtlogin/config/Xconfig.nc
-{ dec
-	install_target = /usr/dt/config/Xconfig.nc
-}
-#
-programs/dtlogin/config/Xconfig.con
-{ dec
-	install_target = /usr/dt/config/Xconfig.con
 }
 #
 programs/dtlogin/config/Xreset
@@ -256,16 +218,6 @@ programs/dtlogin/config/Xsetup
 programs/dtlogin/config/Xservers
 { default
 	install_target = /usr/dt/config/Xservers
-}
-#
-programs/dtlogin/config/Xservers.nc
-{ dec
-        install_target = /usr/dt/config/Xservers.nc
-}
-#
-programs/dtlogin/config/Xservers.con
-{ dec
-        install_target = /usr/dt/config/Xservers.con
 }
 #
 programs/dtlogin/config/Xaccess
@@ -311,13 +263,13 @@ programs/localized/C/config/sys.font
 }
 #
 programs/dtconfig/sun/dtlogin.rc
-{ sun 
+{ sun
 	install_target = /usr/dt/config/dtlogin.rc
 	mode = 0555
 }
 #
 programs/dtconfig/sun/dtconfig
-{ sun 
+{ sun
 	install_target = /usr/dt/bin/dtconfig
 	mode = 0555
 }
@@ -348,9 +300,9 @@ programs/dtconfig/hp/dtlogin.rc
 #
 #
 #
-#>>----------------------------- 
+#>>-----------------------------
 # dtconfig for AIX
-#<<----------------------------- 
+#<<-----------------------------
 #
 programs/dtconfig/ibm/dtconfig
 { aix
@@ -446,9 +398,9 @@ lib/DtWidget/UNIXbindings
         install_target = /usr/dt/app-defaults/C/UNIXbindings
 }
 #
-#>>----------------------------- 
+#>>-----------------------------
 # dtsession
-#<<----------------------------- 
+#<<-----------------------------
 #
 #
 #
@@ -495,9 +447,9 @@ programs/dtsession/sys.font.iso
 #
 
 #
-#>>----------------------------- 
+#>>-----------------------------
 # dtprintinfo
-#<<----------------------------- 
+#<<-----------------------------
 #
 #
 programs/dtprintinfo/dtprintinfo
@@ -539,9 +491,9 @@ programs/util/scripts/convertvf
 }
 
 #
-#>>------------------------------ 
+#>>------------------------------
 # dtpad
-#<<----------------------------- 
+#<<-----------------------------
 #
 #programs/dtpad/adjust16
 #${ default
@@ -552,9 +504,9 @@ programs/util/scripts/convertvf
 
 
 #
-#>>----------------------------- 
+#>>-----------------------------
 # dtcreate client
-#<<----------------------------- 
+#<<-----------------------------
 #
 programs/dtcreate/dtcreate
 { default
@@ -562,10 +514,10 @@ programs/dtcreate/dtcreate
 	mode = 0555
 }
 #
-# 
-#>>----------------------------- 
+#
+#>>-----------------------------
 # DT predefined actions
-#<<----------------------------- 
+#<<-----------------------------
 #
 programs/dtsearchpath/dtappg/howto-customize
 { default
@@ -614,7 +566,7 @@ programs/localized/C/types/action
 }
 #
 programs/localized/C/types/action
-{ default 	
+{ default
 	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/DttermConsole
 	mode = 0555
 }
@@ -627,13 +579,13 @@ programs/localized/C/types/action
 #
 programs/localized/C/types/action
 { default
-	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/XclockDig 
+	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/XclockDig
 	mode = 0555
 }
 #
 programs/localized/C/types/action
 { default
-	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/DuSort 
+	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/DuSort
 	mode = 0555
 }
 #
@@ -699,13 +651,13 @@ programs/localized/C/types/action
 #
 programs/localized/C/types/action
 { default
-	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/Make 
+	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/Make
 	mode = 0555
 }
 #
 programs/localized/C/types/action
 { default
-	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/Xrefresh	
+	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/Xrefresh
 	mode = 0555
 }
 #
@@ -747,7 +699,7 @@ programs/localized/C/types/action
 #
 programs/localized/C/types/action
 { default
-	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/RestorePanel	
+	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/RestorePanel
 	mode = 0555
 }
 #
@@ -789,13 +741,13 @@ programs/localized/C/types/action
 #
 programs/localized/C/types/action
 { default
-	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/File	
+	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/File
 	mode = 0555
 }
 #
 programs/localized/C/types/action
 { default
-	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/Uncompress	
+	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/Uncompress
 	mode = 0555
 }
 #
@@ -813,7 +765,7 @@ programs/localized/C/types/action
 #
 programs/localized/C/types/action
 { default
-	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/Xterm 
+	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/Xterm
 	mode = 0555
 }
 #
@@ -831,7 +783,7 @@ programs/localized/C/types/action
 #
 programs/localized/C/types/action
 { default
-	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/Xwud 
+	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/Xwud
 	mode = 0555
 }
 #
@@ -840,7 +792,7 @@ programs/localized/C/types/action
 	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Tools/DtImsMode
 	mode = 0555
 }
-# 
+#
 programs/localized/C/types/action
 { default
 	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Apps/Dtappbuild
@@ -867,7 +819,7 @@ programs/localized/C/types/action
 #
 programs/localized/C/types/action
 { default
-	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Apps/Dtfile 
+	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Apps/Dtfile
 	mode = 0555
 }
 #
@@ -915,13 +867,13 @@ programs/localized/C/types/action
 #
 programs/localized/C/types/action
 { default
-	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Apps/Dtterm 
+	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Apps/Dtterm
 	mode = 0555
 }
 #
 programs/localized/C/types/action
 { default
-	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Apps/Dttrash 
+	install_target = /usr/dt/appconfig/appmanager/C/Desktop_Apps/Dttrash
 	mode = 0555
 }
 #
@@ -937,9 +889,9 @@ programs/dtprintegrate/dtlp
 }
 #
 #
-#>>----------------------------- 
-# backdrop files 
-#<<----------------------------- 
+#>>-----------------------------
+# backdrop files
+#<<-----------------------------
 #
 programs/localized/C/palettes/desc.C
 { default
@@ -1107,9 +1059,9 @@ programs/dtfile/dtfile_error
 }
 #
 #<<--------------------------------------------
-# The DT binaries follow 
+# The DT binaries follow
 #>>--------------------------------------------
-# 
+#
 programs/dtappbuilder/src/ab/dtbuilder
 { default
 	install_target = /usr/dt/bin/dtbuilder
@@ -1264,14 +1216,6 @@ programs/dtaction/dtaction
         install_target = /usr/dt/bin/dtaction
 	owner = root
 	group = sys
-        mode = 06555
-}
-#
-programs/dtaction/dtaction
-{ dec
-        install_target = /usr/dt/bin/dtaction
-	owner = root
-	group = system
         mode = 06555
 }
 #
@@ -1613,7 +1557,7 @@ programs/localized/C/types/dtims.dt
 { default
 	install_target = /usr/dt/appconfig/types/C/dtims.dt
 }
-# 
+#
 programs/localized/C/types/dtbuilder.dt
 { default
 	install_target = /usr/dt/appconfig/types/C/dtbuilder.dt
@@ -1646,11 +1590,11 @@ programs/types/error.ds
 	type = sym_link
 }
 #
-#>>----------------------------- 
+#>>-----------------------------
 #
 # dtsearch
 #
-#<<----------------------------- 
+#<<-----------------------------
 #
 programs/dtsr/dtsrclean
 { default
@@ -1710,11 +1654,11 @@ programs/dtsr/dtsearch.dbd
         mode = 0555
 }
 #
-#>>----------------------------- 
+#>>-----------------------------
 #
 # dtinfo
 #
-#<<----------------------------- 
+#<<-----------------------------
 #
 programs/dtinfo/dtinfo/src/dtinfo
 { default
@@ -1729,11 +1673,11 @@ programs/dtinfo/clients/dtinfo_start/dtinfo_start
 }
 #
 #
-#>>----------------------------- 
+#>>-----------------------------
 #
 # dtinfogen
 #
-#<<----------------------------- 
+#<<-----------------------------
 #
 programs/dtinfo/dtinfogen/infolib/etc/dtinfogen
 { default
@@ -1807,11 +1751,11 @@ programs/nsgmls/nsgmls
         mode = 0555
 }
 #
-#>>----------------------------- 
-# 
+#>>-----------------------------
+#
 # MMDB
 #
-#<<----------------------------- 
+#<<-----------------------------
 #
 programs/dtinfo/dtinfogen/mmdb/src/dbdrv
 { default
@@ -1825,11 +1769,11 @@ programs/dtinfo/dtinfogen/mmdb/StyleSheet/validator
         mode = 0555
 }
 #
-#>>----------------------------- 
+#>>-----------------------------
 #
-# DtSearch entries 
+# DtSearch entries
 #
-#<<----------------------------- 
+#<<-----------------------------
 #
 #
 programs/localized/C/dtsr/eng.sfx

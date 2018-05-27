@@ -2255,11 +2255,7 @@ static void ActivateClist(Widget wid, XEvent *event, String *params,
                                            : (message[i] = tmp[i]));
                 };
 
-#ifdef __osf__
-                sscanf(params[0], "%lx", &fileMgrRec);
-#else
                 sscanf(params[0], "%p", (void **)&fileMgrRec);
-#endif
                 _DtMessage(toplevel, title, message, NULL, HelpRequestCB);
                 XtFree(title);
                 XtFree(message);
@@ -6004,11 +6000,7 @@ static void FMInput(Widget wid, XEvent *event, String *params,
         cb.event = event;
 
         if (*(params[0]) != '@') {
-#ifdef __osf__
-                sscanf(params[0], "%lx", &fileMgrRec);
-#else
                 sscanf(params[0], "%p", (void **)&fileMgrRec);
-#endif
                 FileWindowInputCallback(wid, (XtPointer)fileMgrRec,
                                         (XtPointer)&cb);
         }

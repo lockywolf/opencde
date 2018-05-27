@@ -44,7 +44,7 @@
 #include <stdlib.h>
 #ifdef hpux
   #include <time.h>
-#elif defined(USL) || defined(__uxp__) || defined(__osf__) || defined(linux)
+#elif defined(USL) || defined(__uxp__) || defined(linux)
   #include <sys/time.h>
 #else
   #include <sys/select.h>
@@ -175,7 +175,7 @@ void BaseUI::Parent(BaseUI *new_parent)
 {
    if (SetParent(new_parent))
     {
-      // need to write this 
+      // need to write this
       ;
     }
 }
@@ -270,7 +270,7 @@ BaseUI * BaseUI::ContainerParent()
 
    while (parent && !IsContainer(parent))
       parent = parent->_parent;
-      
+
    return parent;
 }
 
@@ -679,7 +679,7 @@ void BaseUI::_Find(void *pattern, int depth, int *n_matches,
 #else
                is_match = !regexec((regex_t *)pattern, value, (size_t)0,NULL,0);
 #endif
-            else 
+            else
 	       is_match = !strcasecmp(value, (char *)pattern);
           }
         }
@@ -702,7 +702,7 @@ void BaseUI::_Find(void *pattern, int depth, int *n_matches,
 
 BaseUI *BaseUI::_FindBy(char *pattern, int depth, int *n_matches,
 		        BaseUI ***matches, SelectProc select_proc,
-			boolean regular_expression, boolean case_sensitive, 
+			boolean regular_expression, boolean case_sensitive,
 			boolean find_by_name)
 {
    void *reg_expr = pattern;
@@ -763,7 +763,7 @@ BaseUI *BaseUI::_FindBy(char *pattern, int depth, int *n_matches,
    int _n_matches = 0;
    _Find(reg_expr, depth, &_n_matches, &_matches, select_proc,
 	 regular_expression, case_sensitive, find_by_name, 0);
-  
+
 #ifndef NO_REGCOMP
    if (regular_expression)
       regfree(&re);

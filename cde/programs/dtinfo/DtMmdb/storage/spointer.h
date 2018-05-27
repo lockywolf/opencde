@@ -111,11 +111,7 @@ class spointer_t {
         };
 
         void swap_order() {
-#ifdef __osf__
-                ORDER_SWAP_INT(fwd_ptr);
-#else
                 ORDER_SWAP_LONG(fwd_ptr);
-#endif
                 ORDER_SWAP_UINT(header.int_view);
                 swapped = true;
         };

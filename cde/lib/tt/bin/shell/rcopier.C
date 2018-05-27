@@ -20,11 +20,11 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $XConsortium: rcopier.C /main/3 1995/10/20 16:36:32 rswiston $ 			 				
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $XConsortium: rcopier.C /main/3 1995/10/20 16:36:32 rswiston $
 /*
  * rcopier.cc - Link Service/ToolTalk wrapper for rcp(1).
  *
@@ -34,12 +34,8 @@
 
 #include "tt_options.h"
 #include <string.h>
-#ifdef __osf__
-#include <unistd.h>
-#else
 #ifndef USL
 #include <osfcn.h>
-#endif
 #endif
 #if defined(OPT_BUG_SUNOS_4)
 #	include <stdlib.h>
@@ -312,7 +308,7 @@ parse_args( int argc, char **argv )
 			_to_path_is_dir = FALSE;
 			if (stat( (char *)_to_path->path(), &stat_buf) == 0) {
 				_to_path_is_dir = S_ISDIR(stat_buf.st_mode);
-			} 
+			}
 			/*
 			 * I don't think rcp has a clonedir mode. (see ttcp)
 			else {
@@ -336,7 +332,7 @@ parse_args( int argc, char **argv )
 } /* parse_args() */
 
 /*
- * rcopier::_parse_arg() - Parse an option 
+ * rcopier::_parse_arg() - Parse an option
  */
 void rcopier::
 _parse_arg( char *arg )

@@ -102,7 +102,7 @@ typedef unsigned char u_char;
 #define self *this
 
 #ifndef STRINGIFY
-#if defined(__STDC__) || defined(hpux) || defined(__osf__)
+#if defined(__STDC__) || defined(hpux)
 #define STRINGIFY(S) #S
 #else
 #define STRINGIFY(S) "S"
@@ -110,7 +110,7 @@ typedef unsigned char u_char;
 #endif
 
 #ifndef CONCAT
-#if defined(__STDC__) || defined(hpux) || defined(__osf__)
+#if defined(__STDC__) || defined(hpux)
 #define CONCAT(A, B) A##B
 #define CONCAT3(A, B, C) A##B##C
 #else

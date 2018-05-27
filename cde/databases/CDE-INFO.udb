@@ -8,7 +8,7 @@
 #<<------------------------------
 #
 { hpux : defaults
-	install_target = 
+	install_target =
 	fileset = CDE-RUN
 	type = file
 	status = di----
@@ -18,8 +18,8 @@
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -30,7 +30,7 @@
 #<<------------------------------
 #
 { hpV4 : defaults
-	install_target = 
+	install_target =
 	fileset = CDE-RUN
 	type = file
 	status = di----
@@ -40,8 +40,8 @@
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -52,7 +52,7 @@
 #<<------------------------------
 #
 { aix : defaults
-	install_target = 
+	install_target =
 	fileset = CDE-RUN
 	type = file
 	status = di----
@@ -62,8 +62,8 @@
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -92,33 +92,11 @@
 }
 #
 #>>------------------------------
-# Defaults for: Digital
-#<<------------------------------
-#
-{ dec : defaults
-	install_target = 
-	fileset = CDE-RUN
-	type = file
-	status = di----
-	processor = 378
-	mode = 0444
-	owner = bin
-	group = bin
-	link_source = <LNK>
-	build_target = /
-	install_rule_name = 
-	install_flags = 
-	a_out_location = <SRC>
-	order = 0
-	responsible_project = cde_dt
-}
-#
-#>>------------------------------
 # Defaults for: standalone product
 #<<------------------------------
 #
 { standalone : defaults
-	install_target = 
+	install_target =
 	fileset = CDE-RUN
 	type = file
 	status = di----
@@ -128,8 +106,8 @@
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -140,7 +118,7 @@
 #<<-------------------------------------------------
 #
 { default : defaults
-	install_target = 
+	install_target =
 	fileset = CDE-RUN
 	type = file
 	status = di----
@@ -150,16 +128,16 @@
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
 }
 #
-#>>----------------------------- 
+#>>-----------------------------
 # SGML files
-#<<----------------------------- 
+#<<-----------------------------
 #
 programs/dtinfo/dtinfogen/infolib/C/SGML/dtinfo.af
 { default
@@ -321,9 +299,9 @@ programs/dtinfo/dtinfogen/infolib/C/SGML/styprolog.sgml
 	install_target = /usr/dt/infolib/C/SGML/styprolog.sgml
 }
 #
-#>>----------------------------- 
+#>>-----------------------------
 # dtinfo spec files
-#<<----------------------------- 
+#<<-----------------------------
 #
 programs/dtinfo/dtinfo/install/lib/mmdb.mark.spec
 { default

@@ -183,25 +183,6 @@ typedef enum {B_FALSE, B_TRUE} boolean_t;
  /*
  **
  */
-#if defined(__osf__)
-
-#define vfork		fork
-
-#include <sys/types.h>
-
-#ifndef MAXPATHLEN
-#include <sys/param.h>
-#endif
-
-#ifndef MAXNAMELEN
-#define MAXNAMELEN      256
-#endif
-
-typedef enum {B_FALSE, B_TRUE} boolean_t;
-
-#undef BIG_ENDIAN
-
-#endif /* __osf__ */
 
 #ifdef __cplusplus
 }

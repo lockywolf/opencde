@@ -2,13 +2,13 @@ XCOMM $XConsortium: CDE-INFOLIB-LOC.src /main/16 1996/10/28 17:40:15 barstow $
 XCOMM >>------------------------------
 XCOMM  %_FILENAME_%.udb   CDE universal database for InfoLibs
 XCOMM --------------------------------
-XCOMM 
+XCOMM
 XCOMM >>------------------------------
 XCOMM  Defaults for: hpux
 XCOMM <<------------------------------
-XCOMM 
+XCOMM
 { hpux : defaults
-	install_target = 
+	install_target =
 	fileset = %_FILENAME_%
 	type = file
 	status = di----
@@ -18,30 +18,8 @@ XCOMM
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
-	a_out_location = <SRC>
-	order = 0
-	responsible_project = cde_dt
-}
-
-XCOMM >>------------------------------
-XCOMM  Defaults for: Digital
-XCOMM <<------------------------------
-XCOMM 
-{ dec : defaults
-	install_target = 
-	fileset = %_FILENAME_%
-	type = file
-	status = di----
-	processor = 378
-	mode = 0444
-	owner = bin
-	group = bin
-	link_source = <LNK>
-	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -50,9 +28,9 @@ XCOMM
 XCOMM >>------------------------------
 XCOMM  Defaults for: standalone product
 XCOMM <<------------------------------
-XCOMM 
+XCOMM
 { standalone : defaults
-	install_target = 
+	install_target =
 	fileset = %_FILENAME_%
 	type = file
 	status = di----
@@ -62,8 +40,8 @@ XCOMM
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -72,9 +50,9 @@ XCOMM
 XCOMM >>-------------------------------------------------
 XCOMM  Defaults for: everything else
 XCOMM <<-------------------------------------------------
-XCOMM 
+XCOMM
 { default : defaults
-	install_target = 
+	install_target =
 	fileset = %_FILENAME_%
 	type = file
 	status = di----
@@ -84,8 +62,8 @@ XCOMM
 	group = bin
 	link_source = <LNK>
 	build_target = /
-	install_rule_name = 
-	install_flags = 
+	install_rule_name =
+	install_flags =
 	a_out_location = <SRC>
 	order = 0
 	responsible_project = cde_dt
@@ -98,7 +76,7 @@ XCOMM
 	mode = 0555
 	status = ------
 }
-XCOMM 
+XCOMM
 -
 { default
 	type = directory
@@ -106,7 +84,7 @@ XCOMM
 	mode = 0555
 	status = ------
 }
-XCOMM 
+XCOMM
 -
 { default
 	type = directory
@@ -114,7 +92,7 @@ XCOMM
 	mode = 0555
 	status = ------
 }
-XCOMM 
+XCOMM
 -
 { default
 	type = directory
@@ -130,39 +108,39 @@ XCOMM
 	status = ------
 }
 
-XCOMM 
+XCOMM
 XCOMM >>-----------------------------
-XCOMM 
+XCOMM
 XCOMM    infolib map file
-XCOMM 
+XCOMM
 XCOMM <<-----------------------------
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/bookcase.map
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/bookcase.map
 }
 
 
-XCOMM 
+XCOMM
 XCOMM >>-----------------------------
-XCOMM 
+XCOMM
 XCOMM    "short name" file
-XCOMM 
+XCOMM
 XCOMM <<-----------------------------
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/cde.oli
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/cde.oli
 }
 
 
-XCOMM 
+XCOMM
 XCOMM >>-----------------------------
-XCOMM 
+XCOMM
 XCOMM    CDEDOC infolib
-XCOMM 
+XCOMM
 XCOMM <<-----------------------------
-XCOMM 
+XCOMM
 -
 { default
 	type = directory
@@ -177,114 +155,114 @@ XCOMM
 	mode = 0555
 	status = ------
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/CDEDOC.sch
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/CDEDOC.sch
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/CDEDOC.dbd
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/CDEDOC.dbd
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/CDEDOC.dbi
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/CDEDOC.dbi
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.d00
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.d00
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.d01
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.d01
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.d21
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.d21
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.d22
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.d22
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.d23
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.d23
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.d99
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.d99
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.k00
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.k00
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.k01
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.k01
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.k21
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.k21
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.k22
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.k22
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.k23
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.k23
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.dbd
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.dbd
 }
 #ifndef _JAPANESE_
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.stp
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.stp
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.sfx
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.sfx
 }
 #endif
 #ifdef _JAPANESE_
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.knj
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/CDEDOC.knj
 }
 #endif
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/CDEDOC/dtsearch/dtsearch.ocf
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/CDEDOC/dtsearch/dtsearch.ocf
 }
 
 #if defined(_MOTIFDOC_) && (defined(_ENGLISH_) || defined(_JAPANESE_))
-XCOMM 
+XCOMM
 XCOMM >>-----------------------------
-XCOMM 
+XCOMM
 XCOMM    MOTIFDOC infolib
-XCOMM 
+XCOMM
 XCOMM <<-----------------------------
-XCOMM 
+XCOMM
 -
 { default
 	type = directory
@@ -299,101 +277,101 @@ XCOMM
 	mode = 0555
 	status = ------
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/MOTIFDOC.sch
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/MOTIFDOC.sch
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/MOTIFDOC.dbd
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/MOTIFDOC.dbd
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/MOTIFDOC.dbi
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/MOTIFDOC.dbi
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.d00
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.d00
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.d01
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.d01
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.d21
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.d21
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.d22
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.d22
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.d23
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.d23
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.d99
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.d99
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.k00
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.k00
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.k01
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.k01
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.k21
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.k21
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.k22
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.k22
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.k23
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.k23
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.dbd
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.dbd
 }
 #ifndef _JAPANESE_
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.stp
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.stp
 }
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.sfx
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.sfx
 }
 #endif
 #ifdef _JAPANESE_
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.knj
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/MOTIFDOC.knj
 }
 #endif
-XCOMM 
+XCOMM
 doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/dtsearch.ocf
 { default
 	install_target = /usr/dt/infolib/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/dtsearch.ocf
@@ -402,9 +380,9 @@ doc/%_LANG_%/cde.dti/MOTIFDOC/dtsearch/dtsearch.ocf
 
 
 XCOMM ##########################################################################
-XCOMM 
+XCOMM
 XCOMM  HP - Locale and platform specific entries
-XCOMM 
+XCOMM
 XCOMM ##########################################################################
 XCOMM /usr/dt/infolib/de_DE.ISO8859-1
 XCOMM	install_target = ../dt/infolib/de_DE.iso88591
@@ -455,9 +433,9 @@ XCOMM ./../infolib/de_DE.ISO8859-1
 #endif /* __hpux */
 
 XCOMM ##########################################################################
-XCOMM 
+XCOMM
 XCOMM  IBM - Locale and platform specific entries
-XCOMM 
+XCOMM
 XCOMM ##########################################################################
 #ifdef _AIX
 
@@ -505,9 +483,9 @@ XCOMM ##########################################################################
 
 
 XCOMM ##########################################################################
-XCOMM 
+XCOMM
 XCOMM  Novell - Locale and platform specific entries
-XCOMM 
+XCOMM
 XCOMM ##########################################################################
 #ifdef USL
 
@@ -555,9 +533,9 @@ XCOMM ##########################################################################
 
 
 XCOMM ##########################################################################
-XCOMM 
+XCOMM
 XCOMM  Fujitsu - Locale and platform specific entries
-XCOMM 
+XCOMM
 XCOMM ##########################################################################
 #ifdef __uxp__
 
@@ -602,24 +580,3 @@ XCOMM ##########################################################################
 #endif
 
 #endif /* __uxp__ */
-
-XCOMM ##########################################################################
-XCOMM 
-XCOMM  DEC - Locale and platform specific entries
-XCOMM 
-XCOMM   There are no German, Spanish, French, Italian or Swedith
-XCOMM   symbolic links for DEC because they use the same name as
-XCOMM   the generic/normalized/cannonical locale name.
-XCOMM 
-XCOMM ##########################################################################
-#ifdef __osf__
-
-#ifdef _JAPANESE_
-../infolib/ja_JP.dt-eucJP
-{ dec
-	install_target = /usr/dt/infolib/ja_JP.eucJP
-	type = sym_link
-}
-#endif
-
-#endif /* __osf__ */

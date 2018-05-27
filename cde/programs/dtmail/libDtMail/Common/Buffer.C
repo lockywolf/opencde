@@ -27,7 +27,7 @@
  *  $XConsortium: Buffer.C /main/6 1996/04/21 19:47:10 drk $
  *
  *  RESTRICTED CONFIDENTIAL INFORMATION:
- *  
+ *
  *  The information in this document is subject to special
  *  restrictions in a confidential disclosure agreement between
  *  HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
@@ -44,16 +44,12 @@
 #include <DtMail/Buffer.hh>
 
 #include <string.h>
-#ifdef __osf__
-#include <stdlib.h>
-#else
 #if defined(USL) && (OSMAJORVERSION == 2)
 extern "C" {
 #endif
 #if defined(USL) && (OSMAJORVERSION == 2)
 };
 #endif
-#endif // __osf__
 #include <stdio.h>
 #include <stdlib.h>
 #include <DtMail/Threads.hh>
@@ -221,9 +217,9 @@ BufferMemory::iterate(Buffer::CallBack callback, ...)
     MutexLock mutex(_mutex);
     Chunk *c;
     unsigned long ret = 0;
- 
+
     va_start(va, callback);
- 
+
     // walk through the chunk list, calling the callback for each one
     for (c = _firstchunk; c; c = c->_nextchunk) {
 
@@ -236,10 +232,10 @@ BufferMemory::iterate(Buffer::CallBack callback, ...)
 	// check for problems
         if (ret) break;
     }
- 
+
     return (ret);
 }
- 
+
 
 
 

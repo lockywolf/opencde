@@ -31,13 +31,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -47,7 +47,7 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
 
 #define C_TOC_Element
@@ -106,22 +106,22 @@
 
 // Modes of operation:
 // 1) Set field from preference (initialize only!).
-// 2) Reset field from preference. 
+// 2) Reset field from preference.
 // 3) Set preference from field (when field is modified).
-// 4) Update other UI parts when preference changes.  
+// 4) Update other UI parts when preference changes.
 
-  
+
 class ChangeData {
 public:
   ChangeData (WXmTextField &f, Widget up, Widget dn, int c, int l)
     : field (f), up_arrow(up), dn_arrow(dn), change(c), limit(l)
     { }
 
-  WXmTextField field;		// Field to change 
+  WXmTextField field;		// Field to change
   Widget       up_arrow;
   Widget       dn_arrow;
   int          change;		// Amount of change
-  int          limit;		// Limit of change 
+  int          limit;		// Limit of change
 };
 
 
@@ -145,7 +145,7 @@ public:
     : original (value), current (value) { }
   void set_value (int value)
     {
-      if (value == original)  // ie: reset 
+      if (value == original)  // ie: reset
 	unmodified();
       else if (!changed)      // ie: first change
 	modified();
@@ -169,7 +169,7 @@ public:
     : original (value), current (value) { }
   void set_value (int value)
     {
-      if (value == original)  // ie: reset 
+      if (value == original)  // ie: reset
 	unmodified();
       else if (!changed)      // ie: first change
 	modified();
@@ -187,14 +187,14 @@ public:
   bool current;
 };
 
-// NOTE: String currently unused, will probably have to strdup() values. 
+// NOTE: String currently unused, will probably have to strdup() values.
 class StringValue : public Value {
 public:
   StringValue (String value)
     : original (value), current (value) { }
   void set_value (String value)
     {
-      if (value == original)  // ie: reset 
+      if (value == original)  // ie: reset
 	unmodified();
       else if (!changed)      // ie: first change
 	modified();
@@ -218,7 +218,7 @@ public:
     : original (value), current (value) { }
   void set_value (WindowGeometry &value)
     {
-      if (value == original)  // ie: reset 
+      if (value == original)  // ie: reset
 	unmodified();
       else if (!changed)      // ie: first change
 	modified();
@@ -239,7 +239,7 @@ public:
 #define IS_CHANGED(X) (((Value *) (X).UserData())->changed)
 #define SET_CHANGED(X,V) ((Value *) (X).UserData())->changed = V
 
-#if defined(__STDC__) || defined(hpux) || defined(__osf__)
+#if defined(__STDC__) || defined(hpux)
 #define ATTACH_VALUE(X,T,V) (X).UserData ((void *) new T##Value(V))
 #define SET_VALUE(X,T,V) ((T##Value *) (X).UserData())->set_value(V)
 #define ORIGINAL_VALUE(X,T) ((T##Value *) (X).UserData())->original
@@ -287,7 +287,7 @@ PrefAgent::display()
   if (f_shell == 0)
     create_ui();
 
-  // Always reset on new popup. 
+  // Always reset on new popup.
   reset();
 
   f_shell.Popup();
@@ -441,7 +441,7 @@ PrefAgent::create_ui()
   height = f_map_geo.Height();
   map_label.Height (height);
   update_label.Height (height);
-  
+
   SET_CALLBACK_D (get_map_geo,Activate,get_geometry,(Widget)f_map_geo);
   SET_CALLBACK_D (map,Activate,switch_to_window,(Widget)map_form);
   SET_CALLBACK (f_map_geo,ValueChanged,something_changed);
@@ -450,7 +450,7 @@ PrefAgent::create_ui()
 
   map_form.Manage();
 
-  // Create history preferences 
+  // Create history preferences
   DECLM (WXmPushButton,   history,      options_menu, "history");
 
   mtfstring = CATGETS(Set_AgentLabel, 260, "History");
@@ -486,7 +486,7 @@ PrefAgent::create_ui()
   nh_form.Manage();
   sh_form.Manage();
   hist_form.Manage();
-  
+
   SET_CALLBACK_D (history,Activate,switch_to_window,(Widget)hist_form);
   SET_CALLBACK (f_nh_field,ValueChanged,something_changed);
   SET_CALLBACK (f_sh_field,ValueChanged,something_changed);
@@ -579,7 +579,7 @@ PrefAgent::create_ui()
   hist_form.Unmanage();
   search_form.Unmanage();
 
-  // Values get displayed when reset() is called on dialog display. 
+  // Values get displayed when reset() is called on dialog display.
   init_values();
 }
 
@@ -598,7 +598,7 @@ PrefAgent::ok()
 
 // NOTE:
 // All the functionaly in the `if' statements below in appy and reset
-// really should be part of the class.  No time right now, though. 
+// really should be part of the class.  No time right now, though.
 
 
 // /////////////////////////////////////////////////////////////////
@@ -631,11 +631,11 @@ PrefAgent::apply()
     search_mgr().set_history_length (CURRENT_VALUE (f_sh_field, Integer));
   APPLY_VALUE (f_sh_field, Integer, PrefMgr::SearchHistSize);
 
-  // Save search preferences. 
+  // Save search preferences.
   APPLY_VALUE (f_max_hits_field, Integer, PrefMgr::MaxSearchHits);
   APPLY_VALUE (f_adisplay_toggle, Boolean, PrefMgr::DisplayFirstHit);
 
-  // Desensitize appropriate controls. 
+  // Desensitize appropriate controls.
   f_ok.SetSensitive (False);
   f_apply.SetSensitive (False);
   f_reset.SetSensitive (False);
@@ -680,13 +680,13 @@ PrefAgent::reset()
   if (IS_CHANGED (f_sh_field))
     set_integer (f_sh_field, ORIGINAL_VALUE (f_sh_field, Integer));
 
-  // Reset Search preferences. 
+  // Reset Search preferences.
   if (IS_CHANGED (f_max_hits_field))
     set_integer (f_max_hits_field, ORIGINAL_VALUE (f_max_hits_field, Integer));
   if (IS_CHANGED (f_adisplay_toggle))
     set_auto_display (ORIGINAL_VALUE (f_adisplay_toggle, Boolean));
 
-  // Desensitize appropriate controls. 
+  // Desensitize appropriate controls.
   f_ok.SetSensitive (False);
   f_apply.SetSensitive (False);
   f_reset.SetSensitive (False);
@@ -711,12 +711,12 @@ void
 PrefAgent::init_values()
 {
   PrefMgr &m = pref_mgr();
-  
+
   ATTACH_VALUE (f_browse_geo, WindowGeometry,
 		m.get_geometry (PrefMgr::BrowseGeometry));
   ATTACH_VALUE (f_fs_field, Integer, m.get_int (PrefMgr::FontScale));
   ATTACH_VALUE (f_lock_toggle, Boolean, m.get_boolean (PrefMgr::BrowseLock));
-  
+
   ATTACH_VALUE (f_map_geo, WindowGeometry,
 		m.get_geometry (PrefMgr::MapGeometry));
   ATTACH_VALUE (f_update_toggle, Boolean,
@@ -762,7 +762,7 @@ PrefAgent::switch_to_window (WCallback *wcb)
 }
 
 
-// Keep track if timeout called.  If so, don't change on active callback. 
+// Keep track if timeout called.  If so, don't change on active callback.
 static int timeout_called;
 
 // /////////////////////////////////////////////////////////////////
@@ -774,7 +774,7 @@ PrefAgent::change_cb (WCallback *wcb)
 {
   if (timeout_called == 0)
     change_field ((ChangeData *) wcb->ClientData());
-  // Get rid of the timeout if it is active. 
+  // Get rid of the timeout if it is active.
   if (f_timeout)
     {
       delete f_timeout;
@@ -821,11 +821,11 @@ PrefAgent::change_timeout (WTimeOut *wto)
   timeout_called++;
   // Change the value.
   bool changed = change_field ((ChangeData *) wto->ClientData());
-  // Add the callback again if the limit hasn't been reached. 
+  // Add the callback again if the limit hasn't been reached.
   if (changed)
     {
       int speed = CHANGE_SPEED;
-      // After three times double the speed. 
+      // After three times double the speed.
       if (timeout_called > 3)
 	speed /= 2;
       f_timeout =
@@ -845,7 +845,7 @@ PrefAgent::change_timeout (WTimeOut *wto)
 bool
 PrefAgent::change_field (ChangeData *cd)
 {
-  // Get the current field value and add the change to it. 
+  // Get the current field value and add the change to it.
   char *value = cd->field.Value();
   int amount = atoi (value);
   free (value);
@@ -890,7 +890,7 @@ PrefAgent::change_field (ChangeData *cd)
   if ((cd->change < 0 && amount < cd->limit) ||
       (cd->change > 0 && amount > cd->limit))
     {
-      // Sorry, Charlie. 
+      // Sorry, Charlie.
       window_system().beep();
       return (FALSE);
     }
@@ -951,10 +951,10 @@ PrefAgent::set_lock (bool set)
 					    window_system().unlocked_pixmap(f_lock_toggle.Parent()),
 					    NULL));
     }
-    
+
     f_lock_toggle.Set (set);
     SET_VALUE (f_lock_toggle, Boolean, set);
-}  
+}
 
 
 // /////////////////////////////////////////////////////////////////
@@ -1067,8 +1067,8 @@ PrefAgent::get_geometry (WCallback *wcb)
     shell_name = (char*)"map";
   else if (text_field == f_browse_geo)
     shell_name = (char*)"nodeview";
-    
-  // Display an instructional dialog. 
+
+  // Display an instructional dialog.
   WXmMessageDialog
     info_dialog ((Widget)f_shell, (char*)"geometry_msg",
 		 WArgList (XmNdialogType, XmDIALOG_INFORMATION, NULL));
@@ -1084,7 +1084,7 @@ PrefAgent::get_geometry (WCallback *wcb)
 
   XtVaSetValues((Widget)info_dialog, XmNdefaultPosition, False, NULL);
 
-  // Wait for the dialog to appear. 
+  // Wait for the dialog to appear.
   int mapped = FALSE;
   info_dialog.Manage();
   XtAddEventHandler (info_dialog, ExposureMask, False,
@@ -1097,7 +1097,7 @@ PrefAgent::get_geometry (WCallback *wcb)
       XtDispatchEvent (&event);
     }
 
-  // Let the user pick an OLIAS window. 
+  // Let the user pick an OLIAS window.
   static Cursor pick_cursor =
     XCreateFontCursor (window_system().display(), XC_crosshair);
   Widget target;

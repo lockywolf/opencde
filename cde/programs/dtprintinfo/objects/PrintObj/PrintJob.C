@@ -101,7 +101,7 @@ PrintJob::PrintJob(BaseObj *parent,
    n++;
    message = new char [strlen(MESSAGE(DateL)) + 4];
    sprintf(message, "   %s", MESSAGE(DateL));
-   AddAttribute(DATE_SUBMITTED, message, 
+   AddAttribute(DATE_SUBMITTED, message,
                 Help, ContextualHelp, Mask, ValueListType, Listing);
    _attributes[n]->Value = STRDUP(Date);
    _attributes[n]->DisplayValue = STRDUP(Date);
@@ -120,8 +120,6 @@ int PrintJob::CancelJob(BaseObj *obj, char **output, BaseObj * /*requestor*/)
 
 #ifdef aix
    sprintf(command, "enq -P%s -x%s", me->Parent()->Name(), me->_jobNumber);
-#elif __osf__
-   sprintf(command, "lprm -P%s %s", me->Parent()->Name(), me->_jobNumber);
 #else
    sprintf(command, "cancel %s-%s", me->Parent()->Name(), me->_jobNumber);
 #endif

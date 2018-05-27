@@ -117,7 +117,7 @@ IcccmAgent::value_handler(Widget w, XtPointer ia, Atom *selection,
     }
 
     if (*type == XA_TEXT(XtDisplay(w)) || *type == XA_STRING) {
-#ifdef DEBUG   
+#ifdef DEBUG
         if (*type == XA_STRING)
             cout << "(DEBUG) valueCB: import data as XA_STRING" << endl;
         else
@@ -372,24 +372,16 @@ IcccmAgent::own_selection(Widget w, Atom selection, IcccmAgent* ia,
 		f_selection_owner = this;
 		f_owning_selection = selection;
 		f_owning_widget = w;
-#if defined(__osf__)
-		if (fs != NULL)
-#else
 		if (fs)
-#endif /* __osf__ */
-#if defined(SC3) || defined (__osf__)
+#if defined(SC3)
 		    (ia->*fs)();
 #else
 		    (((IcccmAgent*)f_real_object)->*fs)();
 #endif
 	}
 	else {
-#if defined(__osf__)
-	    if (ff != NULL)
-#else
 	    if (ff)
-#endif /* __osf__ */
-#if defined(SC3) || defined (__osf__)
+#if defined(SC3)
 		(ia->*ff)();
 #else
 		(((IcccmAgent*)f_real_object)->*ff)();
@@ -492,7 +484,7 @@ IcccmAgent::convert_handler(Widget w, Atom selection, Atom target,
     XtFree((char*)xmu_targets);
     xmu_targets = NULL;
     value_return = (XtPointer)target_list;
-    return True;				
+    return True;
   }
 
   if (target == XA_COMPOUND_TEXT(XtDisplay(w))) {
@@ -564,13 +556,13 @@ IcccmAgent::convert_handler(Widget w, Atom selection, Atom target,
     ON_DEBUG( cout << "selection requested as length" << '\n' << flush; );
 
     const char* ct;
-    length = (int *)XtMalloc(sizeof(int)); 
+    length = (int *)XtMalloc(sizeof(int));
     // we should return the length of compound text
     *length = mbstoct((((IcccmAgent*)f_real_object)->*f_string_exporter)(), ct);
     XtFree((char*)ct);
 
     type_return = XA_INTEGER;
-    value_return = (XtPointer)length; 
+    value_return = (XtPointer)length;
     length_return = 1;
     format_return = sizeof(int) * 8;
     return True;

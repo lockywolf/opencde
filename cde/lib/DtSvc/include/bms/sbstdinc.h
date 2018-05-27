@@ -63,7 +63,7 @@
 #if !(defined(apollo) && defined(__bsd)) && !defined(CSRG_BASED)
 
 #if defined(__STDC__)
-#if !defined(linux) && !defined(__osf__) && !defined(_XFUNCS_H_) &&            \
+#if !defined(linux) && !defined(_XFUNCS_H_) &&            \
     !defined(sun)
 extern void bcopy(char *b1, char *b2, int length);
 extern int bcmp(char *b1, char *b2, int length);
@@ -72,7 +72,7 @@ extern void bzero(char *b, int length);
 
 extern char *mktemp(char *tmplate);
 #elif !defined(__cplusplus)
-#if !defined(linux) && !defined(__osf__) && !defined(_XFUNCS_H_)
+#if !defined(linux) && !defined(_XFUNCS_H_)
 extern void bcopy();
 extern int bcmp();
 extern void bzero();
@@ -225,12 +225,10 @@ extern size_t Xestrlen(ConstXeString s);
 #else
 extern size_t Xestrlen();
 #endif
-#ifndef __osf__
 #ifdef strlen
 #undef strlen
 #endif
 #define strlen Xestrlen
-#endif
 
 #if defined(__STDC__) || defined(__cplusplus)
 extern XeString Xestrdup(ConstXeString s);

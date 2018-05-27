@@ -1,7 +1,7 @@
 %{ /* -*- c++ -*- */
 /* $XConsortium: lex.l /main/5 1996/11/19 16:55:12 drk $ */
 
-#if !defined(__osf__) && !defined(USL) && !defined(linux) && !defined(CSRG_BASED)
+#if !defined(USL) && !defined(linux) && !defined(CSRG_BASED)
 #include <osfcn.h>
 #else
 #include <unistd.h>
@@ -9,15 +9,15 @@
 
 #include <iostream.h>
 #include <stdio.h>
-#include <stream.h>  
+#include <stream.h>
 #include <string.h>
 
 #include "Exceptions.hh"
 
-#include "SGMLDefn.h"  
+#include "SGMLDefn.h"
 #include "Dispatch.h"
 #include "AttributeRec.h"
-#include "AttributeList.h"  
+#include "AttributeList.h"
 #include "FlexBuffer.h"
 #include "Token.h"
 #include "api/utility.h"
@@ -31,12 +31,12 @@ unsigned char oct2dec( const char *str )
   unsigned char  value = 0;
   const char *ptr = str;
   const char *endptr = str + strlen(str) -1 ;
-  
+
   for ( ; *ptr != '\0' ; ptr++ ) {
-    
+
     int power = endptr - ptr;
     int result     = 1;
-    
+
     for ( int i = 1; i <= power; i++ ) {
       result = result * 8;
     }
@@ -44,7 +44,7 @@ unsigned char oct2dec( const char *str )
     value = value + ( *ptr - '0' ) * result ;
   }
 
-  
+
   return ( value );
 }
 
@@ -78,7 +78,7 @@ unsigned char oct2dec( const char *str )
                              // information associated with it
 
                              Dispatch::token(START, (unsigned char *)yytext+1 );
-                            
+
                            }
 
 ^"L"[0-9]+" "[^ \n]+       {	/* file & line num info. */
@@ -88,12 +88,12 @@ unsigned char oct2dec( const char *str )
 				p++;
 				Dispatch::file(p);
 			   }
-				
+
 ^"L"[0-9]+		   {	/* line num info. */
 				char *p = (char*)yytext+1;
 				Dispatch::line(atoi(p));
 			   }
-				
+
 ^"s"[^\n]+                 {
                               /* system id found */
                               defn->store_sys_id( (char *)yytext + 1 );
@@ -109,15 +109,15 @@ unsigned char oct2dec( const char *str )
 			       */
                               defn->store_defn( ENTITY_TYPE,
 						(char *)yytext + 1 );
-			      
+
                               Dispatch::entity_decl( defn );
-			      
+
 			    }
 ^"&"[^\n]+                  {
                               /*
 			       * external entity reference
 			       */
-                              Dispatch::token(EXTERNAL_ENTITY, 
+                              Dispatch::token(EXTERNAL_ENTITY,
 					      (unsigned char *)yytext+1 );
 			    }
 
@@ -148,7 +148,7 @@ unsigned char oct2dec( const char *str )
                              // Replace new line with space
                              DataBuffer->put('\015');
 			     Dispatch::newline();
-                             
+
                            }
 <ProcessData>"\\|"         {
                              // Bypass this entity
@@ -159,7 +159,7 @@ unsigned char oct2dec( const char *str )
                              }
 
 <ProcessData>"\\"[0-7][0-7][0-7] {
-  
+
                                    unsigned char ch = oct2dec(
 				      (const char *)yytext + 1 );
                                    DataBuffer->put ( ch );
@@ -189,12 +189,12 @@ unsigned char oct2dec( const char *str )
 
 .                          |
 \n                         ;
-			     
+
 %%
 
 #ifdef DEBUG
 //---------------------------------------------------------------------
-#include "OLAF.h"  
+#include "OLAF.h"
 #include "SGMLName.h"
 
 static void TestToken( Token *tok )
@@ -220,7 +220,7 @@ static void TestToken( Token *tok )
       else {
 	cout << "AttrMatch Test 2 failed\n";
       }
-      
+
     }
   }
 }

@@ -20,11 +20,11 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $TOG: tt_log.C /main/7 1999/10/14 18:42:17 mgreess $ 			 				
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $TOG: tt_log.C /main/7 1999/10/14 18:42:17 mgreess $
 /*
  *
  * tt_log.cc
@@ -34,13 +34,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifdef __osf__
-#include <unistd.h>
-#else
 #if !defined (USL) && !defined(__uxp__) && !defined(linux) && !defined(CSRG_BASED) && !defined(sun)
 #include <osfcn.h>
 #endif
-#endif /* __osf__ */
 
 #define X_INCLUDE_TIME_H
 #define XOS_USE_XT_LOCKING

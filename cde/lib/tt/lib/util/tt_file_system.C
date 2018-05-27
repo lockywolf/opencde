@@ -20,20 +20,20 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $TOG: tt_file_system.C /main/5 1998/03/19 18:59:48 mgreess $ 			 				
-//%% 	restrictions in a confidential disclosure agreement between	
-//%% 	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this	
-//%% 	document outside HP, IBM, Sun, USL, SCO, or Univel without	
-//%% 	Sun's specific written approval.  This document and all copies	
-//%% 	and derivative works thereof must be returned or destroyed at	
-//%% 	Sun's request.							
-//%% 									
-//%% 	Copyright 1993, 1994 Sun Microsystems, Inc.  All rights reserved.	
-//%% 									
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $TOG: tt_file_system.C /main/5 1998/03/19 18:59:48 mgreess $
+//%% 	restrictions in a confidential disclosure agreement between
+//%% 	HP, IBM, Sun, USL, SCO and Univel.  Do not distribute this
+//%% 	document outside HP, IBM, Sun, USL, SCO, or Univel without
+//%% 	Sun's specific written approval.  This document and all copies
+//%% 	and derivative works thereof must be returned or destroyed at
+//%% 	Sun's request.
+//%%
+//%% 	Copyright 1993, 1994 Sun Microsystems, Inc.  All rights reserved.
+//%%
 /* @(#)tt_file_system.C	1.40 95/01/06
  *
  * Tool Talk Utility
@@ -82,16 +82,14 @@
 				   : "unknown"))))
 #	define ttFsName(e) vmt2dataptr(e,VMT_OBJECT)
 #	define ttMountPt(e) vmt2dataptr(e,VMT_STUB)
-#	define ttCloseMntTbl(f)		free(tmpbuf)    
-#elif defined(__osf__) || defined(CSRG_BASED)
+#	define ttCloseMntTbl(f)		free(tmpbuf)
+#elif defined(CSRG_BASED)
 #       include <sys/types.h>
 #       include <sys/mount.h>
 
 
 #if defined(HAS_STATVFS)
         extern "C" int getfsstat(struct statvfs *, long, int);
-#elif defined(__osf__)
-        extern "C" int getfsstat(struct statfs *, long, int);
 # endif
 
 #       define MNTTYPE_NFS              "nfs"
@@ -104,15 +102,7 @@
 #     define TtMntEntry struct statfs *
 # endif
 
-# ifdef __osf__
-#       define ttFsType(e)              \
-                                (((e)->f_type == MOUNT_UFS) ? "ufs" \
-                                : (((e)->f_type == MOUNT_NFS3) ? "nfs" \
-                                : (((e)->f_type == MOUNT_NFS) ? "nfs" \
-                                 : (((e)->f_type == MOUNT_CDFS) ? "cdfs" \
-                                  : (((e)->f_type == MOUNT_PROCFS) ? "procfs" \
-                                   : "unknown")))))
-# elif defined(CSRG_BASED)
+# if defined(CSRG_BASED)
 #	define ttFsType(e)		(e->f_fstypename)
 # endif
 #       define ttFsName(e)              ((char *)((e)->f_mntfromname))
@@ -139,7 +129,7 @@
 
 #if defined(OPT_BUG_SUNOS_5)
 // Bug 1116904 filed on the absence of hasmntopt from the
-// header file.  Fixed in SunOS 5.3, but we leave this in so 
+// header file.  Fixed in SunOS 5.3, but we leave this in so
 // we can compile on 5.1 and 5.2.
 extern "C" {
 	extern char *hasmntopt(struct mnttab *mnt, char *opt);
@@ -151,7 +141,7 @@ time_t				_Tt_file_system::lastMountTime		= 0;
 _Tt_file_system::
 _Tt_file_system ()
 {
-	// It would be simpler just to have a static instance of 
+	// It would be simpler just to have a static instance of
 	// _Tt_file_system_entry_list here, but static class instances
 	// are verboten if we want to be called by C programs.
 	if (_tt_global->fileSystemEntries.is_null()) {
@@ -196,7 +186,7 @@ createFileSystemEntry(TtMntEntry entry)
                 hostname = vmt2dataptr(entry,VMT_HOSTNAME);
 		partition = ttFsName(entry);
 #else /* AIX */
-	
+
 		// Search for a '.' to separate the hostname and
 		// the domain name
 		char *endOfHostNamePos =
@@ -228,7 +218,7 @@ createFileSystemEntry(TtMntEntry entry)
 		}
 
 		hostname = ttFsName(entry);
-#endif	/* AIX */	
+#endif	/* AIX */
 		local_flag = FALSE;
 		loop_back_flag = FALSE;
 	} else {
@@ -321,7 +311,7 @@ findBestMountPoint (_Tt_string &path,
 				    current_mount_point_length)) {
 				max_match_length = current_mount_point_length;
 				max_match_entry = *entries_cursor;
-			}  
+			}
 		}
 
 		if (max_match_length == path_length) {
@@ -439,7 +429,7 @@ updateFileSystemEntries ()
 	}
 
 	firsttime = 0;
-	
+
 	// XXX Due to bug #1126575 - MNTTAB temporarily goes to
 	//     size 0 during automounter updates.  The file stats
 	//     OK, but has no data in it.
@@ -463,7 +453,7 @@ updateFileSystemEntries ()
 #endif
 
 	_tt_global->fileSystemEntries->flush();
-	_Tt_file_system_entry_ptr fse;	
+	_Tt_file_system_entry_ptr fse;
 	TtMntEntry entry;
 #if defined(_AIX)
 	int	rc, sz = BUFSIZ;
@@ -510,13 +500,13 @@ updateFileSystemEntries ()
             }
             entry = &buf[i];
 
-#elif defined(__osf__) || defined(CSRG_BASED)
+#elif defined(CSRG_BASED)
         int             numfs,i;
         struct statfs   *buf;
         long            bufsize;
         int             flags = MNT_NOWAIT;
         char            *s, *host, path[MNAMELEN] ;
- 
+
         numfs = getfsstat ( (struct statfs *)0, 0, flags );
         if(numfs == (-1)){
             _tt_syslog(0,LOG_ERR,"getfsstat: %s",strerror(errno));
@@ -544,12 +534,12 @@ updateFileSystemEntries ()
             entry = &buf[i];
 
 #elif defined(OPT_SVR4_GETMNTENT)
-	int rc;     
+	int rc;
         while (! (rc = getmntent(mount_table, &entry)))
-#else		    
+#else
 	while (entry = getmntent(mount_table))
 #endif
-#if !defined(__osf__) && !defined(CSRG_BASED)
+#if !defined(CSRG_BASED)
 	{
 #endif
 		fse =  createFileSystemEntry( entry );
@@ -561,7 +551,7 @@ fprintf(stderr,"File name mapping: %s:%s on %s; %s %s\n",
 	(char *)fse->getMountPoint(),
 	fse->isLocal()?"local":"",
 	fse->isLoopBack()?"loopback":"");
-#endif			
+#endif
 			_tt_global->fileSystemEntries->append(fse);
                 }
         }

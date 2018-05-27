@@ -36,11 +36,7 @@
 #define __need_fd_set
 
 #include <bms/sbport.h>
-#ifdef __osf__
-#include <sys/time.h> /* For declaration of select(). */
-#else
 #include <time.h>
-#endif
 #include <errno.h>
 #include <signal.h>
 
@@ -201,7 +197,7 @@ void local_channel_object_input_handler(void *client_data, int *source,
         timeout.tv_sec = 0;
         timeout.tv_usec = 0;
 
-#if defined(SVR4) || defined(__osf__) || defined(__hpux) ||                    \
+#if defined(SVR4) || defined(__hpux) ||                    \
     defined(__OpenBSD__) || defined(linux)
         select(max_fds, (fd_set *)&read_fd_vect, NULL,
                (fd_set *)&except_fd_vect, &timeout);

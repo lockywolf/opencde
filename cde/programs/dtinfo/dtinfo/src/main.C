@@ -26,7 +26,7 @@
  * (c) Copyright 1996 Hewlett-Packard Company.
  * (c) Copyright 1996 International Business Machines Corp.
  * (c) Copyright 1996 Sun Microsystems, Inc.
- * (c) Copyright 1996 Novell, Inc. 
+ * (c) Copyright 1996 Novell, Inc.
  * (c) Copyright 1994, 1995, 1996 FUJITSU LIMITED.
  * (c) Copyright 1996 Hitachi.
  */
@@ -36,13 +36,13 @@
  * the Copyright Laws of the United States.  USE OF A COPYRIGHT
  * NOTICE IS PRECAUTIONARY ONLY AND DOES NOT IMPLY PUBLICATION
  * OR DISCLOSURE.
- * 
+ *
  * THIS SOFTWARE CONTAINS CONFIDENTIAL INFORMATION AND TRADE
  * SECRETS OF HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.  USE,
  * DISCLOSURE, OR REPRODUCTION IS PROHIBITED WITHOUT THE
  * PRIOR EXPRESS WRITTEN PERMISSION OF HAL COMPUTER SYSTEMS
  * INTERNATIONAL, LTD.
- * 
+ *
  *                         RESTRICTED RIGHTS LEGEND
  * Use, duplication, or disclosure by the Government is subject
  * to the restrictions as set forth in subparagraph (c)(l)(ii)
@@ -52,7 +52,7 @@
  *          HAL COMPUTER SYSTEMS INTERNATIONAL, LTD.
  *                  1315 Dell Avenue
  *                  Campbell, CA  95008
- * 
+ *
  */
 
 # include "UAS.hh"
@@ -68,12 +68,6 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 #endif
-
-#ifdef __osf__
-/* Suppress unaligned access message */
-#include <sys/types.h>
-#include <sys/sysinfo.h>
-#endif /* __osf__ */
 
 #define C_WindowSystem
 #define L_Other
@@ -104,11 +98,11 @@
 extern "C" {
   extern void monitor(int);
   int quantify_clear_data(void);
-}  
+}
 #endif
 extern "C" {
   int quantify_clear_data(void);
-}  
+}
 
 
 #ifdef UseSessionMgmt
@@ -172,7 +166,7 @@ DisplayDocList( UAS_List<UAS_String> docs )
   if( docs.length() != 0 )
   {
     // the presumption for now is that any special session state
-    // info will exist only if there were node display windows... 
+    // info will exist only if there were node display windows...
     XtAppAddWorkProc( window_system().app_context(),
                       RestoreSession_wp, (char *)NULL ) ;
   }
@@ -223,18 +217,18 @@ PrintDocList( UAS_List<UAS_String> docs )
     UAS_String  doc_locator, start_doc, end_doc ;
     char *document;
     char *temp;
-    
+
     for (unsigned int i = 0; i < docs.length(); i++)
     {
 	(*(docs[i])).split( '-', start_doc, end_doc ) ;
 	doc_locator = start_doc.length() ? start_doc : end_doc ;
-	
+
 	// only print cares about a range of locators;
 	int len = doc_locator.length();
 	document = new char[len + 1];
 	temp = (char *)doc_locator;
 	*((char *) memcpy(document, temp, len) + len) = '\0';
-		
+
 	// ... needs expansion of range here if present ...
 	XtAppAddWorkProc( window_system().app_context(),
 			  PrintNode_wp, document ) ;
@@ -245,47 +239,26 @@ int
 main(int argc, char **argv)
 {
     INIT_EXCEPTIONS();
-    
+
 #if defined(sparc) && defined(MAP_ZERO)
-    // to permit dtsearch to access address zero 
+    // to permit dtsearch to access address zero
     mmap(NULL, 0x1000, PROT_READ, MAP_PRIVATE | MAP_FIXED,
 	 open("/dev/zero", O_RDONLY), 0);
 #endif
-    
+
 #ifdef MONITOR
     monitor(0);
 #endif
 
-#ifdef __osf__
-/* Code to suppress unaligned access message. */
-   unsigned long        op;
-   int                  buffer[2];
-   unsigned long        nbytes = 1;
-   char*                arg = 0;
-   unsigned long        flag = 0;
-
-   int                  ssi_status;
-
-   op = SSI_NVPAIRS;
-
-   buffer[0] = SSIN_UACPROC;
-   buffer[1] =  0x00000001;
-#ifdef DEBUG_UAC
-   buffer[1] |= 0x00000004;
-#endif
-
-   ssi_status = setsysinfo ( op, (caddr_t) buffer, nbytes, arg, flag );
-#endif
-    
     WindowSystem window_system (argc, argv);
     CatMgr msg_catalog_mgr;
     InputMgrX input_manager;
     if (env().init(argc, argv) < 0)
 	exit(1);
-    
+
     mtry
     {
-	
+
 	// don't set up for session management or tooltalk if
 	// invoked for print only
 	if (!window_system.videoShell()->print_only) {
@@ -299,7 +272,7 @@ main(int argc, char **argv)
 			      SetTooltalk_wp, (char *)NULL ) ;
 #endif
 	}
-	
+
 	// set up to process any explicit section display requests for
         // startup. If print only, print specified sections.
 	UAS_List<UAS_String>env_sections( env().sections() );
@@ -310,11 +283,11 @@ main(int argc, char **argv)
 	else {
 	    DisplayDocList( env_sections );
 	}
-	
+
 	// request immediate loading of any/all infolibs specified
 	UAS_List<UAS_String>env_infolibs( env().infolibs() );
 	library_mgr().init( env_infolibs );
-	
+
 	window_system.run();
     }
     mcatch (Exception &, e)
@@ -331,7 +304,7 @@ main(int argc, char **argv)
 	exit (1);
     }
     end_try;
-    
+
     return (0);
 }
 

@@ -20,11 +20,11 @@
  * to the Free Software Foundation, Inc., 51 Franklin Street, Fifth
  * Floor, Boston, MA 02110-1301 USA
  */
-//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company			
-//%%  (c) Copyright 1993, 1994 International Business Machines Corp.	
-//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.			
-//%%  (c) Copyright 1993, 1994 Novell, Inc. 				
-//%%  $TOG: tt_host.C /main/9 1999/10/14 18:41:36 mgreess $ 			 				
+//%%  (c) Copyright 1993, 1994 Hewlett-Packard Company
+//%%  (c) Copyright 1993, 1994 International Business Machines Corp.
+//%%  (c) Copyright 1993, 1994 Sun Microsystems, Inc.
+//%%  (c) Copyright 1993, 1994 Novell, Inc.
+//%%  $TOG: tt_host.C /main/9 1999/10/14 18:41:36 mgreess $
 /*
  *
  * @(#)tt_host.C	1.12 93/09/07
@@ -45,19 +45,15 @@ extern "C" in_addr_t inet_addr(const char *);
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <string.h>
-#ifdef __osf__
-#include <unistd.h>
-#else
 #if !defined(USL) && !defined(__uxp__) && !defined(linux) && !defined(CSRG_BASED) && !defined(sun)
 #include <osfcn.h>
 #endif
-#endif /* __osf */
 
 #define X_INCLUDE_NETDB_H
 #define XOS_USE_XT_LOCKING
 #include <X11/Xos_r.h>
 
-#include "util/tt_port.h"   
+#include "util/tt_port.h"
 
 #if defined(OPT_BUG_SUNOS_4) && defined(__GNUG__)
 	extern "C" { int endhostent(); }
@@ -68,7 +64,7 @@ extern "C" in_addr_t inet_addr(const char *);
 
 
 
-/* 
+/*
  * Null constructor.
  */
 _Tt_host::
@@ -80,7 +76,7 @@ _Tt_host()
 }
 
 
-/* 
+/*
  * Destructor. Sets _name to NULL so that reference counting can free up the
  * space if possible.
  */
@@ -93,7 +89,7 @@ _Tt_host::
 }
 
 
-/* 
+/*
  * Initializes a _Tt_host object from a hostent structure which is the
  * standard structure returned by gethostbyaddr and gethostbyname.
  */
@@ -127,9 +123,9 @@ init_from_hostent(hostent *h)
 }
 
 
-/* 
+/*
  * Initializes a _Tt_host object from an IP address.
- * 
+ *
  * --> This method should attempt to cache results as much as possible to
  * avoid repeated calls to gethostbyaddr (which may, in the abscence of
  * DNS trigger YP lookups). (and in the presence of DNS trigger DNS
@@ -155,21 +151,16 @@ init_byaddr(_Tt_string addr)
 }
 
 
-/* 
+/*
  * Initializes a _Tt_host object from a string representing the host
  * address in Internet '.' notation.
  */
 int _Tt_host::
 init_bystringaddr(_Tt_string addr)
 {
-	
-#ifdef __osf__
-        unsigned int    *ip_address;
-        unsigned int    ip_address_buf;
-#else
+
 	unsigned long	*ip_address;
 	unsigned long 	ip_address_buf;
-#endif
 	struct hostent		*addr_ret;
 	_Xgethostbynameparams	addr_buf;
 
@@ -202,9 +193,9 @@ init_bystringaddr(_Tt_string addr)
 	return(1);
 }
 
-/* 
+/*
  * Initializes a _Tt_host object from a host name.
- * 
+ *
  */
 int _Tt_host::
 init_byname(_Tt_string name)
@@ -250,7 +241,7 @@ init_byname(_Tt_string name)
 }
 
 
-/* 
+/*
  * Returns the length of the host address.
  */
 int _Tt_host::

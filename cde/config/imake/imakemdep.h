@@ -44,7 +44,7 @@ in this Software without prior written authorization from The Open Group.
 */
 
 
-/* 
+/*
  * This file contains machine-dependent constants for the imake utility.
  * When porting imake, read each of the steps below and add in any necessary
  * definitions.  In general you should *not* edit ccimake.c or imake.c!
@@ -111,10 +111,10 @@ in this Software without prior written authorization from The Open Group.
 #ifdef Mips
 #  if defined(SYSTYPE_BSD) || defined(BSD) || defined(BSD43)
 #    define imake_ccflags "-DBSD43"
-#  else 
+#  else
 #    define imake_ccflags "-DSYSV"
 #  endif
-#endif 
+#endif
 
 #ifdef is68k
 #define imake_ccflags "-Dluna -Duniosb"
@@ -295,17 +295,17 @@ in this Software without prior written authorization from The Open Group.
 /*
  * Step 5:  cpp_argv
  *     The following table contains the flags that should be passed
- *     whenever a Makefile is being generated.  If your preprocessor 
+ *     whenever a Makefile is being generated.  If your preprocessor
  *     doesn't predefine any unique symbols, choose one and add it to the
  *     end of this table.  Then, do the following:
- * 
+ *
  *         a.  Use this symbol in Imake.tmpl when setting MacroFile.
  *         b.  Put this symbol in the definition of BootstrapCFlags in your
  *             <platform>.cf file.
- *         c.  When doing a make World, always add "BOOTSTRAPCFLAGS=-Dsymbol" 
+ *         c.  When doing a make World, always add "BOOTSTRAPCFLAGS=-Dsymbol"
  *             to the end of the command line.
- * 
- *     Note that you may define more than one symbol (useful for platforms 
+ *
+ *     Note that you may define more than one symbol (useful for platforms
  *     that support multiple operating systems).
  */
 
@@ -426,7 +426,7 @@ char *cpp_argv[ARGUMENTS] = {
 #ifdef MOTOROLA
 	"-DMOTOROLA",    /* Motorola Delta Systems */
 # ifdef SYSV
-	"-DSYSV", 
+	"-DSYSV",
 # endif
 # ifdef SVR4
 	"-DSVR4",
@@ -516,21 +516,6 @@ char *cpp_argv[ARGUMENTS] = {
 #  ifdef DELL
 	"-DDELL",
 #  endif
-# endif
-#endif
-#ifdef __osf__
-	"-D__osf__",
-# ifdef __mips__
-	"-D__mips__",
-# endif
-# ifdef __alpha
-	"-D__alpha",
-# endif
-# ifdef __i386__
-	"-D__i386__",
-# endif
-# ifdef __GNUC__
-	"-traditional",
 # endif
 #endif
 #ifdef Oki
@@ -639,11 +624,6 @@ char *cpp_argv[ARGUMENTS] = {
 # define DEFAULT_OS_MAJOR_REV	"v %[0-9]"
 # define DEFAULT_OS_MINOR_REV	"v %*d.%1s"
 # define DEFAULT_OS_TEENY_REV	"v %*d.%*c%[.0-9]"
-# define DEFAULT_OS_NAME	"srvm %[^\n]"
-#elif defined(__osf__)
-/* uname -r returns "Wx.y", e.g. "V3.2" or "T4.0" */
-# define DEFAULT_OS_MAJOR_REV	"r %*[^0-9]%[0-9]"
-# define DEFAULT_OS_MINOR_REV	"r %*[^.].%[0-9]"
 # define DEFAULT_OS_NAME	"srvm %[^\n]"
 #elif defined(__uxp__)
 /* NOTE: "x.y[.z]" above handles UXP/DF.  This is a sample alternative. */
@@ -826,9 +806,6 @@ struct symtab	predefs[] = {
 #endif
 #ifdef __OSF__
 	{"__OSF__", "1"},
-#endif
-#ifdef __osf__
-	{"__osf__", "1"},
 #endif
 #ifdef __alpha
 	{"__alpha", "1"},
