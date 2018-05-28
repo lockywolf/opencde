@@ -924,8 +924,8 @@ static void SetValues(FilterRec *filter_rec, FilterData *filter_data) {
 
                 user_data = filter_data->user_data[i];
 
-                if (ptr = (char *)DtDtsDataTypeToAttributeValue(
-                        user_data->filetype, FM_TYPE_LABEL, NULL)) {
+                if ((ptr = (char *)DtDtsDataTypeToAttributeValue(
+                        user_data->filetype, FM_TYPE_LABEL, NULL))) {
                         icon_label = XmStringCreateLocalized(ptr);
                         DtDtsFreeAttributeValue(ptr);
                 } else {
@@ -1526,7 +1526,7 @@ void UpdateFilterAfterDBReread(DialogData *dialog_data)
         filter_data = (FilterData *)dialog_data->data;
         new_filter_data = (FilterData *)XtMalloc(sizeof(FilterData));
 
-        if (filter_rec = (FilterRec *)_DtGetDialogInstance(dialog_data)) {
+        if ((filter_rec = (FilterRec *)_DtGetDialogInstance(dialog_data))) {
                 /* Dialog is posted */
                 result = GetFilterValues(filter_rec, new_filter_data);
                 if (result) {

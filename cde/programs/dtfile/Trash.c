@@ -376,7 +376,7 @@ Boolean InitializeTrash(Boolean enableVerifyPrompt) {
         sacred_dir_list[sacred_dir_count++] = XtNewString(TrashInfoFileName);
 
         ptr = TrashInfoFileName + 1;
-        while (ptr = DtStrchr(ptr, '/')) {
+        while ((ptr = DtStrchr(ptr, '/'))) {
                 /* All parent components of the user's home dir cannot be
                  * deleted */
                 *ptr = '\0';
@@ -3977,7 +3977,7 @@ static int CheckDeletePermissionRecur(char *destinationPath) {
 
         first_file = True;
 
-        while (dp = readdir(dirp)) {
+        while ((dp = readdir(dirp))) {
                 if (strcmp(dp->d_name, ".") != 0 &&
                     strcmp(dp->d_name, "..") != 0) {
                         if (first_file) {

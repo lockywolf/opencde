@@ -1490,7 +1490,7 @@ static XtPointer GetResourceValues(XrmDatabase data_base, char **name_list) {
         /* Get primary help dialog */
         new_name_list[name_list_count] = number;
         new_name_list[name_list_count + 1] = NULL;
-        sprintf(number, "%d", 0);
+        snprintf(number, 10, "%d", 0);
         if (restoreType == NORMAL_RESTORE) {
                 file_mgr_data->primaryHelpDialog = _DtGetResourceDialogData(
                     help_dialog, data_base, new_name_list);
@@ -1950,10 +1950,10 @@ static void SetValues(FileMgrRec *file_mgr_rec, FileMgrData *file_mgr_data) {
                             strcmp(file_mgr_data->helpVol, DTFILE_HELP_NAME) !=
                                 0) {
                                 tmpStr = GETMESSAGE(21, 1, "File Permissions");
-                                tempStr = (char *)XtMalloc(
-                                    strlen(tmpStr) +
-                                    strlen(file_mgr_data->title) + 5);
-                                sprintf(tempStr, "%s - %s",
+                                int tempStr_size = strlen(tmpStr) +
+                                    strlen(file_mgr_data->title) + 5;
+                                tempStr = (char *)XtMalloc(tempStr_size);
+                                snprintf(tempStr, tempStr_size, "%s - %s",
                                         file_mgr_data->title, tmpStr);
                         } else {
                                 tmpStr = (GETMESSAGE(
@@ -2087,7 +2087,7 @@ static void WriteResourceValues(DialogData *values, int fd, char **name_list) {
         if (file_mgr_data->primaryHelpDialog) {
                 new_name_list[name_list_count] = number;
                 new_name_list[name_list_count + 1] = NULL;
-                sprintf(number, "%d", 0);
+                snprintf(number, 10, "%d", 0);
                 _DtWriteDialogData(file_mgr_data->primaryHelpDialog, fd,
                                    new_name_list);
         }
@@ -2333,18 +2333,20 @@ static void GetSessionDir(FileMgrData *file_mgr_data) {
                         toolbox_dir +=
                             strlen(file_mgr_data->restricted_directory);
 
-                        current_dir = XtMalloc(strlen(root_toolbox) +
+                        int current_dir_size = strlen(root_toolbox) +
                                                strlen(user_session_str) +
-                                               strlen(toolbox_dir) + 1);
-                        sprintf(current_dir, "%s%s%s", root_toolbox,
+                                               strlen(toolbox_dir) + 1;
+                        current_dir = XtMalloc(current_dir_size);
+                        snprintf(current_dir, current_dir_size, "%s%s%s", root_toolbox,
                                 user_session_str, toolbox_dir);
                         file_mgr_data->current_directory = current_dir;
 
+                        int file_mgr_data_size = strlen(root_toolbox) +
+                                     strlen(user_session_str) + 1;
                         file_mgr_data->restricted_directory =
-                            XtMalloc(strlen(root_toolbox) +
-                                     strlen(user_session_str) + 1);
-                        sprintf(file_mgr_data->restricted_directory, "%s%s",
-                                root_toolbox, user_session_str);
+                            XtMalloc(file_mgr_data_size);
+                        snprintf(file_mgr_data->restricted_directory, file_mgr_data_size,
+                                "%s%s", root_toolbox, user_session_str);
                 } else {
                         file_mgr_data->current_directory =
                             XtNewString(file_mgr_data->current_directory);
@@ -4329,7 +4331,7 @@ void UpdateBranchState(FileMgrData *file_mgr_data, FileViewData *ip, int op,
                                                  "The folder %s contains no "
                                                  "subdirectories.");
 
-                        sprintf(buf, msg, ip->file_data->file_name);
+                        snprintf(buf, 1024, msg, ip->file_data->file_name);
                         SetSpecialMsg(file_mgr_rec, file_mgr_data, buf);
                 }
         }
@@ -4667,6 +4669,7 @@ static void SetIconAttributes(FileMgrRec *file_mgr_rec,
         else
                 ptr = "";
 
+        int new_directory_name_size;
         if (file_mgr_data->title) {
                 if (file_mgr_data->toolbox) {
                         if (strcmp(directory_name,
@@ -4676,21 +4679,25 @@ static void SetIconAttributes(FileMgrRec *file_mgr_rec,
                                 strcpy(new_directory_name,
                                        file_mgr_data->title);
                         } else {
+                                new_directory_name_size = strlen(ptr) + 1;
                                 new_directory_name =
-                                    (char *)XtMalloc(strlen(ptr) + 1);
-                                sprintf(new_directory_name, "%s", ptr);
+                                    (char *)XtMalloc(new_directory_name_size);
+                                snprintf(new_directory_name, new_directory_name_size, "%s", ptr);
                         }
                 } else {
-                        new_directory_name = (char *)XtMalloc(strlen(ptr) + 1);
-                        sprintf(new_directory_name, "%s", ptr);
+                        new_directory_name_size = strlen(ptr) + 1;
+                        new_directory_name = (char *)XtMalloc(new_directory_name_size);
+                        snprintf(new_directory_name, new_directory_name_size, "%s", ptr);
                 }
                 root = True;
         } else {
                 if (strcmp(directory_name, "/") == 0 && !fileLabel) {
+
+                        new_directory_name_size = strlen(file_mgr_data->host) +
+                                             strlen(root_title) + 3;
                         new_directory_name =
-                            (char *)XtMalloc(strlen(file_mgr_data->host) +
-                                             strlen(root_title) + 3);
-                        sprintf(new_directory_name, "%s:%s",
+                            (char *)XtMalloc(new_directory_name_size);
+                        snprintf(new_directory_name, new_directory_name_size, "%s:%s",
                                 file_mgr_data->host, root_title);
                         root = True;
                 } else
@@ -5069,9 +5076,9 @@ static void RemoveIconInWorkspace(char *fileName, char *workspaceName) {
                 desktopWin = desktop_data->desktopWindows[i];
 
                 if (strcmp(desktopWin->dir_linked_to, "/") == 0)
-                        sprintf(iconName, "/%s", desktopWin->file_name);
+                        snprintf(iconName, MAX_PATH, "/%s", desktopWin->file_name);
                 else
-                        sprintf(iconName, "%s/%s", desktopWin->dir_linked_to,
+                        snprintf(iconName, MAX_PATH, "%s/%s", desktopWin->dir_linked_to,
                                 desktopWin->file_name);
 
                 DtEliminateDots(iconName);
@@ -5182,6 +5189,7 @@ void CheckMoveType(FileMgrData *file_mgr_data, FileViewData *file_view_data,
                 char *message = NULL;
                 char *title;
                 char *from, *to, *filename;
+                int to_size, message_size;
 
                 global_file_count = file_count;
                 _DtCopyDroppedFileInfo(file_count, file_set, host_set,
@@ -5197,10 +5205,11 @@ void CheckMoveType(FileMgrData *file_mgr_data, FileViewData *file_view_data,
                         dtWindow = desktopWindow;
                         fm = (FileMgrData *)NULL;
                         dd = (DirectorySet *)NULL;
-                        to = (char *)XtMalloc(strlen(directory_data->name) +
-                                              strlen(fv->file_data->file_name) +
-                                              2);
-                        sprintf(to, "%s/%s", directory_data->name,
+                        to_size = strlen(directory_data->name) +
+                                  strlen(fv->file_data->file_name) +
+                                  2;
+                        to = (char *)XtMalloc(to_size);
+                        snprintf(to, to_size, "%s/%s", directory_data->name,
                                 fv->file_data->file_name);
                         DtEliminateDots(to);
                         break;
@@ -5210,10 +5219,11 @@ void CheckMoveType(FileMgrData *file_mgr_data, FileViewData *file_view_data,
                         dtWindow = (DesktopRec *)NULL;
                         fm = file_mgr_data;
                         dd = directory_data;
-                        to = (char *)XtMalloc(strlen(dd->name) +
-                                              strlen(fv->file_data->file_name) +
-                                              2);
-                        sprintf(to, "%s/%s", dd->name,
+                        to_size = strlen(dd->name) +
+                                  strlen(fv->file_data->file_name) +
+                                  2;
+                        to = (char *)XtMalloc(to_size);
+                        snprintf(to, to_size, "%s/%s", dd->name,
                                 fv->file_data->file_name);
                         (void)DtEliminateDots(to);
                         break;
@@ -5260,12 +5270,14 @@ void CheckMoveType(FileMgrData *file_mgr_data, FileViewData *file_view_data,
                 if (number == 1) {
                         int len = strlen(to);
                         char *ptr, *ptr1;
+                        int size;
 
                         if (file_mgr_data && file_mgr_data->toolbox) {
                                 ptr = strrchr(file_set[0], '/');
-                                ptr1 = (char *)XtMalloc(strlen(to) +
-                                                        strlen(ptr) + 1);
-                                sprintf(ptr1, "%s%s", to, ptr);
+                                size = strlen(to) +
+                                       strlen(ptr) + 1;
+                                ptr1 = (char *)XtMalloc(size);
+                                snprintf(ptr1, size, "%s%s", to, ptr);
                                 ptr1 = _DtResolveAppManPath(
                                     ptr1, file_mgr_data->restricted_directory);
 
@@ -5324,11 +5336,11 @@ void CheckMoveType(FileMgrData *file_mgr_data, FileViewData *file_view_data,
                             "are moving the object to folder %3$s.\nIs this "
                             "what you want to do?"));
 #endif
-                        message =
-                            (char *)XtMalloc(strlen(tmpStr) + strlen(filename) +
-                                             strlen(to) + strlen(from) + 1);
+                        message_size = strlen(tmpStr) + strlen(filename) +
+                                           strlen(to) + strlen(from) + 1;
+                        message = (char *)XtMalloc(message_size);
 
-                        sprintf(message, tmpStr, filename, from, to);
+                        snprintf(message, message_size, tmpStr, filename, from, to);
                         XtFree(filename);
                         XtFree(to);
                         XtFree(from);
@@ -5418,10 +5430,11 @@ void CheckMoveType(FileMgrData *file_mgr_data, FileViewData *file_view_data,
                                                 "moving all these "
                                                 "files to %s.\nIs this what "
                                                 "you want to do?"));
-                                message = (char *)XtMalloc(strlen(tmpStr) +
-                                                           strlen(to) + 1);
+                                message_size = strlen(tmpStr) +
+                                               strlen(to) + 1;
+                                message = (char *)XtMalloc(message_size);
 
-                                sprintf(message, tmpStr, to);
+                                snprintf(message, message_size, tmpStr, to);
                                 XtFree(to);
                         } else {
                         }
@@ -5451,7 +5464,7 @@ void CheckMoveType(FileMgrData *file_mgr_data, FileViewData *file_view_data,
         switch (view) {
         case DESKTOP:
                 target_host = desktopWindow->host;
-                sprintf(directory, "%s/%s", directory_data->name,
+                snprintf(directory, MAX_PATH, "%s/%s", directory_data->name,
                         file_view_data->file_data->file_name);
                 DtEliminateDots(directory);
                 value = FileMoveCopyDesktop(file_view_data, directory, host_set,
@@ -5461,7 +5474,7 @@ void CheckMoveType(FileMgrData *file_mgr_data, FileViewData *file_view_data,
 
         case NOT_DESKTOP_DIR:
                 target_host = file_mgr_data->host;
-                sprintf(directory, "%s/%s", directory_data->name,
+                snprintf(directory, MAX_PATH, "%s/%s", directory_data->name,
                         file_view_data->file_data->file_name);
                 DtEliminateDots(directory);
                 value = FileMoveCopy(file_mgr_data, NULL, directory,
@@ -5888,10 +5901,10 @@ static void DoTheMove(int type) {
                                                    host_set[j]) != 0)
                                                 continue;
 
-                                        fileName = (char *)XtMalloc(
-                                            strlen(desktopWin->dir_linked_to) +
-                                            strlen(desktopWin->file_name) + 3);
-                                        sprintf(fileName, "%s/%s",
+                                        int fileName_size = strlen(desktopWin->dir_linked_to) +
+                                            strlen(desktopWin->file_name) + 3;
+                                        fileName = (char *)XtMalloc(fileName_size);
+                                        snprintf(fileName, fileName_size, "%s/%s",
                                                 desktopWin->dir_linked_to,
                                                 desktopWin->file_name);
                                         /*
@@ -5958,7 +5971,7 @@ static void DoTheMove(int type) {
                 break;
 
         case NOT_DESKTOP_DIR:
-                sprintf(directory, "%s/%s", dd->name, fv->file_data->file_name);
+                snprintf(directory, MAX_PATH, "%s/%s", dd->name, fv->file_data->file_name);
 
                 result = FileMoveCopy(fm, NULL, directory, fm->host, host_set,
                                       file_set, file_count, (unsigned int)0,
@@ -5971,7 +5984,7 @@ static void DoTheMove(int type) {
                 DirectorySet *directory_data =
                     (DirectorySet *)fv->directory_set;
 
-                sprintf(directory, "%s/%s", directory_data->name,
+                snprintf(directory, MAX_PATH, "%s/%s", directory_data->name,
                         fv->file_data->file_name);
 
                 result =

@@ -484,7 +484,8 @@ static int FileMoveCopyProcess(int pipe_s2m, int pipe_m2s, char *to_file,
                                int file_count, int mode,
                                DesktopRec *desktopWindow) {
         char *target_dir, *from, *to;
-        int i, j, rc, result;
+        int i, j, result;
+        int rc = 0;
         Boolean return_val = False;
         Boolean isContainer;
         long current;
@@ -3306,7 +3307,7 @@ static void DisplayDuplicateOpError(FileOpCBData *cb_data, int index)
         Widget dialogwidget;
 
         if (cb_data->mode == MOVE_FILE) {
-                if (cb_data->callback_data == NULL)
+                if (cb_data->callback_data == NULL) {
                         if (initiating_view == NULL)
                                 return;
                         else {
@@ -3322,6 +3323,10 @@ static void DisplayDuplicateOpError(FileOpCBData *cb_data, int index)
                                     11, 135,
                                     "Cannot move object %s onto itself");
                         }
+                } else {
+                        title = XtCalloc(1, 1);
+                        title = (char *)'\0';
+                }
         } else if (cb_data->mode == COPY_FILE) {
                 title = XtCalloc(1, strlen(GETMESSAGE(9, 72, "Copy")) +
                                         strlen(GETMESSAGE(9, 94, "Error")) + 5);

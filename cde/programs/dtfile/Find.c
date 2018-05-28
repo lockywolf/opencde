@@ -2466,7 +2466,7 @@ static Boolean ExtractDirectory(String host, String path, char **file_name) {
                 return (True);
         }
 
-        if (findptr = strrchr(path, '/')) {
+        if ((findptr = strrchr(path, '/'))) {
                 *findptr = '\0';
                 findptr++;
                 *file_name = findptr;

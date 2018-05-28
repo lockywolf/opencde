@@ -639,7 +639,7 @@ void _DtCheckAndFreePixmapData(char *dataType, Widget shell,
                         char *tmp, *ptr;
 
                         tmp = XtNewString(pixmapData->instanceIconName);
-                        if (ptr = strrchr(tmp, '/'))
+                        if ((ptr = strrchr(tmp, '/')))
                                 *(ptr) = 0;
                         XmeFlushIconFileCache(tmp);
 
@@ -730,7 +730,7 @@ Boolean _DtCheckForDataTypeProperty(char *dataType, char *property)
         if (properties) {
                 props = properties;
                 prop = props;
-                while (props = DtStrchr(props, ',')) {
+                while ((props = DtStrchr(props, ','))) {
                         *props = '\0';
                         if (strcmp(prop, property) == 0) {
                                 found = True;
@@ -785,7 +785,7 @@ char *_DtRetrieveDefaultAction(char *dataType)
         actions =
             DtDtsDataTypeToAttributeValue(dataType, DtDTS_DA_ACTION_LIST, NULL);
         if (actions) {
-                if (acts = DtStrchr(actions, ','))
+                if ((acts = DtStrchr(actions, ',')))
                         *acts = '\0';
                 default_action = XtNewString(actions);
 
@@ -804,10 +804,10 @@ char *_DtBuildFMTitle(FileMgrData *file_mgr_data)
 {
         char *title, *ptr, *fileLabel, *fileName;
 
-        if (fileLabel = DtDtsFileToAttributeValue(
-                file_mgr_data->current_directory, DtDTS_DA_LABEL))
+        if ((fileLabel = DtDtsFileToAttributeValue(
+                file_mgr_data->current_directory, DtDTS_DA_LABEL)))
                 ptr = fileLabel;
-        else if (fileName = strrchr(file_mgr_data->current_directory, '/'))
+        else if ((fileName = strrchr(file_mgr_data->current_directory, '/')))
                 ptr = fileName + 1;
         else
                 ptr = "";

@@ -130,7 +130,7 @@ void HelpRequestCB(Widget w, XtPointer clientData, XtPointer callData)
         XmUpdateDisplay(w);
 
         if (recordStruct = LocateRecordStructure(w)) {
-                if (dialogData = _DtGetInstanceData(recordStruct)) {
+                if ((dialogData = _DtGetInstanceData(recordStruct))) {
                         if (IsMainWinDialog(dialogData)) {
                                 FileMgrData *fileMgrData =
                                     (FileMgrData *)dialogData->data;

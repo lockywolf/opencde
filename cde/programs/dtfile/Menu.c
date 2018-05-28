@@ -1324,22 +1324,9 @@ static void SetMenuSensitivity(Widget w, XtPointer client_data,
                 }
 
                 if (!restrictMode) {
-                        /*
-                                 if(file_mgr_data->restricted_directory == NULL)
-                                 {
-                        */
                         _DtGlobalUpdateMenuItemState(*terminalBtn, TERMINAL,
                                                      True, &currentMenuStates);
                         file_mgr_rec->menuStates |= TERMINAL;
-                        /*
-                                 }
-                                 else
-                                 {
-                                    _DtGlobalUpdateMenuItemState(*terminalBtn,
-                           TERMINAL, False, &currentMenuStates);
-                                    file_mgr_rec->menuStates &= ~(TERMINAL);
-                                 }
-                        */
                         XtManageChild(*terminalBtn);
                 }
 
@@ -1348,21 +1335,6 @@ static void SetMenuSensitivity(Widget w, XtPointer client_data,
                 if (openDirType == CURRENT)
                         XtManageChild(*newViewBtn);
                 XtManageChild(*showHiddenMenu);
-
-                /*    Obsolete code.
-                      if(restrictMode)
-                      {
-                         char *ptr;
-
-                         ptr = strrchr(users_home_dir, '/');
-                         *ptr = '\0';
-                         if(strcmp(file_mgr_data->current_directory,
-                   users_home_dir) == 0) file_mgr_rec->menuStates &= ~(MOVE_UP);
-                         else
-                            file_mgr_rec->menuStates |= MOVE_UP;
-                         *ptr = '/';
-                      }
-                */
 
                 XtManageChild(*findBtn);
 
@@ -1411,27 +1383,27 @@ static void SetMenuSensitivity(Widget w, XtPointer client_data,
                                     &currentMenuStates);
                         }
                 }
-        }
 
-        if (showFilesystem) {
-                if (file_mgr_data->show_hid_enabled)
-                        XmToggleButtonGadgetSetState(*showHiddenMenu, True,
-                                                     False);
-                else
-                        XmToggleButtonGadgetSetState(*showHiddenMenu, False,
-                                                     False);
-        }
+                if (showFilesystem) {
+                        if (file_mgr_data->show_hid_enabled)
+                                XmToggleButtonGadgetSetState(*showHiddenMenu, True,
+                                                             False);
+                        else
+                                XmToggleButtonGadgetSetState(*showHiddenMenu, False,
+                                                             False);
+                }
 
-        if (file_mgr_data->toolbox) {
-                if (!XtIsManaged(*applicationManagerHelp))
-                        XtManageChild(*applicationManagerHelp);
-                if (XtIsManaged(*fileManagerHelp))
-                        XtUnmanageChild(*fileManagerHelp);
-        } else {
-                if (!XtIsManaged(*fileManagerHelp))
-                        XtManageChild(*fileManagerHelp);
-                if (XtIsManaged(*applicationManagerHelp))
-                        XtUnmanageChild(*applicationManagerHelp);
+                if (file_mgr_data->toolbox) {
+                        if (!XtIsManaged(*applicationManagerHelp))
+                                XtManageChild(*applicationManagerHelp);
+                        if (XtIsManaged(*fileManagerHelp))
+                                XtUnmanageChild(*fileManagerHelp);
+                } else {
+                        if (!XtIsManaged(*fileManagerHelp))
+                                XtManageChild(*fileManagerHelp);
+                        if (XtIsManaged(*applicationManagerHelp))
+                                XtUnmanageChild(*applicationManagerHelp);
+                }
         }
 
         _DtGlobalSetMenuSensitivity(w, client_data, call_data);

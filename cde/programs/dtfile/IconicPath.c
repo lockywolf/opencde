@@ -573,8 +573,8 @@ static int Update(DtIconicPathWidget ip, FileMgrRec *file_mgr_rec,
                             restrictMode &&
                             strncmp(path, users_home_dir, path_len) == 0 &&
                             (path_len == 1 ||
-                             users_home_dir[path_len] == '/' &&
-                                 users_home_dir[path_len + 1] != '\0');
+                             (users_home_dir[path_len] == '/' &&
+                                 users_home_dir[path_len + 1] != '\0'));
 
                         /* check if we need to add or update the path component
                          */
@@ -661,10 +661,10 @@ static int Update(DtIconicPathWidget ip, FileMgrRec *file_mgr_rec,
                                     ip->iconic_path.components[i].icon,
                                     XmNcallback, ButtonCallback, ip);
 
-                                if (fileLabel = DtDtsDataTypeToAttributeValue(
+                                if ((fileLabel = DtDtsDataTypeToAttributeValue(
                                         GetDirectoryLogicalType(file_mgr_data,
                                                                 path),
-                                        DtDTS_DA_LABEL, NULL)) {
+                                        DtDTS_DA_LABEL, NULL))) {
                                         xm_string =
                                             XmStringCreateLocalized(fileLabel);
                                         DtDtsFreeAttributeValue(fileLabel);
@@ -727,10 +727,10 @@ static int Update(DtIconicPathWidget ip, FileMgrRec *file_mgr_rec,
                                             XtNewString(path);
                                 }
 
-                                if (fileLabel = DtDtsDataTypeToAttributeValue(
+                                if ((fileLabel = DtDtsDataTypeToAttributeValue(
                                         GetDirectoryLogicalType(file_mgr_data,
                                                                 path),
-                                        DtDTS_DA_LABEL, NULL)) {
+                                        DtDTS_DA_LABEL, NULL))) {
                                         xm_string =
                                             XmStringCreateLocalized(fileLabel);
                                         DtDtsFreeAttributeValue(fileLabel);
@@ -755,11 +755,11 @@ static int Update(DtIconicPathWidget ip, FileMgrRec *file_mgr_rec,
                                              NULL) !=
                                                 (ip->iconic_path.components[i]
                                                      .icon_name == NULL) ||
-                                            pixmapData->iconFileName != NULL &&
+                                            (pixmapData->iconFileName != NULL &&
                                                 strcmp(pixmapData->iconFileName,
                                                        ip->iconic_path
                                                            .components[i]
-                                                           .icon_name) != 0) {
+                                                           .icon_name) != 0)) {
                                                 INC_N_CHANGES();
 
                                                 XtFree(ip->iconic_path

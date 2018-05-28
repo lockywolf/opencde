@@ -616,7 +616,7 @@ void FileWindowInputCallback(Widget w, XtPointer client_data,
                                 switch (keysym) {
                                 case osfXK_Delete: {
                                         DtActionArg *action_args;
-                                        int arg_count;
+                                        int arg_count = 0;
 
                                         if (desktopRec == NULL &&
                                             file_mgr_rec != NULL) {

@@ -1472,7 +1472,7 @@ static void SetValues(ModAttrRec *modAttr_rec, ModAttrData *modAttr_data) {
                 user_data = NULL;
         effective_user = geteuid();
 
-        if (user_data && user_data->pw_uid == getuid() ||
+        if ((user_data && user_data->pw_uid == getuid()) ||
             effective_user == root_user) {
                 /* Check for root user */
                 if (effective_user == root_user) {
@@ -1762,8 +1762,8 @@ static void SetValues(ModAttrRec *modAttr_rec, ModAttrData *modAttr_data) {
         if (modAttr_data->filetype) {
                 char *ptr;
 
-                if (ptr = (char *)DtDtsDataTypeToAttributeValue(
-                        modAttr_data->filetype, FM_TYPE_LABEL, NULL)) {
+                if ((ptr = (char *)DtDtsDataTypeToAttributeValue(
+                        modAttr_data->filetype, FM_TYPE_LABEL, NULL))) {
                         string = XmStringCreateLocalized(ptr);
                         DtDtsFreeAttributeValue(ptr);
                 } else {
